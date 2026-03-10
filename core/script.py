@@ -12,7 +12,6 @@ SCREEN_HEIGHT = 720
 FPS = 60
 TITLE = "Arkamon"
 
-
 class Game:
     def __init__(self) -> None:
         pygame.init()
