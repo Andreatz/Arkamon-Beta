@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import pygame
 
-from __future__ import annotations
 from data_loader import DataLoader
 from lab_scene import LabScene
 from world_scene import WorldScene
