@@ -1,22 +1,18 @@
-from __future__ import annotations
-from lab_scene import LabScene
-from world_scene import WorldScene
-
 import csv
+import pygame
+
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Dict, List, Optional
-
-import pygame
-
+from __future__ import annotations
+from lab_scene import LabScene
+from world_scene import WorldScene
 from data_loader import DataLoader
-
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 FPS = 60
 TITLE = "Arkamon"
-
 
 @dataclass
 class PlayerState:
@@ -115,42 +111,6 @@ class Game:
             self.draw()
 
         pygame.quit()
-
-    def handle_events(self) -> None:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.running = False
-
-                elif event.key == pygame.K_RETURN:
-                    if self.scene == "menu":
-                        self.scene = "world"
-
-                elif event.key == pygame.K_l:
-                    self.scene = "lab"
-
-                elif event.key == pygame.K_m:
-                    self.scene = "world"
-
-    def update(self, dt: float) -> None:
-        pass
-
-    def draw(self) -> None:
-        self.screen.fill((22, 24, 30))
-
-        if self.scene == "menu":
-            self.draw_menu()
-        elif self.scene == "lab":
-            self.draw_lab()
-        elif self.scene == "world":
-            self.draw_world()
-        else:
-            self.draw_fallback()
-
-        pygame.display.flip()
 
     def draw_menu(self) -> None:
         title = self.font_title.render("Arkamon", True, (240, 240, 240))
