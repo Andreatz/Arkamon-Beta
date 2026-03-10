@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 import pygame
 
+from __future__ import annotations
 from data_loader import DataLoader
 from lab_scene import LabScene
 from world_scene import WorldScene
-
+from save_manager import load_pokemon_instances, load_player_state
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -26,17 +25,42 @@ class Game:
 
         self.data = DataLoader("data", strict=False).load_all()
 
-        self.scenes = {
-            "lab": LabScene(self),
-            "world": WorldScene(self),
+        self.scenes = {}
+        self.current_scene = None
+
+        if self._should_start_in_lab():
+            self.change_scene("lab")
+        else:
+            self.change_scene("world")
+
+    def _should_start_in_lab(self) -> bool:
+        players = load_player_state("saves/slot_1")
+        instances = load_pokemon_instances("saves/slot_1")
+
+        if len(players) < 2:
+            return True
+
+        player_party = [
+            p for p in instances
+            if str(p.get("owner_type", "")).strip().lower() == "player"
+            and str(p.get("storage", "")).strip().lower() == "party"
+        ]
+
+        player_ids_with_starter = {
+            int(p["owner_id"])
+            for p in player_party
+            if str(p.get("owner_id", "")).isdigit()
         }
-        self.current_scene = self.scenes["lab"]
+
+        return not ({1, 2}.issubset(player_ids_with_starter))
 
     def change_scene(self, scene_name: str) -> None:
-        if scene_name == "world":
+        if scene_name == "lab":
+            self.scenes["lab"] = LabScene(self)
+            self.current_scene = self.scenes["lab"]
+        elif scene_name == "world":
             self.scenes["world"] = WorldScene(self)
-        if scene_name in self.scenes:
-            self.current_scene = self.scenes[scene_name]
+            self.current_scene = self.scenes["world"]
 
     def handle_events(self) -> None:
         for event in pygame.event.get():

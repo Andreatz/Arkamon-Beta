@@ -106,7 +106,6 @@ def next_instance_id(instances: List[dict]) -> int:
 def create_pokemon_instance(
     instance_id: int,
     owner_id: int,
-    owner_type: str,
     storage: str,
     slot: int,
     species_id: int,
@@ -117,7 +116,6 @@ def create_pokemon_instance(
     return {
         "instance_id": instance_id,
         "owner_id": owner_id,
-        "owner_type": owner_type,
         "storage": storage,
         "slot": slot,
         "species_id": species_id,
