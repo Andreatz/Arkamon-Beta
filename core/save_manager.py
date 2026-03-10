@@ -8,6 +8,7 @@ from paths import SLOT_1_DIR
 
 LOCAL_MAP_STATE_FILE = "local_map_state.json"
 BATTLE_STATE_FILE = "battle_state.json"
+TURN_STATE_FILE = "turn_state.json"
 
 PLAYER_STATE_HEADER = [
     "player_id",
@@ -187,3 +188,29 @@ def save_battle_state(state: dict, save_dir: str | Path = SLOT_1_DIR) -> None:
 
     with file_path.open("w", encoding="utf-8") as f:
         json.dump(state, f, indent=2, ensure_ascii=False)
+
+
+def load_turn_state(save_dir: str | Path = SLOT_1_DIR) -> dict:
+    save_path = ensure_save_dir(save_dir)
+    file_path = save_path / TURN_STATE_FILE
+
+    if not file_path.exists():
+        return {"current_turn": 1}
+
+    with file_path.open("r", encoding="utf-8") as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError:
+            return {"current_turn": 1}
+
+
+def save_turn_state(current_turn: int, save_dir: str | Path = SLOT_1_DIR) -> None:
+    save_path = ensure_save_dir(save_dir)
+    file_path = save_path / TURN_STATE_FILE
+
+    payload = {
+        "current_turn": int(current_turn)
+    }
+
+    with file_path.open("w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)

@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Tuple
 
 import pygame
 
-from save_manager import load_player_state, save_player_state
+from save_manager import load_player_state, save_player_state, load_turn_state, save_turn_state
 from paths import MAPS_DIR, SLOT_1_DIR
 
 
@@ -29,7 +29,8 @@ class WorldScene:
         self.small_font = pygame.font.SysFont("arial", 20)
 
         self.players = load_player_state(SLOT_1_DIR)
-        self.current_turn = self._get_first_player()
+        self.turn_state = load_turn_state(SLOT_1_DIR)
+        self.current_turn = self._resolve_current_turn()
         self.selected_node_id: Optional[str] = None
         self.hovered_node_id: Optional[str] = None
 
@@ -63,6 +64,13 @@ class WorldScene:
         if self.players:
             return sorted(self.players.keys())[0]
         return 1
+    
+
+    def _resolve_current_turn(self) -> int:
+        saved_turn = self.turn_state.get("current_turn", 1)
+        if saved_turn in self.players:
+            return saved_turn
+        return self._get_first_player()
 
     def _build_node_positions(self) -> Dict[str, Tuple[int, int]]:
         positions = {}
@@ -116,6 +124,7 @@ class WorldScene:
             self.selected_node_id = node_id
             node = self.game.data.world_nodes.get(node_id)
             if node and node.node_type == "route":
+                save_turn_state(self.current_turn, SLOT_1_DIR)
                 self.game.change_scene("route", route_node_id=node_id)
             return
 
@@ -125,13 +134,17 @@ class WorldScene:
             save_player_state(self.players, SLOT_1_DIR)
             self.selected_node_id = node_id
             self._advance_turn()
+            save_turn_state(self.current_turn, SLOT_1_DIR)
+
 
     def _advance_turn(self) -> None:
         ordered = sorted(pid for pid in self.players.keys() if pid in (1, 2))
         if not ordered:
             return
+
         idx = ordered.index(self.current_turn)
         self.current_turn = ordered[(idx + 1) % len(ordered)]
+        save_turn_state(self.current_turn, SLOT_1_DIR)
 
     def update(self, dt: float) -> None:
         pass
@@ -226,6 +239,8 @@ class WorldScene:
         node = self.game.data.world_nodes.get(current_location)
         if not node:
             return
+
+        save_turn_state(self.current_turn, SLOT_1_DIR)
 
         if node.node_type == "route":
             self.game.change_scene("route", route_node_id=current_location)

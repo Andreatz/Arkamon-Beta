@@ -8,12 +8,13 @@ import pygame
 from paths import SLOT_1_DIR
 from save_manager import (
     load_player_state,
-    save_player_state,
     load_local_map_state,
     save_local_map_state,
     get_player_route_state,
     load_pokemon_instances,
     save_battle_state,
+    load_turn_state,
+    save_turn_state,
 )
 from encounter_service import (
     roll_wild_encounter,
@@ -41,7 +42,6 @@ class Npc:
 
 class RouteScene:
     def __init__(self, game, route_node_id: str):
-        self.instances = load_pokemon_instances(SLOT_1_DIR)
         self.game = game
         self.screen = game.screen
         self.font_title = game.font_title
@@ -49,11 +49,16 @@ class RouteScene:
         self.small_font = pygame.font.SysFont("arial", 20)
 
         self.players = load_player_state(SLOT_1_DIR)
+        self.turn_state = load_turn_state(SLOT_1_DIR)
         self.route_node_id = route_node_id
         self.route_node = self.game.data.world_nodes[route_node_id]
 
         self.current_player_id = self._resolve_current_player()
         self.current_player = self.players[self.current_player_id]
+        self.instances = load_pokemon_instances(SLOT_1_DIR)
+
+        save_turn_state(self.current_player_id, SLOT_1_DIR)
+        self.game.change_scene("battle")
 
         self.local_state = load_local_map_state(SLOT_1_DIR)
         self.player_route_state = get_player_route_state(
@@ -81,10 +86,18 @@ class RouteScene:
         save_local_map_state(self.local_state, SLOT_1_DIR)
 
     def _resolve_current_player(self) -> int:
-        for pid in sorted(self.players):
-            if self.players[pid]["turn_order_status"] == 0:
-                return pid
-        return sorted(self.players)[0]
+        saved_turn = self.turn_state.get("current_turn", 1)
+        if saved_turn in self.players:
+            return saved_turn
+
+        if 1 in self.players:
+            return 1
+
+        if self.players:
+            return sorted(self.players.keys())[0]
+
+        return 1
+
 
     def handle_event(self, event) -> None:
         if event.type == pygame.KEYDOWN:
@@ -115,7 +128,9 @@ class RouteScene:
         player_rect = self._player_rect()
 
         if player_rect.colliderect(self.exit_rect):
-            self.message = "Uscita verso la mappa generale. Premi E."
+            save_local_map_state(self.local_state, SLOT_1_DIR)
+            save_turn_state(self.current_player_id, SLOT_1_DIR)
+            self.game.change_scene("world")
             return
 
         for bush in self.bushes:
@@ -187,6 +202,7 @@ class RouteScene:
                 cleared.append(bush.bush_id)
                 save_local_map_state(self.local_state, SLOT_1_DIR)
                 save_battle_state(battle_state, SLOT_1_DIR)
+                save_turn_state(self.current_player_id, SLOT_1_DIR)
                 self.game.change_scene("battle")
                 return
 
