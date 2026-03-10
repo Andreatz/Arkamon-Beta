@@ -84,107 +84,6 @@ class BattleScene:
 
         return labels
 
-    def handle_event(self, event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.change_scene("world")
-            return
-
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            for key, rect in self.buttons.items():
-                if rect.collidepoint(event.pos):
-                    self._handle_button(key)
-                    break
-
-    def _handle_button(self, key: str) -> None:
-        if self.battle_state.get("battle_result") in {"player_win", "wild_win"}:
-            self.game.change_scene("world")
-            return
-
-        if key.startswith("move_"):
-            move_index = int(key.split("_")[1]) - 1
-            self.battle_state, self.message = resolve_player_attack(
-                self.game.data,
-                self.battle_state,
-                self.instances,
-                move_index,
-            )
-            save_battle_state(self.battle_state, SLOT_1_DIR)
-
-        elif key == "capture":
-            if self.battle_state.get("capture_allowed"):
-                self.message = "La cattura sarà il prossimo step."
-            else:
-                self.message = "Cattura non disponibile."
-
-        elif key == "switch":
-            self.message = "Il cambio Pokémon sarà il prossimo step."
-
-    def update(self, dt: float) -> None:
-        pass
-
-    def draw(self) -> None:
-        self.screen.fill((210, 235, 255))
-        pygame.draw.rect(self.screen, (120, 180, 120), (0, 350, 1280, 370))
-
-        title = self.font_title.render("Battaglia", True, (25, 25, 25))
-        self.screen.blit(title, (40, 30))
-
-        side_a = self.battle_state.get("side_a", {})
-        side_b = self.battle_state.get("side_b", {})
-
-        a_text = [
-            f"Giocatore: {side_a.get('trainer_name', '---')}",
-            f"Instance ID: {side_a.get('active_instance_id', '---')}",
-            f"HP correnti: {side_a.get('current_hp', '---')}",
-        ]
-
-        b_text = [
-            f"Avversario: {side_b.get('wild_species_name', side_b.get('trainer_name', '---'))}",
-            f"Livello: {side_b.get('level', '---')}",
-            f"HP: {side_b.get('current_hp', '---')} / {side_b.get('hp_max', '---')}",
-        ]
-
-        y = 110
-        for line in a_text:
-            surf = self.font_text.render(str(line), True, (30, 30, 30))
-            self.screen.blit(surf, (60, y))
-            y += 36
-
-        y = 110
-        for line in b_text:
-            surf = self.font_text.render(str(line), True, (30, 30, 30))
-            self.screen.blit(surf, (760, y))
-            y += 36
-
-        msg = self.font_text.render(self.message, True, (30, 30, 30))
-        self.screen.blit(msg, (60, 430))
-
-        if self.battle_state.get("battle_result") == "player_win":
-            win_msg = self.font_text.render("Hai vinto. Clicca un pulsante per uscire.", True, (20, 120, 20))
-            self.screen.blit(win_msg, (60, 470))
-        elif self.battle_state.get("battle_result") == "wild_win":
-            lose_msg = self.font_text.render("Hai perso. Clicca un pulsante per uscire.", True, (160, 40, 40))
-            self.screen.blit(lose_msg, (60, 470))
-
-        labels = self._get_player_move_labels()
-
-        for key, rect in self.buttons.items():
-            pygame.draw.rect(self.screen, (245, 245, 245), rect, border_radius=10)
-            pygame.draw.rect(self.screen, (40, 40, 40), rect, 3, border_radius=10)
-            surf = self.small_font.render(labels[key], True, (20, 20, 20))
-            self.screen.blit(surf, (rect.x + 18, rect.y + 18))
-
-        if self.battle_state.get("battle_result") == "player_win":
-            win_msg = self.font_text.render("Hai vinto. Clicca un pulsante per uscire.", True, (20, 120, 20))
-            self.screen.blit(win_msg, (60, 470))
-        elif self.battle_state.get("battle_result") == "wild_win":
-            lose_msg = self.font_text.render("Hai perso. Clicca un pulsante per uscire.", True, (160, 40, 40))
-            self.screen.blit(lose_msg, (60, 470))
-        elif self.battle_state.get("battle_result") == "captured":
-            cap_msg = self.font_text.render("Pokémon catturato. Clicca un pulsante per uscire.", True, (20, 120, 20))
-            self.screen.blit(cap_msg, (60, 470))
-
-
     def _get_player_party(self, player_id: int) -> list[dict]:
         party = []
         for row in self.instances:
@@ -203,7 +102,6 @@ class BattleScene:
 
         party.sort(key=lambda r: int(r.get("slot", 999)))
         return party
-
 
     def _get_player_box(self, player_id: int) -> list[dict]:
         box_rows = []
@@ -224,10 +122,14 @@ class BattleScene:
         box_rows.sort(key=lambda r: int(r.get("slot", 999)))
         return box_rows
 
+    def _return_after_battle(self) -> None:
+        battle_type = self.battle_state.get("battle_type")
+        return_node = self.battle_state.get("return_node")
 
-    def _close_battle_to_world(self) -> None:
-        self.game.change_scene("world")
-
+        if battle_type == "wild" and return_node:
+            self.game.change_scene("route", route_node_id=return_node)
+        else:
+            self.game.change_scene("world")
 
     def _try_capture(self) -> None:
         if not self.battle_state.get("capture_allowed"):
@@ -238,6 +140,10 @@ class BattleScene:
             self.message = "Puoi catturare solo i Pokémon selvatici."
             return
 
+        if self.battle_state.get("battle_result") in {"player_win", "wild_win", "captured"}:
+            self.message = "La battaglia è già terminata."
+            return
+
         side_a = self.battle_state.get("side_a", {})
         side_b = self.battle_state.get("side_b", {})
 
@@ -246,6 +152,10 @@ class BattleScene:
         current_hp = int(side_b.get("current_hp", 1))
         hp_max = int(side_b.get("hp_max", 1))
         level = int(side_b.get("level", 1))
+
+        if current_hp <= 0:
+            self.message = "Non puoi catturare un Pokémon già KO."
+            return
 
         if not player_id or not species_id:
             self.message = "Dati cattura incompleti."
@@ -294,9 +204,100 @@ class BattleScene:
 
         save_pokemon_instances(self.instances, SLOT_1_DIR)
         self.battle_state["battle_result"] = "captured"
+        self.battle_state["capture_allowed"] = False
         save_battle_state(self.battle_state, SLOT_1_DIR)
 
         if storage == "party":
             self.message = f"{species.name} catturato e aggiunto alla squadra!"
         else:
             self.message = f"{species.name} catturato e inviato al box!"
+
+    def handle_event(self, event) -> None:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self._return_after_battle()
+            return
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            for key, rect in self.buttons.items():
+                if rect.collidepoint(event.pos):
+                    self._handle_button(key)
+                    break
+
+    def _handle_button(self, key: str) -> None:
+        if self.battle_state.get("battle_result") in {"player_win", "wild_win", "captured"}:
+            self._return_after_battle()
+            return
+
+        if key.startswith("move_"):
+            move_index = int(key.split("_")[1]) - 1
+            self.battle_state, self.message = resolve_player_attack(
+                self.game.data,
+                self.battle_state,
+                self.instances,
+                move_index,
+            )
+            save_battle_state(self.battle_state, SLOT_1_DIR)
+
+        elif key == "capture":
+            self._try_capture()
+
+        elif key == "switch":
+            self.message = "Il cambio Pokémon sarà il prossimo step."
+
+    def update(self, dt: float) -> None:
+        pass
+
+    def draw(self) -> None:
+        self.screen.fill((210, 235, 255))
+        pygame.draw.rect(self.screen, (120, 180, 120), (0, 350, 1280, 370))
+
+        title = self.font_title.render("Battaglia", True, (25, 25, 25))
+        self.screen.blit(title, (40, 30))
+
+        side_a = self.battle_state.get("side_a", {})
+        side_b = self.battle_state.get("side_b", {})
+
+        a_text = [
+            f"Giocatore: {side_a.get('trainer_name', '---')}",
+            f"Instance ID: {side_a.get('active_instance_id', '---')}",
+            f"HP correnti: {side_a.get('current_hp', '---')}",
+        ]
+
+        b_text = [
+            f"Avversario: {side_b.get('wild_species_name', side_b.get('trainer_name', '---'))}",
+            f"Livello: {side_b.get('level', '---')}",
+            f"HP: {side_b.get('current_hp', '---')} / {side_b.get('hp_max', '---')}",
+        ]
+
+        y = 110
+        for line in a_text:
+            surf = self.font_text.render(str(line), True, (30, 30, 30))
+            self.screen.blit(surf, (60, y))
+            y += 36
+
+        y = 110
+        for line in b_text:
+            surf = self.font_text.render(str(line), True, (30, 30, 30))
+            self.screen.blit(surf, (760, y))
+            y += 36
+
+        msg = self.font_text.render(self.message, True, (30, 30, 30))
+        self.screen.blit(msg, (60, 430))
+
+        labels = self._get_player_move_labels()
+
+        for key, rect in self.buttons.items():
+            pygame.draw.rect(self.screen, (245, 245, 245), rect, border_radius=10)
+            pygame.draw.rect(self.screen, (40, 40, 40), rect, 3, border_radius=10)
+            surf = self.small_font.render(labels[key], True, (20, 20, 20))
+            self.screen.blit(surf, (rect.x + 18, rect.y + 18))
+
+        if self.battle_state.get("battle_result") == "player_win":
+            win_msg = self.font_text.render("Hai vinto. Clicca un pulsante per tornare al percorso.", True, (20, 120, 20))
+            self.screen.blit(win_msg, (60, 470))
+        elif self.battle_state.get("battle_result") == "wild_win":
+            lose_msg = self.font_text.render("Hai perso. Clicca un pulsante per uscire.", True, (160, 40, 40))
+            self.screen.blit(lose_msg, (60, 470))
+        elif self.battle_state.get("battle_result") == "captured":
+            cap_msg = self.font_text.render("Pokémon catturato. Clicca un pulsante per tornare al percorso.", True, (20, 120, 20))
+            self.screen.blit(cap_msg, (60, 470))

@@ -58,7 +58,6 @@ class RouteScene:
         self.instances = load_pokemon_instances(SLOT_1_DIR)
 
         save_turn_state(self.current_player_id, SLOT_1_DIR)
-        self.game.change_scene("battle")
 
         self.local_state = load_local_map_state(SLOT_1_DIR)
         self.player_route_state = get_player_route_state(
@@ -207,14 +206,10 @@ class RouteScene:
                 return
 
         for npc in self.npcs:
-            if player_rect.colliderect(npc.rect):
-                defeated = self.player_route_state["defeated_npcs"]
-                if npc.npc_id in defeated:
-                    self.message = f"{npc.npc_id} già sconfitto."
-                else:
-                    defeated.append(npc.npc_id)
-                    self.message = f"Sfida avviabile contro {npc.npc_id}."
-                    save_local_map_state(self.local_state, SLOT_1_DIR)
+            if player_rect.colliderect(self.exit_rect):
+                save_local_map_state(self.local_state, SLOT_1_DIR)
+                save_turn_state(self.current_player_id, SLOT_1_DIR)
+                self.game.change_scene("world")
                 return
 
     def update(self, dt: float) -> None:
