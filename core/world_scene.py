@@ -81,6 +81,9 @@ class WorldScene:
             if event.key == pygame.K_ESCAPE:
                 self.game.change_scene("menu")
                 return
+            if event.key in (pygame.K_RETURN, pygame.K_e):
+                self._enter_current_node()
+                return
 
         if event.type == pygame.MOUSEMOTION:
             self.hovered_node_id = self._find_node_at_pos(event.pos)
@@ -209,33 +212,16 @@ class WorldScene:
             self.screen.blit(surf, (35, y))
             y += 30
 
-        def handle_event(self, event) -> None:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.game.change_scene("menu")
-                    return
-                if event.key in (pygame.K_RETURN, pygame.K_e):
-                    self._enter_current_node()
-                    return
 
-            if event.type == pygame.MOUSEMOTION:
-                self.hovered_node_id = self._find_node_at_pos(event.pos)
+    def _enter_current_node(self) -> None:
+        player = self.players.get(self.current_turn)
+        if not player:
+            return
 
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                clicked = self._find_node_at_pos(event.pos)
-                if clicked:
-                    self._handle_node_click(clicked)
+        current_location = player["current_location"]
+        node = self.game.data.world_nodes.get(current_location)
+        if not node:
+            return
 
-
-        def _enter_current_node(self) -> None:
-            player = self.players.get(self.current_turn)
-            if not player:
-                return
-
-            current_location = player["current_location"]
-            node = self.game.data.world_nodes.get(current_location)
-            if not node:
-                return
-
-            if node.node_type == "route":
-                self.game.change_scene("route", route_node_id=current_location)
+        if node.node_type == "route":
+            self.game.change_scene("route", route_node_id=current_location)
