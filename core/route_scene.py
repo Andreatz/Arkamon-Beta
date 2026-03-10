@@ -41,6 +41,7 @@ class Npc:
 
 class RouteScene:
     def __init__(self, game, route_node_id: str):
+        self.instances = load_pokemon_instances(SLOT_1_DIR)
         self.game = game
         self.screen = game.screen
         self.font_title = game.font_title
@@ -119,7 +120,37 @@ class RouteScene:
 
         for bush in self.bushes:
             if player_rect.colliderect(bush.rect):
+                if bush.bush_id in self.player_route_state["cleared_bushes"]:
+                    self.message = f"{bush.bush_id} già visitato da questo giocatore."
+                else:
+                    self.message = f"Cespuglio {bush.bush_id}. Premi E per esplorare."
+                return
+
+        for npc in self.npcs:
+            if player_rect.colliderect(npc.rect):
+                if npc.npc_id in self.player_route_state["defeated_npcs"]:
+                    self.message = f"{npc.npc_id} già sconfitto."
+                else:
+                    self.message = f"NPC {npc.npc_id}. Premi E per parlare/sfidare."
+                return
+
+        self.message = f"Esplorazione {self.route_node.name}"
+
+    def _player_rect(self) -> pygame.Rect:
+        return pygame.Rect(self.player_pos[0] * TILE, self.player_pos[1] * TILE, TILE, TILE)
+
+    def _interact(self) -> None:
+        player_rect = self._player_rect()
+
+        if player_rect.colliderect(self.exit_rect):
+            save_local_map_state(self.local_state, SLOT_1_DIR)
+            self.game.change_scene("world")
+            return
+
+        for bush in self.bushes:
+            if player_rect.colliderect(bush.rect):
                 cleared = self.player_route_state["cleared_bushes"]
+
                 if bush.bush_id in cleared:
                     self.message = f"{bush.bush_id} già visitato da questo giocatore."
                     return
@@ -157,36 +188,6 @@ class RouteScene:
                 save_local_map_state(self.local_state, SLOT_1_DIR)
                 save_battle_state(battle_state, SLOT_1_DIR)
                 self.game.change_scene("battle")
-                return
-
-        for npc in self.npcs:
-            if player_rect.colliderect(npc.rect):
-                self.message = f"NPC {npc.npc_id}. Premi E per parlare/sfidare."
-                return
-
-        self.message = f"Esplorazione {self.route_node.name}"
-
-    def _player_rect(self) -> pygame.Rect:
-        return pygame.Rect(self.player_pos[0] * TILE, self.player_pos[1] * TILE, TILE, TILE)
-
-    def _interact(self) -> None:
-        player_rect = self._player_rect()
-
-        if player_rect.colliderect(self.exit_rect):
-            save_local_map_state(self.local_state, SLOT_1_DIR)
-            self.game.change_scene("world")
-            return
-
-        for bush in self.bushes:
-            if player_rect.colliderect(bush.rect):
-                cleared = self.player_route_state["cleared_bushes"]
-                if bush.bush_id in cleared:
-                    self.message = f"{bush.bush_id} già visitato da questo giocatore."
-                else:
-                    cleared.append(bush.bush_id)
-                    group = self.route_node.encounter_group or self.route_node_id
-                    self.message = f"Esplorato {bush.bush_id}. Qui partirà l'incontro del gruppo {group}."
-                    save_local_map_state(self.local_state, SLOT_1_DIR)
                 return
 
         for npc in self.npcs:

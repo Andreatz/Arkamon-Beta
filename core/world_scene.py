@@ -60,7 +60,9 @@ class WorldScene:
     def _get_first_player(self) -> int:
         if 1 in self.players:
             return 1
-        return sorted(self.players.keys())[0]
+        if self.players:
+            return sorted(self.players.keys())[0]
+        return 1
 
     def _build_node_positions(self) -> Dict[str, Tuple[int, int]]:
         positions = {}
@@ -112,15 +114,17 @@ class WorldScene:
 
         if node_id == current_location:
             self.selected_node_id = node_id
-            return
-
-        if node_id == current_location:
-            self.selected_node_id = node_id
             node = self.game.data.world_nodes.get(node_id)
             if node and node.node_type == "route":
                 self.game.change_scene("route", route_node_id=node_id)
             return
 
+        if node_id in valid_destinations:
+            self.players[self.current_turn]["current_location"] = node_id
+            self.players[self.current_turn]["turn_order_status"] = 0
+            save_player_state(self.players, SLOT_1_DIR)
+            self.selected_node_id = node_id
+            self._advance_turn()
 
     def _advance_turn(self) -> None:
         ordered = sorted(pid for pid in self.players.keys() if pid in (1, 2))
