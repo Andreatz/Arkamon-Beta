@@ -11,6 +11,8 @@ from save_manager import (
     save_pokemon_instances,
     next_instance_id,
     create_pokemon_instance,
+    heal_player_party,
+    clear_battle_state,
 )
 from battle_service import (
     get_instance_by_id,
@@ -127,8 +129,17 @@ class BattleScene:
         return box_rows
 
     def _return_after_battle(self) -> None:
+        side_a = self.battle_state.get("side_a", {})
+        player_id = side_a.get("player_id")
+
+        if self.battle_state.get("battle_type") == "wild" and player_id:
+            heal_player_party(int(player_id), SLOT_1_DIR)
+            self.instances = load_pokemon_instances(SLOT_1_DIR)
+
         battle_type = self.battle_state.get("battle_type")
         return_node = self.battle_state.get("return_node")
+
+        clear_battle_state(SLOT_1_DIR)
 
         if battle_type == "wild" and return_node:
             self.game.change_scene("route", route_node_id=return_node)

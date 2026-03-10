@@ -214,3 +214,29 @@ def save_turn_state(current_turn: int, save_dir: str | Path = SLOT_1_DIR) -> Non
 
     with file_path.open("w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
+
+
+def heal_player_party(player_id: int, save_dir: str | Path = SLOT_1_DIR) -> List[dict]:
+    instances = load_pokemon_instances(save_dir)
+
+    for row in instances:
+        try:
+            if int(row.get("owner_id", -1)) != int(player_id):
+                continue
+        except (TypeError, ValueError):
+            continue
+
+        if str(row.get("owner_type", "")).strip().lower() != "player":
+            continue
+        if str(row.get("storage", "")).strip().lower() != "party":
+            continue
+
+        row["hp_current"] = row.get("hp_max", row.get("hp_current", 0))
+        row["is_fainted"] = 0
+
+    save_pokemon_instances(instances, save_dir)
+    return instances
+
+
+def clear_battle_state(save_dir: str | Path = SLOT_1_DIR) -> None:
+    save_battle_state({}, save_dir)
