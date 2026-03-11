@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import random
 import pygame
+from pathlib import Path
 
-from paths import SLOT_1_DIR, BACK_SPRITES_DIR, FRONT_SPRITES_DIR
+from paths import SLOT_1_DIR, BACK_SPRITES_DIR, FRONT_SPRITES_DIR, BACKGROUND_DIR, UI_DIR
 from save_manager import (
     load_battle_state,
     load_pokemon_instances,
@@ -36,6 +37,11 @@ class BattleScene:
 
         self.battle_state = load_battle_state(SLOT_1_DIR)
         self.instances = load_pokemon_instances(SLOT_1_DIR)
+
+        self.bg_forest = pygame.image.load(str(BACKGROUND_DIR / "battle_forest.png")).convert()
+        self.ui_text_box = pygame.image.load(str(UI_DIR / "infobox.png")).convert_alpha()
+        self.ui_hp_enemy = pygame.image.load(str(UI_DIR / "hp_bar_enemy.png")).convert_alpha()
+        self.ui_hp_player = pygame.image.load(str(UI_DIR / "hp_bar_player.png")).convert_alpha()
 
         self.buttons = {
             "move_1": pygame.Rect(60, 520, 240, 60),
@@ -290,27 +296,28 @@ class BattleScene:
         pass
 
     def draw(self) -> None:
-        self.screen.fill((210, 235, 255))
-        pygame.draw.rect(self.screen, (120, 180, 120), (0, 350, 1280, 370))
+        self.screen.blit(self.bg_forest, (0, 0))
 
         title = self.font_title.render("Battaglia", True, (25, 25, 25))
         player_sprite, wild_sprite = self._get_battle_sprites()
 
         if player_sprite:
-            self.screen.blit(player_sprite, (140, 220))
-        else:
-            pygame.draw.rect(self.screen, (180, 180, 180), (140, 220, 220, 220))
-            txt = self.small_font.render("Back sprite mancante", True, (20, 20, 20))
-            self.screen.blit(txt, (155, 320))
+            # come nei tuoi mockup: back sprite a sinistra in basso
+            self.screen.blit(player_sprite, (140, 260))
 
         if wild_sprite:
-            self.screen.blit(wild_sprite, (880, 120))
-        else:
-            pygame.draw.rect(self.screen, (180, 180, 180), (880, 120, 220, 220))
-            txt = self.small_font.render("Front sprite mancante", True, (20, 20, 20))
-            self.screen.blit(txt, (895, 220))
+            # front sprite a destra in alto
+            self.screen.blit(wild_sprite, (880, 140))
 
-        self.screen.blit(title, (40, 30))
+            self.screen.blit(title, (40, 30))
+
+        # barra HP nemico (in alto)
+        self.screen.blit(self.ui_hp_enemy, (340, 40))
+        # barra HP giocatore (in basso)
+        self.screen.blit(self.ui_hp_player, (340, 340))
+
+        # pannello testo
+        self.screen.blit(self.ui_text_box, (260, 380))
 
         side_a = self.battle_state.get("side_a", {})
         side_b = self.battle_state.get("side_b", {})
@@ -431,6 +438,40 @@ class BattleScene:
                 FRONT_SPRITES_DIR,
                 int(wild_species_id),
                 (220, 220),
+            )
+
+        return player_sprite, wild_sprite
+    
+    def _load_sprite(self, folder: Path, species_id: int, size: tuple[int, int]):
+        candidates = [
+            folder / f"{species_id}.png",
+            folder / f"{species_id:03}.png",
+        ]
+        for path in candidates:
+            if path.exists():
+                img = pygame.image.load(str(path)).convert_alpha()
+                return pygame.transform.smoothscale(img, size)
+        return None
+
+    def _get_battle_sprites(self):
+        player_sprite = None
+        wild_sprite = None
+
+        player_instance = self._get_active_player_instance()
+        if player_instance:
+            player_sprite = self._load_sprite(
+                BACK_SPRITES_DIR,
+                int(player_instance["species_id"]),
+                (260, 260),
+            )
+
+        side_b = self.battle_state.get("side_b", {})
+        wild_species_id = side_b.get("wild_species_id")
+        if wild_species_id is not None:
+            wild_sprite = self._load_sprite(
+                FRONT_SPRITES_DIR,
+                int(wild_species_id),
+                (260, 260),
             )
 
         return player_sprite, wild_sprite
