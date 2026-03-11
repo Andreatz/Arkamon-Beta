@@ -64,30 +64,30 @@ class BattleScene:
 
         self.ui_text_box = self._load_scaled_image(
             UI_DIR / "infobox.png",
-            self._scale_size(760, 200),
+            self._scale_size(455, 175),
             alpha=True,
         )
 
         self.ui_hp_enemy = self._load_scaled_image(
             UI_DIR / "hp_bar_enemy.png",
-            self._scale_size(580, 110),
+            self._scale_size(850,115),
             alpha=True,
         )
 
         self.ui_hp_player = self._load_scaled_image(
             UI_DIR / "hp_bar_player.png",
-            self._scale_size(580, 110),
+            self._scale_size(850, 115),
             alpha=True,
         )
 
         self.ui_move_panel = self._load_optional_ui(
             ["move_button.png"],
-            self._scale_size(320, 110),
+            self._scale_size(390, 225),
         )
 
         self.ui_action_panel = self._load_optional_ui(
             ["general_button.png", "move_button.png"],
-            self._scale_size(320, 90),
+            self._scale_size(225, 75),
         )
 
         self.buttons = self._build_buttons()
@@ -120,11 +120,11 @@ class BattleScene:
 
     def _build_buttons(self) -> dict[str, pygame.Rect]:
         return {
-            "move_1":  self._vr(860,  840, 320, 110),
-            "move_2":  self._vr(1200, 840, 320, 110),
-            "move_3":  self._vr(1540, 840, 320, 110),
-            "capture": self._vr(860,  960, 320,  90),
-            "switch":  self._vr(1200, 960, 320,  90),
+            "move_1":  self._vr(610,  560, 340, 120),
+            "move_2":  self._vr(970,  560, 340, 120),
+            "move_3":  self._vr(1330, 560, 340, 120),
+            "capture": self._vr(610,  690, 340,  90),
+            "switch":  self._vr(970,  690, 340,  90),
         }
 
     def _wrap_text(self, text: str, max_chars: int = 38) -> list[str]:
@@ -396,7 +396,7 @@ class BattleScene:
             player_sprite = self._load_sprite(
                 BACK_SPRITES_DIR,
                 int(player_instance["species_id"]),
-                self._scale_size(420, 420),
+                self._scale_size(460, 460),   # più grande
             )
 
         side_b = self.battle_state.get("side_b", {})
@@ -405,10 +405,11 @@ class BattleScene:
             wild_sprite = self._load_sprite(
                 FRONT_SPRITES_DIR,
                 int(wild_species_id),
-                self._scale_size(380, 380),
+                self._scale_size(420, 420),   # più grande
             )
 
         return player_sprite, wild_sprite
+
 
     # ------------------------------------------------------------------ eventi
 
@@ -530,22 +531,22 @@ class BattleScene:
         player_sprite, wild_sprite = self._get_battle_sprites()
 
         if player_sprite:
-            self.screen.blit(player_sprite, self._vr(80, 480, 420, 420).topleft)
+            self.screen.blit(player_sprite, self._vr(30, 390, 460, 460).topleft)
         if wild_sprite:
-            self.screen.blit(wild_sprite, self._vr(1370, 80, 380, 380).topleft)
+            self.screen.blit(wild_sprite, self._vr(880, 50, 420, 420).topleft)
 
         # --- frame UI ---
-        enemy_bar_rect  = self._vr(850,  60, 580, 110)
-        player_bar_rect = self._vr(80,  720, 580, 110)
-        text_box_rect   = self._vr(80,  840, 760, 200)
+        enemy_bar_rect  = self._vr(380,  30, 580, 110)
+        player_bar_rect = self._vr(620, 480, 580, 110)
+        text_box_rect   = self._vr(30,  560, 560, 180)
 
         self.screen.blit(self.ui_hp_enemy,  enemy_bar_rect.topleft)
         self.screen.blit(self.ui_hp_player, player_bar_rect.topleft)
         self.screen.blit(self.ui_text_box,  text_box_rect.topleft)
 
         # --- barre HP dinamiche ---
-        enemy_fill_rect  = self._vr(860, 120, 470, 22)
-        player_fill_rect = self._vr(90,  784, 470, 22)
+        enemy_fill_rect  = self._vr(440,  95, 470, 20)
+        player_fill_rect = self._vr(680, 545, 470, 20)
 
         self._draw_hp_fill(
             enemy_fill_rect,
@@ -562,40 +563,24 @@ class BattleScene:
         enemy_name  = side_b.get("wild_species_name", side_b.get("trainer_name", "---"))
         enemy_level = side_b.get("level", "---")
 
+        self.screen.blit(self.font_name.render(str(enemy_name),           True, (255,255,255)), self._vr(440,  40, 0, 0).topleft)
+        self.screen.blit(self.font_name.render(f"LV. {enemy_level}",     True, (255,255,255)), self._vr(830,  40, 0, 0).topleft)
+        self.screen.blit(self.font_name.render(str(player_species_name), True, (255,255,255)), self._vr(660, 490, 0, 0).topleft)
+        self.screen.blit(self.font_name.render(f"LV. {player_level}",   True, (255,255,255)), self._vr(1050, 490, 0, 0).topleft)
         self.screen.blit(
-            self.font_name.render(str(enemy_name),           True, (255, 255, 255)),
-            self._vr(860,  68, 0, 0).topleft,
-        )
-        self.screen.blit(
-            self.font_name.render(f"LV. {enemy_level}",     True, (255, 255, 255)),
-            self._vr(1290, 68, 0, 0).topleft,
-        )
-        self.screen.blit(
-            self.font_name.render(str(player_species_name), True, (255, 255, 255)),
-            self._vr(90,  728, 0, 0).topleft,
-        )
-        self.screen.blit(
-            self.font_name.render(f"LV. {player_level}",   True, (255, 255, 255)),
-            self._vr(490, 728, 0, 0).topleft,
-        )
-        self.screen.blit(
-            self.font_small_bold.render(
-                f"{player_hp_current}/{player_hp_max}",
-                True,
-                (30, 30, 30),
-            ),
-            self._vr(90, 786, 0, 0).topleft,
+            self.font_small_bold.render(f"{player_hp_current}/{player_hp_max}", True, (30,30,30)),
+            self._vr(660, 548, 0, 0).topleft,
         )
 
         # --- testo infobox ---
-        message_lines = self._wrap_text(self.message, max_chars=38)
-        text_y = text_box_rect.y + int(50 * self.sy)
+        message_lines = self._wrap_text(self.message, max_chars=32)
+        text_y = text_box_rect.y + int(45 * self.sy)
         for line in message_lines[:4]:
             self.screen.blit(
                 self.font_text.render(line, True, (30, 30, 30)),
-                (text_box_rect.x + int(40 * self.sx), text_y),
+                (text_box_rect.x + int(35 * self.sx), text_y),
             )
-            text_y += int(40 * self.sy)
+            text_y += int(38 * self.sy)
 
         if self.awaiting_switch:
             self.screen.blit(
