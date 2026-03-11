@@ -295,3 +295,217 @@ class LayoutEditor:
         e    = self.layout[self.selected]
         mods = pygame.key.get_mods()
         step = SNAP * (5 if mods & pygame.KMOD_SHIFT else 1)
+        if mods & pygame.KMOD_CTRL:
+            e["h"] = max(SNAP, e["h"] + (step if event.y > 0 else -step))
+        else:
+            e["w"] = max(SNAP, e["w"] + (step if event.y > 0 else -step))
+        self._reload_assets()
+        self.dirty = True
+
+    # ------------------------------------------------------------------ drag / resize
+
+    def _start_interaction(self, pos):
+        # prima controlla se clicca su una maniglia di resize
+        if self.selected and self.selected not in POINT_ELEMENTS:
+            srect   = self._srect(self.selected)
+            handles = get_handle_rects(srect)
+            for hkey, hrect in handles.items():
+                if hrect.collidepoint(pos):
+                    self.drag_mode   = hkey
+                    self.drag_origin = dict(self.layout[self.selected])
+                    self.drag_offset = pos
+                    return
+
+        # poi controlla se clicca sul corpo di un elemento
+        for key in reversed(list(self.layout.keys())):
+            srect = self._srect(key)
+            if srect.collidepoint(pos):
+                self.selected    = key
+                self.drag_mode   = "move"
+                self.drag_origin = dict(self.layout[key])
+                self.drag_offset = (pos[0] - srect.x, pos[1] - srect.y)
+                return
+
+        self.selected  = None
+        self.drag_mode = None
+
+    def _do_interaction(self, pos):
+        if not self.drag_mode or not self.selected:
+            return
+
+        e  = self.layout[self.selected]
+        o  = self.drag_origin
+        mx, my = pos
+
+        if self.drag_mode == "move":
+            nx = snap(int((mx - self.drag_offset[0]) / SX))
+            ny = snap(int((my - self.drag_offset[1]) / SY))
+            e["x"] = nx
+            e["y"] = ny
+
+        else:
+            # calcola delta virtuale rispetto al punto di partenza
+            ox, oy = self.drag_offset
+            dvx = snap(int((mx - ox) / SX))
+            dvy = snap(int((my - oy) / SY))
+
+            h = self.drag_mode  # handle key: "nw","n","ne","e","se","s","sw","w"
+
+            # ridimensiona X / W
+            if "w" in h:   # bordo sinistro
+                new_x = o["x"] + dvx
+                new_w = o["w"] - dvx
+                if new_w >= SNAP:
+                    e["x"] = new_x
+                    e["w"] = new_w
+            if "e" in h:   # bordo destro
+                new_w = o["w"] + dvx
+                if new_w >= SNAP:
+                    e["w"] = new_w
+
+            # ridimensiona Y / H
+            if "n" in h:   # bordo superiore
+                new_y = o["y"] + dvy
+                new_h = o["h"] - dvy
+                if new_h >= SNAP:
+                    e["y"] = new_y
+                    e["h"] = new_h
+            if "s" in h:   # bordo inferiore
+                new_h = o["h"] + dvy
+                if new_h >= SNAP:
+                    e["h"] = new_h
+
+        self.dirty = True
+
+    # ------------------------------------------------------------------ draw
+
+    def _draw(self):
+        self.screen.fill((20, 20, 28))
+
+        # sfondo battaglia
+        self.screen.blit(self.bg, (0, 0))
+
+        # griglia virtuale 100px
+        if self.show_grid:
+            gs = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
+            for x in range(0, SCREEN_W, int(100 * SX)):
+                pygame.draw.line(gs, (255,255,255,15), (x, 0), (x, SCREEN_H))
+            for y in range(0, SCREEN_H, int(100 * SY)):
+                pygame.draw.line(gs, (255,255,255,15), (0, y), (SCREEN_W, y))
+            self.screen.blit(gs, (0, 0))
+
+        # asset reali ridimensionati
+        for key, asset in self.assets.items():
+            e = self.layout[key]
+            self.screen.blit(asset, (int(e["x"]*SX), int(e["y"]*SY)))
+
+        # overlay + etichette + maniglie
+        for key in self.layout:
+            srect = self._srect(key)
+            col   = ELEMENT_COLORS.get(key, (200, 200, 200))
+            is_pt = key in POINT_ELEMENTS
+            sel   = key == self.selected
+
+            if is_pt:
+                c = (255, 255, 0) if sel else col
+                pygame.draw.circle(self.screen, c, srect.center, 9)
+                pygame.draw.circle(self.screen, (0,0,0), srect.center, 9, 2)
+            else:
+                ov = pygame.Surface((srect.w, srect.h), pygame.SRCALPHA)
+                if sel:
+                    ov.fill((*col, 50))
+                    pygame.draw.rect(ov, (255,255,0,255), ov.get_rect(), 3)
+                else:
+                    ov.fill((*col, 0))
+                    pygame.draw.rect(ov, (*col, 160), ov.get_rect(), 2)
+                self.screen.blit(ov, srect.topleft)
+
+                # maniglie di resize solo sull'elemento selezionato
+                if sel:
+                    for hrect in get_handle_rects(srect).values():
+                        pygame.draw.rect(self.screen, (255, 255, 0), hrect)
+                        pygame.draw.rect(self.screen, (0, 0, 0),     hrect, 1)
+
+            # etichetta
+            lbl    = self.font.render(key, True, (255, 255, 255))
+            lbl_bg = pygame.Surface((lbl.w + 6, lbl.h + 2), pygame.SRCALPHA)
+            lbl_bg.fill((0, 0, 0, 150))
+            self.screen.blit(lbl_bg, (srect.x + 2, srect.y + 2))
+            self.screen.blit(lbl,    (srect.x + 5, srect.y + 3))
+
+        # ---- pannello laterale ----
+        px = SCREEN_W
+        pygame.draw.rect(self.screen, (28, 30, 40), (px, 0, PANEL_W, SCREEN_H))
+        pygame.draw.line(self.screen, (70, 72, 90), (px, 0), (px, SCREEN_H), 2)
+
+        y = 10
+        self.screen.blit(self.font_lg.render("Layout Editor", True, (210, 210, 255)), (px+10, y))
+        y += 28
+
+        state_col  = (255, 90, 90) if self.dirty else (90, 220, 90)
+        state_text = "● Non salvato" if self.dirty else "● Salvato"
+        self.screen.blit(self.font_b.render(state_text, True, state_col), (px+10, y))
+        y += 22
+
+        pygame.draw.line(self.screen, (55,57,70), (px+6,y), (px+PANEL_W-6,y)); y += 8
+
+        # info elemento selezionato
+        if self.selected:
+            e = self.layout[self.selected]
+            self.screen.blit(self.font_b.render("Selezionato:", True, (255,220,100)), (px+10, y)); y += 18
+            self.screen.blit(self.font_lg.render(self.selected,  True, (255,255,60)),  (px+10, y)); y += 26
+
+            fields = ["x","y"] if self.selected in POINT_ELEMENTS else ["x","y","w","h"]
+            for field in fields:
+                val = e.get(field, 0)
+                col = (160,255,160) if field in ("x","y") else (160,200,255)
+                self.screen.blit(self.font_b.render(f"  {field} = {val}", True, col), (px+10, y))
+                y += 18
+
+            y += 4
+            sr = self._srect(self.selected)
+            self.screen.blit(self.font.render(f"  px: ({sr.x},{sr.y})  {sr.w}×{sr.h}", True, (150,150,170)), (px+10, y))
+            y += 18
+        else:
+            self.screen.blit(self.font.render("Nessun elemento", True, (130,130,150)), (px+10, y)); y += 18
+
+        pygame.draw.line(self.screen, (55,57,70), (px+6,y+2), (px+PANEL_W-6,y+2)); y += 12
+
+        # lista elementi
+        self.screen.blit(self.font_b.render("Elementi:", True, (190,200,220)), (px+10, y)); y += 18
+        for key in self.layout:
+            e   = self.layout[key]
+            col = (255,255,60) if key == self.selected else (150,170,195)
+            mrk = "▶ " if key == self.selected else "  "
+            txt = f"{mrk}{key}  x={e['x']} y={e['y']}"
+            self.screen.blit(self.font.render(txt, True, col), (px+6, y))
+            y += 15
+            if y > SCREEN_H - 110:
+                self.screen.blit(self.font.render("...", True, (100,100,120)), (px+10, y))
+                break
+
+        # shortcuts in fondo
+        pygame.draw.line(self.screen, (55,57,70), (px+6, SCREEN_H-108), (px+PANEL_W-6, SCREEN_H-108))
+
+        shortcuts = [
+            ("[S] Salva",                   (100, 220, 100)),
+            ("[G] Griglia on/off",          (160, 180, 220)),
+            ("[TAB] Elemento successivo",   (160, 210, 255)),
+            ("[↑↓←→] Sposta  +SHIFT×5",    (220, 200, 170)),
+            ("[+/-] Larghezza +CTRL=Alt.",  (220, 200, 170)),
+            ("[ScrollWheel] Ridimensiona",  (220, 200, 170)),
+            ("[Trascina maniglie] Resize",  (255, 190, 100)),
+            ("[R] Reset default",           (220, 120, 120)),
+            ("[ESC] Esci",                  (170, 170, 170)),
+        ]
+        sy = SCREEN_H - 105
+        for text, color in shortcuts:
+            self.screen.blit(self.font.render(text, True, color), (px+8, sy))
+            sy += 13
+
+        pygame.display.flip()
+
+
+if __name__ == "__main__":
+    editor = LayoutEditor()
+    editor.run()
