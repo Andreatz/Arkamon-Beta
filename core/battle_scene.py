@@ -120,11 +120,11 @@ class BattleScene:
 
     def _build_buttons(self) -> dict[str, pygame.Rect]:
         return {
-            "move_1": self,
-            "move_2": self,
-            "move_3": self,
-            "capture": self,
-            "switch": self
+            "move_1":  self._vr(860,  840, 320, 110),
+            "move_2":  self._vr(1200, 840, 320, 110),
+            "move_3":  self._vr(1540, 840, 320, 110),
+            "capture": self._vr(860,  960, 320,  90),
+            "switch":  self._vr(1200, 960, 320,  90),
         }
 
     def _wrap_text(self, text: str, max_chars: int = 34) -> list[str]:
@@ -536,6 +536,22 @@ class BattleScene:
         self.screen.blit(title, title_rect)
 
     def draw(self) -> None:
+        player_instance = self._get_active_player_instance()
+        player_species_name = "---"
+        player_level = "---"
+        player_hp_current = int(side_a.get("current_hp", 0))
+        player_hp_max = 1
+
+        if player_instance:
+            player_species = self.game.data.species.get(int(player_instance["species_id"]))
+            if player_species:
+                player_species_name = player_species.name
+            player_level = player_instance.get("level", "---")
+            try:
+                player_hp_max = int(player_instance.get("hp_max", 1))
+            except (TypeError, ValueError):
+                player_hp_max = 1
+
         self.screen.blit(self.bg_forest, (0, 0))
 
         side_a = self.battle_state.get("side_a", {})
@@ -578,19 +594,6 @@ class BattleScene:
 
         player_instance = self._get_active_player_instance()
         player_species_name = "---"
-        player_level = "---"
-        player_hp_current = int(side_a.get("current_hp", 0))
-        player_hp_max = player_hp_current
-
-        if player_instance:
-            player_species = self.game.data.species.get(int(player_instance["species_id"]))
-            if player_species:
-                player_species_name = player_species.name
-            player_level = player_instance.get("level", "---")
-            try:
-                player_hp_max = int(player_instance.get("hp_max", player_hp_current))
-            except (TypeError, ValueError):
-                player_hp_max = player_hp_current
 
         enemy_name_surf = self.font_name.render(str(enemy_name), True, (255, 255, 255))
         enemy_lvl_surf = self.font_name.render(f"LV. {enemy_level}", True, (255, 255, 255))
