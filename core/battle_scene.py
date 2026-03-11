@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+import json
 from pathlib import Path
 
 import pygame
@@ -38,6 +39,7 @@ class BattleScene:
     VIRTUAL_H = 1080
 
     def __init__(self, game):
+        self.layout = self._load_layout()
         self.game = game
         self.screen = game.screen
 
@@ -536,9 +538,9 @@ class BattleScene:
             self.screen.blit(wild_sprite, self._vr(880, 50, 420, 420).topleft)
 
         # --- frame UI ---
-        enemy_bar_rect  = self._vr(380,  30, 580, 110)
-        player_bar_rect = self._vr(620, 480, 580, 110)
-        text_box_rect   = self._vr(30,  560, 560, 180)
+        enemy_bar_rect  = self._lr(380,  30, 580, 110)
+        player_bar_rect = self._lr(620, 480, 580, 110)
+        text_box_rect   = self._lr(30,  560, 560, 180)
 
         self.screen.blit(self.ui_hp_enemy,  enemy_bar_rect.topleft)
         self.screen.blit(self.ui_hp_player, player_bar_rect.topleft)
@@ -628,3 +630,19 @@ class BattleScene:
                 ),
                 self._vr(120, 1010, 0, 0).topleft,
             )
+
+    def _load_layout(self) -> dict:
+        layout_path = UI_DIR / "battle_layout.json"
+        if layout_path.exists():
+            with layout_path.open("r", encoding="utf-8") as f:
+                return json.load(f)
+        return {}
+
+    def _lr(self, key: str, default_x: int, default_y: int,
+            default_w: int = 0, default_h: int = 0) -> pygame.Rect:
+        e = self.layout.get(key, {})
+        x = e.get("x", default_x)
+        y = e.get("y", default_y)
+        w = e.get("w", default_w)
+        h = e.get("h", default_h)
+        return self._vr(x, y, w, h)
