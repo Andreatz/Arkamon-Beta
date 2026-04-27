@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * VARIABILI GLOBALI ARKAMON
+ * Modifica qui per cambiare l'aspetto generale del gioco.
+ * Sono utilizzabili come `var(--arka-primary)` in CSS o
+ * tramite Tailwind con `bg-[var(--arka-primary)]`.
+ */
+:root {
+  /* Colori brand */
+  --arka-primary: #f59e0b;
+  --arka-primary-hover: #fbbf24;
+  --arka-bg: #0f172a;
+  --arka-surface: #1e293b;
+  --arka-surface-hover: #334155;
+  --arka-text: #f1f5f9;
+  --arka-text-muted: #94a3b8;
+  --arka-border: #475569;
+
+  /* HP bar */
+  --hp-high: #16a34a;
+  --hp-mid: #eab308;
+  --hp-low: #dc2626;
+
+  /* Spaziature */
+  --spacing-game: 1rem;
+
+  /* Transizioni */
+  --transition-fast: 0.15s;
+  --transition-medium: 0.3s;
+  --transition-slow: 0.6s;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--arka-bg);
+  color: var(--arka-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+ * Componenti utility riutilizzabili.
+ * Per cambiare l'aspetto di tutti i pannelli/pulsanti del gioco,
+ * basta modificare queste classi.
+ */
+@layer components {
+  .arka-panel {
+    @apply bg-arka-surface border border-arka-border rounded-xl shadow-2xl;
+  }
+
+  .arka-button {
+    @apply px-6 py-3 bg-arka-accent text-arka-bg font-bold rounded-lg
+           hover:brightness-110 active:scale-95 transition-all
+           shadow-lg disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .arka-button-secondary {
+    @apply px-6 py-3 bg-arka-surface text-white border border-arka-border rounded-lg
+           hover:bg-slate-700 active:scale-95 transition-all;
+  }
+
+  /* Container principale del gioco con aspect ratio 16:9 */
+  .arka-stage {
+    @apply relative bg-arka-bg overflow-hidden shadow-2xl;
+    aspect-ratio: 16 / 9;
+    width: min(100vw, calc(100vh * 16 / 9));
+    height: min(100vh, calc(100vw * 9 / 16));
+  }
+}
+
+/* Disabilita selezione testo (è un gioco, non un documento) */
+* {
+  user-select: none;
+  -webkit-user-select: none;
+}

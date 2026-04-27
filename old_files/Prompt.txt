@@ -1,0 +1,2112 @@
+Sto creando un gioco su powerpoint in stile pokemon, basato su dadi d6 come D&D.
+
+Tutto il gioco sarà basato su interfaccia grafica costituita da forme e immagini cliccabili. Ci saranno due giocatori principali che si alterneranno tra di loro e altri giocatori che interpreteranno i Capopalestra e il rivale; i giocatori si muoveranno su una mappa principale contenente diverse città collegate da dei percorsi; ogni percorso ed ogni città corrisponderà ad una diapositiva specifica. Dentro queste diapositive, ci saranno delle nuove mappe; nelle mappe dei percorsi ci saranno dei cespugli dove si nasconderanno i pokémon e delle zone con allenatori NPC e il rivale PVP, mentre nelle città ci saranno delle palestre dove affrontare i Capopalestra PVP. Ogni cespuglio avrà un totale di 3-4 pokémon, ognuno con una possibilità variabile di apparire (comune, medio difficile). Ogni cespuglio potrà essere visitato solo una volta per ogni giocatore. Ogni giocatore potrà avere un massimo di 6 pokémon in squadra, ma potrà conservare gli altri pokémon catturati all'interno di un deposito.
+
+La prima diapositiva sarà quella del titolo, con un tasto che farà iniziare il gioco e porterà alla seconda diapositiva (tramite hyperlink), ovvero il laboratorio dove i due giocatori sceglieranno a turno il proprio starter (1 di 3 pokemon, come nel gioco classico). Quando i giocatori avranno scelto il pokemon, si schiaccerà il pulsante della pokeball del colore corrispondente al giocatore (verde per il primo, giallo per il secondo), mentre il terzo pokemon non scelto sparirà e verrà utilizzato in futuro dal Rivale.
+
+Una volta scelti i pokemon, si schiaccerà sull'icona della mappa, che sarà collegata per hyperlink con la terza diapositiva, ovvero quella della mappa generale. La mappa generale conterrà una città di partenza, dei percorsi grigi che porteranno ad altre città o a delle zone di transito, come boschi o paesi. Tutti i pallini saranno cliccabili, e porteranno ad una diapositiva specifica contenente la mappa della città, del percorso o del luogo specifico. Queste mappe conterrano punti d'interesse (cliccabili e che rimandano alla diapositiva corrispondente) come palestre, centri pokemon o cespugli con pokemon. Ci saranno poi le diapositive delle battaglie contro un pokemon selvaggio, contro un allenatore NPC o contro un allenatore PVP. Queste diapositive avranno un'interfaccia (con tasti cliccabili) contenente le mosse del pokemon del giocatore e altri tasti come quello della cattura o il box per scambiare il pokemon in campo in caso di morte.
+
+I pokémon saranno in totale 110. Ogni pokémon avrà delle mosse specifiche che infliggono X dadi d6 di danno, che aumentano di 1d6 ogni tot livelli e avranno un incremento di danno fisso in base al livello. Inoltre, i pokémon saranno suddivisi in diverse categorie, ognuna delle quali avrà una crescita HP per livello differente. Ogni pokemon sarà di un tipo specifico, ovvero Normale, Elettro, Fuoco, Terra, Acqua, Erba, Oscurità, Psico e ogni tipo avrà delle resistenze e delle debolezze.
+
+Per quanto riguarda il sistema di combattimento, ci saranno tre tipi di combattimento diversi, tutti basati sul combattimento a turni come quello dei pokémon, ma basato sui dadi d6.
+Il primo tipo di combattimento sarà quello contro i pokemon selvaggi: durante il proprio turno, i giocatori possono fare due azioni, ovvero attaccare con una delle tre mosse del proprio pokémon, o provare a catturare il pokémon. Il pokemon avversario invece potrà solo attaccare. Una volta che il pokémon selvatico o tutti i propri pokemon saranno sconfitti, o nel caso in cui il pokemon selvatico venga catturato, la battaglia finirà, gli HP di tutti i pokemon saranno recuperati al massimo e si tornerà alla mappa precedente del cespuglio.
+
+Il secondo tipo di combattimento sarà quello contro gli allenatori NPC: durante il proprio turno, i giocatori possono attaccare con una delle tre mosse del proprio pokemon in campo. L'allenatore avversario a sua volta sceglierà la mossa migliore e attaccherà. Una volta che tutti i propri pokémon o tutti i pokémon avversari saranno sconfitti, la battaglia finirà, gli HP di tutti i pokemon saranno recuperati al massimo e si tornerà alla mappa della palestra.
+
+Il terzo tipo di combattimento sarà quello contro gli allenatori PVP: durante il proprio turno, i giocatori possono attaccare con una delle tre mosse del proprio pokemon in campo cliccando sulla mossa specifica. Lo stesso vale per l'altro allenatore (che non è ne il Giocatore 1 ne il Giocatore 2 ma un terzo giocatore. Il terzo giocatore avrà a disposizione tre tasti delle mosse del proprio pokemon, diversi rispetto a quelli del giocatore principale. Una volta che tutti i propri pokémon o tutti i pokémon avversari saranno sconfitti, la battaglia finirà, gli HP di tutti i pokemon saranno recuperati al massimo e si tornerà alla mappa della palestra.
+
+Tutte le statistiche saranno presenti all'interno di un file excel. 
+
+Questa è la mia roadmap:
+
+Battaglia:
+
+- Battaglia NPC: Vorrei che il messaggio iniziale che appare nell'Infobox non sia "Appare Darklaw!" ma "Inizia la battaglia contro X allenatore!". Inoltre, dato che non si possono catturare i pokemon dei nemici, vorrei che il tasto cattura non venga mai visualizzato durante una partita PVP o contro NPC;
+
+- Sistema Recupero HP: Mosse che fanno recuperare HP a percentuale;
+
+- Sistema Mossa Suprema: infligge danni doppi, subisce danno anche il proprio pokemon (metà della vita massima);
+
+- Sistema EXP: 1X Exp per eliminazione; 2X exp per cattura; Exp limitata per percorso;
+
+- Sistema Stati: Confusione (per 2 turni hai il 50% di possibilità di colpire l'avversario o colpirti da solo); Sonno (per 3 turni, 50% di svegliarti o passare il turno); Avvelenamento (10% di HP a turno, curabile solo con una mossa specifica); Un pokemon non può essere afflitto contemporaneamente da Confusione e Sonno.
+
+- Sistema Deposito Pokemon (mosse per tipo del pokemon avversario, in base alla propria salute o allo status del nemico)
+
+
+Generico:
+
+- Sistema Turni Giocatori: Pulsante per passare da giocatore A a Giocatore B;
+
+- Sistema Monete: 200$ ad allenatore battuto; 1000$ a capopalestra battuto; 200$ persi a sconfitta da allenatore;
+
+- Sistema Oggetti: Masterball (100% possibilità di cattura);
+
+- Animazioni e suoni (Me ne occupo da solo);
+
+
+Miglioramenti Interfaccia Utente:
+
+- Aggiungi numero HP affianco alla barra
+
+- Aggiungere un tasto per cambiare livello al pokemon selezionato (Ci devo ancora ragionare)
+
+Questo è il mio codice:
+
+'================================================================================'
+#If VBA7 Then
+    ' Per Office a 64-bit e 32-bit
+    Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
+#Else
+    ' Per versioni precedenti di Office (solo 32-bit)
+    Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+#End If
+'================================================================================'
+Option Explicit
+
+'#################################################################################
+'#                                                                               #
+'#                   ARKAMON - MOTORE DI GIOCO COMPLETO                          #
+'#                     REVISIONE FINALE - VERSIONE 5.0                           #
+'#                                                                               #
+'#################################################################################
+
+'================================================================================'
+' SEZIONE 1: FUNZIONI DI UTILITY GLOBALI
+'================================================================================'
+
+Private Const SLIDE_VS As Integer = 32
+Private Const SLIDE_BATTAGLIA As Integer = 33
+Private Const LIVELLO_MIN As Integer = 5
+Private Const LIVELLO_MAX As Integer = 100
+Private g_ScambioGiocatoreID As Integer
+
+
+Private Function RoundIntHalfUp(ByVal v As Double) As Long
+    If v >= 0 Then
+        RoundIntHalfUp = Int(v + 0.5)
+    Else
+        RoundIntHalfUp = -Int(-v + 0.5)
+    End If
+End Function
+
+Function CalcolaHPMax(xlWorkbook As Object, ID_Base As Long, livello As Integer) As Long
+    Dim pkmnSheet As Object, crescitaSheet As Object
+    Dim hpBase As Long, hpPerLivello As Double, categoria As String
+    Dim lastRow As Long, i As Long, found As Boolean
+    
+    On Error Resume Next
+    Set pkmnSheet = xlWorkbook.Sheets("Pokemon_Base")
+    Set crescitaSheet = xlWorkbook.Sheets("Crescita_HP")
+    If pkmnSheet Is Nothing Or crescitaSheet Is Nothing Then CalcolaHPMax = 20: Exit Function
+    On Error GoTo 0
+    
+    found = False
+    lastRow = pkmnSheet.Cells(pkmnSheet.Rows.count, "A").End(-4162).Row
+    
+    For i = 2 To lastRow
+        If CLng(pkmnSheet.Cells(i, "A").value) = ID_Base Then
+            hpBase = pkmnSheet.Cells(i, "E").value
+            categoria = pkmnSheet.Cells(i, "C").value
+            found = True
+            Exit For
+        End If
+    Next i
+    
+    If Not found Then CalcolaHPMax = 20: Exit Function
+    
+    Dim foundRow As Range
+    Set foundRow = crescitaSheet.Columns("A").Find(what:=categoria, lookIn:=-4163, lookAt:=1)
+    If foundRow Is Nothing Then
+        hpPerLivello = 1.5
+    Else
+        hpPerLivello = CDbl(Replace(crescitaSheet.Cells(foundRow.Row, "B").Text, ".", ","))
+    End If
+    
+    If livello <= 5 Then
+        CalcolaHPMax = hpBase
+    Else
+        CalcolaHPMax = hpBase + Int((livello - 5) * hpPerLivello)
+    End If
+End Function
+
+Private Function LanciaDadi(NumeroDadi As Integer) As Integer
+    Dim totale As Integer, i As Integer: totale = 0
+    If NumeroDadi <= 0 Then NumeroDadi = 1
+    Randomize
+    For i = 1 To NumeroDadi: totale = totale + Int((6 * Rnd) + 1): Next i
+    LanciaDadi = totale
+End Function
+
+Function DeterminaPrimoTurno(livelloA As Integer, livelloB As Integer) As String
+    If livelloA > livelloB Then
+        DeterminaPrimoTurno = "A"
+    ElseIf livelloB > livelloA Then
+        DeterminaPrimoTurno = "B"
+    Else
+        Randomize
+        If Int((2 * Rnd) + 1) = 1 Then DeterminaPrimoTurno = "A" Else DeterminaPrimoTurno = "B"
+    End If
+End Function
+
+Function ControllaSquadraRimanente(xlWorkbook As Object, Optional GiocatoreID As Variant) As Boolean
+    Dim teamSheet As Object, targetID As Long, lastRow As Long, i As Long
+    
+    If IsMissing(GiocatoreID) Then
+        targetID = xlWorkbook.Sheets("Battaglia_Corrente").Cells(3, 2).value
+    Else
+        targetID = GiocatoreID
+    End If
+    
+    If targetID = 1 Then Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra") Else Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    
+    lastRow = teamSheet.Cells(teamSheet.Rows.count, "A").End(-4162).Row
+    For i = 2 To lastRow
+        If teamSheet.Cells(i, "F").value > 0 Then
+            ControllaSquadraRimanente = True
+            Exit Function
+        End If
+    Next i
+    ControllaSquadraRimanente = False
+End Function
+
+Private Function ClampLivello(lv As Integer) As Integer
+    If lv < LIVELLO_MIN Then
+        ClampLivello = LIVELLO_MIN
+    ElseIf lv > LIVELLO_MAX Then
+        ClampLivello = LIVELLO_MAX
+    Else
+        ClampLivello = lv
+    End If
+End Function
+
+Private Function TrovaColonnaHeader(ws As Object, header As String) As Long
+    Dim c As Object
+    Set c = ws.Rows(1).Find(what:=header, lookIn:=-4163, lookAt:=1)
+    If Not c Is Nothing Then TrovaColonnaHeader = c.Column Else TrovaColonnaHeader = 0
+End Function
+
+Private Function ColonnaDadiPerLivello(mosseSheet As Object, livello As Integer) As Long
+    Dim baseCol As Long, lvl As Integer
+    lvl = ClampLivello(livello)
+    baseCol = TrovaColonnaHeader(mosseSheet, "Dadi_lvl_5")
+    If baseCol = 0 Then
+        ColonnaDadiPerLivello = 0
+    Else
+        ColonnaDadiPerLivello = baseCol + (lvl - 5)
+    End If
+End Function
+
+Private Function ColonnaIncrementoPerLivello(mosseSheet As Object, livello As Integer) As Long
+    Dim baseCol As Long, lvl As Integer
+    lvl = ClampLivello(livello)
+    baseCol = TrovaColonnaHeader(mosseSheet, "Incremento_lvl_5")
+    If baseCol = 0 Then
+        ColonnaIncrementoPerLivello = 0
+    Else
+        ColonnaIncrementoPerLivello = baseCol + (lvl - 5)
+    End If
+End Function
+
+Private Function OttieniParametriMossaAlLivello(ByVal xlWorkbook As Object, ByVal mossaID As Long, ByVal livello As Integer, ByRef outNome As String, ByRef outTipo As String, ByRef outNumD6 As Integer, ByRef outIncremento As Long) As Boolean
+    Dim mosseSheet As Object, r As Object
+    Dim colDadi As Long, colInc As Long, lvl As Integer
+    Set mosseSheet = xlWorkbook.Sheets("Mosse")
+    If mossaID <= 0 Then Exit Function
+    
+    Set r = mosseSheet.Columns("A").Find(what:=mossaID, lookIn:=-4163, lookAt:=1)
+    If r Is Nothing Then Exit Function
+    
+    outNome = mosseSheet.Cells(r.Row, "B").value
+    outTipo = mosseSheet.Cells(r.Row, "D").value
+    If Trim(outTipo) = "" Then outTipo = "Normale"
+    
+    lvl = ClampLivello(livello)
+    colDadi = ColonnaDadiPerLivello(mosseSheet, lvl)
+    colInc = ColonnaIncrementoPerLivello(mosseSheet, lvl)
+    If colDadi = 0 Or colInc = 0 Then Exit Function
+    
+    outNumD6 = val(mosseSheet.Cells(r.Row, colDadi).value)
+    outIncremento = val(mosseSheet.Cells(r.Row, colInc).value)
+    If outNumD6 < 0 Then outNumD6 = 0
+    If outIncremento < 0 Then outIncremento = 0
+    
+    OttieniParametriMossaAlLivello = True
+End Function
+
+Private Function PesoCategoria(ByVal categoria As String) As Long
+    Select Case UCase$(Trim$(categoria))
+        Case "COMUNE":     PesoCategoria = 60
+        Case "MEDIO":      PesoCategoria = 30
+        Case "DIFFICILE":  PesoCategoria = 10
+        Case Else:         PesoCategoria = 1
+    End Select
+End Function
+
+Private Function ScegliIndicePesato(possibiliIncontri As Object) As Long
+    Dim tot As Long, i As Long, r As Long, acc As Long
+    For i = 0 To possibiliIncontri.count - 1
+        tot = tot + PesoCategoria(CStr(possibiliIncontri(i)(1)))
+    Next i
+    If tot <= 0 Then
+        ScegliIndicePesato = 0
+        Exit Function
+    End If
+    Randomize
+    r = Int(tot * Rnd) + 1
+    acc = 0
+    For i = 0 To possibiliIncontri.count - 1
+        acc = acc + PesoCategoria(CStr(possibiliIncontri(i)(1)))
+        If r <= acc Then
+            ScegliIndicePesato = i
+            Exit Function
+        End If
+    Next i
+    ScegliIndicePesato = possibiliIncontri.count - 1
+End Function
+
+Public Sub MostraInfoSuSlideCorrente(messaggio As String, Optional fineBattaglia As Boolean = False, Optional turnoProssimo As String = "")
+    Dim sld As Slide
+    On Error Resume Next
+    If Application.SlideShowWindows.count > 0 Then
+        Set sld = Application.SlideShowWindows(1).View.Slide
+    Else
+        Set sld = Application.ActiveWindow.View.Slide
+    End If
+    On Error GoTo 0
+    If Not sld Is Nothing Then
+        MostraInfoBox sld, messaggio, fineBattaglia, turnoProssimo
+    End If
+End Sub
+
+Private Function GetTipoFromIDBase(ByVal xlWorkbook As Object, ByVal idBase As Long) As String
+    Dim ws As Object, r As Object, t As String
+    Set ws = xlWorkbook.Sheets("Pokemon_Base")
+    Set r = ws.Columns("A").Find(what:=idBase, lookIn:=-4163, lookAt:=1)
+    If Not r Is Nothing Then t = Trim(ws.Cells(r.Row, "D").value)
+    If t = "" Then t = "Normale"
+    GetTipoFromIDBase = t
+End Function
+
+Private Function TipoMultiplier(ByVal xlWorkbook As Object, ByVal tipoAttacco As String, ByVal tipoDifesa As String) As Double
+    Dim ws As Object, r As Object, c As Object, m As Double
+    Set ws = xlWorkbook.Sheets("Tipi")
+    Set r = ws.Columns("A").Find(what:=tipoAttacco, lookIn:=-4163, lookAt:=1)
+    Set c = ws.Rows(1).Find(what:=tipoDifesa, lookIn:=-4163, lookAt:=1)
+    If r Is Nothing Or c Is Nothing Then
+        m = 1
+    Else
+        m = val(ws.Cells(r.Row, c.Column).value)
+        If m = 0 Then m = 0
+    End If
+    TipoMultiplier = m
+End Function
+
+Private Function ScegliMossaIA(ByVal xlWorkbook As Object, ByVal idBaseAtt As Long, ByVal livelloAtt As Integer, ByVal idBaseDif As Long) As Integer
+    Const STAB As Double = 1.5
+    Dim pkmnBase As Object, mosse As Object
+    Dim attTipo As String, difTipo As String
+    Dim rAtt As Object, mossaID As Long
+    Dim bestIdx As Integer, i As Integer
+    Dim bestScore As Double, score As Double
+    Dim nome As String, tipo As String, numD6 As Integer, incremento As Long
+    Dim mult As Double, stabMult As Double
+    
+    Set pkmnBase = xlWorkbook.Sheets("Pokemon_Base")
+    Set rAtt = pkmnBase.Columns("A").Find(what:=idBaseAtt, lookIn:=-4163, lookAt:=1)
+    If rAtt Is Nothing Then
+        ScegliMossaIA = Int((3 * Rnd) + 1)
+        Exit Function
+    End If
+    
+    attTipo = GetTipoFromIDBase(xlWorkbook, idBaseAtt)
+    difTipo = GetTipoFromIDBase(xlWorkbook, idBaseDif)
+    
+    bestScore = -1
+    bestIdx = 1
+    
+    For i = 1 To 3
+        Select Case i
+            Case 1: mossaID = CLng(val(pkmnBase.Cells(rAtt.Row, "F").value))
+            Case 2: mossaID = CLng(val(pkmnBase.Cells(rAtt.Row, "G").value))
+            Case 3: mossaID = CLng(val(pkmnBase.Cells(rAtt.Row, "H").value))
+        End Select
+        If mossaID > 0 Then
+            If OttieniParametriMossaAlLivello(xlWorkbook, mossaID, livelloAtt, nome, tipo, numD6, incremento) Then
+                If Trim(tipo) = "" Then tipo = "Normale"
+                mult = TipoMultiplier(xlWorkbook, tipo, difTipo)
+                If tipo = attTipo Then stabMult = STAB Else stabMult = 1#
+                score = ((numD6 * 3.5) + incremento) * mult * stabMult
+                If score > bestScore Then
+                    bestScore = score
+                    bestIdx = i
+                ElseIf Abs(score - bestScore) < 0.0001 Then
+                    If Rnd < 0.5 Then bestIdx = i
+                End If
+            End If
+        End If
+    Next i
+    
+    ScegliMossaIA = bestIdx
+End Function
+
+Private Function CSVContains(ByVal csv As String, ByVal token As String) As Boolean
+    Dim arr As Variant, i As Long
+    If Len(Trim(csv)) = 0 Then Exit Function
+    arr = Split(csv, ",")
+    For i = LBound(arr) To UBound(arr)
+        If Trim(arr(i)) = Trim(token) Then CSVContains = True: Exit Function
+    Next i
+End Function
+
+Private Function CSVAppendUnique(ByVal csv As String, ByVal token As String) As String
+    If Len(Trim(token)) = 0 Then CSVAppendUnique = csv: Exit Function
+    If Len(csv) = 0 Then
+        CSVAppendUnique = token
+    Else
+        If CSVContains(csv, token) Then
+            CSVAppendUnique = csv
+        Else
+            CSVAppendUnique = csv & "," & token
+        End If
+    End If
+End Function
+
+Private Function ScegliProssimoPokemonNPC_Random(ByVal xlWorkbook As Object, ByVal trainerID As Long, ByVal usedIdxCSV As String, ByRef outID As Long, ByRef outLV As Integer) As Boolean
+    Dim npcSheet As Object, npcRow As Object
+    Dim idx As Long, idCol As Long, lvCol As Long, idB As Long, lvB As Long
+    Dim candidates As Object
+    Set candidates = CreateObject("System.Collections.ArrayList")
+    
+    Set npcSheet = xlWorkbook.Sheets("Allenatori")
+    Set npcRow = npcSheet.Columns("A").Find(what:=trainerID, lookIn:=-4163, lookAt:=1)
+    If npcRow Is Nothing Then Exit Function
+    
+    For idx = 1 To 6
+        idCol = 5 + (idx - 1) * 2
+        lvCol = idCol + 1
+        idB = CLng(val(npcSheet.Cells(npcRow.Row, idCol).value))
+        lvB = CInt(val(npcSheet.Cells(npcRow.Row, lvCol).value))
+        If idB > 0 And lvB > 0 Then
+            If Not CSVContains(usedIdxCSV, CStr(idx)) Then
+                candidates.Add Array(idB, lvB, idx)
+            End If
+        End If
+    Next idx
+    
+    If candidates.count = 0 Then
+        ScegliProssimoPokemonNPC_Random = False
+        Exit Function
+    End If
+    
+    Randomize
+    Dim pick As Variant
+    pick = candidates(Int(candidates.count * Rnd))
+    outID = CLng(pick(0))
+    outLV = CInt(pick(1))
+    ScegliProssimoPokemonNPC_Random = True
+End Function
+
+Private Function ScegliProssimoPokemonPvP_Random(ByVal xlWorkbook As Object, ByVal GiocatoreID As Long, ByVal usedInstCSV As String, ByRef outIst As Long, ByRef outHP As Long, ByRef outLV As Integer) As Boolean
+    Dim team As Object, lastRow As Long, r As Long
+    If GiocatoreID = 1 Then
+        Set team = xlWorkbook.Sheets("Giocatore1_Squadra")
+    Else
+        Set team = xlWorkbook.Sheets("Giocatore2_Squadra")
+    End If
+    lastRow = team.Cells(team.Rows.count, "A").End(-4162).Row
+    Dim candidates As Object: Set candidates = CreateObject("System.Collections.ArrayList")
+    For r = 2 To lastRow
+        Dim inst As Long: inst = CLng(team.Cells(r, "A").value)
+        Dim hp As Long: hp = CLng(team.Cells(r, "F").value)
+        Dim lv As Integer: lv = CInt(team.Cells(r, "D").value)
+        If Not CSVContains(usedInstCSV, CStr(inst)) Then
+            candidates.Add Array(inst, hp, lv)
+        End If
+    Next r
+    If candidates.count = 0 Then
+        ScegliProssimoPokemonPvP_Random = False
+        Exit Function
+    End If
+    Randomize
+    Dim pick As Variant
+    pick = candidates(Int(candidates.count * Rnd))
+    outIst = CLng(pick(0))
+    outHP = CLng(pick(1))
+    outLV = CInt(pick(2))
+    ScegliProssimoPokemonPvP_Random = True
+End Function
+
+'================================================================================'
+' SEZIONE 2: SETUP INIZIALE E SCELTA STARTER
+'================================================================================'
+
+Sub ScegliPokemonPerGiocatore(ID_Base As Long, NomePokemon As String, Giocatore As Integer, Optional ByVal LivelloIniziale As Integer = 5, Optional ByVal xlWorkbook As Object = Nothing, Optional ByVal AlDeposito As Boolean = False)
+    Dim xlApp As Object, xlSheet As Object, percorsoFile As String, nextRow As Long, ID_Istanza As Long, hpMax As Long
+    Dim closeWorkbookOnExit As Boolean: closeWorkbookOnExit = False
+    
+    If xlWorkbook Is Nothing Then
+        percorsoFile = ActivePresentation.path & "\Database.xlsx"
+        If Dir(percorsoFile) = "" Then MsgBox "Errore: Database.xlsx non trovato!", vbCritical: Exit Sub
+        Set xlApp = CreateObject("Excel.Application"): Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+        closeWorkbookOnExit = True
+    End If
+
+    Dim teamSheet As Object, depositoSheet As Object
+    If Giocatore = 1 Then
+        Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra")
+        Set depositoSheet = xlWorkbook.Sheets("Giocatore1_Deposito")
+    Else
+        Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+        Set depositoSheet = xlWorkbook.Sheets("Giocatore2_Deposito")
+    End If
+    
+    If AlDeposito Then Set xlSheet = depositoSheet Else Set xlSheet = teamSheet
+    
+    Dim maxID_Squadra As Long, maxID_Deposito As Long, maxID_Totale As Long
+    On Error Resume Next
+    maxID_Squadra = xlWorkbook.Application.WorksheetFunction.max(teamSheet.Columns(1))
+    maxID_Deposito = xlWorkbook.Application.WorksheetFunction.max(depositoSheet.Columns(1))
+    On Error GoTo 0
+    
+    If maxID_Squadra > maxID_Deposito Then maxID_Totale = maxID_Squadra Else maxID_Totale = maxID_Deposito
+    
+    If maxID_Totale = 0 Then
+        If Giocatore = 1 Then ID_Istanza = 1001 Else ID_Istanza = 2001
+    Else
+        ID_Istanza = maxID_Totale + 1
+    End If
+
+    hpMax = CalcolaHPMax(xlWorkbook, ID_Base, LivelloIniziale)
+    nextRow = xlSheet.Cells(xlSheet.Rows.count, "A").End(-4162).Row + 1
+    
+    With xlSheet
+        .Cells(nextRow, 1).value = ID_Istanza: .Cells(nextRow, 2).value = ID_Base: .Cells(nextRow, 3).value = NomePokemon
+        .Cells(nextRow, 4).value = LivelloIniziale: .Cells(nextRow, 5).value = hpMax: .Cells(nextRow, 6).value = hpMax
+    End With
+    
+    If closeWorkbookOnExit Then
+        xlWorkbook.Close True: xlApp.Quit: Set xlApp = Nothing
+    End If
+End Sub
+Sub AssegnaRivaleEVaiAllaMappa(ID_Base As Long, NomePokemon As String)
+    Dim xlApp As Object, xlWorkbook As Object, npcSheet As Object, percorsoFile As String, rivalRow As Range
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    If Dir(percorsoFile) = "" Then MsgBox "Errore: Database.xlsx non trovato!", vbCritical: Exit Sub
+    
+    Set xlApp = CreateObject("Excel.Application"): Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    Set npcSheet = xlWorkbook.Sheets("Allenatori")
+    
+    Set rivalRow = npcSheet.Columns("B").Find(what:="Rivale", lookIn:=-4163, lookAt:=1)
+    
+    If Not rivalRow Is Nothing Then
+        npcSheet.Cells(rivalRow.Row, "E").value = ID_Base
+        npcSheet.Cells(rivalRow.Row, "F").value = 5
+    Else
+        MsgBox "Allenatore 'Rivale' non trovato nel file Excel!", vbExclamation
+    End If
+    
+    xlWorkbook.Close True: xlApp.Quit: Set xlApp = Nothing
+End Sub
+
+' --- MACRO DA COLLEGARE AI PULSANTI DI SCELTA STARTER ---
+Sub P1_Scegli_Vyrath(): Call ScegliPokemonPerGiocatore(1, "Vyrath", 1): End Sub
+Sub P1_Scegli_Darklaw(): Call ScegliPokemonPerGiocatore(5, "Darklaw", 1): End Sub
+Sub P1_Scegli_Felyss(): Call ScegliPokemonPerGiocatore(9, "Felyss", 1): End Sub
+Sub P2_Scegli_Vyrath(): Call ScegliPokemonPerGiocatore(1, "Vyrath", 2): End Sub
+Sub P2_Scegli_Darklaw(): Call ScegliPokemonPerGiocatore(5, "Darklaw", 2): End Sub
+Sub P2_Scegli_Felyss(): Call ScegliPokemonPerGiocatore(9, "Felyss", 2): End Sub
+Sub AssegnaRivale_Vyrath(): Call AssegnaRivaleEVaiAllaMappa(1, "Vyrath"): End Sub
+Sub AssegnaRivale_Darklaw(): Call AssegnaRivaleEVaiAllaMappa(5, "Darklaw"): End Sub
+Sub AssegnaRivale_Felyss(): Call AssegnaRivaleEVaiAllaMappa(9, "Felyss"): End Sub
+
+'================================================================================'
+' SEZIONE 3: NAVIGAZIONE SU MAPPA E INCONTRI
+'================================================================================'
+
+Sub SpostaGiocatore(NuovaPosizione As String, ID_Diapositiva As Integer)
+    Dim xlApp As Object, xlWorkbook As Object, statoSheet As Object, percorsoFile As String, activePlayerRow As Long
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    If Dir(percorsoFile) = "" Then MsgBox "Errore: Database.xlsx non trovato!", vbCritical: Exit Sub
+    Set xlApp = CreateObject("Excel.Application"): Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    Set statoSheet = xlWorkbook.Sheets("Stato_Giocatore")
+    activePlayerRow = statoSheet.Columns("D").Find(what:=True, lookIn:=-4163, lookAt:=1).Row
+    If activePlayerRow <> 0 Then statoSheet.Cells(activePlayerRow, "C").value = NuovaPosizione
+    xlWorkbook.Close True: xlApp.Quit: Set xlApp = Nothing
+    ActivePresentation.SlideShowWindow.View.GotoSlide ID_Diapositiva
+End Sub
+
+' --- MACRO DA COLLEGARE AI PULSANTI DI NAVIGAZIONE ---
+Sub Vai_a_Venezia(): Call SpostaGiocatore("Venezia", 4): End Sub
+Sub Vai_a_Percorso_1(): Call SpostaGiocatore("Percorso_1", 5): End Sub
+Sub Vai_a_Piacenza(): Call SpostaGiocatore("Piacenza", 6): End Sub
+Sub Vai_a_Percorso_2(): Call SpostaGiocatore("Percorso_2", 7): End Sub
+Sub Vai_a_Milano(): Call SpostaGiocatore("Milano", 8): End Sub
+Sub Vai_a_Percorso_3(): Call SpostaGiocatore("Percorso_3", 9): End Sub
+Sub Vai_a_Percorso_4(): Call SpostaGiocatore("Percorso_4", 10): End Sub
+Sub Vai_a_Percorso_5(): Call SpostaGiocatore("Percorso_5", 11): End Sub
+Sub Vai_a_Percorso_6(): Call SpostaGiocatore("Percorso_6", 12): End Sub
+Sub Vai_a_Torino(): Call SpostaGiocatore("Torino", 13): End Sub
+Sub Vai_a_Grosseto(): Call SpostaGiocatore("Grosseto", 14): End Sub
+Sub Vai_a_Civitavecchia(): Call SpostaGiocatore("Civitavecchia", 15): End Sub
+Sub Vai_a_Percorso_7(): Call SpostaGiocatore("Percorso_7", 16): End Sub
+Sub Vai_a_Cagliari(): Call SpostaGiocatore("Cagliari", 17): End Sub
+Sub Vai_a_Percorso_8(): Call SpostaGiocatore("Percorso_8", 18): End Sub
+Sub Vai_a_Palermo(): Call SpostaGiocatore("Palermo", 19): End Sub
+Sub Vai_a_Percorso_9(): Call SpostaGiocatore("Percorso_9", 20): End Sub
+Sub Vai_a_ReggioCalabria(): Call SpostaGiocatore("ReggioCalabria", 21): End Sub
+Sub Vai_a_Percorso_10(): Call SpostaGiocatore("Percorso_10", 22): End Sub
+Sub Vai_a_Foggia(): Call SpostaGiocatore("Foggia", 23): End Sub
+Sub Vai_a_Percorso_11(): Call SpostaGiocatore("Percorso_11", 24): End Sub
+Sub Vai_a_Percorso_12(): Call SpostaGiocatore("Percorso_12", 25): End Sub
+Sub Vai_a_Napoli(): Call SpostaGiocatore("Napoli", 26): End Sub
+Sub Vai_a_Molisnt(): Call SpostaGiocatore("Molisnt", 27): End Sub
+Sub Vai_a_Percorso_13(): Call SpostaGiocatore("Percorso_13", 28): End Sub
+Sub Vai_a_Pescara(): Call SpostaGiocatore("Pescara", 29): End Sub
+Sub Vai_a_Percorso_14(): Call SpostaGiocatore("Percorso_14", 30): End Sub
+Sub Vai_a_Roma(): Call SpostaGiocatore("Roma", 31): End Sub
+
+Sub IniziaBattagliaSelvatica(Luogo As String, Cespuglio As String)
+    Dim xlApp As Object, xlWorkbook As Object
+    Dim incontriSheet As Object, battagliaSheet As Object, statoSheet As Object, pkmnBaseSheet As Object
+    Dim playerTeamSheet As Object
+    Dim percorsoFile As String, possibiliIncontri As Object, lastRow As Long
+    Dim wildPokemonID As Long, wildPokemonName As String, wildPokemonLevel As Integer, wildPokemonHP As Long
+    Dim activePlayerID As Long, activePlayerRow As Long
+    Dim playerPokemonInstanceID As Long, playerPokemonCurrentHP As Long, playerPokemonLevel As Integer
+    Dim primoTurno As String
+    Dim i As Long
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    If Dir(percorsoFile) = "" Then
+        MostraInfoSuSlideCorrente "Errore: Database.xlsx non trovato!"
+        Exit Sub
+    End If
+    
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    
+    Set incontriSheet = xlWorkbook.Sheets("Incontri_Selvatici")
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    Set statoSheet = xlWorkbook.Sheets("Stato_Giocatore")
+    Set pkmnBaseSheet = xlWorkbook.Sheets("Pokemon_Base")
+    
+    Set possibiliIncontri = CreateObject("System.Collections.ArrayList")
+    lastRow = incontriSheet.Cells(incontriSheet.Rows.count, "A").End(-4162).Row
+    For i = 2 To lastRow
+        If incontriSheet.Cells(i, "A").value = Luogo And incontriSheet.Cells(i, "B").value = Cespuglio Then
+            possibiliIncontri.Add Array(incontriSheet.Cells(i, "C").value, incontriSheet.Cells(i, "D").value, incontriSheet.Cells(i, "E").value, incontriSheet.Cells(i, "F").value)
+        End If
+    Next i
+    
+    If possibiliIncontri.count = 0 Then
+        xlWorkbook.Close False: xlApp.Quit: Set xlApp = Nothing
+        MostraInfoSuSlideCorrente "Nessun Pokémon selvatico qui..."
+        Exit Sub
+    End If
+    
+    Dim idx As Long, chosenEncounter As Variant
+    idx = ScegliIndicePesato(possibiliIncontri)
+    chosenEncounter = possibiliIncontri(idx)
+    
+    wildPokemonID = CLng(chosenEncounter(0))
+    Randomize
+    wildPokemonLevel = Int((CLng(chosenEncounter(3)) - CLng(chosenEncounter(2)) + 1) * Rnd + CLng(chosenEncounter(2)))
+    
+    Dim rigaBase As Object
+    Set rigaBase = pkmnBaseSheet.Columns("A").Find(what:=wildPokemonID, lookIn:=-4163, lookAt:=1)
+    If rigaBase Is Nothing Then
+        wildPokemonName = "Sconosciuto"
+    Else
+        wildPokemonName = pkmnBaseSheet.Cells(rigaBase.Row, "B").value
+    End If
+    
+    wildPokemonHP = CalcolaHPMax(xlWorkbook, wildPokemonID, wildPokemonLevel)
+    
+    activePlayerRow = statoSheet.Columns("D").Find(what:=True, lookIn:=-4163, lookAt:=1).Row
+    activePlayerID = statoSheet.Cells(activePlayerRow, "A").value
+    
+    If activePlayerID = 1 Then
+        Set playerTeamSheet = xlWorkbook.Sheets("Giocatore1_Squadra")
+    Else
+        Set playerTeamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    End If
+    
+    playerPokemonInstanceID = playerTeamSheet.Cells(2, "A").value
+    playerPokemonCurrentHP = playerTeamSheet.Cells(2, "F").value
+    playerPokemonLevel = playerTeamSheet.Cells(2, "D").value
+    
+    primoTurno = DeterminaPrimoTurno(playerPokemonLevel, wildPokemonLevel)
+    
+    With battagliaSheet
+        .Cells(2, 2).value = "Selvatico"
+        .Cells(3, 2).value = activePlayerID
+        .Cells(4, 2).value = playerPokemonInstanceID
+        .Cells(5, 2).value = playerPokemonCurrentHP
+        .Cells(6, 2).value = 0
+        .Cells(7, 2).value = wildPokemonID
+        .Cells(8, 2).value = wildPokemonHP
+        .Cells(9, 2).value = wildPokemonLevel
+        .Cells(10, 2).value = wildPokemonName
+        .Cells(11, 2).value = Luogo
+        .Cells(12, 2).value = primoTurno
+        .Cells(13, 2).value = 0
+        .Cells(14, 2).value = ""
+        .Cells(15, 2).value = 0
+        .Cells(16, 2).value = ""
+    End With
+    
+    xlWorkbook.Close True: xlApp.Quit: Set xlApp = Nothing
+    
+    ActivePresentation.SlideShowWindow.View.GotoSlide SLIDE_VS
+    Sleep 100
+    DoEvents
+    Call AggiornaInterfacciaBattaglia_DaTrigger_SullaSlideSpecifica(SLIDE_BATTAGLIA)
+End Sub
+
+' --- MACRO DA COLLEGARE AI PULSANTI DEI CESPUGLI ---
+Sub Cespuglio_Percorso_1_A(): Call IniziaBattagliaSelvatica("Percorso_1", "A"): End Sub
+Sub Cespuglio_Percorso_1_B(): Call IniziaBattagliaSelvatica("Percorso_1", "B"): End Sub
+Sub Cespuglio_Percorso_1_C(): Call IniziaBattagliaSelvatica("Percorso_1", "C"): End Sub
+Sub Cespuglio_Percorso_1_D(): Call IniziaBattagliaSelvatica("Percorso_1", "D"): End Sub
+Sub Cespuglio_Percorso_1_E(): Call IniziaBattagliaSelvatica("Percorso_1", "E"): End Sub
+Sub Cespuglio_Percorso_1_F(): Call IniziaBattagliaSelvatica("Percorso_1", "F"): End Sub
+Sub Cespuglio_Percorso_1_G(): Call IniziaBattagliaSelvatica("Percorso_1", "G"): End Sub
+
+'================================================================================'
+' SEZIONE 4: SETUP BATTAGLIA ALLENATORE
+'================================================================================'
+
+Sub IniziaBattagliaAllenatore(ID_Allenatore_Avversario As Long, Nome_Allenatore As String, luogoRitorno As String)
+    Dim xlApp As Object, xlWorkbook As Object, statoSheet As Object, battagliaSheet As Object
+    Dim g1TeamSheet As Object, g2TeamSheet As Object, npcSheet As Object
+    Dim percorsoFile As String, tipoBattaglia As String
+    Dim activePlayerID As Integer, activePlayerRow As Long, activePlayerInstanceID As Long, activePlayerCurrentHP As Long, activePlayerLevel As Integer
+    Dim opponentPlayerID As Long, opponentInstanceID As Long, opponentCurrentHP As Long, opponentLevel As Integer
+    Dim primoTurno As String, tmpBase As Long, tmpName As String, npcRow As Range
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    If Dir(percorsoFile) = "" Then MostraInfoSuSlideCorrente "Errore: Database.xlsx non trovato!": Exit Sub
+    
+    Set xlApp = CreateObject("Excel.Application"): Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    
+    Set statoSheet = xlWorkbook.Sheets("Stato_Giocatore")
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    Set g1TeamSheet = xlWorkbook.Sheets("Giocatore1_Squadra")
+    Set g2TeamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    Set npcSheet = xlWorkbook.Sheets("Allenatori")
+    
+    activePlayerRow = statoSheet.Columns("D").Find(what:=True, lookIn:=-4163, lookAt:=1).Row
+    activePlayerID = statoSheet.Cells(activePlayerRow, "A").value
+    Call GetPokemonDetailsFromInstance(xlWorkbook, g1TeamSheet.Cells(2, "A").value, tmpBase, tmpName, activePlayerLevel)
+    
+    If activePlayerID = 1 Then
+        activePlayerInstanceID = g1TeamSheet.Cells(2, "A").value: activePlayerCurrentHP = g1TeamSheet.Cells(2, "F").value
+    Else
+        activePlayerInstanceID = g2TeamSheet.Cells(2, "A").value: activePlayerCurrentHP = g2TeamSheet.Cells(2, "F").value
+    End If
+    Call GetPokemonDetailsFromInstance(xlWorkbook, activePlayerInstanceID, tmpBase, tmpName, activePlayerLevel)
+    
+    Set npcRow = npcSheet.Columns("A").Find(what:=ID_Allenatore_Avversario, lookIn:=-4163, lookAt:=1)
+    If npcRow Is Nothing Then
+        xlWorkbook.Close False: xlApp.Quit: MostraInfoSuSlideCorrente "Allenatore non trovato (ID " & ID_Allenatore_Avversario & ")": Exit Sub
+    End If
+    
+    tipoBattaglia = npcSheet.Cells(npcRow.Row, "D").value
+    
+    Select Case tipoBattaglia
+        Case "PvP"
+            If activePlayerID = 1 Then opponentPlayerID = 2 Else opponentPlayerID = 1
+            If opponentPlayerID = 1 Then
+                 opponentInstanceID = g1TeamSheet.Cells(2, "A").value: opponentCurrentHP = g1TeamSheet.Cells(2, "F").value: opponentLevel = g1TeamSheet.Cells(2, "D").value
+            Else
+                 opponentInstanceID = g2TeamSheet.Cells(2, "A").value: opponentCurrentHP = g2TeamSheet.Cells(2, "F").value: opponentLevel = g2TeamSheet.Cells(2, "D").value
+            End If
+            Nome_Allenatore = "Giocatore " & opponentPlayerID
+        
+        Case "Allenatore_NPC", "NPC"
+            opponentPlayerID = ID_Allenatore_Avversario
+            opponentInstanceID = npcSheet.Cells(npcRow.Row, "E").value
+            opponentLevel = npcSheet.Cells(npcRow.Row, "F").value
+            opponentCurrentHP = CalcolaHPMax(xlWorkbook, opponentInstanceID, opponentLevel)
+    End Select
+    
+    primoTurno = DeterminaPrimoTurno(activePlayerLevel, opponentLevel)
+    
+    With battagliaSheet
+        .Range("B2:B16").ClearContents
+        .Cells(2, 2).value = tipoBattaglia
+        .Cells(3, 2).value = activePlayerID
+        .Cells(4, 2).value = activePlayerInstanceID
+        .Cells(5, 2).value = activePlayerCurrentHP
+        .Cells(6, 2).value = opponentPlayerID
+        .Cells(7, 2).value = opponentInstanceID
+        .Cells(8, 2).value = opponentCurrentHP
+        .Cells(9, 2).value = opponentLevel
+        .Cells(10, 2).value = Nome_Allenatore
+        .Cells(11, 2).value = luogoRitorno
+        .Cells(12, 2).value = primoTurno
+    End With
+    
+    xlWorkbook.Close True: xlApp.Quit
+    
+    ActivePresentation.SlideShowWindow.View.GotoSlide SLIDE_VS
+    Sleep 100
+    DoEvents
+    Call AggiornaInterfacciaBattaglia_DaTrigger_SullaSlideSpecifica(SLIDE_BATTAGLIA)
+End Sub
+
+' --- MACRO DA COLLEGARE AI PULSANTI DI SFIDA ---
+Sub Sfida_Gennaro_Bullo(): Call IniziaBattagliaAllenatore(202, "Gennaro Bullo", "Percorso_1"): End Sub
+Sub Sfida_Capopalestra_1(): Call IniziaBattagliaAllenatore(203, "Capopalestra_1", "Venezia"): End Sub
+Sub Sfida_Rivale_Percorso_1(): Call IniziaBattagliaAllenatore(201, "Rivale", "Percorso_1"): End Sub
+
+'================================================================================'
+' SEZIONE 5: MOTORE DI GIOCO IN BATTAGLIA
+'================================================================================'
+
+Private Sub EseguiAzioneDiBattaglia(Azione As String, Parametro As Integer)
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String, sld As Slide
+    Dim messaggio As String, battagliaFinita As Boolean, giocatoreSconfitto As Boolean
+    Dim nomeA As String, hpA As Long, hpMaxA As Long, lvA As Integer
+    Dim nomeB As String, hpB As Long, hpMaxB As Long, lvB As Integer
+    Dim prossimoTurno As String, tipoBattaglia As String, idBaseA As Long, idBaseB As Long
+    Dim turnoCorrente As String
+    
+    Set sld = ActivePresentation.SlideShowWindow.View.Slide
+    If sld Is Nothing Then Exit Sub
+    
+    If sld.Shapes("InfoBox").Visible = msoTrue And _
+       (InStr(1, sld.Shapes("InfoBox").TextFrame.TextRange.Text, "VINTO") > 0 Or _
+        InStr(1, sld.Shapes("InfoBox").TextFrame.TextRange.Text, "SCONFITTO") > 0) Then Exit Sub
+    
+    Call AbilitaPulsantiMosse(False)
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    If Dir(percorsoFile) = "" Then Exit Sub
+    
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    
+    turnoCorrente = xlWorkbook.Sheets("Battaglia_Corrente").Cells(12, 2).value
+    
+    If xlWorkbook.Sheets("Battaglia_Corrente").Cells(5, 2).value <= 0 Then
+        Dim haAltri As Boolean
+        haAltri = ControllaSquadraRimanente(xlWorkbook)
+        xlWorkbook.Close False: xlApp.Quit: Set xlApp = Nothing
+        MostraInfoSuSlideCorrente "Il tuo Pokémon non può più combattere! Scegli il prossimo.", False, "A"
+        If haAltri Then Call MostraSchermataScambio
+        Exit Sub
+    End If
+    
+    Select Case Azione
+        Case "ATTACCO_GIOCATORE"
+            If turnoCorrente = "A" Then
+                Call CalcolaEApplicaDanno("A", Parametro, xlWorkbook, messaggio)
+            ElseIf turnoCorrente = "B" And xlWorkbook.Sheets("Battaglia_Corrente").Cells(2, 2).value = "PvP" Then
+                Call CalcolaEApplicaDanno("B", Parametro, xlWorkbook, messaggio)
+            Else
+                xlWorkbook.Close False: xlApp.Quit: Exit Sub
+            End If
+            
+        Case "ATTACCO_AVVERSARIO"
+            tipoBattaglia = xlWorkbook.Sheets("Battaglia_Corrente").Cells(2, 2).value
+            If turnoCorrente <> "B" Then
+                xlWorkbook.Close False: xlApp.Quit: Set xlApp = Nothing
+                Exit Sub
+            End If
+            
+            Dim idxMossa As Integer
+            If tipoBattaglia = "Allenatore_NPC" Then
+                Dim idBaseAtt As Long, lvAtt As Integer
+                Dim idBaseDif As Long, nm As String, lvDif As Integer
+                Call GetPokemonDetailsFromInstance(xlWorkbook, xlWorkbook.Sheets("Battaglia_Corrente").Cells(7, 2).value, idBaseAtt, nm, lvAtt)
+                Call GetPokemonDetailsFromInstance(xlWorkbook, xlWorkbook.Sheets("Battaglia_Corrente").Cells(4, 2).value, idBaseDif, nm, lvDif)
+                idxMossa = ScegliMossaIA(xlWorkbook, idBaseAtt, lvAtt, idBaseDif)
+            Else
+                idxMossa = Int((3 * Rnd) + 1)
+            End If
+            
+            Call CalcolaEApplicaDanno("B", idxMossa, xlWorkbook, messaggio)
+            
+            xlWorkbook.Sheets("Battaglia_Corrente").Cells(12, 2).value = "A"
+    End Select
+    
+    Call LeggiDatiCompletiBattaglia(xlWorkbook, tipoBattaglia, nomeA, lvA, hpA, hpMaxA, idBaseA, nomeB, lvB, hpB, hpMaxB, idBaseB, prossimoTurno)
+    
+    If hpA <= 0 Then
+        giocatoreSconfitto = True
+        Call SalvaHPGiocatore(xlWorkbook, 0)
+        If ControllaSquadraRimanente(xlWorkbook) Then
+            messaggio = messaggio & vbCrLf & vbCrLf & nomeA & " non può più combattere! Scegli il prossimo."
+        Else
+            messaggio = messaggio & vbCrLf & vbCrLf & "SEI STATO SCONFITTO!"
+            battagliaFinita = True
+            Call TerminaBattaglia(False, xlWorkbook)
+        End If
+    End If
+    
+    If Not battagliaFinita And hpB <= 0 Then
+        Select Case tipoBattaglia
+            Case "Allenatore_NPC"
+                Dim trainerID As Long, usedIdxCSV As String, curIdx As Long
+                Dim nextID As Long, nextLV As Integer, nextHP As Long
+                Dim nomeNext As String, baseRow As Object
+                Dim npcSheet As Object, npcRow As Object, idx As Long, idCol As Long
+                
+                trainerID = xlWorkbook.Sheets("Battaglia_Corrente").Cells(6, 2).value
+                curIdx = val(xlWorkbook.Sheets("Battaglia_Corrente").Cells(13, 2).value)
+                usedIdxCSV = CStr(xlWorkbook.Sheets("Battaglia_Corrente").Cells(14, 2).value)
+                usedIdxCSV = CSVAppendUnique(usedIdxCSV, CStr(curIdx))
+                
+                If ScegliProssimoPokemonNPC_Random(xlWorkbook, trainerID, usedIdxCSV, nextID, nextLV) Then
+                    nextHP = CalcolaHPMax(xlWorkbook, nextID, nextLV)
+                    xlWorkbook.Sheets("Battaglia_Corrente").Cells(7, 2).value = nextID
+                    xlWorkbook.Sheets("Battaglia_Corrente").Cells(8, 2).value = nextHP
+                    xlWorkbook.Sheets("Battaglia_Corrente").Cells(9, 2).value = nextLV
+                    Set npcSheet = xlWorkbook.Sheets("Allenatori")
+                    Set npcRow = npcSheet.Columns("A").Find(what:=trainerID, lookIn:=-4163, lookAt:=1)
+                    For idx = 1 To 6
+                        idCol = 4 + (idx - 1) * 2
+                        If CLng(val(npcSheet.Cells(npcRow.Row, idCol).value)) = nextID Then
+                            xlWorkbook.Sheets("Battaglia_Corrente").Cells(13, 2).value = idx
+                            Exit For
+                        End If
+                    Next idx
+                    usedIdxCSV = CSVAppendUnique(usedIdxCSV, CStr(xlWorkbook.Sheets("Battaglia_Corrente").Cells(13, 2).value))
+                    xlWorkbook.Sheets("Battaglia_Corrente").Cells(14, 2).value = usedIdxCSV
+                    xlWorkbook.Sheets("Battaglia_Corrente").Cells(12, 2).value = "A"
+                    
+                    Set baseRow = xlWorkbook.Sheets("Pokemon_Base").Columns("A").Find(what:=nextID, lookIn:=-4163, lookAt:=1)
+                    If Not baseRow Is Nothing Then nomeNext = xlWorkbook.Sheets("Pokemon_Base").Cells(baseRow.Row, "B").value Else nomeNext = "??"
+                    messaggio = messaggio & vbCrLf & vbCrLf & xlWorkbook.Sheets("Battaglia_Corrente").Cells(10, 2).value & " manda in campo " & nomeNext & " (Lv. " & nextLV & ")!"
+                    battagliaFinita = False
+                    prossimoTurno = "A"
+                Else
+                    messaggio = messaggio & vbCrLf & vbCrLf & "HAI VINTO LA BATTAGLIA!"
+                    battagliaFinita = True
+                    Call TerminaBattaglia(True, xlWorkbook)
+                End If
+                
+            Case "PvP"
+                Call SalvaHPGiocatore(xlWorkbook, 0)
+                If ControllaSquadraRimanente(xlWorkbook, xlWorkbook.Sheets("Battaglia_Corrente").Cells(6, 2).value) Then
+                    messaggio = messaggio & vbCrLf & vbCrLf & nomeB & " non può più combattere! " & xlWorkbook.Sheets("Battaglia_Corrente").Cells(10, 2).value & ", scegli il prossimo Pokémon."
+                    battagliaFinita = False
+                    prossimoTurno = "B"
+                Else
+                    messaggio = messaggio & vbCrLf & vbCrLf & "HAI VINTO LA BATTAGLIA!"
+                    battagliaFinita = True
+                    Call TerminaBattaglia(True, xlWorkbook)
+                End If
+                
+            Case Else
+                messaggio = messaggio & vbCrLf & vbCrLf & "HAI VINTO LA BATTAGLIA!"
+                battagliaFinita = True
+                Call TerminaBattaglia(True, xlWorkbook)
+        End Select
+    End If
+    
+    xlWorkbook.Close True: xlApp.Quit: Set xlApp = Nothing
+    
+    Call AggiornaUI_PostAzione(sld, nomeA, lvA, hpA, hpMaxA, nomeB, lvB, hpB, hpMaxB)
+    
+    On Error Resume Next
+    If prossimoTurno = "A" Then
+        Call AggiornaPulsantiMossa(sld, idBaseA)
+        Call AbilitaPulsantiMosse(True)
+    ElseIf prossimoTurno = "B" Then
+        Call AggiornaPulsantiMossa(sld, idBaseB)
+    End If
+    On Error GoTo 0
+    
+    DoEvents
+    Sleep 200
+    Call MostraInfoBox(sld, messaggio, battagliaFinita, prossimoTurno)
+    
+    On Error Resume Next
+    If tipoBattaglia = "PvP" Then sld.Shapes("Pulsante_Turno_Avversario").Visible = msoFalse
+    On Error GoTo 0
+End Sub
+
+
+Private Sub CalcolaEApplicaDanno(LatoAttaccante As String, NumeroMossa As Integer, ByVal xlWorkbook As Object, ByRef out_messaggio As String)
+    Dim battagliaSheet As Object, pkmnBaseSheet As Object, mosseSheet As Object, tipiSheet As Object
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    Set pkmnBaseSheet = xlWorkbook.Sheets("Pokemon_Base")
+    Set mosseSheet = xlWorkbook.Sheets("Mosse")
+    Set tipiSheet = xlWorkbook.Sheets("Tipi")
+    
+    Dim istanzaAtt As Long, istanzaDif As Long, hpDif As Long
+    Dim idBaseAtt As Long, nomeAtt As String, livelloAtt As Integer
+    Dim idBaseDif As Long, livelloDif As Integer, tipoDif As String, nomeDif As String
+    Dim mossaID As Long, mossaNome As String, mossaTipo As String
+    Dim numD6 As Integer, incremento As Long
+    Dim rigaDifBase As Object, rigaTipo As Object, colonnaTipo As Object
+    Dim moltiplicatoreTipo As Double, dannoFinale As Long, sommaDadi As Long
+    Dim msgTipo As String
+    
+    If LatoAttaccante = "A" Then
+        istanzaAtt = battagliaSheet.Cells(4, 2).value
+        istanzaDif = battagliaSheet.Cells(7, 2).value
+        hpDif = battagliaSheet.Cells(8, 2).value
+    Else
+        istanzaAtt = battagliaSheet.Cells(7, 2).value
+        istanzaDif = battagliaSheet.Cells(4, 2).value
+        hpDif = battagliaSheet.Cells(5, 2).value
+    End If
+    
+    Call GetPokemonDetailsFromInstance(xlWorkbook, istanzaAtt, idBaseAtt, nomeAtt, livelloAtt)
+    Call GetPokemonDetailsFromInstance(xlWorkbook, istanzaDif, idBaseDif, nomeDif, livelloDif)
+    
+    Set rigaDifBase = pkmnBaseSheet.Columns("A").Find(what:=idBaseDif, lookIn:=-4163, lookAt:=1)
+    If Not rigaDifBase Is Nothing Then
+        tipoDif = pkmnBaseSheet.Cells(rigaDifBase.Row, "D").value
+        If Trim(tipoDif) = "" Then tipoDif = "Normale"
+    Else
+        tipoDif = "Normale"
+    End If
+    
+    Dim rigaMossaPkmn As Object
+    Set rigaMossaPkmn = pkmnBaseSheet.Columns("A").Find(what:=idBaseAtt, lookIn:=-4163, lookAt:=1)
+    If rigaMossaPkmn Is Nothing Then
+        out_messaggio = "Errore: mossa non trovata."
+        Exit Sub
+    End If
+    
+    Select Case NumeroMossa
+        Case 1: mossaID = pkmnBaseSheet.Cells(rigaMossaPkmn.Row, "F").value
+        Case 2: mossaID = pkmnBaseSheet.Cells(rigaMossaPkmn.Row, "G").value
+        Case 3: mossaID = pkmnBaseSheet.Cells(rigaMossaPkmn.Row, "H").value
+        Case Else: mossaID = 0
+    End Select
+    
+    If mossaID <= 0 Then
+        mossaNome = "Colpo goffo"
+        mossaTipo = "Normale"
+        numD6 = 1
+        incremento = 0
+    Else
+        If Not OttieniParametriMossaAlLivello(xlWorkbook, mossaID, livelloAtt, mossaNome, mossaTipo, numD6, incremento) Then
+            mossaNome = "Attacco"
+            mossaTipo = "Normale"
+            numD6 = 1
+            incremento = 0
+        End If
+        If Trim(mossaTipo) = "" Then mossaTipo = "Normale"
+    End If
+    
+    Set rigaTipo = tipiSheet.Columns("A").Find(what:=mossaTipo, lookIn:=-4163, lookAt:=1)
+    Set colonnaTipo = tipiSheet.Rows(1).Find(what:=tipoDif, lookIn:=-4163, lookAt:=1)
+    If rigaTipo Is Nothing Or colonnaTipo Is Nothing Then
+        moltiplicatoreTipo = 1
+    Else
+        moltiplicatoreTipo = val(tipiSheet.Cells(rigaTipo.Row, colonnaTipo.Column).value)
+        If moltiplicatoreTipo = 0 Then
+            dannoFinale = 0
+            msgTipo = " (Nessun effetto!)"
+            GoTo ApplicaDanno
+        End If
+    End If
+    
+    sommaDadi = LanciaDadi(numD6)
+    dannoFinale = RoundIntHalfUp((sommaDadi + incremento) * moltiplicatoreTipo)
+    
+    If moltiplicatoreTipo > 1 Then
+        msgTipo = " (Super Efficace!)"
+    ElseIf moltiplicatoreTipo < 1 Then
+        msgTipo = " (Poco Efficace...)"
+    Else
+        msgTipo = ""
+    End If
+ApplicaDanno:
+    Dim hpAggiornati As Long
+    hpAggiornati = hpDif - dannoFinale
+    If hpAggiornati < 0 Then hpAggiornati = 0
+    
+    If LatoAttaccante = "A" Then
+        battagliaSheet.Cells(8, 2).value = hpAggiornati
+        battagliaSheet.Cells(12, 2).value = "B"
+    Else
+        battagliaSheet.Cells(5, 2).value = hpAggiornati
+        battagliaSheet.Cells(12, 2).value = "A"
+    End If
+    
+    out_messaggio = nomeAtt & " usa " & mossaNome & "! Danno: " & CStr(dannoFinale) & msgTipo
+End Sub
+
+Private Sub TerminaBattaglia(vittoria As Boolean, xlWorkbook As Object)
+    Dim teamSheet As Object, idGiocatoreA As Long, battagliaSheet As Object
+    Dim luogoRitorno As String, slideID As Long
+    
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    
+    luogoRitorno = battagliaSheet.Cells(11, 2).value
+    
+    Call SalvaHPGiocatore(xlWorkbook, battagliaSheet.Cells(5, 2).value)
+    idGiocatoreA = battagliaSheet.Cells(3, 2).value
+    If idGiocatoreA = 1 Then Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra") Else Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+
+    Dim lastRow As Long, i As Long
+    lastRow = teamSheet.Cells(teamSheet.Rows.count, "A").End(-4162).Row
+    For i = 2 To lastRow
+        teamSheet.Cells(i, "F").value = teamSheet.Cells(i, "E").value
+    Next i
+    
+    battagliaSheet.Range("B2:B16").ClearContents
+    battagliaSheet.Cells(11, 2).value = luogoRitorno
+End Sub
+
+Private Sub SalvaHPGiocatore(xlWorkbook As Object, hpDaSalvare As Long)
+    Dim teamSheet As Object, idGiocatoreA As Long, idIstanzaA As Long, rigaPkmn As Range
+    idGiocatoreA = xlWorkbook.Sheets("Battaglia_Corrente").Cells(3, 2).value
+    idIstanzaA = xlWorkbook.Sheets("Battaglia_Corrente").Cells(4, 2).value
+    If idGiocatoreA = 1 Then Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra") Else Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    Set rigaPkmn = teamSheet.Columns("A").Find(what:=idIstanzaA)
+    If Not rigaPkmn Is Nothing Then
+        teamSheet.Cells(rigaPkmn.Row, "F").value = hpDaSalvare
+    End If
+End Sub
+
+'================================================================================'
+' SEZIONE 6: GESTIONE INTERFACCIA UTENTE
+'================================================================================'
+
+Private Sub LeggiDatiCompletiBattaglia(xlWorkbook As Object, ByRef out_tipoB As String, ByRef out_nomeA As String, ByRef out_lvA As Integer, ByRef out_hpA As Long, ByRef out_hpMaxA As Long, ByRef out_idBaseA As Long, ByRef out_nomeB As String, ByRef out_lvB As Integer, ByRef out_hpB As Long, ByRef out_hpMaxB As Long, ByRef out_idBaseB As Long, ByRef out_turno As String)
+    Dim battagliaSheet As Object
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    Dim idIA As Long, idIB As Long
+    
+    out_tipoB = battagliaSheet.Cells(2, 2).value
+    idIA = battagliaSheet.Cells(4, 2).value
+    out_hpA = battagliaSheet.Cells(5, 2).value
+    idIB = battagliaSheet.Cells(7, 2).value
+    out_hpB = battagliaSheet.Cells(8, 2).value
+    out_lvB = battagliaSheet.Cells(9, 2).value
+    out_nomeB = battagliaSheet.Cells(10, 2).value
+    out_turno = battagliaSheet.Cells(12, 2).value
+    Call GetPokemonDetailsFromInstance(xlWorkbook, idIA, out_idBaseA, out_nomeA, out_lvA)
+    out_hpMaxA = CalcolaHPMax(xlWorkbook, out_idBaseA, out_lvA)
+    Call GetPokemonDetailsFromInstance(xlWorkbook, idIB, out_idBaseB, out_nomeB, out_lvB)
+    out_hpMaxB = CalcolaHPMax(xlWorkbook, out_idBaseB, out_lvB)
+End Sub
+
+Private Sub AggiornaPulsantiMossa(sld As Slide, idBase As Long)
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String
+    Dim pkmnBaseSheet As Object, mosseSheet As Object
+    Dim mossa1ID As Long, mossa2ID As Long, mossa3ID As Long
+    Dim nomeMossa1 As String, nomeMossa2 As String, nomeMossa3 As String
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application"): Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile, True)
+    
+    Set pkmnBaseSheet = xlWorkbook.Sheets("Pokemon_Base")
+    Set mosseSheet = xlWorkbook.Sheets("Mosse")
+    
+    Dim rigaPkmn As Object, r As Object
+    Set rigaPkmn = pkmnBaseSheet.Columns("A").Find(what:=idBase, lookIn:=-4163, lookAt:=1)
+    If Not rigaPkmn Is Nothing Then
+    mossa1ID = CLng(val(pkmnBaseSheet.Cells(rigaPkmn.Row, "F").value))
+    mossa2ID = CLng(val(pkmnBaseSheet.Cells(rigaPkmn.Row, "G").value))
+    mossa3ID = CLng(val(pkmnBaseSheet.Cells(rigaPkmn.Row, "H").value))
+    End If
+    
+    If mossa1ID > 0 Then
+        Set r = mosseSheet.Columns("A").Find(what:=mossa1ID, lookIn:=-4163, lookAt:=1)
+        If Not r Is Nothing Then nomeMossa1 = mosseSheet.Cells(r.Row, "B").value
+    End If
+    If mossa2ID > 0 Then
+        Set r = mosseSheet.Columns("A").Find(what:=mossa2ID, lookIn:=-4163, lookAt:=1)
+        If Not r Is Nothing Then nomeMossa2 = mosseSheet.Cells(r.Row, "B").value
+    End If
+    If mossa3ID > 0 Then
+        Set r = mosseSheet.Columns("A").Find(what:=mossa3ID, lookIn:=-4163, lookAt:=1)
+        If Not r Is Nothing Then nomeMossa3 = mosseSheet.Cells(r.Row, "B").value
+    End If
+    
+    xlWorkbook.Close False: Set xlApp = Nothing
+    
+    On Error Resume Next
+    sld.Shapes("PulsanteMossa1").TextFrame.TextRange.Text = nomeMossa1
+    sld.Shapes("PulsanteMossa2").TextFrame.TextRange.Text = nomeMossa2
+    sld.Shapes("PulsanteMossa3").TextFrame.TextRange.Text = nomeMossa3
+    On Error GoTo 0
+End Sub
+
+Private Sub GetPokemonDetailsFromInstance(xlWorkbook As Object, istanza As Long, ByRef outIDBase As Long, ByRef outNome As String, ByRef outLivello As Integer)
+    Dim teamSheet As Object, rigaPkmn As Range, idGiocatore As Long
+    If istanza >= 2000 And istanza < 3000 Then
+        idGiocatore = 2
+    ElseIf istanza >= 1000 And istanza < 2000 Then
+        idGiocatore = 1
+    Else:
+        idGiocatore = 0
+    End If
+    If idGiocatore > 0 Then
+        If idGiocatore = 1 Then Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra") Else Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+        Set rigaPkmn = teamSheet.Columns("A").Find(what:=istanza)
+        If Not rigaPkmn Is Nothing Then
+            outIDBase = teamSheet.Cells(rigaPkmn.Row, "B").value
+            outNome = teamSheet.Cells(rigaPkmn.Row, "C").value
+            outLivello = teamSheet.Cells(rigaPkmn.Row, "D").value
+        End If
+    Else
+        outIDBase = istanza
+        Set rigaPkmn = xlWorkbook.Sheets("Pokemon_Base").Columns("A").Find(what:=outIDBase)
+        outNome = xlWorkbook.Sheets("Pokemon_Base").Cells(rigaPkmn.Row, "B").value
+        outLivello = xlWorkbook.Sheets("Battaglia_Corrente").Cells(9, 2).value
+    End If
+End Sub
+
+Private Sub AggiornaUI_PostAzione(sld As Slide, nomeA As String, lvA As Integer, hpA As Long, hpMaxA As Long, nomeB As String, lvB As Integer, hpB As Long, hpMaxB As Long)
+    Const LARGHEZZA_MAX_HP_A As Single = 160
+    Const LARGHEZZA_MAX_HP_B As Single = 180
+    On Error Resume Next
+    With sld.Shapes
+        .Item("Nome_A").TextFrame.TextRange.Text = nomeA: .Item("Livello_A").TextFrame.TextRange.Text = "LV. " & lvA
+        .Item("TestoHP_A").TextFrame.TextRange.Text = hpA & "/" & hpMaxA
+        If hpMaxA > 0 Then .Item("BarraHP_A").Width = (hpA / hpMaxA) * LARGHEZZA_MAX_HP_A Else .Item("BarraHP_A").Width = 0
+        
+        .Item("Nome_B").TextFrame.TextRange.Text = nomeB: .Item("Livello_B").TextFrame.TextRange.Text = "LV. " & lvB
+        .Item("TestoHP_B").TextFrame.TextRange.Text = hpB & "/" & hpMaxB
+        If hpMaxB > 0 Then .Item("BarraHP_B").Width = (hpB / hpMaxB) * LARGHEZZA_MAX_HP_B Else .Item("BarraHP_B").Width = 0
+    End With
+    On Error GoTo 0
+End Sub
+
+Private Sub AggiornaSpritePokemon(sld As Slide, ID_Base As Long, Lato As String)
+    Dim gruppoSprite As Shape, sprite As Shape
+    Dim nomeGruppo As String, nomeSpriteDaMostrare As String
+    
+    If Lato = "A" Then
+        nomeGruppo = "Sprite_A_Back"
+    Else
+        nomeGruppo = "Sprite_B_Front"
+    End If
+    
+    nomeSpriteDaMostrare = "Sprite_" & Lato & "_" & ID_Base
+    
+    On Error Resume Next
+    Set gruppoSprite = sld.Shapes(nomeGruppo)
+    If Not gruppoSprite Is Nothing Then
+        For Each sprite In gruppoSprite.GroupItems
+            sprite.Visible = msoFalse
+        Next sprite
+    End If
+    sld.Shapes(nomeSpriteDaMostrare).Visible = msoTrue
+    
+    On Error GoTo 0
+End Sub
+
+Private Sub MostraInfoBox(sld As Slide, messaggio As String, fineBattaglia As Boolean, ByVal turnoProssimo As String)
+    On Error Resume Next
+    sld.Shapes("Pulsante_Prosegui").Visible = msoFalse
+    sld.Shapes("Pulsante_Turno_Avversario").Visible = msoFalse
+    Call AbilitaPulsantiMosse_SuSlide(sld, False)
+    
+    If fineBattaglia Then
+        sld.Shapes("InfoBox").TextFrame.TextRange.Text = messaggio
+        sld.Shapes("InfoBox").Visible = msoTrue
+        sld.Shapes("Pulsante_Prosegui").Visible = msoTrue
+    Else
+        sld.Shapes("InfoBox").TextFrame.TextRange.Text = messaggio
+        sld.Shapes("InfoBox").Visible = msoTrue
+        
+        If InStr(1, messaggio, "non può più combattere") > 0 Then
+        ElseIf turnoProssimo = "B" Then
+            sld.Shapes("Pulsante_Turno_Avversario").Visible = msoTrue
+        Else
+            DoEvents
+            Sleep 1500
+            sld.Shapes("InfoBox").Visible = msoFalse
+            Call AggiornaInterfacciaBattaglia_DaTrigger
+        End If
+    End If
+    On Error GoTo 0
+End Sub
+
+Sub NascondiSoloInfoBox()
+    On Error Resume Next
+    If Application.SlideShowWindows.count > 0 Then
+        Application.SlideShowWindows(1).View.Slide.Shapes("InfoBox").Visible = msoFalse
+    End If
+    On Error GoTo 0
+End Sub
+
+Sub TornaAllaMappa()
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String
+    Dim luogoRitorno As String, slideID As Long
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    
+    luogoRitorno = xlWorkbook.Sheets("Battaglia_Corrente").Cells(11, 2).value
+    
+    On Error Resume Next
+    slideID = xlWorkbook.Sheets("Mappe").Columns("A").Find(what:=luogoRitorno).Offset(0, 1).value
+    If Err.Number <> 0 Or slideID = 0 Then slideID = 3
+    On Error GoTo 0
+    
+    xlWorkbook.Sheets("Battaglia_Corrente").Cells(11, 2).ClearContents
+    
+    xlWorkbook.Close True
+    Set xlApp = Nothing
+    
+    If slideID > 0 Then Application.SlideShowWindows(1).View.GotoSlide slideID
+End Sub
+
+Function GetSlideIDPostBattaglia() As Long
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile, True)
+    
+    On Error Resume Next
+    GetSlideIDPostBattaglia = CLng(xlWorkbook.Sheets("Battaglia_Corrente").Cells(18, 2).value)
+    If Err.Number <> 0 Or GetSlideIDPostBattaglia = 0 Then
+        GetSlideIDPostBattaglia = 3
+    End If
+    On Error GoTo 0
+    
+    xlWorkbook.Close False
+    xlApp.Quit
+End Function
+
+Sub AbilitaPulsantiMosse(stato As Boolean)
+    Dim sld As Slide
+    Set sld = ActivePresentation.SlideShowWindow.View.Slide
+    If sld Is Nothing Then Exit Sub
+    
+    On Error Resume Next
+    With sld.Shapes
+        .Item("PulsanteMossa1").Visible = stato
+        .Item("PulsanteMossa2").Visible = stato
+        .Item("PulsanteMossa3").Visible = stato
+        .Item("Pulsante_Cattura").Visible = stato
+    End With
+    On Error GoTo 0
+End Sub
+
+Sub AggiornaInterfacciaBattaglia_DaTrigger()
+    On Error GoTo GestioneErrori
+
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String, sld As Slide
+    Dim nomeA As String, hpA As Long, hpMaxA As Long, lvA As Integer, idBaseA As Long
+    Dim nomeB As String, hpB As Long, hpMaxB As Long, lvB As Integer, idBaseB As Long
+    Dim turno As String, tipoB As String
+    Dim idBaseAttivo As Long
+
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile, True)
+    
+    Call LeggiDatiCompletiBattaglia(xlWorkbook, tipoB, nomeA, lvA, hpA, hpMaxA, idBaseA, nomeB, lvB, hpB, hpMaxB, idBaseB, turno)
+    
+    xlWorkbook.Close False
+    xlApp.Quit
+    Set xlApp = Nothing
+
+    Sleep 50
+    DoEvents
+    If Application.SlideShowWindows.count > 0 Then
+        Set sld = Application.SlideShowWindows(1).View.Slide
+    Else
+        Exit Sub
+    End If
+    If sld Is Nothing Then Exit Sub
+
+    Call AggiornaSpritePokemon(sld, idBaseA, "A")
+    Call AggiornaSpritePokemon(sld, idBaseB, "B")
+    Call AggiornaUI_PostAzione(sld, nomeA, lvA, hpA, hpMaxA, nomeB, lvB, hpB, hpMaxB)
+    
+    If turno = "A" Then idBaseAttivo = idBaseA Else idBaseAttivo = idBaseB
+    Call AggiornaPulsantiMossa(sld, idBaseAttivo)
+    Call NascondiSoloInfoBox_SullaSlideSpecifica(sld.slideIndex)
+
+    On Error Resume Next
+    Select Case tipoB
+        Case "Selvatico"
+            If turno = "A" Then
+                Call AbilitaPulsantiMosse(True)
+                sld.Shapes("Pulsante_Cattura").Visible = msoTrue
+                sld.Shapes("Pulsante_Turno_Avversario").Visible = msoFalse
+            Else
+                Call AbilitaPulsantiMosse(False)
+                sld.Shapes("Pulsante_Turno_Avversario").Visible = msoTrue
+            End If
+        
+        Case "Allenatore_NPC"
+            sld.Shapes("Pulsante_Cattura").Visible = msoFalse
+            If turno = "A" Then
+                Call AbilitaPulsantiMosse(True)
+                sld.Shapes("Pulsante_Turno_Avversario").Visible = msoFalse
+            Else
+                Call AbilitaPulsantiMosse(False)
+                sld.Shapes("Pulsante_Turno_Avversario").Visible = msoTrue
+            End If
+        
+        Case "PvP"
+            Call AbilitaPulsantiMosse(True)
+            sld.Shapes("Pulsante_Cattura").Visible = msoFalse
+            sld.Shapes("Pulsante_Turno_Avversario").Visible = msoFalse
+            Call AggiornaPulsantiMossa(sld, idBaseAttivo)
+    End Select
+    On Error GoTo 0
+    
+    Exit Sub
+
+GestioneErrori:
+    If Not xlApp Is Nothing Then xlApp.Quit
+End Sub
+Sub AggiornaInterfacciaBattaglia_DaTrigger_SullaSlideSpecifica(slideIndex As Integer)
+    On Error GoTo GestioneErrori
+    
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String, sld As Slide
+    Dim nomeA As String, hpA As Long, hpMaxA As Long, lvA As Integer, idBaseA As Long
+    Dim nomeB As String, hpB As Long, hpMaxB As Long, lvB As Integer, idBaseB As Long
+    Dim turno As String, tipoB As String, messaggioIniziale As String, nomePrimoAttaccante As String
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile, True)
+    
+    Call LeggiDatiCompletiBattaglia(xlWorkbook, tipoB, nomeA, lvA, hpA, hpMaxA, idBaseA, nomeB, lvB, hpB, hpMaxB, idBaseB, turno)
+    xlWorkbook.Close False
+    Set xlApp = Nothing
+    
+    If turno = "A" Then nomePrimoAttaccante = nomeA Else nomePrimoAttaccante = nomeB
+    messaggioIniziale = "Appare " & nomeB & "! Primo turno: " & nomePrimoAttaccante
+    
+    Set sld = ActivePresentation.Slides(slideIndex)
+    If sld Is Nothing Then Exit Sub
+    
+    Call AggiornaSpritePokemon(sld, idBaseA, "A")
+    Call AggiornaSpritePokemon(sld, idBaseB, "B")
+    Call AggiornaUI_PostAzione(sld, nomeA, lvA, hpA, hpMaxA, nomeB, lvB, hpB, hpMaxB)
+    Call AggiornaPulsantiMossa(sld, idBaseA)
+    
+    Call AbilitaPulsantiMosse_SuSlide(sld, False)
+    On Error Resume Next
+    sld.Shapes("Pulsante_Turno_Avversario").Visible = msoFalse
+    sld.Shapes("Pulsante_Prosegui").Visible = msoFalse
+    sld.Shapes("InfoBox").TextFrame.TextRange.Text = messaggioIniziale
+    sld.Shapes("InfoBox").Visible = msoTrue
+    On Error GoTo 0
+    Exit Sub
+GestioneErrori:
+    If Not xlApp Is Nothing Then xlApp.Quit
+End Sub
+
+Sub NascondiSoloInfoBox_SullaSlideSpecifica(slideIndex As Integer)
+    On Error Resume Next
+    ActivePresentation.Slides(slideIndex).Shapes("InfoBox").Visible = msoFalse
+    On Error GoTo 0
+End Sub
+
+' --- MACRO DA COLLEGARE AI PULSANTI E TRIGGER ---
+Sub Trigger_InizioBattaglia_Click(): Call AggiornaInterfacciaBattaglia_DaTrigger: End Sub
+Sub AttaccoMossa1(): Call EseguiAzioneDiBattaglia("ATTACCO_GIOCATORE", 1): End Sub
+Sub AttaccoMossa2(): Call EseguiAzioneDiBattaglia("ATTACCO_GIOCATORE", 2): End Sub
+Sub AttaccoMossa3(): Call EseguiAzioneDiBattaglia("ATTACCO_GIOCATORE", 3): End Sub
+
+Sub InfoBox_Click()
+    Dim sld As Slide, messaggio As String
+    
+    Set sld = ActivePresentation.SlideShowWindow.View.Slide
+    If sld Is Nothing Then Exit Sub
+    
+    messaggio = sld.Shapes("InfoBox").TextFrame.TextRange.Text
+    sld.Shapes("InfoBox").Visible = msoFalse
+    
+    If InStr(1, messaggio, "non può più combattere") > 0 Then
+        Call MostraSchermataScambio
+        Exit Sub
+    End If
+    
+    If InStr(1, messaggio, "Appare") > 0 Or InStr(1, messaggio, "Inizia la battaglia") > 0 Then
+        Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String, turno As String, tipoB As String
+        percorsoFile = ActivePresentation.path & "\Database.xlsx"
+        Set xlApp = CreateObject("Excel.Application")
+        Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile, True)
+        turno = xlWorkbook.Sheets("Battaglia_Corrente").Cells(12, 2).value
+        tipoB = xlWorkbook.Sheets("Battaglia_Corrente").Cells(2, 2).value
+        xlWorkbook.Close False
+        Set xlApp = Nothing
+        
+        If Trim(turno) = "A" Then
+            Call AbilitaPulsantiMosse_SuSlide(sld, True)
+            If tipoB <> "Selvatico" Then sld.Shapes("Pulsante_Cattura").Visible = False
+        ElseIf Trim(turno) = "B" Then
+            sld.Shapes("Pulsante_Turno_Avversario").Visible = msoTrue
+        End If
+    End If
+End Sub
+
+Sub Pulsante_Turno_Avversario_Click()
+    On Error Resume Next
+    If Application.SlideShowWindows.count = 0 Then Exit Sub
+    With Application.SlideShowWindows(1).View.Slide.Shapes
+        .Item("InfoBox").Visible = msoFalse
+        .Item("Pulsante_Turno_Avversario").Visible = msoFalse
+        .Item("Pulsante_Cattura").Visible = msoFalse
+    End With
+    On Error GoTo 0
+    DoEvents
+    Call EseguiAzioneDiBattaglia("ATTACCO_AVVERSARIO", 0)
+End Sub
+
+Sub Pulsante_Prosegui_Click()
+    Call TornaAllaMappa
+End Sub
+
+Private Sub AbilitaPulsantiMosse_SuSlide(sld As Slide, stato As Boolean)
+    On Error Resume Next
+    With sld.Shapes
+        .Item("PulsanteMossa1").Visible = stato
+        .Item("PulsanteMossa2").Visible = stato
+        .Item("PulsanteMossa3").Visible = stato
+        .Item("Pulsante_Cattura").Visible = stato
+    End With
+    On Error GoTo 0
+End Sub
+
+'================================================================================'
+' SEZIONE 7: SISTEMA DI SCAMBIO POKEMON
+'================================================================================'
+
+Private Sub GestisciVisibilitaInterfacciaScambio(stato As Boolean, sld As Slide)
+    On Error Resume Next
+    sld.Shapes("Box_Squadra").Visible = stato
+    Dim i As Integer
+    For i = 1 To 6
+        sld.Shapes("Slot_" & i).Visible = stato
+        sld.Shapes("Pulsante_Slot_" & i).Visible = msoFalse
+    Next i
+    If Not stato Then
+        For i = 1 To 110
+            sld.Shapes("Sprite_Small_" & i).Visible = msoFalse
+            sld.Shapes("Sprite_Small_" & i & "_KO").Visible = msoFalse
+        Next i
+    End If
+    On Error GoTo 0
+End Sub
+
+Public Sub MostraSchermataScambio(Optional ByVal GiocatoreID As Variant)
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String
+    Dim sld As Slide, teamSheet As Object, battagliaSheet As Object
+    Dim idTarget As Integer, lastRow As Long, i As Integer
+    Dim boxSquadra As Shape, slotShape As Shape, spriteShape As Shape, buttonShape As Shape
+    Dim hp As Long, pkmnID_Base As Long, slotNum As Integer, nomeSprite As String
+    
+    Set sld = ActivePresentation.SlideShowWindow.View.Slide
+    If sld Is Nothing Then Exit Sub
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile, True)
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    
+    If IsMissing(GiocatoreID) Then
+        idTarget = CInt(battagliaSheet.Cells(3, 2).value)
+    Else
+        idTarget = CInt(GiocatoreID)
+    End If
+    g_ScambioGiocatoreID = idTarget
+    
+    If idTarget = 1 Then
+        Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra")
+    Else
+        Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    End If
+    
+    Set boxSquadra = sld.Shapes("Box_Squadra")
+    boxSquadra.Left = (sld.Master.Width / 2) - (boxSquadra.Width / 2)
+    boxSquadra.Top = (sld.Master.Height / 2) - (boxSquadra.Height / 2)
+    boxSquadra.Visible = msoTrue
+    
+    Call GestisciVisibilitaInterfacciaScambio(True, sld)
+    
+    lastRow = teamSheet.Cells(teamSheet.Rows.count, "A").End(-4162).Row
+    For i = 2 To lastRow
+        slotNum = i - 1
+        pkmnID_Base = CLng(teamSheet.Cells(i, "B").value)
+        hp = CLng(teamSheet.Cells(i, "F").value)
+        
+        If hp <= 0 Then
+            nomeSprite = "Sprite_Small_" & pkmnID_Base & "_KO"
+        Else
+            nomeSprite = "Sprite_Small_" & pkmnID_Base
+        End If
+        
+        On Error Resume Next
+        Set slotShape = sld.Shapes("Slot_" & slotNum)
+        Set spriteShape = sld.Shapes(nomeSprite)
+        Set buttonShape = sld.Shapes("Pulsante_Slot_" & slotNum)
+        
+        If Not slotShape Is Nothing Then
+            slotShape.Left = boxSquadra.Left + 20 + ((slotNum - 1) * 80)
+            slotShape.Top = boxSquadra.Top + 20
+            slotShape.Visible = msoTrue
+            If Not spriteShape Is Nothing Then
+                spriteShape.Left = slotShape.Left + (slotShape.Width / 2) - (spriteShape.Width / 2)
+                spriteShape.Top = slotShape.Top + (slotShape.Height / 2) - (spriteShape.Height / 2)
+                spriteShape.Visible = msoTrue
+                If Not buttonShape Is Nothing Then
+                    buttonShape.Left = slotShape.Left
+                    buttonShape.Top = slotShape.Top
+                    buttonShape.Width = slotShape.Width
+                    buttonShape.Height = slotShape.Height
+                    buttonShape.Visible = (hp > 0)
+                End If
+            End If
+        End If
+        On Error GoTo 0
+    Next i
+    
+    xlWorkbook.Close False: Set xlApp = Nothing
+End Sub
+
+Sub EseguiScambio(SlotSelezionato As Integer)
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String, sld As Slide
+    Dim teamSheet As Object, battagliaSheet As Object
+    Dim tipoB As String, idTarget As Integer
+    Dim rigaScelta As Integer, nuovoIst As Long, nuovoHP As Long, nuovoLV As Integer
+    
+    Set sld = ActivePresentation.SlideShowWindow.View.Slide
+    If sld Is Nothing Then Exit Sub
+    
+    rigaScelta = SlotSelezionato + 1
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    tipoB = CStr(battagliaSheet.Cells(2, 2).value)
+    
+    idTarget = g_ScambioGiocatoreID
+    If idTarget = 0 Then idTarget = CInt(battagliaSheet.Cells(3, 2).value)
+    
+    If idTarget = 1 Then
+        Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra")
+    Else
+        Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    End If
+    
+    nuovoHP = CLng(teamSheet.Cells(rigaScelta, "F").value)
+    If nuovoHP <= 0 Then
+        xlWorkbook.Close False: Set xlApp = Nothing
+        Exit Sub
+    End If
+    
+    nuovoIst = CLng(teamSheet.Cells(rigaScelta, "A").value)
+    nuovoLV = CInt(teamSheet.Cells(rigaScelta, "D").value)
+    
+    If idTarget = CInt(battagliaSheet.Cells(3, 2).value) Then
+        battagliaSheet.Cells(4, 2).value = nuovoIst
+        battagliaSheet.Cells(5, 2).value = nuovoHP
+        battagliaSheet.Cells(12, 2).value = "A"
+    ElseIf tipoB = "PvP" And idTarget = CInt(battagliaSheet.Cells(6, 2).value) Then
+        battagliaSheet.Cells(7, 2).value = nuovoIst
+        battagliaSheet.Cells(8, 2).value = nuovoHP
+        battagliaSheet.Cells(9, 2).value = nuovoLV
+        battagliaSheet.Cells(12, 2).value = "A"
+    Else
+        xlWorkbook.Close False: Set xlApp = Nothing
+        Call GestisciVisibilitaInterfacciaScambio(False, sld)
+        Exit Sub
+    End If
+    
+    xlWorkbook.Close True: Set xlApp = Nothing
+    
+    g_ScambioGiocatoreID = 0 ' reset
+    Call GestisciVisibilitaInterfacciaScambio(False, sld)
+    Call AggiornaInterfacciaBattaglia_DaTrigger
+End Sub
+
+Sub EseguiScambio_B(SlotSelezionato As Integer)
+    Dim percorsoFile As String, xlApp As Object, xlWorkbook As Object
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile, True)
+    g_ScambioGiocatoreID = CInt(xlWorkbook.Sheets("Battaglia_Corrente").Cells(6, 2).value)
+    xlWorkbook.Close False: Set xlApp = Nothing
+    Call EseguiScambio(SlotSelezionato)
+End Sub
+
+Sub Slot1_Click(): Call EseguiScambio(1): End Sub
+Sub Slot2_Click(): Call EseguiScambio(2): End Sub
+Sub Slot3_Click(): Call EseguiScambio(3): End Sub
+Sub Slot4_Click(): Call EseguiScambio(4): End Sub
+Sub Slot5_Click(): Call EseguiScambio(5): End Sub
+Sub Slot6_Click(): Call EseguiScambio(6): End Sub
+
+'================================================================================'
+' SEZIONE 8: SISTEMA DI CATTURA POKEMON
+'================================================================================'
+
+Private Sub AggiungiPokemonCatturato(ID_Base As Long, NomePokemon As String, livello As Integer, GiocatoreID As Integer, xlWorkbook As Object)
+    Dim teamSheet As Object, depositoSheet As Object, xlSheet As Object
+    Dim numPkmnInSquadra As Integer, AlDeposito As Boolean
+    
+    If GiocatoreID = 1 Then
+        Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra")
+    Else
+        Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    End If
+    
+    numPkmnInSquadra = teamSheet.Cells(teamSheet.Rows.count, "A").End(-4162).Row - 1
+    
+    If numPkmnInSquadra >= 6 Then
+        AlDeposito = True
+        MsgBox NomePokemon & " è stato inviato al Deposito.", vbInformation
+    Else
+        AlDeposito = False
+    End If
+    
+    Call ScegliPokemonPerGiocatore(ID_Base, NomePokemon, GiocatoreID, livello, xlWorkbook, AlDeposito)
+End Sub
+
+Private Sub EseguiAzioneCattura()
+    Dim xlApp As Object, xlWorkbook As Object, percorsoFile As String, sld As Slide
+    Dim battagliaSheet As Object, pkmnBaseSheet As Object, teamSheet As Object
+    Dim tipoBattaglia As String, tassoCattura As Double, hpMaxB As Long, hpAttualiB As Long
+    Dim sogliaSuccesso As Double, roll As Integer, catturaRiuscita As Boolean
+    Dim messaggio As String, pkmnID_Base As Long, pkmnNome As String, pkmnLivello As Integer
+    Dim activePlayerID As Integer, numPkmnInSquadra As Integer
+    
+    Set sld = ActivePresentation.SlideShowWindow.View.Slide
+    If sld Is Nothing Then Exit Sub
+    
+    percorsoFile = ActivePresentation.path & "\Database.xlsx"
+    Set xlApp = CreateObject("Excel.Application")
+    Set xlWorkbook = xlApp.Workbooks.Open(percorsoFile)
+    
+    Set battagliaSheet = xlWorkbook.Sheets("Battaglia_Corrente")
+    Set pkmnBaseSheet = xlWorkbook.Sheets("Pokemon_Base")
+    
+    If battagliaSheet.Cells(5, 2).value <= 0 Then
+        xlWorkbook.Close False: xlApp.Quit: Set xlApp = Nothing
+        MostraInfoSuSlideCorrente "Il tuo Pokémon non può più combattere! Scegli il prossimo.", False, "A"
+        Exit Sub
+    End If
+    
+    tipoBattaglia = battagliaSheet.Cells(2, 2).value
+    If tipoBattaglia <> "Selvatico" Then
+        xlWorkbook.Close False: xlApp.Quit: Set xlApp = Nothing
+        MostraInfoSuSlideCorrente "Non puoi catturare i Pokémon di un allenatore!", False, "A"
+        Exit Sub
+    End If
+    
+    pkmnID_Base = battagliaSheet.Cells(7, 2).value
+    hpAttualiB = battagliaSheet.Cells(8, 2).value
+    pkmnLivello = battagliaSheet.Cells(9, 2).value
+    pkmnNome = battagliaSheet.Cells(10, 2).value
+    hpMaxB = CalcolaHPMax(xlWorkbook, pkmnID_Base, pkmnLivello)
+    
+    Dim cellID As Object
+    Set cellID = pkmnBaseSheet.Columns("A").Find(what:=pkmnID_Base, lookIn:=-4163, lookAt:=1)
+    If Not cellID Is Nothing Then
+        tassoCattura = val(cellID.Offset(0, 10).value)
+    Else
+        tassoCattura = 1
+    End If
+    If tassoCattura <= 0 Then tassoCattura = 1
+    
+    roll = LanciaDadi(1) + LanciaDadi(1) + LanciaDadi(1)
+    sogliaSuccesso = tassoCattura * (2 - (hpAttualiB / hpMaxB))
+    catturaRiuscita = (roll <= sogliaSuccesso)
+    
+    activePlayerID = battagliaSheet.Cells(3, 2).value
+    If activePlayerID = 1 Then
+        Set teamSheet = xlWorkbook.Sheets("Giocatore1_Squadra")
+    Else
+        Set teamSheet = xlWorkbook.Sheets("Giocatore2_Squadra")
+    End If
+    numPkmnInSquadra = teamSheet.Cells(teamSheet.Rows.count, "A").End(-4162).Row - 1
+    
+    If catturaRiuscita Then
+        Call AggiungiPokemonCatturato(pkmnID_Base, pkmnNome, pkmnLivello, activePlayerID, xlWorkbook)
+        messaggio = "Hai catturato " & pkmnNome & "!"
+        If numPkmnInSquadra >= 6 Then
+            messaggio = messaggio & vbCrLf & pkmnNome & " è stato inviato al Deposito."
+        End If
+        Call TerminaBattaglia(True, xlWorkbook)
+        xlWorkbook.Close True: xlApp.Quit: Set xlApp = Nothing
+        Call MostraInfoBox(sld, messaggio, True, "A")
+    Else
+        messaggio = pkmnNome & " si è liberato!"
+        battagliaSheet.Cells(12, 2).value = "B"
+        xlWorkbook.Close True: xlApp.Quit: Set xlApp = Nothing
+        Call MostraInfoBox(sld, messaggio, False, "B")
+    End If
+End Sub
+
+' --- MACRO DA COLLEGARE AL PULSANTE CATTURA ---
+Sub Pulsante_Cattura_Click()
+    Call AbilitaPulsantiMosse(False)
+    Call EseguiAzioneCattura
+End Sub
+
+Questo invece è il contenuto del mio file excel:
+
+Foglio: Pokemon_Base
+
+ID Nome Categoria Tipo HP_Base Mossa1_ID Mossa2_ID Mossa3_ID Livello_Evoluzione Evoluzione_ID Tasso_Cattura
+1 Vyrath Media Normale 12 1 0 2345 15 2 5
+2 Vyrath Media Normale 12 2 0 2345 35 3 4
+3 Vyrath Media Normale 12 3 0 2345 55 4 3
+4 Vyrath Media Normale 12 4 0 2345 0 0 2
+5 Darklaw Media Oscurità 12 28 0 2345 15 6 5
+6 Darklaw Media Oscurità 12 29 0 2345 35 7 4
+7 Darklaw Media Oscurità 12 30 0 2345 55 8 3
+8 Darklaw Media Oscurità 12 31 0 2345 0 0 2
+9 Felyss Media Psico 12 55 0 2345 15 10 5
+10 Felyss Media Psico 12 56 0 2345 35 11 4
+11 Felyss Media Psico 12 57 0 2345 55 12 3
+12 Felyss Media Psico 12 58 0 2345 0 0 2
+13 Wormaren Media Terra 12 82 0 2345 19 14 5
+14 Wormaren Media Terra 12 83 0 2345 40 15 4
+15 Wormaren Media Terra 12 84 0 2345 0 0 2
+16 Clastoom Veloce Terra 12 11 0 2345 19 17 5
+17 Clastoom Veloce Terra 12 12 0 2345 40 18 4
+18 Clastoom Veloce Terra 12 13 0 2345 0 0 3
+19 Colussand Media Terra 12 102 0 2345 0 0 2
+20 Handipus Veloce Terra 12 80 0 2345 0 0 5
+21 Shrody Media Psico 12 24 0 2345 0 0 5
+22 Voltrake Media Elettro 12 51 0 2345 0 0 4
+23 Sparkly Lenta Elettro 12 52 0 2345 0 0 3
+24 Grimbolt Lenta Elettro 12 18 0 2345 26 26 5
+25 Grimbolt Lenta Elettro 12 19 0 2345 0 0 4
+26 Ampereel Media Elettro 12 14 0 2345 26 27 5
+27 Ampereel Media Elettro 12 15 0 2345 0 0 4
+28 Silvard Media Erba 12 41 0 2345 26 29 5
+29 Silvard Media Erba 12 42 0 2345 0 0 4
+30 Eclyps Media Oscurità 12 68 0 2345 26 31 5
+31 Eclyps Media Oscurità 12 69 0 2345 0 0 4
+32 Blazion Veloce Fuoco 12 74 0 2345 26 33 5
+33 Blazion Veloce Fuoco 12 75 0 2345 0 0 2
+34 Crawgoyle Media Terra 12 94 0 2345 26 35 5
+35 Crawgoyle Media Terra 12 95 0 2345 0 0 3
+36 Chimzap Veloce Elettro 12 38 0 2345 19 37 5
+37 Chimzap Veloce Elettro 12 39 0 2345 40 38 4
+38 Chimzap Veloce Elettro 12 40 0 2345 0 0 2
+39 RS-219 Lenta Normale 12 85 0 2345 19 40 5
+40 RS-219 Lenta Normale 12 86 0 2345 40 41 4
+41 RS-219 Lenta Normale 12 87 0 2345 0 0 2
+42 Felvex Media Normale 12 16 0 2345 26 43 5
+43 Felvex Media Normale 12 17 0 2345 0 0 4
+44 Felvex Media Oscurità 12 78 0 2345 0 0 4
+45 Spectron Lenta Oscurità 12 45 0 2345 26 46 4
+46 Spectron Lenta Oscurità 12 46 0 2345 0 0 3
+47 Weedrug Lenta Erba 12 72 0 2345 26 48 5
+48 Weedrug Lenta Erba 12 73 0 2345 0 0 4
+49 Constrix Lenta Fuoco 12 98 0 2345 26 50 5
+50 Constrix Lenta Fuoco 12 99 0 2345 0 0 4
+51 Goliash Media Fuoco 12 103 0 2345 0 0 2
+52 Leafrex Veloce Erba 12 65 0 2345 19 53 5
+53 Leafrex Veloce Erba 12 66 0 2345 40 54 4
+54 Leafrex Veloce Erba 12 67 0 2345 0 0 3
+55 Peek-a-buu Veloce Oscurità 12 105 0 2345 0 0 2
+56 Deephion Lenta Acqua 12 20 0 2345 26 57 4
+57 Deephion Lenta Acqua 12 21 0 2345 0 0 3
+58 Shabyss Veloce Acqua 12 91 0 2345 19 59 4
+59 Shabyss Veloce Acqua 12 92 0 2345 40 60 3
+60 Shabyss Veloce Acqua 12 93 0 2345 0 0 2
+61 Wailoom Veloce Acqua 12 27 0 2345 0 0 3
+62 Fluffet Veloce Normale 12 100 0 2345 26 63 5
+63 Fluffet Veloce Normale 12 101 0 2345 0 0 4
+64 Hopz Lenta Normale 12 79 0 2345 0 0 5
+65 Piox Veloce Normale 12 54 0 2345 0 0 5
+66 Hoppiox Media Normale 12 25 0 2345 0 0 2
+67 Fearstraw Veloce Psico 12 22 0 2345 26 68 5
+68 Fearstraw Veloce Psico 12 23 0 2345 0 0 4
+69 Lickard Veloce Acqua 12 49 0 2345 26 70 5
+70 Lickard Veloce Acqua 12 50 0 2345 0 0 4
+71 Blizzaquil Lenta Acqua 12 8 0 2345 19 72 5
+72 Blizzaquil Lenta Acqua 12 9 0 2345 40 73 3
+73 Blizzaquil Lenta Acqua 12 10 0 2345 0 0 2
+74 Impise Lenta Fuoco 12 35 0 2345 19 75 5
+75 Impise Lenta Fuoco 12 36 0 2345 40 76 3
+76 Impise Lenta Fuoco 12 37 0 2345 0 0 3
+77 Ignitor Veloce Fuoco 12 81 0 2345 0 0 3
+78 Trippix Lenta Erba 12 104 0 2345 0 0 2
+79 Cellgon Lenta Oscurità 12 62 0 2345 19 80 5
+80 Cellgon Lenta Oscurità 12 63 0 2345 40 81 4
+81 Cellgon Lenta Oscurità 12 64 0 2345 0 0 2
+82 Reliskull Lenta Acqua 12 26 0 2345 0 0 3
+83 Cerebron Lenta Psico 12 53 0 2345 0 0 4
+84 Psycroak Media Psico 12 43 0 2345 26 85 3
+85 Psycroak Media Psico 12 44 0 2345 0 0 4
+86 Teslat Media Elettro 12 5 0 2345 19 87 3
+87 Teslat Media Elettro 12 6 0 2345 40 88 5
+88 Teslat Media Elettro 12 7 0 2345 0 0 3
+89 Espeiry Lenta Psico 12 88 0 2345 19 90 5
+90 Espeiry Lenta Psico 12 89 0 2345 40 91 4
+91 Espeiry Lenta Psico 12 90 0 2345 0 0 3
+92 Pyrodil Media Fuoco 12 32 0 2345 19 93 4
+93 Pyrodil Media Fuoco 12 33 0 2345 40 94 3
+94 Pyrodil Media Fuoco 12 34 0 2345 0 0 2
+95 Beestrix Media Erba 12 59 0 2345 19 96 5
+96 Beestrix Media Erba 12 60 0 2345 40 97 4
+97 Beestrix Media Erba 12 61 0 2345 0 0 2
+98 Grooty Veloce Erba 12 106 0 2345 0 0 3
+99 Ervys Normale 12 96 0 2345 26 100 5
+100 Ervys Normale 12 97 0 2345 0 0 4
+101 Xesar Oscurità 12 47 0 2345 26 102 4
+102 Xesar Oscurità 12 48 0 2345 0 0 3
+103 Boomrock Veloce Terra 12 76 0 2345 26 104 5
+104 Boomrock Veloce Terra 12 77 0 2345 0 0 4
+105 Zoorian Erba 12 70 0 2345 26 106 5
+106 Zoorian Erba 12 71 0 2345 0 0 4
+107 Ao-shin Leggendaria Normale 12 109 0 2345 0 0 1
+108 Aka-shin Leggendaria Normale 12 110 0 2345 0 0 1
+109 Oniros Leggendaria Psico 12 107 0 2345 0 0 1
+110 Voider Leggendaria Oscurità 12 108 0 2345 0 0 1
+
+Foglio: Mosse
+
+ID_Mossa	Nome_Mossa	Tipo	Dadi_lvl_5	Dadi_lvl_6	Dadi_lvl_7	Dadi_lvl_8	Dadi_lvl_9	Dadi_lvl_10	Dadi_lvl_11	Dadi_lvl_12	Dadi_lvl_13	Dadi_lvl_14	Dadi_lvl_15	Dadi_lvl_16	Dadi_lvl_17	Dadi_lvl_18	Dadi_lvl_19	Dadi_lvl_20	Dadi_lvl_21	Dadi_lvl_22	Dadi_lvl_23	Dadi_lvl_24	Dadi_lvl_25	Dadi_lvl_26	Dadi_lvl_27	Dadi_lvl_28	Dadi_lvl_29	Dadi_lvl_30	Dadi_lvl_31	Dadi_lvl_32	Dadi_lvl_33	Dadi_lvl_34	Dadi_lvl_35	Dadi_lvl_36	Dadi_lvl_37	Dadi_lvl_38	Dadi_lvl_39	Dadi_lvl_40	Dadi_lvl_41	Dadi_lvl_42	Dadi_lvl_43	Dadi_lvl_44	Dadi_lvl_45	Dadi_lvl_46	Dadi_lvl_47	Dadi_lvl_48	Dadi_lvl_49	Dadi_lvl_50	Dadi_lvl_51	Dadi_lvl_52	Dadi_lvl_53	Dadi_lvl_54	Dadi_lvl_55	Dadi_lvl_56	Dadi_lvl_57	Dadi_lvl_58	Dadi_lvl_59	Dadi_lvl_60	Dadi_lvl_61	Dadi_lvl_62	Dadi_lvl_63	Dadi_lvl_64	Dadi_lvl_65	Dadi_lvl_66	Dadi_lvl_67	Dadi_lvl_68	Dadi_lvl_69	Dadi_lvl_70	Dadi_lvl_71	Dadi_lvl_72	Dadi_lvl_73	Dadi_lvl_74	Dadi_lvl_75	Dadi_lvl_76	Dadi_lvl_77	Dadi_lvl_78	Dadi_lvl_79	Dadi_lvl_80	Dadi_lvl_81	Dadi_lvl_82	Dadi_lvl_83	Dadi_lvl_84	Dadi_lvl_85	Dadi_lvl_86	Dadi_lvl_87	Dadi_lvl_88	Dadi_lvl_89	Dadi_lvl_90	Dadi_lvl_91	Dadi_lvl_92	Dadi_lvl_93	Dadi_lvl_94	Dadi_lvl_95	Dadi_lvl_96	Dadi_lvl_97	Dadi_lvl_98	Dadi_lvl_99	Dadi_lvl_100	Incremento_lvl_5	Incremento_lvl_6	Incremento_lvl_7	Incremento_lvl_8	Incremento_lvl_9	Incremento_lvl_10	Incremento_lvl_11	Incremento_lvl_12	Incremento_lvl_13	Incremento_lvl_14	Incremento_lvl_15	Incremento_lvl_16	Incremento_lvl_17	Incremento_lvl_18	Incremento_lvl_19	Incremento_lvl_20	Incremento_lvl_21	Incremento_lvl_22	Incremento_lvl_23	Incremento_lvl_24	Incremento_lvl_25	Incremento_lvl_26	Incremento_lvl_27	Incremento_lvl_28	Incremento_lvl_29	Incremento_lvl_30	Incremento_lvl_31	Incremento_lvl_32	Incremento_lvl_33	Incremento_lvl_34	Incremento_lvl_35	Incremento_lvl_36	Incremento_lvl_37	Incremento_lvl_38	Incremento_lvl_39	Incremento_lvl_40	Incremento_lvl_41	Incremento_lvl_42	Incremento_lvl_43	Incremento_lvl_44	Incremento_lvl_45	Incremento_lvl_46	Incremento_lvl_47	Incremento_lvl_48	Incremento_lvl_49	Incremento_lvl_50	Incremento_lvl_51	Incremento_lvl_52	Incremento_lvl_53	Incremento_lvl_54	Incremento_lvl_55	Incremento_lvl_56	Incremento_lvl_57	Incremento_lvl_58	Incremento_lvl_59	Incremento_lvl_60	Incremento_lvl_61	Incremento_lvl_62	Incremento_lvl_63	Incremento_lvl_64	Incremento_lvl_65	Incremento_lvl_66	Incremento_lvl_67	Incremento_lvl_68	Incremento_lvl_69	Incremento_lvl_70	Incremento_lvl_71	Incremento_lvl_72	Incremento_lvl_73	Incremento_lvl_74	Incremento_lvl_75	Incremento_lvl_76	Incremento_lvl_77	Incremento_lvl_78	Incremento_lvl_79	Incremento_lvl_80	Incremento_lvl_81	Incremento_lvl_82	Incremento_lvl_83	Incremento_lvl_84	Incremento_lvl_85	Incremento_lvl_86	Incremento_lvl_87	Incremento_lvl_88	Incremento_lvl_89	Incremento_lvl_90	Incremento_lvl_91	Incremento_lvl_92	Incremento_lvl_93	Incremento_lvl_94	Incremento_lvl_95	Incremento_lvl_96	Incremento_lvl_97	Incremento_lvl_98	Incremento_lvl_99	Incremento_lvl_100
+1	Soffio	Normale	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20
+2	Assalto	Normale	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13
+3	Impatto verticale	Normale	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+4	Carica ossidrica	Normale	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8
+5	Voltaggio	Elettro	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16	16
+6	Alta tensione	Elettro	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11
+7	Stormo di fulmini	Elettro	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15
+8	Nevischio	Acqua	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+9	Valanga	Acqua	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2	2	2	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23	23	23	24	24	24	25	25	25	26	26	26	27	27	27	28	28	28	29
+10	Tormenta glaciale	Acqua	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33
+11	Lapillo	Terra	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20
+12	Roccia fusa	Terra	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11
+13	Cratere	Terra	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11
+14	Conduttore	Elettro	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+15	Circuito chiuso	Elettro	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10
+16	Sprint	Normale	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+17	Scatto	Normale	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10
+18	Elettroscontro	Elettro	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+19	Elettrocarica	Elettro	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22
+20	Spruzzo	Acqua	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	2	2	2	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23	23	23	24	24	24	25	25	25	26	26	26	27	27	27	28	28	28	29	29	29	30	30	30	31	31	31	32	32	32
+21	Alta marea	Acqua	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22
+22	Spavento	Psico	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	1	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+23	Terrore	Psico	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11
+24	Paradosso	Psico	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16	16
+25	Ultimo sangue	Normale	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+26	Arrembaggio	Acqua	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	0	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24
+27	Onda anomala	Acqua	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+28	Zampata	Oscurità	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20
+29	Colpo felpato	Oscurità	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13
+30	Artigli del terrore	Oscurità	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+31	Abisso tenebroso	Oscurità	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8
+32	Alito incandescente	Fuoco	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14
+33	Sbuffo magmatico	Fuoco	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14
+34	Soffio lavico	Fuoco	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15
+35	Mani brucianti	Fuoco	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+36	Palla di fuoco	Fuoco	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2	2	2	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23	23	23	24	24	24	25	25	25	26	26	26	27	27	27	28	28	28	29
+37	Ardemonio	Fuoco	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23
+38	Scossa	Elettro	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16	16
+39	Lampo	Elettro	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11
+40	Lotta tonante	Elettro	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13
+41	Fioritura	Erba	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+42	Florilegio letale	Erba	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12
+43	Controllo mentale	Psico	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14
+44	Collasso nervoso	Psico	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12
+45	Urlo straziante	Oscurità	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	2	2	2	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23	23	23	24	24	24	25	25	25	26	26	26	27	27	27	28	28	28	29	29	29	30	30	30	31	31	31	32	32	32
+46	Materia oscura	Oscurità	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22
+47	Spazzata	Oscurità	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	2	2	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33	33	34	34	35	35	36	36	37	37	38	38	39	39	40	40	41	41	42	42	43	43	44	44	45	45	46	46	47	47	48	48
+48	Falcidiata	Oscurità	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22
+49	Inumidire	Acqua	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	1	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+50	Attacco fradicio	Acqua	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11
+51	Tempesta magnetica	Elettro	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20
+52	Temporale	Elettro	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	0	1	1	1	2	2	2	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23	23	23	24	24	24	25	25	25	26	26	26	27	27	27	28	28	28	29	29	29	30	30	30	31	31	31	32	32
+53	Angoscia	Psico	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	0	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24
+54	Avanzata	Normale	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14
+55	Sussurro	Psico	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19	20
+56	Sesto senso	Psico	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13
+57	Intreccio mentale	Psico	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+58	Occhio universale	Psico	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8
+59	Assorbilinfa	Erba	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+60	Avanguardia	Erba	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11
+61	Sciame operaio	Erba	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15
+62	Manto d'ombra	Oscurità	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+63	Buio pesto	Oscurità	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18
+64	Fiamma nera	Oscurità	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33
+65	Foglia caducea	Erba	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16	16
+66	Risveglio verde	Erba	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11
+67	Forza della natura	Erba	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11
+68	Luna storta	Oscurità	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+69	Luna rossa	Oscurità	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12
+70	Puntura anestetica	Erba	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+71	Sete di sangue	Erba	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10
+72	Predigestione	Erba	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+73	Divoramento	Erba	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18
+74	Cerino	Fuoco	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	1	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+75	Cimitero di fiamme	Fuoco	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10
+76	Scossa d'assestamento	Terra	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	1	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+77	Canyon	Terra	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11
+78	Rivolta	Oscurità	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16	16
+79	Guerriglia	Normale	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	0	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19
+80	Fangospruzzo	Terra	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	0	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14
+81	Fornace	Fuoco	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+82	Sotterrare	Terra	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+83	Sepoltura	Terra	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11
+84	Emersione	Terra	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15
+85	Area 51	Normale	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+86	Viaggio temporale	Normale	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22
+87	Ritorno al futuro	Normale	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33
+88	Occhiolino	Psico	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+89	Pressione spirituale	Psico	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	10	10	10	11	11	11	11	11	0	0	0	0	0	0	0	0	0	0	0	0	0	0	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18
+90	Assorbianima	Psico	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	9	9	9	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23
+91	Immersione	Acqua	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+92	Affondare	Acqua	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13
+93	Morte dagli abissi	Acqua	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13
+94	Getto del peso	Terra	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+95	Bombardamento	Terra	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12
+96	Gufata	Normale	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10	10	10	10	10	10	11	11	11	11	11	11	11	11	12	12	12	12	12	12	12	12
+97	Picchiata fatale	Normale	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12
+98	Fiammella	Fuoco	1	1	1	1	1	1	1	2	2	2	2	2	2	2	3	3	3	3	3	3	3	4	4	4	4	4	4	4	5	5	5	5	5	5	5	6	6	6	6	6	6	6	7	7	7	7	7	7	7	8	8	8	8	8	8	8	9	9	9	9	9	9	9	10	10	10	10	10	10	10	11	11	11	11	11	11	11	12	12	12	12	12	12	12	13	13	13	13	13	13	13	14	14	14	14	14	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+99	Spirale ardente	Fuoco	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	9	9	10	10	10	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22
+100	Testata bassa	Normale	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	1	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+101	Lana magica	Normale	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	10	10	10
+102	Funerale del deserto	Terra	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+103	Sbuffo lavico	Fuoco	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	8	1	1	1	1	2	2	2	2	3	3	3	3	4	4	4	4	5	5	5	5	6	6	6	6	7	7	7	7	8	8	8	8	9	9	9	9	10	10	10	10	11	11	11	11	12	12	12	12	13	13	13	13	14	14	14	14	15	15	15	15	16	16	16	16	17	17	17	17	18	18	18	18	19	19	19	19	20	20	20	20	21	21	21	21	22	22	22	22	23	23	23	23	24	24	24	24
+104	Sradicamento	Erba	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	0	1	1	1	2	2	2	3	3	3	4	4	4	5	5	5	6	6	6	7	7	7	8	8	8	9	9	9	10	10	10	11	11	11	12	12	12	13	13	13	14	14	14	15	15	15	16	16	16	17	17	17	18	18	18	19	19	19	20	20	20	21	21	21	22	22	22	23	23	23	24	24	24	25	25	25	26	26	26	27	27	27	28	28	28	29	29	29	30	30	30	31	31	31	32	32
+105	Jumpscare	Oscurità	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	0	1	1	1	1	1	2	2	2	2	2	3	3	3	3	3	4	4	4	4	4	5	5	5	5	5	6	6	6	6	6	7	7	7	7	7	8	8	8	8	8	9	9	9	9	9	10	10	10	10	10	11	11	11	11	11	12	12	12	12	12	13	13	13	13	13	14	14	14	14	14	15	15	15	15	15	16	16	16	16	16	17	17	17	17	17	18	18	18	18	18	19	19	19	19	19
+106	Legnata	Erba	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	5	6	0	1	1	1	1	1	1	2	2	2	2	2	2	3	3	3	3	3	3	4	4	4	4	4	4	5	5	5	5	5	5	6	6	6	6	6	6	7	7	7	7	7	7	8	8	8	8	8	8	9	9	9	9	9	9	10	10	10	10	10	10	11	11	11	11	11	11	12	12	12	12	12	12	13	13	13	13	13	13	14	14	14	14	14	14	15	15	15	15	15	15	16	16	16	16	16
+107	Sguardo glaciale	Psico	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	1	1	2	2	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33	33	34	34	35	35	36	36	37	37	38	38	39	39	40	40	41	41	42	42	43	43	44	44	45	45	46	46	47	47	48	48
+108	Ordine gelido	Oscurità	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	1	1	2	2	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33	33	34	34	35	35	36	36	37	37	38	38	39	39	40	40	41	41	42	42	43	43	44	44	45	45	46	46	47	47	48	48
+109	Vortice divino	Acqua	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	1	1	2	2	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33	33	34	34	35	35	36	36	37	37	38	38	39	39	40	40	41	41	42	42	43	43	44	44	45	45	46	46	47	47	48	48
+110	Fiamma celestiale	Fuoco	1	1	1	1	1	1	1	1	1	1	2	2	2	2	2	2	2	2	2	2	3	3	3	3	3	3	3	3	3	3	4	4	4	4	4	4	4	4	4	4	5	5	5	5	5	5	5	5	5	5	6	6	6	6	6	6	6	6	6	6	7	7	7	7	7	7	7	7	7	7	8	8	8	8	8	8	8	8	8	8	9	9	9	9	9	9	9	9	9	9	10	10	10	10	10	10	1	1	2	2	3	3	4	4	5	5	6	6	7	7	8	8	9	9	10	10	11	11	12	12	13	13	14	14	15	15	16	16	17	17	18	18	19	19	20	20	21	21	22	22	23	23	24	24	25	25	26	26	27	27	28	28	29	29	30	30	31	31	32	32	33	33	34	34	35	35	36	36	37	37	38	38	39	39	40	40	41	41	42	42	43	43	44	44	45	45	46	46	47	47	48	48
+
+Foglio: Crescita_HP
+
+Categoria HP_per_Livello
+Lenta 1
+Media 1.5
+Veloce 2
+Leggendaria 3.14
+
+Foglio: Tipi
+
+Attacco/Difesa Normale Elettro Fuoco Terra Acqua Erba Oscurità Psico
+Normale 1 1 1 1 1 1 1 1
+Elettro 1 1 1 0.5 2 1 1 1
+Fuoco 1 1 1 1 0.5 2 1 1
+Terra 1 2 1 1 1 0.5 1 1
+Acqua 1 0.5 2 2 1 1 1 1
+Erba 1 1 0.5 1 2 1 1 1
+Oscurità 1 1 1 1 1 1 1 2
+Psico 1 1 1 1 1 1 2 1
+
+Foglio: Mappe
+
+Nome_Luogo ID_Diapositiva
+Venezia 4
+Percorso_1 5
+Piacenza 6
+Percorso_2 7
+Milano 8
+Percorso_3 9
+Percorso_4 10
+Percorso_5 11
+Percorso_6 12
+Torino 13
+Grosseto 14
+Civitavecchia 15
+Percorso_7 16
+Cagliari 17
+Percorso_8 18
+Palermo 19
+Percorso_9 20
+ReggioCalabria 21
+Percorso_10 22
+Foggia 23
+Percorso_11 24
+Percorso_12 25
+Napoli 26
+Molisnt 27
+Percorso_13 28
+Pescara 29
+Percorso_14 30
+Roma 31
+
+Foglio: Stato_Giocatore
+
+ID_Giocatore Nome_Giocatore Posizione_Corrente Turno_Attivo
+1 Giocatore 1 Laboratorio True
+2 Giocatore 2 Laboratorio False
+
+Foglio: Incontri_Selvatici
+
+Luogo Cespuglio ID_Pokemon Probabilità Livello Min Livello Max
+Percorso_1 A 13 Comune 5 5
+Percorso_1 A 13 Comune 5 5
+Percorso_1 A 13 Medio 5 5
+Percorso_1 A 13 Difficile 5 5
+Percorso_1 B 13 Comune 5 5
+Percorso_1 B 16 Comune 5 5
+Percorso_1 B 20 Medio 5 6
+Percorso_1 B 21 Difficile 5 7
+Percorso_1 C 13 Comune 5 5
+Percorso_1 C 16 Comune 5 5
+Percorso_1 C 20 Medio 5 6
+Percorso_1 C 21 Difficile 5 7
+Percorso_1 D 13 Comune 5 5
+Percorso_1 D 16 Comune 5 5
+Percorso_1 D 20 Medio 5 6
+Percorso_1 D 21 Difficile 5 7
+Percorso_1 E 13 Comune 5 5
+Percorso_1 E 16 Comune 5 5
+Percorso_1 E 20 Medio 5 6
+Percorso_1 E 21 Difficile 5 7
+Percorso_1 F 13 Comune 5 5
+Percorso_1 F 16 Comune 5 5
+Percorso_1 F 20 Medio 5 6
+Percorso_1 F 21 Difficile 5 7
+Percorso_1 G 13 Comune 5 5
+Percorso_1 G 16 Comune 5 5
+Percorso_1 G 20 Medio 5 6
+Percorso_1 G 21 Difficile 5 7
+
+ID_Allenatore	Nome Allenatore	Luogo	Tipo	ID_Pokémon_1	Livello_Pokémon_1	ID_Pokémon_2	Livello_Pokémon_2	ID_Pokémon_3	Livello_Pokémon_3	ID_Pokémon_4	Livello_Pokémon_4	ID_Pokémon_5	Livello_Pokémon_5	ID_Pokémon_6	Livello_Pokémon_6
+201	Rivale	Percorso_1	PVP	1	5	32	5								
+202	Gennaro Bullo	Percorso_1	NPC	47	5										
+203	Capopalestra1	Venezia	PVP	5	5	47	5								
+
+Campo	Valore	Descrizione
+Tipo_Battaglia	Selvatico	Può essere "Selvatico", "Allenatore_NPC" o "PvP".
+ID_Giocatore_A	1	ID del giocatore che ha iniziato la sfida.
+ID_Istanza_A	1001	ID_Istanza del Pokémon in campo del Giocatore A.
+HP_Attuali_A	1	HP attuali del Pokémon di A.
+ID_Giocatore_B	0	ID dell'avversario. 0 per i selvatici.
+ID_Istanza_B	13	ID_Istanza (o Base per selvatici) del Pokémon di B.
+HP_Attuali_B	10	HP attuali del Pokémon di B.
+Livello_B	5	Il livello del Pokémon avversario
+Nome_Avversario	Wormaren	Il nome dell'allenatore avversario.
+Fonte_Ritorno	Percorso_1	Il luogo a cui tornare dopo la battaglia.
+Turno_Battaglia	A	Di chi è il turno: "A" o "B".
+Esito_Battaglia		Può essere "vittoria", "sconfitta", "cattura" o vuoto.
+
+
+Foglio: Giocatore1_Squadra
+
+ID_Istanza ID_Base Nickname Livello HP_Max HP_Attuali
+1001 5 Darklaw 5 12 12
+1002 13 Wormaren 5 12 12
+
+Foglio: Giocatore2_Squadra
+
+ID_Istanza ID_Base Nickname Livello HP_Max HP_Attuali
+2001 9 Felyss 5 12 12
+
+Foglio: Giocatore1_Deposito
+
+ID_Istanza ID_Base Nickname Livello HP_Max HP_Attuali
+
+Foglio: Giocatore2_Deposito
+
+ID_Istanza ID_Base Nickname Livello HP_Max HP_Attuali
+
+La mia idea è quella di inserire tutti i dati dell'excel all'interno del powerpoint stesso, in modo da eliminare le interazioni esterne al powerpoint. Questo comporta la modifica dell'intero codice.
