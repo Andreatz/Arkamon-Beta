@@ -13,7 +13,13 @@ import {
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
-import type { PokemonIstanza, MossaDef } from '@/types'
+import type { PokemonIstanza, MossaDef, StatoAlterato } from '@/types'
+
+const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
+  Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
+  Addormentato: { label: 'ZZZ', color: 'bg-blue-500', emoji: '😴' },
+  Avvelenato: { label: 'PSN', color: 'bg-purple-600', emoji: '☠️' },
+}
 
 /**
  * Scena di battaglia.
