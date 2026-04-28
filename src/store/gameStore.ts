@@ -15,8 +15,14 @@ import type {
   NavigazioneScena,
   SceneId,
 } from '@/types'
-import { calcolaHPMax } from '@engine/battleEngine'
-import { getPokemon } from '@data/index'
+import {
+  calcolaHPMax,
+  calcolaVariazioneMonete,
+  determinaIniziativa,
+  type EsitoBattaglia,
+  type TipoAvversario,
+} from '@engine/battleEngine'
+import { getPokemon, getAllenatore } from '@data/index'
 
 interface GameState {
   // === STATO GIOCATORI ===
@@ -59,6 +65,15 @@ interface GameState {
 
   /** Aggiunge (o sottrae se delta < 0) monete al giocatore, non scende sotto 0 */
   aggiornaMonete: (giocatoreId: 1 | 2, delta: number) => void
+
+  /** Avvia una battaglia contro un allenatore NPC. Ritorna false se non avviabile */
+  iniziaBattagliaNPC: (allenatoreId: number, luogoRitorno: string) => boolean
+
+  /** Risolve l'esito di una battaglia NPC: applica monete e marca sconfitto */
+  risolviBattagliaNPC: (esito: EsitoBattaglia) => void
+
+  /** Cura tutta la squadra del giocatore (Centro Pokemon) */
+  curaSquadra: (giocatoreId: 1 | 2) => void
 
   /** Avvia una nuova battaglia */
   iniziaBattaglia: (battaglia: StatoBattaglia) => void
@@ -180,6 +195,82 @@ export const useGameStore = create<GameState>()(
           return {
             [chiaveG]: { ...g, monete: Math.max(0, g.monete + delta) },
           } as Partial<GameState>
+        }),
+
+      // Porting di: IniziaBattagliaAllenatore da old_files/Mod_Game_Events.txt
+      iniziaBattagliaNPC: (allenatoreId, luogoRitorno) => {
+        const allenatore = getAllenatore(allenatoreId)
+        if (!allenatore || allenatore.squadra.length === 0) return false
+
+        const state = get()
+        const giocatore =
+          state.giocatoreAttivo === 1 ? state.giocatore1 : state.giocatore2
+        const pokemonA = giocatore.squadra.find((p) => p.hp > 0) ?? giocatore.squadra[0]
+        if (!pokemonA) return false
+
+        const primoB = allenatore.squadra[0]
+        const speciB = getPokemon(primoB.pokemonId)
+        if (!speciB) return false
+
+        const pokemonB: PokemonIstanza = {
+          istanzaId: `npc-${allenatoreId}-${primoB.pokemonId}-${Date.now()}`,
+          specieId: primoB.pokemonId,
+          nome: speciB.nome,
+          livello: primoB.livello,
+          hp: 0, // popolato sotto
+          xp: 0,
+        }
+        pokemonB.hp = calcolaHPMax(pokemonB)
+
+        const turnoCorrente = determinaIniziativa(pokemonA.livello, pokemonB.livello)
+        const tipo = allenatore.tipo === 'PVP' ? 'PVP' : 'NPC'
+
+        set({
+          battaglia: {
+            tipo,
+            pokemonA,
+            pokemonB,
+            hpMaxA: calcolaHPMax(pokemonA),
+            hpMaxB: calcolaHPMax(pokemonB),
+            turnoCorrente,
+            luogoRitorno,
+            allenatoreId,
+            log: [`${allenatore.nome} ti sfida!`],
+            evoluzioneInAttesa: null,
+          },
+        })
+        return true
+      },
+
+      risolviBattagliaNPC: (esito) => {
+        const state = get()
+        const b = state.battaglia
+        if (!b || b.allenatoreId === undefined || b.tipo === 'Selvatico') return
+
+        const tipoAvv: TipoAvversario = b.tipo === 'PVP' ? 'PVP' : 'NPC'
+        const delta = calcolaVariazioneMonete(esito, tipoAvv)
+        const giocatoreId = state.giocatoreAttivo
+        const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+        const g = state[chiaveG]
+
+        const nuoviSconfitti = new Set(g.allenatoriSconfitti)
+        if (esito === 'vittoria') nuoviSconfitti.add(b.allenatoreId)
+
+        set({
+          [chiaveG]: {
+            ...g,
+            monete: Math.max(0, g.monete + delta),
+            allenatoriSconfitti: nuoviSconfitti,
+          },
+        } as Partial<GameState>)
+      },
+
+      curaSquadra: (giocatoreId) =>
+        set((s) => {
+          const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+          const g = s[chiaveG]
+          const squadraCurata = g.squadra.map((p) => ({ ...p, hp: calcolaHPMax(p) }))
+          return { [chiaveG]: { ...g, squadra: squadraCurata } } as Partial<GameState>
         }),
 
       iniziaBattaglia: (battaglia) => set({ battaglia }),

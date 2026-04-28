@@ -20,6 +20,8 @@ export function BattagliaScene() {
   const terminaBattaglia = useGameStore((s) => s.terminaBattaglia)
   const aggiungiPokemon = useGameStore((s) => s.aggiungiPokemon)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
+  const risolviBattagliaNPC = useGameStore((s) => s.risolviBattagliaNPC)
+  const [esito, setEsito] = useState<'vittoria' | 'sconfitta' | null>(null)
 
   const [pkmnA, setPkmnA] = useState<PokemonIstanza | null>(null)
   const [pkmnB, setPkmnB] = useState<PokemonIstanza | null>(null)
@@ -46,12 +48,18 @@ export function BattagliaScene() {
   }, [])
 
   const luogoRitorno = battaglia?.luogoRitorno ?? 'mappa-principale'
+  const isNPC = !!battaglia && battaglia.tipo !== 'Selvatico' && battaglia.allenatoreId !== undefined
+  const isPercorso = !!luogoRitorno && /^Percorso_/.test(luogoRitorno)
+
   const tornaIndietro = () => {
+    if (isNPC && esito) risolviBattagliaNPC(esito)
     terminaBattaglia(true)
-    if (luogoRitorno === 'mappa-principale' || !luogoRitorno) {
-      vaiAScena('mappa-principale')
-    } else {
+    if (isPercorso) {
       vaiAScena('percorso', { luogo: luogoRitorno })
+    } else if (luogoRitorno && luogoRitorno !== 'mappa-principale') {
+      vaiAScena('citta', { luogo: luogoRitorno })
+    } else {
+      vaiAScena('mappa-principale')
     }
   }
 
@@ -75,6 +83,7 @@ export function BattagliaScene() {
 
     if (nuovoB.hp <= 0) {
       setLog((l) => [...l, `Hai vinto la battaglia!`])
+      setEsito('vittoria')
       setTerminata(true)
       return
     }
@@ -118,6 +127,7 @@ export function BattagliaScene() {
     setTimeout(() => setShaking(null), 400)
     if (nuovoA.hp <= 0) {
       setLog((l) => [...l, `Hai perso la battaglia...`])
+      setEsito('sconfitta')
       setTerminata(true)
     } else {
       setTurnoA(true)
@@ -177,13 +187,24 @@ export function BattagliaScene() {
         </motion.button>
       )}
 
+      {/* Esito + monete (solo battaglie NPC) */}
+      {terminata && isNPC && esito && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
+          <p className="text-yellow-300 font-bold text-center">
+            {esito === 'vittoria'
+              ? '+200₳ guadagnati'
+              : '-200₳ persi'}
+          </p>
+        </div>
+      )}
+
       {/* Pulsante exit */}
       {terminata && (
         <button
           className="arka-button absolute bottom-4 left-4 z-20"
           onClick={tornaIndietro}
         >
-          {luogoRitorno === 'mappa-principale' ? 'Torna alla mappa' : 'Torna al percorso'}
+          {isPercorso ? 'Torna al percorso' : luogoRitorno !== 'mappa-principale' ? 'Torna in città' : 'Torna alla mappa'}
         </button>
       )}
 
