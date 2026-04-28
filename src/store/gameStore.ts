@@ -272,7 +272,15 @@ export const useGameStore = create<GameState>()(
         const b = state.battaglia
         if (!b || b.allenatoreId === undefined || b.tipo === 'Selvatico') return
 
-        const tipoAvv: TipoAvversario = b.tipo === 'PVP' ? 'PVP' : 'NPC'
+        // tipoAvv per il calcolo monete: derivato da allenatore.tipo
+        // (Capopalestra → +1000, NPC → +200, PVP → 0)
+        const allenatore = getAllenatore(b.allenatoreId)
+        const tipoAvv: TipoAvversario =
+          allenatore?.tipo === 'Capopalestra'
+            ? 'Capopalestra'
+            : allenatore?.tipo === 'PVP'
+            ? 'PVP'
+            : 'NPC'
         const delta = calcolaVariazioneMonete(esito, tipoAvv)
         const giocatoreId = state.giocatoreAttivo
         const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'

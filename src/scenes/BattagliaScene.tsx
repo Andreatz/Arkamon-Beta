@@ -11,14 +11,9 @@ import {
   applicaStato,
   risolviStatoInizioTurno,
 } from '@engine/battleEngine'
-import { getPokemon, getMossa } from '@data/index'
-import type { PokemonIstanza, MossaDef, StatoAlterato } from '@/types'
-
-const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
-  Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
-  Addormentato: { label: 'ZZZ', color: 'bg-blue-500', emoji: '😴' },
-  Avvelenato: { label: 'PSN', color: 'bg-purple-600', emoji: '☠️' },
-}
+import { getPokemon, getMossa, getAllenatore } from '@data/index'
+import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
+import type { PokemonIstanza, MossaDef } from '@/types'
 
 /**
  * Scena di battaglia.
@@ -377,14 +372,28 @@ export function BattagliaScene() {
         </motion.button>
       )}
 
-      {/* Esito + monete (solo battaglie NPC) */}
-      {terminata && isNPC && esito && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
-          <p className="text-yellow-300 font-bold text-center">
-            {esito === 'vittoria' ? '+200₳ guadagnati' : '-200₳ persi'}
-          </p>
-        </div>
-      )}
+      {/* Esito + monete (solo battaglie NPC/Capopalestra) */}
+      {terminata && isNPC && esito && (() => {
+        const allenatore = battaglia?.allenatoreId !== undefined
+          ? getAllenatore(battaglia.allenatoreId)
+          : null
+        const tipoAvv: TipoAvversario =
+          allenatore?.tipo === 'Capopalestra'
+            ? 'Capopalestra'
+            : allenatore?.tipo === 'PVP'
+            ? 'PVP'
+            : 'NPC'
+        const delta = calcolaVariazioneMonete(esito, tipoAvv)
+        if (delta === 0) return null
+        return (
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
+            <p className="text-yellow-300 font-bold text-center">
+              {delta > 0 ? `+${delta}₳ guadagnati` : `${delta}₳ persi`}
+              {tipoAvv === 'Capopalestra' && delta > 0 && ' 👑'}
+            </p>
+          </div>
+        )
+      })()}
 
       {/* Pulsante exit */}
       {terminata && (
