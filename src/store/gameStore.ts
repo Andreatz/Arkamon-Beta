@@ -205,23 +205,30 @@ export const useGameStore = create<GameState>()(
         const state = get()
         const giocatore =
           state.giocatoreAttivo === 1 ? state.giocatore1 : state.giocatore2
+        if (giocatore.squadra.length === 0) return false
         const pokemonA = giocatore.squadra.find((p) => p.hp > 0) ?? giocatore.squadra[0]
         if (!pokemonA) return false
 
-        const primoB = allenatore.squadra[0]
-        const speciB = getPokemon(primoB.pokemonId)
-        if (!speciB) return false
-
-        const pokemonB: PokemonIstanza = {
-          istanzaId: `npc-${allenatoreId}-${primoB.pokemonId}-${Date.now()}`,
-          specieId: primoB.pokemonId,
-          nome: speciB.nome,
-          livello: primoB.livello,
-          hp: 0, // popolato sotto
-          xp: 0,
+        // Crea istanze fresche per tutta la squadra dell'allenatore
+        const squadraB: PokemonIstanza[] = []
+        for (let i = 0; i < allenatore.squadra.length; i++) {
+          const slot = allenatore.squadra[i]
+          const speci = getPokemon(slot.pokemonId)
+          if (!speci) continue
+          const ist: PokemonIstanza = {
+            istanzaId: `npc-${allenatoreId}-${i}-${Date.now()}`,
+            specieId: slot.pokemonId,
+            nome: speci.nome,
+            livello: slot.livello,
+            hp: 0,
+            xp: 0,
+          }
+          ist.hp = calcolaHPMax(ist)
+          squadraB.push(ist)
         }
-        pokemonB.hp = calcolaHPMax(pokemonB)
+        if (squadraB.length === 0) return false
 
+        const pokemonB = squadraB[0]
         const turnoCorrente = determinaIniziativa(pokemonA.livello, pokemonB.livello)
         const tipo = allenatore.tipo === 'PVP' ? 'PVP' : 'NPC'
 
@@ -233,6 +240,8 @@ export const useGameStore = create<GameState>()(
             hpMaxA: calcolaHPMax(pokemonA),
             hpMaxB: calcolaHPMax(pokemonB),
             turnoCorrente,
+            squadraA: giocatore.squadra,
+            squadraB,
             luogoRitorno,
             allenatoreId,
             log: [`${allenatore.nome} ti sfida!`],
