@@ -22,7 +22,7 @@ export type CategoriaHP = 'Lenta' | 'Media' | 'Veloce' | 'Leggendaria'
 
 export type Probabilita = 'Comune' | 'Medio' | 'Difficile'
 
-export type TipoAllenatore = 'PVP' | 'NPC'
+export type TipoAllenatore = 'PVP' | 'NPC' | 'Capopalestra'
 
 export type TipoBattaglia = 'Selvatico' | 'NPC' | 'PVP'
 

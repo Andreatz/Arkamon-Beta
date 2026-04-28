@@ -9,7 +9,8 @@ import {
   applicaXP,
   xpGuadagnato,
 } from '@engine/battleEngine'
-import { getPokemon, getMossa } from '@data/index'
+import { getPokemon, getMossa, getAllenatore } from '@data/index'
+import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
 import type { PokemonIstanza, MossaDef } from '@/types'
 
 /**
@@ -285,14 +286,28 @@ export function BattagliaScene() {
         </motion.button>
       )}
 
-      {/* Esito + monete (solo battaglie NPC) */}
-      {terminata && isNPC && esito && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
-          <p className="text-yellow-300 font-bold text-center">
-            {esito === 'vittoria' ? '+200₳ guadagnati' : '-200₳ persi'}
-          </p>
-        </div>
-      )}
+      {/* Esito + monete (solo battaglie NPC/Capopalestra) */}
+      {terminata && isNPC && esito && (() => {
+        const allenatore = battaglia?.allenatoreId !== undefined
+          ? getAllenatore(battaglia.allenatoreId)
+          : null
+        const tipoAvv: TipoAvversario =
+          allenatore?.tipo === 'Capopalestra'
+            ? 'Capopalestra'
+            : allenatore?.tipo === 'PVP'
+            ? 'PVP'
+            : 'NPC'
+        const delta = calcolaVariazioneMonete(esito, tipoAvv)
+        if (delta === 0) return null
+        return (
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
+            <p className="text-yellow-300 font-bold text-center">
+              {delta > 0 ? `+${delta}₳ guadagnati` : `${delta}₳ persi`}
+              {tipoAvv === 'Capopalestra' && delta > 0 && ' 👑'}
+            </p>
+          </div>
+        )
+      })()}
 
       {/* Pulsante exit */}
       {terminata && (
