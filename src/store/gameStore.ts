@@ -23,6 +23,7 @@ import {
   type TipoAvversario,
 } from '@engine/battleEngine'
 import { getPokemon, getAllenatore } from '@data/index'
+import { scambia, type SlotRef } from '@engine/deposito'
 
 interface GameState {
   // === STATO GIOCATORI ===
@@ -74,6 +75,9 @@ interface GameState {
 
   /** Cura tutta la squadra del giocatore (Centro Pokemon) */
   curaSquadra: (giocatoreId: 1 | 2) => void
+
+  /** Scambia o sposta il contenuto tra due slot (squadra o deposito) */
+  scambiaSlot: (giocatoreId: 1 | 2, source: SlotRef, target: SlotRef) => void
 
   /** Avvia una nuova battaglia */
   iniziaBattaglia: (battaglia: StatoBattaglia) => void
@@ -280,6 +284,18 @@ export const useGameStore = create<GameState>()(
           const g = s[chiaveG]
           const squadraCurata = g.squadra.map((p) => ({ ...p, hp: calcolaHPMax(p) }))
           return { [chiaveG]: { ...g, squadra: squadraCurata } } as Partial<GameState>
+        }),
+
+      // Porting di: EseguiScambioDati da old_files/Mod_Deposito.txt
+      scambiaSlot: (giocatoreId, source, target) =>
+        set((s) => {
+          const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+          const g = s[chiaveG]
+          const r = scambia(g.squadra, g.deposito, source, target)
+          if (r.squadra === g.squadra && r.deposito === g.deposito) return s
+          return {
+            [chiaveG]: { ...g, squadra: r.squadra, deposito: r.deposito },
+          } as Partial<GameState>
         }),
 
       iniziaBattaglia: (battaglia) => set({ battaglia }),
