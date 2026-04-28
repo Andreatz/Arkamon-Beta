@@ -1,6 +1,6 @@
 import { useGameStore, creaIstanza } from '@store/gameStore'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { calcolaDanno, calcolaHPMax, scegliMossaIA } from '@engine/battleEngine'
 import { getPokemon, getMossa } from '@data/index'
 import type { PokemonIstanza, MossaDef } from '@/types'
@@ -16,8 +16,9 @@ import type { PokemonIstanza, MossaDef } from '@/types'
  */
 export function BattagliaScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
+  const battaglia = useGameStore((s) => s.battaglia)
+  const terminaBattaglia = useGameStore((s) => s.terminaBattaglia)
 
-  // Battaglia demo: due pokemon casuali
   const [pkmnA, setPkmnA] = useState<PokemonIstanza | null>(null)
   const [pkmnB, setPkmnB] = useState<PokemonIstanza | null>(null)
   const [log, setLog] = useState<string[]>([])
@@ -26,17 +27,35 @@ export function BattagliaScene() {
   const [terminata, setTerminata] = useState(false)
 
   useEffect(() => {
-    const a = creaIstanza(1, 5)  // Vyrath lvl 5
-    const b = creaIstanza(13, 5) // Weedrug lvl 5
-    setPkmnA(a)
-    setPkmnB(b)
-    setLog([`Appare ${b?.nome} selvatico!`])
+    if (battaglia) {
+      // Battaglia avviata dallo store (es. da PercorsoScene)
+      setPkmnA(battaglia.pokemonA)
+      setPkmnB(battaglia.pokemonB)
+      setLog(battaglia.log)
+    } else {
+      // Fallback demo: Vyrath vs Weedrug lvl 5
+      const a = creaIstanza(1, 5)
+      const b = creaIstanza(13, 5)
+      setPkmnA(a)
+      setPkmnB(b)
+      setLog([`Appare ${b?.nome} selvatico!`])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const luogoRitorno = battaglia?.luogoRitorno ?? 'mappa-principale'
+  const tornaIndietro = () => {
+    terminaBattaglia(true)
+    if (luogoRitorno === 'mappa-principale' || !luogoRitorno) {
+      vaiAScena('mappa-principale')
+    } else {
+      vaiAScena('percorso', { luogo: luogoRitorno })
+    }
+  }
 
   if (!pkmnA || !pkmnB) return <div className="text-white p-8">Caricamento...</div>
 
   const specieA = getPokemon(pkmnA.specieId)!
-  const specieB = getPokemon(pkmnB.specieId)!
   const hpMaxA = calcolaHPMax(pkmnA)
   const hpMaxB = calcolaHPMax(pkmnB)
 
@@ -127,9 +146,9 @@ export function BattagliaScene() {
       {terminata && (
         <button
           className="arka-button absolute bottom-4 left-4 z-20"
-          onClick={() => vaiAScena('mappa-principale')}
+          onClick={tornaIndietro}
         >
-          Torna alla mappa
+          {luogoRitorno === 'mappa-principale' ? 'Torna alla mappa' : 'Torna al percorso'}
         </button>
       )}
 

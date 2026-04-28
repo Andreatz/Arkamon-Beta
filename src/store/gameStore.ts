@@ -57,6 +57,9 @@ interface GameState {
   /** Verifica se un cespuglio è già stato visitato dal giocatore */
   cespuglioVisitato: (giocatoreId: 1 | 2, luogo: string, cespuglio: string) => boolean
 
+  /** Aggiunge (o sottrae se delta < 0) monete al giocatore, non scende sotto 0 */
+  aggiornaMonete: (giocatoreId: 1 | 2, delta: number) => void
+
   /** Avvia una nuova battaglia */
   iniziaBattaglia: (battaglia: StatoBattaglia) => void
 
@@ -77,6 +80,7 @@ const giocatoreVuoto = (id: 1 | 2): StatoGiocatore => ({
   deposito: {},
   cespugliVisitati: new Set(),
   allenatoriSconfitti: new Set(),
+  monete: 0,
 })
 
 /**
@@ -168,6 +172,15 @@ export const useGameStore = create<GameState>()(
         const g = get()[giocatoreId === 1 ? 'giocatore1' : 'giocatore2']
         return g.cespugliVisitati.has(`${luogo}:${cespuglio}`)
       },
+
+      aggiornaMonete: (giocatoreId, delta) =>
+        set((s) => {
+          const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+          const g = s[chiaveG]
+          return {
+            [chiaveG]: { ...g, monete: Math.max(0, g.monete + delta) },
+          } as Partial<GameState>
+        }),
 
       iniziaBattaglia: (battaglia) => set({ battaglia }),
 

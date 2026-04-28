@@ -254,3 +254,24 @@ export function squadraSconfitta(squadra: PokemonIstanza[] | undefined): boolean
   if (!squadra || squadra.length === 0) return false
   return squadra.every((p) => p.hp <= 0)
 }
+
+// =============================================================
+// MONETE (porting di CalcolaVariazioneMonete)
+// =============================================================
+
+export type EsitoBattaglia = 'vittoria' | 'sconfitta'
+export type TipoAvversario = 'NPC' | 'Capopalestra' | 'Selvatico' | 'PVP'
+
+// Porting di: CalcolaVariazioneMonete da old_files/Mod_Battle_Engine.txt
+export function calcolaVariazioneMonete(
+  esito: EsitoBattaglia,
+  tipoAvversario: TipoAvversario
+): number {
+  if (esito === 'vittoria') {
+    if (tipoAvversario === 'NPC') return 200
+    if (tipoAvversario === 'Capopalestra') return 1000
+    return 0 // Selvatico/PVP: niente monete
+  }
+  if (tipoAvversario === 'NPC' || tipoAvversario === 'Capopalestra') return -200
+  return 0
+}
