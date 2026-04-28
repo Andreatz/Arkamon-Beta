@@ -1,7 +1,7 @@
 import { useGameStore, creaIstanza } from '@store/gameStore'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { calcolaDanno, calcolaHPMax, scegliMossaIA } from '@engine/battleEngine'
+import { calcolaDanno, calcolaHPMax, scegliMossaIA, tentaCattura } from '@engine/battleEngine'
 import { getPokemon, getMossa } from '@data/index'
 import type { PokemonIstanza, MossaDef } from '@/types'
 
@@ -18,6 +18,8 @@ export function BattagliaScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const battaglia = useGameStore((s) => s.battaglia)
   const terminaBattaglia = useGameStore((s) => s.terminaBattaglia)
+  const aggiungiPokemon = useGameStore((s) => s.aggiungiPokemon)
+  const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
 
   const [pkmnA, setPkmnA] = useState<PokemonIstanza | null>(null)
   const [pkmnB, setPkmnB] = useState<PokemonIstanza | null>(null)
@@ -82,6 +84,26 @@ export function BattagliaScene() {
     setTimeout(() => turnoAvversario(nuovoB), 1500)
   }
 
+  // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
+  const eseguiCattura = () => {
+    if (terminata || !turnoA) return
+    const ris = tentaCattura(pkmnB)
+    setLog((l) => [
+      ...l,
+      `Lanci una pokeball... (3d6=${ris.roll}, soglia=${ris.soglia.toFixed(1)})`,
+    ])
+    if (ris.riuscita) {
+      setLog((l) => [...l, `${pkmnB.nome} è stato catturato!`])
+      aggiungiPokemon(giocatoreAttivo, pkmnB)
+      setTerminata(true)
+      return
+    }
+    setLog((l) => [...l, `${pkmnB.nome} è scappato dalla pokeball!`])
+    // Cattura fallita = il turno è perso → tocca al selvatico
+    setTurnoA(false)
+    setTimeout(() => turnoAvversario(pkmnB), 1500)
+  }
+
   const turnoAvversario = (statoBcorrente: PokemonIstanza) => {
     const mossa = scegliMossaIA(statoBcorrente, pkmnA)
     const ris = calcolaDanno(statoBcorrente, pkmnA, mossa)
@@ -141,6 +163,19 @@ export function BattagliaScene() {
           )
         })}
       </div>
+
+      {/* Pulsante cattura (solo battaglie selvatiche) */}
+      {battaglia?.tipo === 'Selvatico' && !terminata && (
+        <motion.button
+          whileHover={turnoA ? { scale: 1.05 } : {}}
+          whileTap={turnoA ? { scale: 0.95 } : {}}
+          disabled={!turnoA}
+          onClick={eseguiCattura}
+          className="arka-button absolute bottom-4 left-1/2 -translate-x-1/2 z-20 disabled:opacity-50"
+        >
+          🟡 Cattura
+        </motion.button>
+      )}
 
       {/* Pulsante exit */}
       {terminata && (
