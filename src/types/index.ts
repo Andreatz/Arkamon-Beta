@@ -126,6 +126,8 @@ export interface StatoGiocatore {
   cespugliVisitati: Set<string>
   /** Allenatori già sconfitti */
   allenatoriSconfitti: Set<number>
+  /** Monete possedute (porting di Stato_Giocatore.Monete del VBA) */
+  monete: number
 }
 
 /** Stato della battaglia in corso (analogo del foglio Battaglia_Corrente VBA) */

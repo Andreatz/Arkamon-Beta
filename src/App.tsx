@@ -3,6 +3,7 @@ import { TitoloScene } from '@scenes/TitoloScene'
 import { LaboratorioScene } from '@scenes/LaboratorioScene'
 import { MappaPrincipaleScene } from '@scenes/MappaPrincipaleScene'
 import { BattagliaScene } from '@scenes/BattagliaScene'
+import { PercorsoScene } from '@scenes/PercorsoScene'
 import { AnimatePresence, motion } from 'framer-motion'
 
 /**
@@ -41,6 +42,8 @@ function renderScena(scena: string) {
       return <MappaPrincipaleScene />
     case 'battaglia':
       return <BattagliaScene />
+    case 'percorso':
+      return <PercorsoScene />
     default:
       return (
         <div className="flex items-center justify-center h-full text-arka-text-muted">
