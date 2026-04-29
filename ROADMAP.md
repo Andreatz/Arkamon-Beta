@@ -96,18 +96,20 @@ Tutte le voci della roadmap originale "Fase A" sono portate in TS, testate e gio
 
 ## 🚧 Fase A — voci rimaste in coda
 
-### Trigger stati alterati nei dati (S, ~10 minuti)
+### ✅ Trigger stati alterati nei dati — FATTO
 
-L'engine degli stati funziona (12 test verdi) ma **nessuna mossa in `mosse.json` ha `effetto`/`valoreEffetto` valorizzati**, quindi gli stati non si attivano in giocato. Per attivarli:
+6 mosse popolate con `effetto`/`valoreEffetto` per dare profondità tattica subito:
 
-```jsonc
-// es. in mosse.json
-{ "id": 99, ..., "effetto": "VELENO", "valoreEffetto": 30 }    // 30% chance
-{ "id": 100, ..., "effetto": "SONNO", "valoreEffetto": 50 }    // 50% chance
-{ "id": 101, ..., "effetto": "CONFUSIONE", "valoreEffetto": 25 } // 25%
-```
+| Mossa | Tipo | Effetto | Chance |
+| --- | --- | --- | ---: |
+| Predigestione | Erba | VELENO | 30% |
+| Soffocaterra | Terra | VELENO | 30% |
+| Canto del Crepuscolo | Oscurità | SONNO | 40% |
+| Rugiada Mattutina | Acqua | SONNO | 35% |
+| Ronzio Psichico | Psico | CONFUSIONE | 40% |
+| Jumpscare | Oscurità | CONFUSIONE | 30% |
 
-Le chiavi accettate sono `'CONFUSIONE'`, `'SONNO'`, `'VELENO'` (vedi `EFFETTO_TO_STATO` in `battleEngine.ts`).
+Chiavi accettate (mappa in `EFFETTO_TO_STATO` in `battleEngine.ts`): `'CONFUSIONE'`, `'SONNO'`, `'VELENO'`. Per ampliare in futuro basta aggiungere altre voci con queste chiavi.
 
 ### Battaglia PvP esplicita (M)
 
@@ -121,7 +123,7 @@ Le 14 città principali hanno almeno 1 allenatore (NPC o Capopalestra), ma alcun
 
 ## 🆕 Fase B — Estensioni nuove (mai in VBA)
 
-- ✅ **Stati alterati**: Confusione / Sonno / Avvelenamento — engine + UI completi (manca solo data-trigger)
+- ✅ **Stati alterati**: Confusione / Sonno / Avvelenamento — engine + UI + 6 mosse trigger nei dati (Fase B chiusa)
 - ⏭️ **Mosse di cura HP** a percentuale (l'AI ha già la priorità "CURA" in `scegliMossaIA`, manca l'esecuzione lato player)
 - ⏭️ **Mossa Suprema**: ×2 danno + autodanno 50% HP max
 - ⏭️ **Oggetti**: Masterball (cattura 100%), pozioni, etc.
@@ -178,14 +180,13 @@ I test coprono solo l'engine puro. Le scene React non hanno test automatici — 
 
 ## 🎯 Prossimi candidati (in ordine di valore decrescente)
 
-1. **Trigger stati nelle mosse** (S) — popola 3-5 mosse in `mosse.json` con `effetto`/`valoreEffetto`. Sblocca Fase B già in piedi e aggiunge profondità tattica immediata.
-2. **Mosse di cura HP** (S-M) — completa il pattern degli "effetti" speciali: nuovi `effetto: 'CURA'`/`'CURA_PCT'` con applicazione a inizio turno. L'AI ha già la priorità.
-3. **Allenatori nelle città vuote** (M, data-entry) — 1-2 NPC per ciascun luogo non popolato. Riempie il mondo.
-4. **Bilanciamento + polish** (variabile) — playthrough completo, tuning di livelli/monete/cespugli.
-5. **PvP esplicito** (M) — utile solo se vuoi un'esperienza locale a 2 giocatori reali.
-6. **Mossa Suprema + Oggetti** (M) — Fase B residua.
-7. **Sprite reali + sfondo mappa** (variabile, asset-pesante) — Fase C polish visivo.
-8. **Deploy GitHub Pages + Tauri** (S+M) — Fase D, solo quando il gameplay è solido.
+1. **Mosse di cura HP** (S-M) — completa il pattern degli "effetti" speciali: nuovi `effetto: 'CURA'`/`'CURA_PCT'` con applicazione a inizio turno. L'AI ha già la priorità.
+2. **Allenatori nelle città vuote** (M, data-entry) — 1-2 NPC per ciascun luogo non popolato. Riempie il mondo.
+3. **Bilanciamento + polish** (variabile) — playthrough completo, tuning di livelli/monete/cespugli.
+4. **PvP esplicito** (M) — utile solo se vuoi un'esperienza locale a 2 giocatori reali.
+5. **Mossa Suprema + Oggetti** (M) — Fase B residua.
+6. **Sprite reali + sfondo mappa** (variabile, asset-pesante) — Fase C polish visivo.
+7. **Deploy GitHub Pages + Tauri** (S+M) — Fase D, solo quando il gameplay è solido.
 
 ---
 
