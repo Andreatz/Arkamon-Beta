@@ -43,6 +43,12 @@ export function BattagliaScene() {
   const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const risolviBattagliaNPC = useGameStore((s) => s.risolviBattagliaNPC)
+  const usaOggetto = useGameStore((s) => s.usaOggetto)
+  const masterballRimaste = useGameStore((s) =>
+    s.giocatoreAttivo === 1
+      ? s.giocatore1.inventario.masterball ?? 0
+      : s.giocatore2.inventario.masterball ?? 0
+  )
   const [esito, setEsito] = useState<'vittoria' | 'sconfitta' | null>(null)
 
   const [pkmnA, setPkmnA] = useState<PokemonIstanza | null>(null)
@@ -52,6 +58,8 @@ export function BattagliaScene() {
   const [log, setLog] = useState<string[]>([])
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
+  /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
+  const [mostraMoseB, setMostraMoseB] = useState(false)
   const [terminata, setTerminata] = useState(false)
   // Evoluzioni accumulate durante la battaglia: applicate dopo, in EvoluzioneScene
   const [evoluzioniInAttesa, setEvoluzioniInAttesa] = useState<
@@ -81,6 +89,7 @@ export function BattagliaScene() {
   const luogoRitorno = battaglia?.luogoRitorno ?? 'mappa-principale'
   const isNPC = !!battaglia && battaglia.tipo !== 'Selvatico' && battaglia.allenatoreId !== undefined
   const isSelvatico = !battaglia || battaglia.tipo === 'Selvatico'
+  const isPvP = !!battaglia && battaglia.tipo === 'PVP'
   const isPercorso = !!luogoRitorno && /^Percorso_/.test(luogoRitorno)
 
   /** Aggiorna l'istanza nella squadra mantenendo l'ordine. */
@@ -113,6 +122,15 @@ export function BattagliaScene() {
   }
 
   if (!pkmnA || !pkmnB) return <div className="text-white p-8">Caricamento...</div>
+
+  const specieB = getPokemon(pkmnB.specieId)!
+
+  /** Handler PvP: il giocatore B clicca una mossa. */
+  const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2) => {
+    if (terminata || turnoA || !mostraMoseB) return
+    setMostraMoseB(false)
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa)
+  }
 
   const specieA = getPokemon(pkmnA.specieId)!
   const hpMaxA = calcolaHPMax(pkmnA)
@@ -212,9 +230,20 @@ export function BattagliaScene() {
 
     setTimeout(() => setShaking(null), 400)
 
+    // Autodanno mossa Suprema sull'attaccante (può auto-KO)
+    let aDopoAutodanno = pkmnAEffettivo
+    if (ris.autodanno && ris.autodanno > 0) {
+      aDopoAutodanno = {
+        ...pkmnAEffettivo,
+        hp: Math.max(0, pkmnAEffettivo.hp - ris.autodanno),
+      }
+      setPkmnA(aDopoAutodanno)
+      setSquadraA((sq) => updateInSquadra(sq, aDopoAutodanno))
+    }
+
     if (nuovoB.hp <= 0) {
       // XP a pokemonA per il KO (regola: 1 nemico = 1 xp = 1 livello)
-      const aggiornatoA = premiaConXP(pkmnA, nuovoB)
+      const aggiornatoA = premiaConXP(aDopoAutodanno, nuovoB)
       setPkmnA(aggiornatoA)
       setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
 
@@ -231,6 +260,28 @@ export function BattagliaScene() {
       // Nessun altro avversario → vittoria
       setLog((l) => [...l, 'Hai vinto la battaglia!'])
       setEsito('vittoria')
+      setTerminata(true)
+      return
+    }
+
+    // Auto-KO da mossa Suprema: gestisci switch o sconfitta
+    if (aDopoAutodanno.hp <= 0) {
+      const nextA = squadraA.find(
+        (p) => p.istanzaId !== aDopoAutodanno.istanzaId && p.hp > 0
+      )
+      if (nextA) {
+        setLog((l) => [
+          ...l,
+          `${aDopoAutodanno.nome} è esausto! Mandi in campo ${nextA.nome}!`,
+        ])
+        setPkmnA(nextA)
+        // Turno passa comunque all'avversario (la mossa è stata usata)
+        setTurnoA(false)
+        setTimeout(() => turnoAvversario(nuovoB), 1500)
+        return
+      }
+      setLog((l) => [...l, 'Hai perso la battaglia...'])
+      setEsito('sconfitta')
       setTerminata(true)
       return
     }
@@ -261,8 +312,26 @@ export function BattagliaScene() {
     setTimeout(() => turnoAvversario(pkmnB), 1500)
   }
 
+  /** Cattura garantita al 100% via Masterball (consuma 1 oggetto). */
+  const eseguiMasterball = () => {
+    if (terminata || !turnoA) return
+    if (!usaOggetto(giocatoreAttivo, 'masterball')) return
+    setLog((l) => [
+      ...l,
+      `Lanci una Masterball... 💎`,
+      `${pkmnB.nome} è stato catturato!`,
+    ])
+    aggiungiPokemon(giocatoreAttivo, pkmnB)
+    setEsito('vittoria')
+    setTerminata(true)
+  }
+
+  /**
+   * Avvio del turno di B: risolve stato/HP e poi:
+   * - PvP: mostra le mosse di B per input umano (stop, attende click);
+   * - NPC: pesca subito la mossa via AI ed esegue.
+   */
   const turnoAvversario = (statoBcorrente: PokemonIstanza) => {
-    // Risoluzione stato dell'avversario a inizio turno
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
     const statoRes = risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
     if (statoRes.messaggi.length > 0) setLog((l) => [...l, ...statoRes.messaggi])
@@ -295,12 +364,31 @@ export function BattagliaScene() {
       return
     }
 
-    const mossa = scegliMossaIA(bEffettivo, pkmnA)
+    if (isPvP) {
+      // Attesa input umano per B: la pulsantiera mosse di B viene mostrata.
+      setMostraMoseB(true)
+      return
+    }
+
+    // NPC: AI sceglie ed esegue subito
+    const mossaIdx = scegliMossaIA(bEffettivo, pkmnA)
+    eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx)
+  }
+
+  /**
+   * Esecuzione della mossa di B (condivisa tra NPC e PvP umano).
+   * Applica cura/suprema/autodanno e gestisce KO.
+   */
+  const eseguiMossaB = (
+    bEffettivo: PokemonIstanza,
+    hpMaxBcorrente: number,
+    mossaIdx: 0 | 1 | 2
+  ) => {
     const specieB = getPokemon(bEffettivo.specieId)
-    const mossaIdB = specieB?.mosse[mossa] ?? null
+    const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
-    // Cura lato AI: l'avversario ripristina HP, niente danno al giocatore.
+    // Cura lato B: ripristina HP, niente danno ad A.
     if (mossaDefB && èMossaCura(mossaDefB)) {
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
       setPkmnB(cura.istanza)
@@ -310,7 +398,7 @@ export function BattagliaScene() {
       return
     }
 
-    const ris = calcolaDanno(bEffettivo, pkmnA, mossa)
+    const ris = calcolaDanno(bEffettivo, pkmnA, mossaIdx)
     if (!ris) {
       setTurnoA(true)
       return
@@ -325,6 +413,17 @@ export function BattagliaScene() {
     setSquadraA(nuovaSquadraA)
     setLog((l) => [...l, ...ris.messaggi])
     setTimeout(() => setShaking(null), 400)
+
+    // Autodanno mossa Suprema lato AI
+    let bDopoAutodanno = bEffettivo
+    if (ris.autodanno && ris.autodanno > 0) {
+      bDopoAutodanno = {
+        ...bEffettivo,
+        hp: Math.max(0, bEffettivo.hp - ris.autodanno),
+      }
+      setPkmnB(bDopoAutodanno)
+      setSquadraB((sq) => updateInSquadra(sq, bDopoAutodanno))
+    }
 
     if (nuovoA.hp <= 0) {
       const nextA = nuovaSquadraA.find(
@@ -342,9 +441,33 @@ export function BattagliaScene() {
       setLog((l) => [...l, 'Hai perso la battaglia...'])
       setEsito('sconfitta')
       setTerminata(true)
-    } else {
-      setTurnoA(true)
+      return
     }
+
+    // Auto-KO lato AI da mossa Suprema
+    if (bDopoAutodanno.hp <= 0) {
+      const nextB = squadraB.find(
+        (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
+      )
+      if (nextB && isNPC) {
+        setLog((l) => [
+          ...l,
+          `${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`,
+        ])
+        setPkmnB(nextB)
+        setTurnoA(true)
+        return
+      }
+      const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
+      setPkmnA(aggiornatoA)
+      setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
+      setLog((l) => [...l, 'Hai vinto la battaglia!'])
+      setEsito('vittoria')
+      setTerminata(true)
+      return
+    }
+
+    setTurnoA(true)
   }
 
   return (
@@ -378,34 +501,69 @@ export function BattagliaScene() {
         <p className="text-white text-sm">{log[log.length - 1]}</p>
       </div>
 
-      {/* Pulsanti mosse */}
-      <div className="absolute bottom-4 right-4 grid grid-cols-3 gap-2 z-20">
-        {specieA.mosse.map((mossaId, i) => {
-          const mossa = mossaId ? getMossa(mossaId) : null
-          if (!mossa) return null
-          return (
-            <MoveButton
-              key={i}
-              mossa={mossa}
-              livello={pkmnA.livello}
-              disabled={!turnoA || terminata}
-              onClick={() => eseguiMossa(i as 0 | 1 | 2)}
-            />
-          )
-        })}
-      </div>
+      {/* Pulsanti mosse di A — nascosti in PvP quando aspetta B */}
+      {!mostraMoseB && (
+        <div className="absolute bottom-4 right-4 grid grid-cols-3 gap-2 z-20">
+          {specieA.mosse.map((mossaId, i) => {
+            const mossa = mossaId ? getMossa(mossaId) : null
+            if (!mossa) return null
+            return (
+              <MoveButton
+                key={i}
+                mossa={mossa}
+                livello={pkmnA.livello}
+                disabled={!turnoA || terminata}
+                onClick={() => eseguiMossa(i as 0 | 1 | 2)}
+              />
+            )
+          })}
+        </div>
+      )}
 
-      {/* Pulsante cattura (solo battaglie selvatiche) */}
+      {/* PvP: pulsanti mosse di B (input umano) */}
+      {isPvP && mostraMoseB && !terminata && (
+        <div className="absolute top-32 left-4 grid grid-cols-3 gap-2 z-20">
+          {specieB.mosse.map((mossaId, i) => {
+            const mossa = mossaId ? getMossa(mossaId) : null
+            if (!mossa) return null
+            return (
+              <MoveButton
+                key={`B-${i}`}
+                mossa={mossa}
+                livello={pkmnB.livello}
+                disabled={terminata}
+                onClick={() => eseguiMossaPvP_B(i as 0 | 1 | 2)}
+              />
+            )
+          })}
+        </div>
+      )}
+
+      {/* Pulsanti cattura (solo battaglie selvatiche) */}
       {isSelvatico && !terminata && battaglia && (
-        <motion.button
-          whileHover={turnoA ? { scale: 1.05 } : {}}
-          whileTap={turnoA ? { scale: 0.95 } : {}}
-          disabled={!turnoA}
-          onClick={eseguiCattura}
-          className="arka-button absolute bottom-4 left-1/2 -translate-x-1/2 z-20 disabled:opacity-50"
-        >
-          🟡 Cattura
-        </motion.button>
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          <motion.button
+            whileHover={turnoA ? { scale: 1.05 } : {}}
+            whileTap={turnoA ? { scale: 0.95 } : {}}
+            disabled={!turnoA}
+            onClick={eseguiCattura}
+            className="arka-button disabled:opacity-50"
+          >
+            🟡 Cattura
+          </motion.button>
+          {masterballRimaste > 0 && (
+            <motion.button
+              whileHover={turnoA ? { scale: 1.05 } : {}}
+              whileTap={turnoA ? { scale: 0.95 } : {}}
+              disabled={!turnoA}
+              onClick={eseguiMasterball}
+              className="arka-button disabled:opacity-50"
+              title="Cattura garantita al 100%"
+            >
+              💎 Masterball ×{masterballRimaste}
+            </motion.button>
+          )}
+        </div>
       )}
 
       {/* Esito + monete (solo battaglie NPC/Capopalestra) */}
@@ -448,7 +606,15 @@ export function BattagliaScene() {
       {/* Indicatore turno */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 arka-panel px-4 py-1">
         <span className="text-sm">
-          {terminata ? 'Battaglia finita' : turnoA ? 'Il tuo turno' : 'Turno avversario...'}
+          {terminata
+            ? 'Battaglia finita'
+            : isPvP && mostraMoseB
+            ? 'Turno del Rivale — scegli una mossa'
+            : isPvP && turnoA
+            ? 'Turno del Giocatore — scegli una mossa'
+            : turnoA
+            ? 'Il tuo turno'
+            : 'Turno avversario...'}
         </span>
       </div>
     </div>
