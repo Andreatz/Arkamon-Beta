@@ -93,6 +93,24 @@ describe('applicaMossaCura', () => {
     const r = applicaMossaCura(i, mkMossa('CURA_PCT', 1), 12)
     expect(r.hpRecuperato).toBeGreaterThanOrEqual(1)
   })
+
+  // BR.3 — cura + guarigione veleno
+  it('BR.3 Avvelenato + cura con recupero: rimuove stato, messaggio veleno', () => {
+    const base = mkIstanza(1, 5, 4) // hp 4, hpMax 12
+    const i: PokemonIstanza = { ...base, stato: { tipo: 'Avvelenato', turniRimanenti: -1 } }
+    const r = applicaMossaCura(i, mkMossa('CURA', 5), 12)
+    expect(r.istanza.stato).toBeUndefined()
+    expect(r.hpRecuperato).toBe(5)
+    expect(r.messaggi.some((m) => m.toLowerCase().includes('veleno'))).toBe(true)
+  })
+  it('BR.3 Avvelenato + HP pieni: guarisce il veleno anche senza recupero HP', () => {
+    const base = mkIstanza(1, 5) // hp pieni (12)
+    const i: PokemonIstanza = { ...base, stato: { tipo: 'Avvelenato', turniRimanenti: -1 } }
+    const r = applicaMossaCura(i, mkMossa('CURA_PCT', 50), 12)
+    expect(r.hpRecuperato).toBe(0)
+    expect(r.istanza.stato).toBeUndefined()
+    expect(r.messaggi.some((m) => m.toLowerCase().includes('veleno'))).toBe(true)
+  })
 })
 
 describe('scegliMossaIA — priorità mosse curative', () => {

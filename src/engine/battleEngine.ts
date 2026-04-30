@@ -46,6 +46,28 @@ export function applicaStato(
 }
 
 /**
+ * Tenta di applicare uno stato a un'istanza, rispettando le immunità.
+ *
+ * Regola BR.3: un Pokémon può avere un solo stato alterato alla volta.
+ * Se ne ha già uno (qualsiasi), il nuovo stato non viene applicato.
+ *
+ * @returns `{ applicato: true }` se lo stato può essere applicato;
+ *          `{ applicato: false, messaggio }` se bloccato da immunità.
+ */
+export function tentaApplicaStato(
+  istanza: PokemonIstanza,
+  _tipo: StatoAlterato
+): { applicato: boolean; messaggio?: string } {
+  if (istanza.stato) {
+    return {
+      applicato: false,
+      messaggio: 'Ma non ha funzionato...',
+    }
+  }
+  return { applicato: true }
+}
+
+/**
  * Risolve lo stato all'inizio del turno del pokemon.
  *
  * - Avvelenato: subisce 10% dell'hpMax come danno, lo stato persiste.
@@ -228,20 +250,17 @@ export function calcolaDanno(
   const difensoreSvenuto = difensore.hp - dannoFinale <= 0
   if (difensoreSvenuto) messaggi.push(`${difensore.nome} non può più combattere!`)
 
-  // Trigger stato alterato (solo se la mossa ha un effetto mappato e il
-  // difensore non è già afflitto e non è KO).
+  // Trigger stato alterato (BR.3: sempre applicato se mossa ha effetto,
+  // salvo immunità da tentaApplicaStato — nessun roll % di probabilità).
   let statoApplicato: StatoAlterato | undefined
-  if (
-    mossa.effetto &&
-    EFFETTO_TO_STATO[mossa.effetto] &&
-    !difensore.stato &&
-    !difensoreSvenuto
-  ) {
+  if (mossa.effetto && EFFETTO_TO_STATO[mossa.effetto] && !difensoreSvenuto) {
     const stato = EFFETTO_TO_STATO[mossa.effetto]
-    const chance = mossa.valoreEffetto ?? 100
-    if (rng() * 100 < chance) {
+    const tentativo = tentaApplicaStato(difensore, stato)
+    if (tentativo.applicato) {
       statoApplicato = stato
       messaggi.push(`${difensore.nome} è ora ${stato}!`)
+    } else if (tentativo.messaggio) {
+      messaggi.push(tentativo.messaggio)
     }
   }
 
@@ -295,6 +314,8 @@ export function autodannoSuprema(
 // - effetto: 'CURA'      → cura piatta di `valoreEffetto` HP
 // - effetto: 'CURA_PCT'  → cura `valoreEffetto`% di hpMax (1..100)
 // In entrambi i casi la cura non può oltrepassare hpMax.
+//
+// BR.3: se l'attaccante è Avvelenato, la cura rimuove anche il veleno.
 
 export const EFFETTI_CURA = new Set(['CURA', 'CURA_PCT'])
 
@@ -306,6 +327,9 @@ export function èMossaCura(mossa: MossaDef): boolean {
 /**
  * Applica una mossa di cura sull'attaccante stesso.
  * Restituisce un risultato con hp aggiornati e messaggi.
+ *
+ * BR.3: se l'attaccante è Avvelenato, lo stato viene rimosso
+ * automaticamente (anche se gli HP sono già al massimo).
  */
 export function applicaMossaCura(
   attaccante: PokemonIstanza,
@@ -331,14 +355,30 @@ export function applicaMossaCura(
   const nuovoHp = Math.min(hpMax, attaccante.hp + amount)
   const recuperato = nuovoHp - attaccante.hp
 
-  if (recuperato <= 0) {
+  // BR.3: cura automatica del veleno (se presente)
+  const haVeleno = attaccante.stato?.tipo === 'Avvelenato'
+  let istanzaFinale: PokemonIstanza = { ...attaccante, hp: nuovoHp }
+  if (haVeleno) {
+    istanzaFinale = { ...istanzaFinale, stato: undefined }
+  }
+
+  // Early-exit solo se né HP da recuperare né veleno da curare
+  if (recuperato <= 0 && !haVeleno) {
     messaggi.push(`${attaccante.nome} è già al massimo dell'energia.`)
     return { istanza: attaccante, hpRecuperato: 0, messaggi }
   }
 
-  messaggi.push(`${attaccante.nome} recupera ${recuperato} HP.`)
+  if (recuperato > 0) {
+    messaggi.push(`${attaccante.nome} recupera ${recuperato} HP.`)
+  } else {
+    messaggi.push(`${attaccante.nome} è già al massimo dell'energia.`)
+  }
+  if (haVeleno) {
+    messaggi.push(`${attaccante.nome} è guarito dal veleno!`)
+  }
+
   return {
-    istanza: { ...attaccante, hp: nuovoHp },
+    istanza: istanzaFinale,
     hpRecuperato: recuperato,
     messaggi,
   }
