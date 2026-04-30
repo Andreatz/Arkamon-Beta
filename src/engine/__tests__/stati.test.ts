@@ -4,6 +4,7 @@ import {
   risolviStatoInizioTurno,
   calcolaHPMax,
   DURATA_STATO,
+  tentaApplicaStato,
 } from '@engine/battleEngine'
 import type { PokemonIstanza } from '@/types'
 
@@ -34,6 +35,27 @@ describe('applicaStato', () => {
     const i = applicaStato(mkIstanza(1, 5), 'Avvelenato')
     expect(i.stato?.turniRimanenti).toBe(-1)
     expect(DURATA_STATO.Avvelenato).toBe(-1)
+  })
+})
+
+describe('tentaApplicaStato — immunità stato singolo (BR.3)', () => {
+  it('pokemon senza stato → applicato=true', () => {
+    const i = mkIstanza(1, 5)
+    expect(tentaApplicaStato(i, 'Confuso').applicato).toBe(true)
+  })
+  it('pokemon già Confuso → tenta Addormentato: applicato=false + messaggio', () => {
+    const i = applicaStato(mkIstanza(1, 5), 'Confuso')
+    const r = tentaApplicaStato(i, 'Addormentato')
+    expect(r.applicato).toBe(false)
+    expect(r.messaggio).toBeTruthy()
+  })
+  it('pokemon già Addormentato → tenta Confuso: applicato=false', () => {
+    const i = applicaStato(mkIstanza(1, 5), 'Addormentato')
+    expect(tentaApplicaStato(i, 'Confuso').applicato).toBe(false)
+  })
+  it('pokemon già Avvelenato → tenta stesso stato: applicato=false', () => {
+    const i = applicaStato(mkIstanza(1, 5), 'Avvelenato')
+    expect(tentaApplicaStato(i, 'Avvelenato').applicato).toBe(false)
   })
 })
 
