@@ -19,7 +19,7 @@ export const PERCORSO_1: MappaGriglia = {
   id: 'Percorso_1',
   larghezza: 12,
   altezza: 7,
-  background: '/backgrounds/Percorso_1.jpg',
+  background: '/backgrounds/route_1.jpg',
   spawnDefault: { x: 1, y: 6 },
   caselle: [
     [T, T, T, T, T, T, T, T, T, T, T, U_VENEZIA],

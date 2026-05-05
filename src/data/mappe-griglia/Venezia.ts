@@ -17,7 +17,7 @@ export const VENEZIA: MappaGriglia = {
   id: 'Venezia',
   larghezza: 14,
   altezza: 9,
-  background: '/backgrounds/Venezia.jpg',
+  background: '/backgrounds/venezia.png',
   spawnDefault: { x: 1, y: 8 },
   caselle: [
     [T, T, T, T, T, T, T, T, T, T, T, T, T, T],
