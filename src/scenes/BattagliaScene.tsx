@@ -125,7 +125,9 @@ export function BattagliaScene() {
       return
     }
 
-    if (isPercorso) {
+    if (luogoRitorno === 'mappa-griglia') {
+      vaiAScena('mappa-griglia')
+    } else if (isPercorso) {
       vaiAScena('percorso', { luogo: luogoRitorno })
     } else if (luogoRitorno && luogoRitorno !== 'mappa-principale') {
       vaiAScena('citta', { luogo: luogoRitorno })
@@ -682,7 +684,9 @@ export function BattagliaScene() {
           className="arka-button absolute bottom-4 left-4 z-20"
           onClick={tornaIndietro}
         >
-          {isPercorso
+          {luogoRitorno === 'mappa-griglia'
+            ? "Torna all'overworld"
+            : isPercorso
             ? 'Torna al percorso'
             : luogoRitorno !== 'mappa-principale'
             ? 'Torna in città'
