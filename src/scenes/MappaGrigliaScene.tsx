@@ -31,8 +31,10 @@ import { assetUrl } from '@/utils/assetUrl'
 import type {
   Casella,
   MappaGriglia,
+  PokemonIstanza,
   PosizioneAvatar,
   StatoBattaglia,
+  StatoGiocatore,
 } from '@/types'
 
 // ----------------------------------------------------------------
@@ -84,6 +86,82 @@ function coloreCasella(c: Casella): string {
     default:
       return 'bg-emerald-900/30'
   }
+}
+
+// ----------------------------------------------------------------
+// AVATAR
+// ----------------------------------------------------------------
+
+/** Restituisce il "leader" della squadra: primo Pokémon vivo (o primo). */
+function leaderSquadra(g: StatoGiocatore): PokemonIstanza | null {
+  return g.squadra.find((p) => p.hp > 0) ?? g.squadra[0] ?? null
+}
+
+interface AvatarSlotProps {
+  giocatoreId: 1 | 2
+  pos: PosizioneAvatar
+  cella: number
+  attivo: boolean
+  leader: PokemonIstanza | null
+}
+
+/**
+ * Avatar di un giocatore: usa lo sprite back del leader della squadra
+ * (analogamente al Pokémon "che ti segue" dei Pokémon GBA). Se la squadra
+ * è vuota, fallback a un cerchio colorato con il numero del giocatore.
+ * Ring colorato (rosa G1 / azzurro G2) e pulsante luminoso quando il
+ * giocatore è attivo.
+ */
+function AvatarSlot({ giocatoreId, pos, cella, attivo, leader }: AvatarSlotProps) {
+  const ringColor = giocatoreId === 1 ? 'ring-rose-400' : 'ring-sky-400'
+  const bgColor = giocatoreId === 1 ? 'bg-rose-500' : 'bg-sky-500'
+  return (
+    <motion.div
+      className="absolute pointer-events-none flex items-end justify-center"
+      style={{ width: cella, height: cella }}
+      animate={{ x: pos.x * cella, y: pos.y * cella }}
+      transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+    >
+      <motion.div
+        className={[
+          'relative rounded-full border-2 border-white shadow-lg overflow-hidden',
+          'ring-2 ring-offset-1 ring-offset-transparent',
+          ringColor,
+        ].join(' ')}
+        style={{ width: cella - 6, height: cella - 6 }}
+        animate={attivo ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+        transition={
+          attivo
+            ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' }
+            : { duration: 0.2 }
+        }
+      >
+        {leader ? (
+          <img
+            src={assetUrl(`/sprites/back_sprites/${leader.specieId}.png`)}
+            alt={leader.nome}
+            className="w-full h-full object-contain bg-black/30"
+            onError={(e) => {
+              ;(e.target as HTMLImageElement).style.display = 'none'
+            }}
+            draggable={false}
+          />
+        ) : (
+          <div
+            className={`w-full h-full ${bgColor} flex items-center justify-center text-xs font-bold text-white`}
+          >
+            {giocatoreId}
+          </div>
+        )}
+        {/* Numero giocatore in basso a destra come badge */}
+        <div
+          className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${bgColor} border border-white text-[9px] font-bold text-white flex items-center justify-center shadow`}
+        >
+          {giocatoreId}
+        </div>
+      </motion.div>
+    </motion.div>
+  )
 }
 
 // ----------------------------------------------------------------
@@ -454,30 +532,24 @@ export function MappaGrigliaScene() {
 
             {/* Avatar G2 (sotto, così G1 è sopra in caso di sovrapposizione) */}
             {posizione2.mappaId === mappa.id && (
-              <motion.div
-                className="absolute pointer-events-none flex items-center justify-center text-2xl"
-                style={{ width: CELLA, height: CELLA }}
-                animate={{ x: posizione2.x * CELLA, y: posizione2.y * CELLA }}
-                transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-              >
-                <div className="w-7 h-7 rounded-full bg-sky-500 border-2 border-white shadow-lg flex items-center justify-center text-xs font-bold text-white">
-                  2
-                </div>
-              </motion.div>
+              <AvatarSlot
+                giocatoreId={2}
+                pos={posizione2}
+                cella={CELLA}
+                attivo={turno.giocatoreAttivo === 2}
+                leader={leaderSquadra(giocatore2)}
+              />
             )}
 
             {/* Avatar G1 */}
             {posizione1.mappaId === mappa.id && (
-              <motion.div
-                className="absolute pointer-events-none flex items-center justify-center text-2xl"
-                style={{ width: CELLA, height: CELLA }}
-                animate={{ x: posizione1.x * CELLA, y: posizione1.y * CELLA }}
-                transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-              >
-                <div className="w-7 h-7 rounded-full bg-rose-500 border-2 border-white shadow-lg flex items-center justify-center text-xs font-bold text-white">
-                  1
-                </div>
-              </motion.div>
+              <AvatarSlot
+                giocatoreId={1}
+                pos={posizione1}
+                cella={CELLA}
+                attivo={turno.giocatoreAttivo === 1}
+                leader={leaderSquadra(giocatore1)}
+              />
             )}
           </motion.div>
         </AnimatePresence>
