@@ -28,7 +28,7 @@ import { assetUrl } from '@/utils/assetUrl'
  * per swap/move. Click di nuovo sullo stesso slot per deselezionare.
  */
 export function DepositoScene() {
-  const vaiAScena = useGameStore((s) => s.vaiAScena)
+  const scenaIndietro = useGameStore((s) => s.scenaIndietro)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const giocatore = useGameStore((s) =>
     giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
@@ -71,9 +71,9 @@ export function DepositoScene() {
       <div className="flex justify-between items-center mb-4">
         <button
           className="arka-button-secondary text-sm py-2 px-4"
-          onClick={() => vaiAScena('mappa-principale')}
+          onClick={() => scenaIndietro()}
         >
-          ← Torna alla mappa
+          ← Torna indietro
         </button>
         <h2 className="text-2xl font-bold text-arka-accent">Deposito</h2>
         <div className="arka-panel px-4 py-2">
