@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { EVOLUTION_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
+import { playSound } from '@/utils/soundManager'
 
 /**
  * Scena Evoluzione: animazione per ogni Pokémon che ha raggiunto la
@@ -79,6 +80,7 @@ export function EvoluzioneScene() {
   }
 
   const avvia = () => {
+    playSound('evolution')
     setFase('morphing')
     setTimeout(() => {
       // Applica l'evoluzione allo store
@@ -89,6 +91,7 @@ export function EvoluzioneScene() {
       }
       evoluto.hp = calcolaHPMax(evoluto)
       aggiornaPokemon(giocatoreId, evoluto)
+      playSound('level-up')
       setFase('post')
     }, 1800)
   }

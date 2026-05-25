@@ -10,11 +10,11 @@ Questo documento sostituisce la vecchia roadmap congelata su Battle Refresh: la 
 | --- | --- |
 | Branch attivo | `main` |
 | Ultimo commit base | `6964a7f` |
-| Test | `npm test` -> **161/161 verdi** |
+| Test | `npm test` -> **309/309 verdi** |
 | Build | `npm run build` pulito |
 | Stack | React 18, TypeScript, Vite 5, Tailwind 3, Zustand, framer-motion, Vitest 2 |
 | Loop giocabile | titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno |
-| Prossima fase | **E.7/E.9 - polish overworld a griglia** |
+| Prossima fase | **Rifinitura release e distribuzione** |
 
 ## Fasi Completate
 
@@ -73,7 +73,7 @@ Completata come MVP.
 - Store: posizioni avatar, turno overworld, azioni, caselle consumate.
 - `MappaGrigliaScene`: due avatar, click, tastiera, 2 azioni, interazioni.
 - Interazioni: cespuglio -> battaglia selvatica, allenatore -> battaglia NPC/PvP, centro -> cura, deposito -> scena deposito, uscita -> transizione.
-- Mappe iniziali in `src/data/mappe-griglia/`: `mappa-principale`, `Percorso_1`, `Venezia`.
+- Mappe in `src/data/mappe-griglia/`: `mappa-principale`, tutte le citta e tutti i percorsi storici.
 - Test movimento, store overworld e sanity check mappe.
 
 ## Test Suite
@@ -89,9 +89,11 @@ Completata come MVP.
 | Deposito | 12 |
 | Movimento overworld | 34 |
 | Store overworld | 14 |
-| Mappe griglia | 24 |
+| Mappe griglia | 158 |
 | Dati allenatori | 2 |
-| **Totale** | **161** |
+| Bilanciamento | 11 |
+| Audio | 3 |
+| **Totale** | **309** |
 
 Nota: i test store possono stampare warning Zustand sullo storage non disponibile in Vitest. Sono warning attesi e non bloccanti.
 
@@ -99,47 +101,65 @@ Nota: i test store possono stampare warning Zustand sullo storage non disponibil
 
 ### Priorita 1 - E.7/E.9 Polish Overworld
 
+Completata.
+
 Obiettivo: rendere l'MVP griglia piu piacevole e robusto su desktop/mobile.
 
 - [x] Celle responsive invece di dimensione fissa.
 - [x] Camera/pan che segue il giocatore attivo quando la mappa supera il viewport.
 - [x] Indicatori per caselle consumate dal giocatore attivo.
-- Transizioni mappa piu chiare.
-- Overlay debug griglia opzionale.
-- Miglior leggenda.
-- Avatar piu leggibili, con differenziazione giocatore 1/2.
+- [x] Overlay debug griglia opzionale.
+- [x] Miglior leggenda.
+- [x] Transizioni mappa piu chiare.
+- [x] Avatar piu leggibili, con differenziazione giocatore 1/2.
 
 ### Priorita 2 - E.8 Migrazione Mappe Restanti
+
+Completata.
 
 Obiettivo: portare le restanti citta e percorsi nel formato `MappaGriglia`.
 
 - [x] Piacenza migrata con Luca (301), Centro Pokemon, deposito e uscita verso mappa-principale.
-- Definire JSON/TS mappe per gli altri luoghi.
-- Registrarle in `src/data/mappe-griglia/index.ts`.
-- Collegare le uscite da `mappa-principale`.
-- Mantenere scene 2D come fallback finche la migrazione non e' completa.
+- [x] Percorso_2 migrato con Pendolare Lia (250), 6 cespugli, incontri dedicati e collegamenti da Piacenza/mappa-principale.
+- [x] Milano migrata con Anna Voltaggio (302), palestra, Centro Pokemon, deposito e collegamenti da Percorso_2/mappa-principale.
+- [x] Percorso_3 migrato con Camionista Tito (251), 6 cespugli, incontri dedicati e collegamenti da Milano/mappa-principale.
+- [x] Restanti percorsi `Percorso_4`-`Percorso_14` migrati con allenatori e cespugli.
+- [x] Restanti citta/isole (`Torino`, `Grosseto`, `Civitavecchia`, `Cagliari`, `Palermo`, `ReggioCalabria`, `Foggia`, `Napoli`, `Molisnt`, `Pescara`, `Roma`) migrate.
+- [x] Registry completo in `src/data/mappe-griglia/index.ts`.
+- [x] Uscite da `mappa-principale` verso tutti i luoghi storici.
+- [x] Scene 2D mantenute come fallback di navigazione.
+- [x] Test: ogni luogo di `mappe.json` e ogni allenatore hanno una mappa/casella griglia.
 
 ### Priorita 3 - Bilanciamento
 
-- Playthrough completo.
-- Livelli allenatori e capipalestra.
-- Economia monete.
-- Distribuzione incontri nei cespugli.
-- Frequenza e potenza stati/cure/Supreme.
+Completata.
+
+- [x] Playthrough completo codificato in `PROGRESSIONE_MAPPE`.
+- [x] Livelli allenatori e capipalestra bloccati in range verificati.
+- [x] Economia monete verificata: NPC, Capopalestra, penalita e ricompensa run.
+- [x] Distribuzione incontri nei cespugli standardizzata per ogni percorso.
+- [x] Frequenza e potenza stati/cure/Supreme protette da soglie dati.
+- [x] Test dedicati in `src/data/__tests__/bilanciamento.test.ts`.
 
 ### Priorita 4 - Audio
 
-- SoundManager.
-- Effetti: click, battle-start, hit, KO, cattura, vittoria, level-up, evoluzione.
-- Musica per titolo, mappa, battaglia, evoluzione.
-- Toggle muto persistito.
+Completata.
+
+- [x] SoundManager generativo via Web Audio API, senza asset esterni.
+- [x] Effetti: click, battle-start, hit, KO, cattura, vittoria, level-up, evoluzione.
+- [x] Musica sintetica per titolo, mappa, battaglia, evoluzione.
+- [x] Toggle muto persistito nello store.
+- [x] Test dedicati in `src/utils/__tests__/soundManager.test.ts`.
 
 ### Priorita 5 - Desktop Tauri
 
-- Inizializzazione Tauri.
-- Script `tauri:dev` e `tauri:build`.
-- Config finestra desktop.
-- Build installer Windows.
+Completata.
+
+- [x] Inizializzazione Tauri 2 in `src-tauri/`.
+- [x] Script `tauri:dev` e `tauri:build`.
+- [x] Config finestra desktop 1280x720, minimo 1024x640.
+- [x] Capability desktop default.
+- [x] Build installer Windows verificata con MSI e setup NSIS generati.
 
 ## Regole Tecniche
 
@@ -156,6 +176,7 @@ Obiettivo: portare le restanti citta e percorsi nel formato `MappaGriglia`.
 ```bash
 npm run build
 npm test
+npm run tauri:build
 ```
 
-Entrambi devono restare verdi prima di considerare chiusa una fase.
+`npm run tauri:build` richiede anche Rust/Cargo e produce gli artefatti in `src-tauri/target/release/bundle/`.

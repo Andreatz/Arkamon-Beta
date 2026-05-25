@@ -18,6 +18,7 @@ import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngi
 import type { PokemonIstanza, MossaDef, StatoAlterato } from '@/types'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
+import { playSound } from '@/utils/soundManager'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -85,6 +86,7 @@ export function BattagliaScene() {
   >([])
 
   useEffect(() => {
+    playSound('battle-start')
     if (battaglia) {
       setPkmnA(battaglia.pokemonA)
       setPkmnB(battaglia.pokemonB)
@@ -234,9 +236,11 @@ export function BattagliaScene() {
     const xpRes = applicaXP(attivo, xpGuadagnato(sconfitto))
     const messaggi: string[] = []
     if (xpRes.livelliGuadagnati > 0) {
+      playSound('level-up')
       messaggi.push(`${attivo.nome} è salito al livello ${xpRes.istanza.livello}!`)
     }
     if (xpRes.evoluzionePendente) {
+      playSound('evolution')
       messaggi.push(`Cosa? ${attivo.nome} si sta evolvendo!`)
       setEvoluzioniInAttesa((prev) => [
         ...prev,
@@ -307,6 +311,7 @@ export function BattagliaScene() {
     setPkmnB(nuovoB)
     const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
     setSquadraB(nuovaSquadraB)
+    playSound('hit')
     mostraMessaggi(ris.messaggi)
 
     setTimeout(() => setShaking(null), 400)
@@ -322,6 +327,7 @@ export function BattagliaScene() {
     }
 
     if (nuovoB.hp <= 0) {
+      playSound('ko')
       const aggiornatoA = premiaConXP(aDopoAutodanno, nuovoB)
       setPkmnA(aggiornatoA)
       setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
@@ -337,6 +343,7 @@ export function BattagliaScene() {
         return
       }
       mostraMessaggi(['Hai vinto la battaglia!'])
+      playSound('victory')
       setEsito('vittoria')
       setTerminata(true)
       return
@@ -356,6 +363,7 @@ export function BattagliaScene() {
         return
       }
       mostraMessaggi(['Hai perso la battaglia...'])
+      playSound('ko')
       setEsito('sconfitta')
       setTerminata(true)
       return
@@ -374,6 +382,7 @@ export function BattagliaScene() {
     ])
     if (ris.riuscita) {
       mostraMessaggi([`${pkmnB.nome} e stato catturato!`])
+      playSound('capture')
       aggiungiPokemon(giocatoreAttivo, pkmnB)
       setEsito('vittoria')
       setTerminata(true)
@@ -392,6 +401,7 @@ export function BattagliaScene() {
       'Lanci una Masterball...',
       `${pkmnB.nome} e stato catturato!`,
     ])
+    playSound('capture')
     aggiungiPokemon(giocatoreAttivo, pkmnB)
     setEsito('vittoria')
     setTerminata(true)
@@ -408,6 +418,7 @@ export function BattagliaScene() {
 
     if (bEffettivo.hp <= 0) {
       mostraMessaggi([`${bEffettivo.nome} e caduto!`])
+      playSound('ko')
       const nextB = squadraB.find(
         (p) => p.istanzaId !== bEffettivo.istanzaId && p.hp > 0
       )
@@ -421,6 +432,7 @@ export function BattagliaScene() {
       setPkmnA(aggiornatoA)
       setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
       mostraMessaggi(['Hai vinto la battaglia!'])
+      playSound('victory')
       setEsito('vittoria')
       setTerminata(true)
       return
@@ -471,6 +483,7 @@ export function BattagliaScene() {
     setPkmnA(nuovoA)
     const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
     setSquadraA(nuovaSquadraA)
+    playSound('hit')
     mostraMessaggi(ris.messaggi)
     setTimeout(() => setShaking(null), 400)
 
@@ -497,6 +510,7 @@ export function BattagliaScene() {
         return
       }
       mostraMessaggi(['Hai perso la battaglia...'])
+      playSound('ko')
       setEsito('sconfitta')
       setTerminata(true)
       return
@@ -516,6 +530,7 @@ export function BattagliaScene() {
       setPkmnA(aggiornatoA)
       setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
       mostraMessaggi(['Hai vinto la battaglia!'])
+      playSound('victory')
       setEsito('vittoria')
       setTerminata(true)
       return

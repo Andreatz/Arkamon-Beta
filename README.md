@@ -23,7 +23,7 @@ npm test
 - Branch di lavoro: `main`
 - Ultima verifica: **25 maggio 2026**
 - Build: `npm run build` pulito
-- Test: **161/161 verdi**
+- Test: **309/309 verdi**
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
 
 ## Funzionalita Implementate
@@ -37,7 +37,10 @@ npm test
 - Rivale e Capipalestra con squadre complete da 6 Pokemon.
 - Deposito con box, squadra, selezione e scambio slot.
 - Evoluzione post-battaglia con animazione.
-- Overworld a griglia MVP: movimento a turni, 2 azioni, interazioni, camera responsive, Percorso_1, Venezia, Piacenza e mappa-principale griglia.
+- Overworld a griglia completo in formato `MappaGriglia`: movimento a turni, 2 azioni, interazioni, camera responsive, debug grid, transizioni chiare, avatar leggibili, tutte le citta e tutti i percorsi storici registrati.
+- Bilanciamento codificato: progressione mappe, range livelli, economia, incontri e soglie stati/cure/Supreme.
+- Audio generativo Web Audio: musica per scene, effetti principali e toggle muto persistito.
+- Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
 - Deploy GitHub Pages configurato.
 
 ## Architettura
@@ -56,6 +59,7 @@ public/
   maps/                 Mappe principali
   sprites/              Sprite front/back/small
   ui/                   Asset UI da prototipo PowerPoint
+src-tauri/              Shell desktop Tauri 2
 ```
 
 ## Script
@@ -65,6 +69,8 @@ npm run dev       # server locale Vite
 npm run build     # type-check + build produzione
 npm run preview   # preview dist/
 npm test          # suite Vitest
+npm run tauri:dev # app desktop in sviluppo, richiede Rust/Cargo
+npm run tauri:build # build desktop/installer, richiede Rust/Cargo
 ```
 
 ## Roadmap Breve
@@ -74,10 +80,12 @@ npm test          # suite Vitest
 - [x] Fase C: sprite, sfondi, animazioni, code-splitting
 - [x] Fase BR: Battle Refresh
 - [x] Fase E.1-E.6: Overworld a griglia MVP
-- [ ] Fase E.7-E.9: polish overworld restante, debug grid, asset definitivi
-- [ ] Fase E.8: migrazione incrementale delle restanti mappe a griglia
-- [ ] Fase C audio: sound effects e musica
-- [ ] Fase D desktop: build Tauri
+- [x] Fase E.7-E.9: polish overworld
+- [x] Fase E.8: migrazione completa delle mappe a griglia
+- [x] Priorita 3: bilanciamento
+- [x] Fase C audio: sound effects e musica
+- [x] Fase D desktop: scaffold Tauri
+- [x] Fase D desktop: installer Windows verificato
 
 Per il piano completo vedi [ROADMAP.md](./ROADMAP.md).
 
@@ -93,12 +101,33 @@ GITHUB_PAGES=true npm run build
 
 ## Desktop
 
-Tauri e' ancora una fase futura. Il piano previsto:
+Il progetto include lo scaffold Tauri 2 in `src-tauri/`.
+
+Requisiti desktop: **Node.js 18+** e **Rust/Cargo**.
 
 ```bash
-npm install --save-dev @tauri-apps/cli
-npx tauri init
+npm run tauri:dev
+npm run tauri:build
+```
+
+La build web resta disponibile anche senza toolchain Rust:
+
+```bash
+npm run build
+```
+
+Per produrre l'installer Windows:
+
+```bash
 npx tauri build
+```
+
+Output atteso:
+
+```text
+src-tauri/target/release/arkamon.exe
+src-tauri/target/release/bundle/msi/Arkamon_0.1.0_x64_en-US.msi
+src-tauri/target/release/bundle/nsis/Arkamon_0.1.0_x64-setup.exe
 ```
 
 ## Mappatura VBA -> TypeScript

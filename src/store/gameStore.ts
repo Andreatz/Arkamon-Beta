@@ -60,6 +60,9 @@ interface GameState {
   scenaCorrente: NavigazioneScena
   scenaPrecedente: NavigazioneScena | null
 
+  // === AUDIO ===
+  audioMuted: boolean
+
   // =====================================================
   // ACTIONS
   // =====================================================
@@ -69,6 +72,9 @@ interface GameState {
 
   /** Torna alla scena precedente */
   scenaIndietro: () => void
+
+  /** Abilita/disabilita audio globale, persistito nel save. */
+  setAudioMuted: (muted: boolean) => void
 
   /** Cambia il giocatore attivo (alternanza tra Giocatore 1 e 2) */
   cambiaGiocatoreAttivo: () => void
@@ -197,6 +203,7 @@ export const useGameStore = create<GameState>()(
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       scenaCorrente: { scena: 'titolo' },
       scenaPrecedente: null,
+      audioMuted: false,
 
       vaiAScena: (scena, payload) =>
         set((s) => ({
@@ -210,6 +217,8 @@ export const useGameStore = create<GameState>()(
             ? { scenaCorrente: s.scenaPrecedente, scenaPrecedente: null }
             : s
         ),
+
+      setAudioMuted: (audioMuted) => set({ audioMuted }),
 
       cambiaGiocatoreAttivo: () =>
         set((s) => ({ giocatoreAttivo: s.giocatoreAttivo === 1 ? 2 : 1 })),
@@ -583,6 +592,7 @@ export const useGameStore = create<GameState>()(
           posizione1: p.posizione1 ?? posizioneIniziale(),
           posizione2: p.posizione2 ?? posizioneIniziale(),
           turnoOverworld: p.turnoOverworld ?? { giocatoreAttivo: 1, azioniRimaste: 2 },
+          audioMuted: p.audioMuted ?? current.audioMuted,
         }
       },
     }

@@ -52,19 +52,19 @@ const MAPPA_DI_DEFAULT = PERCORSO_1
 function etichettaCasella(c: Casella): string {
   switch (c.tipo) {
     case 'cespuglio':
-      return '🌿'
+      return 'ERBA'
     case 'allenatore':
-      return '🧑‍🎤'
+      return 'NPC'
     case 'edificio':
       return c.edificioId === 'centro'
-        ? '⛑️'
+        ? 'PKMN'
         : c.edificioId === 'deposito'
-        ? '📦'
+        ? 'BOX'
         : c.edificioId === 'palestra'
-        ? '🏟️'
-        : '🔬'
+        ? 'GYM'
+        : 'LAB'
     case 'uscita':
-      return '🚪'
+      return 'EXIT'
     case 'ostacolo':
       return ''
     default:
@@ -107,6 +107,19 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value))
 }
 
+function nomeDirezione(d: PosizioneAvatar['direzione']): string {
+  switch (d) {
+    case 'N':
+      return 'N'
+    case 'S':
+      return 'S'
+    case 'E':
+      return 'E'
+    case 'O':
+      return 'O'
+  }
+}
+
 // ----------------------------------------------------------------
 // AVATAR
 // ----------------------------------------------------------------
@@ -134,20 +147,24 @@ interface AvatarSlotProps {
 function AvatarSlot({ giocatoreId, pos, cella, attivo, leader }: AvatarSlotProps) {
   const ringColor = giocatoreId === 1 ? 'ring-rose-400' : 'ring-sky-400'
   const bgColor = giocatoreId === 1 ? 'bg-rose-500' : 'bg-sky-500'
+  const textColor = giocatoreId === 1 ? 'text-rose-100' : 'text-sky-100'
+  const avatarSize = Math.max(24, cella - 8)
+
   return (
     <motion.div
-      className="absolute pointer-events-none flex items-end justify-center"
+      className="absolute pointer-events-none flex items-center justify-center"
       style={{ width: cella, height: cella }}
       animate={{ x: pos.x * cella, y: pos.y * cella }}
       transition={{ type: 'spring', stiffness: 320, damping: 28 }}
     >
       <motion.div
         className={[
-          'relative rounded-full border-2 border-white shadow-lg overflow-hidden',
-          'ring-2 ring-offset-1 ring-offset-transparent',
+          'relative flex items-center justify-center rounded-full border-2 border-white shadow-xl',
+          'ring-2 ring-offset-2 ring-offset-black/40',
           ringColor,
+          attivo ? 'shadow-white/40' : 'opacity-90',
         ].join(' ')}
-        style={{ width: cella - 6, height: cella - 6 }}
+        style={{ width: avatarSize, height: avatarSize }}
         animate={attivo ? { scale: [1, 1.06, 1] } : { scale: 1 }}
         transition={
           attivo
@@ -155,29 +172,40 @@ function AvatarSlot({ giocatoreId, pos, cella, attivo, leader }: AvatarSlotProps
             : { duration: 0.2 }
         }
       >
-        {leader ? (
-          <img
-            src={assetUrl(`/sprites/back_sprites/${leader.specieId}.png`)}
-            alt={leader.nome}
-            className="w-full h-full object-contain bg-black/30"
-            onError={(e) => {
-              ;(e.target as HTMLImageElement).style.display = 'none'
-            }}
-            draggable={false}
-          />
-        ) : (
+        <div className="absolute inset-0 overflow-hidden rounded-full bg-black/45">
+          {leader ? (
+            <img
+              src={assetUrl(`/sprites/back_sprites/${leader.specieId}.png`)}
+              alt={leader.nome}
+              className="h-full w-full object-contain"
+              onError={(e) => {
+                ;(e.target as HTMLImageElement).style.display = 'none'
+              }}
+              draggable={false}
+            />
+          ) : (
+            <div
+              className={`h-full w-full ${bgColor} flex items-center justify-center text-xs font-bold text-white`}
+            >
+              {giocatoreId}
+            </div>
+          )}
+        </div>
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 rounded bg-black/80 px-1.5 py-0.5 text-[9px] font-bold leading-none text-white shadow">
+          G{giocatoreId}
+        </div>
+        <div
+          className={`absolute -bottom-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full ${bgColor} border border-white px-1 text-[10px] font-bold text-white shadow`}
+        >
+          {nomeDirezione(pos.direzione)}
+        </div>
+        {attivo && (
           <div
-            className={`w-full h-full ${bgColor} flex items-center justify-center text-xs font-bold text-white`}
+            className={`absolute -bottom-6 left-1/2 -translate-x-1/2 rounded bg-black/80 px-1.5 py-0.5 text-[9px] font-bold leading-none ${textColor} shadow`}
           >
-            {giocatoreId}
+            ATTIVO
           </div>
         )}
-        {/* Numero giocatore in basso a destra come badge */}
-        <div
-          className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${bgColor} border border-white text-[9px] font-bold text-white flex items-center justify-center shadow`}
-        >
-          {giocatoreId}
-        </div>
       </motion.div>
     </motion.div>
   )
@@ -202,6 +230,12 @@ export function MappaGrigliaScene() {
   const curaSquadra = useGameStore((s) => s.curaSquadra)
   const viewport = useViewportSize()
 
+  const [mostraDebug, setMostraDebug] = useState(false)
+  const [transizione, setTransizione] = useState<{
+    da: string
+    a: string
+    giocatoreId: 1 | 2
+  } | null>(null)
   const [log, setLog] = useState<string[]>([
     "Benvenuto nell'overworld a griglia.",
     'Movimento: WASD/frecce o click. Spazio per interagire.',
@@ -214,6 +248,12 @@ export function MappaGrigliaScene() {
   const mappa = REGISTRY[posAttivo.mappaId] ?? MAPPA_DI_DEFAULT
   const giocatoreAttivo =
     turno.giocatoreAttivo === 1 ? giocatore1 : giocatore2
+
+  useEffect(() => {
+    if (!transizione) return
+    const id = window.setTimeout(() => setTransizione(null), 1600)
+    return () => window.clearTimeout(id)
+  }, [transizione])
 
   // Allinea le posizioni degli avatar al registry al primo mount: se uno dei
   // due avatar è su una mappa non disponibile (es. `mappa-principale`),
@@ -392,12 +432,22 @@ export function MappaGrigliaScene() {
       }
       case 'transizione-mappa':
         if (r.versoMappaId === 'mappa-principale') {
+          setTransizione({
+            da: mappa.id,
+            a: 'mappa-principale',
+            giocatoreId: useGameStore.getState().giocatoreAttivo,
+          })
           aggiungiLog('Uscita verso la mappa principale.')
           vaiAScena('mappa-principale')
         } else if (REGISTRY[r.versoMappaId]) {
           // Transizione interna alla scena: lo store ha già spostato l'avatar
           // sullo spawn della mappa di destinazione. La scena reagisce al
           // cambio di `mappa.id` con un fade automatico.
+          setTransizione({
+            da: mappa.id,
+            a: r.versoMappaId,
+            giocatoreId: useGameStore.getState().giocatoreAttivo,
+          })
           aggiungiLog(`Sei entrato in: ${r.versoMappaId}.`)
         } else {
           aggiungiLog(`Mappa "${r.versoMappaId}" non disponibile.`)
@@ -505,6 +555,27 @@ export function MappaGrigliaScene() {
       }
     >
       {mappa.background && <div className="absolute inset-0 bg-black/55 z-0" />}
+      <AnimatePresence>
+        {transizione && (
+          <motion.div
+            key={`${transizione.da}-${transizione.a}`}
+            className="absolute left-1/2 top-20 z-40 w-[min(520px,calc(100%-2rem))] rounded-md border border-white/15 bg-black/80 px-4 py-3 text-center shadow-2xl"
+            initial={{ opacity: 0, x: '-50%', y: -14, scale: 0.96 }}
+            animate={{ opacity: 1, x: '-50%', y: 0, scale: 1 }}
+            exit={{ opacity: 0, x: '-50%', y: -10, scale: 0.98 }}
+            transition={{ duration: 0.22 }}
+          >
+            <div className="text-[10px] font-bold uppercase tracking-wide text-arka-text-muted">
+              Transizione mappa - Giocatore {transizione.giocatoreId}
+            </div>
+            <div className="mt-1 flex items-center justify-center gap-3 text-sm font-bold text-white">
+              <span className="max-w-[12rem] truncate">{transizione.da}</span>
+              <span className="text-arka-accent">verso</span>
+              <span className="max-w-[12rem] truncate">{transizione.a}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* HUD */}
       <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-30">
         <div className="flex gap-2">
@@ -530,6 +601,13 @@ export function MappaGrigliaScene() {
           </div>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={() => setMostraDebug((v) => !v)}
+            className="arka-button-secondary text-xs py-1 px-3"
+            aria-pressed={mostraDebug}
+          >
+            Debug griglia
+          </button>
           <button
             onClick={() => passaTurnoOverworld()}
             className="arka-button-secondary text-xs py-1 px-3"
@@ -560,6 +638,14 @@ export function MappaGrigliaScene() {
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.35 }}
           >
+            <motion.div
+              className="absolute left-2 top-2 z-20 rounded bg-black/65 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+            >
+              {mappa.id}
+            </motion.div>
             <motion.div
               className="absolute left-0 top-0"
               style={{
@@ -600,8 +686,8 @@ export function MappaGrigliaScene() {
                       height: CELLA,
                     }}
                   >
-                    <span className="opacity-80">
-                      {consumata ? 'OK' : etichettaCasella(c)}
+                    <span className="px-0.5 text-center text-[9px] font-bold leading-none opacity-85">
+                      {mostraDebug ? `${x},${y}` : consumata ? 'OK' : etichettaCasella(c)}
                     </span>
                   </button>
                 )
@@ -649,6 +735,9 @@ export function MappaGrigliaScene() {
           </div>
         </div>
         <div className="arka-panel px-3 py-2 text-[10px] flex flex-col gap-0.5">
+          <div className="text-arka-text-muted uppercase tracking-wide">
+            Leggenda
+          </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm ring-2 ring-sky-400" />
             Movibile
@@ -659,19 +748,23 @@ export function MappaGrigliaScene() {
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-emerald-700/60" />
-            🌿 Cespuglio
+            ERBA Cespuglio
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-rose-700/60" />
-            🧑‍🎤 Allenatore
+            NPC Allenatore
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-amber-700/60" />
-            ⛑️/📦 Edificio
+            PKMN/BOX Edificio
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-indigo-700/60" />
-            🚪 Uscita
+            EXIT Uscita
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-sm bg-white/20 grayscale opacity-40" />
+            OK Consumata
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-slate-900" />

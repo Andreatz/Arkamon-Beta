@@ -20,6 +20,14 @@ import crescitaData from './crescita_hp.json'
 import mappeData from './mappe.json'
 import incontriData from './incontri.json'
 import allenatoriData from './allenatori.json'
+import {
+  CESPUGLI_STANDARD,
+  POKEMON_INCONTRI_COMUNI,
+  POKEMON_INCONTRI_SPECIALI,
+  PROBABILITA_INCONTRI_STANDARD,
+  RANGE_INCONTRI_PERCORSO,
+  ROUTE_GENERATE,
+} from './bilanciamento'
 
 // Cast tipizzati (i JSON non hanno tipi inferiti perfetti dal compilatore)
 export const POKEMON_BASE: PokemonSpecie[] = pokemonData as PokemonSpecie[]
@@ -28,7 +36,40 @@ export const TABELLA_TIPI: TabellaTipi = tipiData as TabellaTipi
 export const CRESCITA_HP: Record<CategoriaHP, number> =
   crescitaData as Record<CategoriaHP, number>
 export const MAPPE: Mappa[] = mappeData as Mappa[]
-export const INCONTRI: IncontroSelvatico[] = incontriData as IncontroSelvatico[]
+const INCONTRI_ROUTE_RESTANTI: IncontroSelvatico[] = ROUTE_GENERATE.flatMap(
+  (luogo, routeIndex) =>
+    CESPUGLI_STANDARD.flatMap((cespuglio, bushIndex) => {
+      const range = RANGE_INCONTRI_PERCORSO[luogo]
+      const livello = Math.min(range.max - 1, range.min + Math.floor(bushIndex / 2))
+      const pokemonComune = POKEMON_INCONTRI_COMUNI[bushIndex]
+      const pokemonMedio =
+        POKEMON_INCONTRI_SPECIALI[(routeIndex + bushIndex) % POKEMON_INCONTRI_SPECIALI.length]
+
+      return [
+        {
+          luogo,
+          cespuglio,
+          pokemonId: pokemonComune,
+          probabilita: PROBABILITA_INCONTRI_STANDARD[0],
+          livelloMin: livello,
+          livelloMax: livello + 1,
+        },
+        {
+          luogo,
+          cespuglio,
+          pokemonId: pokemonMedio,
+          probabilita: bushIndex % 3 === 2 ? 'Difficile' : PROBABILITA_INCONTRI_STANDARD[1],
+          livelloMin: livello + 1,
+          livelloMax: livello + 2,
+        },
+      ] satisfies IncontroSelvatico[]
+    })
+)
+
+export const INCONTRI: IncontroSelvatico[] = [
+  ...(incontriData as IncontroSelvatico[]),
+  ...INCONTRI_ROUTE_RESTANTI,
+]
 export const ALLENATORI: AllenatoreDef[] = allenatoriData as AllenatoreDef[]
 
 // Mappe-griglia (Fase E.6+)

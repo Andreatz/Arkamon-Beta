@@ -9,6 +9,7 @@ import { CittaScene } from '@scenes/CittaScene'
 import { DepositoScene } from '@scenes/DepositoScene'
 import { EvoluzioneScene } from '@scenes/EvoluzioneScene'
 import { AnimatePresence, motion } from 'framer-motion'
+import { AudioController } from '@components/AudioController'
 
 /**
  * Router delle scene.
@@ -20,6 +21,7 @@ function App() {
 
   return (
     <div className="arka-stage">
+      <AudioController />
       <AnimatePresence mode="wait">
         <motion.div
           key={scenaCorrente.scena}

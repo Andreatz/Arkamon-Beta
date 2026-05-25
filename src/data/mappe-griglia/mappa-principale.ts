@@ -1,19 +1,12 @@
 /**
- * mappa-principale (Fase E.6) — versione griglia "macro" della mappa Italia.
+ * mappa-principale (Fase E.8) - versione griglia "macro" della mappa Italia.
  *
- * Espone le mappe-griglia gia migrate come uscite reali
- * (Percorso_1, Venezia, Piacenza). Le altre caselle sono `transito` placeholder e
- * verranno popolate in E.8 con i restanti percorsi/città.
- *
+ * Espone tutte le mappe storiche come uscite reali nel registry griglia.
  * Resta accessibile la versione 2D classica (`MappaPrincipaleScene`) come
- * fallback finché tutte le mappe non sono migrate.
+ * fallback di navigazione finche serve.
  */
 import type { MappaGriglia } from '@/types'
 import { T, U } from './_helpers'
-
-const U_PERCORSO_1 = U('Percorso_1', 0, 6)
-const U_VENEZIA = U('Venezia', 6, 8)
-const U_PIACENZA = U('Piacenza', 1, 7)
 
 export const MAPPA_PRINCIPALE_GRIGLIA: MappaGriglia = {
   id: 'mappa-principale',
@@ -23,10 +16,40 @@ export const MAPPA_PRINCIPALE_GRIGLIA: MappaGriglia = {
   spawnDefault: { x: 7, y: 4 },
   caselle: [
     [T, T, T, T, T, T, T, T, T, T, T, T, T, T],
+    [
+      U('Venezia', 6, 8),
+      U('Percorso_1', 0, 6),
+      U('Piacenza', 1, 7),
+      U('Percorso_2', 1, 3),
+      U('Milano', 1, 4),
+      U('Percorso_3', 1, 3),
+      U('Percorso_4', 1, 3),
+      U('Percorso_5', 1, 3),
+      U('Percorso_6', 1, 3),
+      U('Torino', 1, 4),
+      U('Grosseto', 1, 4),
+      U('Civitavecchia', 1, 4),
+      U('Percorso_7', 1, 3),
+      U('Cagliari', 1, 4),
+    ],
+    [
+      U('Percorso_8', 1, 3),
+      U('Palermo', 1, 4),
+      U('Percorso_9', 1, 3),
+      U('ReggioCalabria', 1, 4),
+      U('Percorso_10', 1, 3),
+      U('Foggia', 1, 4),
+      U('Percorso_11', 1, 3),
+      U('Percorso_12', 1, 3),
+      U('Napoli', 1, 4),
+      U('Molisnt', 1, 4),
+      U('Percorso_13', 1, 3),
+      U('Pescara', 1, 4),
+      U('Percorso_14', 1, 3),
+      U('Roma', 1, 4),
+    ],
     [T, T, T, T, T, T, T, T, T, T, T, T, T, T],
-    [T, T, T, T, T, T, T, U_PERCORSO_1, T, T, T, T, T, T],
     [T, T, T, T, T, T, T, T, T, T, T, T, T, T],
-    [T, T, T, T, U_VENEZIA, T, U_PIACENZA, T, T, T, T, T, T, T],
     [T, T, T, T, T, T, T, T, T, T, T, T, T, T],
     [T, T, T, T, T, T, T, T, T, T, T, T, T, T],
     [T, T, T, T, T, T, T, T, T, T, T, T, T, T],

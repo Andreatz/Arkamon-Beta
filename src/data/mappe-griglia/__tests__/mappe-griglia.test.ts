@@ -5,12 +5,16 @@
 import { describe, it, expect } from 'vitest'
 import {
   MAPPE_GRIGLIA,
+  MILANO,
   PERCORSO_1,
+  PERCORSO_2,
+  PERCORSO_3,
   VENEZIA,
   PIACENZA,
   MAPPA_PRINCIPALE_GRIGLIA,
   getMappaGriglia,
 } from '@data/mappe-griglia'
+import { ALLENATORI, MAPPE, getIncontri } from '@data/index'
 import type { MappaGriglia } from '@/types'
 
 const tutte: MappaGriglia[] = Object.values(MAPPE_GRIGLIA)
@@ -69,6 +73,38 @@ describe('MAPPE_GRIGLIA — invariants', () => {
       }
     }
   )
+
+  it.each(tutte)(
+    '$id: ogni cespuglio ha almeno un incontro selvatico configurato',
+    (m) => {
+      for (const riga of m.caselle) {
+        for (const c of riga) {
+          if (c.tipo !== 'cespuglio') continue
+          expect(getIncontri(m.id, c.cespuglioId).length).toBeGreaterThan(0)
+        }
+      }
+    }
+  )
+
+  it('registra tutte le mappe storiche definite in mappe.json', () => {
+    for (const m of MAPPE) {
+      expect(MAPPE_GRIGLIA[m.nome]?.id).toBe(m.nome)
+    }
+  })
+
+  it('contiene una casella allenatore per ogni allenatore definito nei dati', () => {
+    for (const allenatore of ALLENATORI) {
+      const mappa = MAPPE_GRIGLIA[allenatore.luogo]
+      expect(mappa, `Mappa mancante: ${allenatore.luogo}`).toBeTruthy()
+
+      const trovato = mappa.caselle.some((riga) =>
+        riga.some(
+          (c) => c.tipo === 'allenatore' && c.allenatoreId === allenatore.id
+        )
+      )
+      expect(trovato, `${allenatore.nome} (${allenatore.id}) non piazzato in ${allenatore.luogo}`).toBe(true)
+    }
+  })
 })
 
 describe('Percorso_1', () => {
@@ -132,17 +168,70 @@ describe('Piacenza', () => {
   })
 })
 
+describe('Percorso_2', () => {
+  it('contiene 6 cespugli A..F distinti e Pendolare Lia', () => {
+    const cespugli = new Set<string>()
+    let trovataLia = false
+
+    for (const riga of PERCORSO_2.caselle) {
+      for (const c of riga) {
+        if (c.tipo === 'cespuglio') cespugli.add(c.cespuglioId)
+        if (c.tipo === 'allenatore' && c.allenatoreId === 250) trovataLia = true
+      }
+    }
+
+    expect(cespugli).toEqual(new Set(['A', 'B', 'C', 'D', 'E', 'F']))
+    expect(trovataLia).toBe(true)
+  })
+})
+
+describe('Percorso_3', () => {
+  it('contiene 6 cespugli A..F distinti e Camionista Tito', () => {
+    const cespugli = new Set<string>()
+    let trovatoTito = false
+
+    for (const riga of PERCORSO_3.caselle) {
+      for (const c of riga) {
+        if (c.tipo === 'cespuglio') cespugli.add(c.cespuglioId)
+        if (c.tipo === 'allenatore' && c.allenatoreId === 251) trovatoTito = true
+      }
+    }
+
+    expect(cespugli).toEqual(new Set(['A', 'B', 'C', 'D', 'E', 'F']))
+    expect(trovatoTito).toBe(true)
+  })
+})
+
+describe('Milano', () => {
+  it('contiene Anna Voltaggio (302), palestra, centro Pokemon e deposito', () => {
+    const edifici = new Set<string>()
+    let trovataAnna = false
+
+    for (const riga of MILANO.caselle) {
+      for (const c of riga) {
+        if (c.tipo === 'allenatore' && c.allenatoreId === 302) trovataAnna = true
+        if (c.tipo === 'edificio') edifici.add(c.edificioId)
+      }
+    }
+
+    expect(trovataAnna).toBe(true)
+    expect(edifici.has('palestra')).toBe(true)
+    expect(edifici.has('centro')).toBe(true)
+    expect(edifici.has('deposito')).toBe(true)
+  })
+})
+
 describe('mappa-principale (griglia)', () => {
-  it('ha almeno 3 uscite (verso Percorso_1, Venezia e Piacenza)', () => {
+  it('ha uscite verso tutte le mappe storiche migrate', () => {
     const dest: string[] = []
     for (const riga of MAPPA_PRINCIPALE_GRIGLIA.caselle) {
       for (const c of riga) {
         if (c.tipo === 'uscita') dest.push(c.versoMappaId)
       }
     }
-    expect(dest).toContain('Percorso_1')
-    expect(dest).toContain('Venezia')
-    expect(dest).toContain('Piacenza')
+    for (const m of MAPPE) {
+      expect(dest).toContain(m.nome)
+    }
   })
 })
 

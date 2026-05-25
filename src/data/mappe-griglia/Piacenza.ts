@@ -11,6 +11,7 @@ import type { MappaGriglia } from '@/types'
 import { T, O, X, EDF, U, NPC } from './_helpers'
 
 const U_MAIN = U('mappa-principale', 7, 4)
+const U_PERCORSO_2 = U('Percorso_2', 1, 3)
 
 export const PIACENZA: MappaGriglia = {
   id: 'Piacenza',
@@ -23,7 +24,7 @@ export const PIACENZA: MappaGriglia = {
     [T, O, O, O, T, T, T, O, O, O, T],
     [T, O, EDF('centro'), O, T, T, T, O, EDF('deposito'), O, T],
     [T, O, O, O, T, T, T, O, O, O, T],
-    [T, T, T, T, T, X(301), T, T, T, T, T],
+    [T, T, T, T, T, X(301), T, T, T, T, U_PERCORSO_2],
     [T, T, NPC('piacenza-mercante'), T, T, T, T, T, T, T, T],
     [T, T, T, T, T, T, T, T, T, T, T],
     [U_MAIN, T, T, T, T, T, T, T, T, T, T],
