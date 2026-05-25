@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useGameStore } from '@store/gameStore'
 import {
   caselleAdiacenti,
+  chiaveCasellaConsumata,
   puòInteragire,
   puòMuoversi,
 } from '@engine/movimento'
@@ -86,6 +87,24 @@ function coloreCasella(c: Casella): string {
     default:
       return 'bg-emerald-900/30'
   }
+}
+
+function useViewportSize() {
+  const [size, setSize] = useState({ width: 1280, height: 720 })
+
+  useEffect(() => {
+    const update = () =>
+      setSize({ width: window.innerWidth, height: window.innerHeight })
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  return size
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value))
 }
 
 // ----------------------------------------------------------------
@@ -181,6 +200,7 @@ export function MappaGrigliaScene() {
   const iniziaBattaglia = useGameStore((s) => s.iniziaBattaglia)
   const iniziaBattagliaNPC = useGameStore((s) => s.iniziaBattagliaNPC)
   const curaSquadra = useGameStore((s) => s.curaSquadra)
+  const viewport = useViewportSize()
 
   const [log, setLog] = useState<string[]>([
     "Benvenuto nell'overworld a griglia.",
@@ -431,8 +451,49 @@ export function MappaGrigliaScene() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [posAttivo, turno, mappa])
 
-  // Layout: griglia 10x10 con celle 40x40 → 400x400
-  const CELLA = 40
+  const areaMappa = useMemo(
+    () => ({
+      width: Math.max(320, viewport.width - 96),
+      height: Math.max(260, viewport.height - 220),
+    }),
+    [viewport]
+  )
+
+  const CELLA = useMemo(() => {
+    const lato = Math.min(
+      areaMappa.width / mappa.larghezza,
+      areaMappa.height / mappa.altezza
+    )
+    return Math.floor(Math.max(28, Math.min(64, lato)))
+  }, [areaMappa, mappa.larghezza, mappa.altezza])
+
+  const dimensioniGriglia = useMemo(
+    () => ({
+      width: mappa.larghezza * CELLA,
+      height: mappa.altezza * CELLA,
+    }),
+    [mappa.larghezza, mappa.altezza, CELLA]
+  )
+
+  const dimensioniViewportGriglia = useMemo(
+    () => ({
+      width: Math.min(areaMappa.width, dimensioniGriglia.width),
+      height: Math.min(areaMappa.height, dimensioniGriglia.height),
+    }),
+    [areaMappa, dimensioniGriglia]
+  )
+
+  const camera = useMemo(() => {
+    const targetX = dimensioniViewportGriglia.width / 2 - (posAttivo.x + 0.5) * CELLA
+    const targetY = dimensioniViewportGriglia.height / 2 - (posAttivo.y + 0.5) * CELLA
+    const minX = Math.min(0, dimensioniViewportGriglia.width - dimensioniGriglia.width)
+    const minY = Math.min(0, dimensioniViewportGriglia.height - dimensioniGriglia.height)
+
+    return {
+      x: clamp(targetX, minX, 0),
+      y: clamp(targetY, minY, 0),
+    }
+  }, [CELLA, dimensioniGriglia, dimensioniViewportGriglia, posAttivo.x, posAttivo.y])
 
   return (
     <div
@@ -484,38 +545,53 @@ export function MappaGrigliaScene() {
         </div>
       </div>
 
-      {/* Griglia centrata, con fade su cambio mappa (E.5) */}
-      <div className="flex-1 flex items-center justify-center pt-16 pb-32">
+      {/* Griglia con camera che segue il giocatore attivo (E.9) */}
+      <div className="flex-1 flex items-center justify-center px-6 pt-16 pb-32">
         <AnimatePresence mode="wait">
           <motion.div
             key={mappa.id}
-            className="relative"
+            className="relative overflow-hidden rounded-md border border-white/10 bg-slate-950/45 shadow-2xl"
             style={{
-              width: mappa.larghezza * CELLA,
-              height: mappa.altezza * CELLA,
+              width: dimensioniViewportGriglia.width,
+              height: dimensioniViewportGriglia.height,
             }}
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.35 }}
           >
+            <motion.div
+              className="absolute left-0 top-0"
+              style={{
+                width: dimensioniGriglia.width,
+                height: dimensioniGriglia.height,
+              }}
+              animate={{ x: camera.x, y: camera.y }}
+              transition={{ type: 'spring', stiffness: 220, damping: 28 }}
+            >
             {/* Caselle */}
             {mappa.caselle.map((riga, y) =>
               riga.map((c, x) => {
                 const movibile = isMovibile(x, y)
                 const interagibile = isInteragibile(x, y)
                 const cliccabile = movibile || interagibile
+                const chiaveConsumata = chiaveCasellaConsumata(mappa.id, x, y, c)
+                const consumata =
+                  !!chiaveConsumata &&
+                  giocatoreAttivo.caselleConsumate.has(chiaveConsumata)
                 return (
                   <button
                     key={`${x}-${y}`}
                     onClick={() => cellaClick(x, y)}
                     disabled={!cliccabile}
+                    title={consumata ? 'Gia consumata per questo giocatore' : undefined}
                     className={[
                       'absolute border border-slate-700/60 flex items-center justify-center text-base',
                       coloreCasella(c),
                       cliccabile ? 'cursor-pointer' : 'cursor-default',
                       movibile ? 'ring-2 ring-sky-400 ring-inset' : '',
                       interagibile ? 'ring-2 ring-amber-300 ring-inset' : '',
+                      consumata ? 'opacity-35 grayscale' : '',
                     ].join(' ')}
                     style={{
                       left: x * CELLA,
@@ -524,7 +600,9 @@ export function MappaGrigliaScene() {
                       height: CELLA,
                     }}
                   >
-                    <span className="opacity-80">{etichettaCasella(c)}</span>
+                    <span className="opacity-80">
+                      {consumata ? 'OK' : etichettaCasella(c)}
+                    </span>
                   </button>
                 )
               })
@@ -551,6 +629,7 @@ export function MappaGrigliaScene() {
                 leader={leaderSquadra(giocatore1)}
               />
             )}
+            </motion.div>
           </motion.div>
         </AnimatePresence>
       </div>

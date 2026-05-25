@@ -6,10 +6,12 @@ import type { MappaGriglia } from '@/types'
 import { PERCORSO_1 } from './Percorso_1'
 import { VENEZIA } from './Venezia'
 import { MAPPA_PRINCIPALE_GRIGLIA } from './mappa-principale'
+import { PIACENZA } from './Piacenza'
 
 export const MAPPE_GRIGLIA: Record<string, MappaGriglia> = {
   [PERCORSO_1.id]: PERCORSO_1,
   [VENEZIA.id]: VENEZIA,
+  [PIACENZA.id]: PIACENZA,
   [MAPPA_PRINCIPALE_GRIGLIA.id]: MAPPA_PRINCIPALE_GRIGLIA,
 }
 
@@ -18,4 +20,4 @@ export function getMappaGriglia(id: string): MappaGriglia | null {
   return MAPPE_GRIGLIA[id] ?? null
 }
 
-export { PERCORSO_1, VENEZIA, MAPPA_PRINCIPALE_GRIGLIA }
+export { PERCORSO_1, VENEZIA, PIACENZA, MAPPA_PRINCIPALE_GRIGLIA }

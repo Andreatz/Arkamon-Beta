@@ -7,6 +7,7 @@ import {
   MAPPE_GRIGLIA,
   PERCORSO_1,
   VENEZIA,
+  PIACENZA,
   MAPPA_PRINCIPALE_GRIGLIA,
   getMappaGriglia,
 } from '@data/mappe-griglia'
@@ -113,8 +114,26 @@ describe('Venezia', () => {
   })
 })
 
+describe('Piacenza', () => {
+  it('contiene Luca (allenatore 301), centro Pokemon e deposito', () => {
+    const edifici = new Set<string>()
+    let trovatoLuca = false
+
+    for (const riga of PIACENZA.caselle) {
+      for (const c of riga) {
+        if (c.tipo === 'allenatore' && c.allenatoreId === 301) trovatoLuca = true
+        if (c.tipo === 'edificio') edifici.add(c.edificioId)
+      }
+    }
+
+    expect(trovatoLuca).toBe(true)
+    expect(edifici.has('centro')).toBe(true)
+    expect(edifici.has('deposito')).toBe(true)
+  })
+})
+
 describe('mappa-principale (griglia)', () => {
-  it('ha almeno 2 uscite (verso Percorso_1 e Venezia)', () => {
+  it('ha almeno 3 uscite (verso Percorso_1, Venezia e Piacenza)', () => {
     const dest: string[] = []
     for (const riga of MAPPA_PRINCIPALE_GRIGLIA.caselle) {
       for (const c of riga) {
@@ -123,6 +142,7 @@ describe('mappa-principale (griglia)', () => {
     }
     expect(dest).toContain('Percorso_1')
     expect(dest).toContain('Venezia')
+    expect(dest).toContain('Piacenza')
   })
 })
 

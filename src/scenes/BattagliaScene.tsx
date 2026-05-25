@@ -64,6 +64,7 @@ export function BattagliaScene() {
   const [squadraA, setSquadraA] = useState<PokemonIstanza[]>([])
   const [squadraB, setSquadraB] = useState<PokemonIstanza[]>([])
   const [log, setLog] = useState<string[]>([])
+  const [infoBoxMessaggi, setInfoBoxMessaggi] = useState<string[]>([])
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
@@ -90,14 +91,17 @@ export function BattagliaScene() {
       setSquadraA(battaglia.squadraA ?? [battaglia.pokemonA])
       setSquadraB(battaglia.squadraB ?? [battaglia.pokemonB])
       setLog(battaglia.log)
+      setInfoBoxMessaggi(battaglia.log.slice(-4))
     } else {
       const a = creaIstanza(1, 5)
       const b = creaIstanza(13, 5)
+      const messaggiIniziali = [`Appare ${b?.nome} selvatico!`]
       setPkmnA(a)
       setPkmnB(b)
       setSquadraA(a ? [a] : [])
       setSquadraB(b ? [b] : [])
-      setLog([`Appare ${b?.nome} selvatico!`])
+      setLog(messaggiIniziali)
+      setInfoBoxMessaggi(messaggiIniziali)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -110,6 +114,14 @@ export function BattagliaScene() {
 
   const updateInSquadra = (squadra: PokemonIstanza[], updated: PokemonIstanza) =>
     squadra.map((p) => (p.istanzaId === updated.istanzaId ? updated : p))
+
+  const resetInfoBox = () => setInfoBoxMessaggi([])
+
+  const mostraMessaggi = (messaggi: string[]) => {
+    if (messaggi.length === 0) return
+    setLog((l) => [...l, ...messaggi])
+    setInfoBoxMessaggi((correnti) => [...correnti, ...messaggi].slice(-6))
+  }
 
   const tornaIndietro = () => {
     if (isNPC && esito) risolviBattagliaNPC(esito)
@@ -186,7 +198,7 @@ export function BattagliaScene() {
   const apriScambio = (richiesta: PendingSwitch) => {
     setMostraMoseB(false)
     setAttesaAvversario(null)
-    setLog((l) => [...l, 'Scegli un Pokemon dalla squadra.'])
+    mostraMessaggi(['Scegli un Pokemon dalla squadra.'])
     setScambioRichiesto(richiesta)
   }
 
@@ -195,7 +207,8 @@ export function BattagliaScene() {
     const richiesta = scambioRichiesto
     setPkmnA(scelto)
     setScambioRichiesto(null)
-    setLog((l) => [...l, `${scelto.nome} entra in campo!`])
+    resetInfoBox()
+    mostraMessaggi([`${scelto.nome} entra in campo!`])
 
     if (richiesta.prossimoPasso === 'passaAB') {
       passaTurnoAaB(richiesta.pendingB ?? pkmnB, 300)
@@ -224,7 +237,7 @@ export function BattagliaScene() {
       messaggi.push(`${attivo.nome} è salito al livello ${xpRes.istanza.livello}!`)
     }
     if (xpRes.evoluzionePendente) {
-      messaggi.push(`${attivo.nome} sembra cambiare... (evolverà a fine battaglia)`)
+      messaggi.push(`Cosa? ${attivo.nome} si sta evolvendo!`)
       setEvoluzioniInAttesa((prev) => [
         ...prev,
         {
@@ -234,15 +247,16 @@ export function BattagliaScene() {
         },
       ])
     }
-    if (messaggi.length > 0) setLog((l) => [...l, ...messaggi])
+    mostraMessaggi(messaggi)
     return xpRes.istanza
   }
 
   const eseguiMossa = (numeroMossa: 0 | 1 | 2) => {
     if (terminata || !turnoA) return
+    resetInfoBox()
 
     const statoRes = risolviStatoInizioTurno(pkmnA, hpMaxA)
-    if (statoRes.messaggi.length > 0) setLog((l) => [...l, ...statoRes.messaggi])
+    mostraMessaggi(statoRes.messaggi)
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
@@ -252,14 +266,14 @@ export function BattagliaScene() {
         (p) => p.istanzaId !== pkmnAEffettivo.istanzaId && p.hp > 0
       )
       if (nextA) {
-        setLog((l) => [...l, `${pkmnAEffettivo.nome} e caduto!`])
+        mostraMessaggi([`${pkmnAEffettivo.nome} e caduto!`])
         apriScambio({
           motivo: `${pkmnAEffettivo.nome} non puo continuare.`,
           prossimoPasso: 'continuaA',
         })
         return
       }
-      setLog((l) => [...l, 'Hai perso la battaglia...'])
+      mostraMessaggi(['Hai perso la battaglia...'])
       setEsito('sconfitta')
       setTerminata(true)
       return
@@ -277,7 +291,7 @@ export function BattagliaScene() {
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
       setPkmnA(cura.istanza)
       setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
-      setLog((l) => [...l, ...cura.messaggi])
+      mostraMessaggi(cura.messaggi)
       passaTurnoAaB(pkmnB, 1200)
       return
     }
@@ -293,7 +307,7 @@ export function BattagliaScene() {
     setPkmnB(nuovoB)
     const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
     setSquadraB(nuovaSquadraB)
-    setLog((l) => [...l, ...ris.messaggi])
+    mostraMessaggi(ris.messaggi)
 
     setTimeout(() => setShaking(null), 400)
 
@@ -316,13 +330,13 @@ export function BattagliaScene() {
         (p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0
       )
       if (nextB && isNPC) {
-        setLog((l) => [...l, `L'avversario manda in campo ${nextB.nome}!`])
+        mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
         setPkmnB(nextB)
         // BR.3: il nuovo Pokémon nemico attacca subito (VBA: Cells(12,2)="B")
         passaTurnoAaB(nextB, 800)
         return
       }
-      setLog((l) => [...l, 'Hai vinto la battaglia!'])
+      mostraMessaggi(['Hai vinto la battaglia!'])
       setEsito('vittoria')
       setTerminata(true)
       return
@@ -333,10 +347,7 @@ export function BattagliaScene() {
         (p) => p.istanzaId !== aDopoAutodanno.istanzaId && p.hp > 0
       )
       if (nextA) {
-        setLog((l) => [
-          ...l,
-          `${aDopoAutodanno.nome} e esausto!`,
-        ])
+        mostraMessaggi([`${aDopoAutodanno.nome} e esausto!`])
         apriScambio({
           motivo: `${aDopoAutodanno.nome} non puo continuare.`,
           prossimoPasso: 'passaAB',
@@ -344,7 +355,7 @@ export function BattagliaScene() {
         })
         return
       }
-      setLog((l) => [...l, 'Hai perso la battaglia...'])
+      mostraMessaggi(['Hai perso la battaglia...'])
       setEsito('sconfitta')
       setTerminata(true)
       return
@@ -356,19 +367,19 @@ export function BattagliaScene() {
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
   const eseguiCattura = () => {
     if (terminata || !turnoA) return
+    resetInfoBox()
     const ris = tentaCattura(pkmnB)
-    setLog((l) => [
-      ...l,
+    mostraMessaggi([
       `Lanci una pokeball... (3d6=${ris.roll}, soglia=${ris.soglia.toFixed(1)})`,
     ])
     if (ris.riuscita) {
-      setLog((l) => [...l, `${pkmnB.nome} è stato catturato!`])
+      mostraMessaggi([`${pkmnB.nome} e stato catturato!`])
       aggiungiPokemon(giocatoreAttivo, pkmnB)
       setEsito('vittoria')
       setTerminata(true)
       return
     }
-    setLog((l) => [...l, `${pkmnB.nome} è scappato dalla pokeball!`])
+    mostraMessaggi([`${pkmnB.nome} e scappato dalla pokeball!`])
     setTurnoA(false)
     setAttesaAvversario(pkmnB)
   }
@@ -376,10 +387,10 @@ export function BattagliaScene() {
   const eseguiMasterball = () => {
     if (terminata || !turnoA) return
     if (!usaOggetto(giocatoreAttivo, 'masterball')) return
-    setLog((l) => [
-      ...l,
-      `Lanci una Masterball... 💎`,
-      `${pkmnB.nome} è stato catturato!`,
+    resetInfoBox()
+    mostraMessaggi([
+      'Lanci una Masterball...',
+      `${pkmnB.nome} e stato catturato!`,
     ])
     aggiungiPokemon(giocatoreAttivo, pkmnB)
     setEsito('vittoria')
@@ -387,19 +398,21 @@ export function BattagliaScene() {
   }
 
   const turnoAvversario = (statoBcorrente: PokemonIstanza) => {
+    resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
     const statoRes = risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
-    if (statoRes.messaggi.length > 0) setLog((l) => [...l, ...statoRes.messaggi])
+    mostraMessaggi(statoRes.messaggi)
     const bEffettivo = statoRes.istanza
     setPkmnB(bEffettivo)
     setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
 
     if (bEffettivo.hp <= 0) {
+      mostraMessaggi([`${bEffettivo.nome} e caduto!`])
       const nextB = squadraB.find(
         (p) => p.istanzaId !== bEffettivo.istanzaId && p.hp > 0
       )
       if (nextB && isNPC) {
-        setLog((l) => [...l, `${bEffettivo.nome} è caduto! L'avversario manda in campo ${nextB.nome}!`])
+        mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
         setPkmnB(nextB)
         setTurnoA(true)
         return
@@ -407,7 +420,7 @@ export function BattagliaScene() {
       const aggiornatoA = premiaConXP(pkmnA, bEffettivo)
       setPkmnA(aggiornatoA)
       setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-      setLog((l) => [...l, 'Hai vinto la battaglia!'])
+      mostraMessaggi(['Hai vinto la battaglia!'])
       setEsito('vittoria')
       setTerminata(true)
       return
@@ -440,7 +453,7 @@ export function BattagliaScene() {
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
       setPkmnB(cura.istanza)
       setSquadraB((sq) => updateInSquadra(sq, cura.istanza))
-      setLog((l) => [...l, ...cura.messaggi])
+      mostraMessaggi(cura.messaggi)
       passaTurnoBaA()
       return
     }
@@ -458,7 +471,7 @@ export function BattagliaScene() {
     setPkmnA(nuovoA)
     const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
     setSquadraA(nuovaSquadraA)
-    setLog((l) => [...l, ...ris.messaggi])
+    mostraMessaggi(ris.messaggi)
     setTimeout(() => setShaking(null), 400)
 
     let bDopoAutodanno = bEffettivo
@@ -476,17 +489,14 @@ export function BattagliaScene() {
         (p) => p.istanzaId !== nuovoA.istanzaId && p.hp > 0
       )
       if (nextA) {
-        setLog((l) => [
-          ...l,
-          `${nuovoA.nome} e KO!`,
-        ])
+        mostraMessaggi([`${nuovoA.nome} e KO!`])
         apriScambio({
           motivo: `${nuovoA.nome} e KO.`,
           prossimoPasso: 'passaAdA',
         })
         return
       }
-      setLog((l) => [...l, 'Hai perso la battaglia...'])
+      mostraMessaggi(['Hai perso la battaglia...'])
       setEsito('sconfitta')
       setTerminata(true)
       return
@@ -497,10 +507,7 @@ export function BattagliaScene() {
         (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
       )
       if (nextB && isNPC) {
-        setLog((l) => [
-          ...l,
-          `${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`,
-        ])
+        mostraMessaggi([`${bDopoAutodanno.nome} e esausto! L'avversario manda in campo ${nextB.nome}!`])
         setPkmnB(nextB)
         setTurnoA(true)
         return
@@ -508,7 +515,7 @@ export function BattagliaScene() {
       const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
       setPkmnA(aggiornatoA)
       setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-      setLog((l) => [...l, 'Hai vinto la battaglia!'])
+      mostraMessaggi(['Hai vinto la battaglia!'])
       setEsito('vittoria')
       setTerminata(true)
       return
@@ -587,7 +594,7 @@ export function BattagliaScene() {
       />
 
       <InfoBox
-        messaggi={log}
+        messaggi={infoBoxMessaggi.length > 0 ? infoBoxMessaggi : log.slice(-4)}
         showOpponentButton={!!attesaAvversario && !terminata}
         onOpponentTurn={confermaTurnoAvversario}
       />
@@ -684,13 +691,7 @@ export function BattagliaScene() {
           className="arka-button absolute bottom-4 left-4 z-20"
           onClick={tornaIndietro}
         >
-          {luogoRitorno === 'mappa-griglia'
-            ? "Torna all'overworld"
-            : isPercorso
-            ? 'Torna al percorso'
-            : luogoRitorno !== 'mappa-principale'
-            ? 'Torna in città'
-            : 'Torna alla mappa'}
+          Prosegui
         </button>
       )}
 
@@ -740,12 +741,18 @@ function InfoBox({
   onOpponentTurn: () => void
 }) {
   const righe = messaggi.slice(-4)
+  const frameSrc = assetUrl('/ui/infobox.png')
 
   return (
     <div
-      className="absolute top-[38%] left-1/2 -translate-x-1/2 z-20 w-[min(44vw,560px)] min-h-[124px] rounded-lg border border-amber-200/35 bg-slate-950/78 px-6 py-5 text-white shadow-2xl backdrop-blur-sm"
+      className="absolute top-[38%] left-1/2 z-20 aspect-[456/173] w-[clamp(380px,44vw,590px)] -translate-x-1/2 text-slate-950 drop-shadow-2xl"
+      style={{
+        backgroundImage: `url(${frameSrc})`,
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
-      <div className="space-y-1.5 pr-4 text-[15px] font-semibold leading-snug">
+      <div className="absolute inset-x-[8%] top-[16%] space-y-1.5 pr-[28%] text-[clamp(13px,1vw,16px)] font-extrabold leading-snug">
         {righe.map((msg, idx) => (
           <p key={`${idx}-${msg}`} className="truncate">
             {msg}
@@ -755,7 +762,7 @@ function InfoBox({
 
       {showOpponentButton && (
         <button
-          className="absolute bottom-4 right-5 rounded-md bg-amber-400 px-4 py-2 text-xs font-extrabold text-slate-950 shadow-lg hover:bg-amber-300 active:scale-95"
+          className="absolute bottom-[13%] right-[8%] rounded-md bg-amber-400 px-4 py-2 text-xs font-extrabold text-slate-950 shadow-lg hover:bg-amber-300 active:scale-95"
           onClick={onOpponentTurn}
         >
           Avversario...
@@ -946,28 +953,34 @@ function HpBar({
   const pct = Math.max(0, Math.min(100, (hp / hpMax) * 100))
   const colore = pct > 60 ? 'var(--hp-high)' : pct > 25 ? 'var(--hp-mid)' : 'var(--hp-low)'
   const badge = stato ? STATO_BADGE[stato] : null
-  const accent = side === 'player' ? '#60a5fa' : '#ef4444'
+  const frameSrc = assetUrl(`/ui/hp_bar_${side}.png`)
 
   return (
     <div
-      className={`absolute z-20 w-[min(28vw,390px)] rounded-lg border border-white/15 bg-slate-950/82 px-4 py-3 text-white shadow-2xl backdrop-blur-sm ${className}`}
-      style={{ borderLeft: `5px solid ${accent}` }}
+      className={`absolute z-20 w-[clamp(310px,34vw,500px)] aspect-[849/114] text-white drop-shadow-2xl ${className}`}
+      style={{
+        backgroundImage: `url(${frameSrc})`,
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
-      <div className="flex items-center justify-between gap-3">
-        <span className="min-w-0 truncate text-[15px] font-extrabold leading-none">
+      <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
+        <span className="min-w-0 truncate text-[clamp(13px,1.25vw,18px)] font-extrabold leading-none text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]">
           {nome}
           {badge && (
             <span
-              className={`ml-2 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${badge.color} text-white`}
+              className={`ml-2 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${badge.color} text-white`}
               title={stato}
             >
               {badge.emoji} {badge.label}
             </span>
           )}
         </span>
-        <span className="shrink-0 text-[12px] font-extrabold text-slate-200">LV. {livello}</span>
+        <span className="shrink-0 text-[clamp(11px,1vw,15px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]">
+          LV. {livello}
+        </span>
       </div>
-      <div className="mt-3 h-[9px] overflow-hidden rounded-full bg-black/60 ring-1 ring-white/15">
+      <div className="absolute left-[10.5%] top-[70%] h-[16%] w-[59.2%] overflow-hidden rounded-r-[999px] bg-black/35">
         <motion.div
           className="h-full"
           style={{ backgroundColor: colore }}
@@ -976,7 +989,7 @@ function HpBar({
           transition={{ duration: 0.5, ease: 'easeOut' }}
         />
       </div>
-      <div className="mt-1 text-right text-[11px] font-bold text-slate-300">
+      <div className="absolute left-[72%] right-[5%] top-[68%] text-right text-[clamp(10px,0.9vw,13px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]">
         {hp}/{hpMax}
       </div>
     </div>
@@ -1027,6 +1040,7 @@ function MoveButton({
   const dadi = mossa.dadiPerLivello[String(livello)] ?? 1
   const incremento = mossa.incrementoPerLivello[String(livello)] ?? 0
   const coloreTipo = typeColor(mossa.tipo)
+  const frameSrc = assetUrl('/ui/move_button.png')
 
   return (
     <motion.button
@@ -1034,18 +1048,24 @@ function MoveButton({
       whileTap={!disabled ? { scale: 0.95 } : {}}
       disabled={disabled}
       onClick={onClick}
-      className="relative min-h-[92px] overflow-hidden rounded-md border border-white/15 bg-slate-900/88 px-4 py-3 text-left text-white shadow-lg transition-colors hover:bg-slate-800/95 disabled:cursor-not-allowed disabled:opacity-45"
+      className="relative min-h-[104px] overflow-hidden px-5 py-4 text-left text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
       style={{
-        borderLeft: `6px solid ${coloreTipo}`,
+        backgroundImage: `url(${frameSrc})`,
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
       }}
     >
-      <div className="truncate pr-2 text-[15px] font-extrabold leading-tight">{mossa.nome}</div>
-      <div className="mt-3 flex items-center justify-between gap-2 text-[12px] font-bold text-slate-100">
-        <span className="rounded bg-black/35 px-2 py-1">
+      <div
+        className="absolute left-4 top-4 h-[calc(100%-32px)] w-1.5 rounded-full"
+        style={{ backgroundColor: coloreTipo }}
+      />
+      <div className="truncate pl-3 pr-2 text-[15px] font-extrabold leading-tight">{mossa.nome}</div>
+      <div className="mt-4 flex items-center justify-between gap-2 pl-3 text-[12px] font-bold">
+        <span className="rounded bg-white/60 px-2 py-1 text-slate-900 shadow-inner">
           D6 {dadi} +{incremento}
         </span>
         <span
-          className="rounded px-2 py-1 text-[11px] font-extrabold uppercase tracking-wide text-slate-950"
+          className="rounded px-2 py-1 text-[11px] font-extrabold uppercase text-slate-950 shadow"
           style={{ backgroundColor: coloreTipo }}
         >
           {mossa.tipo}
