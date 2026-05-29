@@ -73,6 +73,16 @@ npm run tauri:dev # app desktop in sviluppo, richiede Rust/Cargo
 npm run tauri:build # build desktop/installer, richiede Rust/Cargo
 ```
 
+## Modalita Admin Grafica
+
+Arkamon include una modalita admin locale per modificare colori, UI e preset grafici.
+
+Attivazione: `CTRL + SHIFT + A`
+
+La configurazione viene salvata separatamente dalla partita.
+
+Vedi: [docs/ADMIN_MODE.md](./docs/ADMIN_MODE.md)
+
 ## Roadmap Breve
 
 - [x] Fase A: parita VBA core

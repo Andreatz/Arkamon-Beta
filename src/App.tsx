@@ -10,6 +10,8 @@ import { DepositoScene } from '@scenes/DepositoScene'
 import { EvoluzioneScene } from '@scenes/EvoluzioneScene'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AudioController } from '@components/AudioController'
+import { AdminOverlay } from '@/admin/AdminOverlay'
+import { AdminRuntime } from '@/admin/AdminRuntime'
 
 /**
  * Router delle scene.
@@ -21,7 +23,9 @@ function App() {
 
   return (
     <div className="arka-stage">
+      <AdminRuntime />
       <AudioController />
+      <AdminOverlay />
       <AnimatePresence mode="wait">
         <motion.div
           key={scenaCorrente.scena}

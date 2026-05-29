@@ -9,16 +9,16 @@ export default {
         // I nomi diventano classi Tailwind: bg-arka-bg, text-arka-accent, ecc.
         // ==============================================
         arka: {
-          bg: '#0f172a',                  // bg-arka-bg
-          surface: '#1e293b',             // bg-arka-surface
-          'surface-hover': '#334155',     // bg-arka-surface-hover
-          accent: '#f59e0b',              // bg-arka-accent
-          'accent-hover': '#fbbf24',
-          danger: '#dc2626',
-          success: '#16a34a',
-          text: '#f1f5f9',                // text-arka-text
-          'text-muted': '#94a3b8',        // text-arka-text-muted
-          border: '#475569',              // border-arka-border
+          bg: 'var(--arka-bg)',                  // bg-arka-bg
+          surface: 'var(--arka-surface)',        // bg-arka-surface
+          'surface-hover': 'var(--arka-surface-hover)',
+          accent: 'var(--arka-primary)',         // bg-arka-accent
+          'accent-hover': 'var(--arka-primary-hover)',
+          danger: 'var(--hp-low)',
+          success: 'var(--hp-high)',
+          text: 'var(--arka-text)',              // text-arka-text
+          'text-muted': 'var(--arka-text-muted)',
+          border: 'var(--arka-border)',          // border-arka-border
         },
         // Colori per i tipi di pokémon - usati nelle classi tipo bg-tipo-fuoco
         tipo: {

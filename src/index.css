@@ -24,6 +24,14 @@
   --hp-mid: #eab308;
   --hp-low: #dc2626;
 
+  /* Admin Theme Editor */
+  --arka-panel-radius: 16px;
+  --arka-button-radius: 12px;
+  --arka-panel-opacity: 1;
+  --arka-shadow-intensity: 1;
+  --arka-button-scale: 0.95;
+  --arka-stage-scale: 1;
+
   /* Spaziature */
   --spacing-game: 1rem;
 
@@ -58,18 +66,32 @@ html, body {
  */
 @layer components {
   .arka-panel {
-    @apply bg-arka-surface border border-arka-border rounded-xl shadow-2xl;
+    @apply bg-arka-surface border border-arka-border shadow-2xl;
+    border-radius: var(--arka-panel-radius);
+    opacity: var(--arka-panel-opacity);
+    box-shadow: 0 24px 70px rgb(0 0 0 / calc(0.35 * var(--arka-shadow-intensity)));
   }
 
   .arka-button {
-    @apply px-6 py-3 bg-arka-accent text-arka-bg font-bold rounded-lg
-           hover:brightness-110 active:scale-95 transition-all
+    @apply px-6 py-3 bg-arka-accent text-arka-bg font-bold
+           hover:brightness-110 transition-all
            shadow-lg disabled:opacity-50 disabled:cursor-not-allowed;
+    border-radius: var(--arka-button-radius);
+    box-shadow: 0 10px 20px rgb(0 0 0 / calc(0.22 * var(--arka-shadow-intensity)));
+  }
+
+  .arka-button:active {
+    transform: scale(var(--arka-button-scale));
   }
 
   .arka-button-secondary {
-    @apply px-6 py-3 bg-arka-surface text-white border border-arka-border rounded-lg
-           hover:bg-slate-700 active:scale-95 transition-all;
+    @apply px-6 py-3 bg-arka-surface text-white border border-arka-border
+           hover:bg-arka-surface-hover transition-all;
+    border-radius: var(--arka-button-radius);
+  }
+
+  .arka-button-secondary:active {
+    transform: scale(var(--arka-button-scale));
   }
 
   /* Container principale del gioco con aspect ratio 16:9 */
@@ -78,6 +100,14 @@ html, body {
     aspect-ratio: 16 / 9;
     width: min(100vw, calc(100vh * 16 / 9));
     height: min(100vh, calc(100vw * 9 / 16));
+    transform: scale(var(--arka-stage-scale));
+    transform-origin: center;
+  }
+
+  .arka-admin-panel,
+  .arka-admin-panel * {
+    user-select: text;
+    -webkit-user-select: text;
   }
 }
 
@@ -85,4 +115,10 @@ html, body {
 * {
   user-select: none;
   -webkit-user-select: none;
+}
+
+.arka-admin-panel,
+.arka-admin-panel * {
+  user-select: text;
+  -webkit-user-select: text;
 }
