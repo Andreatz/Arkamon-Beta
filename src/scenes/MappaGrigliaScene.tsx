@@ -17,6 +17,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useGameStore } from '@store/gameStore'
+import { useAdminStore } from '@store/adminStore'
+import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import {
   caselleAdiacenti,
   chiaveCasellaConsumata,
@@ -29,6 +31,7 @@ import { generaIncontroDaCespuglio } from '@engine/encounters'
 import { getIncontri } from '@data/index'
 import { MAPPE_GRIGLIA, PERCORSO_1 } from '@data/mappe-griglia'
 import { assetUrl } from '@/utils/assetUrl'
+import type { AdminLayoutRect, AdminMapGridLayoutKey } from '@/theme/adminThemeTypes'
 import type {
   Casella,
   MappaGriglia,
@@ -229,6 +232,9 @@ export function MappaGrigliaScene() {
   const iniziaBattagliaNPC = useGameStore((s) => s.iniziaBattagliaNPC)
   const curaSquadra = useGameStore((s) => s.curaSquadra)
   const viewport = useViewportSize()
+  const layoutEditing = useAdminStore((s) => s.layoutEditing)
+  const mapGridLayout = useAdminStore((s) => s.theme.layouts.mapGrid)
+  const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const [mostraDebug, setMostraDebug] = useState(false)
   const [transizione, setTransizione] = useState<{
@@ -240,6 +246,8 @@ export function MappaGrigliaScene() {
     "Benvenuto nell'overworld a griglia.",
     'Movimento: WASD/frecce o click. Spazio per interagire.',
   ])
+  const updateMapGridLayout = (key: AdminMapGridLayoutKey, rect: AdminLayoutRect) =>
+    updateSceneLayout({ scene: 'mapGrid', key, rect })
 
   // La mappa visualizzata segue il giocatore attivo. In assenza di una mappa
   // valida nel registry (es. avatar ancora su `mappa-principale`), usa il
@@ -547,6 +555,7 @@ export function MappaGrigliaScene() {
 
   return (
     <div
+      data-admin-layout-root
       className="relative w-full h-full bg-slate-950 overflow-hidden flex flex-col bg-cover bg-center"
       style={
         mappa.background
@@ -577,7 +586,15 @@ export function MappaGrigliaScene() {
         )}
       </AnimatePresence>
       {/* HUD */}
-      <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-30">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="HUD mappa"
+        rect={mapGridLayout.hud}
+        editing={layoutEditing}
+        onChange={(rect) => updateMapGridLayout('hud', rect)}
+        zIndex={30}
+      >
+      <div className="flex h-full w-full justify-between items-center">
         <div className="flex gap-2">
           <div className="arka-panel px-4 py-2">
             <span className="text-arka-text-muted text-xs">Turno di:</span>
@@ -622,9 +639,18 @@ export function MappaGrigliaScene() {
           </button>
         </div>
       </div>
+      </AdminLayoutItem>
 
       {/* Griglia con camera che segue il giocatore attivo (E.9) */}
-      <div className="flex-1 flex items-center justify-center px-6 pt-16 pb-32">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Griglia"
+        rect={mapGridLayout.grid}
+        editing={layoutEditing}
+        onChange={(rect) => updateMapGridLayout('grid', rect)}
+        zIndex={10}
+      >
+      <div className="flex h-full w-full items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={mappa.id}
@@ -719,10 +745,18 @@ export function MappaGrigliaScene() {
           </motion.div>
         </AnimatePresence>
       </div>
+      </AdminLayoutItem>
 
       {/* Log + leggenda */}
-      <div className="absolute bottom-3 left-3 right-3 flex gap-3 z-30 items-end">
-        <div className="arka-panel px-3 py-2 flex-1 max-h-32 overflow-hidden">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Log"
+        rect={mapGridLayout.bottomLog}
+        editing={layoutEditing}
+        onChange={(rect) => updateMapGridLayout('bottomLog', rect)}
+        zIndex={30}
+      >
+        <div className="arka-panel h-full w-full overflow-hidden px-3 py-2">
           <div className="text-arka-text-muted text-[10px] uppercase mb-1">
             Log
           </div>
@@ -734,7 +768,16 @@ export function MappaGrigliaScene() {
             ))}
           </div>
         </div>
-        <div className="arka-panel px-3 py-2 text-[10px] flex flex-col gap-0.5">
+      </AdminLayoutItem>
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Legenda"
+        rect={mapGridLayout.legend}
+        editing={layoutEditing}
+        onChange={(rect) => updateMapGridLayout('legend', rect)}
+        zIndex={30}
+      >
+        <div className="arka-panel flex h-full w-full flex-col gap-0.5 overflow-hidden px-3 py-2 text-[10px]">
           <div className="text-arka-text-muted uppercase tracking-wide">
             Leggenda
           </div>
@@ -771,7 +814,7 @@ export function MappaGrigliaScene() {
             Ostacolo
           </div>
         </div>
-      </div>
+      </AdminLayoutItem>
     </div>
   )
 }

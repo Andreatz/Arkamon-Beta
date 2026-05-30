@@ -1,4 +1,6 @@
 import { useGameStore } from '@store/gameStore'
+import { useAdminStore } from '@store/adminStore'
+import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getPokemon } from '@data/index'
 import { calcolaHPMax } from '@engine/battleEngine'
 import {
@@ -11,6 +13,7 @@ import {
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import type { PokemonIstanza } from '@/types'
+import type { AdminDepositLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import { DEPOSIT_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 
@@ -34,9 +37,14 @@ export function DepositoScene() {
     giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
   )
   const scambiaSlot = useGameStore((s) => s.scambiaSlot)
+  const layoutEditing = useAdminStore((s) => s.layoutEditing)
+  const depositLayout = useAdminStore((s) => s.theme.layouts.deposit)
+  const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const [boxCorrente, setBoxCorrente] = useState(1)
   const [selezionato, setSelezionato] = useState<SlotRef | null>(null)
+  const updateDepositLayout = (key: AdminDepositLayoutKey, rect: AdminLayoutRect) =>
+    updateSceneLayout({ scene: 'deposit', key, rect })
 
   const refsUguali = (a: SlotRef | null, b: SlotRef): boolean => {
     if (!a) return false
@@ -64,11 +72,20 @@ export function DepositoScene() {
 
   return (
     <div
-      className="w-full h-full flex flex-col bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 p-6 bg-cover bg-center"
+      data-admin-layout-root
+      className="relative w-full h-full bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 bg-cover bg-center"
       style={{ backgroundImage: `url(${DEPOSIT_BG})` }}
     >
       {/* HUD top */}
-      <div className="flex justify-between items-center mb-4">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="HUD deposito"
+        rect={depositLayout.hud}
+        editing={layoutEditing}
+        onChange={(rect) => updateDepositLayout('hud', rect)}
+        zIndex={30}
+      >
+      <div className="flex h-full w-full justify-between items-center">
         <button
           className="arka-button-secondary text-sm py-2 px-4"
           onClick={() => scenaIndietro()}
@@ -81,10 +98,18 @@ export function DepositoScene() {
           <span className="text-arka-accent font-bold ml-2">{giocatoreAttivo}</span>
         </div>
       </div>
+      </AdminLayoutItem>
 
-      <div className="flex-1 flex gap-6 max-w-7xl mx-auto w-full">
         {/* Box deposito */}
-        <div className="flex-1 arka-panel p-4">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Box deposito"
+        rect={depositLayout.boxGrid}
+        editing={layoutEditing}
+        onChange={(rect) => updateDepositLayout('boxGrid', rect)}
+        zIndex={20}
+      >
+        <div className="arka-panel h-full w-full overflow-hidden p-4">
           <div className="flex items-center justify-between mb-4">
             <button
               disabled={boxCorrente <= 1}
@@ -122,9 +147,18 @@ export function DepositoScene() {
             })}
           </div>
         </div>
+      </AdminLayoutItem>
 
         {/* Squadra */}
-        <div className="w-80 arka-panel p-4 flex flex-col">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Squadra"
+        rect={depositLayout.teamPanel}
+        editing={layoutEditing}
+        onChange={(rect) => updateDepositLayout('teamPanel', rect)}
+        zIndex={20}
+      >
+        <div className="arka-panel h-full w-full p-4 flex flex-col">
           <h3 className="text-lg font-bold mb-3 text-center">
             Squadra <span className="text-arka-text-muted text-sm">{giocatore.squadra.length}/{SQUADRA_MAX}</span>
           </h3>
@@ -144,14 +178,23 @@ export function DepositoScene() {
             })}
           </div>
         </div>
-      </div>
+      </AdminLayoutItem>
 
       {/* Info bar in basso */}
-      <div className="mt-4 arka-panel px-4 py-2 text-sm text-center">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Info"
+        rect={depositLayout.infoBar}
+        editing={layoutEditing}
+        onChange={(rect) => updateDepositLayout('infoBar', rect)}
+        zIndex={30}
+      >
+      <div className="arka-panel flex h-full w-full items-center justify-center px-4 py-2 text-sm text-center">
         {selezionato
           ? '✋ Slot selezionato — clicca un altro slot per scambiare/spostare, o di nuovo lo stesso per annullare'
           : '🖱️ Clicca uno slot occupato per selezionarlo'}
       </div>
+      </AdminLayoutItem>
     </div>
   )
 }

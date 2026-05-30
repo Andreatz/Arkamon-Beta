@@ -15,7 +15,7 @@ export const MAPPA_PRINCIPALE_GRIGLIA: MappaGriglia = {
   background: '/maps/Mappa-Finale.jpg',
   spawnDefault: { x: 7, y: 4 },
   caselle: [
-    [T, T, T, T, T, T, T, T, T, T, T, T, T, T],
+    [U('Pordenone', 5, 3), T, T, T, T, T, T, T, T, T, T, T, T, T],
     [
       U('Venezia', 6, 8),
       U('Percorso_1', 0, 6),

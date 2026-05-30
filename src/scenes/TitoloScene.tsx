@@ -1,6 +1,11 @@
+import { useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
+import { useAdminStore } from '@store/adminStore'
 import { motion } from 'framer-motion'
 import { assetUrl } from '@/utils/assetUrl'
+
+const DEFAULT_TITLE_LOGO = '/ui/logo_arkamon.png'
+const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
 
 /**
  * Schermata titolo.
@@ -11,23 +16,69 @@ export function TitoloScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const reset = useGameStore((s) => s.reset)
   const haGiocatori = useGameStore((s) => s.giocatore1.squadra.length > 0)
+  const titleLogo = useAdminStore((s) => s.theme.assets.titleLogo)
+  const titleBackground = useAdminStore((s) => s.theme.assets.titleBackground)
+  const [logoFailed, setLogoFailed] = useState(false)
+  const [backgroundFailed, setBackgroundFailed] = useState(false)
+
+  useEffect(() => {
+    setLogoFailed(false)
+  }, [titleLogo])
+
+  useEffect(() => {
+    setBackgroundFailed(false)
+  }, [titleBackground])
+
+  const logoPath = titleLogo && !logoFailed ? titleLogo : DEFAULT_TITLE_LOGO
+  const backgroundPath =
+    titleBackground && !backgroundFailed ? titleBackground : DEFAULT_TITLE_BACKGROUND_VIDEO
+  const hasBackground = Boolean(backgroundPath && !backgroundFailed)
+  const hasVideoBackground = /\.(mp4|webm|ogg)$/i.test(backgroundPath)
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950">
+    <div className="relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950">
+      {hasBackground && hasVideoBackground ? (
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src={assetUrl(backgroundPath)}
+          autoPlay
+          muted
+          loop
+          playsInline
+          onError={() => setBackgroundFailed(true)}
+        />
+      ) : null}
+      {hasBackground && !hasVideoBackground ? (
+        <img
+          src={assetUrl(backgroundPath)}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          onError={() => setBackgroundFailed(true)}
+        />
+      ) : null}
+      {hasBackground ? (
+        <div className="absolute inset-0 bg-[color-mix(in_srgb,var(--arka-bg)_45%,transparent)]" />
+      ) : null}
+
       <motion.img
-        src={assetUrl('/ui/logo_arkamon.png')}
+        src={assetUrl(logoPath)}
         alt="Arkamon"
-        className="w-96 max-w-[80%] mb-4 drop-shadow-2xl"
+        className="relative z-10 w-96 max-w-[80%] mb-4 drop-shadow-2xl"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, type: 'spring' }}
         onError={(e) => {
-          ;(e.currentTarget as HTMLImageElement).style.display = 'none'
+          if (logoPath !== DEFAULT_TITLE_LOGO) {
+            setLogoFailed(true)
+            return
+          }
+
+          e.currentTarget.style.display = 'none'
         }}
       />
       <h1 className="sr-only">ARKAMON</h1>
       <motion.p
-        className="text-arka-text-muted mb-12 text-lg italic"
+        className="relative z-10 text-arka-text-muted mb-12 text-lg italic"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
@@ -36,7 +87,7 @@ export function TitoloScene() {
       </motion.p>
 
       <motion.div
-        className="flex flex-col gap-3 w-72"
+        className="relative z-10 flex flex-col gap-3 w-72"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 1 }}
@@ -60,7 +111,7 @@ export function TitoloScene() {
         )}
       </motion.div>
 
-      <p className="absolute bottom-4 text-arka-text-muted text-xs">
+      <p className="absolute bottom-4 z-10 text-arka-text-muted text-xs">
         v0.1.0 · powered by React + TypeScript + Tailwind
       </p>
     </div>

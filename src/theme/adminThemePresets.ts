@@ -1,5 +1,14 @@
 import type { AdminTheme } from './adminThemeTypes'
-import { defaultAdminTheme } from './defaultAdminTheme'
+import {
+  defaultAdminTheme,
+  defaultBattleLayout,
+  defaultDepositLayout,
+  defaultEvolutionLayout,
+  defaultMainMapNodePositions,
+  defaultMainMapRoads,
+  defaultMainMapUiLayout,
+  defaultMapGridLayout,
+} from './defaultAdminTheme'
 
 export const adminThemePresets: AdminTheme[] = [
   defaultAdminTheme,
@@ -26,6 +35,17 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 1.2,
       buttonScale: 0.94,
       stageScale: 1,
+      mainMapRoadOpacity: 0.42,
+    },
+    assets: {},
+    layouts: {
+      battle: defaultBattleLayout,
+      mainMapNodes: defaultMainMapNodePositions,
+      mainMapRoads: defaultMainMapRoads,
+      mainMapUi: defaultMainMapUiLayout,
+      mapGrid: defaultMapGridLayout,
+      deposit: defaultDepositLayout,
+      evolution: defaultEvolutionLayout,
     },
   },
   {
@@ -51,6 +71,19 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 0.65,
       buttonScale: 0.96,
       stageScale: 1,
+      mainMapRoadOpacity: 0.42,
+    },
+    assets: {
+      titleBackground: '/assets/s220308-cartoon-palm-tree-e03-mainpreview-beaece814012dcedf276eb90c00a71ed0e83e25e12b2801c4c825ab8f330bc4e.jpg',
+    },
+    layouts: {
+      battle: defaultBattleLayout,
+      mainMapNodes: defaultMainMapNodePositions,
+      mainMapRoads: defaultMainMapRoads,
+      mainMapUi: defaultMainMapUiLayout,
+      mapGrid: defaultMapGridLayout,
+      deposit: defaultDepositLayout,
+      evolution: defaultEvolutionLayout,
     },
   },
   {
@@ -76,6 +109,19 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 1.6,
       buttonScale: 0.93,
       stageScale: 1,
+      mainMapRoadOpacity: 0.42,
+    },
+    assets: {
+      battleBackground: '/backgrounds/battle_forest.jpg',
+    },
+    layouts: {
+      battle: defaultBattleLayout,
+      mainMapNodes: defaultMainMapNodePositions,
+      mainMapRoads: defaultMainMapRoads,
+      mainMapUi: defaultMainMapUiLayout,
+      mapGrid: defaultMapGridLayout,
+      deposit: defaultDepositLayout,
+      evolution: defaultEvolutionLayout,
     },
   },
   {
@@ -101,6 +147,17 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 1.25,
       buttonScale: 0.95,
       stageScale: 1,
+      mainMapRoadOpacity: 0.42,
+    },
+    assets: {},
+    layouts: {
+      battle: defaultBattleLayout,
+      mainMapNodes: defaultMainMapNodePositions,
+      mainMapRoads: defaultMainMapRoads,
+      mainMapUi: defaultMainMapUiLayout,
+      mapGrid: defaultMapGridLayout,
+      deposit: defaultDepositLayout,
+      evolution: defaultEvolutionLayout,
     },
   },
 ]

@@ -59,6 +59,14 @@ const uiFields: {
     max: 1.05,
     step: 0.01,
   },
+  {
+    key: 'mainMapRoadOpacity',
+    label: 'Opacita strade mappa',
+    description: 'Trasparenza del grigio interno delle strade.',
+    min: 0,
+    max: 1,
+    step: 0.01,
+  },
 ]
 
 function formatValue(value: number): string {

@@ -1,5 +1,6 @@
 import { useGameStore, creaIstanza } from '@store/gameStore'
-import { useState, useEffect, type ReactNode } from 'react'
+import { useAdminStore } from '@store/adminStore'
+import { useState, useEffect, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   calcolaDanno,
@@ -16,6 +17,7 @@ import {
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
 import type { PokemonIstanza, MossaDef, StatoAlterato } from '@/types'
+import type { AdminBattleLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
@@ -53,6 +55,10 @@ export function BattagliaScene() {
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const risolviBattagliaNPC = useGameStore((s) => s.risolviBattagliaNPC)
   const usaOggetto = useGameStore((s) => s.usaOggetto)
+  const battleLayout = useAdminStore((s) => s.theme.layouts.battle)
+  const customBattleBackground = useAdminStore((s) => s.theme.assets.battleBackground)
+  const layoutEditing = useAdminStore((s) => s.layoutEditing)
+  const updateBattleLayout = useAdminStore((s) => s.updateBattleLayout)
   const masterballRimaste = useGameStore((s) =>
     s.giocatoreAttivo === 1
       ? s.giocatore1.inventario.masterball ?? 0
@@ -539,7 +545,9 @@ export function BattagliaScene() {
     passaTurnoBaA()
   }
 
-  const bgBattaglia = getBackground(luogoRitorno) ?? BATTLE_BG_DEFAULT
+  const bgBattaglia = customBattleBackground
+    ? assetUrl(customBattleBackground)
+    : getBackground(luogoRitorno) ?? BATTLE_BG_DEFAULT
   const mosseA = specieA.mosse
     .map((mossaId, i) => {
       const mossa = mossaId ? getMossa(mossaId) : null
@@ -555,6 +563,7 @@ export function BattagliaScene() {
 
   return (
     <div
+      data-battle-layout-root
       className="w-full h-full relative bg-cover bg-center"
       style={{ backgroundImage: `url(${bgBattaglia})` }}
     >
@@ -563,120 +572,196 @@ export function BattagliaScene() {
 
       {isNPC && (
         <>
-          <SquadIndicator squadra={squadraB} position="top-left" />
-          <SquadIndicator squadra={squadraA} position="bottom-right" />
+          <BattleLayoutItem
+            layoutKey="enemySquad"
+            label="Squadra nemica"
+            rect={battleLayout.enemySquad}
+            editing={layoutEditing}
+            onChange={updateBattleLayout}
+          >
+            <SquadIndicator squadra={squadraB} />
+          </BattleLayoutItem>
+          <BattleLayoutItem
+            layoutKey="playerSquad"
+            label="Squadra giocatore"
+            rect={battleLayout.playerSquad}
+            editing={layoutEditing}
+            onChange={updateBattleLayout}
+          >
+            <SquadIndicator squadra={squadraA} />
+          </BattleLayoutItem>
         </>
       )}
 
       <AnimatePresence mode="popLayout">
-        <PokemonBattleSlot
+        <BattleLayoutItem
           key={pkmnB.istanzaId}
-          istanza={pkmnB}
-          position="top-right"
-          shaking={shaking === 'B'}
-          lunging={shaking === 'A'}
-        />
+          layoutKey="enemySprite"
+          label="Sprite nemico"
+          rect={battleLayout.enemySprite}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <PokemonBattleSlot
+            istanza={pkmnB}
+            position="top-right"
+            shaking={shaking === 'B'}
+            lunging={shaking === 'A'}
+          />
+        </BattleLayoutItem>
       </AnimatePresence>
 
       <AnimatePresence mode="popLayout">
-        <PokemonBattleSlot
+        <BattleLayoutItem
           key={pkmnA.istanzaId}
-          istanza={pkmnA}
-          position="bottom-left"
-          shaking={shaking === 'A'}
-          lunging={shaking === 'B'}
-        />
+          layoutKey="playerSprite"
+          label="Sprite giocatore"
+          rect={battleLayout.playerSprite}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <PokemonBattleSlot
+            istanza={pkmnA}
+            position="bottom-left"
+            shaking={shaking === 'A'}
+            lunging={shaking === 'B'}
+          />
+        </BattleLayoutItem>
       </AnimatePresence>
 
-      <HpBar
-        nome={pkmnB.nome}
-        livello={pkmnB.livello}
-        hp={pkmnB.hp}
-        hpMax={hpMaxB}
-        stato={pkmnB.stato?.tipo}
-        side="enemy"
-        className="top-[17%] right-[24%]"
-      />
+      <BattleLayoutItem
+        layoutKey="enemyHp"
+        label="HP nemico"
+        rect={battleLayout.enemyHp}
+        editing={layoutEditing}
+        onChange={updateBattleLayout}
+      >
+        <HpBar
+          nome={pkmnB.nome}
+          livello={pkmnB.livello}
+          hp={pkmnB.hp}
+          hpMax={hpMaxB}
+          stato={pkmnB.stato?.tipo}
+          side="enemy"
+        />
+      </BattleLayoutItem>
 
-      <HpBar
-        nome={pkmnA.nome}
-        livello={pkmnA.livello}
-        hp={pkmnA.hp}
-        hpMax={hpMaxA}
-        stato={pkmnA.stato?.tipo}
-        side="player"
-        className="top-[55%] left-[33%]"
-      />
+      <BattleLayoutItem
+        layoutKey="playerHp"
+        label="HP giocatore"
+        rect={battleLayout.playerHp}
+        editing={layoutEditing}
+        onChange={updateBattleLayout}
+      >
+        <HpBar
+          nome={pkmnA.nome}
+          livello={pkmnA.livello}
+          hp={pkmnA.hp}
+          hpMax={hpMaxA}
+          stato={pkmnA.stato?.tipo}
+          side="player"
+        />
+      </BattleLayoutItem>
 
-      <InfoBox
-        messaggi={infoBoxMessaggi.length > 0 ? infoBoxMessaggi : log.slice(-4)}
-        showOpponentButton={!!attesaAvversario && !terminata}
-        onOpponentTurn={confermaTurnoAvversario}
-      />
+      <BattleLayoutItem
+        layoutKey="infoBox"
+        label="Box messaggi"
+        rect={battleLayout.infoBox}
+        editing={layoutEditing}
+        onChange={updateBattleLayout}
+      >
+        <InfoBox
+          messaggi={infoBoxMessaggi.length > 0 ? infoBoxMessaggi : log.slice(-4)}
+          showOpponentButton={!!attesaAvversario && !terminata}
+          onOpponentTurn={confermaTurnoAvversario}
+        />
+      </BattleLayoutItem>
 
       {!terminata && !mostraMoseB && !attesaPassaggio && !attesaAvversario && !scambioRichiesto && (
-        <div className="absolute bottom-5 right-6 z-30 w-[min(52vw,760px)] rounded-lg border border-white/15 bg-slate-950/80 p-3 shadow-2xl backdrop-blur-sm">
-          <div
-            className="grid gap-3"
-            style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseA.length)}, minmax(0, 1fr))` }}
-          >
-            {mosseA.map(({ mossa, idx }) => (
-              <MoveButton
-                key={idx}
-                mossa={mossa}
-                livello={pkmnA.livello}
-                disabled={!turnoA}
-                onClick={() => eseguiMossa(idx)}
-              />
-            ))}
-          </div>
-
-          {isSelvatico && battaglia && (
-            <div className="mt-3 flex justify-end gap-2">
-              <ActionButton disabled={!turnoA} onClick={eseguiCattura}>
-                Cattura
-              </ActionButton>
-              {masterballRimaste > 0 && (
-                <ActionButton disabled={!turnoA} onClick={eseguiMasterball}>
-                  Masterball x{masterballRimaste}
-                </ActionButton>
-              )}
+        <BattleLayoutItem
+          layoutKey="playerMoves"
+          label="Mosse giocatore"
+          rect={battleLayout.playerMoves}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <div className="h-full w-full rounded-lg border border-white/15 bg-slate-950/80 p-3 shadow-2xl backdrop-blur-sm">
+            <div
+              className="grid h-[68%] gap-3"
+              style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseA.length)}, minmax(0, 1fr))` }}
+            >
+              {mosseA.map(({ mossa, idx }) => (
+                <MoveButton
+                  key={idx}
+                  mossa={mossa}
+                  livello={pkmnA.livello}
+                  disabled={!turnoA}
+                  onClick={() => eseguiMossa(idx)}
+                />
+              ))}
             </div>
-          )}
-        </div>
+
+            {isSelvatico && battaglia && (
+              <div className="mt-3 flex justify-end gap-2">
+                <ActionButton disabled={!turnoA} onClick={eseguiCattura}>
+                  Cattura
+                </ActionButton>
+                {masterballRimaste > 0 && (
+                  <ActionButton disabled={!turnoA} onClick={eseguiMasterball}>
+                    Masterball x{masterballRimaste}
+                  </ActionButton>
+                )}
+              </div>
+            )}
+          </div>
+        </BattleLayoutItem>
       )}
 
       {isPvP && mostraMoseB && !terminata && !scambioRichiesto && (
-        <div className="absolute top-28 left-6 z-30 w-[min(52vw,760px)] rounded-lg border border-white/15 bg-slate-950/80 p-3 shadow-2xl backdrop-blur-sm">
-          <div
-            className="grid gap-3"
-            style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseB.length)}, minmax(0, 1fr))` }}
-          >
-            {mosseB.map(({ mossa, idx }) => (
-              <MoveButton
-                key={`B-${idx}`}
-                mossa={mossa}
-                livello={pkmnB.livello}
-                disabled={false}
-                onClick={() => eseguiMossaPvP_B(idx)}
-              />
-            ))}
+        <BattleLayoutItem
+          layoutKey="enemyMoves"
+          label="Mosse rivale"
+          rect={battleLayout.enemyMoves}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <div className="h-full w-full rounded-lg border border-white/15 bg-slate-950/80 p-3 shadow-2xl backdrop-blur-sm">
+            <div
+              className="grid h-full gap-3"
+              style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseB.length)}, minmax(0, 1fr))` }}
+            >
+              {mosseB.map(({ mossa, idx }) => (
+                <MoveButton
+                  key={`B-${idx}`}
+                  mossa={mossa}
+                  livello={pkmnB.livello}
+                  disabled={false}
+                  onClick={() => eseguiMossaPvP_B(idx)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </BattleLayoutItem>
       )}
 
       {isPvP && attesaPassaggio && !terminata && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
+        <BattleLayoutItem
+          layoutKey="passTurnButton"
+          label="Passa controllo"
+          rect={battleLayout.passTurnButton}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={confermaPassaggio}
-            className="arka-button text-base px-6 py-3 shadow-lg"
+            className="arka-button h-full w-full text-base px-6 py-3 shadow-lg"
           >
             ▶ Passa il controllo al{' '}
             {attesaPassaggio.direzione === 'A→B' ? 'Rivale' : 'Giocatore'}
           </motion.button>
-        </div>
+        </BattleLayoutItem>
       )}
 
       {terminata && isNPC && esito && (() => {
@@ -702,16 +787,28 @@ export function BattagliaScene() {
       })()}
 
       {terminata && (
-        <button
-          className="arka-button absolute bottom-4 left-4 z-20"
-          onClick={tornaIndietro}
+        <BattleLayoutItem
+          layoutKey="continueButton"
+          label="Prosegui"
+          rect={battleLayout.continueButton}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
         >
-          Prosegui
-        </button>
+          <button className="arka-button h-full w-full" onClick={tornaIndietro}>
+            Prosegui
+          </button>
+        </BattleLayoutItem>
       )}
 
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 arka-panel px-4 py-1">
-        <span className="text-sm">
+      <BattleLayoutItem
+        layoutKey="turnStatus"
+        label="Stato turno"
+        rect={battleLayout.turnStatus}
+        editing={layoutEditing}
+        onChange={updateBattleLayout}
+      >
+        <div className="arka-panel flex h-full w-full items-center justify-center px-4 py-1">
+        <span className="text-sm text-center">
           {terminata
             ? 'Battaglia finita'
             : attesaAvversario
@@ -728,7 +825,8 @@ export function BattagliaScene() {
             ? 'Il tuo turno'
             : 'Turno avversario...'}
         </span>
-      </div>
+        </div>
+      </BattleLayoutItem>
 
       {scambioRichiesto && (
         <ScambioModal
@@ -746,6 +844,112 @@ export function BattagliaScene() {
 // SOTTOCOMPONENTI
 // =============================================================
 
+function clampLayoutValue(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+function BattleLayoutItem({
+  layoutKey,
+  label,
+  rect,
+  editing,
+  onChange,
+  children,
+}: {
+  layoutKey: AdminBattleLayoutKey
+  label: string
+  rect: AdminLayoutRect
+  editing: boolean
+  onChange: (key: AdminBattleLayoutKey, rect: AdminLayoutRect) => void
+  children: ReactNode
+}) {
+  const beginLayoutChange = useAdminStore((s) => s.beginLayoutChange)
+
+  const startPointerEdit = (
+    event: ReactPointerEvent<HTMLButtonElement>,
+    mode: 'move' | 'resize'
+  ) => {
+    if (!editing) return
+
+    const root = event.currentTarget.closest('[data-battle-layout-root]') as HTMLElement | null
+    if (!root) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    beginLayoutChange()
+
+    const rootBounds = root.getBoundingClientRect()
+    const startX = event.clientX
+    const startY = event.clientY
+    const startRect = rect
+
+    const onPointerMove = (moveEvent: PointerEvent) => {
+      const dx = ((moveEvent.clientX - startX) / rootBounds.width) * 100
+      const dy = ((moveEvent.clientY - startY) / rootBounds.height) * 100
+
+      if (mode === 'move') {
+        onChange(layoutKey, {
+          ...startRect,
+          x: clampLayoutValue(startRect.x + dx, 0, 100 - startRect.w),
+          y: clampLayoutValue(startRect.y + dy, 0, 100 - startRect.h),
+        })
+        return
+      }
+
+      onChange(layoutKey, {
+        ...startRect,
+        w: clampLayoutValue(startRect.w + dx, 4, 100 - startRect.x),
+        h: clampLayoutValue(startRect.h + dy, 4, 100 - startRect.y),
+      })
+    }
+
+    const onPointerUp = () => {
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+    }
+
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup', onPointerUp)
+  }
+
+  return (
+    <div
+      className="absolute z-20"
+      style={{
+        left: `${rect.x}%`,
+        top: `${rect.y}%`,
+        width: `${rect.w}%`,
+        height: `${rect.h}%`,
+      }}
+    >
+      {editing ? (
+        <button
+          type="button"
+          onPointerDown={(event) => startPointerEdit(event, 'move')}
+          className="absolute -top-6 left-0 z-[80] cursor-move rounded border border-amber-300 bg-slate-950/90 px-2 py-1 text-[10px] font-black text-amber-200 shadow-lg"
+        >
+          {label}
+        </button>
+      ) : null}
+      {editing ? (
+        <button
+          type="button"
+          aria-label={`Ridimensiona ${label}`}
+          onPointerDown={(event) => startPointerEdit(event, 'resize')}
+          className="absolute -bottom-2 -right-2 z-[80] h-5 w-5 cursor-nwse-resize rounded border border-amber-300 bg-slate-950/90 text-[10px] font-black text-amber-200 shadow-lg"
+        >
+          R
+        </button>
+      ) : null}
+      {editing ? (
+        <div className="pointer-events-none absolute inset-0 z-[70] rounded border border-dashed border-amber-300/80" />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
 function InfoBox({
   messaggi,
   showOpponentButton,
@@ -760,7 +964,7 @@ function InfoBox({
 
   return (
     <div
-      className="absolute top-[38%] left-1/2 z-20 aspect-[456/173] w-[clamp(380px,44vw,590px)] -translate-x-1/2 text-slate-950 drop-shadow-2xl"
+      className="relative h-full w-full text-slate-950 drop-shadow-2xl"
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
@@ -861,14 +1065,11 @@ function ScambioModal({
 
 function SquadIndicator({
   squadra,
-  position,
 }: {
   squadra: PokemonIstanza[]
-  position: 'top-left' | 'bottom-right'
 }) {
-  const posClass = position === 'top-left' ? 'top-16 left-4' : 'bottom-44 right-4'
   return (
-    <div className={`absolute ${posClass} flex gap-1 z-10`}>
+    <div className="relative z-10 flex h-full w-full items-center gap-1">
       {squadra.map((p) => (
         <div
           key={p.istanzaId}
@@ -894,12 +1095,6 @@ function PokemonBattleSlot({
   lunging: boolean
 }) {
   const isPlayer = position === 'bottom-left'
-  const posClass = isPlayer
-    ? 'bottom-[13%] left-[6%]'
-    : 'top-[14%] right-[7%]'
-  const spriteSizeClass = isPlayer
-    ? 'w-[clamp(250px,23vw,370px)] h-[clamp(250px,23vw,370px)]'
-    : 'w-[clamp(210px,19vw,320px)] h-[clamp(210px,19vw,320px)]'
   const spriteFolder = isPlayer ? 'back_sprites' : 'front_sprites'
   const spriteSrc = assetUrl(`/sprites/${spriteFolder}/${istanza.specieId}.png`)
   const isKO = istanza.hp <= 0
@@ -912,7 +1107,7 @@ function PokemonBattleSlot({
 
   return (
     <motion.div
-      className={`absolute ${posClass} z-10`}
+      className="relative z-10 h-full w-full"
       initial={{ x: isPlayer ? -400 : 400, opacity: 0 }}
       animate={{
         x: 0,
@@ -925,7 +1120,7 @@ function PokemonBattleSlot({
       <motion.div
         animate={innerAnim}
         transition={{ duration: 0.4 }}
-        className={`${spriteSizeClass} flex items-center justify-center drop-shadow-2xl`}
+        className="flex h-full w-full items-center justify-center drop-shadow-2xl"
       >
         <img
           src={spriteSrc}
@@ -972,7 +1167,7 @@ function HpBar({
 
   return (
     <div
-      className={`absolute z-20 w-[clamp(310px,34vw,500px)] aspect-[849/114] text-white drop-shadow-2xl ${className}`}
+      className={`relative z-20 h-full w-full text-white drop-shadow-2xl ${className}`}
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
@@ -1063,7 +1258,7 @@ function MoveButton({
       whileTap={!disabled ? { scale: 0.95 } : {}}
       disabled={disabled}
       onClick={onClick}
-      className="relative min-h-[104px] overflow-hidden px-5 py-4 text-left text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
+      className="relative h-full min-h-0 overflow-hidden px-5 py-4 text-left text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',

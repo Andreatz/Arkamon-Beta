@@ -19,8 +19,11 @@ La V1 modifica:
 - intensita delle ombre;
 - scala click dei bottoni;
 - scala dello stage 16:9;
+- posizione e dimensione degli elementi principali di battaglia, mappa, deposito ed evoluzione;
+- posizione dei pallini della mappa principale;
 - preset grafici;
 - import/export JSON del tema.
+- selezione di asset gia presenti in `public/`.
 
 ## Dove salva
 
@@ -52,4 +55,4 @@ Per sicurezza reale servirebbe un backend, una build desktop con storage control
 
 Chiudi il pannello con `Chiudi` oppure premi di nuovo `CTRL + SHIFT + A`.
 
-Per tornare all'aspetto iniziale usa `Ripristina Arkamon Classico` nel tab `Preset`.
+Per tornare all'aspetto iniziale usa `Ripristina Arkamon Classico` nel tab `Preset`, oppure i pulsanti di ripristino del tab `Layout`.

@@ -31,6 +31,7 @@
   --arka-shadow-intensity: 1;
   --arka-button-scale: 0.95;
   --arka-stage-scale: 1;
+  --arka-panel-texture: none;
 
   /* Spaziature */
   --spacing-game: 1rem;
@@ -70,6 +71,9 @@ html, body {
     border-radius: var(--arka-panel-radius);
     opacity: var(--arka-panel-opacity);
     box-shadow: 0 24px 70px rgb(0 0 0 / calc(0.35 * var(--arka-shadow-intensity)));
+    background-image: var(--arka-panel-texture);
+    background-size: cover;
+    background-blend-mode: overlay;
   }
 
   .arka-button {

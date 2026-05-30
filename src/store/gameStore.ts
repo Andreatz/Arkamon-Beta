@@ -28,6 +28,10 @@ import {
   type TipoAvversario,
 } from '@engine/battleEngine'
 import { getPokemon, getAllenatore } from '@data/index'
+import {
+  MAIN_MAP_START_NODE,
+  areMainMapNodesConnected,
+} from '@data/mainMapRoads'
 import { scambia, type SlotRef } from '@engine/deposito'
 import {
   chiaveCasellaConsumata,
@@ -151,6 +155,14 @@ interface GameState {
   /** Forza lo swap del turno overworld (usato dalla UI come pulsante manuale). */
   passaTurnoOverworld: () => void
 
+  /** Muove l'avatar sulla mappa principale lungo una strada collegata. */
+  muoviAvatarMappaPrincipale: (giocatoreId: 1 | 2, luogoDestinazione: string) => boolean
+
+  /** Consuma l'interazione del turno sul nodo corrente della mappa principale. */
+  interagisciLuogoMappaPrincipale: (
+    giocatoreId: 1 | 2
+  ) => { tipo: 'no-op' } | { tipo: 'luogo'; luogo: string }
+
   /** Reset completo del gioco (Nuova Partita) */
   reset: () => void
 }
@@ -174,7 +186,30 @@ const posizioneIniziale = (): PosizioneAvatar => ({
   x: 0,
   y: 0,
   direzione: 'S',
+  luogo: MAIN_MAP_START_NODE,
 })
+
+function posizioneMappaPrincipale(luogo: string): PosizioneAvatar {
+  return {
+    mappaId: 'mappa-principale',
+    x: 0,
+    y: 0,
+    direzione: 'S',
+    luogo,
+  }
+}
+
+function luogoMappaPrincipale(posizione: PosizioneAvatar): string {
+  return posizione.mappaId === 'mappa-principale'
+    ? posizione.luogo ?? MAIN_MAP_START_NODE
+    : MAIN_MAP_START_NODE
+}
+
+function normalizePosizioneAvatar(posizione: PosizioneAvatar | undefined): PosizioneAvatar {
+  const normalized = posizione ?? posizioneIniziale()
+  if (normalized.mappaId !== 'mappa-principale') return normalized
+  return posizioneMappaPrincipale(normalized.luogo ?? MAIN_MAP_START_NODE)
+}
 
 /**
  * Cerca il primo slot libero nel deposito (box × slot).
@@ -527,7 +562,52 @@ export const useGameStore = create<GameState>()(
       },
 
       passaTurnoOverworld: () =>
-        set((s) => ({ turnoOverworld: nuovoTurno(s.turnoOverworld.giocatoreAttivo) })),
+        set((s) => {
+          const turnoOverworld = nuovoTurno(s.turnoOverworld.giocatoreAttivo)
+          return {
+            turnoOverworld,
+            giocatoreAttivo: turnoOverworld.giocatoreAttivo,
+          }
+        }),
+
+      muoviAvatarMappaPrincipale: (giocatoreId, luogoDestinazione) => {
+        const state = get()
+        const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
+        const posizione = state[chiavePos]
+        const luogoCorrente = luogoMappaPrincipale(posizione)
+
+        if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
+        if (state.turnoOverworld.azioniRimaste <= 1) return false
+        if (!areMainMapNodesConnected(luogoCorrente, luogoDestinazione)) return false
+
+        set({
+          [chiavePos]: posizioneMappaPrincipale(luogoDestinazione),
+          giocatoreAttivo: giocatoreId,
+          turnoOverworld: {
+            ...state.turnoOverworld,
+            azioniRimaste: 1,
+          },
+        } as Partial<GameState>)
+        return true
+      },
+
+      interagisciLuogoMappaPrincipale: (giocatoreId) => {
+        const state = get()
+        const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
+        const posizione = state[chiavePos]
+        if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return { tipo: 'no-op' }
+        if (state.turnoOverworld.azioniRimaste <= 0) return { tipo: 'no-op' }
+        if (posizione.mappaId !== 'mappa-principale') return { tipo: 'no-op' }
+
+        const luogo = luogoMappaPrincipale(posizione)
+        set({
+          [chiavePos]: posizioneMappaPrincipale(luogo),
+          giocatoreAttivo: giocatoreId,
+          turnoOverworld: nuovoTurno(giocatoreId),
+        } as Partial<GameState>)
+
+        return { tipo: 'luogo', luogo }
+      },
 
       reset: () =>
         set({
@@ -589,8 +669,8 @@ export const useGameStore = create<GameState>()(
             inventario: inv(p.giocatore2),
             caselleConsumate: consumate(p.giocatore2),
           },
-          posizione1: p.posizione1 ?? posizioneIniziale(),
-          posizione2: p.posizione2 ?? posizioneIniziale(),
+          posizione1: normalizePosizioneAvatar(p.posizione1),
+          posizione2: normalizePosizioneAvatar(p.posizione2),
           turnoOverworld: p.turnoOverworld ?? { giocatoreAttivo: 1, azioniRimaste: 2 },
           audioMuted: p.audioMuted ?? current.audioMuted,
         }

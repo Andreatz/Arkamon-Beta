@@ -5,6 +5,7 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useGameStore } from '@store/gameStore'
+import { MAIN_MAP_START_NODE, getAdjacentMainMapNodes } from '@data/mainMapRoads'
 import type { Casella, MappaGriglia, PosizioneAvatar } from '@/types'
 
 // Mappa 4×3 con tutti i tipi di casella, identica a quella usata in
@@ -193,6 +194,107 @@ describe('store overworld — passaTurnoOverworld', () => {
   })
 })
 
+describe('store overworld — mappa principale', () => {
+  beforeEach(() => {
+    useGameStore.setState({
+      posizione1: {
+        mappaId: 'mappa-principale',
+        x: 0,
+        y: 0,
+        direzione: 'S',
+        luogo: 'Venezia',
+      },
+      posizione2: {
+        mappaId: 'mappa-principale',
+        x: 0,
+        y: 0,
+        direzione: 'S',
+        luogo: 'Venezia',
+      },
+      giocatoreAttivo: 1,
+      turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
+    })
+  })
+
+  it('muove il giocatore attivo solo verso un nodo collegato da strada', () => {
+    const ok = useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')
+
+    expect(ok).toBe(true)
+    expect(useGameStore.getState().posizione1).toMatchObject({
+      mappaId: 'mappa-principale',
+      luogo: 'Percorso_1',
+    })
+    expect(useGameStore.getState().turnoOverworld).toEqual({
+      giocatoreAttivo: 1,
+      azioniRimaste: 1,
+    })
+  })
+
+  it('blocca un secondo movimento nello stesso turno sulla mappa principale', () => {
+    useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')
+
+    const ok = useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Piacenza')
+
+    expect(ok).toBe(false)
+    expect(useGameStore.getState().posizione1.luogo).toBe('Percorso_1')
+  })
+
+  it('rifiuta movimento verso un nodo non collegato', () => {
+    const ok = useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Roma')
+
+    expect(ok).toBe(false)
+    expect(useGameStore.getState().posizione1.luogo).toBe('Venezia')
+  })
+
+  it('usa Pordenone come nodo iniziale collegato a Venezia', () => {
+    expect(MAIN_MAP_START_NODE).toBe('Pordenone')
+    expect(getAdjacentMainMapNodes('Pordenone')).toEqual(['Venezia'])
+  })
+
+  it('supporta diramazioni con piu strade in uscita dallo stesso nodo', () => {
+    useGameStore.setState({
+      posizione1: {
+        mappaId: 'mappa-principale',
+        x: 0,
+        y: 0,
+        direzione: 'S',
+        luogo: 'Percorso_14',
+      },
+      turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
+    })
+
+    const ok = useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')
+
+    expect(ok).toBe(true)
+    expect(useGameStore.getState().posizione1.luogo).toBe('Percorso_1')
+  })
+
+  it('modella le diramazioni principali senza percorso lineare unico', () => {
+    expect(getAdjacentMainMapNodes('Percorso_3')).toEqual(['Milano'])
+    expect(getAdjacentMainMapNodes('Percorso_11')).toEqual(['Foggia'])
+    expect(new Set(getAdjacentMainMapNodes('Percorso_14'))).toEqual(
+      new Set(['Percorso_1', 'Grosseto', 'Pescara', 'Roma'])
+    )
+    expect(new Set(getAdjacentMainMapNodes('Percorso_4'))).toEqual(
+      new Set(['Percorso_2', 'Percorso_5'])
+    )
+    expect(new Set(getAdjacentMainMapNodes('Percorso_12'))).toEqual(
+      new Set(['Foggia', 'Napoli', 'Molisnt'])
+    )
+  })
+
+  it('interagisce col luogo corrente e passa il turno mantenendo il giocatore attivo di scena', () => {
+    const result = useGameStore.getState().interagisciLuogoMappaPrincipale(1)
+
+    expect(result).toEqual({ tipo: 'luogo', luogo: 'Venezia' })
+    expect(useGameStore.getState().giocatoreAttivo).toBe(1)
+    expect(useGameStore.getState().turnoOverworld).toEqual({
+      giocatoreAttivo: 2,
+      azioniRimaste: 2,
+    })
+  })
+})
+
 describe('store overworld — reset', () => {
   it("ripristina posizioni e turnoOverworld al default", () => {
     useGameStore.setState({
@@ -207,12 +309,14 @@ describe('store overworld — reset', () => {
       x: 0,
       y: 0,
       direzione: 'S',
+      luogo: MAIN_MAP_START_NODE,
     })
     expect(s.posizione2).toEqual({
       mappaId: 'mappa-principale',
       x: 0,
       y: 0,
       direzione: 'S',
+      luogo: MAIN_MAP_START_NODE,
     })
     expect(s.turnoOverworld).toEqual({ giocatoreAttivo: 1, azioniRimaste: 2 })
     expect(s.giocatore1.caselleConsumate.size).toBe(0)

@@ -7,12 +7,14 @@ import { MILANO } from './Milano'
 import { PERCORSO_1 } from './Percorso_1'
 import { PERCORSO_2 } from './Percorso_2'
 import { PERCORSO_3 } from './Percorso_3'
+import { PORDENONE } from './Pordenone'
 import { VENEZIA } from './Venezia'
 import { MAPPA_PRINCIPALE_GRIGLIA } from './mappa-principale'
 import { PIACENZA } from './Piacenza'
 import { MAPPE_RESTANTI } from './restanti'
 
 export const MAPPE_GRIGLIA: Record<string, MappaGriglia> = {
+  [PORDENONE.id]: PORDENONE,
   [MILANO.id]: MILANO,
   [PERCORSO_1.id]: PERCORSO_1,
   [PERCORSO_2.id]: PERCORSO_2,
@@ -29,6 +31,7 @@ export function getMappaGriglia(id: string): MappaGriglia | null {
 }
 
 export {
+  PORDENONE,
   MILANO,
   PERCORSO_1,
   PERCORSO_2,

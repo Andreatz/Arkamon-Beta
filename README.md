@@ -75,7 +75,7 @@ npm run tauri:build # build desktop/installer, richiede Rust/Cargo
 
 ## Modalita Admin Grafica
 
-Arkamon include una modalita admin locale per modificare colori, UI e preset grafici.
+Arkamon include una modalita admin locale per modificare colori, UI, asset e preset grafici.
 
 Attivazione: `CTRL + SHIFT + A`
 

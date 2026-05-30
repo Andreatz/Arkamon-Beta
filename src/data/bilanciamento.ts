@@ -1,6 +1,7 @@
 import type { Probabilita } from '@/types'
 
 export const PROGRESSIONE_MAPPE = [
+  'Pordenone',
   'Venezia',
   'Percorso_1',
   'Piacenza',

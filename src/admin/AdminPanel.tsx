@@ -1,17 +1,21 @@
 import { useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
+import { AdminAssetEditor } from './AdminAssetEditor'
 import { AdminColorEditor } from './AdminColorEditor'
 import { AdminImportExport } from './AdminImportExport'
+import { AdminLayoutEditor } from './AdminLayoutEditor'
 import { AdminPresetEditor } from './AdminPresetEditor'
 import { AdminUiEditor } from './AdminUiEditor'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 
-type AdminTab = 'colors' | 'ui' | 'presets' | 'json'
+type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'presets' | 'json'
 
 const tabs: { id: AdminTab; label: string }[] = [
   { id: 'colors', label: 'Colori' },
   { id: 'ui', label: 'UI' },
+  { id: 'layout', label: 'Layout' },
+  { id: 'assets', label: 'Asset' },
   { id: 'presets', label: 'Preset' },
   { id: 'json', label: 'Import/Export' },
 ]
@@ -41,13 +45,13 @@ export function AdminPanel() {
         </button>
       </header>
 
-      <nav className="grid grid-cols-4 border-b border-[var(--arka-border)] text-xs font-bold">
+      <nav className="grid grid-cols-6 border-b border-[var(--arka-border)] text-[10px] font-bold">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`min-h-10 px-2 py-2 transition ${
+            className={`min-h-10 px-1 py-2 leading-tight transition ${
               activeTab === tab.id
                 ? 'bg-[var(--arka-primary)] text-[var(--arka-bg)]'
                 : 'text-[var(--arka-text-muted)] hover:bg-[var(--arka-surface-hover)] hover:text-[var(--arka-text)]'
@@ -61,6 +65,8 @@ export function AdminPanel() {
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
         {activeTab === 'colors' ? <AdminColorEditor /> : null}
         {activeTab === 'ui' ? <AdminUiEditor /> : null}
+        {activeTab === 'layout' ? <AdminLayoutEditor /> : null}
+        {activeTab === 'assets' ? <AdminAssetEditor /> : null}
         {activeTab === 'presets' ? <AdminPresetEditor /> : null}
         {activeTab === 'json' ? <AdminImportExport /> : null}
       </div>

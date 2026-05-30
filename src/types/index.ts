@@ -231,12 +231,14 @@ export interface PosizioneAvatar {
   x: number
   y: number
   direzione: 'N' | 'S' | 'E' | 'O'
+  /** Nodo occupato quando l'avatar si trova sulla mappa principale. */
+  luogo?: string
 }
 
 /** Stato del turno overworld (sequenziale a turni A→B). */
 export interface StatoTurnoOverworld {
   giocatoreAttivo: 1 | 2
-  /** 2 a inizio turno; movimento -1, interazione → 0 */
+  /** 2 a inizio turno; sulla mappa principale: 1 movimento + 1 interazione. */
   azioniRimaste: number
 }
 

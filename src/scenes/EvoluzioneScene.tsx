@@ -1,4 +1,6 @@
 import { useGameStore } from '@store/gameStore'
+import { useAdminStore } from '@store/adminStore'
+import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getPokemon } from '@data/index'
 import { calcolaHPMax } from '@engine/battleEngine'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -6,6 +8,7 @@ import { useState } from 'react'
 import { EVOLUTION_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
+import type { AdminEvolutionLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 
 /**
  * Scena Evoluzione: animazione per ogni Pokémon che ha raggiunto la
@@ -40,6 +43,9 @@ export function EvoluzioneScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const giocatore1 = useGameStore((s) => s.giocatore1)
   const giocatore2 = useGameStore((s) => s.giocatore2)
+  const layoutEditing = useAdminStore((s) => s.layoutEditing)
+  const evolutionLayout = useAdminStore((s) => s.theme.layouts.evolution)
+  const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const evoluzioni = (scenaCorrente.payload?.evoluzioni as EvoluzioneSpec[]) ?? []
   const luogoRitorno = (scenaCorrente.payload?.luogoRitorno as string) ?? 'mappa-principale'
@@ -47,6 +53,8 @@ export function EvoluzioneScene() {
 
   const [indice, setIndice] = useState(0)
   const [fase, setFase] = useState<'pre' | 'morphing' | 'post'>('pre')
+  const updateEvolutionLayout = (key: AdminEvolutionLayoutKey, rect: AdminLayoutRect) =>
+    updateSceneLayout({ scene: 'evolution', key, rect })
 
   const corrente = evoluzioni[indice]
 
@@ -107,7 +115,8 @@ export function EvoluzioneScene() {
 
   return (
     <div
-      className="w-full h-full relative bg-gradient-to-br from-violet-950 via-fuchsia-900 to-indigo-950 flex flex-col items-center justify-center overflow-hidden bg-cover bg-center"
+      data-admin-layout-root
+      className="w-full h-full relative bg-gradient-to-br from-violet-950 via-fuchsia-900 to-indigo-950 overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: `url(${EVOLUTION_BG})` }}
     >
       {/* Sfondo a stelline animate */}
@@ -134,14 +143,31 @@ export function EvoluzioneScene() {
       </div>
 
       {/* Contatore */}
-      <div className="absolute top-4 right-4 arka-panel px-3 py-1 z-20">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Contatore"
+        rect={evolutionLayout.counter}
+        editing={layoutEditing}
+        onChange={(rect) => updateEvolutionLayout('counter', rect)}
+        zIndex={20}
+      >
+      <div className="arka-panel flex h-full w-full items-center justify-center px-3 py-1">
         <span className="text-xs text-arka-text-muted">
           Evoluzione {indice + 1} di {evoluzioni.length}
         </span>
       </div>
+      </AdminLayoutItem>
 
       {/* Sprite centrale */}
-      <div className="relative w-64 h-64 flex items-center justify-center mb-8">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Sprite evoluzione"
+        rect={evolutionLayout.sprite}
+        editing={layoutEditing}
+        onChange={(rect) => updateEvolutionLayout('sprite', rect)}
+        zIndex={20}
+      >
+      <div className="relative h-full w-full flex items-center justify-center">
         <AnimatePresence mode="wait">
           {fase === 'pre' && (
             <motion.div
@@ -149,7 +175,7 @@ export function EvoluzioneScene() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="w-48 h-48 rounded-full bg-arka-surface border-4 border-white shadow-2xl flex items-center justify-center overflow-hidden"
+              className="h-[75%] w-[75%] rounded-full bg-arka-surface border-4 border-white shadow-2xl flex items-center justify-center overflow-hidden"
             >
               <SpriteOrEmoji specieId={oldSpec.id} fallback={spriteFor(oldSpec.tipo)} />
             </motion.div>
@@ -169,7 +195,7 @@ export function EvoluzioneScene() {
                 ],
               }}
               transition={{ duration: 1.8, ease: 'easeInOut' }}
-              className="w-48 h-48 rounded-full bg-white shadow-2xl flex items-center justify-center"
+              className="h-[75%] w-[75%] rounded-full bg-white shadow-2xl flex items-center justify-center"
             >
               <span className="text-8xl">✨</span>
             </motion.div>
@@ -188,7 +214,7 @@ export function EvoluzioneScene() {
                 ],
               }}
               transition={{ duration: 0.6, type: 'spring' }}
-              className="w-48 h-48 rounded-full bg-arka-surface border-4 border-yellow-400 shadow-2xl flex items-center justify-center overflow-hidden"
+              className="h-[75%] w-[75%] rounded-full bg-arka-surface border-4 border-yellow-400 shadow-2xl flex items-center justify-center overflow-hidden"
             >
               <SpriteOrEmoji specieId={newSpec.id} fallback={spriteFor(newSpec.tipo)} />
             </motion.div>
@@ -219,9 +245,18 @@ export function EvoluzioneScene() {
           </div>
         )}
       </div>
+      </AdminLayoutItem>
 
       {/* Testo + pulsante */}
-      <div className="z-20 flex flex-col items-center gap-4 px-6">
+      <AdminLayoutItem
+        rootSelector="[data-admin-layout-root]"
+        label="Testi"
+        rect={evolutionLayout.textPanel}
+        editing={layoutEditing}
+        onChange={(rect) => updateEvolutionLayout('textPanel', rect)}
+        zIndex={20}
+      >
+      <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
         {fase === 'pre' && (
           <>
             <h2 className="text-3xl font-bold text-white drop-shadow-lg">
@@ -255,6 +290,7 @@ export function EvoluzioneScene() {
           </>
         )}
       </div>
+      </AdminLayoutItem>
     </div>
   )
 }
