@@ -22,6 +22,13 @@ import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
+import {
+  MOVE_VFX_VISIBLE_MS,
+  MoveVfx,
+  type MoveVfxEvent,
+  type MoveVfxSide,
+  type MoveVfxTarget,
+} from '@/components/MoveVfx'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -78,6 +85,9 @@ export function BattagliaScene() {
   const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
   const diceRollTimerRef = useRef<number | null>(null)
   const diceRollIdRef = useRef(0)
+  const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
+  const moveVfxTimerRef = useRef<number | null>(null)
+  const moveVfxIdRef = useRef(0)
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
@@ -133,6 +143,9 @@ export function BattagliaScene() {
       if (diceRollTimerRef.current !== null) {
         window.clearTimeout(diceRollTimerRef.current)
       }
+      if (moveVfxTimerRef.current !== null) {
+        window.clearTimeout(moveVfxTimerRef.current)
+      }
     }
   }, [])
 
@@ -169,6 +182,27 @@ export function BattagliaScene() {
       setDiceRoll(null)
       diceRollTimerRef.current = null
     }, DICE_ROLL_VISIBLE_MS)
+  }
+
+  const mostraVfxMossa = (
+    move: MossaDef,
+    side: MoveVfxSide,
+    target: MoveVfxTarget = 'opponent'
+  ) => {
+    if (moveVfxTimerRef.current !== null) {
+      window.clearTimeout(moveVfxTimerRef.current)
+    }
+
+    setMoveVfx({
+      id: ++moveVfxIdRef.current,
+      move,
+      side,
+      target,
+    })
+    moveVfxTimerRef.current = window.setTimeout(() => {
+      setMoveVfx(null)
+      moveVfxTimerRef.current = null
+    }, MOVE_VFX_VISIBLE_MS)
   }
 
   const tornaIndietro = () => {
@@ -338,6 +372,7 @@ export function BattagliaScene() {
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
     if (mossaScelta && èMossaCura(mossaScelta)) {
+      mostraVfxMossa(mossaScelta, 'A', 'self')
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
       setPkmnA(cura.istanza)
       setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
@@ -349,6 +384,7 @@ export function BattagliaScene() {
     const ris = calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa)
     if (!ris) return
 
+    mostraVfxMossa(ris.mossa, 'A')
     mostraLancioDadi(ris, 'A')
     setShaking('B')
     let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
@@ -509,6 +545,7 @@ export function BattagliaScene() {
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
     if (mossaDefB && èMossaCura(mossaDefB)) {
+      mostraVfxMossa(mossaDefB, 'B', 'self')
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
       setPkmnB(cura.istanza)
       setSquadraB((sq) => updateInSquadra(sq, cura.istanza))
@@ -522,6 +559,7 @@ export function BattagliaScene() {
       passaTurnoBaA()
       return
     }
+    mostraVfxMossa(ris.mossa, 'B')
     mostraLancioDadi(ris, 'B')
     setShaking('A')
     let nuovoA = { ...pkmnA, hp: Math.max(0, pkmnA.hp - ris.dannoFinale) }
@@ -611,6 +649,10 @@ export function BattagliaScene() {
     >
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+
+      <AnimatePresence>
+        {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} />}
+      </AnimatePresence>
 
       <AnimatePresence>
         {diceRoll && <DiceRollOverlay key={diceRoll.id} roll={diceRoll} />}
