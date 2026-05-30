@@ -87,6 +87,13 @@ export interface AdminBattleLayout {
 }
 
 export type AdminMapGridLayoutKey = 'hud' | 'grid' | 'bottomLog' | 'legend'
+export type AdminLuogoLayoutKey =
+  | 'backButton'
+  | 'turnPanel'
+  | 'coinsPanel'
+  | 'title'
+  | 'subtitle'
+  | 'contentGrid'
 export type AdminMainMapUiLayoutKey =
   | 'turnPanel'
   | 'coinsPanel'
@@ -103,11 +110,13 @@ export type AdminEvolutionLayoutKey = 'counter' | 'sprite' | 'textPanel'
 
 export type AdminSceneLayoutKey =
   | AdminMapGridLayoutKey
+  | AdminLuogoLayoutKey
   | AdminMainMapUiLayoutKey
   | AdminDepositLayoutKey
   | AdminEvolutionLayoutKey
 
 export type AdminMapGridLayout = Record<AdminMapGridLayoutKey, AdminLayoutRect>
+export type AdminLuogoLayout = Record<AdminLuogoLayoutKey, AdminLayoutRect>
 export type AdminMainMapUiLayout = Record<AdminMainMapUiLayoutKey, AdminLayoutRect>
 export type AdminDepositLayout = Record<AdminDepositLayoutKey, AdminLayoutRect>
 export type AdminEvolutionLayout = Record<AdminEvolutionLayoutKey, AdminLayoutRect>
@@ -120,6 +129,7 @@ export interface AdminThemeLayouts {
   mainMapRoads: AdminMainMapRoadsLayout
   mainMapUi: AdminMainMapUiLayout
   mapGrid: AdminMapGridLayout
+  luogo: AdminLuogoLayout
   deposit: AdminDepositLayout
   evolution: AdminEvolutionLayout
 }

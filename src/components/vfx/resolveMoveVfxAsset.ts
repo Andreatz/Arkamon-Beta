@@ -5,6 +5,7 @@ import {
   type MoveVfxAssetId,
 } from './vfxManifest'
 import type { MoveVfxAsset } from './types'
+import { getAdminMoveVfxOverride } from '@store/vfxAdminStore'
 
 const BY_EFFECT: Partial<Record<string, MoveVfxAssetId>> = {
   CURA: 'cure',
@@ -64,7 +65,22 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
     byType(move) ??
     'punch'
 
-  return MOVE_VFX_ASSETS[assetId] ?? MOVE_VFX_ASSETS.punch
+  const baseAsset = MOVE_VFX_ASSETS[assetId] ?? MOVE_VFX_ASSETS.punch
+  const adminOverride = getAdminMoveVfxOverride(move.id)
+
+  if (!adminOverride) return baseAsset
+
+  return {
+    ...MOVE_VFX_ASSETS[adminOverride.assetId],
+    scale: adminOverride.scale,
+    offsetX: adminOverride.offsetX,
+    offsetY: adminOverride.offsetY,
+    durationMs: adminOverride.durationMs,
+    anchor: adminOverride.anchor,
+    layer: adminOverride.layer,
+    mirrorForEnemy: adminOverride.mirrorForEnemy,
+    blendMode: adminOverride.blendMode,
+  }
 }
 
 export function getMoveVfxImpactDelayMs(move: MossaDef): number {

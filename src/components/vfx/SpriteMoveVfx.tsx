@@ -32,6 +32,7 @@ const Z_INDEX: Record<VfxLayer, number> = {
 }
 
 const PROJECTILE_ASSETS = new Set(['thrust', 'waterGif', 'energyGif'])
+const COMPACT_VFX_QUERY = '(max-width: 640px)'
 
 function getPosition(side: 'A' | 'B', anchor: VfxAnchor): Position {
   if (anchor === 'center' || anchor === 'screen') return CENTER
@@ -74,6 +75,9 @@ export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
   const reduceMotion = useReducedMotion()
   const [assetFailed, setAssetFailed] = useState(false)
   const [visible, setVisible] = useState(true)
+  const [compact, setCompact] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(COMPACT_VFX_QUERY).matches
+  )
   const anchor = effect.target === 'self' ? 'self' : asset.anchor
   const destination = getPosition(effect.side, anchor)
   const attacker = getPosition(effect.side, 'attacker')
@@ -86,6 +90,14 @@ export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
     const timeout = window.setTimeout(() => setVisible(false), asset.durationMs)
     return () => window.clearTimeout(timeout)
   }, [asset.durationMs, asset.id, effect.id])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(COMPACT_VFX_QUERY)
+    const updateCompact = () => setCompact(mediaQuery.matches)
+    updateCompact()
+    mediaQuery.addEventListener('change', updateCompact)
+    return () => mediaQuery.removeEventListener('change', updateCompact)
+  }, [])
 
   useEffect(() => {
     if (assetFailed && import.meta.env.DEV) {
@@ -101,7 +113,7 @@ export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
     opacity: asset.opacity ?? 1,
     mixBlendMode: asset.blendMode ?? 'normal',
     transform: [
-      `scale(${asset.scale ?? 1})`,
+      `scale(${(asset.scale ?? 1) * (compact ? 0.78 : 1)})`,
       effect.side === 'B' && asset.mirrorForEnemy ? 'scaleX(-1)' : '',
       effect.side === 'B' && asset.rotateDegForEnemy ? `rotate(${asset.rotateDegForEnemy}deg)` : '',
     ].filter(Boolean).join(' '),

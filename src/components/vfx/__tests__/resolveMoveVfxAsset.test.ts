@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { MOSSE } from '@data/index'
 import type { MossaDef, TipoPokemon } from '@/types'
+import { useVfxAdminStore } from '@store/vfxAdminStore'
 import { getGifRuntimeSrc } from '../GifVfx'
 import { resolveMoveVfxAsset } from '../resolveMoveVfxAsset'
 
@@ -22,14 +23,22 @@ function move(
 }
 
 describe('resolveMoveVfxAsset', () => {
+  afterEach(() => {
+    useVfxAdminStore.getState().resetOverrides()
+  })
+
   it('resolves special effects before type fallbacks', () => {
-    expect(resolveMoveVfxAsset(move(9001, 'Normale', 'CURA')).id).toBe('cure')
+    const cure = resolveMoveVfxAsset(move(9001, 'Normale', 'CURA'))
+    expect(cure.id).toBe('cure')
+    expect(cure.anchor).toBe('self')
     expect(resolveMoveVfxAsset(move(9002, 'Normale', 'CONFUSIONE')).id).toBe('confuseGif')
     expect(resolveMoveVfxAsset(move(9003, 'Normale', 'SUPREMA')).id).toBe('burst')
   })
 
   it('resolves water and normal type fallbacks', () => {
-    expect(resolveMoveVfxAsset(move(9004, 'Acqua')).id).toBe('waterGif')
+    const waterAttack = resolveMoveVfxAsset(move(9004, 'Acqua'))
+    expect(waterAttack.id).toBe('waterGif')
+    expect(waterAttack.anchor).toBe('target')
     expect(['punch', 'thrust', 'gutsPunchGif']).toContain(
       resolveMoveVfxAsset(move(9005, 'Normale')).id
     )
@@ -54,5 +63,31 @@ describe('resolveMoveVfxAsset', () => {
     expect(getGifRuntimeSrc('/vfx/water.gif?quality=1', 12)).toBe(
       '/vfx/water.gif?quality=1&vfx=12'
     )
+  })
+
+  it('applies temporary admin overrides before the configured mapping', () => {
+    useVfxAdminStore.getState().setOverride({
+      moveId: 146,
+      assetId: 'shield',
+      scale: 1.35,
+      offsetX: 12,
+      offsetY: -8,
+      durationMs: 777,
+      anchor: 'self',
+      layer: 'front-ui',
+      mirrorForEnemy: false,
+      blendMode: 'lighten',
+    })
+
+    const asset = resolveMoveVfxAsset(move(146, 'Normale'))
+    expect(asset.id).toBe('shield')
+    expect(asset.scale).toBe(1.35)
+    expect(asset.offsetX).toBe(12)
+    expect(asset.offsetY).toBe(-8)
+    expect(asset.durationMs).toBe(777)
+    expect(asset.anchor).toBe('self')
+    expect(asset.layer).toBe('front-ui')
+    expect(asset.mirrorForEnemy).toBe(false)
+    expect(asset.blendMode).toBe('lighten')
   })
 })

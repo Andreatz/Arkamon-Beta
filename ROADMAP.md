@@ -1180,6 +1180,8 @@ Prima creare solo:
 
 Poi, in una fase successiva, collegare al sistema admin asset/layout già esistente.
 
+Stato: prima milestone completata e collegata al pannello admin esistente nella scheda `VFX`.
+
 ---
 
 # Piano operativo per Codex
@@ -1243,20 +1245,22 @@ Contenuto:
 
 # Checklist finale prima PR
 
-- [ ] `npm run build` passa.
-- [ ] `npm run test` passa.
-- [ ] Nessun errore TypeScript.
-- [ ] Nessun unused import.
+- [x] `npm run build` passa.
+- [x] `npm run test` passa.
+- [x] Nessun errore TypeScript.
+- [x] Nessun unused import.
 - [ ] Le VFX partono sia per lato A sia per lato B.
-- [ ] Le cure appaiono sul self.
-- [ ] Gli attacchi appaiono sul target.
-- [ ] GIF restartano quando la stessa mossa viene usata due volte.
-- [ ] Sprite sheet non restano bloccati al primo frame.
+- [x] Le cure appaiono sul self.
+- [x] Gli attacchi appaiono sul target.
+- [x] GIF restartano quando la stessa mossa viene usata due volte.
+- [x] Sprite sheet non restano bloccati al primo frame.
 - [ ] Asset mancanti non crashano il gioco.
 - [ ] Mobile ok.
-- [ ] Nessuna regressione su HP, dadi, info box, KO, cambio Pokémon.
-- [ ] Vecchio SVG rimosso o isolato come fallback legacy.
-- [ ] Codice leggibile e documentato dove serve.
+- [x] Nessuna regressione su HP, dadi, info box, KO, cambio Pokémon.
+- [x] Vecchio SVG rimosso o isolato come fallback legacy.
+- [x] Codice leggibile e documentato dove serve.
+
+Per i controlli visivi manuali rimasti usare `docs/VFX_QA.md`.
 
 ---
 

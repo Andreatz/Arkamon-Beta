@@ -160,6 +160,35 @@ describe('adminStore', () => {
     )
   })
 
+  it('updateSceneLayout aggiorna il layout condiviso da tutti i percorsi', () => {
+    useAdminStore.getState().updateSceneLayout({
+      scene: 'luogo',
+      key: 'contentGrid',
+      rect: { x: 8, y: 24, w: 84, h: 66 },
+    })
+
+    expect(useAdminStore.getState().theme.layouts.luogo.contentGrid).toEqual({
+      x: 8,
+      y: 24,
+      w: 84,
+      h: 66,
+    })
+  })
+
+  it('resetSceneLayout ripristina il layout condiviso da percorsi e citta', () => {
+    useAdminStore.getState().updateSceneLayout({
+      scene: 'luogo',
+      key: 'contentGrid',
+      rect: { x: 10, y: 20, w: 80, h: 72 },
+    })
+
+    useAdminStore.getState().resetSceneLayout('luogo')
+
+    expect(useAdminStore.getState().theme.layouts.luogo.contentGrid).toEqual(
+      defaultAdminTheme.layouts.luogo.contentGrid
+    )
+  })
+
   it('resetTheme ripristina Arkamon Classico', () => {
     useAdminStore.getState().updateColor('bg', '#ffffff')
     useAdminStore.getState().updateUi('stageScale', 0.8)

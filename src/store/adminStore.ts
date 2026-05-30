@@ -5,6 +5,7 @@ import type {
   AdminBattleLayoutKey,
   AdminDepositLayoutKey,
   AdminEvolutionLayoutKey,
+  AdminLuogoLayoutKey,
   AdminMainMapUiLayoutKey,
   AdminMapGridLayoutKey,
   AdminMapNodePosition,
@@ -26,6 +27,7 @@ import {
   defaultMainMapRoads,
   defaultMainMapUiLayout,
   defaultMapGridLayout,
+  defaultLuogoLayout,
 } from '@/theme/defaultAdminTheme'
 
 const ADMIN_ENABLED_BY_DEFAULT = import.meta.env.DEV
@@ -59,6 +61,7 @@ type PersistedAdminTheme = Partial<AdminTheme> & {
     mainMapRoads?: Partial<AdminTheme['layouts']['mainMapRoads']>
     mainMapUi?: Partial<AdminTheme['layouts']['mainMapUi']>
     mapGrid?: Partial<AdminTheme['layouts']['mapGrid']>
+    luogo?: Partial<AdminTheme['layouts']['luogo']>
     deposit?: Partial<AdminTheme['layouts']['deposit']>
     evolution?: Partial<AdminTheme['layouts']['evolution']>
   }
@@ -66,6 +69,7 @@ type PersistedAdminTheme = Partial<AdminTheme> & {
 
 type SceneLayoutUpdate =
   | { scene: 'mapGrid'; key: AdminMapGridLayoutKey; rect: AdminLayoutRect }
+  | { scene: 'luogo'; key: AdminLuogoLayoutKey; rect: AdminLayoutRect }
   | { scene: 'mainMapUi'; key: AdminMainMapUiLayoutKey; rect: AdminLayoutRect }
   | { scene: 'deposit'; key: AdminDepositLayoutKey; rect: AdminLayoutRect }
   | { scene: 'evolution'; key: AdminEvolutionLayoutKey; rect: AdminLayoutRect }
@@ -149,6 +153,10 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
       mapGrid: {
         ...defaultMapGridLayout,
         ...theme?.layouts?.mapGrid,
+      },
+      luogo: {
+        ...defaultLuogoLayout,
+        ...theme?.layouts?.luogo,
       },
       deposit: {
         ...defaultDepositLayout,
@@ -335,6 +343,8 @@ export const useAdminStore = create<AdminState>()(
               [scene]:
                 scene === 'mapGrid'
                   ? defaultMapGridLayout
+                  : scene === 'luogo'
+                  ? defaultLuogoLayout
                   : scene === 'mainMapUi'
                   ? defaultMainMapUiLayout
                   : scene === 'deposit'

@@ -8,6 +8,7 @@ import {
   defaultMainMapRoads,
   defaultMainMapUiLayout,
   defaultMapGridLayout,
+  defaultLuogoLayout,
 } from './defaultAdminTheme'
 
 export const adminThemePresets: AdminTheme[] = [
@@ -45,6 +46,7 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },
@@ -84,6 +86,7 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },
@@ -123,6 +126,7 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },
@@ -160,6 +164,7 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },
