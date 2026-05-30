@@ -65,9 +65,8 @@ describe('autodannoSuprema', () => {
 
 describe('calcolaDanno con mossa Suprema', () => {
   it('applica ×2 al danno e popola autodanno', () => {
-    // Vyrath lvl 5 vs Vyrath lvl 5. Suprema Normale = STAB (1.5×) + tipo (1×)
-    // + suprema (2×). dadi=1 con rng=0 → tiro = 1, dannoBase = 1+0 = 1
-    // dannoFinale = round(1 * 1.5 * 1 * 2) = 3
+    // Vyrath lvl 5 vs Vyrath lvl 5. La mossa reale non è Suprema:
+    // il test verifica che il branch di autodanno resti disattivato.
     const att = mkIstanza(1, 5)
     const dif = mkIstanza(1, 5)
     // Patcho temporaneamente la mossa di Vyrath via mock-ish: usiamo il

@@ -63,7 +63,7 @@ export function TitoloScene() {
       <motion.img
         src={assetUrl(logoPath)}
         alt="Arkamon"
-        className="relative z-10 w-96 max-w-[80%] mb-4 drop-shadow-2xl"
+        className="relative -top-40 z-10 w-[500px] max-w-[90%] mb-4 drop-shadow-2xl"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, type: 'spring' }}

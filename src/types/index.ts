@@ -184,6 +184,7 @@ export interface RisultatoMossa {
   tiriDado: number[]
   dannoBase: number
   moltiplicatoreTipo: number
+  /** Regola Arkamon: true quando il bersaglio è debole al tipo della mossa. */
   stab: boolean
   dannoFinale: number
   difensoreSvenuto: boolean

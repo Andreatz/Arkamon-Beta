@@ -23,7 +23,6 @@ import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import {
-  MOVE_VFX_VISIBLE_MS,
   MoveVfx,
   type MoveVfxEvent,
   type MoveVfxSide,
@@ -34,7 +33,10 @@ import {
   preloadVfxAssets,
 } from '@/components/vfx/preloadVfxAssets'
 import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
-import { getMoveVfxImpactDelayMs } from '@/components/vfx/resolveMoveVfxAsset'
+import {
+  getMoveVfxDurationMs,
+  getMoveVfxImpactDelayMs,
+} from '@/components/vfx/resolveMoveVfxAsset'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -95,6 +97,8 @@ export function BattagliaScene() {
   const moveVfxTimerRef = useRef<number | null>(null)
   const moveVfxIdRef = useRef(0)
   const feedbackTimersRef = useRef<Set<number>>(new Set())
+  const messaggiTurnoBRef = useRef<string[]>([])
+  const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
@@ -187,7 +191,11 @@ export function BattagliaScene() {
     setInfoBoxMessaggi((correnti) => [...correnti, ...messaggi].slice(-6))
   }
 
-  const mostraLancioDadi = (risultato: RisultatoMossa, side: 'A' | 'B') => {
+  const mostraLancioDadi = (
+    risultato: RisultatoMossa,
+    side: 'A' | 'B',
+    onComplete: () => void
+  ) => {
     if (diceRollTimerRef.current !== null) {
       window.clearTimeout(diceRollTimerRef.current)
     }
@@ -203,6 +211,7 @@ export function BattagliaScene() {
     diceRollTimerRef.current = window.setTimeout(() => {
       setDiceRoll(null)
       diceRollTimerRef.current = null
+      onComplete()
     }, DICE_ROLL_VISIBLE_MS)
   }
 
@@ -210,7 +219,7 @@ export function BattagliaScene() {
     move: MossaDef,
     side: MoveVfxSide,
     target: MoveVfxTarget = 'opponent'
-  ) => {
+  ): number => {
     if (moveVfxTimerRef.current !== null) {
       window.clearTimeout(moveVfxTimerRef.current)
     }
@@ -221,10 +230,12 @@ export function BattagliaScene() {
       side,
       target,
     })
+    const durationMs = getMoveVfxDurationMs(move)
     moveVfxTimerRef.current = window.setTimeout(() => {
       setMoveVfx(null)
       moveVfxTimerRef.current = null
-    }, MOVE_VFX_VISIBLE_MS)
+    }, durationMs)
+    return durationMs
   }
 
   const scheduleFeedbackTimer = (callback: () => void, delayMs: number) => {
@@ -245,6 +256,37 @@ export function BattagliaScene() {
       if (playHitSound) playSound('hit')
       scheduleFeedbackTimer(() => setShaking(null), 400)
     }, getMoveVfxImpactDelayMs(move))
+  }
+
+  const eseguiSequenzaOffensiva = (
+    risultato: RisultatoMossa,
+    side: 'A' | 'B',
+    targetSide: 'A' | 'B',
+    playHitSound: boolean,
+    onComplete: () => void
+  ) => {
+    setAzioneInCorso(true)
+    const vfxDurationMs = mostraVfxMossa(risultato.mossa, side)
+    scheduleImpactFeedback(risultato.mossa, targetSide, playHitSound)
+    scheduleFeedbackTimer(() => {
+      mostraLancioDadi(risultato, side, () => {
+        onComplete()
+        setAzioneInCorso(false)
+      })
+    }, vfxDurationMs)
+  }
+
+  const eseguiSequenzaCura = (
+    move: MossaDef,
+    side: 'A' | 'B',
+    onComplete: () => void
+  ) => {
+    setAzioneInCorso(true)
+    const vfxDurationMs = mostraVfxMossa(move, side, 'self')
+    scheduleFeedbackTimer(() => {
+      onComplete()
+      setAzioneInCorso(false)
+    }, vfxDurationMs)
   }
 
   const tornaIndietro = () => {
@@ -277,9 +319,11 @@ export function BattagliaScene() {
   const specieB = getPokemon(pkmnB.specieId)!
 
   const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2) => {
-    if (terminata || turnoA || !mostraMoseB) return
+    if (terminata || turnoA || !mostraMoseB || azioneInCorso) return
     setMostraMoseB(false)
-    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa)
+    const messaggiIniziali = messaggiTurnoBRef.current
+    messaggiTurnoBRef.current = []
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa, messaggiIniziali)
   }
 
   const passaTurnoAaB = (nuovoB: PokemonIstanza, delayMs = 1500) => {
@@ -378,16 +422,16 @@ export function BattagliaScene() {
   }
 
   const eseguiMossa = (numeroMossa: 0 | 1 | 2) => {
-    if (terminata || !turnoA) return
+    if (terminata || !turnoA || azioneInCorso) return
     resetInfoBox()
 
     const statoRes = risolviStatoInizioTurno(pkmnA, hpMaxA)
-    mostraMessaggi(statoRes.messaggi)
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
 
     if (pkmnAEffettivo.hp <= 0) {
+      mostraMessaggi(statoRes.messaggi)
       const nextA = squadraA.find(
         (p) => p.istanzaId !== pkmnAEffettivo.istanzaId && p.hp > 0
       )
@@ -406,6 +450,7 @@ export function BattagliaScene() {
     }
 
     if (!statoRes.puoAgire) {
+      mostraMessaggi(statoRes.messaggi)
       passaTurnoAaB(pkmnB, 1200)
       return
     }
@@ -414,89 +459,89 @@ export function BattagliaScene() {
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
     if (mossaScelta && èMossaCura(mossaScelta)) {
-      mostraVfxMossa(mossaScelta, 'A', 'self')
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
-      setPkmnA(cura.istanza)
-      setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
-      mostraMessaggi(cura.messaggi)
-      passaTurnoAaB(pkmnB, 1200)
+      eseguiSequenzaCura(mossaScelta, 'A', () => {
+        setPkmnA(cura.istanza)
+        setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
+        mostraMessaggi([...statoRes.messaggi, ...cura.messaggi])
+        passaTurnoAaB(pkmnB, 1200)
+      })
       return
     }
 
     const ris = calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa)
     if (!ris) return
 
-    mostraVfxMossa(ris.mossa, 'A')
-    mostraLancioDadi(ris, 'A')
     let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
-    scheduleImpactFeedback(ris.mossa, 'B', nuovoB.hp > 0)
     if (ris.statoApplicato && nuovoB.hp > 0) {
       nuovoB = applicaStato(nuovoB, ris.statoApplicato)
     }
-    setPkmnB(nuovoB)
-    const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
-    setSquadraB(nuovaSquadraB)
-    mostraMessaggi(ris.messaggi)
+    eseguiSequenzaOffensiva(ris, 'A', 'B', nuovoB.hp > 0, () => {
+      setPkmnB(nuovoB)
+      const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
+      setSquadraB(nuovaSquadraB)
+      mostraMessaggi([...statoRes.messaggi, ...ris.messaggi])
 
-    let aDopoAutodanno = pkmnAEffettivo
-    if (ris.autodanno && ris.autodanno > 0) {
-      aDopoAutodanno = {
-        ...pkmnAEffettivo,
-        hp: Math.max(0, pkmnAEffettivo.hp - ris.autodanno),
+      let aDopoAutodanno = pkmnAEffettivo
+      if (ris.autodanno && ris.autodanno > 0) {
+        aDopoAutodanno = {
+          ...pkmnAEffettivo,
+          hp: Math.max(0, pkmnAEffettivo.hp - ris.autodanno),
+        }
+        setPkmnA(aDopoAutodanno)
+        setSquadraA((sq) => updateInSquadra(sq, aDopoAutodanno))
       }
-      setPkmnA(aDopoAutodanno)
-      setSquadraA((sq) => updateInSquadra(sq, aDopoAutodanno))
-    }
 
-    if (nuovoB.hp <= 0) {
-      playSound('ko')
-      const aggiornatoA = premiaConXP(aDopoAutodanno, nuovoB)
-      setPkmnA(aggiornatoA)
-      setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
+      if (nuovoB.hp <= 0) {
+        playSound('ko')
+        const aggiornatoA = premiaConXP(aDopoAutodanno, nuovoB)
+        setPkmnA(aggiornatoA)
+        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
 
-      const nextB = nuovaSquadraB.find(
-        (p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0
-      )
-      if (nextB && isNPC) {
-        mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
-        setPkmnB(nextB)
-        // BR.3: il nuovo Pokémon nemico attacca subito (VBA: Cells(12,2)="B")
-        passaTurnoAaB(nextB, 800)
+        const nextB = nuovaSquadraB.find(
+          (p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0
+        )
+        if (nextB && isNPC) {
+          mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
+          setPkmnB(nextB)
+          // BR.3: il nuovo Pokémon nemico attacca subito (VBA: Cells(12,2)="B")
+          passaTurnoAaB(nextB, 800)
+          return
+        }
+        mostraMessaggi(['Hai vinto la battaglia!'])
+        playSound('victory')
+        setEsito('vittoria')
+        setTerminata(true)
         return
       }
-      mostraMessaggi(['Hai vinto la battaglia!'])
-      playSound('victory')
-      setEsito('vittoria')
-      setTerminata(true)
-      return
-    }
 
-    if (aDopoAutodanno.hp <= 0) {
-      const nextA = squadraA.find(
-        (p) => p.istanzaId !== aDopoAutodanno.istanzaId && p.hp > 0
-      )
-      if (nextA) {
-        mostraMessaggi([`${aDopoAutodanno.nome} e esausto!`])
-        apriScambio({
-          motivo: `${aDopoAutodanno.nome} non puo continuare.`,
-          prossimoPasso: 'passaAB',
-          pendingB: nuovoB,
-        })
+      if (aDopoAutodanno.hp <= 0) {
+        const nextA = squadraA.find(
+          (p) => p.istanzaId !== aDopoAutodanno.istanzaId && p.hp > 0
+        )
+        if (nextA) {
+          mostraMessaggi([`${aDopoAutodanno.nome} e esausto!`])
+          apriScambio({
+            motivo: `${aDopoAutodanno.nome} non puo continuare.`,
+            prossimoPasso: 'passaAB',
+            pendingB: nuovoB,
+          })
+          return
+        }
+        mostraMessaggi(['Hai perso la battaglia...'])
+        playSound('ko')
+        setEsito('sconfitta')
+        setTerminata(true)
         return
       }
-      mostraMessaggi(['Hai perso la battaglia...'])
-      playSound('ko')
-      setEsito('sconfitta')
-      setTerminata(true)
-      return
-    }
 
-    passaTurnoAaB(nuovoB, 1500)
+      passaTurnoAaB(nuovoB, 1500)
+    })
   }
 
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
   const eseguiCattura = () => {
-    if (terminata || !turnoA) return
+    if (terminata || !turnoA || azioneInCorso) return
     resetInfoBox()
     const ris = tentaCattura(pkmnB)
     mostraMessaggi([
@@ -516,7 +561,7 @@ export function BattagliaScene() {
   }
 
   const eseguiMasterball = () => {
-    if (terminata || !turnoA) return
+    if (terminata || !turnoA || azioneInCorso) return
     if (!usaOggetto(giocatoreAttivo, 'masterball')) return
     resetInfoBox()
     mostraMessaggi([
@@ -533,12 +578,12 @@ export function BattagliaScene() {
     resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
     const statoRes = risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
-    mostraMessaggi(statoRes.messaggi)
     const bEffettivo = statoRes.istanza
     setPkmnB(bEffettivo)
     setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
 
     if (bEffettivo.hp <= 0) {
+      mostraMessaggi(statoRes.messaggi)
       mostraMessaggi([`${bEffettivo.nome} e caduto!`])
       playSound('ko')
       const nextB = squadraB.find(
@@ -561,35 +606,39 @@ export function BattagliaScene() {
     }
 
     if (!statoRes.puoAgire) {
+      mostraMessaggi(statoRes.messaggi)
       passaTurnoBaA()
       return
     }
 
     if (isPvP) {
+      messaggiTurnoBRef.current = statoRes.messaggi
       setMostraMoseB(true)
       return
     }
 
     const mossaIdx = scegliMossaIA(bEffettivo, pkmnA)
-    eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx)
+    eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, statoRes.messaggi)
   }
 
   const eseguiMossaB = (
     bEffettivo: PokemonIstanza,
     hpMaxBcorrente: number,
-    mossaIdx: 0 | 1 | 2
+    mossaIdx: 0 | 1 | 2,
+    messaggiIniziali: string[] = []
   ) => {
     const specieB = getPokemon(bEffettivo.specieId)
     const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
     if (mossaDefB && èMossaCura(mossaDefB)) {
-      mostraVfxMossa(mossaDefB, 'B', 'self')
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
-      setPkmnB(cura.istanza)
-      setSquadraB((sq) => updateInSquadra(sq, cura.istanza))
-      mostraMessaggi(cura.messaggi)
-      passaTurnoBaA()
+      eseguiSequenzaCura(mossaDefB, 'B', () => {
+        setPkmnB(cura.istanza)
+        setSquadraB((sq) => updateInSquadra(sq, cura.istanza))
+        mostraMessaggi([...messaggiIniziali, ...cura.messaggi])
+        passaTurnoBaA()
+      })
       return
     }
 
@@ -598,68 +647,67 @@ export function BattagliaScene() {
       passaTurnoBaA()
       return
     }
-    mostraVfxMossa(ris.mossa, 'B')
-    mostraLancioDadi(ris, 'B')
     let nuovoA = { ...pkmnA, hp: Math.max(0, pkmnA.hp - ris.dannoFinale) }
-    scheduleImpactFeedback(ris.mossa, 'A', nuovoA.hp > 0)
     if (ris.statoApplicato && nuovoA.hp > 0) {
       nuovoA = applicaStato(nuovoA, ris.statoApplicato)
     }
-    setPkmnA(nuovoA)
-    const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
-    setSquadraA(nuovaSquadraA)
-    mostraMessaggi(ris.messaggi)
+    eseguiSequenzaOffensiva(ris, 'B', 'A', nuovoA.hp > 0, () => {
+      setPkmnA(nuovoA)
+      const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
+      setSquadraA(nuovaSquadraA)
+      mostraMessaggi([...messaggiIniziali, ...ris.messaggi])
 
-    let bDopoAutodanno = bEffettivo
-    if (ris.autodanno && ris.autodanno > 0) {
-      bDopoAutodanno = {
-        ...bEffettivo,
-        hp: Math.max(0, bEffettivo.hp - ris.autodanno),
+      let bDopoAutodanno = bEffettivo
+      if (ris.autodanno && ris.autodanno > 0) {
+        bDopoAutodanno = {
+          ...bEffettivo,
+          hp: Math.max(0, bEffettivo.hp - ris.autodanno),
+        }
+        setPkmnB(bDopoAutodanno)
+        setSquadraB((sq) => updateInSquadra(sq, bDopoAutodanno))
       }
-      setPkmnB(bDopoAutodanno)
-      setSquadraB((sq) => updateInSquadra(sq, bDopoAutodanno))
-    }
 
-    if (nuovoA.hp <= 0) {
-      const nextA = nuovaSquadraA.find(
-        (p) => p.istanzaId !== nuovoA.istanzaId && p.hp > 0
-      )
-      if (nextA) {
-        mostraMessaggi([`${nuovoA.nome} e KO!`])
-        apriScambio({
-          motivo: `${nuovoA.nome} e KO.`,
-          prossimoPasso: 'passaAdA',
-        })
+      if (nuovoA.hp <= 0) {
+        const nextA = nuovaSquadraA.find(
+          (p) => p.istanzaId !== nuovoA.istanzaId && p.hp > 0
+        )
+        if (nextA) {
+          mostraMessaggi([`${nuovoA.nome} e KO!`])
+          apriScambio({
+            motivo: `${nuovoA.nome} e KO.`,
+            prossimoPasso: 'passaAdA',
+          })
+          return
+        }
+        mostraMessaggi(['Hai perso la battaglia...'])
+        playSound('ko')
+        setEsito('sconfitta')
+        setTerminata(true)
         return
       }
-      mostraMessaggi(['Hai perso la battaglia...'])
-      playSound('ko')
-      setEsito('sconfitta')
-      setTerminata(true)
-      return
-    }
 
-    if (bDopoAutodanno.hp <= 0) {
-      const nextB = squadraB.find(
-        (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
-      )
-      if (nextB && isNPC) {
-        mostraMessaggi([`${bDopoAutodanno.nome} e esausto! L'avversario manda in campo ${nextB.nome}!`])
-        setPkmnB(nextB)
-        setTurnoA(true)
+      if (bDopoAutodanno.hp <= 0) {
+        const nextB = squadraB.find(
+          (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
+        )
+        if (nextB && isNPC) {
+          mostraMessaggi([`${bDopoAutodanno.nome} e esausto! L'avversario manda in campo ${nextB.nome}!`])
+          setPkmnB(nextB)
+          setTurnoA(true)
+          return
+        }
+        const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
+        setPkmnA(aggiornatoA)
+        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
+        mostraMessaggi(['Hai vinto la battaglia!'])
+        playSound('victory')
+        setEsito('vittoria')
+        setTerminata(true)
         return
       }
-      const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
-      setPkmnA(aggiornatoA)
-      setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-      mostraMessaggi(['Hai vinto la battaglia!'])
-      playSound('victory')
-      setEsito('vittoria')
-      setTerminata(true)
-      return
-    }
 
-    passaTurnoBaA()
+      passaTurnoBaA()
+    })
   }
 
   const bgBattaglia = customBattleBackground
@@ -823,7 +871,7 @@ export function BattagliaScene() {
                   mossa={mossa}
                   livello={pkmnA.livello}
                   textKeyPrefix={`move-${idx}`}
-                  disabled={!turnoA}
+                  disabled={!turnoA || azioneInCorso}
                   onClick={() => eseguiMossa(idx)}
                 />
               ))}
@@ -831,11 +879,11 @@ export function BattagliaScene() {
 
             {isSelvatico && battaglia && (
               <div className="mt-3 flex justify-end gap-2">
-                <ActionButton disabled={!turnoA} onClick={eseguiCattura}>
+                <ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiCattura}>
                   Cattura
                 </ActionButton>
                 {masterballRimaste > 0 && (
-                  <ActionButton disabled={!turnoA} onClick={eseguiMasterball}>
+                  <ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiMasterball}>
                     Masterball x{masterballRimaste}
                   </ActionButton>
                 )}
@@ -864,7 +912,7 @@ export function BattagliaScene() {
                   mossa={mossa}
                   livello={pkmnB.livello}
                   textKeyPrefix={`move-${idx}`}
-                  disabled={false}
+                  disabled={azioneInCorso}
                   onClick={() => eseguiMossaPvP_B(idx)}
                 />
               ))}
@@ -942,6 +990,10 @@ export function BattagliaScene() {
         <span className="arka-layout-content text-sm text-center">
           {terminata
             ? 'Battaglia finita'
+            : moveVfx
+            ? 'Animazione mossa...'
+            : diceRoll
+            ? 'Lancio dei dadi...'
             : attesaAvversario
             ? 'Premi Avversario... per continuare'
             : isPvP && attesaPassaggio

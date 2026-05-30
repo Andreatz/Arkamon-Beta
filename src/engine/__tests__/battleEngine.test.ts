@@ -80,15 +80,26 @@ describe('determinaIniziativa', () => {
 })
 
 describe('calcolaDanno messaggi', () => {
-  it('applica STAB al danno senza mostrare il messaggio tecnico STAB', () => {
+  it('non applica STAB solo perché mossa e attaccante hanno lo stesso tipo', () => {
     const attaccante = mkIstanza(1, 5)
     const difensore = mkIstanza(1, 5)
 
     const risultato = calcolaDanno(attaccante, difensore, 0, () => 0)
 
+    expect(risultato?.stab).toBe(false)
+    expect(risultato?.dannoFinale).toBe(2)
+  })
+
+  it('applica STAB quando il bersaglio è debole al tipo della mossa', () => {
+    const attaccante = mkIstanza(1, 5)
+    const difensoreAcqua = mkIstanza(56, 5)
+
+    const risultato = calcolaDanno(attaccante, difensoreAcqua, 1, () => 0)
+
     expect(risultato?.stab).toBe(true)
+    expect(risultato?.moltiplicatoreTipo).toBe(1.5)
     expect(risultato?.dannoFinale).toBe(3)
-    expect(risultato?.messaggi).not.toContain('(STAB)')
+    expect(risultato?.messaggi).toContain('È superefficace!')
   })
 })
 

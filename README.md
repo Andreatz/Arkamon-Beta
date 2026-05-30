@@ -29,7 +29,7 @@ npm test
 ## Funzionalita Implementate
 
 - Dati convertiti in JSON: 110 Pokemon, 220 mosse, tipi, mappe, incontri e allenatori.
-- Battle engine allineato al VBA: danno D6, STAB, efficacia tipi, iniziativa, cattura, AI, XP, monete.
+- Battle engine: danno D6, bonus STAB sulle debolezze tipo, iniziativa, cattura, AI, XP, monete.
 - Battle Refresh completato: sprite grandi, HP bar PNG, InfoBox a blocchi, pulsante avversario, modal scambio post-KO, pulsante `Prosegui`.
 - Stati alterati: Confuso, Addormentato, Avvelenato, immunita stato singolo, cura che rimuove veleno.
 - Mosse speciali: cure percentuali, mosse Supreme con autodanno, Masterball.

@@ -3,7 +3,7 @@ import { MOSSE } from '@data/index'
 import type { MossaDef, TipoPokemon } from '@/types'
 import { useVfxAdminStore } from '@store/vfxAdminStore'
 import { getGifRuntimeSrc } from '../GifVfx'
-import { resolveMoveVfxAsset } from '../resolveMoveVfxAsset'
+import { getMoveVfxDurationMs, resolveMoveVfxAsset } from '../resolveMoveVfxAsset'
 
 function move(
   id: number,
@@ -85,6 +85,7 @@ describe('resolveMoveVfxAsset', () => {
     expect(asset.offsetX).toBe(12)
     expect(asset.offsetY).toBe(-8)
     expect(asset.durationMs).toBe(777)
+    expect(getMoveVfxDurationMs(move(146, 'Normale'))).toBe(777)
     expect(asset.anchor).toBe('self')
     expect(asset.layer).toBe('front-ui')
     expect(asset.mirrorForEnemy).toBe(false)

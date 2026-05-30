@@ -86,3 +86,7 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
 export function getMoveVfxImpactDelayMs(move: MossaDef): number {
   return resolveMoveVfxAsset(move).impactAtMs ?? 0
 }
+
+export function getMoveVfxDurationMs(move: MossaDef): number {
+  return resolveMoveVfxAsset(move).durationMs
+}
