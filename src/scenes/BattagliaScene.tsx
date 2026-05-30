@@ -29,6 +29,12 @@ import {
   type MoveVfxSide,
   type MoveVfxTarget,
 } from '@/components/MoveVfx'
+import {
+  preloadMoveVfxForPokemon,
+  preloadVfxAssets,
+} from '@/components/vfx/preloadVfxAssets'
+import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
+import { getMoveVfxImpactDelayMs } from '@/components/vfx/resolveMoveVfxAsset'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -88,6 +94,7 @@ export function BattagliaScene() {
   const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
   const moveVfxTimerRef = useRef<number | null>(null)
   const moveVfxIdRef = useRef(0)
+  const feedbackTimersRef = useRef<Set<number>>(new Set())
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
@@ -108,6 +115,17 @@ export function BattagliaScene() {
   >([])
 
   useEffect(() => {
+    preloadVfxAssets(DEFAULT_PRELOAD_VFX_ASSET_IDS)
+    preloadMoveVfxForPokemon(
+      battaglia
+        ? [
+            battaglia.pokemonA.specieId,
+            battaglia.pokemonB.specieId,
+            ...(battaglia.squadraA ?? []).map((pokemon) => pokemon.specieId),
+            ...(battaglia.squadraB ?? []).map((pokemon) => pokemon.specieId),
+          ]
+        : [1, 13]
+    )
     playSound('battle-start')
     if (battaglia) {
       setPkmnA(battaglia.pokemonA)
@@ -146,6 +164,10 @@ export function BattagliaScene() {
       if (moveVfxTimerRef.current !== null) {
         window.clearTimeout(moveVfxTimerRef.current)
       }
+      for (const timer of feedbackTimersRef.current) {
+        window.clearTimeout(timer)
+      }
+      feedbackTimersRef.current.clear()
     }
   }, [])
 
@@ -203,6 +225,26 @@ export function BattagliaScene() {
       setMoveVfx(null)
       moveVfxTimerRef.current = null
     }, MOVE_VFX_VISIBLE_MS)
+  }
+
+  const scheduleFeedbackTimer = (callback: () => void, delayMs: number) => {
+    const timer = window.setTimeout(() => {
+      feedbackTimersRef.current.delete(timer)
+      callback()
+    }, delayMs)
+    feedbackTimersRef.current.add(timer)
+  }
+
+  const scheduleImpactFeedback = (
+    move: MossaDef,
+    side: 'A' | 'B',
+    playHitSound = true
+  ) => {
+    scheduleFeedbackTimer(() => {
+      setShaking(side)
+      if (playHitSound) playSound('hit')
+      scheduleFeedbackTimer(() => setShaking(null), 400)
+    }, getMoveVfxImpactDelayMs(move))
   }
 
   const tornaIndietro = () => {
@@ -386,18 +428,15 @@ export function BattagliaScene() {
 
     mostraVfxMossa(ris.mossa, 'A')
     mostraLancioDadi(ris, 'A')
-    setShaking('B')
     let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
+    scheduleImpactFeedback(ris.mossa, 'B', nuovoB.hp > 0)
     if (ris.statoApplicato && nuovoB.hp > 0) {
       nuovoB = applicaStato(nuovoB, ris.statoApplicato)
     }
     setPkmnB(nuovoB)
     const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
     setSquadraB(nuovaSquadraB)
-    playSound('hit')
     mostraMessaggi(ris.messaggi)
-
-    setTimeout(() => setShaking(null), 400)
 
     let aDopoAutodanno = pkmnAEffettivo
     if (ris.autodanno && ris.autodanno > 0) {
@@ -561,17 +600,15 @@ export function BattagliaScene() {
     }
     mostraVfxMossa(ris.mossa, 'B')
     mostraLancioDadi(ris, 'B')
-    setShaking('A')
     let nuovoA = { ...pkmnA, hp: Math.max(0, pkmnA.hp - ris.dannoFinale) }
+    scheduleImpactFeedback(ris.mossa, 'A', nuovoA.hp > 0)
     if (ris.statoApplicato && nuovoA.hp > 0) {
       nuovoA = applicaStato(nuovoA, ris.statoApplicato)
     }
     setPkmnA(nuovoA)
     const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
     setSquadraA(nuovaSquadraA)
-    playSound('hit')
     mostraMessaggi(ris.messaggi)
-    setTimeout(() => setShaking(null), 400)
 
     let bDopoAutodanno = bEffettivo
     if (ris.autodanno && ris.autodanno > 0) {

@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { AudioController } from '@components/AudioController'
 import { AdminOverlay } from '@/admin/AdminOverlay'
 import { AdminRuntime } from '@/admin/AdminRuntime'
+import { VfxGallery } from '@/components/vfx/VfxGallery'
 
 /**
  * Router delle scene.
@@ -20,6 +21,10 @@ import { AdminRuntime } from '@/admin/AdminRuntime'
  */
 function App() {
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
+
+  if (import.meta.env.DEV && window.location.hash === '#vfx-lab') {
+    return <VfxGallery />
+  }
 
   return (
     <div className="arka-stage">
