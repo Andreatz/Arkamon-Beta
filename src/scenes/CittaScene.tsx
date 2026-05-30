@@ -73,10 +73,10 @@ export function CittaScene() {
         </div>
       </div>
 
-      <h2 className="text-4xl font-bold text-white text-center mb-1 drop-shadow-lg">
+      <h2 className="arka-readable-title text-4xl font-bold text-white text-center mb-1">
         {luogo}
       </h2>
-      <p className="text-arka-text-muted text-center mb-6 italic">
+      <p className="arka-readable-text text-arka-text-muted text-center mb-6 italic">
         Sfida gli allenatori o cura la tua squadra al Centro Pokémon
       </p>
 

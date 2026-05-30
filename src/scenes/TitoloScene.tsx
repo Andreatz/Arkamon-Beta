@@ -77,14 +77,6 @@ export function TitoloScene() {
         }}
       />
       <h1 className="sr-only">ARKAMON</h1>
-      <motion.p
-        className="relative z-10 text-arka-text-muted mb-12 text-lg italic"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-      >
-        Diventa il più grande Allenatore del mondo
-      </motion.p>
 
       <motion.div
         className="relative z-10 flex flex-col gap-3 w-72"
@@ -111,9 +103,6 @@ export function TitoloScene() {
         )}
       </motion.div>
 
-      <p className="absolute bottom-4 z-10 text-arka-text-muted text-xs">
-        v0.1.0 · powered by React + TypeScript + Tailwind
-      </p>
     </div>
   )
 }

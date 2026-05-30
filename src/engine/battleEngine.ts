@@ -233,7 +233,6 @@ export function calcolaDanno(
 
   const messaggi: string[] = [`${attaccante.nome} usa ${mossa.nome}!`]
   if (èMossaSuprema(mossa)) messaggi.push('💥 MOSSA SUPREMA! 💥')
-  if (stab) messaggi.push('(STAB)')
   if (moltTipo > 1) messaggi.push('È superefficace!')
   else if (moltTipo < 1 && moltTipo > 0) messaggi.push('Non è molto efficace...')
   else if (moltTipo === 0) messaggi.push('Non ha effetto!')

@@ -8,7 +8,10 @@ import {
 } from '@data/mainMapRoads'
 import { motion } from 'framer-motion'
 import { assetUrl } from '@/utils/assetUrl'
-import { orthogonalizeRoadPoints } from '@/utils/mainMapRoadGeometry'
+import {
+  hasOnlyOrthogonalSegments,
+  orthogonalizeRoadPoints,
+} from '@/utils/mainMapRoadGeometry'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react'
 import type {
@@ -81,11 +84,8 @@ function defaultRoadPoints(
   from: AdminMapRoadPoint,
   to: AdminMapRoadPoint
 ): AdminMapRoadPoint[] {
-  const midX = (from.x + to.x) / 2
   return [
     { x: from.x, y: from.y },
-    { x: midX, y: from.y },
-    { x: midX, y: to.y },
     { x: to.x, y: to.y },
   ]
 }
@@ -110,6 +110,18 @@ function roadPath(points: AdminMapRoadPoint[]): string {
   return points
     .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
     .join(' ')
+}
+
+function editableRoadControlPoints(points: AdminMapRoadPoint[]): AdminMapRoadPoint[] {
+  if (points.length <= 3 || !hasOnlyOrthogonalSegments(points)) {
+    return points.map((point) => ({ ...point }))
+  }
+
+  const controls = points.filter((_, index) => (
+    index === 0 || index === points.length - 1 || index % 2 === 0
+  ))
+
+  return controls.map((point) => ({ ...point }))
 }
 
 function getMapPoint(
@@ -142,6 +154,36 @@ function distanceToSegment(
   const projectionX = start.x + t * dx
   const projectionY = start.y + t * dy
   return Math.hypot(point.x - projectionX, point.y - projectionY)
+}
+
+function closestPointOnSegment(
+  point: AdminMapRoadPoint,
+  start: AdminMapRoadPoint,
+  end: AdminMapRoadPoint
+): { point: AdminMapRoadPoint; distance: number } {
+  const dx = end.x - start.x
+  const dy = end.y - start.y
+  const lengthSquared = dx * dx + dy * dy
+  if (lengthSquared === 0) {
+    return {
+      point: { x: start.x, y: start.y },
+      distance: Math.hypot(point.x - start.x, point.y - start.y),
+    }
+  }
+
+  const t = Math.max(
+    0,
+    Math.min(1, ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared)
+  )
+  const projection = {
+    x: start.x + t * dx,
+    y: start.y + t * dy,
+  }
+
+  return {
+    point: projection,
+    distance: Math.hypot(point.x - projection.x, point.y - projection.y),
+  }
 }
 
 function nearestSegmentIndex(points: AdminMapRoadPoint[], point: AdminMapRoadPoint): number {
@@ -293,29 +335,14 @@ export function MappaPrincipaleScene() {
   const getRoadPointWithSnap = (
     point: AdminMapRoadPoint,
     currentRoadKey: string,
-    currentPointIndex: number
+    currentPointIndex: number | null
   ): AdminMapRoadPoint => {
-    const candidates: AdminMapRoadPoint[] = Object.keys(COORDS).map((name) => {
+    const nodeCandidates: AdminMapRoadPoint[] = Object.keys(COORDS).map((name) => {
       const position = nodePositions[name] ?? COORDS[name]
       return { x: position.x, y: position.y }
     })
 
-    for (const [fromName, toName] of MAIN_MAP_ROAD_CONNECTIONS) {
-      const key = getRoadKey(fromName, toName)
-      const from = nodePositions[fromName] ?? COORDS[fromName]
-      const to = nodePositions[toName] ?? COORDS[toName]
-      if (!from || !to) continue
-
-      const roadPoints = orthogonalizeRoadPoints(
-        anchoredRoadPoints(from, to, roadLayouts[key])
-      )
-      roadPoints.forEach((candidate, index) => {
-        if (key === currentRoadKey && index === currentPointIndex) return
-        candidates.push({ x: candidate.x, y: candidate.y })
-      })
-    }
-
-    const nearest = candidates.reduce<{
+    let nearest = nodeCandidates.reduce<{
       point: AdminMapRoadPoint | null
       distance: number
     }>(
@@ -325,6 +352,26 @@ export function MappaPrincipaleScene() {
       },
       { point: null, distance: Number.POSITIVE_INFINITY }
     )
+
+    for (const [fromName, toName] of MAIN_MAP_ROAD_CONNECTIONS) {
+      const key = getRoadKey(fromName, toName)
+      if (key === currentRoadKey) continue
+
+      const from = nodePositions[fromName] ?? COORDS[fromName]
+      const to = nodePositions[toName] ?? COORDS[toName]
+      if (!from || !to) continue
+
+      const roadPoints = orthogonalizeRoadPoints(
+        editableRoadControlPoints(anchoredRoadPoints(from, to, roadLayouts[key]))
+      )
+      for (let index = 0; index < roadPoints.length - 1; index += 1) {
+        if (currentPointIndex !== null && key === currentRoadKey) continue
+        const candidate = closestPointOnSegment(point, roadPoints[index], roadPoints[index + 1])
+        if (candidate.distance < nearest.distance) {
+          nearest = candidate
+        }
+      }
+    }
 
     return nearest.point && nearest.distance <= ROAD_SNAP_DISTANCE
       ? nearest.point
@@ -356,7 +403,7 @@ export function MappaPrincipaleScene() {
         roadKey,
         pointIndex
       )
-      updateMainMapRoad(roadKey, orthogonalizeRoadPoints(nextPoints))
+      updateMainMapRoad(roadKey, nextPoints)
     }
 
     const onPointerMove = (moveEvent: PointerEvent) => {
@@ -390,17 +437,14 @@ export function MappaPrincipaleScene() {
     const point = getRoadPointWithSnap(
       getMapPoint(root.getBoundingClientRect(), event.clientX, event.clientY),
       roadKey,
-      -1
+      null
     )
     const insertIndex = nearestSegmentIndex(points, point) + 1
-    updateMainMapRoad(
-      roadKey,
-      orthogonalizeRoadPoints([
-        ...points.slice(0, insertIndex),
-        point,
-        ...points.slice(insertIndex),
-      ])
-    )
+    updateMainMapRoad(roadKey, [
+      ...points.slice(0, insertIndex),
+      point,
+      ...points.slice(insertIndex),
+    ])
   }
 
   const removeRoadPoint = (
@@ -415,10 +459,7 @@ export function MappaPrincipaleScene() {
     event.stopPropagation()
 
     beginLayoutChange()
-    updateMainMapRoad(
-      roadKey,
-      orthogonalizeRoadPoints(points.filter((_, index) => index !== pointIndex))
-    )
+    updateMainMapRoad(roadKey, points.filter((_, index) => index !== pointIndex))
   }
 
   const roadRenderItems = MAIN_MAP_ROAD_CONNECTIONS.flatMap(([fromName, toName]) => {
@@ -427,11 +468,12 @@ export function MappaPrincipaleScene() {
     if (!from || !to) return []
 
     const key = getRoadKey(fromName, toName)
-    const points = orthogonalizeRoadPoints(
+    const controlPoints = editableRoadControlPoints(
       anchoredRoadPoints(from, to, roadLayouts[key])
     )
+    const points = orthogonalizeRoadPoints(controlPoints)
 
-    return [{ key, points, d: roadPath(points) }]
+    return [{ key, points, controlPoints, d: roadPath(points) }]
   })
 
   return (
@@ -505,7 +547,7 @@ export function MappaPrincipaleScene() {
           />
         ))}
 
-        {roadRenderItems.map(({ key, points, d }) => (
+        {roadRenderItems.map(({ key, controlPoints, d }) => (
           <g key={`${key}-editor`}>
               {layoutEditing ? (
                 <>
@@ -518,10 +560,10 @@ export function MappaPrincipaleScene() {
                     strokeLinejoin="miter"
                     vectorEffect="non-scaling-stroke"
                     pointerEvents="stroke"
-                    onDoubleClick={(event) => addRoadPoint(event, key, points)}
+                    onDoubleClick={(event) => addRoadPoint(event, key, controlPoints)}
                   />
-                  {points.map((point, index) => {
-                    const isAnchor = index === 0 || index === points.length - 1
+                  {controlPoints.map((point, index) => {
+                    const isAnchor = index === 0 || index === controlPoints.length - 1
 
                     return (
                       <circle
@@ -535,8 +577,8 @@ export function MappaPrincipaleScene() {
                         vectorEffect="non-scaling-stroke"
                         className={isAnchor ? 'drop-shadow' : 'cursor-move drop-shadow'}
                         pointerEvents={isAnchor ? 'none' : 'all'}
-                        onPointerDown={(event) => startRoadPointDrag(event, key, points, index)}
-                        onDoubleClick={(event) => removeRoadPoint(event, key, points, index)}
+                        onPointerDown={(event) => startRoadPointDrag(event, key, controlPoints, index)}
+                        onDoubleClick={(event) => removeRoadPoint(event, key, controlPoints, index)}
                       />
                     )
                   })}
@@ -555,8 +597,8 @@ export function MappaPrincipaleScene() {
         zIndex={35}
       >
         <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
-          <span className="shrink-0 text-xs text-arka-text-muted">Turno di:</span>
-          <span className="ml-2 min-w-0 truncate font-bold text-arka-accent">
+          <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Turno di:</span>
+          <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-arka-accent">
             Giocatore {giocatoreAttivo}
           </span>
         </div>
@@ -571,8 +613,8 @@ export function MappaPrincipaleScene() {
         zIndex={35}
       >
         <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
-          <span className="shrink-0 text-xs text-arka-text-muted">Monete:</span>
-          <span className="ml-2 min-w-0 truncate font-bold text-yellow-300">
+          <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Monete:</span>
+          <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-yellow-300">
             ₳ {giocatore.monete}
           </span>
         </div>
@@ -587,8 +629,8 @@ export function MappaPrincipaleScene() {
         zIndex={35}
       >
         <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
-          <span className="shrink-0 text-xs text-arka-text-muted">Posizione:</span>
-          <span className="ml-2 min-w-0 truncate font-bold text-white">
+          <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Posizione:</span>
+          <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-white">
             {activeNodeName.replace('_', ' ')}
           </span>
         </div>
@@ -603,8 +645,8 @@ export function MappaPrincipaleScene() {
         zIndex={35}
       >
         <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
-          <span className="shrink-0 text-xs text-arka-text-muted">Azioni:</span>
-          <span className="ml-2 min-w-0 truncate font-bold text-white">
+          <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Azioni:</span>
+          <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-white">
             {movimentoDisponibile ? 'Movimento' : 'Movimento fatto'} ·{' '}
             {interazioneDisponibile ? 'Interazione' : 'Turno chiuso'}
           </span>
@@ -624,7 +666,7 @@ export function MappaPrincipaleScene() {
           disabled={!interazioneDisponibile}
           className="arka-button h-full w-full overflow-hidden px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-45"
         >
-          <span className="block truncate">Entra in {activeNodeName.replace('_', ' ')}</span>
+          <span className="arka-layout-content block truncate">Entra in {activeNodeName.replace('_', ' ')}</span>
         </button>
       </AdminLayoutItem>
 
@@ -640,7 +682,7 @@ export function MappaPrincipaleScene() {
           onClick={passaTurnoOverworld}
           className="arka-button-secondary h-full w-full overflow-hidden px-2 py-1 text-sm"
         >
-          <span className="block truncate">Passa turno</span>
+          <span className="arka-layout-content block truncate">Passa turno</span>
         </button>
       </AdminLayoutItem>
 
@@ -656,7 +698,7 @@ export function MappaPrincipaleScene() {
           onClick={() => vaiAScena('deposito')}
           className="arka-button-secondary h-full w-full overflow-hidden px-2 py-1 text-sm"
         >
-          <span className="block truncate">Deposito</span>
+          <span className="arka-layout-content block truncate">Deposito</span>
         </button>
       </AdminLayoutItem>
 
@@ -672,7 +714,7 @@ export function MappaPrincipaleScene() {
           onClick={() => vaiAScena('titolo')}
           className="arka-button-secondary h-full w-full overflow-hidden px-2 py-1 text-sm"
         >
-          <span className="block truncate">Titolo</span>
+          <span className="arka-layout-content block truncate">Titolo</span>
         </button>
       </AdminLayoutItem>
 
@@ -738,7 +780,7 @@ export function MappaPrincipaleScene() {
                   draggable={false}
                 />
               </div>
-              <span className="text-white text-[10px] font-bold drop-shadow-lg whitespace-nowrap leading-tight">
+              <span className="arka-layout-content arka-readable-text text-white text-[10px] font-bold whitespace-nowrap leading-tight">
                 {luogo.nome.replace('_', ' ')}
               </span>
             </motion.button>
@@ -755,19 +797,19 @@ export function MappaPrincipaleScene() {
         zIndex={35}
       >
         <div className="arka-panel flex h-full w-full flex-col justify-center overflow-hidden px-3 py-2 text-xs">
-          <div className="mb-1 flex items-center gap-2">
+          <div className="arka-layout-content mb-1 flex items-center gap-2">
             <img src={assetUrl('/ui/start_location.png')} alt="" className="h-4 w-4 object-contain" /> Start
           </div>
-          <div className="mb-1 flex items-center gap-2">
+          <div className="arka-layout-content mb-1 flex items-center gap-2">
             <img src={assetUrl('/ui/cities.png')} alt="" className="h-4 w-4 object-contain" /> Città
           </div>
-          <div className="mb-1 flex items-center gap-2">
+          <div className="arka-layout-content mb-1 flex items-center gap-2">
             <img src={assetUrl('/ui/countries.png')} alt="" className="h-4 w-4 object-contain" /> Villaggio
           </div>
-          <div className="mb-1 flex items-center gap-2">
+          <div className="arka-layout-content mb-1 flex items-center gap-2">
             <img src={assetUrl('/ui/route.png')} alt="" className="h-4 w-4 object-contain" /> Percorso
           </div>
-          <div className="mt-1 flex items-center gap-2">
+          <div className="arka-layout-content mt-1 flex items-center gap-2">
             <span className="h-3 w-3 rounded-full ring-2 ring-sky-300" /> Raggiungibile
           </div>
         </div>
@@ -781,9 +823,7 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('footer', rect)}
         zIndex={35}
       >
-        <p className="flex h-full w-full items-center justify-end overflow-hidden text-xs text-arka-text-muted">
-          <span className="truncate">Mappa Arkamon · {MAPPE.length} luoghi</span>
-        </p>
+        <div className="h-full w-full" aria-hidden="true" />
       </AdminLayoutItem>
     </div>
   )

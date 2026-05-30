@@ -3,8 +3,8 @@ import { useAdminStore } from '@store/adminStore'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getPokemon } from '@data/index'
 import { calcolaHPMax } from '@engine/battleEngine'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 import { EVOLUTION_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
@@ -47,20 +47,29 @@ export function EvoluzioneScene() {
   const evolutionLayout = useAdminStore((s) => s.theme.layouts.evolution)
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
-  const evoluzioni = (scenaCorrente.payload?.evoluzioni as EvoluzioneSpec[]) ?? []
-  const luogoRitorno = (scenaCorrente.payload?.luogoRitorno as string) ?? 'mappa-principale'
-  const giocatoreId = (scenaCorrente.payload?.giocatoreId as 1 | 2) ?? 1
+  const initialPayloadRef = useRef(scenaCorrente.payload)
+  const evoluzioni = (initialPayloadRef.current?.evoluzioni as EvoluzioneSpec[]) ?? []
+  const luogoRitorno =
+    (initialPayloadRef.current?.luogoRitorno as string) ?? 'mappa-principale'
+  const giocatoreId = (initialPayloadRef.current?.giocatoreId as 1 | 2) ?? 1
 
   const [indice, setIndice] = useState(0)
   const [fase, setFase] = useState<'pre' | 'morphing' | 'post'>('pre')
+  const evolutionTimerRef = useRef<number | null>(null)
+  const navigationRequestedRef = useRef(false)
   const updateEvolutionLayout = (key: AdminEvolutionLayoutKey, rect: AdminLayoutRect) =>
     updateSceneLayout({ scene: 'evolution', key, rect })
 
   const corrente = evoluzioni[indice]
 
   const tornaIndietro = () => {
+    if (navigationRequestedRef.current) return
+    navigationRequestedRef.current = true
+
     const isPercorso = /^Percorso_/.test(luogoRitorno)
-    if (isPercorso) {
+    if (luogoRitorno === 'mappa-griglia') {
+      vaiAScena('mappa-griglia')
+    } else if (isPercorso) {
       vaiAScena('percorso', { luogo: luogoRitorno })
     } else if (luogoRitorno && luogoRitorno !== 'mappa-principale') {
       vaiAScena('citta', { luogo: luogoRitorno })
@@ -69,28 +78,47 @@ export function EvoluzioneScene() {
     }
   }
 
-  if (!corrente) {
-    // Nessuna evoluzione (edge case: payload vuoto) → torna direttamente
-    tornaIndietro()
-    return null
-  }
+  useEffect(() => {
+    return () => {
+      if (evolutionTimerRef.current !== null) {
+        window.clearTimeout(evolutionTimerRef.current)
+      }
+    }
+  }, [])
 
-  const oldSpec = getPokemon(corrente.oldSpecieId)
-  const newSpec = getPokemon(corrente.newSpecieId)
+  const oldSpec = corrente ? getPokemon(corrente.oldSpecieId) : null
+  const newSpec = corrente ? getPokemon(corrente.newSpecieId) : null
   const giocatore = giocatoreId === 1 ? giocatore1 : giocatore2
-  const istanza = giocatore.squadra.find((p) => p.istanzaId === corrente.istanzaId)
+  const istanza = corrente
+    ? giocatore.squadra.find((p) => p.istanzaId === corrente.istanzaId)
+    : null
 
-  if (!oldSpec || !newSpec || !istanza) {
-    // Dati mancanti → skippa silenziosamente
-    setIndice((i) => i + 1)
-    setFase('pre')
+  useEffect(() => {
+    if (!corrente) {
+      tornaIndietro()
+      return
+    }
+
+    if (!oldSpec || !newSpec || !istanza) {
+      setIndice((i) => i + 1)
+      setFase('pre')
+    }
+    // La navigazione deve avvenire soltanto quando cambia l'evoluzione corrente.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [corrente, oldSpec, newSpec, istanza])
+
+  if (!corrente || !oldSpec || !newSpec || !istanza) {
     return null
   }
 
   const avvia = () => {
+    if (fase !== 'pre') return
     playSound('evolution')
     setFase('morphing')
-    setTimeout(() => {
+    if (evolutionTimerRef.current !== null) {
+      window.clearTimeout(evolutionTimerRef.current)
+    }
+    evolutionTimerRef.current = window.setTimeout(() => {
       // Applica l'evoluzione allo store
       const evoluto = {
         ...istanza,
@@ -101,10 +129,12 @@ export function EvoluzioneScene() {
       aggiornaPokemon(giocatoreId, evoluto)
       playSound('level-up')
       setFase('post')
+      evolutionTimerRef.current = null
     }, 1800)
   }
 
   const continua = () => {
+    if (fase !== 'post') return
     if (indice + 1 < evoluzioni.length) {
       setIndice((i) => i + 1)
       setFase('pre')
@@ -152,7 +182,7 @@ export function EvoluzioneScene() {
         zIndex={20}
       >
       <div className="arka-panel flex h-full w-full items-center justify-center px-3 py-1">
-        <span className="text-xs text-arka-text-muted">
+        <span className="arka-layout-content text-xs text-arka-text-muted">
           Evoluzione {indice + 1} di {evoluzioni.length}
         </span>
       </div>
@@ -168,58 +198,43 @@ export function EvoluzioneScene() {
         zIndex={20}
       >
       <div className="relative h-full w-full flex items-center justify-center">
-        <AnimatePresence mode="wait">
+        <motion.div
+          animate={
+            fase === 'morphing'
+              ? {
+                  opacity: 1,
+                  scale: [1, 1.2, 0.9, 1.3, 1],
+                  rotate: [0, 90, 180, 270, 360],
+                  filter: [
+                    'brightness(1)',
+                    'brightness(2)',
+                    'brightness(3)',
+                    'brightness(2)',
+                    'brightness(1)',
+                  ],
+                }
+              : {
+                  opacity: 1,
+                  scale: 1,
+                  rotate: 0,
+                  filter: 'brightness(1)',
+                }
+          }
+          transition={
+            fase === 'morphing'
+              ? { duration: 1.8, ease: 'easeInOut' }
+              : { duration: 0.35, ease: 'easeOut' }
+          }
+          className="relative z-10 flex h-full w-full items-center justify-center overflow-visible"
+        >
           {fase === 'pre' && (
-            <motion.div
-              key="pre"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="h-[75%] w-[75%] rounded-full bg-arka-surface border-4 border-white shadow-2xl flex items-center justify-center overflow-hidden"
-            >
-              <SpriteOrEmoji specieId={oldSpec.id} fallback={spriteFor(oldSpec.tipo)} />
-            </motion.div>
+            <SpriteOrEmoji specieId={oldSpec.id} fallback={spriteFor(oldSpec.tipo)} />
           )}
-          {fase === 'morphing' && (
-            <motion.div
-              key="morphing"
-              animate={{
-                scale: [1, 1.2, 0.9, 1.3, 1],
-                rotate: [0, 90, 180, 270, 360],
-                filter: [
-                  'brightness(1)',
-                  'brightness(2)',
-                  'brightness(3)',
-                  'brightness(2)',
-                  'brightness(1)',
-                ],
-              }}
-              transition={{ duration: 1.8, ease: 'easeInOut' }}
-              className="h-[75%] w-[75%] rounded-full bg-white shadow-2xl flex items-center justify-center"
-            >
-              <span className="text-8xl">✨</span>
-            </motion.div>
-          )}
+          {fase === 'morphing' && <span className="text-8xl">✨</span>}
           {fase === 'post' && (
-            <motion.div
-              key="post"
-              initial={{ opacity: 0, scale: 1.5 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                boxShadow: [
-                  '0 0 0px rgba(250, 204, 21, 0)',
-                  '0 0 60px rgba(250, 204, 21, 0.9)',
-                  '0 0 30px rgba(250, 204, 21, 0.6)',
-                ],
-              }}
-              transition={{ duration: 0.6, type: 'spring' }}
-              className="h-[75%] w-[75%] rounded-full bg-arka-surface border-4 border-yellow-400 shadow-2xl flex items-center justify-center overflow-hidden"
-            >
-              <SpriteOrEmoji specieId={newSpec.id} fallback={spriteFor(newSpec.tipo)} />
-            </motion.div>
+            <SpriteOrEmoji specieId={newSpec.id} fallback={spriteFor(newSpec.tipo)} />
           )}
-        </AnimatePresence>
+        </motion.div>
 
         {/* Particelle che esplodono dal centro all'apparizione del nuovo sprite */}
         {fase === 'post' && (
@@ -259,33 +274,35 @@ export function EvoluzioneScene() {
       <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
         {fase === 'pre' && (
           <>
-            <h2 className="text-3xl font-bold text-white drop-shadow-lg">
+            <h2 className="arka-layout-content arka-readable-title text-3xl font-bold text-white">
               {istanza.nome} sta per evolversi!
             </h2>
-            <p className="text-arka-text-muted text-center max-w-md">
+            <p className="arka-layout-content arka-readable-text text-arka-text-muted text-center max-w-md">
               {oldSpec.nome} (livello {istanza.livello}) ha raggiunto la soglia
               di evoluzione.
             </p>
             <button onClick={avvia} className="arka-button mt-4">
-              ✨ Evolvi!
+              <span className="arka-layout-content">✨ Evolvi!</span>
             </button>
           </>
         )}
         {fase === 'morphing' && (
-          <h2 className="text-2xl font-bold text-white drop-shadow-lg animate-pulse">
+          <h2 className="arka-layout-content arka-readable-title text-2xl font-bold text-white animate-pulse">
             ???
           </h2>
         )}
         {fase === 'post' && (
           <>
-            <h2 className="text-4xl font-black text-yellow-300 drop-shadow-lg">
+            <h2 className="arka-layout-content arka-readable-title text-4xl font-black text-yellow-300">
               {oldSpec.nome} si è evoluto in {newSpec.nome}!
             </h2>
-            <p className="text-arka-text-muted text-sm">
+            <p className="arka-layout-content arka-readable-text text-arka-text-muted text-sm">
               Tipo: {newSpec.tipo} · HP base: {newSpec.hpBase}
             </p>
             <button onClick={continua} className="arka-button mt-4">
-              {indice + 1 < evoluzioni.length ? 'Continua' : 'Fine'}
+              <span className="arka-layout-content">
+                {indice + 1 < evoluzioni.length ? 'Continua' : 'Fine'}
+              </span>
             </button>
           </>
         )}
@@ -302,22 +319,32 @@ function SpriteOrEmoji({
   specieId: number
   fallback: string
 }) {
+  const [sourceIndex, setSourceIndex] = useState(0)
+  const sources = [
+    assetUrl(`/sprites/front_sprites/${specieId}.png`),
+    assetUrl(`/sprites/small_sprites/Sprite Small ${specieId}.png`),
+  ]
+
+  useEffect(() => {
+    setSourceIndex(0)
+  }, [specieId])
+
   return (
     <>
-      <img
-        src={assetUrl(`/sprites/front_sprites/${specieId}.png`)}
-        alt=""
-        className="w-full h-full object-contain"
-        style={{ imageRendering: 'pixelated' }}
-        onError={(e) => {
-          ;(e.currentTarget as HTMLImageElement).style.display = 'none'
-          const sib = e.currentTarget.nextElementSibling as HTMLElement | null
-          if (sib) sib.style.display = 'inline'
-        }}
-      />
-      <span className="text-8xl" style={{ display: 'none' }}>
-        {fallback}
-      </span>
+      {sourceIndex < sources.length ? (
+        <img
+          key={`${specieId}-${sourceIndex}`}
+          src={sources[sourceIndex]}
+          alt=""
+          className="w-full h-full object-contain"
+          style={{ imageRendering: 'pixelated' }}
+          onError={() => setSourceIndex((index) => index + 1)}
+        />
+      ) : (
+        <span className="flex h-full w-full items-center justify-center text-8xl">
+          {fallback}
+        </span>
+      )}
     </>
   )
 }

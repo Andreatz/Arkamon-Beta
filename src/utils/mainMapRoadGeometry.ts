@@ -12,7 +12,7 @@ function isCollinear(
   return (a.x === b.x && b.x === c.x) || (a.y === b.y && b.y === c.y)
 }
 
-function compactRoadPoints(points: AdminMapRoadPoint[]): AdminMapRoadPoint[] {
+export function compactRoadPoints(points: AdminMapRoadPoint[]): AdminMapRoadPoint[] {
   const compacted: AdminMapRoadPoint[] = []
 
   for (const point of points) {

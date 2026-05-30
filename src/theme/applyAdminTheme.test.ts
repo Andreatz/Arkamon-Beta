@@ -27,6 +27,7 @@ describe('applyAdminTheme', () => {
     expect(properties.get('--hp-high')).toBe(defaultAdminTheme.colors.hpHigh)
     expect(properties.get('--arka-panel-radius')).toBe('16px')
     expect(properties.get('--arka-stage-scale')).toBe('1')
+    expect(properties.get('--arka-font-scale')).toBe('1')
   })
 
   it('non genera errori con un tema valido', () => {

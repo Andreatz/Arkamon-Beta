@@ -35,6 +35,7 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 1.2,
       buttonScale: 0.94,
       stageScale: 1,
+      fontScale: 1,
       mainMapRoadOpacity: 0.42,
     },
     assets: {},
@@ -71,6 +72,7 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 0.65,
       buttonScale: 0.96,
       stageScale: 1,
+      fontScale: 1,
       mainMapRoadOpacity: 0.42,
     },
     assets: {
@@ -109,6 +111,7 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 1.6,
       buttonScale: 0.93,
       stageScale: 1,
+      fontScale: 1,
       mainMapRoadOpacity: 0.42,
     },
     assets: {
@@ -147,6 +150,7 @@ export const adminThemePresets: AdminTheme[] = [
       shadowIntensity: 1.25,
       buttonScale: 0.95,
       stageScale: 1,
+      fontScale: 1,
       mainMapRoadOpacity: 0.42,
     },
     assets: {},

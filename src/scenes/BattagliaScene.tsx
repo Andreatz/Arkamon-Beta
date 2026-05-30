@@ -1,6 +1,6 @@
 import { useGameStore, creaIstanza } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
-import { useState, useEffect, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
+import { useState, useEffect, useRef, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   calcolaDanno,
@@ -16,17 +16,21 @@ import {
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
-import type { PokemonIstanza, MossaDef, StatoAlterato } from '@/types'
+import type { PokemonIstanza, MossaDef, RisultatoMossa, StatoAlterato } from '@/types'
 import type { AdminBattleLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
+import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
   Addormentato: { label: 'ZZZ', color: 'bg-blue-500', emoji: '😴' },
   Avvelenato: { label: 'PSN', color: 'bg-purple-600', emoji: '☠️' },
 }
+
+const INFOBOX_VISIBLE_MS = 4200
+const DICE_ROLL_VISIBLE_MS = 2200
 
 type PendingSwitch = {
   motivo: string
@@ -70,8 +74,10 @@ export function BattagliaScene() {
   const [pkmnB, setPkmnB] = useState<PokemonIstanza | null>(null)
   const [squadraA, setSquadraA] = useState<PokemonIstanza[]>([])
   const [squadraB, setSquadraB] = useState<PokemonIstanza[]>([])
-  const [log, setLog] = useState<string[]>([])
   const [infoBoxMessaggi, setInfoBoxMessaggi] = useState<string[]>([])
+  const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
+  const diceRollTimerRef = useRef<number | null>(null)
+  const diceRollIdRef = useRef(0)
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
@@ -98,7 +104,6 @@ export function BattagliaScene() {
       setPkmnB(battaglia.pokemonB)
       setSquadraA(battaglia.squadraA ?? [battaglia.pokemonA])
       setSquadraB(battaglia.squadraB ?? [battaglia.pokemonB])
-      setLog(battaglia.log)
       setInfoBoxMessaggi(battaglia.log.slice(-4))
     } else {
       const a = creaIstanza(1, 5)
@@ -108,10 +113,27 @@ export function BattagliaScene() {
       setPkmnB(b)
       setSquadraA(a ? [a] : [])
       setSquadraB(b ? [b] : [])
-      setLog(messaggiIniziali)
       setInfoBoxMessaggi(messaggiIniziali)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (infoBoxMessaggi.length === 0) return
+
+    const timeout = window.setTimeout(() => {
+      setInfoBoxMessaggi([])
+    }, INFOBOX_VISIBLE_MS)
+
+    return () => window.clearTimeout(timeout)
+  }, [infoBoxMessaggi])
+
+  useEffect(() => {
+    return () => {
+      if (diceRollTimerRef.current !== null) {
+        window.clearTimeout(diceRollTimerRef.current)
+      }
+    }
   }, [])
 
   const luogoRitorno = battaglia?.luogoRitorno ?? 'mappa-principale'
@@ -127,8 +149,26 @@ export function BattagliaScene() {
 
   const mostraMessaggi = (messaggi: string[]) => {
     if (messaggi.length === 0) return
-    setLog((l) => [...l, ...messaggi])
     setInfoBoxMessaggi((correnti) => [...correnti, ...messaggi].slice(-6))
+  }
+
+  const mostraLancioDadi = (risultato: RisultatoMossa, side: 'A' | 'B') => {
+    if (diceRollTimerRef.current !== null) {
+      window.clearTimeout(diceRollTimerRef.current)
+    }
+
+    setDiceRoll({
+      id: ++diceRollIdRef.current,
+      side,
+      moveName: risultato.mossa.nome,
+      rolls: risultato.tiriDado,
+      increment: risultato.incremento,
+      damage: risultato.dannoFinale,
+    })
+    diceRollTimerRef.current = window.setTimeout(() => {
+      setDiceRoll(null)
+      diceRollTimerRef.current = null
+    }, DICE_ROLL_VISIBLE_MS)
   }
 
   const tornaIndietro = () => {
@@ -309,6 +349,7 @@ export function BattagliaScene() {
     const ris = calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa)
     if (!ris) return
 
+    mostraLancioDadi(ris, 'A')
     setShaking('B')
     let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
     if (ris.statoApplicato && nuovoB.hp > 0) {
@@ -481,6 +522,7 @@ export function BattagliaScene() {
       passaTurnoBaA()
       return
     }
+    mostraLancioDadi(ris, 'B')
     setShaking('A')
     let nuovoA = { ...pkmnA, hp: Math.max(0, pkmnA.hp - ris.dannoFinale) }
     if (ris.statoApplicato && nuovoA.hp > 0) {
@@ -569,6 +611,10 @@ export function BattagliaScene() {
     >
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+
+      <AnimatePresence>
+        {diceRoll && <DiceRollOverlay key={diceRoll.id} roll={diceRoll} />}
+      </AnimatePresence>
 
       {isNPC && (
         <>
@@ -663,19 +709,21 @@ export function BattagliaScene() {
         />
       </BattleLayoutItem>
 
-      <BattleLayoutItem
-        layoutKey="infoBox"
-        label="Box messaggi"
-        rect={battleLayout.infoBox}
-        editing={layoutEditing}
-        onChange={updateBattleLayout}
-      >
-        <InfoBox
-          messaggi={infoBoxMessaggi.length > 0 ? infoBoxMessaggi : log.slice(-4)}
-          showOpponentButton={!!attesaAvversario && !terminata}
-          onOpponentTurn={confermaTurnoAvversario}
-        />
-      </BattleLayoutItem>
+      {(infoBoxMessaggi.length > 0 || !!attesaAvversario || layoutEditing) && (
+        <BattleLayoutItem
+          layoutKey="infoBox"
+          label="Box messaggi"
+          rect={battleLayout.infoBox}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <InfoBox
+            messaggi={infoBoxMessaggi}
+            showOpponentButton={!!attesaAvversario && !terminata}
+            onOpponentTurn={confermaTurnoAvversario}
+          />
+        </BattleLayoutItem>
+      )}
 
       {!terminata && !mostraMoseB && !attesaPassaggio && !attesaAvversario && !scambioRichiesto && (
         <BattleLayoutItem
@@ -695,6 +743,7 @@ export function BattagliaScene() {
                   key={idx}
                   mossa={mossa}
                   livello={pkmnA.livello}
+                  textKeyPrefix={`move-${idx}`}
                   disabled={!turnoA}
                   onClick={() => eseguiMossa(idx)}
                 />
@@ -735,6 +784,7 @@ export function BattagliaScene() {
                   key={`B-${idx}`}
                   mossa={mossa}
                   livello={pkmnB.livello}
+                  textKeyPrefix={`move-${idx}`}
                   disabled={false}
                   onClick={() => eseguiMossaPvP_B(idx)}
                 />
@@ -758,8 +808,10 @@ export function BattagliaScene() {
             onClick={confermaPassaggio}
             className="arka-button h-full w-full text-base px-6 py-3 shadow-lg"
           >
-            ▶ Passa il controllo al{' '}
-            {attesaPassaggio.direzione === 'A→B' ? 'Rivale' : 'Giocatore'}
+            <span className="arka-layout-content">
+              ▶ Passa il controllo al{' '}
+              {attesaPassaggio.direzione === 'A→B' ? 'Rivale' : 'Giocatore'}
+            </span>
           </motion.button>
         </BattleLayoutItem>
       )}
@@ -778,7 +830,7 @@ export function BattagliaScene() {
         if (delta === 0) return null
         return (
           <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
-            <p className="text-yellow-300 font-bold text-center">
+            <p className="arka-layout-content text-yellow-300 font-bold text-center">
               {delta > 0 ? `+${delta}₳ guadagnati` : `${delta}₳ persi`}
               {tipoAvv === 'Capopalestra' && delta > 0 && ' 👑'}
             </p>
@@ -795,7 +847,7 @@ export function BattagliaScene() {
           onChange={updateBattleLayout}
         >
           <button className="arka-button h-full w-full" onClick={tornaIndietro}>
-            Prosegui
+            <span className="arka-layout-content">Prosegui</span>
           </button>
         </BattleLayoutItem>
       )}
@@ -808,7 +860,7 @@ export function BattagliaScene() {
         onChange={updateBattleLayout}
       >
         <div className="arka-panel flex h-full w-full items-center justify-center px-4 py-1">
-        <span className="text-sm text-center">
+        <span className="arka-layout-content text-sm text-center">
           {terminata
             ? 'Battaglia finita'
             : attesaAvversario
@@ -844,10 +896,6 @@ export function BattagliaScene() {
 // SOTTOCOMPONENTI
 // =============================================================
 
-function clampLayoutValue(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value))
-}
-
 function BattleLayoutItem({
   layoutKey,
   label,
@@ -863,90 +911,107 @@ function BattleLayoutItem({
   onChange: (key: AdminBattleLayoutKey, rect: AdminLayoutRect) => void
   children: ReactNode
 }) {
-  const beginLayoutChange = useAdminStore((s) => s.beginLayoutChange)
+  return (
+    <AdminLayoutItem
+      rootSelector="[data-battle-layout-root]"
+      label={label}
+      rect={rect}
+      editing={editing}
+      onChange={(nextRect) => onChange(layoutKey, nextRect)}
+      zIndex={20}
+    >
+      {children}
+    </AdminLayoutItem>
+  )
+}
 
-  const startPointerEdit = (
-    event: ReactPointerEvent<HTMLButtonElement>,
-    mode: 'move' | 'resize'
-  ) => {
-    if (!editing) return
+type DiceRollDisplay = {
+  id: number
+  side: 'A' | 'B'
+  moveName: string
+  rolls: number[]
+  increment: number
+  damage: number
+}
 
-    const root = event.currentTarget.closest('[data-battle-layout-root]') as HTMLElement | null
-    if (!root) return
+const DIE_PIPS: Record<number, string[]> = {
+  1: ['col-start-2 row-start-2'],
+  2: ['col-start-1 row-start-1', 'col-start-3 row-start-3'],
+  3: ['col-start-1 row-start-1', 'col-start-2 row-start-2', 'col-start-3 row-start-3'],
+  4: [
+    'col-start-1 row-start-1',
+    'col-start-3 row-start-1',
+    'col-start-1 row-start-3',
+    'col-start-3 row-start-3',
+  ],
+  5: [
+    'col-start-1 row-start-1',
+    'col-start-3 row-start-1',
+    'col-start-2 row-start-2',
+    'col-start-1 row-start-3',
+    'col-start-3 row-start-3',
+  ],
+  6: [
+    'col-start-1 row-start-1',
+    'col-start-3 row-start-1',
+    'col-start-1 row-start-2',
+    'col-start-3 row-start-2',
+    'col-start-1 row-start-3',
+    'col-start-3 row-start-3',
+  ],
+}
 
-    event.preventDefault()
-    event.stopPropagation()
-    event.currentTarget.setPointerCapture(event.pointerId)
-    beginLayoutChange()
-
-    const rootBounds = root.getBoundingClientRect()
-    const startX = event.clientX
-    const startY = event.clientY
-    const startRect = rect
-
-    const onPointerMove = (moveEvent: PointerEvent) => {
-      const dx = ((moveEvent.clientX - startX) / rootBounds.width) * 100
-      const dy = ((moveEvent.clientY - startY) / rootBounds.height) * 100
-
-      if (mode === 'move') {
-        onChange(layoutKey, {
-          ...startRect,
-          x: clampLayoutValue(startRect.x + dx, 0, 100 - startRect.w),
-          y: clampLayoutValue(startRect.y + dy, 0, 100 - startRect.h),
-        })
-        return
-      }
-
-      onChange(layoutKey, {
-        ...startRect,
-        w: clampLayoutValue(startRect.w + dx, 4, 100 - startRect.x),
-        h: clampLayoutValue(startRect.h + dy, 4, 100 - startRect.y),
-      })
-    }
-
-    const onPointerUp = () => {
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerup', onPointerUp)
-    }
-
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
-  }
+function DiceRollOverlay({ roll }: { roll: DiceRollDisplay }) {
+  const total = roll.rolls.reduce((sum, value) => sum + value, 0)
 
   return (
-    <div
-      className="absolute z-20"
-      style={{
-        left: `${rect.x}%`,
-        top: `${rect.y}%`,
-        width: `${rect.w}%`,
-        height: `${rect.h}%`,
-      }}
-    >
-      {editing ? (
-        <button
-          type="button"
-          onPointerDown={(event) => startPointerEdit(event, 'move')}
-          className="absolute -top-6 left-0 z-[80] cursor-move rounded border border-amber-300 bg-slate-950/90 px-2 py-1 text-[10px] font-black text-amber-200 shadow-lg"
-        >
-          {label}
-        </button>
-      ) : null}
-      {editing ? (
-        <button
-          type="button"
-          aria-label={`Ridimensiona ${label}`}
-          onPointerDown={(event) => startPointerEdit(event, 'resize')}
-          className="absolute -bottom-2 -right-2 z-[80] h-5 w-5 cursor-nwse-resize rounded border border-amber-300 bg-slate-950/90 text-[10px] font-black text-amber-200 shadow-lg"
-        >
-          R
-        </button>
-      ) : null}
-      {editing ? (
-        <div className="pointer-events-none absolute inset-0 z-[70] rounded border border-dashed border-amber-300/80" />
-      ) : null}
-      {children}
+    <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.88, y: -18 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94, y: 12 }}
+        transition={{ duration: 0.22 }}
+        className="w-[min(560px,88vw)] rounded-md border border-white/20 bg-slate-950/88 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
+      >
+        <p className="text-[11px] font-black uppercase text-amber-300">
+          {roll.side === 'A' ? 'Lancio giocatore' : 'Lancio avversario'}
+        </p>
+        <h3 className="mt-1 text-lg font-black">{roll.moveName}</h3>
+        <div className="mt-3 flex min-h-16 flex-wrap items-center justify-center gap-3">
+          {roll.rolls.map((value, index) => (
+            <DieFace key={`${roll.id}-${index}`} value={value} index={index} />
+          ))}
+        </div>
+        <p className="mt-3 text-xs font-bold text-slate-200">
+          Dadi: {roll.rolls.join(' + ')}
+          {roll.increment > 0 ? ` + ${roll.increment}` : ''}
+          {' = '}
+          {total + roll.increment}
+        </p>
+        <p className="mt-1 text-base font-black text-rose-300">
+          Danno finale: {roll.damage}
+        </p>
+      </motion.div>
     </div>
+  )
+}
+
+function DieFace({ value, index }: { value: number; index: number }) {
+  return (
+    <motion.div
+      initial={{ y: -70, rotate: -180, opacity: 0 }}
+      animate={{ y: 0, rotate: 0, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 16, delay: index * 0.08 }}
+      className="grid h-14 w-14 shrink-0 grid-cols-3 grid-rows-3 rounded-md border-2 border-slate-300 bg-white p-2 shadow-lg"
+      aria-label={`Dado: ${value}`}
+    >
+      {(DIE_PIPS[value] ?? []).map((position, pipIndex) => (
+        <span
+          key={`${position}-${pipIndex}`}
+          className={`${position} h-2.5 w-2.5 place-self-center rounded-full bg-slate-950`}
+        />
+      ))}
+    </motion.div>
   )
 }
 
@@ -971,9 +1036,17 @@ function InfoBox({
         backgroundRepeat: 'no-repeat',
       }}
     >
-      <div className="absolute inset-x-[8%] top-[16%] space-y-1.5 pr-[28%] text-[clamp(13px,1vw,16px)] font-extrabold leading-snug">
+      <div
+        className={`absolute left-[8%] top-[16%] space-y-1.5 text-[clamp(11px,0.92vw,15px)] font-extrabold leading-snug ${
+          showOpponentButton ? 'right-[28%]' : 'right-[8%]'
+        }`}
+      >
         {righe.map((msg, idx) => (
-          <p key={`${idx}-${msg}`} className="truncate">
+          <p
+            key={`${idx}-${msg}`}
+            data-admin-layout-text-key={`message-${idx}`}
+            className="arka-layout-content whitespace-normal break-words"
+          >
             {msg}
           </p>
         ))}
@@ -1175,7 +1248,10 @@ function HpBar({
       }}
     >
       <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
-        <span className="min-w-0 truncate text-[clamp(13px,1.25vw,18px)] font-extrabold leading-none text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]">
+        <span
+          data-admin-layout-text-key="pokemon-name"
+          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.25vw,18px)] font-extrabold leading-none text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]"
+        >
           {nome}
           {badge && (
             <span
@@ -1186,7 +1262,10 @@ function HpBar({
             </span>
           )}
         </span>
-        <span className="shrink-0 text-[clamp(11px,1vw,15px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]">
+        <span
+          data-admin-layout-text-key="pokemon-level"
+          className="arka-layout-content shrink-0 text-[clamp(11px,1vw,15px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]"
+        >
           LV. {livello}
         </span>
       </div>
@@ -1199,7 +1278,10 @@ function HpBar({
           transition={{ duration: 0.5, ease: 'easeOut' }}
         />
       </div>
-      <div className="absolute left-[72%] right-[5%] top-[68%] text-right text-[clamp(10px,0.9vw,13px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]">
+      <div
+        data-admin-layout-text-key="pokemon-hp"
+        className="arka-layout-content absolute left-[72%] right-[5%] top-[68%] text-right text-[clamp(10px,0.9vw,13px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]"
+      >
         {hp}/{hpMax}
       </div>
     </div>
@@ -1239,11 +1321,13 @@ function ActionButton({
 function MoveButton({
   mossa,
   livello,
+  textKeyPrefix,
   disabled,
   onClick,
 }: {
   mossa: MossaDef
   livello: number
+  textKeyPrefix: string
   disabled: boolean
   onClick: () => void
 }) {
@@ -1269,13 +1353,22 @@ function MoveButton({
         className="absolute left-4 top-4 h-[calc(100%-32px)] w-1.5 rounded-full"
         style={{ backgroundColor: coloreTipo }}
       />
-      <div className="truncate pl-3 pr-2 text-[15px] font-extrabold leading-tight">{mossa.nome}</div>
+      <div
+        data-admin-layout-text-key={`${textKeyPrefix}-name`}
+        className="arka-layout-content truncate pl-3 pr-2 text-[15px] font-extrabold leading-tight"
+      >
+        {mossa.nome}
+      </div>
       <div className="mt-4 flex items-center justify-between gap-2 pl-3 text-[12px] font-bold">
-        <span className="rounded bg-white/60 px-2 py-1 text-slate-900 shadow-inner">
+        <span
+          data-admin-layout-text-key={`${textKeyPrefix}-dice`}
+          className="arka-layout-content rounded bg-white/60 px-2 py-1 text-slate-900 shadow-inner"
+        >
           D6 {dadi} +{incremento}
         </span>
         <span
-          className="rounded px-2 py-1 text-[11px] font-extrabold uppercase text-slate-950 shadow"
+          data-admin-layout-text-key={`${textKeyPrefix}-type`}
+          className="arka-layout-content rounded px-2 py-1 text-[11px] font-extrabold uppercase text-slate-950 shadow"
           style={{ backgroundColor: coloreTipo }}
         >
           {mossa.tipo}

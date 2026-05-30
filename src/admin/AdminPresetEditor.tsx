@@ -2,13 +2,12 @@ import { useAdminStore } from '@store/adminStore'
 import { adminThemePresets } from '@/theme/adminThemePresets'
 
 export function AdminPresetEditor() {
-  const importTheme = useAdminStore((state) => state.importTheme)
-  const resetTheme = useAdminStore((state) => state.resetTheme)
+  const applyVisualTheme = useAdminStore((state) => state.applyVisualTheme)
 
   return (
     <div className="space-y-3">
       <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
-        Applicare un preset sovrascrive il tema corrente.
+        I preset cambiano colori, pannelli e asset senza modificare layout, strade o posizioni.
       </p>
 
       {adminThemePresets.map((preset) => (
@@ -20,7 +19,7 @@ export function AdminPresetEditor() {
             <h3 className="text-sm font-black text-[var(--arka-text)]">{preset.name}</h3>
             <button
               type="button"
-              onClick={() => importTheme(preset)}
+              onClick={() => applyVisualTheme(preset)}
               className="rounded-md bg-[var(--arka-primary)] px-3 py-1.5 text-xs font-black text-[var(--arka-bg)] transition hover:bg-[var(--arka-primary-hover)]"
             >
               Applica
@@ -49,10 +48,10 @@ export function AdminPresetEditor() {
 
       <button
         type="button"
-        onClick={resetTheme}
+        onClick={() => applyVisualTheme(adminThemePresets[0])}
         className="w-full rounded-md border border-[var(--arka-primary)] px-3 py-2 text-sm font-black text-[var(--arka-primary-hover)] transition hover:bg-[var(--arka-surface-hover)]"
       >
-        Ripristina Arkamon Classico
+        Ripristina stile Arkamon Classico
       </button>
     </div>
   )

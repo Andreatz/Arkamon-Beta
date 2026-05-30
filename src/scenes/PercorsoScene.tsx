@@ -84,10 +84,10 @@ export function PercorsoScene() {
         </div>
       </div>
 
-      <h2 className="text-3xl font-bold text-white text-center mb-2 drop-shadow-lg">
+      <h2 className="arka-readable-title text-3xl font-bold text-white text-center mb-2">
         {luogo.replace('_', ' ')}
       </h2>
-      <p className="text-arka-text-muted text-center mb-8 italic">
+      <p className="arka-readable-text text-arka-text-muted text-center mb-8 italic">
         Esplora i cespugli — ogni cespuglio è esplorabile UNA sola volta
       </p>
 

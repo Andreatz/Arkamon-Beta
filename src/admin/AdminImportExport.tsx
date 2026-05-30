@@ -11,6 +11,7 @@ import type {
   AdminThemeUi,
 } from '@/theme/adminThemeTypes'
 import {
+  defaultAdminTheme,
   defaultBattleLayout,
   defaultDepositLayout,
   defaultEvolutionLayout,
@@ -43,6 +44,7 @@ const uiKeys: (keyof AdminThemeUi)[] = [
   'shadowIntensity',
   'buttonScale',
   'stageScale',
+  'fontScale',
   'mainMapRoadOpacity',
 ]
 
@@ -78,7 +80,7 @@ function parseLayoutRects(
       return { layout: null, error: `Rettangolo layout non valido: ${key}.` }
     }
 
-    const { x, y, w, h } = rect
+    const { x, y, w, h, contentX, contentY, contentOffsets } = rect
     if (
       typeof x !== 'number' ||
       typeof y !== 'number' ||
@@ -92,7 +94,42 @@ function parseLayoutRects(
       return { layout: null, error: `Coordinate layout non valide: ${key}.` }
     }
 
-    layout[key] = { x, y, w, h }
+    if (
+      (contentX !== undefined && (typeof contentX !== 'number' || !Number.isFinite(contentX))) ||
+      (contentY !== undefined && (typeof contentY !== 'number' || !Number.isFinite(contentY)))
+    ) {
+      return { layout: null, error: `Offset contenuto non valido: ${key}.` }
+    }
+
+    if (contentOffsets !== undefined && !isRecord(contentOffsets)) {
+      return { layout: null, error: `Offset testi non validi: ${key}.` }
+    }
+
+    const parsedContentOffsets: NonNullable<AdminLayoutRect['contentOffsets']> = {}
+    for (const [textKey, offset] of Object.entries(contentOffsets ?? {})) {
+      if (
+        !isRecord(offset) ||
+        typeof offset.x !== 'number' ||
+        typeof offset.y !== 'number' ||
+        !Number.isFinite(offset.x) ||
+        !Number.isFinite(offset.y)
+      ) {
+        return { layout: null, error: `Offset testo non valido: ${key}.${textKey}.` }
+      }
+      parsedContentOffsets[textKey] = { x: offset.x, y: offset.y }
+    }
+
+    layout[key] = {
+      x,
+      y,
+      w,
+      h,
+      ...(contentX !== undefined ? { contentX } : {}),
+      ...(contentY !== undefined ? { contentY } : {}),
+      ...(Object.keys(parsedContentOffsets).length > 0
+        ? { contentOffsets: parsedContentOffsets }
+        : {}),
+    }
   }
 
   return { layout, error: null }
@@ -135,6 +172,10 @@ function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { t
   const ui: Partial<AdminThemeUi> = {}
   for (const key of uiKeys) {
     const valueForKey = parsed.ui[key]
+    if (valueForKey === undefined) {
+      ui[key] = defaultAdminTheme.ui[key]
+      continue
+    }
     if (typeof valueForKey !== 'number' || !Number.isFinite(valueForKey)) {
       return { theme: null, error: `Valore UI non valido: ${key}.` }
     }

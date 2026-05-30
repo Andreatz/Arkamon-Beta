@@ -597,9 +597,9 @@ export function MappaGrigliaScene() {
       <div className="flex h-full w-full justify-between items-center">
         <div className="flex gap-2">
           <div className="arka-panel px-4 py-2">
-            <span className="text-arka-text-muted text-xs">Turno di:</span>
+            <span className="arka-layout-content text-arka-text-muted text-xs">Turno di:</span>
             <span
-              className={`font-bold ml-2 ${
+              className={`arka-layout-content font-bold ml-2 ${
                 turno.giocatoreAttivo === 1 ? 'text-rose-300' : 'text-sky-300'
               }`}
             >
@@ -607,14 +607,14 @@ export function MappaGrigliaScene() {
             </span>
           </div>
           <div className="arka-panel px-4 py-2">
-            <span className="text-arka-text-muted text-xs">Azioni:</span>
-            <span className="text-arka-accent font-bold ml-2">
+            <span className="arka-layout-content text-arka-text-muted text-xs">Azioni:</span>
+            <span className="arka-layout-content text-arka-accent font-bold ml-2">
               {turno.azioniRimaste} / 2
             </span>
           </div>
           <div className="arka-panel px-4 py-2">
-            <span className="text-arka-text-muted text-xs">Mappa:</span>
-            <span className="text-white font-bold ml-2">{mappa.id}</span>
+            <span className="arka-layout-content text-arka-text-muted text-xs">Mappa:</span>
+            <span className="arka-layout-content text-white font-bold ml-2">{mappa.id}</span>
           </div>
         </div>
         <div className="flex gap-2">
@@ -623,19 +623,19 @@ export function MappaGrigliaScene() {
             className="arka-button-secondary text-xs py-1 px-3"
             aria-pressed={mostraDebug}
           >
-            Debug griglia
+            <span className="arka-layout-content">Debug griglia</span>
           </button>
           <button
             onClick={() => passaTurnoOverworld()}
             className="arka-button-secondary text-xs py-1 px-3"
           >
-            Passa turno
+            <span className="arka-layout-content">Passa turno</span>
           </button>
           <button
             onClick={() => vaiAScena('mappa-principale')}
             className="arka-button-secondary text-xs py-1 px-3"
           >
-            ← Mappa principale
+            <span className="arka-layout-content">← Mappa principale</span>
           </button>
         </div>
       </div>
@@ -757,12 +757,12 @@ export function MappaGrigliaScene() {
         zIndex={30}
       >
         <div className="arka-panel h-full w-full overflow-hidden px-3 py-2">
-          <div className="text-arka-text-muted text-[10px] uppercase mb-1">
+          <div className="arka-layout-content text-arka-text-muted text-[10px] uppercase mb-1">
             Log
           </div>
           <div className="text-xs space-y-0.5">
             {log.slice(-4).map((m, i) => (
-              <div key={i} className="text-white/90">
+              <div key={i} className="arka-layout-content text-white/90">
                 {m}
               </div>
             ))}
@@ -778,38 +778,38 @@ export function MappaGrigliaScene() {
         zIndex={30}
       >
         <div className="arka-panel flex h-full w-full flex-col gap-0.5 overflow-hidden px-3 py-2 text-[10px]">
-          <div className="text-arka-text-muted uppercase tracking-wide">
+          <div className="arka-layout-content text-arka-text-muted uppercase tracking-wide">
             Leggenda
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm ring-2 ring-sky-400" />
             Movibile
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm ring-2 ring-amber-300" />
             Interagibile
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-emerald-700/60" />
             ERBA Cespuglio
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-rose-700/60" />
             NPC Allenatore
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-amber-700/60" />
             PKMN/BOX Edificio
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-indigo-700/60" />
             EXIT Uscita
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-white/20 grayscale opacity-40" />
             OK Consumata
           </div>
-          <div className="flex items-center gap-2">
+          <div className="arka-layout-content flex items-center gap-2">
             <span className="w-3 h-3 rounded-sm bg-slate-900" />
             Ostacolo
           </div>

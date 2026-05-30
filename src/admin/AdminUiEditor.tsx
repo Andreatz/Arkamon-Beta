@@ -60,6 +60,14 @@ const uiFields: {
     step: 0.01,
   },
   {
+    key: 'fontScale',
+    label: 'Scala font',
+    description: 'Dimensione globale dei testi del gioco.',
+    min: 0.75,
+    max: 1.35,
+    step: 0.01,
+  },
+  {
     key: 'mainMapRoadOpacity',
     label: 'Opacita strade mappa',
     description: 'Trasparenza del grigio interno delle strade.',

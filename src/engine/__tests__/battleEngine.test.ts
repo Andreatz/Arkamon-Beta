@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   calcolaHPMax,
+  calcolaDanno,
   determinaIniziativa,
   rollD6,
   roundHalfUp,
@@ -75,6 +76,19 @@ describe('determinaIniziativa', () => {
   })
   it('pareggio + rng >= 0.5 → B', () => {
     expect(determinaIniziativa(5, 5, () => 0.7)).toBe('B')
+  })
+})
+
+describe('calcolaDanno messaggi', () => {
+  it('applica STAB al danno senza mostrare il messaggio tecnico STAB', () => {
+    const attaccante = mkIstanza(1, 5)
+    const difensore = mkIstanza(1, 5)
+
+    const risultato = calcolaDanno(attaccante, difensore, 0, () => 0)
+
+    expect(risultato?.stab).toBe(true)
+    expect(risultato?.dannoFinale).toBe(3)
+    expect(risultato?.messaggi).not.toContain('(STAB)')
   })
 })
 

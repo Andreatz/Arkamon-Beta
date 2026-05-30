@@ -47,8 +47,10 @@ export function LaboratorioScene() {
       className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-slate-800 to-slate-950 p-8 bg-cover bg-center"
       style={{ backgroundImage: `url(${LABORATORY_BG})` }}
     >
-      <h2 className="text-4xl font-bold text-arka-accent mb-2">Laboratorio del Professore</h2>
-      <p className="text-arka-text-muted mb-8 text-lg">
+      <h2 className="arka-readable-title text-4xl font-bold text-arka-accent mb-2">
+        Laboratorio del Professore
+      </h2>
+      <p className="arka-readable-text text-arka-text-muted mb-8 text-lg">
         {tuttiHannoStarter
           ? 'Tutti hanno scelto! Si parte!'
           : `Giocatore ${giocatoreAttivo}, scegli il tuo Starter.`}
@@ -87,15 +89,10 @@ export function LaboratorioScene() {
               </div>
               <h3 className="text-2xl font-bold">{specie.nome}</h3>
               <span className="text-sm text-arka-text-muted">{specie.tipo}</span>
-              <span className="text-xs text-arka-text-muted">HP base: {specie.hpBase}</span>
             </motion.button>
           )
         })}
       </div>
-
-      <p className="mt-8 text-arka-text-muted text-sm italic">
-        Il pokémon non scelto verrà usato dal Rivale...
-      </p>
     </div>
   )
 }

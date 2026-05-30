@@ -19,6 +19,7 @@ export interface AdminThemeUi {
   shadowIntensity: number
   buttonScale: number
   stageScale: number
+  fontScale: number
   mainMapRoadOpacity: number
 }
 
@@ -34,6 +35,14 @@ export interface AdminLayoutRect {
   y: number
   w: number
   h: number
+  contentX?: number
+  contentY?: number
+  contentOffsets?: Record<string, AdminLayoutContentOffset>
+}
+
+export interface AdminLayoutContentOffset {
+  x: number
+  y: number
 }
 
 export interface AdminMapNodePosition {

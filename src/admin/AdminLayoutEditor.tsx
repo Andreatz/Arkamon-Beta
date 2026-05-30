@@ -19,7 +19,7 @@ export function AdminLayoutEditor() {
               Layout interfaccia
             </h3>
             <p className="mt-1 text-xs leading-snug text-[var(--arka-text-muted)]">
-              Attiva la modifica e trascina le etichette sugli elementi modificabili.
+              Trascina le etichette per spostare, R per ridimensionare, T per muovere il testo interno. Gli elementi si agganciano a bordi e centri vicini.
             </p>
           </div>
           <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-[var(--arka-text)]">

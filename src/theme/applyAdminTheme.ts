@@ -23,6 +23,7 @@ export function applyAdminTheme(theme: AdminTheme): void {
   root.style.setProperty('--arka-shadow-intensity', `${theme.ui.shadowIntensity}`)
   root.style.setProperty('--arka-button-scale', `${theme.ui.buttonScale}`)
   root.style.setProperty('--arka-stage-scale', `${theme.ui.stageScale}`)
+  root.style.setProperty('--arka-font-scale', `${theme.ui.fontScale}`)
   root.style.setProperty(
     '--arka-panel-texture',
     theme.assets.panelTexture ? `url("${assetUrl(theme.assets.panelTexture)}")` : 'none'

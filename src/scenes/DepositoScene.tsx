@@ -90,12 +90,12 @@ export function DepositoScene() {
           className="arka-button-secondary text-sm py-2 px-4"
           onClick={() => scenaIndietro()}
         >
-          ← Torna indietro
+          <span className="arka-layout-content">← Torna indietro</span>
         </button>
-        <h2 className="text-2xl font-bold text-arka-accent">Deposito</h2>
+        <h2 className="arka-layout-content arka-readable-title text-2xl font-bold text-arka-accent">Deposito</h2>
         <div className="arka-panel px-4 py-2">
-          <span className="text-arka-text-muted text-xs">Giocatore:</span>
-          <span className="text-arka-accent font-bold ml-2">{giocatoreAttivo}</span>
+          <span className="arka-layout-content text-arka-text-muted text-xs">Giocatore:</span>
+          <span className="arka-layout-content text-arka-accent font-bold ml-2">{giocatoreAttivo}</span>
         </div>
       </div>
       </AdminLayoutItem>
@@ -116,9 +116,9 @@ export function DepositoScene() {
               onClick={() => setBoxCorrente((b) => Math.max(1, b - 1))}
               className="arka-button-secondary text-sm py-1 px-3 disabled:opacity-30"
             >
-              ‹
+              <span className="arka-layout-content">‹</span>
             </button>
-            <h3 className="text-lg font-bold">
+            <h3 className="arka-layout-content text-lg font-bold">
               Box {boxCorrente} <span className="text-arka-text-muted text-sm">/ {BOX_COUNT}</span>
             </h3>
             <button
@@ -126,7 +126,7 @@ export function DepositoScene() {
               onClick={() => setBoxCorrente((b) => Math.min(BOX_COUNT, b + 1))}
               className="arka-button-secondary text-sm py-1 px-3 disabled:opacity-30"
             >
-              ›
+              <span className="arka-layout-content">›</span>
             </button>
           </div>
 
@@ -142,6 +142,7 @@ export function DepositoScene() {
                   istanza={istanza}
                   selezionato={isSelezionato(ref)}
                   onClick={() => click(ref, !!istanza)}
+                  layoutTextPrefix={`box-slot-${slotN}`}
                 />
               )
             })}
@@ -159,7 +160,7 @@ export function DepositoScene() {
         zIndex={20}
       >
         <div className="arka-panel h-full w-full p-4 flex flex-col">
-          <h3 className="text-lg font-bold mb-3 text-center">
+          <h3 className="arka-layout-content text-lg font-bold mb-3 text-center">
             Squadra <span className="text-arka-text-muted text-sm">{giocatore.squadra.length}/{SQUADRA_MAX}</span>
           </h3>
           <div className="flex flex-col gap-2 flex-1">
@@ -173,6 +174,7 @@ export function DepositoScene() {
                   selezionato={isSelezionato(ref)}
                   onClick={() => click(ref, !!istanza)}
                   largo
+                  layoutTextPrefix={`team-slot-${i}`}
                 />
               )
             })}
@@ -189,7 +191,7 @@ export function DepositoScene() {
         onChange={(rect) => updateDepositLayout('infoBar', rect)}
         zIndex={30}
       >
-      <div className="arka-panel flex h-full w-full items-center justify-center px-4 py-2 text-sm text-center">
+      <div className="arka-layout-content arka-panel flex h-full w-full items-center justify-center px-4 py-2 text-sm text-center">
         {selezionato
           ? '✋ Slot selezionato — clicca un altro slot per scambiare/spostare, o di nuovo lo stesso per annullare'
           : '🖱️ Clicca uno slot occupato per selezionarlo'}
@@ -204,11 +206,13 @@ function SlotCell({
   selezionato,
   onClick,
   largo = false,
+  layoutTextPrefix,
 }: {
   istanza?: PokemonIstanza
   selezionato: boolean
   onClick: () => void
   largo?: boolean
+  layoutTextPrefix: string
 }) {
   const specie = istanza ? getPokemon(istanza.specieId) : null
   const hpMax = istanza ? calcolaHPMax(istanza) : 0
@@ -235,8 +239,16 @@ function SlotCell({
           <>
             <SmallSprite specieId={specie.id} tipo={specie.tipo} className="w-10 h-10" />
             <div className="flex-1 text-left">
-              <div className="font-bold text-sm leading-tight">{istanza.nome}</div>
-              <div className="text-xs text-arka-text-muted">
+              <div
+                data-admin-layout-text-key={`${layoutTextPrefix}-name`}
+                className="arka-layout-content font-bold text-sm leading-tight"
+              >
+                {istanza.nome}
+              </div>
+              <div
+                data-admin-layout-text-key={`${layoutTextPrefix}-details`}
+                className="arka-layout-content text-xs text-arka-text-muted"
+              >
                 lv {istanza.livello} · {istanza.hp}/{hpMax} HP
               </div>
             </div>
@@ -244,13 +256,21 @@ function SlotCell({
         ) : (
           <>
             <SmallSprite specieId={specie.id} tipo={specie.tipo} className="w-10 h-10" />
-            <span className="text-[9px] text-arka-text-muted leading-tight mt-0.5">
+            <span
+              data-admin-layout-text-key={`${layoutTextPrefix}-level`}
+              className="arka-layout-content text-[9px] text-arka-text-muted leading-tight mt-0.5"
+            >
               lv{istanza.livello}
             </span>
           </>
         )
       ) : (
-        <span className="text-arka-text-muted text-xs">·</span>
+        <span
+          data-admin-layout-text-key={`${layoutTextPrefix}-empty`}
+          className="arka-layout-content text-arka-text-muted text-xs"
+        >
+          ·
+        </span>
       )}
     </motion.button>
   )

@@ -15,7 +15,7 @@ import type {
   AdminThemeUi,
   AdminLayoutRect,
 } from '@/theme/adminThemeTypes'
-import { orthogonalizeRoadPoints } from '@/utils/mainMapRoadGeometry'
+import { compactRoadPoints } from '@/utils/mainMapRoadGeometry'
 import {
   cloneAdminTheme,
   defaultAdminTheme,
@@ -93,6 +93,7 @@ interface AdminState {
   resetMainMapRoads: () => void
   resetSceneLayout: (scene: SceneLayoutUpdate['scene']) => void
   resetTheme: () => void
+  applyVisualTheme: (theme: AdminTheme) => void
   importTheme: (theme: AdminTheme) => void
 }
 
@@ -110,7 +111,7 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
       ...theme?.layouts?.mainMapRoads,
     }).map(([key, points]) => [
       key,
-      orthogonalizeRoadPoints(Array.isArray(points) ? points : []),
+      compactRoadPoints(Array.isArray(points) ? points : []),
     ])
   )
 
@@ -268,7 +269,7 @@ export const useAdminStore = create<AdminState>()(
               ...state.theme.layouts,
               mainMapRoads: {
                 ...state.theme.layouts.mainMapRoads,
-                [key]: orthogonalizeRoadPoints(points),
+                [key]: compactRoadPoints(points),
               },
             },
           },
@@ -347,6 +348,23 @@ export const useAdminStore = create<AdminState>()(
         set({
           layoutUndoStack: [],
           theme: cloneAdminTheme(defaultAdminTheme),
+        }),
+
+      applyVisualTheme: (theme) =>
+        set((state) => {
+          const normalizedTheme = normalizeTheme(theme)
+
+          return {
+            theme: {
+              ...state.theme,
+              id: normalizedTheme.id,
+              name: normalizedTheme.name,
+              colors: normalizedTheme.colors,
+              ui: normalizedTheme.ui,
+              assets: normalizedTheme.assets,
+              layouts: state.theme.layouts,
+            },
+          }
         }),
 
       importTheme: (theme) =>

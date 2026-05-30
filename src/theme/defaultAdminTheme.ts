@@ -105,6 +105,7 @@ export const defaultAdminTheme: AdminTheme = {
     shadowIntensity: 1,
     buttonScale: 0.95,
     stageScale: 1,
+    fontScale: 1,
     mainMapRoadOpacity: 0.42,
   },
   assets: {},

@@ -60,6 +60,24 @@ describe('adminStore', () => {
     })
   })
 
+  it('updateBattleLayout conserva gli offset dei singoli testi', () => {
+    useAdminStore.getState().updateBattleLayout('playerMoves', {
+      x: 46,
+      y: 70,
+      w: 50,
+      h: 24,
+      contentOffsets: {
+        'move-0-name': { x: 12, y: -8 },
+        'move-1-dice': { x: -5, y: 15 },
+      },
+    })
+
+    expect(useAdminStore.getState().theme.layouts.battle.playerMoves.contentOffsets).toEqual({
+      'move-0-name': { x: 12, y: -8 },
+      'move-1-dice': { x: -5, y: 15 },
+    })
+  })
+
   it('updateMainMapNodePosition aggiorna un nodo della mappa principale', () => {
     useAdminStore.getState().updateMainMapNodePosition('Roma', { x: 51, y: 57 })
 
@@ -85,7 +103,7 @@ describe('adminStore', () => {
     ])
   })
 
-  it('updateMainMapRoad raddrizza le strade diagonali ad angoli di 90 gradi', () => {
+  it('updateMainMapRoad salva solo gli hook senza generare nodi automatici', () => {
     useAdminStore.getState().updateMainMapRoad('Venezia__Pordenone', [
       { x: 56, y: 24 },
       { x: 64, y: 20 },
@@ -93,7 +111,6 @@ describe('adminStore', () => {
 
     expect(useAdminStore.getState().theme.layouts.mainMapRoads.Venezia__Pordenone).toEqual([
       { x: 56, y: 24 },
-      { x: 64, y: 24 },
       { x: 64, y: 20 },
     ])
   })
@@ -124,7 +141,7 @@ describe('adminStore', () => {
 
     expect(useAdminStore.getState().theme.layouts.mainMapRoads.Roma__Percorso_14).toEqual([
       { x: 48, y: 56 },
-      { x: 54, y: 56 },
+      { x: 51, y: 56 },
       { x: 54, y: 54 },
     ])
   })
@@ -150,6 +167,43 @@ describe('adminStore', () => {
     useAdminStore.getState().resetTheme()
 
     expect(useAdminStore.getState().theme).toEqual(defaultAdminTheme)
+  })
+
+  it('applyVisualTheme cambia lo stile senza sovrascrivere i layout', () => {
+    useAdminStore.getState().updateMainMapNodePosition('Roma', { x: 51, y: 57 })
+    useAdminStore.getState().updateBattleLayout('playerSprite', {
+      x: 10,
+      y: 20,
+      w: 30,
+      h: 40,
+    })
+
+    const preset: AdminTheme = {
+      ...defaultAdminTheme,
+      id: 'preset-test',
+      name: 'Preset Test',
+      colors: {
+        ...defaultAdminTheme.colors,
+        primary: '#123456',
+      },
+      ui: {
+        ...defaultAdminTheme.ui,
+        buttonRadius: 6,
+      },
+    }
+
+    useAdminStore.getState().applyVisualTheme(preset)
+
+    const theme = useAdminStore.getState().theme
+    expect(theme.colors.primary).toBe('#123456')
+    expect(theme.ui.buttonRadius).toBe(6)
+    expect(theme.layouts.mainMapNodes.Roma).toEqual({ x: 51, y: 57 })
+    expect(theme.layouts.battle.playerSprite).toEqual({
+      x: 10,
+      y: 20,
+      w: 30,
+      h: 40,
+    })
   })
 
   it('importTheme sostituisce il tema corrente', () => {
