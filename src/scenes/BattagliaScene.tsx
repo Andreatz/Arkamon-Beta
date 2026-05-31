@@ -1106,7 +1106,7 @@ function DiceRollOverlay({ roll }: { roll: DiceRollDisplay }) {
         transition={{ duration: 0.22 }}
         className="relative -top-6 w-[min(560px,88vw)] rounded-md border border-white/20 bg-slate-950/88 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
       >
-        <p className="text-[11px] font-black uppercase text-amber-300">
+        <p className="text-[11px] font-black uppercase text-blue-300 arka-letter-outline">
           {roll.side === 'A' ? 'Lancio giocatore' : 'Lancio avversario'}
         </p>
         <h3 className="mt-1 text-lg font-black">{roll.moveName}</h3>
@@ -1378,7 +1378,7 @@ function HpBar({
 
   return (
     <div
-      className={`arka-battle-font relative z-20 h-full w-full text-white drop-shadow-2xl ${className}`}
+      className={`arka-battle-font relative z-20 h-full w-full text-white arka-letter-outline ${className}`}
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
