@@ -142,7 +142,6 @@ export function risolviStatoInizioTurno(
 // =============================================================
 
 export const BATTLE_CONSTANTS = {
-  STAB_MULTIPLIER: 1.5,
   XP_BASE_VITTORIA: 50,
 } as const
 
@@ -221,14 +220,13 @@ export function calcolaDanno(
   const sommaDadi = tiri.reduce((a, b) => a + b, 0)
   const dannoBase = sommaDadi + incremento
 
-  const stab = mossa.tipo === specieAtt.tipo
-  const moltStab = stab ? BATTLE_CONSTANTS.STAB_MULTIPLIER : 1
   const moltTipo = efficaciaTipo(mossa.tipo, specieDif.tipo)
+  const stab = moltTipo > 1
   const moltSuprema = èMossaSuprema(mossa) ? 2 : 1
 
   const dannoFinale = Math.max(
     1,
-    roundHalfUp(dannoBase * moltStab * moltTipo * moltSuprema)
+    roundHalfUp(dannoBase * moltTipo * moltSuprema)
   )
 
   const messaggi: string[] = [`${attaccante.nome} usa ${mossa.nome}!`]
@@ -421,7 +419,6 @@ export function scegliMossaIA(
 
     const { dadi, incremento } = getMossaAlLivello(mossa, attaccante.livello)
     let punteggio = dadi * 3.5 + incremento
-    if (mossa.tipo === specie.tipo) punteggio *= BATTLE_CONSTANTS.STAB_MULTIPLIER
     punteggio *= efficaciaTipo(mossa.tipo, specieDif.tipo)
     if (mossa.effetto && EFFETTI_CURA.has(mossa.effetto)) {
       punteggio = hpRatio <= 0.3 ? 100 : -1

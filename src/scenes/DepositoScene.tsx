@@ -95,7 +95,7 @@ export function DepositoScene() {
         <h2 className="arka-layout-content arka-readable-title text-2xl font-bold text-arka-accent">Deposito</h2>
         <div className="arka-panel px-4 py-2">
           <span className="arka-layout-content text-arka-text-muted text-xs">Giocatore:</span>
-          <span className="arka-layout-content text-arka-accent font-bold ml-2">{giocatoreAttivo}</span>
+          <span className="arka-layout-content text-arka-accent font-bold ml-2">{giocatore.nome}</span>
         </div>
       </div>
       </AdminLayoutItem>

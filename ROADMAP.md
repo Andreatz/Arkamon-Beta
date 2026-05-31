@@ -1,4 +1,41 @@
-# ROADMAP CODEX — Arkamon Admin Mode / Theme Editor
+# ROADMAP — Nuovo sistema VFX mosse per Arkamon
+
+## Obiettivo
+
+Sostituire l’attuale sistema VFX delle mosse basato su SVG procedurali con un sistema più simile a GIF, sprite sheet e immagini animate, in stile cartoon/action RPG, come gli asset allegati:
+
+- `60FPS_FA01_01_Slash.png`
+- `60FPS_FA01_02_Thrust.png`
+- `60FPS_FA01_03_Punch.png`
+- `60FPS_FA01_04_Buff.png`
+- `60FPS_FA01_05_Debuff.png`
+- `60FPS_FA01_06_Shimmer.png`
+- `60FPS_FA01_07_Cure.png`
+- `60FPS_FA01_08_Shield.png`
+- `60FPS_FA01_09_Barrier.png`
+- `60FPS_FA01_10_Burst.png`
+- `Confuse.gif`
+- `Cure(1).gif`
+- `GuardBreak.gif`
+- `GutsPunch.gif`
+- `Acqua 3.gif`
+- `Combined Cartoon Action Effects 01 Color.gif`
+- `energy_11.gif`
+- `Simple Dynamic Cartoon Effects 18 Color.gif`
+
+Il nuovo sistema deve:
+
+1. Eliminare progressivamente la dipendenza visiva dagli SVG generati.
+2. Usare sprite sheet PNG/WebP e GIF trasparenti.
+3. Essere configurabile per tipo mossa, effetto speciale e singola mossa.
+4. Funzionare sia per il giocatore sia per l’avversario.
+5. Supportare VFX su bersaglio nemico, su sé stessi, a centro campo e full-screen.
+6. Restare compatibile con il flusso attuale di `BattagliaScene`.
+7. Non rompere build, test, layout admin o logica di combattimento.
+
+---
+
+## Contesto tecnico della repo
 
 Repository:
 
@@ -6,1155 +43,1227 @@ Repository:
 https://github.com/Andreatz/Arkamon-Beta
 ```
 
-Obiettivo: creare una **modalità admin interna al gioco** che permetta di modificare la grafica di Arkamon direttamente dall’interfaccia del gioco, senza toccare manualmente ogni file CSS/TSX.
+Stack tecnico:
 
-Il progetto è una app **React + TypeScript + Vite + Tailwind + Zustand**. La struttura è già adatta perché il codice è diviso in:
+- React 18
+- TypeScript strict
+- Vite
+- Framer Motion
+- Zustand
+- Vitest
+- Tailwind
 
-```txt
-src/scenes
-src/components
-src/store
-src/data
-src/utils
-public/backgrounds
-public/maps
-public/sprites
-public/ui
+Comandi da rispettare:
+
+```bash
+npm run build
+npm run test
+npm run dev
 ```
 
-Esistono già variabili CSS globali in `src/index.css`, come:
-
-```css
---arka-primary
---arka-primary-hover
---arka-bg
---arka-surface
---arka-surface-hover
---arka-text
---arka-text-muted
---arka-border
---hp-high
---hp-mid
---hp-low
-```
-
----
-
-## Regole generali per Codex
-
-Codex deve rispettare queste regole:
+File importanti:
 
 ```txt
-1. Non modificare la logica di gioco.
-2. Non toccare engine, calcolo danni, cattura, XP, mappa o battaglia se non necessario.
-3. Non aggiungere dipendenze pesanti.
-4. Non aggiornare Vite, React, Tailwind o Zustand.
-5. Usare npm, non pnpm/yarn.
-6. Mantenere TypeScript strict.
-7. Tutti i testi UI devono essere in italiano.
-8. L’admin deve essere un layer opzionale sopra il gioco.
-9. Il salvataggio grafico deve essere separato dal salvataggio partita.
-10. Inserire marker verificabile:
-    ARKAMON_ADMIN_MODE_V1_THEME_EDITOR
-```
-
----
-
-# FASE 0 — Analisi iniziale Codex
-
-## Task 0.1 — Leggere struttura progetto
-
-Codex deve analizzare questi file:
-
-```txt
-package.json
-src/App.tsx
-src/index.css
-src/store/gameStore.ts
+src/scenes/BattagliaScene.tsx
+src/components/MoveVfx.tsx
 src/types/index.ts
-tailwind.config.js
-README.md
-CLAUDE.md
-```
-
-## Obiettivo
-
-Capire dove agganciare il sistema admin.
-
-Il punto principale di aggancio è `src/App.tsx`, perché lì il gioco viene montato dentro:
-
-```tsx
-<div className="arka-stage">
-```
-
-e vengono renderizzate le scene correnti.
-
-## Criteri di accettazione
-
-```txt
-- Codex conferma che l’admin verrà agganciato in App.tsx.
-- Codex conferma che il tema verrà gestito separatamente da gameStore.ts.
-- Codex conferma che verrà usato localStorage/Zustand per la persistenza grafica.
-```
-
----
-
-# FASE 1 — Creare il modello tema admin
-
-## Task 1.1 — Creare il tipo dati del tema
-
-Creare file:
-
-```txt
-src/theme/adminThemeTypes.ts
-```
-
-Contenuto atteso:
-
-```ts
-export interface AdminThemeColors {
-  primary: string
-  primaryHover: string
-  bg: string
-  surface: string
-  surfaceHover: string
-  text: string
-  textMuted: string
-  border: string
-  hpHigh: string
-  hpMid: string
-  hpLow: string
-}
-
-export interface AdminThemeUi {
-  panelRadius: number
-  buttonRadius: number
-  panelOpacity: number
-  shadowIntensity: number
-  buttonScale: number
-  stageScale: number
-}
-
-export interface AdminTheme {
-  id: string
-  name: string
-  colors: AdminThemeColors
-  ui: AdminThemeUi
-}
-```
-
-## Task 1.2 — Creare tema default
-
-Creare file:
-
-```txt
-src/theme/defaultAdminTheme.ts
-```
-
-Il tema default deve rispecchiare i valori attuali di `src/index.css`.
-
-Esempio:
-
-```ts
-import type { AdminTheme } from './adminThemeTypes'
-
-export const defaultAdminTheme: AdminTheme = {
-  id: 'arkamon-default',
-  name: 'Arkamon Classico',
-  colors: {
-    primary: '#f59e0b',
-    primaryHover: '#fbbf24',
-    bg: '#0f172a',
-    surface: '#1e293b',
-    surfaceHover: '#334155',
-    text: '#f1f5f9',
-    textMuted: '#94a3b8',
-    border: '#475569',
-    hpHigh: '#16a34a',
-    hpMid: '#eab308',
-    hpLow: '#dc2626',
-  },
-  ui: {
-    panelRadius: 16,
-    buttonRadius: 12,
-    panelOpacity: 1,
-    shadowIntensity: 1,
-    buttonScale: 0.95,
-    stageScale: 1,
-  },
-}
-```
-
-## Criteri di accettazione
-
-```txt
-- Il tema è tipizzato.
-- Non ci sono any.
-- Non vengono modificate scene di gioco.
-- Il tema default produce lo stesso aspetto attuale.
-```
-
----
-
-# FASE 2 — Applicare il tema al DOM
-
-## Task 2.1 — Creare helper runtime
-
-Creare file:
-
-```txt
-src/theme/applyAdminTheme.ts
-```
-
-Responsabilità:
-
-```txt
-- Riceve AdminTheme.
-- Applica le variabili CSS su document.documentElement.
-- Non usa React.
-- Non modifica localStorage.
-```
-
-Esempio:
-
-```ts
-import type { AdminTheme } from './adminThemeTypes'
-
-export function applyAdminTheme(theme: AdminTheme): void {
-  const root = document.documentElement
-
-  root.style.setProperty('--arka-primary', theme.colors.primary)
-  root.style.setProperty('--arka-primary-hover', theme.colors.primaryHover)
-  root.style.setProperty('--arka-bg', theme.colors.bg)
-  root.style.setProperty('--arka-surface', theme.colors.surface)
-  root.style.setProperty('--arka-surface-hover', theme.colors.surfaceHover)
-  root.style.setProperty('--arka-text', theme.colors.text)
-  root.style.setProperty('--arka-text-muted', theme.colors.textMuted)
-  root.style.setProperty('--arka-border', theme.colors.border)
-
-  root.style.setProperty('--hp-high', theme.colors.hpHigh)
-  root.style.setProperty('--hp-mid', theme.colors.hpMid)
-  root.style.setProperty('--hp-low', theme.colors.hpLow)
-
-  root.style.setProperty('--arka-panel-radius', `${theme.ui.panelRadius}px`)
-  root.style.setProperty('--arka-button-radius', `${theme.ui.buttonRadius}px`)
-  root.style.setProperty('--arka-panel-opacity', `${theme.ui.panelOpacity}`)
-  root.style.setProperty('--arka-shadow-intensity', `${theme.ui.shadowIntensity}`)
-  root.style.setProperty('--arka-button-scale', `${theme.ui.buttonScale}`)
-  root.style.setProperty('--arka-stage-scale', `${theme.ui.stageScale}`)
-}
-```
-
-## Task 2.2 — Aggiornare `src/index.css`
-
-Aggiungere variabili nuove:
-
-```css
---arka-panel-radius: 16px;
---arka-button-radius: 12px;
---arka-panel-opacity: 1;
---arka-shadow-intensity: 1;
---arka-button-scale: 0.95;
---arka-stage-scale: 1;
-```
-
-Modificare le utility globali:
-
-```css
-.arka-panel {
-  border-radius: var(--arka-panel-radius);
-  opacity: var(--arka-panel-opacity);
-}
-
-.arka-button {
-  border-radius: var(--arka-button-radius);
-}
-
-.arka-button:active {
-  transform: scale(var(--arka-button-scale));
-}
-
-.arka-stage {
-  transform: scale(var(--arka-stage-scale));
-}
-```
-
-Attenzione: mantenere Tailwind dove possibile, ma usare CSS normale quando Tailwind non può leggere valori dinamici runtime.
-
-## Criteri di accettazione
-
-```txt
-- Cambiare il tema cambia davvero i colori globali.
-- Non si rompe Tailwind.
-- Non si rompe la classe arka-stage.
-- Il gioco resta visibile e centrato.
-```
-
----
-
-# FASE 3 — Creare adminStore separato
-
-## Task 3.1 — Creare store admin
-
-Creare file:
-
-```txt
-src/store/adminStore.ts
-```
-
-Non modificare `gameStore.ts`.
-
-Lo store deve contenere:
-
-```ts
-interface AdminState {
-  enabled: boolean
-  panelOpen: boolean
-  theme: AdminTheme
-  toggleEnabled: () => void
-  setPanelOpen: (open: boolean) => void
-  updateColor: (key: keyof AdminThemeColors, value: string) => void
-  updateUi: (key: keyof AdminThemeUi, value: number) => void
-  resetTheme: () => void
-  importTheme: (theme: AdminTheme) => void
-}
-```
-
-Persistenza:
-
-```txt
-name: arkamon-admin-theme
-```
-
-## Perché store separato
-
-`gameStore.ts` contiene già partita, giocatori, battaglia, navigazione, overworld e audio. La grafica admin deve restare indipendente dal salvataggio partita, che usa `arkamon-save`.
-
-## Criteri di accettazione
-
-```txt
-- Il tema resta salvato ricaricando la pagina.
-- Reset partita non cancella tema admin.
-- Reset tema non cancella partita.
-- Nessun uso diretto di localStorage nei componenti.
-```
-
----
-
-# FASE 4 — Creare AdminRuntime
-
-## Task 4.1 — Creare file
-
-```txt
-src/admin/AdminRuntime.tsx
-```
-
-Responsabilità:
-
-```txt
-- Legge il tema da adminStore.
-- Applica il tema usando applyAdminTheme().
-- Non renderizza UI visibile.
-```
-
-Esempio:
-
-```tsx
-import { useEffect } from 'react'
-import { useAdminStore } from '@store/adminStore'
-import { applyAdminTheme } from '@/theme/applyAdminTheme'
-
-export function AdminRuntime() {
-  const theme = useAdminStore((s) => s.theme)
-
-  useEffect(() => {
-    applyAdminTheme(theme)
-  }, [theme])
-
-  return null
-}
-```
-
-## Criteri di accettazione
-
-```txt
-- Il tema viene applicato al primo caricamento.
-- Il tema cambia live quando lo store cambia.
-- Nessun errore SSR, anche se Vite è client-only.
-```
-
----
-
-# FASE 5 — Attivazione admin mode
-
-## Task 5.1 — Creare scorciatoia
-
-Creare file:
-
-```txt
-src/admin/useAdminHotkey.ts
-```
-
-Scorciatoia:
-
-```txt
-CTRL + SHIFT + A
-```
-
-Comportamento:
-
-```txt
-- Se admin disattivo: abilita admin e apre pannello.
-- Se admin attivo: chiude/apre pannello.
-```
-
-## Task 5.2 — Creare AdminOverlay
-
-Creare file:
-
-```txt
-src/admin/AdminOverlay.tsx
-```
-
-Responsabilità:
-
-```txt
-- Usa useAdminHotkey().
-- Se admin non è attivo, non mostra nulla.
-- Se admin è attivo, mostra pulsante floating “Admin”.
-- Se panelOpen è true, mostra AdminPanel.
-```
-
-## Stile
-
-Il pulsante deve essere piccolo, non invasivo:
-
-```txt
-posizione: top-right
-label: Admin
-z-index alto
-```
-
-## Criteri di accettazione
-
-```txt
-- CTRL+SHIFT+A attiva il pannello.
-- Il gioco resta cliccabile quando pannello chiuso.
-- Il pannello non blocca la scena se non nella sua area.
-```
-
----
-
-# FASE 6 — Integrare in App.tsx
-
-## Task 6.1 — Modificare `src/App.tsx`
-
-Aggiungere import:
-
-```tsx
-import { AdminRuntime } from '@/admin/AdminRuntime'
-import { AdminOverlay } from '@/admin/AdminOverlay'
-```
-
-Dentro:
-
-```tsx
-<div className="arka-stage">
-```
-
-aggiungere:
-
-```tsx
-<AdminRuntime />
-<AdminOverlay />
-```
-
-Il risultato deve essere simile a:
-
-```tsx
-<div className="arka-stage">
-  <AdminRuntime />
-  <AudioController />
-  <AdminOverlay />
-  ...
-</div>
-```
-
-## Criteri di accettazione
-
-```txt
-- Il gioco parte normalmente.
-- AdminRuntime è sempre montato.
-- AdminOverlay non appare finché non si attiva l’admin.
-- Nessuna scena viene rotta.
-```
-
----
-
-# FASE 7 — AdminPanel V1
-
-## Task 7.1 — Creare pannello principale
-
-Creare file:
-
-```txt
-src/admin/AdminPanel.tsx
-```
-
-Struttura:
-
-```txt
-Header:
-- Titolo: Modalità Admin
-- Badge: Theme Editor V1
-- Bottone chiudi
-
-Tabs:
-- Colori
-- UI
-- Preset
-- Import/Export
-```
-
-Per V1 bastano tab interne gestite con stato React locale.
-
-## Design
-
-Il pannello deve essere coerente con Arkamon:
-
-```txt
-sfondo scuro
-bordo luminoso
-angoli arrotondati
-testi italiani
-dimensione compatta
-scroll interno
-```
-
-## Marker obbligatorio
-
-Inserire nel file:
-
-```tsx
-const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
-```
-
-Usarlo in modo non invasivo, per esempio:
-
-```tsx
-data-admin-marker={ADMIN_MODE_MARKER}
-```
-
-## Criteri di accettazione
-
-```txt
-- Pannello visibile sopra il gioco.
-- Non manda fuori scala l’area 16:9.
-- Ha marker cercabile con grep.
-```
-
----
-
-# FASE 8 — Color Editor
-
-## Task 8.1 — Creare componente
-
-```txt
-src/admin/AdminColorEditor.tsx
-```
-
-Campi:
-
-```txt
-Primario
-Primario hover
-Sfondo
-Superficie
-Superficie hover
-Testo
-Testo secondario
-Bordo
-HP alta
-HP media
-HP bassa
-```
-
-Ogni campo deve avere:
-
-```txt
-- label italiano
-- input type="color"
-- input testuale hex
-- preview piccola
-```
-
-## Validazione
-
-Accettare solo valori tipo:
-
-```txt
-#fff
-#ffffff
-```
-
-Se il valore non è valido:
-
-```txt
-- non applicare
-- mostra bordo rosso
-```
-
-## Criteri di accettazione
-
-```txt
-- Cambiare colore modifica il gioco in tempo reale.
-- Inserire hex manuale funziona.
-- Valori non validi non rompono CSS.
-```
-
----
-
-# FASE 9 — UI Editor
-
-## Task 9.1 — Creare componente
-
-```txt
-src/admin/AdminUiEditor.tsx
-```
-
-Slider:
-
-```txt
-Raggio pannelli: 0-40
-Raggio bottoni: 0-40
-Opacità pannelli: 0.4-1
-Intensità ombra: 0-2
-Scala click bottoni: 0.85-1
-Scala stage: 0.8-1.05
-```
-
-Ogni slider deve mostrare:
-
-```txt
-label
-valore numerico
-descrizione breve
-```
-
-## Criteri di accettazione
-
-```txt
-- Slider fluidi.
-- Valori salvati.
-- Reload mantiene i valori.
-```
-
----
-
-# FASE 10 — Preset grafici
-
-## Task 10.1 — Creare preset
-
-Creare file:
-
-```txt
-src/theme/adminThemePresets.ts
-```
-
-Preset minimi:
-
-```txt
-Arkamon Classico
-Notte Viola
-Cartoon Luminoso
-Battaglia Dark
-Fantasy Dorato
-```
-
-Ogni preset è un `AdminTheme`.
-
-## Task 10.2 — Creare componente
-
-```txt
-src/admin/AdminPresetEditor.tsx
-```
-
-Funzioni:
-
-```txt
-- mostra lista preset
-- bottone Applica
-- preview colori principali
-- avviso: applicare un preset sovrascrive tema corrente
-```
-
-## Criteri di accettazione
-
-```txt
-- Ogni preset cambia davvero il tema.
-- Reset riporta ad Arkamon Classico.
-- Nessun preset rompe contrasto testo/sfondo.
-```
-
----
-
-# FASE 11 — Import / Export JSON
-
-## Task 11.1 — Creare componente
-
-```txt
-src/admin/AdminImportExport.tsx
-```
-
-Funzioni:
-
-```txt
-- Esporta tema corrente come JSON.
-- Copia JSON negli appunti.
-- Importa JSON da textarea.
-- Valida struttura prima di importare.
-```
-
-## Nome file suggerito export
-
-```txt
-arkamon-theme.json
-```
-
-## Validazione minima
-
-Controllare che esistano:
-
-```txt
-id
-name
-colors
-ui
-```
-
-E che i colori siano validi.
-
-## Criteri di accettazione
-
-```txt
-- Export produce JSON leggibile.
-- Import di JSON valido applica il tema.
-- Import di JSON rotto mostra errore e non rompe il gioco.
-```
-
----
-
-# FASE 12 — Asset Editor V1, solo selezione path
-
-Questa fase è successiva alla V1 colori/UI.
-
-## Obiettivo
-
-Permettere di scegliere asset già presenti in `public/`.
-
-Non bisogna ancora caricare file nuovi.
-
-## Task 12.1 — Estendere tipo tema
-
-Aggiungere:
-
-```ts
-export interface AdminThemeAssets {
-  titleLogo?: string
-  titleBackground?: string
-  battleBackground?: string
-  panelTexture?: string
-}
-```
-
-In `AdminTheme`:
-
-```ts
-assets: AdminThemeAssets
-```
-
-## Task 12.2 — Creare componente
-
-```txt
-src/admin/AdminAssetEditor.tsx
-```
-
-Campi:
-
-```txt
-Logo titolo
-Sfondo titolo
-Sfondo battaglia
-Texture pannelli
-```
-
-Input:
-
-```txt
-select con path predefiniti
-input manuale path
-preview immagine
-```
-
-## Nota tecnica
-
-Gli asset dinamici devono passare da:
-
-```txt
+src/data/index.ts
+src/data/mosse.json
 src/utils/assetUrl.ts
 ```
 
-## Criteri di accettazione
+Attualmente `BattagliaScene.tsx` importa e usa:
 
-```txt
-- Asset preview funzionante.
-- Path compatibili con GitHub Pages.
-- Se asset non esiste, fallback sicuro.
+```ts
+MOVE_VFX_VISIBLE_MS
+MoveVfx
+MoveVfxEvent
+MoveVfxSide
+MoveVfxTarget
 ```
+
+Il nuovo sistema deve mantenere inizialmente questa API pubblica, così da ridurre il rischio di regressioni.
 
 ---
 
-# FASE 13 — Scene Theme Bridge
+# FASE 0 — Branch, backup e inventario
 
 ## Obiettivo
 
-Permettere alle scene principali di leggere configurazioni grafiche specifiche.
+Preparare una base sicura per lavorare.
 
-Scene prioritarie:
+## Task Codex
 
-```txt
-TitoloScene
-BattagliaScene
-MappaGrigliaScene
-DepositoScene
-EvoluzioneScene
-```
-
-## Strategia corretta
-
-Non modificare tutte le scene insieme.
-
-Procedere una scena alla volta.
-
-## Task 13.1 — TitoloScene
-
-Modificare:
-
-```txt
-src/scenes/TitoloScene.tsx
-```
-
-Renderlo compatibile con admin theme:
-
-```txt
-- logo dinamico se impostato
-- background dinamico se impostato
-- fallback identico all’attuale
-```
-
-## Criteri di accettazione
-
-```txt
-- TitoloScene resta identica se non c’è tema custom.
-- Se admin imposta nuovo logo, cambia logo.
-- Se path asset errato, non crasha.
-```
-
----
-
-# FASE 14 — Modalità sicura sviluppo/produzione
-
-## Problema
-
-Su GitHub Pages non esiste vera autenticazione frontend. Una password scritta nel codice non è sicurezza reale.
-
-## Soluzione V1
-
-Admin disponibile con hotkey, ma nascosto.
-
-Aggiungere costante:
-
-```ts
-const ADMIN_ENABLED_BY_DEFAULT = import.meta.env.DEV
-```
-
-In produzione:
-
-```txt
-- hotkey ancora possibile
-- nessun pulsante visibile finché non viene attivato
-```
-
-## Soluzione futura
-
-Per sicurezza reale servirebbe:
-
-```txt
-- backend
-oppure
-- build Tauri con storage locale controllato
-oppure
-- flag di build separato
-```
-
-## Criteri di accettazione
-
-```txt
-- In dev è facile aprire admin.
-- In produzione non è visibile per errore.
-- Nessuna falsa promessa di sicurezza.
-```
-
----
-
-# FASE 15 — Test
-
-## Task 15.1 — Test store admin
-
-Creare:
-
-```txt
-src/store/adminStore.test.ts
-```
-
-Testare:
-
-```txt
-- tema default
-- updateColor
-- updateUi
-- resetTheme
-- importTheme
-```
-
-## Task 15.2 — Test helper tema
-
-Creare:
-
-```txt
-src/theme/applyAdminTheme.test.ts
-```
-
-Testare:
-
-```txt
-- applica variabili CSS
-- non crasha con tema valido
-```
-
-## Comandi obbligatori
+1. Crea un branch:
 
 ```bash
-npm test
+git checkout -b feat/sprite-vfx-system
+```
+
+2. Non cancellare subito `MoveVfx.tsx`.
+3. Prima crea una sostituzione compatibile.
+4. Verifica che il progetto parta e compili:
+
+```bash
+npm install
+npm run build
+npm run test
+```
+
+## Criteri di accettazione
+
+- La build iniziale deve passare prima delle modifiche.
+- Nessun file core del battle engine deve essere modificato in questa fase.
+- Nessun asset deve essere importato direttamente da `src` se verrà usato come path runtime. Usare `public/` e `assetUrl`.
+
+---
+
+# FASE 1 — Struttura asset VFX
+
+## Obiettivo
+
+Creare una struttura ordinata per gli asset animati.
+
+## Cartelle da creare
+
+```txt
+public/
+  vfx/
+    moves/
+      slash/
+      thrust/
+      punch/
+      buff/
+      debuff/
+      shimmer/
+      cure/
+      shield/
+      barrier/
+      burst/
+      confuse/
+      water/
+      energy/
+      break/
+      misc/
+```
+
+## Convenzione nomi
+
+Rinominare gli asset in modo pulito, senza spazi e senza parentesi:
+
+```txt
+public/vfx/moves/slash/slash_60fps.png
+public/vfx/moves/thrust/thrust_60fps.png
+public/vfx/moves/punch/punch_60fps.png
+public/vfx/moves/buff/buff_60fps.png
+public/vfx/moves/debuff/debuff_60fps.png
+public/vfx/moves/shimmer/shimmer_60fps.png
+public/vfx/moves/cure/cure_60fps.png
+public/vfx/moves/shield/shield_60fps.png
+public/vfx/moves/barrier/barrier_60fps.png
+public/vfx/moves/burst/burst_60fps.png
+
+public/vfx/moves/confuse/confuse.gif
+public/vfx/moves/cure/cure.gif
+public/vfx/moves/punch/guts_punch.gif
+public/vfx/moves/break/guard_break.gif
+public/vfx/moves/water/water_01.gif
+public/vfx/moves/energy/energy_11.gif
+```
+
+## Nota importante sugli asset
+
+Gli asset allegati sembrano appartenere a due famiglie:
+
+1. **Sprite sheet verticali/orizzontali**
+   - Slash
+   - Thrust
+   - Punch
+   - Buff
+   - Debuff
+   - Cure
+   - Shield
+   - Barrier
+   - Burst
+
+2. **GIF già animate**
+   - Confuse.gif
+   - Cure(1).gif
+   - GuardBreak.gif
+   - GutsPunch.gif
+   - energy_11.gif
+
+Il sistema deve supportare entrambe le tipologie.
+
+## Criteri di accettazione
+
+- Tutti gli asset sono in `public/vfx/moves/...`.
+- I path sono compatibili con GitHub Pages/Vite usando `assetUrl`.
+- Nessun path hardcoded tipo `/vfx/...` senza passare da `assetUrl`.
+
+---
+
+# FASE 2 — Tipi TypeScript per il nuovo sistema VFX
+
+## Obiettivo
+
+Separare la definizione logica della VFX dalla sua resa grafica.
+
+## Nuovo file
+
+```txt
+src/components/vfx/types.ts
+```
+
+## Tipi da implementare
+
+```ts
+export type VfxPlaybackKind = 'sprite-sheet' | 'gif' | 'static-image'
+
+export type VfxAnchor =
+  | 'attacker'
+  | 'target'
+  | 'self'
+  | 'center'
+  | 'screen'
+
+export type VfxLayer =
+  | 'behind-pokemon'
+  | 'over-pokemon'
+  | 'front-ui'
+
+export type VfxBlendMode =
+  | 'normal'
+  | 'screen'
+  | 'lighten'
+  | 'plus-lighter'
+
+export interface SpriteSheetMeta {
+  frameWidth: number
+  frameHeight: number
+  columns: number
+  rows: number
+  frameCount: number
+  fps: number
+}
+
+export interface MoveVfxAsset {
+  id: string
+  label: string
+  kind: VfxPlaybackKind
+  src: string
+
+  sprite?: SpriteSheetMeta
+
+  durationMs: number
+  impactAtMs?: number
+
+  anchor: VfxAnchor
+  layer: VfxLayer
+
+  width: number
+  height: number
+  scale?: number
+
+  offsetX?: number
+  offsetY?: number
+
+  mirrorForEnemy?: boolean
+  rotateDegForEnemy?: number
+
+  blendMode?: VfxBlendMode
+  opacity?: number
+
+  loop?: boolean
+}
+```
+
+## Criteri di accettazione
+
+- Tipi esportati e riutilizzabili.
+- Nessun `any`.
+- Compatibile con TypeScript strict.
+- Nessun unused export/import.
+
+---
+
+# FASE 3 — Manifest VFX centralizzato
+
+## Obiettivo
+
+Creare una mappa dati che descriva tutti gli asset disponibili.
+
+## Nuovo file
+
+```txt
+src/components/vfx/vfxManifest.ts
+```
+
+## Contenuto richiesto
+
+Creare un oggetto `MOVE_VFX_ASSETS` con asset base:
+
+```ts
+export const MOVE_VFX_ASSETS = {
+  slash: {
+    id: 'slash',
+    label: 'Slash',
+    kind: 'sprite-sheet',
+    src: 'vfx/moves/slash/slash_60fps.png',
+    sprite: {
+      frameWidth: 192,
+      frameHeight: 192,
+      columns: 5,
+      rows: 6,
+      frameCount: 30,
+      fps: 60,
+    },
+    durationMs: 500,
+    impactAtMs: 260,
+    anchor: 'target',
+    layer: 'over-pokemon',
+    width: 260,
+    height: 260,
+    scale: 1,
+    mirrorForEnemy: true,
+    blendMode: 'screen',
+  },
+
+  thrust: { ... },
+  punch: { ... },
+  buff: { ... },
+  debuff: { ... },
+  shimmer: { ... },
+  cure: { ... },
+  shield: { ... },
+  barrier: { ... },
+  burst: { ... },
+  confuseGif: { ... },
+  cureGif: { ... },
+  guardBreakGif: { ... },
+  gutsPunchGif: { ... },
+  waterGif: { ... },
+  energyGif: { ... },
+}
+```
+
+## Nota sui frame
+
+Non assumere che tutti gli sprite sheet abbiano la stessa griglia.
+
+Codex deve:
+
+1. Ispezionare dimensioni reali degli asset.
+2. Calcolare `frameWidth`, `frameHeight`, `columns`, `rows`, `frameCount`.
+3. Se non è possibile dedurre correttamente la griglia, partire con una configurazione manuale ragionevole e documentarla nei commenti.
+
+## Criteri di accettazione
+
+- Ogni asset ha un ID stabile.
+- Ogni asset ha durata, dimensione, anchor e layer.
+- Tutti i path passano poi da `assetUrl`.
+- Nessun asset obbligatorio deve rompere la build se manca: il componente deve avere fallback.
+
+---
+
+# FASE 4 — Renderer `AnimatedSprite`
+
+## Obiettivo
+
+Creare un renderer riutilizzabile per sprite sheet.
+
+## Nuovo file
+
+```txt
+src/components/vfx/AnimatedSprite.tsx
+```
+
+## Requisiti
+
+Il componente deve ricevere:
+
+```ts
+interface AnimatedSpriteProps {
+  src: string
+  frameWidth: number
+  frameHeight: number
+  columns: number
+  rows: number
+  frameCount: number
+  fps: number
+  width: number
+  height: number
+  durationMs?: number
+  loop?: boolean
+  className?: string
+  style?: React.CSSProperties
+  onComplete?: () => void
+}
+```
+
+## Implementazione consigliata
+
+Usare `requestAnimationFrame` e calcolare:
+
+```ts
+const currentFrame = Math.floor(elapsed / frameDuration)
+const col = currentFrame % columns
+const row = Math.floor(currentFrame / columns)
+```
+
+Poi impostare:
+
+```ts
+backgroundPosition = `-${col * frameWidth}px -${row * frameHeight}px`
+```
+
+## Requisiti QA
+
+- Deve fermarsi all’ultimo frame se `loop=false`.
+- Deve chiamare `onComplete`.
+- Deve pulire `requestAnimationFrame` in un cleanup.
+- Deve rispettare `prefers-reduced-motion`.
+- Deve evitare memory leak quando la scena cambia.
+
+## Criteri di accettazione
+
+- Lo sprite sheet viene animato correttamente.
+- Non ci sono warning React.
+- Non ci sono timer lasciati attivi.
+- Funziona su Chrome desktop e mobile.
+
+---
+
+# FASE 5 — Renderer `GifVfx`
+
+## Obiettivo
+
+Supportare GIF già animate.
+
+## Nuovo file
+
+```txt
+src/components/vfx/GifVfx.tsx
+```
+
+## Requisiti
+
+Il componente deve:
+
+- Renderizzare `<img>`.
+- Usare `assetUrl`.
+- Applicare:
+  - width
+  - height
+  - transform
+  - opacity
+  - mixBlendMode
+  - pointer-events none
+- Forzare il restart della GIF a ogni nuova mossa.
+
+## Restart GIF
+
+Quando cambia `effect.id`, aggiungere un query param cache-buster:
+
+```ts
+const runtimeSrc = `${assetUrl(asset.src)}?vfx=${effectId}`
+```
+
+## Criteri di accettazione
+
+- La GIF riparte da frame 0 a ogni mossa.
+- Funziona anche se la stessa mossa viene usata due volte di fila.
+- Nessun flicker eccessivo.
+
+---
+
+# FASE 6 — Nuovo resolver `resolveMoveVfxAsset`
+
+## Obiettivo
+
+Sostituire la logica SVG con una logica di scelta asset.
+
+## Nuovo file
+
+```txt
+src/components/vfx/resolveMoveVfxAsset.ts
+```
+
+## Input
+
+```ts
+import type { MossaDef } from '@/types'
+import type { MoveVfxAsset } from './types'
+
+export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset
+```
+
+## Logica richiesta
+
+Ordine di priorità:
+
+1. Override per ID mossa.
+2. Override per effetto speciale.
+3. Tipo Pokémon.
+4. Nome mossa.
+5. Fallback generico.
+
+## Esempio mapping
+
+```ts
+const BY_EFFECT = {
+  CURA: 'cure',
+  CURA_PCT: 'cure',
+  CONFUSIONE: 'confuseGif',
+  SONNO: 'debuff',
+  VELENO: 'debuff',
+  SUPREMA: 'burst',
+}
+
+const BY_TYPE = {
+  Fuoco: 'burst',
+  Acqua: 'waterGif',
+  Erba: 'shimmer',
+  Elettro: 'energyGif',
+  Terra: 'punch',
+  Psico: 'confuseGif',
+  Oscurità: 'debuff',
+  Normale: 'punch',
+}
+```
+
+## Mapping per nome
+
+Usare normalizzazione simile a quella attuale:
+
+```ts
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+```
+
+Esempi:
+
+- nomi con `taglio`, `lama`, `artiglio`, `slash` → `slash`
+- nomi con `pugno`, `colpo`, `botta`, `punch` → `punch`
+- nomi con `cura`, `guarigione`, `heal` → `cure`
+- nomi con `barriera`, `scudo`, `protezione` → `shield` o `barrier`
+- nomi con `confusione`, `psico`, `mente` → `confuseGif`
+
+## Criteri di accettazione
+
+- Ogni mossa riceve sempre un asset.
+- Le mosse cura sono self-target.
+- Le mosse danno sono target-opponent.
+- Le mosse buff/debuff possono essere self o target in base all’effetto.
+- Il fallback non deve mai crashare.
+
+---
+
+# FASE 7 — Nuovo componente `SpriteMoveVfx`
+
+## Obiettivo
+
+Creare il nuovo componente visuale mantenendo compatibilità con `MoveVfxEvent`.
+
+## Nuovo file
+
+```txt
+src/components/vfx/SpriteMoveVfx.tsx
+```
+
+## Props
+
+```ts
+import type { MoveVfxEvent } from '@/components/MoveVfx'
+
+export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
+  ...
+}
+```
+
+## Coordinate battaglia
+
+Attualmente `MoveVfx.tsx` usa coordinate SVG fisse:
+
+```ts
+A/player circa: x 250, y 355
+B/enemy circa: x 770, y 180
+```
+
+Il nuovo sistema deve partire con coordinate compatibili:
+
+```ts
+const POSITIONS = {
+  A: {
+    attacker: { x: 25, y: 64 },
+    target: { x: 77, y: 32 },
+    self: { x: 25, y: 64 },
+  },
+  B: {
+    attacker: { x: 77, y: 32 },
+    target: { x: 25, y: 64 },
+    self: { x: 77, y: 32 },
+  },
+}
+```
+
+Usare percentuali CSS invece di coordinate SVG, così il sistema scala meglio:
+
+```tsx
+style={{
+  left: `${x}%`,
+  top: `${y}%`,
+  transform: `translate(-50%, -50%) scale(...)`,
+}}
+```
+
+## Anchor richiesti
+
+- `target`: effetto sul Pokémon colpito.
+- `self`: effetto sul Pokémon che usa cura/buff.
+- `attacker`: effetto vicino a chi attacca.
+- `center`: effetto al centro campo.
+- `screen`: effetto full-screen.
+
+## Layering
+
+Usare z-index coerenti:
+
+```ts
+behind-pokemon: z-30
+over-pokemon: z-45
+front-ui: z-60
+```
+
+## Movimento projectile
+
+Per slash/punch/thrust si può partire in due modi.
+
+### Versione 1 semplice
+
+Mostrare direttamente l’effetto sul target.
+
+### Versione 2 migliorata
+
+Animare il contenitore da attacker a target con Framer Motion:
+
+```tsx
+<motion.div
+  initial={{ left: `${start.x}%`, top: `${start.y}%`, opacity: 0, scale: 0.7 }}
+  animate={{ left: `${end.x}%`, top: `${end.y}%`, opacity: [0, 1, 1, 0], scale: [0.7, 1.15, 1] }}
+  transition={{ duration: asset.durationMs / 1000 }}
+>
+```
+
+La roadmap deve implementare almeno la Versione 1. La Versione 2 è consigliata per slash/thrust/energy.
+
+## Criteri di accettazione
+
+- Il componente mostra correttamente sprite sheet e GIF.
+- L’effetto appare nel punto giusto.
+- Per avversario viene applicato mirror/orientamento quando necessario.
+- Il componente sparisce dopo la durata configurata.
+- Non intercetta click.
+- Non rompe HP bar, mosse, dadi o info box.
+
+---
+
+# FASE 8 — Compatibilità con `MoveVfx.tsx`
+
+## Obiettivo
+
+Evitare una sostituzione rischiosa immediata.
+
+## Strategia
+
+Modificare `src/components/MoveVfx.tsx` così:
+
+1. Mantenere export esistenti:
+   - `MoveVfxSide`
+   - `MoveVfxTarget`
+   - `MoveVfxEvent`
+   - `MOVE_VFX_VISIBLE_MS`
+   - `MoveVfx`
+
+2. Internamente delegare a `SpriteMoveVfx`.
+
+Esempio:
+
+```tsx
+export const MOVE_VFX_VISIBLE_MS = 1450
+
+export function MoveVfx({ effect }: { effect: MoveVfxEvent }) {
+  return <SpriteMoveVfx effect={effect} />
+}
+```
+
+3. Conservare temporaneamente il vecchio codice SVG in un file:
+
+```txt
+src/components/vfx/LegacySvgMoveVfx.tsx
+```
+
+oppure lasciarlo nel commit precedente, ma meglio non tenerlo in mezzo al nuovo componente.
+
+## Criteri di accettazione
+
+- `BattagliaScene.tsx` non deve richiedere grandi modifiche.
+- La build deve passare.
+- Tutti gli import esistenti devono continuare a funzionare.
+- La scena battaglia deve mostrare le nuove VFX senza cambiare la logica delle mosse.
+
+---
+
+# FASE 9 — Timing, impatto e danno
+
+## Problema attuale
+
+La logica battaglia applica danno, shake e suono quasi subito dopo `mostraVfxMossa`.
+
+Nel nuovo sistema, alcune animazioni hanno un punto di impatto visivo, ad esempio:
+
+- Slash: impatto circa a metà animazione.
+- Punch: impatto quando il pugno raggiunge il target.
+- Burst: impatto verso il centro/finale.
+- Cure: effetto immediato su self.
+- Barrier/Shield: effetto continuo su self.
+
+## Fase 9A — Non rompere nulla
+
+Per la prima implementazione:
+
+- Lasciare invariata la logica danno.
+- Lasciare invariato `playSound('hit')`.
+- Lasciare invariato `setShaking`.
+- Concentrarsi solo sulla qualità visiva.
+
+## Fase 9B — Miglioramento successivo
+
+Creare una piccola funzione:
+
+```ts
+export function getMoveVfxImpactDelayMs(move: MossaDef): number
+```
+
+che usa `asset.impactAtMs`.
+
+Poi in `BattagliaScene.tsx`, solo in una fase successiva, spostare:
+
+```ts
+setShaking(...)
+playSound('hit')
+```
+
+dentro un timeout sincronizzato all’impatto.
+
+## Criteri di accettazione Fase 9A
+
+- Nessuna regressione nel battle engine.
+- Nessuna modifica al calcolo danno.
+- Nessun ritardo strano nel cambio turno.
+
+## Criteri di accettazione Fase 9B
+
+- Lo shake avviene quando l’effetto colpisce.
+- Il suono hit è sincronizzato.
+- I turni non si accavallano.
+- I timeout sono puliti su unmount.
+
+---
+
+# FASE 10 — VFX Lab / schermata test interna
+
+## Obiettivo
+
+Avere una pagina/scena per testare tutte le VFX senza dover combattere ogni volta.
+
+## Nuovo componente
+
+```txt
+src/components/vfx/VfxGallery.tsx
+```
+
+## Funzioni richieste
+
+La gallery deve mostrare:
+
+- Lista asset disponibili.
+- Preview singola.
+- Pulsante Replay.
+- Toggle:
+  - lato A/B
+  - target/self/center/screen
+  - sprite sheet/GIF
+  - scala 0.5x / 1x / 1.5x / 2x
+  - background chiaro/scuro/battle
+- Nome asset.
+- Durata.
+- Dimensione.
+- Anchor.
+- Layer.
+
+## Integrazione
+
+Se esiste già un’area admin, aggiungere la preview lì.
+
+Altrimenti creare componente standalone e renderizzarlo temporaneamente solo in dev con una condizione sicura, ad esempio:
+
+```ts
+if (import.meta.env.DEV && window.location.hash === '#vfx-lab') {
+  ...
+}
+```
+
+Non lasciare scorciatoie invasive in produzione.
+
+## Criteri di accettazione
+
+- Si possono testare tutte le VFX senza entrare in battaglia.
+- Il replay funziona.
+- Utile per calibrare scale e offset.
+- Non appare al giocatore in produzione.
+
+---
+
+# FASE 11 — Mapping avanzato mosse
+
+## Obiettivo
+
+Rendere ogni mossa riconoscibile e non generica.
+
+## Task
+
+Creare:
+
+```txt
+src/components/vfx/moveVfxOverrides.ts
+```
+
+Con struttura:
+
+```ts
+export const MOVE_VFX_BY_MOVE_ID: Record<number, string> = {
+  // esempio:
+  // 1: 'punch',
+  // 2: 'slash',
+  // 3: 'waterGif',
+}
+```
+
+Poi usare questo file nel resolver.
+
+## Regole
+
+- Non modificare `mosse.json` nella prima iterazione.
+- Non aggiungere campi nuovi ai dati mossa finché il resolver funziona.
+- In una fase successiva si potrà aggiungere un campo opzionale `vfxId` nel tipo `MossaDef`.
+
+## Fase successiva opzionale
+
+Estendere `MossaDef`:
+
+```ts
+vfxId?: string
+```
+
+E poi aggiungerlo in `mosse.json`.
+
+## Criteri di accettazione
+
+- Le mosse principali hanno VFX coerenti.
+- Le mosse di tipo Acqua usano effetti acqua.
+- Le mosse cura usano cure/shimmer.
+- Le mosse protezione usano shield/barrier.
+- Le mosse supreme usano burst/energy.
+- Le mosse stato usano confuse/debuff.
+
+---
+
+# FASE 12 — Performance e qualità visiva
+
+## Problemi da evitare
+
+- GIF troppo grandi.
+- Troppe animazioni simultanee.
+- Layout shift.
+- Immagini non precaricate.
+- Memory leak da `requestAnimationFrame`.
+- Effetti tagliati dal contenitore.
+- Z-index sopra i bottoni.
+- Mix blend non supportato uguale su tutti i browser.
+
+## Task
+
+1. Aggiungere preload leggero per gli asset usati più spesso.
+
+Nuovo file:
+
+```txt
+src/components/vfx/preloadVfxAssets.ts
+```
+
+```ts
+export function preloadVfxAssets(assetIds: string[]) {
+  ...
+}
+```
+
+2. Chiamare preload quando entra la battaglia.
+3. Usare `decoding="async"` sulle immagini.
+4. Usare `will-change: transform, opacity`.
+5. Ridurre scale e dimensioni se mobile soffre.
+6. Rispettare `prefers-reduced-motion`.
+
+## Criteri di accettazione
+
+- Nessun calo vistoso di FPS.
+- Nessun freeze quando parte la prima mossa.
+- Gli asset appaiono subito dopo il primo preload.
+- Su mobile gli effetti restano fluidi.
+
+---
+
+# FASE 13 — Fallback e robustezza
+
+## Obiettivo
+
+Il gioco non deve rompersi se un asset manca.
+
+## Requisiti
+
+Se un asset non carica:
+
+1. Mostrare un fallback semplice.
+2. Loggare warning solo in dev.
+3. Non crashare React.
+4. Non bloccare il turno.
+
+## Fallback consigliato
+
+Creare un piccolo fallback CSS:
+
+```txt
+src/components/vfx/FallbackVfx.tsx
+```
+
+Effetto:
+
+- cerchio glow;
+- piccola esplosione;
+- durata 600 ms;
+- nessun SVG complesso.
+
+## Criteri di accettazione
+
+- Rinominando temporaneamente un asset, la battaglia continua.
+- Console pulita in produzione.
+- Warning utile in dev.
+
+---
+
+# FASE 14 — Refactor finale del vecchio SVG
+
+## Obiettivo
+
+Pulire il codice dopo aver validato il nuovo sistema.
+
+## Task
+
+Solo dopo verifica manuale:
+
+1. Spostare il vecchio renderer SVG in `LegacySvgMoveVfx.tsx` oppure rimuoverlo.
+2. Rimuovere funzioni non più usate:
+   - `ProjectileGlyph`
+   - `Trail`
+   - `Burst`
+   - `SelfAura`
+   - vecchi archetype se non servono più.
+3. Mantenere eventualmente solo:
+   - tipi pubblici;
+   - resolver nuovo;
+   - wrapper `MoveVfx`.
+
+## Criteri di accettazione
+
+- `npm run build` passa.
+- Nessun unused import.
+- Nessun unused type.
+- `MoveVfx.tsx` diventa piccolo e leggibile.
+
+---
+
+# FASE 15 — QA manuale battaglia
+
+## Scenari da testare
+
+### 1. Mossa normale giocatore
+
+- Effetto appare sul nemico.
+- Shake nemico.
+- Danno applicato.
+- Info box corretto.
+- Turno passa all’avversario.
+
+### 2. Mossa normale avversario
+
+- Effetto appare sul giocatore.
+- Orientamento corretto.
+- Shake giocatore.
+- Danno applicato.
+
+### 3. Cura giocatore
+
+- Effetto appare sul Pokémon del giocatore.
+- Non va sul nemico.
+- HP aumentano correttamente.
+
+### 4. Cura avversario
+
+- Effetto appare sul Pokémon avversario.
+- Non va sul giocatore.
+
+### 5. Stato alterato
+
+- Confusione usa effetto coerente.
+- Sonno/veleno/debuff usano effetto coerente.
+- Badge stato continua a funzionare.
+
+### 6. KO
+
+- Effetto parte.
+- KO sound parte.
+- Cambio Pokémon o fine battaglia funziona.
+
+### 7. PvP
+
+- Mossa lato A.
+- Passaggio controllo.
+- Mossa lato B.
+- Effetti orientati correttamente.
+
+### 8. Mobile
+
+- Nessun overflow strano.
+- Effetto non copre permanentemente UI.
+- Bottoni ancora cliccabili dopo animazione.
+
+---
+
+# FASE 16 — Test automatici consigliati
+
+## Unit test resolver
+
+Nuovo file:
+
+```txt
+src/components/vfx/__tests__/resolveMoveVfxAsset.test.ts
+```
+
+Testare:
+
+- mossa cura → cure;
+- mossa confusione → confuse;
+- tipo acqua → water;
+- tipo normale → punch;
+- effetto suprema → burst;
+- fallback sempre presente.
+
+## Test utilità sprite
+
+Nuovo file:
+
+```txt
+src/components/vfx/__tests__/spriteFrame.test.ts
+```
+
+Estrarre funzione pura:
+
+```ts
+export function getSpriteFramePosition(
+  frame: number,
+  columns: number,
+  frameWidth: number,
+  frameHeight: number
+) {
+  ...
+}
+```
+
+Testare:
+
+- frame 0;
+- frame 1;
+- frame columns;
+- ultimo frame.
+
+## Criteri di accettazione
+
+```bash
+npm run test
 npm run build
 ```
 
-## Criteri di accettazione
-
-```txt
-- npm test passa.
-- npm run build passa.
-- Nessun errore TypeScript.
-- Nessun warning grave.
-```
+devono passare entrambi.
 
 ---
 
-# FASE 16 — QA manuale
+# FASE 17 — Definizione qualità prodotto
 
-## Checklist manuale
+## Risultato atteso
 
-Codex deve verificare o indicare all’utente di verificare:
+Il nuovo sistema deve dare una sensazione:
 
-```txt
-[ ] Avvio gioco normale.
-[ ] CTRL+SHIFT+A apre admin.
-[ ] Pannello chiudibile.
-[ ] Nuova Partita funziona.
-[ ] Continua funziona.
-[ ] Battaglia ancora funzionante.
-[ ] Mappa ancora funzionante.
-[ ] Deposito ancora funzionante.
-[ ] AudioController ancora visibile.
-[ ] Tema resta dopo refresh.
-[ ] Reset tema funziona.
-[ ] Export JSON funziona.
-[ ] Import JSON valido funziona.
-[ ] Import JSON errato non rompe il gioco.
-```
+- più arcade;
+- più cartoon;
+- più vicina a giochi Pokémon/fantasy mobile;
+- meno “grafico SVG tecnico”;
+- più ricca di glow, scie, impatti, particelle;
+- più coerente con GIF e sprite sheet allegati.
+
+## Non obiettivi
+
+Non fare ora:
+
+- riscrittura del battle engine;
+- nuovo sistema turni;
+- editor completo degli asset;
+- upload asset runtime;
+- fisica particellare complessa;
+- dipendenze pesanti tipo PixiJS o Three.js.
+
+La prima versione deve restare semplice, stabile e integrata con React.
 
 ---
 
-# FASE 17 — Documentazione
+# FASE 18 — Possibile evoluzione futura: mini editor admin VFX
 
-## Task 17.1 — Creare documento
+## Obiettivo futuro
 
-Creare file:
+Permettere da admin di modificare:
+
+- asset associato a una mossa;
+- scala;
+- offset X/Y;
+- durata;
+- anchor;
+- layer;
+- mirror;
+- blend mode.
+
+## Possibile struttura futura
+
+```ts
+interface AdminMoveVfxOverride {
+  moveId: number
+  assetId: string
+  scale: number
+  offsetX: number
+  offsetY: number
+  durationMs: number
+  anchor: VfxAnchor
+}
+```
+
+## Prima milestone admin
+
+Non serve salvare tutto subito.
+
+Prima creare solo:
+
+- pannello preview;
+- modifica temporanea in memoria;
+- export JSON configurazione.
+
+Poi, in una fase successiva, collegare al sistema admin asset/layout già esistente.
+
+Stato: prima milestone completata e collegata al pannello admin esistente nella scheda `VFX`.
+
+---
+
+# Piano operativo per Codex
+
+## Primo commit
 
 ```txt
-docs/ADMIN_MODE.md
+feat(vfx): add sprite/gif vfx asset architecture
 ```
 
 Contenuto:
 
+- cartelle asset;
+- tipi;
+- manifest;
+- AnimatedSprite;
+- GifVfx;
+- resolver;
+- SpriteMoveVfx;
+- wrapper compatibile MoveVfx.
+
+## Secondo commit
+
 ```txt
-- Cos’è la modalità admin.
-- Come attivarla.
-- Cosa modifica.
-- Dove salva.
-- Come esportare/importare tema.
-- Limiti GitHub Pages.
-- Come disattivarla.
+feat(vfx): map battle moves to new animated effects
 ```
 
-## Task 17.2 — Aggiornare README
+Contenuto:
 
-Aggiungere sezione breve:
+- mapping per effetto/tipo/nome;
+- override per mosse principali;
+- calibrazione anchor/scale;
+- fallback.
 
-```md
-## Modalità Admin Grafica
+## Terzo commit
 
-Arkamon include una modalità admin locale per modificare colori, UI e preset grafici.
-
-Attivazione: CTRL + SHIFT + A
-
-La configurazione viene salvata separatamente dalla partita.
-
-Vedi: docs/ADMIN_MODE.md
+```txt
+test(vfx): add resolver and sprite frame tests
 ```
+
+Contenuto:
+
+- test resolver;
+- test frame sprite;
+- build pulita.
+
+## Quarto commit opzionale
+
+```txt
+feat(vfx): add dev vfx gallery
+```
+
+Contenuto:
+
+- VfxGallery;
+- replay;
+- side/target toggles;
+- preview asset.
 
 ---
 
-# Prompt principale da dare a Codex
+# Checklist finale prima PR
 
-Copia questo in Codex:
+- [x] `npm run build` passa.
+- [x] `npm run test` passa.
+- [x] Nessun errore TypeScript.
+- [x] Nessun unused import.
+- [ ] Le VFX partono sia per lato A sia per lato B.
+- [x] Le cure appaiono sul self.
+- [x] Gli attacchi appaiono sul target.
+- [x] GIF restartano quando la stessa mossa viene usata due volte.
+- [x] Sprite sheet non restano bloccati al primo frame.
+- [ ] Asset mancanti non crashano il gioco.
+- [ ] Mobile ok.
+- [x] Nessuna regressione su HP, dadi, info box, KO, cambio Pokémon.
+- [x] Vecchio SVG rimosso o isolato come fallback legacy.
+- [x] Codice leggibile e documentato dove serve.
 
-```txt
-Agisci come senior full-stack developer, QA engineer e product engineer.
-
-Repository: Andreatz/Arkamon-Beta.
-
-Obiettivo: implementare una modalità admin grafica interna al gioco chiamata “Arkamon Admin Mode V1”.
-
-La feature deve permettere di modificare colori globali, parametri UI, preset grafici e import/export JSON del tema direttamente dentro il gioco.
-
-Vincoli:
-- Non modificare logica di gioco.
-- Non modificare engine.
-- Non rompere gameStore.ts.
-- Creare adminStore.ts separato.
-- Usare Zustand persist.
-- Usare TypeScript strict.
-- Nessun any.
-- Nessuna nuova dipendenza pesante.
-- Non aggiornare Vite/React/Tailwind/Zustand.
-- Usare npm.
-- Testi UI in italiano.
-- Inserire marker: ARKAMON_ADMIN_MODE_V1_THEME_EDITOR.
-
-File da creare:
-- src/theme/adminThemeTypes.ts
-- src/theme/defaultAdminTheme.ts
-- src/theme/adminThemePresets.ts
-- src/theme/applyAdminTheme.ts
-- src/store/adminStore.ts
-- src/admin/AdminRuntime.tsx
-- src/admin/AdminOverlay.tsx
-- src/admin/AdminPanel.tsx
-- src/admin/AdminColorEditor.tsx
-- src/admin/AdminUiEditor.tsx
-- src/admin/AdminPresetEditor.tsx
-- src/admin/AdminImportExport.tsx
-- src/admin/useAdminHotkey.ts
-- docs/ADMIN_MODE.md
-
-File da modificare:
-- src/App.tsx
-- src/index.css
-- README.md
-
-Criteri di completamento:
-- CTRL+SHIFT+A apre la modalità admin.
-- I colori cambiano live.
-- I parametri UI cambiano live.
-- Il tema resta dopo refresh.
-- Reset tema funziona.
-- Import/export JSON funziona.
-- npm test passa.
-- npm run build passa.
-- Il gioco continua a funzionare normalmente.
-```
+Per i controlli visivi manuali rimasti usare `docs/VFX_QA.md`.
 
 ---
 
-# Prompt di verifica finale per Codex
+# Prompt breve da dare a Codex
 
-Dopo l’implementazione, dare questo secondo prompt:
-
-```txt
-Esegui una revisione completa della feature Admin Mode V1.
-
-Controlla:
-1. TypeScript strict.
-2. Nessun any.
-3. Nessuna modifica accidentale alla logica di gioco.
-4. Nessun uso diretto di localStorage nei componenti.
-5. Persistenza separata da arkamon-save.
-6. Compatibilità con GitHub Pages.
-7. Presenza marker ARKAMON_ADMIN_MODE_V1_THEME_EDITOR.
-8. npm test.
-9. npm run build.
-
-Poi produci un report finale con:
-- file creati
-- file modificati
-- test eseguiti
-- eventuali limiti noti
-- istruzioni di uso per l’utente.
-```
-
----
-
-# Ordine consigliato dei commit
-
-```txt
-1. admin-theme-types-and-defaults
-2. admin-store-and-runtime
-3. admin-overlay-and-hotkey
-4. admin-panel-color-ui-editors
-5. admin-presets-import-export
-6. admin-css-runtime-variables
-7. admin-docs-and-readme
-8. admin-tests-and-final-polish
-```
-
----
-
-# Comandi finali
-
-```bash
-npm install
-npm test
-npm run build
-npm run dev
-```
-
-Verifica marker:
-
-```bash
-grep -R "ARKAMON_ADMIN_MODE_V1_THEME_EDITOR" src
-```
-
-Output atteso:
-
-```txt
-src/admin/AdminPanel.tsx
-```
-
----
-
-# Nota finale
-
-Questa roadmap è pensata per far lavorare Codex in modo ordinato: prima crea il sistema tema, poi lo store, poi il pannello, poi gli editor, poi i preset, poi i test.
-
-In questo modo la modalità admin nasce solida e non invade il cuore del gioco.
+Agisci come senior React/TypeScript game developer. Nella repo `Andreatz/Arkamon-Beta`, sostituisci il sistema VFX mosse attuale basato su SVG in `src/components/MoveVfx.tsx` con un sistema asset-driven basato su sprite sheet PNG/WebP e GIF animate. Mantieni compatibili gli export pubblici `MoveVfx`, `MOVE_VFX_VISIBLE_MS`, `MoveVfxEvent`, `MoveVfxSide`, `MoveVfxTarget`, così `BattagliaScene.tsx` non richiede una riscrittura. Crea tipi, manifest asset, renderer `AnimatedSprite`, renderer GIF, resolver per tipo/effetto/nome mossa, fallback robusto e test unitari. Usa asset in `public/vfx/moves/...` e risolvi i path con `assetUrl`. Non modificare la logica del battle engine nella prima iterazione. Alla fine esegui `npm run build` e `npm run test`.

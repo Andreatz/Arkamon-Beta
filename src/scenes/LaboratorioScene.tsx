@@ -18,13 +18,26 @@ export function LaboratorioScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const aggiungiPokemon = useGameStore((s) => s.aggiungiPokemon)
   const cambiaGiocatoreAttivo = useGameStore((s) => s.cambiaGiocatoreAttivo)
+  const impostaNomeGiocatore = useGameStore((s) => s.impostaNomeGiocatore)
   const assegnaRivaleStarter = useGameStore((s) => s.assegnaRivaleStarter)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
+  const giocatore1 = useGameStore((s) => s.giocatore1)
+  const giocatore2 = useGameStore((s) => s.giocatore2)
   const g1HaStarter = useGameStore((s) => s.giocatore1.squadra.length > 0)
   const g2HaStarter = useGameStore((s) => s.giocatore2.squadra.length > 0)
   const [starterDisponibili, setStarterDisponibili] = useState(STARTER_IDS)
+  const [nomiConfermati, setNomiConfermati] = useState(g1HaStarter || g2HaStarter)
+  const [nomeGiocatore1, setNomeGiocatore1] = useState(giocatore1.nome)
+  const [nomeGiocatore2, setNomeGiocatore2] = useState(giocatore2.nome)
 
   const tuttiHannoStarter = g1HaStarter && g2HaStarter
+  const nomeGiocatoreAttivo = giocatoreAttivo === 1 ? giocatore1.nome : giocatore2.nome
+
+  const confermaNomi = () => {
+    impostaNomeGiocatore(1, nomeGiocatore1)
+    impostaNomeGiocatore(2, nomeGiocatore2)
+    setNomiConfermati(true)
+  }
 
   const scegliStarter = (specieId: number) => {
     const istanza = creaIstanza(specieId, 5)
@@ -50,10 +63,44 @@ export function LaboratorioScene() {
       <h2 className="arka-readable-title text-4xl font-bold text-arka-accent mb-2">
         Laboratorio del Professore
       </h2>
+      {!nomiConfermati ? (
+        <form
+          className="arka-panel mt-5 w-[min(34rem,92vw)] space-y-4 p-6"
+          onSubmit={(event) => {
+            event.preventDefault()
+            confermaNomi()
+          }}
+        >
+          <p className="text-center text-lg font-bold text-white">Inserisci i nomi dei giocatori</p>
+          <label className="block text-sm font-bold text-arka-text">
+            Giocatore 1
+            <input
+              value={nomeGiocatore1}
+              onChange={(event) => setNomeGiocatore1(event.target.value)}
+              maxLength={24}
+              className="mt-2 h-11 w-full rounded-md border border-arka-border bg-slate-950/80 px-3 text-white outline-none focus:border-arka-accent"
+              autoFocus
+            />
+          </label>
+          <label className="block text-sm font-bold text-arka-text">
+            Giocatore 2
+            <input
+              value={nomeGiocatore2}
+              onChange={(event) => setNomeGiocatore2(event.target.value)}
+              maxLength={24}
+              className="mt-2 h-11 w-full rounded-md border border-arka-border bg-slate-950/80 px-3 text-white outline-none focus:border-arka-accent"
+            />
+          </label>
+          <button type="submit" className="arka-button w-full">
+            Continua
+          </button>
+        </form>
+      ) : (
+        <>
       <p className="arka-readable-text text-arka-text-muted mb-8 text-lg">
         {tuttiHannoStarter
           ? 'Tutti hanno scelto! Si parte!'
-          : `Giocatore ${giocatoreAttivo}, scegli il tuo Starter.`}
+          : `${nomeGiocatoreAttivo}, scegli il tuo Starter.`}
       </p>
 
       <div className="flex gap-6">
@@ -93,6 +140,8 @@ export function LaboratorioScene() {
           )
         })}
       </div>
+        </>
+      )}
     </div>
   )
 }

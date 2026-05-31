@@ -599,7 +599,7 @@ export function MappaPrincipaleScene() {
         <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Turno di:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-arka-accent">
-            Giocatore {giocatoreAttivo}
+            {giocatore.nome}
           </span>
         </div>
       </AdminLayoutItem>

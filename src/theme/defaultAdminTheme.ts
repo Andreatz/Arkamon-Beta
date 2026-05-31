@@ -69,6 +69,15 @@ export const defaultMapGridLayout = {
   legend: { x: 79, y: 78, w: 19.5, h: 20 },
 }
 
+export const defaultLuogoLayout = {
+  backButton: { x: 2, y: 2, w: 16, h: 6 },
+  turnPanel: { x: 68, y: 2, w: 14, h: 6 },
+  coinsPanel: { x: 83, y: 2, w: 15, h: 6 },
+  title: { x: 32, y: 10, w: 36, h: 7 },
+  subtitle: { x: 18, y: 17, w: 64, h: 5 },
+  contentGrid: { x: 4, y: 25, w: 92, h: 70 },
+}
+
 export const defaultDepositLayout = {
   hud: { x: 3, y: 3, w: 94, h: 9 },
   boxGrid: { x: 4, y: 16, w: 66, h: 68 },
@@ -109,12 +118,14 @@ export const defaultAdminTheme: AdminTheme = {
     mainMapRoadOpacity: 0.42,
   },
   assets: {},
+  spriteScales: {},
   layouts: {
     battle: defaultBattleLayout,
     mainMapNodes: defaultMainMapNodePositions,
     mainMapRoads: defaultMainMapRoads,
     mainMapUi: defaultMainMapUiLayout,
     mapGrid: defaultMapGridLayout,
+    luogo: defaultLuogoLayout,
     deposit: defaultDepositLayout,
     evolution: defaultEvolutionLayout,
   },
@@ -126,6 +137,7 @@ export function cloneAdminTheme(theme: AdminTheme): AdminTheme {
     colors: { ...theme.colors },
     ui: { ...theme.ui },
     assets: { ...theme.assets },
+    spriteScales: { ...theme.spriteScales },
     layouts: {
       battle: {
         ...theme.layouts.battle,
@@ -144,6 +156,9 @@ export function cloneAdminTheme(theme: AdminTheme): AdminTheme {
       },
       mapGrid: {
         ...theme.layouts.mapGrid,
+      },
+      luogo: {
+        ...theme.layouts.luogo,
       },
       deposit: {
         ...theme.layouts.deposit,

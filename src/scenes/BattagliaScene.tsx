@@ -13,6 +13,7 @@ import {
   risolviStatoInizioTurno,
   èMossaCura,
   applicaMossaCura,
+  getMossaAlLivello,
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
@@ -23,12 +24,20 @@ import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import {
-  MOVE_VFX_VISIBLE_MS,
   MoveVfx,
   type MoveVfxEvent,
   type MoveVfxSide,
   type MoveVfxTarget,
 } from '@/components/MoveVfx'
+import {
+  preloadMoveVfxForPokemon,
+  preloadVfxAssets,
+} from '@/components/vfx/preloadVfxAssets'
+import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
+import {
+  getMoveVfxDurationMs,
+  getMoveVfxImpactDelayMs,
+} from '@/components/vfx/resolveMoveVfxAsset'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -88,6 +97,9 @@ export function BattagliaScene() {
   const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
   const moveVfxTimerRef = useRef<number | null>(null)
   const moveVfxIdRef = useRef(0)
+  const feedbackTimersRef = useRef<Set<number>>(new Set())
+  const messaggiTurnoBRef = useRef<string[]>([])
+  const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
@@ -106,8 +118,20 @@ export function BattagliaScene() {
   const [evoluzioniInAttesa, setEvoluzioniInAttesa] = useState<
     { istanzaId: string; oldSpecieId: number; newSpecieId: number }[]
   >([])
+  const luogoRitornoRef = useRef(battaglia?.luogoRitorno ?? 'mappa-principale')
 
   useEffect(() => {
+    preloadVfxAssets(DEFAULT_PRELOAD_VFX_ASSET_IDS)
+    preloadMoveVfxForPokemon(
+      battaglia
+        ? [
+            battaglia.pokemonA.specieId,
+            battaglia.pokemonB.specieId,
+            ...(battaglia.squadraA ?? []).map((pokemon) => pokemon.specieId),
+            ...(battaglia.squadraB ?? []).map((pokemon) => pokemon.specieId),
+          ]
+        : [1, 13]
+    )
     playSound('battle-start')
     if (battaglia) {
       setPkmnA(battaglia.pokemonA)
@@ -146,10 +170,14 @@ export function BattagliaScene() {
       if (moveVfxTimerRef.current !== null) {
         window.clearTimeout(moveVfxTimerRef.current)
       }
+      for (const timer of feedbackTimersRef.current) {
+        window.clearTimeout(timer)
+      }
+      feedbackTimersRef.current.clear()
     }
   }, [])
 
-  const luogoRitorno = battaglia?.luogoRitorno ?? 'mappa-principale'
+  const luogoRitorno = luogoRitornoRef.current
   const isNPC = !!battaglia && battaglia.tipo !== 'Selvatico' && battaglia.allenatoreId !== undefined
   const isSelvatico = !battaglia || battaglia.tipo === 'Selvatico'
   const isPvP = !!battaglia && battaglia.tipo === 'PVP'
@@ -165,7 +193,11 @@ export function BattagliaScene() {
     setInfoBoxMessaggi((correnti) => [...correnti, ...messaggi].slice(-6))
   }
 
-  const mostraLancioDadi = (risultato: RisultatoMossa, side: 'A' | 'B') => {
+  const mostraLancioDadi = (
+    risultato: RisultatoMossa,
+    side: 'A' | 'B',
+    onComplete: () => void
+  ) => {
     if (diceRollTimerRef.current !== null) {
       window.clearTimeout(diceRollTimerRef.current)
     }
@@ -181,6 +213,7 @@ export function BattagliaScene() {
     diceRollTimerRef.current = window.setTimeout(() => {
       setDiceRoll(null)
       diceRollTimerRef.current = null
+      onComplete()
     }, DICE_ROLL_VISIBLE_MS)
   }
 
@@ -188,7 +221,7 @@ export function BattagliaScene() {
     move: MossaDef,
     side: MoveVfxSide,
     target: MoveVfxTarget = 'opponent'
-  ) => {
+  ): number => {
     if (moveVfxTimerRef.current !== null) {
       window.clearTimeout(moveVfxTimerRef.current)
     }
@@ -199,10 +232,63 @@ export function BattagliaScene() {
       side,
       target,
     })
+    const durationMs = getMoveVfxDurationMs(move)
     moveVfxTimerRef.current = window.setTimeout(() => {
       setMoveVfx(null)
       moveVfxTimerRef.current = null
-    }, MOVE_VFX_VISIBLE_MS)
+    }, durationMs)
+    return durationMs
+  }
+
+  const scheduleFeedbackTimer = (callback: () => void, delayMs: number) => {
+    const timer = window.setTimeout(() => {
+      feedbackTimersRef.current.delete(timer)
+      callback()
+    }, delayMs)
+    feedbackTimersRef.current.add(timer)
+  }
+
+  const scheduleImpactFeedback = (
+    move: MossaDef,
+    side: 'A' | 'B',
+    playHitSound = true
+  ) => {
+    scheduleFeedbackTimer(() => {
+      setShaking(side)
+      if (playHitSound) playSound('hit')
+      scheduleFeedbackTimer(() => setShaking(null), 400)
+    }, getMoveVfxImpactDelayMs(move))
+  }
+
+  const eseguiSequenzaOffensiva = (
+    risultato: RisultatoMossa,
+    side: 'A' | 'B',
+    targetSide: 'A' | 'B',
+    playHitSound: boolean,
+    onComplete: () => void
+  ) => {
+    setAzioneInCorso(true)
+    const vfxDurationMs = mostraVfxMossa(risultato.mossa, side)
+    scheduleImpactFeedback(risultato.mossa, targetSide, playHitSound)
+    scheduleFeedbackTimer(() => {
+      mostraLancioDadi(risultato, side, () => {
+        onComplete()
+        setAzioneInCorso(false)
+      })
+    }, vfxDurationMs)
+  }
+
+  const eseguiSequenzaCura = (
+    move: MossaDef,
+    side: 'A' | 'B',
+    onComplete: () => void
+  ) => {
+    setAzioneInCorso(true)
+    const vfxDurationMs = mostraVfxMossa(move, side, 'self')
+    scheduleFeedbackTimer(() => {
+      onComplete()
+      setAzioneInCorso(false)
+    }, vfxDurationMs)
   }
 
   const tornaIndietro = () => {
@@ -235,9 +321,11 @@ export function BattagliaScene() {
   const specieB = getPokemon(pkmnB.specieId)!
 
   const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2) => {
-    if (terminata || turnoA || !mostraMoseB) return
+    if (terminata || turnoA || !mostraMoseB || azioneInCorso) return
     setMostraMoseB(false)
-    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa)
+    const messaggiIniziali = messaggiTurnoBRef.current
+    messaggiTurnoBRef.current = []
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa, messaggiIniziali)
   }
 
   const passaTurnoAaB = (nuovoB: PokemonIstanza, delayMs = 1500) => {
@@ -336,23 +424,23 @@ export function BattagliaScene() {
   }
 
   const eseguiMossa = (numeroMossa: 0 | 1 | 2) => {
-    if (terminata || !turnoA) return
+    if (terminata || !turnoA || azioneInCorso) return
     resetInfoBox()
 
     const statoRes = risolviStatoInizioTurno(pkmnA, hpMaxA)
-    mostraMessaggi(statoRes.messaggi)
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
 
     if (pkmnAEffettivo.hp <= 0) {
+      mostraMessaggi(statoRes.messaggi)
       const nextA = squadraA.find(
         (p) => p.istanzaId !== pkmnAEffettivo.istanzaId && p.hp > 0
       )
       if (nextA) {
-        mostraMessaggi([`${pkmnAEffettivo.nome} e caduto!`])
+        mostraMessaggi([`${pkmnAEffettivo.nome} è caduto!`])
         apriScambio({
-          motivo: `${pkmnAEffettivo.nome} non puo continuare.`,
+          motivo: `${pkmnAEffettivo.nome} non può continuare.`,
           prossimoPasso: 'continuaA',
         })
         return
@@ -364,6 +452,7 @@ export function BattagliaScene() {
     }
 
     if (!statoRes.puoAgire) {
+      mostraMessaggi(statoRes.messaggi)
       passaTurnoAaB(pkmnB, 1200)
       return
     }
@@ -372,117 +461,114 @@ export function BattagliaScene() {
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
     if (mossaScelta && èMossaCura(mossaScelta)) {
-      mostraVfxMossa(mossaScelta, 'A', 'self')
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
-      setPkmnA(cura.istanza)
-      setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
-      mostraMessaggi(cura.messaggi)
-      passaTurnoAaB(pkmnB, 1200)
+      eseguiSequenzaCura(mossaScelta, 'A', () => {
+        setPkmnA(cura.istanza)
+        setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
+        mostraMessaggi([...statoRes.messaggi, ...cura.messaggi])
+        passaTurnoAaB(pkmnB, 1200)
+      })
       return
     }
 
     const ris = calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa)
     if (!ris) return
 
-    mostraVfxMossa(ris.mossa, 'A')
-    mostraLancioDadi(ris, 'A')
-    setShaking('B')
     let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
     if (ris.statoApplicato && nuovoB.hp > 0) {
       nuovoB = applicaStato(nuovoB, ris.statoApplicato)
     }
-    setPkmnB(nuovoB)
-    const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
-    setSquadraB(nuovaSquadraB)
-    playSound('hit')
-    mostraMessaggi(ris.messaggi)
+    eseguiSequenzaOffensiva(ris, 'A', 'B', nuovoB.hp > 0, () => {
+      setPkmnB(nuovoB)
+      const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
+      setSquadraB(nuovaSquadraB)
+      mostraMessaggi([...statoRes.messaggi, ...ris.messaggi])
 
-    setTimeout(() => setShaking(null), 400)
-
-    let aDopoAutodanno = pkmnAEffettivo
-    if (ris.autodanno && ris.autodanno > 0) {
-      aDopoAutodanno = {
-        ...pkmnAEffettivo,
-        hp: Math.max(0, pkmnAEffettivo.hp - ris.autodanno),
+      let aDopoAutodanno = pkmnAEffettivo
+      if (ris.autodanno && ris.autodanno > 0) {
+        aDopoAutodanno = {
+          ...pkmnAEffettivo,
+          hp: Math.max(0, pkmnAEffettivo.hp - ris.autodanno),
+        }
+        setPkmnA(aDopoAutodanno)
+        setSquadraA((sq) => updateInSquadra(sq, aDopoAutodanno))
       }
-      setPkmnA(aDopoAutodanno)
-      setSquadraA((sq) => updateInSquadra(sq, aDopoAutodanno))
-    }
 
-    if (nuovoB.hp <= 0) {
-      playSound('ko')
-      const aggiornatoA = premiaConXP(aDopoAutodanno, nuovoB)
-      setPkmnA(aggiornatoA)
-      setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
+      if (nuovoB.hp <= 0) {
+        playSound('ko')
+        const aggiornatoA = premiaConXP(aDopoAutodanno, nuovoB)
+        setPkmnA(aggiornatoA)
+        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
 
-      const nextB = nuovaSquadraB.find(
-        (p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0
-      )
-      if (nextB && isNPC) {
-        mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
-        setPkmnB(nextB)
-        // BR.3: il nuovo Pokémon nemico attacca subito (VBA: Cells(12,2)="B")
-        passaTurnoAaB(nextB, 800)
+        const nextB = nuovaSquadraB.find(
+          (p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0
+        )
+        if (nextB && isNPC) {
+          mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
+          setPkmnB(nextB)
+          // BR.3: il nuovo Pokémon nemico attacca subito (VBA: Cells(12,2)="B")
+          passaTurnoAaB(nextB, 800)
+          return
+        }
+        mostraMessaggi(['Hai vinto la battaglia!'])
+        playSound('victory')
+        setEsito('vittoria')
+        setTerminata(true)
         return
       }
-      mostraMessaggi(['Hai vinto la battaglia!'])
-      playSound('victory')
-      setEsito('vittoria')
-      setTerminata(true)
-      return
-    }
 
-    if (aDopoAutodanno.hp <= 0) {
-      const nextA = squadraA.find(
-        (p) => p.istanzaId !== aDopoAutodanno.istanzaId && p.hp > 0
-      )
-      if (nextA) {
-        mostraMessaggi([`${aDopoAutodanno.nome} e esausto!`])
-        apriScambio({
-          motivo: `${aDopoAutodanno.nome} non puo continuare.`,
-          prossimoPasso: 'passaAB',
-          pendingB: nuovoB,
-        })
+      if (aDopoAutodanno.hp <= 0) {
+        const nextA = squadraA.find(
+          (p) => p.istanzaId !== aDopoAutodanno.istanzaId && p.hp > 0
+        )
+        if (nextA) {
+          mostraMessaggi([`${aDopoAutodanno.nome} è esausto!`])
+          apriScambio({
+            motivo: `${aDopoAutodanno.nome} non può continuare.`,
+            prossimoPasso: 'passaAB',
+            pendingB: nuovoB,
+          })
+          return
+        }
+        mostraMessaggi(['Hai perso la battaglia...'])
+        playSound('ko')
+        setEsito('sconfitta')
+        setTerminata(true)
         return
       }
-      mostraMessaggi(['Hai perso la battaglia...'])
-      playSound('ko')
-      setEsito('sconfitta')
-      setTerminata(true)
-      return
-    }
 
-    passaTurnoAaB(nuovoB, 1500)
+      passaTurnoAaB(nuovoB, 1500)
+    })
   }
 
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
   const eseguiCattura = () => {
-    if (terminata || !turnoA) return
+    if (terminata || !turnoA || azioneInCorso) return
     resetInfoBox()
     const ris = tentaCattura(pkmnB)
     mostraMessaggi([
-      `Lanci una pokeball... (3d6=${ris.roll}, soglia=${ris.soglia.toFixed(1)})`,
+      `Lanci una pokeball...`,
     ])
     if (ris.riuscita) {
-      mostraMessaggi([`${pkmnB.nome} e stato catturato!`])
+      mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
       playSound('capture')
       aggiungiPokemon(giocatoreAttivo, pkmnB)
       setEsito('vittoria')
       setTerminata(true)
       return
     }
-    mostraMessaggi([`${pkmnB.nome} e scappato dalla pokeball!`])
+    mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
     setTurnoA(false)
     setAttesaAvversario(pkmnB)
   }
 
   const eseguiMasterball = () => {
-    if (terminata || !turnoA) return
+    if (terminata || !turnoA || azioneInCorso) return
     if (!usaOggetto(giocatoreAttivo, 'masterball')) return
     resetInfoBox()
     mostraMessaggi([
       'Lanci una Masterball...',
-      `${pkmnB.nome} e stato catturato!`,
+      `${pkmnB.nome} è stato catturato!`,
     ])
     playSound('capture')
     aggiungiPokemon(giocatoreAttivo, pkmnB)
@@ -494,13 +580,13 @@ export function BattagliaScene() {
     resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
     const statoRes = risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
-    mostraMessaggi(statoRes.messaggi)
     const bEffettivo = statoRes.istanza
     setPkmnB(bEffettivo)
     setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
 
     if (bEffettivo.hp <= 0) {
-      mostraMessaggi([`${bEffettivo.nome} e caduto!`])
+      mostraMessaggi(statoRes.messaggi)
+      mostraMessaggi([`${bEffettivo.nome} è caduto!`])
       playSound('ko')
       const nextB = squadraB.find(
         (p) => p.istanzaId !== bEffettivo.istanzaId && p.hp > 0
@@ -522,35 +608,39 @@ export function BattagliaScene() {
     }
 
     if (!statoRes.puoAgire) {
+      mostraMessaggi(statoRes.messaggi)
       passaTurnoBaA()
       return
     }
 
     if (isPvP) {
+      messaggiTurnoBRef.current = statoRes.messaggi
       setMostraMoseB(true)
       return
     }
 
     const mossaIdx = scegliMossaIA(bEffettivo, pkmnA)
-    eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx)
+    eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, statoRes.messaggi)
   }
 
   const eseguiMossaB = (
     bEffettivo: PokemonIstanza,
     hpMaxBcorrente: number,
-    mossaIdx: 0 | 1 | 2
+    mossaIdx: 0 | 1 | 2,
+    messaggiIniziali: string[] = []
   ) => {
     const specieB = getPokemon(bEffettivo.specieId)
     const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
     if (mossaDefB && èMossaCura(mossaDefB)) {
-      mostraVfxMossa(mossaDefB, 'B', 'self')
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
-      setPkmnB(cura.istanza)
-      setSquadraB((sq) => updateInSquadra(sq, cura.istanza))
-      mostraMessaggi(cura.messaggi)
-      passaTurnoBaA()
+      eseguiSequenzaCura(mossaDefB, 'B', () => {
+        setPkmnB(cura.istanza)
+        setSquadraB((sq) => updateInSquadra(sq, cura.istanza))
+        mostraMessaggi([...messaggiIniziali, ...cura.messaggi])
+        passaTurnoBaA()
+      })
       return
     }
 
@@ -559,70 +649,67 @@ export function BattagliaScene() {
       passaTurnoBaA()
       return
     }
-    mostraVfxMossa(ris.mossa, 'B')
-    mostraLancioDadi(ris, 'B')
-    setShaking('A')
     let nuovoA = { ...pkmnA, hp: Math.max(0, pkmnA.hp - ris.dannoFinale) }
     if (ris.statoApplicato && nuovoA.hp > 0) {
       nuovoA = applicaStato(nuovoA, ris.statoApplicato)
     }
-    setPkmnA(nuovoA)
-    const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
-    setSquadraA(nuovaSquadraA)
-    playSound('hit')
-    mostraMessaggi(ris.messaggi)
-    setTimeout(() => setShaking(null), 400)
+    eseguiSequenzaOffensiva(ris, 'B', 'A', nuovoA.hp > 0, () => {
+      setPkmnA(nuovoA)
+      const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
+      setSquadraA(nuovaSquadraA)
+      mostraMessaggi([...messaggiIniziali, ...ris.messaggi])
 
-    let bDopoAutodanno = bEffettivo
-    if (ris.autodanno && ris.autodanno > 0) {
-      bDopoAutodanno = {
-        ...bEffettivo,
-        hp: Math.max(0, bEffettivo.hp - ris.autodanno),
+      let bDopoAutodanno = bEffettivo
+      if (ris.autodanno && ris.autodanno > 0) {
+        bDopoAutodanno = {
+          ...bEffettivo,
+          hp: Math.max(0, bEffettivo.hp - ris.autodanno),
+        }
+        setPkmnB(bDopoAutodanno)
+        setSquadraB((sq) => updateInSquadra(sq, bDopoAutodanno))
       }
-      setPkmnB(bDopoAutodanno)
-      setSquadraB((sq) => updateInSquadra(sq, bDopoAutodanno))
-    }
 
-    if (nuovoA.hp <= 0) {
-      const nextA = nuovaSquadraA.find(
-        (p) => p.istanzaId !== nuovoA.istanzaId && p.hp > 0
-      )
-      if (nextA) {
-        mostraMessaggi([`${nuovoA.nome} e KO!`])
-        apriScambio({
-          motivo: `${nuovoA.nome} e KO.`,
-          prossimoPasso: 'passaAdA',
-        })
+      if (nuovoA.hp <= 0) {
+        const nextA = nuovaSquadraA.find(
+          (p) => p.istanzaId !== nuovoA.istanzaId && p.hp > 0
+        )
+        if (nextA) {
+          mostraMessaggi([`${nuovoA.nome} è KO!`])
+          apriScambio({
+            motivo: `${nuovoA.nome} è KO.`,
+            prossimoPasso: 'passaAdA',
+          })
+          return
+        }
+        mostraMessaggi(['Hai perso la battaglia...'])
+        playSound('ko')
+        setEsito('sconfitta')
+        setTerminata(true)
         return
       }
-      mostraMessaggi(['Hai perso la battaglia...'])
-      playSound('ko')
-      setEsito('sconfitta')
-      setTerminata(true)
-      return
-    }
 
-    if (bDopoAutodanno.hp <= 0) {
-      const nextB = squadraB.find(
-        (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
-      )
-      if (nextB && isNPC) {
-        mostraMessaggi([`${bDopoAutodanno.nome} e esausto! L'avversario manda in campo ${nextB.nome}!`])
-        setPkmnB(nextB)
-        setTurnoA(true)
+      if (bDopoAutodanno.hp <= 0) {
+        const nextB = squadraB.find(
+          (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
+        )
+        if (nextB && isNPC) {
+          mostraMessaggi([`${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`])
+          setPkmnB(nextB)
+          setTurnoA(true)
+          return
+        }
+        const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
+        setPkmnA(aggiornatoA)
+        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
+        mostraMessaggi(['Hai vinto la battaglia!'])
+        playSound('victory')
+        setEsito('vittoria')
+        setTerminata(true)
         return
       }
-      const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
-      setPkmnA(aggiornatoA)
-      setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-      mostraMessaggi(['Hai vinto la battaglia!'])
-      playSound('victory')
-      setEsito('vittoria')
-      setTerminata(true)
-      return
-    }
 
-    passaTurnoBaA()
+      passaTurnoBaA()
+    })
   }
 
   const bgBattaglia = customBattleBackground
@@ -775,7 +862,7 @@ export function BattagliaScene() {
           editing={layoutEditing}
           onChange={updateBattleLayout}
         >
-          <div className="h-full w-full rounded-lg border border-white/15 bg-slate-950/80 p-3 shadow-2xl backdrop-blur-sm">
+          <div className="h-full w-full p-3">
             <div
               className="grid h-[68%] gap-3"
               style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseA.length)}, minmax(0, 1fr))` }}
@@ -786,7 +873,7 @@ export function BattagliaScene() {
                   mossa={mossa}
                   livello={pkmnA.livello}
                   textKeyPrefix={`move-${idx}`}
-                  disabled={!turnoA}
+                  disabled={!turnoA || azioneInCorso}
                   onClick={() => eseguiMossa(idx)}
                 />
               ))}
@@ -794,11 +881,11 @@ export function BattagliaScene() {
 
             {isSelvatico && battaglia && (
               <div className="mt-3 flex justify-end gap-2">
-                <ActionButton disabled={!turnoA} onClick={eseguiCattura}>
+                <ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiCattura}>
                   Cattura
                 </ActionButton>
                 {masterballRimaste > 0 && (
-                  <ActionButton disabled={!turnoA} onClick={eseguiMasterball}>
+                  <ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiMasterball}>
                     Masterball x{masterballRimaste}
                   </ActionButton>
                 )}
@@ -816,7 +903,7 @@ export function BattagliaScene() {
           editing={layoutEditing}
           onChange={updateBattleLayout}
         >
-          <div className="h-full w-full rounded-lg border border-white/15 bg-slate-950/80 p-3 shadow-2xl backdrop-blur-sm">
+          <div className="h-full w-full p-3">
             <div
               className="grid h-full gap-3"
               style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseB.length)}, minmax(0, 1fr))` }}
@@ -827,7 +914,7 @@ export function BattagliaScene() {
                   mossa={mossa}
                   livello={pkmnB.livello}
                   textKeyPrefix={`move-${idx}`}
-                  disabled={false}
+                  disabled={azioneInCorso}
                   onClick={() => eseguiMossaPvP_B(idx)}
                 />
               ))}
@@ -905,6 +992,10 @@ export function BattagliaScene() {
         <span className="arka-layout-content text-sm text-center">
           {terminata
             ? 'Battaglia finita'
+            : moveVfx
+            ? 'Animazione mossa...'
+            : diceRoll
+            ? 'Lancio dei dadi...'
             : attesaAvversario
             ? 'Premi Avversario... per continuare'
             : isPvP && attesaPassaggio
@@ -1013,9 +1104,9 @@ function DiceRollOverlay({ roll }: { roll: DiceRollDisplay }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 12 }}
         transition={{ duration: 0.22 }}
-        className="w-[min(560px,88vw)] rounded-md border border-white/20 bg-slate-950/88 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
+        className="relative -top-6 w-[min(560px,88vw)] rounded-md border border-white/20 bg-slate-950/88 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
       >
-        <p className="text-[11px] font-black uppercase text-amber-300">
+        <p className="text-[11px] font-black uppercase text-blue-300 arka-letter-outline">
           {roll.side === 'A' ? 'Lancio giocatore' : 'Lancio avversario'}
         </p>
         <h3 className="mt-1 text-lg font-black">{roll.moveName}</h3>
@@ -1071,7 +1162,7 @@ function InfoBox({
 
   return (
     <div
-      className="relative h-full w-full text-slate-950 drop-shadow-2xl"
+      className="arka-battle-font relative h-full w-full text-slate-950 drop-shadow-2xl"
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
@@ -1079,7 +1170,7 @@ function InfoBox({
       }}
     >
       <div
-        className={`absolute left-[8%] top-[16%] space-y-1.5 text-[clamp(11px,0.92vw,15px)] font-extrabold leading-snug ${
+        className={`absolute left-[8%] top-[16%] space-y-1.5 text-[clamp(15px,1.25vw,20px)] leading-snug text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] ${
           showOpponentButton ? 'right-[28%]' : 'right-[8%]'
         }`}
       >
@@ -1212,6 +1303,7 @@ function PokemonBattleSlot({
   const isPlayer = position === 'bottom-left'
   const spriteFolder = isPlayer ? 'back_sprites' : 'front_sprites'
   const spriteSrc = assetUrl(`/sprites/${spriteFolder}/${istanza.specieId}.png`)
+  const spriteScale = useAdminStore((state) => state.theme.spriteScales[String(istanza.specieId)] ?? 1)
   const isKO = istanza.hp <= 0
 
   const innerAnim = shaking
@@ -1241,6 +1333,7 @@ function PokemonBattleSlot({
           src={spriteSrc}
           alt={istanza.nome}
           className="w-full h-full object-contain"
+          style={{ transform: `scale(${spriteScale})`, transformOrigin: 'center bottom' }}
           onError={(e) => {
             ;(e.currentTarget as HTMLImageElement).style.display = 'none'
             const sib = e.currentTarget.nextElementSibling as HTMLElement | null
@@ -1279,10 +1372,13 @@ function HpBar({
   const colore = pct > 60 ? 'var(--hp-high)' : pct > 25 ? 'var(--hp-mid)' : 'var(--hp-low)'
   const badge = stato ? STATO_BADGE[stato] : null
   const frameSrc = assetUrl(`/ui/hp_bar_${side}.png`)
+  const barSrc = assetUrl('/ui/hp_bar.png')
+  const barClipId = `hp-bar-inner-${side}`
+  const fillWidth = pct === 0 ? 0 : 23 + pct * 5
 
   return (
     <div
-      className={`relative z-20 h-full w-full text-white drop-shadow-2xl ${className}`}
+      className={`arka-battle-font relative z-20 h-full w-full text-white arka-letter-outline ${className}`}
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
@@ -1311,31 +1407,45 @@ function HpBar({
           LV. {livello}
         </span>
       </div>
-      <div className="absolute left-[10.5%] top-[70%] h-[16%] w-[59.2%] overflow-hidden rounded-r-[999px] bg-black/35">
-        <motion.div
-          className="h-full"
-          style={{ backgroundColor: colore }}
-          initial={false}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+      <div className="absolute left-[10.25%] top-[66.5%] h-[33.5%] w-[59.7%]">
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 507 40"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <clipPath id={barClipId}>
+              <path d="M 16 3 H 503 V 20 C 503 29 499 35 493 36 H 3 V 20 C 3 12 8 5 16 3 Z" />
+            </clipPath>
+          </defs>
+          <motion.rect
+            x="-20"
+            y="3"
+            height="33"
+            clipPath={`url(#${barClipId})`}
+            style={{ fill: colore }}
+            initial={false}
+            animate={{ width: fillWidth, rx: pct === 100 ? 0 : 16.5 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+          />
+        </svg>
+        <img
+          src={barSrc}
+          alt=""
+          className="pointer-events-none absolute inset-0 h-full w-full mix-blend-multiply"
         />
       </div>
-      <div
-        data-admin-layout-text-key="pokemon-hp"
-        className="arka-layout-content absolute left-[72%] right-[5%] top-[68%] text-right text-[clamp(10px,0.9vw,13px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]"
-      >
-        {hp}/{hpMax}
-      </div>
+      {side === 'player' && (
+        <div
+          data-admin-layout-text-key="pokemon-hp"
+          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,0.9vw,13px)] text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]"
+        >
+          {hp}/{hpMax}
+        </div>
+      )}
     </div>
   )
-}
-
-function typeColor(tipo: string): string {
-  const key = tipo
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-  return `var(--tw-color-tipo-${key})`
 }
 
 function ActionButton({
@@ -1373,10 +1483,9 @@ function MoveButton({
   disabled: boolean
   onClick: () => void
 }) {
-  const dadi = mossa.dadiPerLivello[String(livello)] ?? 1
-  const incremento = mossa.incrementoPerLivello[String(livello)] ?? 0
-  const coloreTipo = typeColor(mossa.tipo)
+  const { dadi, incremento } = getMossaAlLivello(mossa, livello)
   const frameSrc = assetUrl('/ui/move_button.png')
+  const typeSrc = assetUrl(`/ui/${mossa.tipo.toLocaleLowerCase('it-IT')}.png`)
 
   return (
     <motion.button
@@ -1384,7 +1493,7 @@ function MoveButton({
       whileTap={!disabled ? { scale: 0.95 } : {}}
       disabled={disabled}
       onClick={onClick}
-      className="relative h-full min-h-0 overflow-hidden px-5 py-4 text-left text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
+      className="arka-battle-font relative h-full min-h-0 overflow-hidden px-[8%] py-[7%] text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
@@ -1392,29 +1501,27 @@ function MoveButton({
       }}
     >
       <div
-        className="absolute left-4 top-4 h-[calc(100%-32px)] w-1.5 rounded-full"
-        style={{ backgroundColor: coloreTipo }}
-      />
-      <div
         data-admin-layout-text-key={`${textKeyPrefix}-name`}
-        className="arka-layout-content truncate pl-3 pr-2 text-[15px] font-extrabold leading-tight"
+        className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
       >
         {mossa.nome}
       </div>
-      <div className="mt-4 flex items-center justify-between gap-2 pl-3 text-[12px] font-bold">
+      <div className="absolute bottom-[13%] left-[10%] right-[8%] flex items-end justify-between gap-3">
         <span
           data-admin-layout-text-key={`${textKeyPrefix}-dice`}
-          className="arka-layout-content rounded bg-white/60 px-2 py-1 text-slate-900 shadow-inner"
+          className="arka-layout-content flex items-center gap-[0.18em] whitespace-nowrap text-[clamp(18px,2.2vw,34px)] leading-none text-white [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
-          D6 {dadi} +{incremento}
+          <span>{dadi}</span>
+          <span className="text-[0.95em]" aria-label="dadi D6">🎲</span>
+          {incremento !== 0 && <span>{incremento > 0 ? `+${incremento}` : incremento}</span>}
         </span>
-        <span
+        <img
           data-admin-layout-text-key={`${textKeyPrefix}-type`}
-          className="arka-layout-content rounded px-2 py-1 text-[11px] font-extrabold uppercase text-slate-950 shadow"
-          style={{ backgroundColor: coloreTipo }}
-        >
-          {mossa.tipo}
-        </span>
+          src={typeSrc}
+          alt={mossa.tipo}
+          title={mossa.tipo}
+          className="arka-layout-content h-[clamp(24px,2.7vw,44px)] w-[clamp(24px,2.7vw,44px)] shrink-0 object-contain drop-shadow-md"
+        />
       </div>
     </motion.button>
   )

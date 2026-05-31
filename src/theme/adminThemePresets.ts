@@ -8,6 +8,7 @@ import {
   defaultMainMapRoads,
   defaultMainMapUiLayout,
   defaultMapGridLayout,
+  defaultLuogoLayout,
 } from './defaultAdminTheme'
 
 export const adminThemePresets: AdminTheme[] = [
@@ -39,12 +40,14 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoadOpacity: 0.42,
     },
     assets: {},
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },
@@ -78,12 +81,14 @@ export const adminThemePresets: AdminTheme[] = [
     assets: {
       titleBackground: '/assets/s220308-cartoon-palm-tree-e03-mainpreview-beaece814012dcedf276eb90c00a71ed0e83e25e12b2801c4c825ab8f330bc4e.jpg',
     },
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },
@@ -117,12 +122,14 @@ export const adminThemePresets: AdminTheme[] = [
     assets: {
       battleBackground: '/backgrounds/battle_forest.jpg',
     },
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },
@@ -154,12 +161,14 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoadOpacity: 0.42,
     },
     assets: {},
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,
       mainMapRoads: defaultMainMapRoads,
       mainMapUi: defaultMainMapUiLayout,
       mapGrid: defaultMapGridLayout,
+      luogo: defaultLuogoLayout,
       deposit: defaultDepositLayout,
       evolution: defaultEvolutionLayout,
     },

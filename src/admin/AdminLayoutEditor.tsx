@@ -86,6 +86,13 @@ export function AdminLayoutEditor() {
           </button>
           <button
             type="button"
+            onClick={() => resetSceneLayout('luogo')}
+            className="rounded-md border border-[var(--arka-border)] px-2 py-2 text-xs font-black text-[var(--arka-text)] transition hover:bg-[var(--arka-surface-hover)]"
+          >
+            Percorsi / Citta
+          </button>
+          <button
+            type="button"
             onClick={() => resetSceneLayout('evolution')}
             className="rounded-md border border-[var(--arka-border)] px-2 py-2 text-xs font-black text-[var(--arka-text)] transition hover:bg-[var(--arka-surface-hover)]"
           >
@@ -96,6 +103,7 @@ export function AdminLayoutEditor() {
 
       <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
         Le posizioni vengono salvate nel tema admin e non modificano il salvataggio della partita.
+        I layout Percorsi e Citta sono condivisi: una modifica vale per ogni luogo dello stesso tipo.
       </p>
     </div>
   )

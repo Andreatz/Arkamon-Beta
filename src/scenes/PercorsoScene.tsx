@@ -1,19 +1,19 @@
-import { useGameStore } from '@store/gameStore'
-import { getIncontri } from '@data/index'
-import { generaIncontroDaCespuglio } from '@engine/encounters'
-import { calcolaHPMax } from '@engine/battleEngine'
 import { motion } from 'framer-motion'
-import type { StatoBattaglia } from '@/types'
+import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
+import { getIncontri } from '@data/index'
+import { calcolaHPMax } from '@engine/battleEngine'
+import { generaIncontroDaCespuglio } from '@engine/encounters'
+import { useAdminStore } from '@store/adminStore'
+import { useGameStore } from '@store/gameStore'
+import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTypes'
+import type { StatoBattaglia } from '@/types'
 
 const CESPUGLI = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const
 
 /**
- * Scena percorso: 7 cespugli A-G visitabili 1-time per giocatore.
- * Click su cespuglio non visitato → genera incontro selvatico pesato 60/30/10
- * → segna visitato → avvia battaglia.
- *
- * Porting di IniziaBattagliaSelvatica + ApriCespuglio del VBA.
+ * Scena percorso: 7 cespugli A-G visitabili una volta per giocatore.
+ * Il layout admin è condiviso da tutti i percorsi.
  */
 export function PercorsoScene() {
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
@@ -25,6 +25,9 @@ export function PercorsoScene() {
   const giocatore = useGameStore((s) =>
     giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
   )
+  const layoutEditing = useAdminStore((s) => s.layoutEditing)
+  const luogoLayout = useAdminStore((s) => s.theme.layouts.luogo)
+  const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Percorso_1'
 
@@ -55,67 +58,118 @@ export function PercorsoScene() {
   }
 
   const bg = getBackground(luogo)
+  const updateLuogoLayout = (key: AdminLuogoLayoutKey, rect: AdminLayoutRect) =>
+    updateSceneLayout({ scene: 'luogo', key, rect })
 
   return (
     <div
-      className="w-full h-full flex flex-col bg-gradient-to-b from-emerald-900 via-emerald-700 to-amber-700 p-6 bg-cover bg-center"
+      data-percorso-layout-root
+      className="relative h-full w-full overflow-hidden bg-gradient-to-b from-emerald-900 via-emerald-700 to-amber-700 bg-cover bg-center"
       style={bg ? { backgroundImage: `url(${bg})` } : undefined}
     >
-      <div className="flex justify-between items-center mb-4">
+      <AdminLayoutItem
+        rootSelector="[data-percorso-layout-root]"
+        label="Indietro"
+        rect={luogoLayout.backButton}
+        editing={layoutEditing}
+        onChange={(rect) => updateLuogoLayout('backButton', rect)}
+      >
         <button
-          className="arka-button-secondary text-sm py-2 px-4"
+          className="arka-layout-content arka-button-secondary h-full w-full px-3 py-2 text-sm"
           onClick={() => vaiAScena('mappa-principale')}
         >
           ← Torna alla mappa
         </button>
-        <div className="flex gap-3">
-          <div className="arka-panel px-4 py-2">
-            <span className="text-arka-text-muted text-xs">Turno di:</span>
-            <span className="text-arka-accent font-bold ml-2">
-              Giocatore {giocatoreAttivo}
-            </span>
-          </div>
-          <div className="arka-panel px-4 py-2">
-            <span className="text-arka-text-muted text-xs">Monete:</span>
-            <span className="text-yellow-300 font-bold ml-2">
-              ₳ {giocatore.monete}
-            </span>
-          </div>
+      </AdminLayoutItem>
+
+      <AdminLayoutItem
+        rootSelector="[data-percorso-layout-root]"
+        label="Turno"
+        rect={luogoLayout.turnPanel}
+        editing={layoutEditing}
+        onChange={(rect) => updateLuogoLayout('turnPanel', rect)}
+      >
+        <div className="arka-panel flex h-full w-full items-center justify-center px-3 py-2">
+          <span className="arka-layout-content text-xs text-arka-text-muted">Turno di:</span>
+          <span className="arka-layout-content ml-2 font-bold text-arka-accent">
+            {giocatore.nome}
+          </span>
         </div>
-      </div>
+      </AdminLayoutItem>
 
-      <h2 className="arka-readable-title text-3xl font-bold text-white text-center mb-2">
-        {luogo.replace('_', ' ')}
-      </h2>
-      <p className="arka-readable-text text-arka-text-muted text-center mb-8 italic">
-        Esplora i cespugli — ogni cespuglio è esplorabile UNA sola volta
-      </p>
+      <AdminLayoutItem
+        rootSelector="[data-percorso-layout-root]"
+        label="Monete"
+        rect={luogoLayout.coinsPanel}
+        editing={layoutEditing}
+        onChange={(rect) => updateLuogoLayout('coinsPanel', rect)}
+      >
+        <div className="arka-panel flex h-full w-full items-center justify-center px-3 py-2">
+          <span className="arka-layout-content text-xs text-arka-text-muted">Monete:</span>
+          <span className="arka-layout-content ml-2 font-bold text-yellow-300">
+            ₳ {giocatore.monete}
+          </span>
+        </div>
+      </AdminLayoutItem>
 
-      <div className="flex-1 grid grid-cols-7 gap-3 max-w-5xl mx-auto w-full">
-        {CESPUGLI.map((c) => {
-          const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
-          const haIncontri = getIncontri(luogo, c).length > 0
-          const disabled = visited || !haIncontri
-          return (
-            <motion.button
-              key={c}
-              whileHover={!disabled ? { scale: 1.05, y: -4 } : {}}
-              whileTap={!disabled ? { scale: 0.95 } : {}}
-              disabled={disabled}
-              onClick={() => apriCespuglio(c)}
-              className={`arka-panel aspect-square flex flex-col items-center justify-center
-                ${disabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer hover:border-arka-accent'}
-              `}
-            >
-              <span className="text-5xl mb-2">{visited ? '🌾' : '🌳'}</span>
-              <span className="font-bold text-lg">{c}</span>
-              <span className="text-xs text-arka-text-muted">
-                {visited ? 'esplorato' : haIncontri ? 'cespuglio' : '—'}
-              </span>
-            </motion.button>
-          )
-        })}
-      </div>
+      <AdminLayoutItem
+        rootSelector="[data-percorso-layout-root]"
+        label="Titolo"
+        rect={luogoLayout.title}
+        editing={layoutEditing}
+        onChange={(rect) => updateLuogoLayout('title', rect)}
+      >
+        <h2 className="arka-layout-content arka-readable-title flex h-full w-full items-center justify-center text-center text-3xl font-bold text-white">
+          {luogo.replace('_', ' ')}
+        </h2>
+      </AdminLayoutItem>
+
+      <AdminLayoutItem
+        rootSelector="[data-percorso-layout-root]"
+        label="Sottotitolo"
+        rect={luogoLayout.subtitle}
+        editing={layoutEditing}
+        onChange={(rect) => updateLuogoLayout('subtitle', rect)}
+      >
+        <p className="arka-layout-content arka-readable-text flex h-full w-full items-center justify-center text-center italic text-arka-text-muted">
+          Esplora i cespugli: ogni cespuglio è esplorabile una sola volta
+        </p>
+      </AdminLayoutItem>
+
+      <AdminLayoutItem
+        rootSelector="[data-percorso-layout-root]"
+        label="Cespugli"
+        rect={luogoLayout.contentGrid}
+        editing={layoutEditing}
+        onChange={(rect) => updateLuogoLayout('contentGrid', rect)}
+        zIndex={10}
+      >
+        <div className="grid h-full w-full grid-cols-7 gap-3 overflow-y-auto p-1">
+          {CESPUGLI.map((c) => {
+            const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
+            const haIncontri = getIncontri(luogo, c).length > 0
+            const disabled = visited || !haIncontri
+            return (
+              <motion.button
+                key={c}
+                whileHover={!layoutEditing && !disabled ? { scale: 1.05, y: -4 } : {}}
+                whileTap={!layoutEditing && !disabled ? { scale: 0.95 } : {}}
+                disabled={layoutEditing || disabled}
+                onClick={() => apriCespuglio(c)}
+                className={`arka-panel flex aspect-square flex-col items-center justify-center
+                  ${disabled ? 'cursor-not-allowed opacity-30' : 'cursor-pointer hover:border-arka-accent'}
+                `}
+              >
+                <span className="arka-layout-content mb-2 text-5xl">{visited ? '🌾' : '🌳'}</span>
+                <span className="arka-layout-content text-lg font-bold">{c}</span>
+                <span className="arka-layout-content text-xs text-arka-text-muted">
+                  {visited ? 'esplorato' : haIncontri ? 'cespuglio' : '—'}
+                </span>
+              </motion.button>
+            )
+          })}
+        </div>
+      </AdminLayoutItem>
     </div>
   )
 }

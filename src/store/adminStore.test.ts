@@ -44,6 +44,14 @@ describe('adminStore', () => {
     expect(useAdminStore.getState().theme.assets.titleLogo).toBe('/ui/logo_arkamon.png')
   })
 
+  it('updateSpriteScale salva e ripristina la scala della singola specie', () => {
+    useAdminStore.getState().updateSpriteScale(12, 1.45)
+    expect(useAdminStore.getState().theme.spriteScales['12']).toBe(1.45)
+
+    useAdminStore.getState().updateSpriteScale(12, 1)
+    expect(useAdminStore.getState().theme.spriteScales['12']).toBeUndefined()
+  })
+
   it('updateBattleLayout aggiorna la posizione richiesta', () => {
     useAdminStore.getState().updateBattleLayout('playerSprite', {
       x: 10,
@@ -157,6 +165,35 @@ describe('adminStore', () => {
 
     expect(useAdminStore.getState().theme.layouts.mainMapUi.turnPanel).toEqual(
       defaultAdminTheme.layouts.mainMapUi.turnPanel
+    )
+  })
+
+  it('updateSceneLayout aggiorna il layout condiviso da tutti i percorsi', () => {
+    useAdminStore.getState().updateSceneLayout({
+      scene: 'luogo',
+      key: 'contentGrid',
+      rect: { x: 8, y: 24, w: 84, h: 66 },
+    })
+
+    expect(useAdminStore.getState().theme.layouts.luogo.contentGrid).toEqual({
+      x: 8,
+      y: 24,
+      w: 84,
+      h: 66,
+    })
+  })
+
+  it('resetSceneLayout ripristina il layout condiviso da percorsi e citta', () => {
+    useAdminStore.getState().updateSceneLayout({
+      scene: 'luogo',
+      key: 'contentGrid',
+      rect: { x: 10, y: 20, w: 80, h: 72 },
+    })
+
+    useAdminStore.getState().resetSceneLayout('luogo')
+
+    expect(useAdminStore.getState().theme.layouts.luogo.contentGrid).toEqual(
+      defaultAdminTheme.layouts.luogo.contentGrid
     )
   })
 

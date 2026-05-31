@@ -19,6 +19,7 @@ import {
   defaultMainMapRoads,
   defaultMainMapUiLayout,
   defaultMapGridLayout,
+  defaultLuogoLayout,
 } from '@/theme/defaultAdminTheme'
 
 const HEX_COLOR_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
@@ -58,6 +59,7 @@ const assetKeys: (keyof AdminThemeAssets)[] = [
 const battleLayoutKeys = Object.keys(defaultBattleLayout) as (keyof typeof defaultBattleLayout)[]
 const mainMapUiLayoutKeys = Object.keys(defaultMainMapUiLayout) as (keyof typeof defaultMainMapUiLayout)[]
 const mapGridLayoutKeys = Object.keys(defaultMapGridLayout) as (keyof typeof defaultMapGridLayout)[]
+const luogoLayoutKeys = Object.keys(defaultLuogoLayout) as (keyof typeof defaultLuogoLayout)[]
 const depositLayoutKeys = Object.keys(defaultDepositLayout) as (keyof typeof defaultDepositLayout)[]
 const evolutionLayoutKeys = Object.keys(defaultEvolutionLayout) as (keyof typeof defaultEvolutionLayout)[]
 
@@ -198,12 +200,27 @@ function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { t
     }
   }
 
+  const spriteScales: Record<string, number> = {}
+  if (parsed.spriteScales !== undefined) {
+    if (!isRecord(parsed.spriteScales)) {
+      return { theme: null, error: 'Il campo spriteScales deve essere un oggetto.' }
+    }
+
+    for (const [speciesId, scale] of Object.entries(parsed.spriteScales)) {
+      if (typeof scale !== 'number' || !Number.isFinite(scale) || scale <= 0) {
+        return { theme: null, error: `Scala sprite non valida: ${speciesId}.` }
+      }
+      spriteScales[speciesId] = scale
+    }
+  }
+
   const layouts: AdminThemeLayouts = {
     battle: defaultBattleLayout,
     mainMapNodes: defaultMainMapNodePositions,
     mainMapRoads: defaultMainMapRoads,
     mainMapUi: defaultMainMapUiLayout,
     mapGrid: defaultMapGridLayout,
+    luogo: defaultLuogoLayout,
     deposit: defaultDepositLayout,
     evolution: defaultEvolutionLayout,
   }
@@ -298,6 +315,15 @@ function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { t
     if (mapGrid.layout === null) return { theme: null, error: mapGrid.error }
     layouts.mapGrid = mapGrid.layout as AdminThemeLayouts['mapGrid']
 
+    const luogo = parseLayoutRects(
+      parsed.layouts.luogo,
+      defaultLuogoLayout,
+      luogoLayoutKeys,
+      'percorsi e citta'
+    )
+    if (luogo.layout === null) return { theme: null, error: luogo.error }
+    layouts.luogo = luogo.layout as AdminThemeLayouts['luogo']
+
     const deposit = parseLayoutRects(
       parsed.layouts.deposit,
       defaultDepositLayout,
@@ -324,6 +350,7 @@ function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { t
       colors: colors as AdminThemeColors,
       ui: ui as AdminThemeUi,
       assets,
+      spriteScales,
       layouts,
     },
     error: null,
