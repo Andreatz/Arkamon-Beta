@@ -130,7 +130,7 @@ export function CittaScene() {
         onChange={(rect) => updateLuogoLayout('contentGrid', rect)}
         zIndex={10}
       >
-        <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
+        <div className="grid h-full w-full grid-cols-3 gap-4 overflow-hidden p-1">
           <motion.button
             whileHover={!layoutEditing ? { scale: 1.05, y: -4 } : {}}
             whileTap={!layoutEditing ? { scale: 0.95 } : {}}

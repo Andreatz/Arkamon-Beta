@@ -57,15 +57,28 @@ export function LaboratorioScene() {
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-slate-800 to-slate-950 p-8 bg-cover bg-center"
+      className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-slate-800 to-slate-950 p-8 bg-cover bg-center"
       style={{ backgroundImage: `url(${LABORATORY_BG})` }}
     >
-      <h2 className="arka-readable-title text-4xl font-bold text-arka-accent mb-2">
+      <img
+        src={assetUrl('/ui/player1.png')}
+        alt=""
+        className="pointer-events-none absolute bottom-[5%] left-[-15%] z-100 h-[60%] max-w-[75%] object-contain object-bottom-left drop-shadow-2xl"
+        aria-hidden="true"
+      />
+      <img
+        src={assetUrl('/ui/player2.png')}
+        alt=""
+        className="pointer-events-none absolute bottom-0 right-0 z-0 h-[88%] max-w-[30%] object-contain object-bottom-right drop-shadow-2xl"
+        aria-hidden="true"
+      />
+
+      <h2 className="arka-readable-title relative z-10 text-4xl font-bold text-arka-accent mb-2">
         Laboratorio del Professore
       </h2>
       {!nomiConfermati ? (
         <form
-          className="arka-panel mt-5 w-[min(34rem,92vw)] space-y-4 p-6"
+          className="arka-panel relative z-10 mt-5 w-[min(34rem,92vw)] space-y-4 p-6"
           onSubmit={(event) => {
             event.preventDefault()
             confermaNomi()
@@ -97,13 +110,13 @@ export function LaboratorioScene() {
         </form>
       ) : (
         <>
-      <p className="arka-readable-text text-arka-text-muted mb-8 text-lg">
+      <p className="arka-readable-text relative z-10 text-arka-text-muted mb-8 text-lg">
         {tuttiHannoStarter
           ? 'Tutti hanno scelto! Si parte!'
           : `${nomeGiocatoreAttivo}, scegli il tuo Starter.`}
       </p>
 
-      <div className="flex gap-6">
+      <div className="relative z-10 flex gap-6">
         {STARTER_IDS.map((id) => {
           const specie = getPokemon(id)
           if (!specie) return null
