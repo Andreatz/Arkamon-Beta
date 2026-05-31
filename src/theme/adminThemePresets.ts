@@ -40,6 +40,7 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoadOpacity: 0.42,
     },
     assets: {},
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,
@@ -80,6 +81,7 @@ export const adminThemePresets: AdminTheme[] = [
     assets: {
       titleBackground: '/assets/s220308-cartoon-palm-tree-e03-mainpreview-beaece814012dcedf276eb90c00a71ed0e83e25e12b2801c4c825ab8f330bc4e.jpg',
     },
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,
@@ -120,6 +122,7 @@ export const adminThemePresets: AdminTheme[] = [
     assets: {
       battleBackground: '/backgrounds/battle_forest.jpg',
     },
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,
@@ -158,6 +161,7 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoadOpacity: 0.42,
     },
     assets: {},
+    spriteScales: {},
     layouts: {
       battle: defaultBattleLayout,
       mainMapNodes: defaultMainMapNodePositions,

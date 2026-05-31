@@ -200,6 +200,20 @@ function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { t
     }
   }
 
+  const spriteScales: Record<string, number> = {}
+  if (parsed.spriteScales !== undefined) {
+    if (!isRecord(parsed.spriteScales)) {
+      return { theme: null, error: 'Il campo spriteScales deve essere un oggetto.' }
+    }
+
+    for (const [speciesId, scale] of Object.entries(parsed.spriteScales)) {
+      if (typeof scale !== 'number' || !Number.isFinite(scale) || scale <= 0) {
+        return { theme: null, error: `Scala sprite non valida: ${speciesId}.` }
+      }
+      spriteScales[speciesId] = scale
+    }
+  }
+
   const layouts: AdminThemeLayouts = {
     battle: defaultBattleLayout,
     mainMapNodes: defaultMainMapNodePositions,
@@ -336,6 +350,7 @@ function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { t
       colors: colors as AdminThemeColors,
       ui: ui as AdminThemeUi,
       assets,
+      spriteScales,
       layouts,
     },
     error: null,

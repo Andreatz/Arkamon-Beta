@@ -78,7 +78,7 @@ export function CittaScene() {
         <div className="arka-panel flex h-full w-full items-center justify-center px-3 py-2">
           <span className="arka-layout-content text-xs text-arka-text-muted">Turno di:</span>
           <span className="arka-layout-content ml-2 font-bold text-arka-accent">
-            Giocatore {giocatoreAttivo}
+            {giocatore.nome}
           </span>
         </div>
       </AdminLayoutItem>

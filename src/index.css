@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Chela One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/ChelaOne-Regular.ttf') format('truetype');
+}
+
 /*
  * VARIABILI GLOBALI ARKAMON
  * Modifica qui per cambiare l'aspetto generale del gioco.
@@ -126,6 +134,10 @@ html, body {
       calc(var(--arka-layout-group-content-x, 0%) + var(--arka-layout-local-content-x, 0%)),
       calc(var(--arka-layout-group-content-y, 0%) + var(--arka-layout-local-content-y, 0%))
     );
+  }
+
+  .arka-battle-font {
+    font-family: 'Chela One', cursive;
   }
 
   [data-admin-layout-editing='true'] .arka-layout-content {

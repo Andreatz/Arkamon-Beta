@@ -88,6 +88,8 @@ interface AdminState {
   updateColor: (key: keyof AdminThemeColors, value: string) => void
   updateUi: (key: keyof AdminThemeUi, value: number) => void
   updateAsset: (key: keyof AdminThemeAssets, value: string) => void
+  updateSpriteScale: (speciesId: number, scale: number) => void
+  resetSpriteScales: () => void
   updateBattleLayout: (key: AdminBattleLayoutKey, rect: AdminLayoutRect) => void
   updateMainMapNodePosition: (name: string, position: AdminMapNodePosition) => void
   updateMainMapRoad: (key: string, points: AdminMapRoadPoint[]) => void
@@ -109,6 +111,13 @@ function pushLayoutUndo(state: AdminState): AdminTheme['layouts'][] {
 }
 
 function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
+  const spriteScales = Object.fromEntries(
+    Object.entries(theme?.spriteScales ?? {}).flatMap(([speciesId, scale]) =>
+      typeof scale === 'number' && Number.isFinite(scale) && scale > 0
+        ? [[speciesId, scale]]
+        : []
+    )
+  )
   const mainMapRoads = Object.fromEntries(
     Object.entries({
       ...defaultMainMapRoads,
@@ -134,6 +143,7 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
       ...defaultAdminTheme.assets,
       ...theme?.assets,
     },
+    spriteScales,
     layouts: {
       battle: {
         ...defaultBattleLayout,
@@ -238,6 +248,31 @@ export const useAdminStore = create<AdminState>()(
               ...state.theme.assets,
               [key]: value.trim() === '' ? undefined : value,
             },
+          },
+        })),
+
+      updateSpriteScale: (speciesId, scale) =>
+        set((state) => {
+          const spriteScales = { ...state.theme.spriteScales }
+          const key = String(speciesId)
+          if (!Number.isFinite(scale) || scale <= 0 || scale === 1) {
+            delete spriteScales[key]
+          } else {
+            spriteScales[key] = scale
+          }
+          return {
+            theme: {
+              ...state.theme,
+              spriteScales,
+            },
+          }
+        }),
+
+      resetSpriteScales: () =>
+        set((state) => ({
+          theme: {
+            ...state.theme,
+            spriteScales: {},
           },
         })),
 
@@ -372,6 +407,7 @@ export const useAdminStore = create<AdminState>()(
               colors: normalizedTheme.colors,
               ui: normalizedTheme.ui,
               assets: normalizedTheme.assets,
+              spriteScales: state.theme.spriteScales,
               layouts: state.theme.layouts,
             },
           }

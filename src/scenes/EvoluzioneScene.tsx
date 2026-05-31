@@ -294,11 +294,8 @@ export function EvoluzioneScene() {
         {fase === 'post' && (
           <>
             <h2 className="arka-layout-content arka-readable-title text-4xl font-black text-yellow-300">
-              {oldSpec.nome} si è evoluto in {newSpec.nome}!
+              {oldSpec.nome} si e' evoluto!
             </h2>
-            <p className="arka-layout-content arka-readable-text text-arka-text-muted text-sm">
-              Tipo: {newSpec.tipo} · HP base: {newSpec.hpBase}
-            </p>
             <button onClick={continua} className="arka-button mt-4">
               <span className="arka-layout-content">
                 {indice + 1 < evoluzioni.length ? 'Continua' : 'Fine'}

@@ -118,6 +118,7 @@ export const defaultAdminTheme: AdminTheme = {
     mainMapRoadOpacity: 0.42,
   },
   assets: {},
+  spriteScales: {},
   layouts: {
     battle: defaultBattleLayout,
     mainMapNodes: defaultMainMapNodePositions,
@@ -136,6 +137,7 @@ export function cloneAdminTheme(theme: AdminTheme): AdminTheme {
     colors: { ...theme.colors },
     ui: { ...theme.ui },
     assets: { ...theme.assets },
+    spriteScales: { ...theme.spriteScales },
     layouts: {
       battle: {
         ...theme.layouts.battle,

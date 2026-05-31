@@ -5,18 +5,20 @@ import { AdminColorEditor } from './AdminColorEditor'
 import { AdminImportExport } from './AdminImportExport'
 import { AdminLayoutEditor } from './AdminLayoutEditor'
 import { AdminPresetEditor } from './AdminPresetEditor'
+import { AdminSpriteScaleEditor } from './AdminSpriteScaleEditor'
 import { AdminUiEditor } from './AdminUiEditor'
 import { AdminVfxEditor } from './AdminVfxEditor'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 
-type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'vfx' | 'presets' | 'json'
+type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json'
 
 const tabs: { id: AdminTab; label: string }[] = [
   { id: 'colors', label: 'Colori' },
   { id: 'ui', label: 'UI' },
   { id: 'layout', label: 'Layout' },
   { id: 'assets', label: 'Asset' },
+  { id: 'sprites', label: 'Sprite' },
   { id: 'vfx', label: 'VFX' },
   { id: 'presets', label: 'Preset' },
   { id: 'json', label: 'Import/Export' },
@@ -47,7 +49,7 @@ export function AdminPanel() {
         </button>
       </header>
 
-      <nav className="grid grid-cols-7 border-b border-[var(--arka-border)] text-[10px] font-bold">
+      <nav className="grid grid-cols-8 border-b border-[var(--arka-border)] text-[10px] font-bold">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -69,6 +71,7 @@ export function AdminPanel() {
         {activeTab === 'ui' ? <AdminUiEditor /> : null}
         {activeTab === 'layout' ? <AdminLayoutEditor /> : null}
         {activeTab === 'assets' ? <AdminAssetEditor /> : null}
+        {activeTab === 'sprites' ? <AdminSpriteScaleEditor /> : null}
         {activeTab === 'vfx' ? <AdminVfxEditor /> : null}
         {activeTab === 'presets' ? <AdminPresetEditor /> : null}
         {activeTab === 'json' ? <AdminImportExport /> : null}

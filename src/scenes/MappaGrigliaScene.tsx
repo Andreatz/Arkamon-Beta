@@ -256,6 +256,8 @@ export function MappaGrigliaScene() {
   const mappa = REGISTRY[posAttivo.mappaId] ?? MAPPA_DI_DEFAULT
   const giocatoreAttivo =
     turno.giocatoreAttivo === 1 ? giocatore1 : giocatore2
+  const nomeGiocatore = (giocatoreId: 1 | 2) =>
+    giocatoreId === 1 ? giocatore1.nome : giocatore2.nome
 
   useEffect(() => {
     if (!transizione) return
@@ -373,7 +375,7 @@ export function MappaGrigliaScene() {
       !giocatoreAttivo.squadra.some((p) => p.hp > 0)
     ) {
       aggiungiLog(
-        `Giocatore ${giocatoreId} non ha Pokémon vivi: impossibile combattere.`
+        `${nomeGiocatore(giocatoreId)} non ha Pokémon vivi: impossibile combattere.`
       )
       return
     }
@@ -429,7 +431,7 @@ export function MappaGrigliaScene() {
         if (r.edificioId === 'centro') {
           curaSquadra(giocId)
           aggiungiLog(
-            `Centro Pokémon: la squadra di Giocatore ${giocId} è stata curata.`
+            `Centro Pokémon: la squadra di ${nomeGiocatore(giocId)} è stata curata.`
           )
         } else if (r.edificioId === 'deposito') {
           vaiAScena('deposito')
@@ -575,7 +577,7 @@ export function MappaGrigliaScene() {
             transition={{ duration: 0.22 }}
           >
             <div className="text-[10px] font-bold uppercase tracking-wide text-arka-text-muted">
-              Transizione mappa - Giocatore {transizione.giocatoreId}
+              Transizione mappa - {nomeGiocatore(transizione.giocatoreId)}
             </div>
             <div className="mt-1 flex items-center justify-center gap-3 text-sm font-bold text-white">
               <span className="max-w-[12rem] truncate">{transizione.da}</span>
@@ -603,7 +605,7 @@ export function MappaGrigliaScene() {
                 turno.giocatoreAttivo === 1 ? 'text-rose-300' : 'text-sky-300'
               }`}
             >
-              Giocatore {turno.giocatoreAttivo}
+              {giocatoreAttivo.nome}
             </span>
           </div>
           <div className="arka-panel px-4 py-2">

@@ -44,6 +44,14 @@ describe('adminStore', () => {
     expect(useAdminStore.getState().theme.assets.titleLogo).toBe('/ui/logo_arkamon.png')
   })
 
+  it('updateSpriteScale salva e ripristina la scala della singola specie', () => {
+    useAdminStore.getState().updateSpriteScale(12, 1.45)
+    expect(useAdminStore.getState().theme.spriteScales['12']).toBe(1.45)
+
+    useAdminStore.getState().updateSpriteScale(12, 1)
+    expect(useAdminStore.getState().theme.spriteScales['12']).toBeUndefined()
+  })
+
   it('updateBattleLayout aggiorna la posizione richiesta', () => {
     useAdminStore.getState().updateBattleLayout('playerSprite', {
       x: 10,

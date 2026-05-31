@@ -140,34 +140,40 @@ export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
   )
 
   return (
-    <motion.div
-      className="pointer-events-none absolute flex items-center justify-center overflow-visible"
+    <div
+      className="pointer-events-none absolute inset-0 overflow-visible"
       data-move-vfx-id={effect.move.id}
       data-move-vfx-asset={asset.id}
-      initial={{
-        left: `${projectile ? attacker.x : destination.x}%`,
-        top: `${projectile ? attacker.y : destination.y}%`,
-        opacity: 0,
-        scale: projectile ? 0.7 : 0.9,
-      }}
-      animate={{
-        left: `${destination.x}%`,
-        top: `${destination.y}%`,
-        opacity: [0, 1, 1, 0],
-        scale: projectile ? [0.7, 1.1, 1] : [0.9, 1.04, 1],
-      }}
-      transition={{ duration: reduceMotion ? 0 : asset.durationMs / 1000, ease: 'easeInOut' }}
       style={{
         zIndex: Z_INDEX[asset.layer],
-        width: isScreen ? '100%' : asset.width,
-        height: isScreen ? '100%' : asset.height,
-        marginLeft: isScreen ? '-50%' : -(asset.width / 2) + (asset.offsetX ?? 0),
-        marginTop: isScreen ? '-50%' : -(asset.height / 2) + (asset.offsetY ?? 0),
-        willChange: 'left, top, transform, opacity',
       }}
       aria-hidden="true"
     >
-      {visual}
-    </motion.div>
+      <motion.div
+        className="absolute flex items-center justify-center overflow-visible"
+        initial={{
+          left: `${projectile ? attacker.x : destination.x}%`,
+          top: `${projectile ? attacker.y : destination.y}%`,
+          opacity: 0,
+          scale: projectile ? 0.7 : 0.9,
+        }}
+        animate={{
+          left: `${destination.x}%`,
+          top: `${destination.y}%`,
+          opacity: [0, 1, 1, 0],
+          scale: projectile ? [0.7, 1.1, 1] : [0.9, 1.04, 1],
+        }}
+        transition={{ duration: reduceMotion ? 0 : asset.durationMs / 1000, ease: 'easeInOut' }}
+        style={{
+          width: isScreen ? '100%' : asset.width,
+          height: isScreen ? '100%' : asset.height,
+          marginLeft: isScreen ? '-50%' : -(asset.width / 2) + (asset.offsetX ?? 0),
+          marginTop: isScreen ? '-50%' : -(asset.height / 2) + (asset.offsetY ?? 0),
+          willChange: 'left, top, transform, opacity',
+        }}
+      >
+        {visual}
+      </motion.div>
+    </div>
   )
 }

@@ -140,5 +140,6 @@ export interface AdminTheme {
   colors: AdminThemeColors
   ui: AdminThemeUi
   assets: AdminThemeAssets
+  spriteScales: Record<string, number>
   layouts: AdminThemeLayouts
 }

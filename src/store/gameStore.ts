@@ -83,6 +83,9 @@ interface GameState {
   /** Cambia il giocatore attivo (alternanza tra Giocatore 1 e 2) */
   cambiaGiocatoreAttivo: () => void
 
+  /** Imposta il nome visualizzato di un giocatore. */
+  impostaNomeGiocatore: (giocatoreId: 1 | 2, nome: string) => void
+
   /** Aggiunge un pokemon alla squadra (se piena va in deposito) */
   aggiungiPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
 
@@ -257,6 +260,17 @@ export const useGameStore = create<GameState>()(
 
       cambiaGiocatoreAttivo: () =>
         set((s) => ({ giocatoreAttivo: s.giocatoreAttivo === 1 ? 2 : 1 })),
+
+      impostaNomeGiocatore: (giocatoreId, nome) =>
+        set((s) => {
+          const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+          return {
+            [chiaveG]: {
+              ...s[chiaveG],
+              nome: nome.trim() || `Giocatore ${giocatoreId}`,
+            },
+          } as Partial<GameState>
+        }),
 
       aggiungiPokemon: (giocatoreId, istanza) =>
         set((s) => {
