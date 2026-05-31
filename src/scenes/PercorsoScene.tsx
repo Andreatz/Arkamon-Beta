@@ -144,7 +144,7 @@ export function PercorsoScene() {
         onChange={(rect) => updateLuogoLayout('contentGrid', rect)}
         zIndex={10}
       >
-        <div className="grid h-full w-full grid-cols-7 gap-3 overflow-y-auto p-1">
+        <div className="grid h-full w-full grid-cols-7 gap-3 overflow-hidden p-1">
           {CESPUGLI.map((c) => {
             const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
             const haIncontri = getIncontri(luogo, c).length > 0

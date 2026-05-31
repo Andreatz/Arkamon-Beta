@@ -45,8 +45,8 @@ const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: 
   Avvelenato: { label: 'PSN', color: 'bg-purple-600', emoji: '☠️' },
 }
 
-const INFOBOX_VISIBLE_MS = 4200
-const DICE_ROLL_VISIBLE_MS = 2200
+const INFOBOX_VISIBLE_MS = 2000
+const DICE_ROLL_VISIBLE_MS = 2000
 
 type PendingSwitch = {
   motivo: string
@@ -862,9 +862,9 @@ export function BattagliaScene() {
           editing={layoutEditing}
           onChange={updateBattleLayout}
         >
-          <div className="h-full w-full p-3">
+          <div className="h-full w-full p-2">
             <div
-              className="grid h-[68%] gap-3"
+              className="grid h-[100%] gap-1"
               style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseA.length)}, minmax(0, 1fr))` }}
             >
               {mosseA.map(({ mossa, idx }) => (
@@ -903,9 +903,9 @@ export function BattagliaScene() {
           editing={layoutEditing}
           onChange={updateBattleLayout}
         >
-          <div className="h-full w-full p-3">
+          <div className="h-full w-full p-2">
             <div
-              className="grid h-full gap-3"
+              className="grid h-full gap-2"
               style={{ gridTemplateColumns: `repeat(${Math.max(1, mosseB.length)}, minmax(0, 1fr))` }}
             >
               {mosseB.map(({ mossa, idx }) => (
@@ -1170,7 +1170,7 @@ function InfoBox({
       }}
     >
       <div
-        className={`absolute left-[8%] top-[16%] space-y-1.5 text-[clamp(15px,1.25vw,20px)] leading-snug text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] ${
+        className={`absolute left-[8%] top-[16%] space-y-0.5 text-3xl leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)] ${
           showOpponentButton ? 'right-[28%]' : 'right-[8%]'
         }`}
       >
@@ -1187,10 +1187,10 @@ function InfoBox({
 
       {showOpponentButton && (
         <button
-          className="absolute bottom-[13%] right-[8%] rounded-md bg-amber-400 px-4 py-2 text-xs font-extrabold text-slate-950 shadow-lg hover:bg-amber-300 active:scale-95"
+          className="absolute bottom-[13%] right-[10%] rounded-md bg-blue-400 px-4 py-2 text-m text-white text-slate-950 shadow-lg hover:bg-blue-300 active:scale-95 [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
           onClick={onOpponentTurn}
         >
-          Avversario...
+          AVVERSARIO
         </button>
       )}
     </div>
@@ -1368,8 +1368,9 @@ function HpBar({
   side: 'player' | 'enemy'
   className?: string
 }) {
+  const hpColors = useAdminStore((state) => state.theme.colors)
   const pct = Math.max(0, Math.min(100, (hp / hpMax) * 100))
-  const colore = pct > 60 ? 'var(--hp-high)' : pct > 25 ? 'var(--hp-mid)' : 'var(--hp-low)'
+  const colore = pct > 60 ? hpColors.hpHigh : pct > 25 ? hpColors.hpMid : hpColors.hpLow
   const badge = stato ? STATO_BADGE[stato] : null
   const frameSrc = assetUrl(`/ui/hp_bar_${side}.png`)
   const barSrc = assetUrl('/ui/hp_bar.png')
@@ -1388,7 +1389,7 @@ function HpBar({
       <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
         <span
           data-admin-layout-text-key="pokemon-name"
-          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.25vw,18px)] font-extrabold leading-none text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]"
+          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.25vw,18px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           {nome}
           {badge && (
@@ -1402,7 +1403,7 @@ function HpBar({
         </span>
         <span
           data-admin-layout-text-key="pokemon-level"
-          className="arka-layout-content shrink-0 text-[clamp(11px,1vw,15px)] font-extrabold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.85)]"
+          className="arka-layout-content shrink-0 text-[clamp(11px,1vw,15px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           LV. {livello}
         </span>
@@ -1424,9 +1425,8 @@ function HpBar({
             y="3"
             height="33"
             clipPath={`url(#${barClipId})`}
-            style={{ fill: colore }}
             initial={false}
-            animate={{ width: fillWidth, rx: pct === 100 ? 0 : 16.5 }}
+            animate={{ width: fillWidth, rx: pct === 100 ? 0 : 16.5, fill: colore }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           />
         </svg>
@@ -1439,7 +1439,7 @@ function HpBar({
       {side === 'player' && (
         <div
           data-admin-layout-text-key="pokemon-hp"
-          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,0.9vw,13px)] text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]"
+          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,0.9vw,13px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           {hp}/{hpMax}
         </div>
@@ -1502,25 +1502,27 @@ function MoveButton({
     >
       <div
         data-admin-layout-text-key={`${textKeyPrefix}-name`}
-        className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+        className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
       >
         {mossa.nome}
       </div>
-      <div className="absolute bottom-[13%] left-[10%] right-[8%] flex items-end justify-between gap-3">
+      <div className="absolute bottom-[14%] left-[8%] flex w-[48%] items-center justify-start">
         <span
           data-admin-layout-text-key={`${textKeyPrefix}-dice`}
-          className="arka-layout-content flex items-center gap-[0.18em] whitespace-nowrap text-[clamp(18px,2.2vw,34px)] leading-none text-white [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          className="arka-layout-content flex items-center gap-[0.14em] whitespace-nowrap text-[clamp(15px,1.65vw,26px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           <span>{dadi}</span>
-          <span className="text-[0.95em]" aria-label="dadi D6">🎲</span>
+          <span className="text-[0.78em]" aria-label="dadi D6">🎲</span>
           {incremento !== 0 && <span>{incremento > 0 ? `+${incremento}` : incremento}</span>}
         </span>
+      </div>
+      <div className="absolute bottom-[14%] right-[9%] flex h-[22%] w-[15%] items-center justify-center">
         <img
           data-admin-layout-text-key={`${textKeyPrefix}-type`}
           src={typeSrc}
           alt={mossa.tipo}
           title={mossa.tipo}
-          className="arka-layout-content h-[clamp(24px,2.7vw,44px)] w-[clamp(24px,2.7vw,44px)] shrink-0 object-contain drop-shadow-md"
+          className="arka-layout-content max-h-full max-w-full object-contain drop-shadow-md"
         />
       </div>
     </motion.button>
