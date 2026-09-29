@@ -13,6 +13,8 @@ import {
   type ArkamonSpriteSide,
 } from './arkamonAnimationManifest'
 import { getArkamonMotionProfile } from './arkamonMotionProfiles'
+import { ArkamonRiggedSprite } from './ArkamonRiggedSprite'
+import { getArkamonRig } from './arkamonRigManifest'
 
 function getProceduralMotion(
   speciesId: number,
@@ -142,10 +144,24 @@ export function ArkamonBattleSprite({
   onError?: () => void
 }) {
   const reduceMotion = useReducedMotion()
+  const rig = getArkamonRig(speciesId, side)
   const animated = getArkamonAnimationAsset(speciesId, side, animation)
   const transformStyle: CSSProperties = {
     transform: `scale(${scale})`,
     transformOrigin: 'center bottom',
+  }
+
+  if (rig) {
+    return (
+      <ArkamonRiggedSprite
+        rig={rig}
+        name={name}
+        animation={animation}
+        scale={scale}
+        className={className}
+        onError={onError}
+      />
+    )
   }
 
   if (animated) {
