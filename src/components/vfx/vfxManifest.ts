@@ -54,6 +54,29 @@ const gif = (
   ...options,
 })
 
+const staticImage = (
+  id: string,
+  label: string,
+  src: string,
+  options: Partial<MoveVfxAsset> = {}
+): MoveVfxAsset => ({
+  id,
+  label,
+  kind: 'static-image',
+  src,
+  durationMs: 520,
+  impactAtMs: 240,
+  anchor: 'target',
+  layer: 'over-pokemon',
+  width: 280,
+  height: 280,
+  scale: 1,
+  mirrorForEnemy: true,
+  blendMode: 'screen',
+  motion: 'static',
+  ...options,
+})
+
 export const MOVE_VFX_ASSETS = {
   slash: sheet('slash', 'Slash', 'vfx/moves/slash/slash_60fps.png'),
   thrust: sheet('thrust', 'Thrust', 'vfx/moves/thrust/thrust_60fps.png', {
@@ -225,6 +248,39 @@ export const MOVE_VFX_ASSETS = {
     width: 340,
     height: 250,
   }),
+
+  // Kenney Particle Pack (CC0) primitives. These stay neutral/white so recipes
+  // can layer them over elemental effects without introducing a second palette.
+  kenneySlash: staticImage(
+    'kenneySlash',
+    'Kenney Slash',
+    'vfx/primitives/kenney/slash_03.png',
+    { durationMs: 430, width: 250, height: 250, opacity: 0.92 }
+  ),
+  kenneySpark: staticImage(
+    'kenneySpark',
+    'Kenney Spark',
+    'vfx/primitives/kenney/spark_04.png',
+    { durationMs: 460, width: 300, height: 300, opacity: 0.86 }
+  ),
+  kenneyMagic: staticImage(
+    'kenneyMagic',
+    'Kenney Magic Ring',
+    'vfx/primitives/kenney/magic_03.png',
+    { durationMs: 620, width: 270, height: 270, opacity: 0.78 }
+  ),
+  kenneySmoke: staticImage(
+    'kenneySmoke',
+    'Kenney Smoke',
+    'vfx/primitives/kenney/smoke_05.png',
+    {
+      durationMs: 620,
+      width: 330,
+      height: 330,
+      opacity: 0.48,
+      blendMode: 'screen',
+    }
+  ),
 } satisfies Record<string, MoveVfxAsset>
 
 export type MoveVfxAssetId = keyof typeof MOVE_VFX_ASSETS
@@ -241,6 +297,10 @@ export const DEFAULT_PRELOAD_VFX_ASSET_IDS: MoveVfxAssetId[] = [
   'cureGif',
   'shimmer',
   'slash',
+  'kenneySlash',
+  'kenneySpark',
+  'kenneyMagic',
+  'kenneySmoke',
 ]
 
 export function getMoveVfxAsset(id: string): MoveVfxAsset | undefined {
