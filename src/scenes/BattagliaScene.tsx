@@ -17,7 +17,13 @@ import {
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
-import type { PokemonIstanza, MossaDef, RisultatoMossa, StatoAlterato } from '@/types'
+import type {
+  PokemonIstanza,
+  MossaDef,
+  RisultatoMossa,
+  StatoAlterato,
+  TipoPokemon,
+} from '@/types'
 import type { AdminBattleLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
@@ -48,6 +54,17 @@ const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: 
 
 const INFOBOX_VISIBLE_MS = 2000
 const DICE_ROLL_VISIBLE_MS = 2000
+
+const VFX_TYPE_COLORS: Record<TipoPokemon, string> = {
+  Normale: '#f8fafc',
+  Fuoco: '#fb923c',
+  Acqua: '#38bdf8',
+  Erba: '#4ade80',
+  Elettro: '#fde047',
+  Terra: '#d6a15f',
+  Psico: '#e879f9',
+  Oscurità: '#a78bfa',
+}
 
 type PendingSwitch = {
   motivo: string
@@ -97,6 +114,8 @@ export function BattagliaScene() {
   const diceRollIdRef = useRef(0)
   const [damagePopup, setDamagePopup] = useState<DamagePopupDisplay | null>(null)
   const damagePopupIdRef = useRef(0)
+  const [impactPulse, setImpactPulse] = useState<ImpactPulseDisplay | null>(null)
+  const impactPulseIdRef = useRef(0)
   const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
   const moveVfxTimerRef = useRef<number | null>(null)
   const moveVfxIdRef = useRef(0)
@@ -298,9 +317,21 @@ export function BattagliaScene() {
     setAzioneInCorso(true)
     const vfxDurationMs = mostraVfxMossa(risultato.mossa, side)
     const impactDelayMs = getMoveVfxImpactDelayMs(risultato.mossa)
+    const feedback = getMoveVfxFeedback(risultato.mossa)
     scheduleImpactFeedback(risultato.mossa, targetSide, playHitSound)
     scheduleFeedbackTimer(() => {
       onImpact()
+
+      const pulseId = ++impactPulseIdRef.current
+      setImpactPulse({
+        id: pulseId,
+        side: targetSide,
+        color: VFX_TYPE_COLORS[risultato.mossa.tipo],
+        strength: Math.max(0.85, 0.9 + feedback.cameraShakePx * 0.06),
+      })
+      scheduleFeedbackTimer(() => {
+        setImpactPulse((current) => (current?.id === pulseId ? null : current))
+      }, 560)
 
       if (risultato.dannoFinale > 0) {
         const popupId = ++damagePopupIdRef.current
@@ -812,6 +843,12 @@ export function BattagliaScene() {
       </AnimatePresence>
 
       <AnimatePresence>
+        {impactPulse && (
+          <ImpactPulseOverlay key={impactPulse.id} pulse={impactPulse} />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {damagePopup && (
           <DamagePopupOverlay key={damagePopup.id} popup={damagePopup} />
         )}
@@ -1137,6 +1174,45 @@ function BattleLayoutItem({
     >
       {children}
     </AdminLayoutItem>
+  )
+}
+
+type ImpactPulseDisplay = {
+  id: number
+  side: 'A' | 'B'
+  color: string
+  strength: number
+}
+
+function ImpactPulseOverlay({ pulse }: { pulse: ImpactPulseDisplay }) {
+  const position =
+    pulse.side === 'A'
+      ? { left: '25%', top: '64%' }
+      : { left: '77%', top: '32%' }
+
+  return (
+    <div
+      className="pointer-events-none absolute z-[64] -translate-x-1/2 -translate-y-1/2"
+      style={position}
+      aria-hidden="true"
+    >
+      <motion.div
+        initial={{ opacity: 0.95, scale: 0.25 }}
+        animate={{
+          opacity: [0.95, 0.72, 0],
+          scale: [0.25, pulse.strength, pulse.strength * 1.9],
+        }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="h-28 w-28 rounded-full border-[3px]"
+        style={{
+          borderColor: pulse.color,
+          background: `radial-gradient(circle, ${pulse.color}55 0%, ${pulse.color}22 42%, transparent 70%)`,
+          boxShadow: `0 0 18px ${pulse.color}, 0 0 42px ${pulse.color}88, inset 0 0 20px ${pulse.color}66`,
+          mixBlendMode: 'screen',
+        }}
+      />
+    </div>
   )
 }
 
