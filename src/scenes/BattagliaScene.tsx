@@ -51,6 +51,7 @@ import {
   getMoveVfxFeedback,
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
+import { resolveMoveVfxProfile } from '@/components/vfx/moveVfxProfiles'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -60,6 +61,14 @@ const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: 
 
 const INFOBOX_VISIBLE_MS = 2000
 const DICE_ROLL_VISIBLE_MS = 2000
+
+const PHYSICAL_VFX_ARCHETYPES = new Set(['blunt', 'slash', 'bite', 'charge'])
+
+function getBattleAnimationForMove(move: MossaDef): ArkamonBattleAnimation {
+  return PHYSICAL_VFX_ARCHETYPES.has(resolveMoveVfxProfile(move).archetype)
+    ? 'physical'
+    : 'special'
+}
 
 const VFX_TYPE_COLORS: Record<TipoPokemon, string> = {
   Normale: '#f8fafc',
@@ -823,6 +832,19 @@ export function BattagliaScene() {
     })
     .filter((entry): entry is { mossa: MossaDef; idx: 0 | 1 | 2 } => entry !== null)
 
+  const activeAnimationA: ArkamonBattleAnimation | undefined =
+    moveVfx?.side === 'A'
+      ? getBattleAnimationForMove(moveVfx.move)
+      : terminata && esito === 'vittoria'
+      ? 'victory'
+      : undefined
+  const activeAnimationB: ArkamonBattleAnimation | undefined =
+    moveVfx?.side === 'B'
+      ? getBattleAnimationForMove(moveVfx.move)
+      : terminata && esito === 'sconfitta'
+      ? 'victory'
+      : undefined
+
   return (
     <motion.div
       data-battle-layout-root
@@ -904,6 +926,7 @@ export function BattagliaScene() {
             shakeDurationMs={shakeDurationMs}
             flashing={impactFlash === 'B'}
             lunging={shaking === 'A'}
+            activeAnimation={activeAnimationB}
           />
         </BattleLayoutItem>
       </AnimatePresence>
@@ -925,6 +948,7 @@ export function BattagliaScene() {
             shakeDurationMs={shakeDurationMs}
             flashing={impactFlash === 'A'}
             lunging={shaking === 'B'}
+            activeAnimation={activeAnimationA}
           />
         </BattleLayoutItem>
       </AnimatePresence>
@@ -1492,6 +1516,7 @@ function PokemonBattleSlot({
   shakeDurationMs,
   flashing,
   lunging,
+  activeAnimation,
 }: {
   istanza: PokemonIstanza
   position: 'top-right' | 'bottom-left'
@@ -1500,6 +1525,7 @@ function PokemonBattleSlot({
   shakeDurationMs: number
   flashing: boolean
   lunging: boolean
+  activeAnimation?: ArkamonBattleAnimation
 }) {
   const isPlayer = position === 'bottom-left'
   const spriteScale = useAdminStore((state) => state.theme.spriteScales[String(istanza.specieId)] ?? 1)
@@ -1509,9 +1535,7 @@ function PokemonBattleSlot({
     ? 'ko'
     : shaking
     ? 'hit'
-    : lunging
-    ? 'physical'
-    : 'idle'
+    : activeAnimation ?? (lunging ? 'physical' : 'idle')
 
   useEffect(() => {
     setSpriteFailed(false)
