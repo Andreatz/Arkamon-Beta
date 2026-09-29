@@ -7,6 +7,7 @@ export interface AnimatedSpriteProps {
   columns: number
   rows: number
   frameCount: number
+  startFrame?: number
   fps: number
   width: number
   height: number
@@ -43,6 +44,7 @@ export function AnimatedSprite({
   columns,
   rows,
   frameCount,
+  startFrame = 0,
   fps,
   width,
   height,
@@ -67,7 +69,12 @@ export function AnimatedSprite({
 
   useEffect(() => {
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
-    const safeFrameCount = Math.max(1, Math.min(frameCount, columns * rows))
+    const totalFrames = Math.max(1, columns * rows)
+    const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
+    const safeFrameCount = Math.max(
+      1,
+      Math.min(frameCount, totalFrames - safeStartFrame)
+    )
     const frameDuration = 1000 / Math.max(1, fps)
     const playbackDuration = durationMs ?? safeFrameCount * frameDuration
     let animationFrame = 0
@@ -117,10 +124,13 @@ export function AnimatedSprite({
       mounted = false
       cancelAnimationFrame(animationFrame)
     }
-  }, [columns, durationMs, fps, frameCount, loop, onComplete, rows])
+  }, [columns, durationMs, fps, frameCount, loop, onComplete, rows, startFrame])
 
+  const totalFrames = Math.max(1, columns * rows)
+  const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
+  const absoluteFrame = safeStartFrame + frame
   const { col, row } = getSpriteFramePosition(
-    frame,
+    absoluteFrame,
     columns,
     frameWidth,
     frameHeight
