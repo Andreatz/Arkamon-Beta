@@ -95,6 +95,8 @@ export function BattagliaScene() {
   const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
   const diceRollTimerRef = useRef<number | null>(null)
   const diceRollIdRef = useRef(0)
+  const [damagePopup, setDamagePopup] = useState<DamagePopupDisplay | null>(null)
+  const damagePopupIdRef = useRef(0)
   const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
   const moveVfxTimerRef = useRef<number | null>(null)
   const moveVfxIdRef = useRef(0)
@@ -290,11 +292,28 @@ export function BattagliaScene() {
     side: 'A' | 'B',
     targetSide: 'A' | 'B',
     playHitSound: boolean,
+    onImpact: () => void,
     onComplete: () => void
   ) => {
     setAzioneInCorso(true)
     const vfxDurationMs = mostraVfxMossa(risultato.mossa, side)
+    const impactDelayMs = getMoveVfxImpactDelayMs(risultato.mossa)
     scheduleImpactFeedback(risultato.mossa, targetSide, playHitSound)
+    scheduleFeedbackTimer(() => {
+      onImpact()
+
+      if (risultato.dannoFinale > 0) {
+        const popupId = ++damagePopupIdRef.current
+        setDamagePopup({
+          id: popupId,
+          side: targetSide,
+          amount: risultato.dannoFinale,
+        })
+        scheduleFeedbackTimer(() => {
+          setDamagePopup((current) => (current?.id === popupId ? null : current))
+        }, 760)
+      }
+    }, impactDelayMs)
     scheduleFeedbackTimer(() => {
       mostraLancioDadi(risultato, side, () => {
         onComplete()
@@ -503,10 +522,17 @@ export function BattagliaScene() {
     if (ris.statoApplicato && nuovoB.hp > 0) {
       nuovoB = applicaStato(nuovoB, ris.statoApplicato)
     }
-    eseguiSequenzaOffensiva(ris, 'A', 'B', nuovoB.hp > 0, () => {
-      setPkmnB(nuovoB)
-      const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
-      setSquadraB(nuovaSquadraB)
+    const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
+    eseguiSequenzaOffensiva(
+      ris,
+      'A',
+      'B',
+      nuovoB.hp > 0,
+      () => {
+        setPkmnB(nuovoB)
+        setSquadraB(nuovaSquadraB)
+      },
+      () => {
       mostraMessaggi([...statoRes.messaggi, ...ris.messaggi])
 
       let aDopoAutodanno = pkmnAEffettivo
@@ -678,10 +704,17 @@ export function BattagliaScene() {
     if (ris.statoApplicato && nuovoA.hp > 0) {
       nuovoA = applicaStato(nuovoA, ris.statoApplicato)
     }
-    eseguiSequenzaOffensiva(ris, 'B', 'A', nuovoA.hp > 0, () => {
-      setPkmnA(nuovoA)
-      const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
-      setSquadraA(nuovaSquadraA)
+    const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
+    eseguiSequenzaOffensiva(
+      ris,
+      'B',
+      'A',
+      nuovoA.hp > 0,
+      () => {
+        setPkmnA(nuovoA)
+        setSquadraA(nuovaSquadraA)
+      },
+      () => {
       mostraMessaggi([...messaggiIniziali, ...ris.messaggi])
 
       let bDopoAutodanno = bEffettivo
@@ -776,6 +809,12 @@ export function BattagliaScene() {
 
       <AnimatePresence>
         {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {damagePopup && (
+          <DamagePopupOverlay key={damagePopup.id} popup={damagePopup} />
+        )}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -1098,6 +1137,37 @@ function BattleLayoutItem({
     >
       {children}
     </AdminLayoutItem>
+  )
+}
+
+type DamagePopupDisplay = {
+  id: number
+  side: 'A' | 'B'
+  amount: number
+}
+
+function DamagePopupOverlay({ popup }: { popup: DamagePopupDisplay }) {
+  const position =
+    popup.side === 'A'
+      ? { left: '25%', top: '56%' }
+      : { left: '77%', top: '24%' }
+
+  return (
+    <div
+      className="pointer-events-none absolute z-[70] -translate-x-1/2 -translate-y-1/2"
+      style={position}
+      aria-hidden="true"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 10, scale: 0.72 }}
+        animate={{ opacity: 1, y: -18, scale: 1.08 }}
+        exit={{ opacity: 0, y: -38, scale: 0.9 }}
+        transition={{ duration: 0.32, ease: 'easeOut' }}
+        className="text-4xl font-black text-rose-300 [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_4px_8px_rgba(0,0,0,0.65)]"
+      >
+        -{popup.amount}
+      </motion.div>
+    </div>
   )
 }
 
