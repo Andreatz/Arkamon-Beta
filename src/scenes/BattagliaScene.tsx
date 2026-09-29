@@ -36,6 +36,7 @@ import {
 import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
 import {
   getMoveVfxDurationMs,
+  getMoveVfxFeedback,
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
 
@@ -102,6 +103,10 @@ export function BattagliaScene() {
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
+  const [impactFlash, setImpactFlash] = useState<'A' | 'B' | null>(null)
+  const [shakeStrengthPx, setShakeStrengthPx] = useState(8)
+  const [shakeDurationMs, setShakeDurationMs] = useState(260)
+  const [cameraShake, setCameraShake] = useState<{ px: number; ms: number } | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
   const [mostraMoseB, setMostraMoseB] = useState(false)
   const [attesaAvversario, setAttesaAvversario] = useState<PokemonIstanza | null>(null)
@@ -253,10 +258,30 @@ export function BattagliaScene() {
     side: 'A' | 'B',
     playHitSound = true
   ) => {
+    const feedback = getMoveVfxFeedback(move)
+
     scheduleFeedbackTimer(() => {
-      setShaking(side)
+      if (feedback.targetShakeMs > 0 && feedback.targetShakePx > 0) {
+        setShakeStrengthPx(feedback.targetShakePx)
+        setShakeDurationMs(feedback.targetShakeMs)
+        setShaking(side)
+        scheduleFeedbackTimer(() => setShaking(null), feedback.targetShakeMs)
+      }
+
+      if (feedback.targetFlashMs > 0) {
+        setImpactFlash(side)
+        scheduleFeedbackTimer(() => setImpactFlash(null), feedback.targetFlashMs)
+      }
+
+      if (feedback.cameraShakeMs > 0 && feedback.cameraShakePx > 0) {
+        setCameraShake({
+          px: feedback.cameraShakePx,
+          ms: feedback.cameraShakeMs,
+        })
+        scheduleFeedbackTimer(() => setCameraShake(null), feedback.cameraShakeMs)
+      }
+
       if (playHitSound) playSound('hit')
-      scheduleFeedbackTimer(() => setShaking(null), 400)
     }, getMoveVfxImpactDelayMs(move))
   }
 
@@ -729,10 +754,22 @@ export function BattagliaScene() {
     .filter((entry): entry is { mossa: MossaDef; idx: 0 | 1 | 2 } => entry !== null)
 
   return (
-    <div
+    <motion.div
       data-battle-layout-root
       className="w-full h-full relative bg-cover bg-center"
       style={{ backgroundImage: `url(${bgBattaglia})` }}
+      animate={
+        cameraShake
+          ? {
+              x: [0, -cameraShake.px, cameraShake.px, -cameraShake.px * 0.6, cameraShake.px * 0.4, 0],
+              y: [0, cameraShake.px * 0.25, -cameraShake.px * 0.2, cameraShake.px * 0.15, 0],
+            }
+          : { x: 0, y: 0 }
+      }
+      transition={{
+        duration: cameraShake ? cameraShake.ms / 1000 : 0.08,
+        ease: 'easeOut',
+      }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
@@ -781,6 +818,9 @@ export function BattagliaScene() {
             istanza={pkmnB}
             position="top-right"
             shaking={shaking === 'B'}
+            shakePx={shakeStrengthPx}
+            shakeDurationMs={shakeDurationMs}
+            flashing={impactFlash === 'B'}
             lunging={shaking === 'A'}
           />
         </BattleLayoutItem>
@@ -799,6 +839,9 @@ export function BattagliaScene() {
             istanza={pkmnA}
             position="bottom-left"
             shaking={shaking === 'A'}
+            shakePx={shakeStrengthPx}
+            shakeDurationMs={shakeDurationMs}
+            flashing={impactFlash === 'A'}
             lunging={shaking === 'B'}
           />
         </BattleLayoutItem>
@@ -1021,7 +1064,7 @@ export function BattagliaScene() {
           onSelect={scegliPokemonCambio}
         />
       )}
-    </div>
+    </motion.div>
   )
 }
 
@@ -1293,11 +1336,17 @@ function PokemonBattleSlot({
   istanza,
   position,
   shaking,
+  shakePx,
+  shakeDurationMs,
+  flashing,
   lunging,
 }: {
   istanza: PokemonIstanza
   position: 'top-right' | 'bottom-left'
   shaking: boolean
+  shakePx: number
+  shakeDurationMs: number
+  flashing: boolean
   lunging: boolean
 }) {
   const isPlayer = position === 'bottom-left'
@@ -1306,11 +1355,20 @@ function PokemonBattleSlot({
   const spriteScale = useAdminStore((state) => state.theme.spriteScales[String(istanza.specieId)] ?? 1)
   const isKO = istanza.hp <= 0
 
-  const innerAnim = shaking
-    ? { x: [0, -8, 8, -8, 8, 0] }
+  const horizontalMotion = shaking
+    ? [0, -shakePx, shakePx, -shakePx, shakePx, 0]
     : lunging
-    ? { x: isPlayer ? [0, 30, 0] : [0, -30, 0] }
-    : {}
+    ? isPlayer
+      ? [0, 30, 0]
+      : [0, -30, 0]
+    : 0
+  const innerDuration = shaking
+    ? shakeDurationMs / 1000
+    : lunging
+    ? 0.4
+    : flashing
+    ? 0.16
+    : 0.2
 
   return (
     <motion.div
@@ -1325,8 +1383,13 @@ function PokemonBattleSlot({
       transition={{ type: 'spring', stiffness: 110, damping: 16 }}
     >
       <motion.div
-        animate={innerAnim}
-        transition={{ duration: 0.4 }}
+        animate={{
+          x: horizontalMotion,
+          filter: flashing
+            ? ['brightness(1)', 'brightness(2.5) saturate(0.35)', 'brightness(1)']
+            : 'brightness(1)',
+        }}
+        transition={{ duration: innerDuration, ease: 'easeOut' }}
         className="flex h-full w-full items-center justify-center drop-shadow-2xl"
       >
         <img
