@@ -30,7 +30,7 @@ Before a new external VFX is committed:
 
 | Source | Useful content | License | Imported |
 | --- | --- | --- | --- |
-| Kenney Particle Pack — https://kenney.nl/assets/particle-pack | 80 modular 512×512 particles: slashes, sparks, fire, smoke, magic, trails | CC0 | No |
+| Kenney Particle Pack — https://kenney.nl/assets/particle-pack | 80 modular 512×512 particles: slashes, sparks, fire, smoke, magic, trails | CC0 | **Yes (selected primitives)** |
 | OpenGameArt: 2D Spell Effects — https://opengameart.org/content/2d-spell-effects | 10 elemental/spell effects with transparent PNG frames | CC0 | No |
 | OpenGameArt: Fire and Spell Animations — https://opengameart.org/content/fire-and-spell-animations | Transparent 512×512 spell sprite sheets | CC0 | No |
 | OpenGameArt: Pixel Art Spells — https://opengameart.org/content/pixel-art-spells | Small editable projectile/beam/shield primitives | CC0 | No |
@@ -78,3 +78,31 @@ When an external asset is actually imported, add a row containing:
 - source URL;
 - license;
 - modifications performed (crop, recolor, resize, frame removal, conversion).
+
+
+## Imported provenance
+
+The following files were copied byte-for-byte from the public GitHub mirror
+`Calinou/kenney-particle-pack`. Their Git blob hashes in Arkamon match the upstream
+blob hashes, which makes provenance easy to audit. The upstream pack and its bundled
+`LICENSE.txt` identify the work as Kenney's Particle Pack under CC0 1.0 Universal.
+
+| Local path | Upstream original | Upstream blob SHA | License | Modifications |
+| --- | --- | --- | --- | --- |
+| `public/vfx/primitives/kenney/slash_03.png` | `addons/kenney_particle_pack/slash_03.png` | `31f250ab448fcd8c767a4960c6fbc7105b326fa5` | CC0-1.0 | None |
+| `public/vfx/primitives/kenney/spark_04.png` | `addons/kenney_particle_pack/spark_04.png` | `6eaf328696ec8640571a69318b6211223c14224e` | CC0-1.0 | None |
+| `public/vfx/primitives/kenney/magic_03.png` | `addons/kenney_particle_pack/magic_03.png` | `47c4a22ff7b104ec9ab8926bd6e68d8709fe7b1a` | CC0-1.0 | None |
+| `public/vfx/primitives/kenney/smoke_05.png` | `addons/kenney_particle_pack/smoke_05.png` | `4a77199d4ddab9d6482d8285ed3cd962983d8ffa` | CC0-1.0 | None |
+
+A copy of the upstream license is kept next to the imported files at
+`public/vfx/primitives/kenney/LICENSE.txt`.
+
+### Vertical-slice usage
+
+- **Vyrath #1 — Soffio (#1):** neutral projectile/focus/spark recipe.
+- **Vyrath #1 — Brezza Profumata (#111):** nature shimmer plus magic focus.
+- **Wormaren #13 — Sotterrare (#82):** heavy ground impact plus spark/dust.
+- **Wormaren #13 — Scottatura (#192):** fire pulse plus smoke/spark impact.
+
+These recipes deliberately combine existing Arkamon VFX with small CC0 primitives so
+the art direction can be evaluated before wholesale asset replacement.
