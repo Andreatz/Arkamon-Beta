@@ -33,4 +33,17 @@ describe('getSpriteFramePosition', () => {
       backgroundPosition: '-768px -960px',
     })
   })
+
+  it('supports atlas regions by positioning absolute frames', () => {
+    expect(getSpriteFramePosition(16, 8, 512, 512)).toMatchObject({
+      col: 0,
+      row: 2,
+      backgroundPosition: '-0px -1024px',
+    })
+    expect(getSpriteFramePosition(23, 8, 512, 512)).toMatchObject({
+      col: 7,
+      row: 2,
+      backgroundPosition: '-3584px -1024px',
+    })
+  })
 })
