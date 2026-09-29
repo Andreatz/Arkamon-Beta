@@ -30,6 +30,12 @@ import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import {
+  ArkamonBattleSprite,
+} from '@/components/arkamon/ArkamonBattleSprite'
+import type {
+  ArkamonBattleAnimation,
+} from '@/components/arkamon/arkamonAnimationManifest'
+import {
   MoveVfx,
   type MoveVfxEvent,
   type MoveVfxSide,
@@ -1496,10 +1502,20 @@ function PokemonBattleSlot({
   lunging: boolean
 }) {
   const isPlayer = position === 'bottom-left'
-  const spriteFolder = isPlayer ? 'back_sprites' : 'front_sprites'
-  const spriteSrc = assetUrl(`/sprites/${spriteFolder}/${istanza.specieId}.png`)
   const spriteScale = useAdminStore((state) => state.theme.spriteScales[String(istanza.specieId)] ?? 1)
+  const [spriteFailed, setSpriteFailed] = useState(false)
   const isKO = istanza.hp <= 0
+  const battleAnimation: ArkamonBattleAnimation = isKO
+    ? 'ko'
+    : shaking
+    ? 'hit'
+    : lunging
+    ? 'physical'
+    : 'idle'
+
+  useEffect(() => {
+    setSpriteFailed(false)
+  }, [istanza.specieId])
 
   const horizontalMotion = shaking
     ? [0, -shakePx, shakePx, -shakePx, shakePx, 0]
@@ -1538,23 +1554,21 @@ function PokemonBattleSlot({
         transition={{ duration: innerDuration, ease: 'easeOut' }}
         className="flex h-full w-full items-center justify-center drop-shadow-2xl"
       >
-        <img
-          src={spriteSrc}
-          alt={istanza.nome}
-          className="w-full h-full object-contain"
-          style={{ transform: `scale(${spriteScale})`, transformOrigin: 'center bottom' }}
-          onError={(e) => {
-            ;(e.currentTarget as HTMLImageElement).style.display = 'none'
-            const sib = e.currentTarget.nextElementSibling as HTMLElement | null
-            if (sib) sib.style.display = 'flex'
-          }}
-        />
-        <span
-          className="text-5xl items-center justify-center w-full h-full rounded-full bg-arka-surface border-4 border-white"
-          style={{ display: 'none' }}
-        >
-          {isPlayer ? '🐺' : '🦈'}
-        </span>
+        {!spriteFailed ? (
+          <ArkamonBattleSprite
+            speciesId={istanza.specieId}
+            name={istanza.nome}
+            side={isPlayer ? 'back' : 'front'}
+            animation={battleAnimation}
+            scale={spriteScale}
+            className="w-full h-full object-contain"
+            onError={() => setSpriteFailed(true)}
+          />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center rounded-full border-4 border-white bg-arka-surface text-5xl">
+            {isPlayer ? '🐺' : '🦈'}
+          </span>
+        )}
       </motion.div>
     </motion.div>
   )
