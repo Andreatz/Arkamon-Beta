@@ -163,6 +163,7 @@ export function ArkamonBattleSprite({
           columns={animated.columns}
           rows={animated.rows}
           frameCount={animated.frameCount}
+          startFrame={animated.startFrame}
           fps={animated.fps}
           width={animated.width}
           height={animated.height}
