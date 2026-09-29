@@ -26,6 +26,7 @@ export interface SpriteSheetMeta {
   columns: number
   rows: number
   frameCount: number
+  startFrame?: number
   fps: number
 }
 
