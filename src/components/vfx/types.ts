@@ -1,5 +1,7 @@
 export type VfxPlaybackKind = 'sprite-sheet' | 'gif' | 'static-image'
 
+export type VfxMotion = 'static' | 'projectile'
+
 export type VfxAnchor =
   | 'attacker'
   | 'target'
@@ -47,4 +49,28 @@ export interface MoveVfxAsset {
   blendMode?: VfxBlendMode
   opacity?: number
   loop?: boolean
+  motion?: VfxMotion
+}
+
+export interface VfxRecipeStep {
+  id: string
+  assetId: string
+  startAtMs: number
+  durationMs?: number
+  anchor?: VfxAnchor
+  layer?: VfxLayer
+  motion?: VfxMotion
+  scaleMultiplier?: number
+  offsetX?: number
+  offsetY?: number
+  opacity?: number
+  blendMode?: VfxBlendMode
+}
+
+export interface MoveVfxRecipe {
+  id: string
+  label: string
+  durationMs: number
+  impactAtMs: number
+  steps: VfxRecipeStep[]
 }
