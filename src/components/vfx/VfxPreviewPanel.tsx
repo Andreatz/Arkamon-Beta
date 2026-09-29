@@ -2,7 +2,7 @@ import { useAdminStore } from '@store/adminStore'
 import { assetUrl } from '@/utils/assetUrl'
 import { getBattleSideCenter } from './battleVfxPosition'
 import { MoveVfxLayer } from './MoveVfxLayer'
-import { getVfxCuration, getVfxCurationPreviewAsset } from './vfxCuration'
+import { getVfxCuration, getVfxCurationPreviewAsset, getVfxReviewLabel } from './vfxCuration'
 import type { MoveVfxAsset, VfxAnchor } from './types'
 
 export type VfxPreviewBackground = 'dark' | 'light' | 'battle'
@@ -69,7 +69,7 @@ export function VfxPreviewPanel({
             <span key={category} className="rounded border border-slate-600 px-2 py-0.5">{category}</span>
           ))}
           <span>{curation?.priority ?? 'Non classificato'}</span>
-          {curation?.reviewed && <span>· Valutato visivamente</span>}
+          <span>· {getVfxReviewLabel(curation)}</span>
           {curation?.intensity && <span>· Intensità: {curation.intensity}</span>}
         </div>
         {curation?.notes && <p className="text-xs">{curation.notes}</p>}

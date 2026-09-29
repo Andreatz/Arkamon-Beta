@@ -5,6 +5,7 @@ import { MOVE_VFX_ASSETS, type MoveVfxAssetId } from './vfxManifest'
 import {
   filterVfxAssetIds,
   getVfxCuration,
+  getVfxReviewLabel,
   VFX_CURATION_CATEGORIES,
   type VfxCurationCategory,
 } from './vfxCuration'
@@ -12,7 +13,7 @@ import {
 type KindFilter = 'all' | VfxPlaybackKind
 
 const ANCHORS: VfxAnchor[] = ['attacker', 'target', 'self', 'center', 'screen']
-const SCALES = [0.5, 0.75, 1, 1.5, 2]
+const SCALES = [0.5, 0.75, 1, 1.25, 1.5, 2]
 const CONTROL_CLASS = 'min-w-0 rounded bg-slate-800 px-3 py-2 text-xs text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-amber-300'
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 
@@ -27,7 +28,7 @@ function getReducedMotion() {
 }
 
 export function VfxGallery() {
-  const [selectedId, setSelectedId] = useState<MoveVfxAssetId>('slash')
+  const [selectedId, setSelectedId] = useState<MoveVfxAssetId>('generated:direction-img_effect_skill_spark_0-images_nested_sheet')
   const [referenceId, setReferenceId] = useState<MoveVfxAssetId | null>(null)
   const [replayId, setReplayId] = useState(1)
   const [side, setSide] = useState<'A' | 'B'>('A')
@@ -39,6 +40,7 @@ export function VfxGallery() {
   const [assetSearch, setAssetSearch] = useState('')
   const [category, setCategory] = useState<VfxCurationCategory | 'all'>('all')
   const [curatedOnly, setCuratedOnly] = useState(false)
+  const [recommendedOnly, setRecommendedOnly] = useState(true)
   const reduceMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, () => true)
   const asset = MOVE_VFX_ASSETS[selectedId]
   const reference = referenceId ? MOVE_VFX_ASSETS[referenceId] : undefined
@@ -46,7 +48,8 @@ export function VfxGallery() {
     search: assetSearch,
     category,
     curatedOnly,
-  }).filter((id) => kindFilter === 'all' || MOVE_VFX_ASSETS[id].kind === kindFilter), [assetSearch, category, curatedOnly, kindFilter])
+    recommendedOnly,
+  }).filter((id) => kindFilter === 'all' || MOVE_VFX_ASSETS[id].kind === kindFilter), [assetSearch, category, curatedOnly, recommendedOnly, kindFilter])
   const selectedIndex = visibleAssetIds.indexOf(selectedId)
   const playbackKey = `${selectedId}-${referenceId}-${replayId}-${side}-${anchor}-${scale}-${background}-${reduceMotion}`
   const repeatDelay = Math.max(asset.durationMs, reference?.durationMs ?? 0) + 500
@@ -67,6 +70,7 @@ export function VfxGallery() {
     setAssetSearch('')
     setCategory('all')
     setCuratedOnly(false)
+    setRecommendedOnly(false)
     setKindFilter('all')
   }
 
@@ -87,6 +91,11 @@ export function VfxGallery() {
             {VFX_CURATION_CATEGORIES.map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
         </label>
+        <label className="flex items-center gap-2 text-xs">
+          <input type="checkbox" checked={recommendedOnly} onChange={(event) => setRecommendedOnly(event.target.checked)} />
+          Solo selezione consigliata
+        </label>
+        <p className="text-[10px] text-slate-400">Confermato = scelto da te. Proposta = selezionato dopo la scrematura, da confermare.</p>
         <label className="flex items-center gap-2 text-xs">
           <input type="checkbox" checked={curatedOnly} onChange={(event) => setCuratedOnly(event.target.checked)} />
           Solo candidati
@@ -120,6 +129,7 @@ export function VfxGallery() {
               >
                 {entry.label}
                 <span className="mt-1 block text-[10px] opacity-70">{curation ? `${curation.categories.join(' · ')} · ${curation.priority ?? 'candidate'}` : entry.kind}</span>
+                {curation && <span className="mt-1 block text-[10px]">{getVfxReviewLabel(curation)}{curation.intensity ? ` · ${curation.intensity}` : ''}</span>}
               </button>
             )
           })}

@@ -31,6 +31,11 @@ Nel tab `VFX`, usa **Confronta effetti nel VFX Lab** per aprire il laboratorio
 in una nuova scheda. È disponibile solo con il server di sviluppo, all'indirizzo
 `/#vfx-lab` (mantieni l'eventuale percorso base dell'applicazione).
 
+Il Lab apre con **Solo selezione consigliata** attivo: mostra le scelte confermate
+e le proposte della scrematura, distinguendole dalle riserve. **Azzera filtri**
+riporta all'intero catalogo. La selezione è documentata in
+[VFX_CURATION_REVIEW.md](./VFX_CURATION_REVIEW.md).
+
 1. Scegli una categoria e attiva **Solo candidati** per vedere la prima selezione
    del catalogo, inclusi effetti preferiti e speciali. Puoi combinare questi filtri
    con ricerca e formato.

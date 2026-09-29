@@ -9,6 +9,23 @@ import {
 } from '../vfxCuration'
 
 describe('VFX curation', () => {
+  it('preserves the confirmed heavy electric calibration', () => {
+    const id = 'generated:highmountain-img_effect_tynus_lightning_2-images_nested_sheet'
+    expect(getVfxCuration(id)).toMatchObject({ reviewed: true, intensity: 'heavy', categories: ['electric', 'impact'] })
+    expect(getVfxCurationPreviewAsset(MOVE_VFX_ASSETS[id])).toMatchObject({ anchor: 'target', scale: 1.5 })
+  })
+
+  it('reduces the review to confirmed choices and proposals while keeping reserves accessible', () => {
+    const reserve = 'generated:hekatoneff_1011-img_hit-images_nested_sheet'
+    const result = filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true })
+    expect(result).toHaveLength(10)
+    expect(result.filter((id) => getVfxCuration(id)?.reviewed)).toHaveLength(3)
+    expect(result).not.toContain(reserve)
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS)).toContain(reserve)
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true, category: 'electric' })).toHaveLength(3)
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true, search: 'no-matching-effect' })).toEqual([])
+  })
+
   it('keeps the reviewed psychic effect out of electric results', () => {
     const id = 'generated:anglercompany-img_ladderpuzzle_shock-images_nested_sheet'
     expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { category: 'electric' })).not.toContain(id)

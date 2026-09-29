@@ -1,4 +1,5 @@
 import { GENERATED_MOVE_VFX_ASSETS } from './generatedVfxAssets'
+import { applyVfxPresentationOverride } from './vfxPresentationOverrides'
 import type { MoveVfxAsset } from './types'
 
 const sheet = (
@@ -284,10 +285,14 @@ const CORE_MOVE_VFX_ASSETS = {
   ),
 } satisfies Record<string, MoveVfxAsset>
 
-export const MOVE_VFX_ASSETS: Record<string, MoveVfxAsset> = {
+const baseAssets: Record<string, MoveVfxAsset> = {
   ...CORE_MOVE_VFX_ASSETS,
   ...GENERATED_MOVE_VFX_ASSETS,
 }
+
+export const MOVE_VFX_ASSETS: Record<string, MoveVfxAsset> = Object.fromEntries(
+  Object.entries(baseAssets).map(([id, asset]) => [id, applyVfxPresentationOverride(asset)])
+)
 
 export type MoveVfxAssetId = string
 
