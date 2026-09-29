@@ -1,7 +1,19 @@
 import { useMemo, useState } from 'react'
 import { MOSSE } from '@data/index'
 import { SpriteMoveVfx } from '@/components/vfx/SpriteMoveVfx'
-import { resolveMoveVfxAsset } from '@/components/vfx/resolveMoveVfxAsset'
+import {
+  getMoveVfxDurationMs,
+  getMoveVfxImpactDelayMs,
+  resolveMoveVfxAsset,
+  resolveMoveVfxRecipe,
+} from '@/components/vfx/resolveMoveVfxAsset'
+import { resolveMoveVfxProfile } from '@/components/vfx/moveVfxProfiles'
+import {
+  filterVfxAssetIds,
+  getVfxCuration,
+  VFX_CURATION_CATEGORIES,
+  type VfxCurationCategory,
+} from '@/components/vfx/vfxCuration'
 import {
   MOVE_VFX_ASSETS,
   type MoveVfxAssetId,
@@ -68,31 +80,31 @@ export function AdminVfxEditor() {
   const [previewSide, setPreviewSide] = useState<'A' | 'B'>('A')
   const [replayId, setReplayId] = useState(1)
   const [assetSearch, setAssetSearch] = useState('')
+  const [curationCategory, setCurationCategory] = useState<VfxCurationCategory | 'all'>('all')
+  const [curatedOnly, setCuratedOnly] = useState(false)
   const overrides = useVfxAdminStore((state) => state.overrides)
   const setOverride = useVfxAdminStore((state) => state.setOverride)
   const removeOverride = useVfxAdminStore((state) => state.removeOverride)
   const resetOverrides = useVfxAdminStore((state) => state.resetOverrides)
   const selectedMove = MOSSE.find((move) => move.id === selectedMoveId) ?? MOSSE[0]
   const resolvedAsset = selectedMove ? resolveMoveVfxAsset(selectedMove) : MOVE_VFX_ASSETS.punch
+  const resolvedProfile = selectedMove ? resolveMoveVfxProfile(selectedMove) : null
+  const resolvedRecipe = selectedMove ? resolveMoveVfxRecipe(selectedMove) : undefined
+  const resolvedDurationMs = selectedMove ? getMoveVfxDurationMs(selectedMove) : resolvedAsset.durationMs
+  const resolvedImpactMs = selectedMove ? getMoveVfxImpactDelayMs(selectedMove) : resolvedAsset.impactAtMs ?? 0
   const draft = overrides[selectedMoveId] ?? toOverride(selectedMoveId, resolvedAsset)
+  const selectedCuration = getVfxCuration(draft.assetId)
   const exportJson = useMemo(
     () => JSON.stringify(Object.values(overrides).sort((a, b) => a.moveId - b.moveId), null, 2),
     [overrides]
   )
-  const filteredAssetIds = useMemo(() => {
-    const query = assetSearch.trim().toLowerCase()
-    if (!query) return assetIds
-
-    return assetIds.filter((assetId) => {
-      const asset = MOVE_VFX_ASSETS[assetId]
-      return (
-        assetId.toLowerCase().includes(query) ||
-        asset.label.toLowerCase().includes(query) ||
-        asset.kind.toLowerCase().includes(query)
-      )
-    })
-  }, [assetSearch])
-  const visibleAssetIds = filteredAssetIds.includes(draft.assetId)
+  const filteredAssetIds = useMemo(() => filterVfxAssetIds(MOVE_VFX_ASSETS, {
+    search: assetSearch,
+    category: curationCategory,
+    curatedOnly,
+  }), [assetSearch, curationCategory, curatedOnly])
+  const selectedAssetMatchesFilters = filteredAssetIds.includes(draft.assetId)
+  const visibleAssetIds = selectedAssetMatchesFilters
     ? filteredAssetIds
     : [draft.assetId, ...filteredAssetIds]
 
@@ -106,6 +118,16 @@ export function AdminVfxEditor() {
       <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
         Gli override VFX restano in memoria fino al refresh. Esporta il JSON per conservarli.
       </p>
+      {import.meta.env.DEV && (
+        <a
+          href={`${window.location.pathname}${window.location.search}#vfx-lab`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-block rounded-md border border-[var(--arka-primary)] px-3 py-2 text-xs font-bold text-[var(--arka-primary-hover)]"
+        >
+          Confronta effetti nel VFX Lab ↗
+        </a>
+      )}
 
       <label className="grid gap-1 text-xs font-bold text-[var(--arka-text-muted)]">
         Mossa
@@ -154,28 +176,109 @@ export function AdminVfxEditor() {
             </button>
           </div>
         </div>
+        {selectedCuration && (
+          <div className="space-y-1 border-t border-[var(--arka-border)] px-3 py-2">
+            <div className="flex flex-wrap gap-1">
+              {selectedCuration.categories.map((category) => (
+                <span key={category} className="rounded border border-[var(--arka-border)] px-1.5 py-0.5 text-[9px] font-bold text-[var(--arka-text-muted)]">
+                  {category}
+                </span>
+              ))}
+              {selectedCuration.priority && (
+                <span className="text-[10px] text-[var(--arka-text-muted)]">
+                  Priorità: {selectedCuration.priority}
+                </span>
+              )}
+            </div>
+            {selectedCuration.notes && (
+              <p className="text-[10px] text-[var(--arka-text-muted)]">{selectedCuration.notes}</p>
+            )}
+          </div>
+        )}
       </section>
 
+      {resolvedProfile && (
+        <section className="grid grid-cols-2 gap-2 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] p-3 text-[11px]">
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Archetipo</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedProfile.archetype}</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Intensità</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedProfile.intensity}</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Classificazione</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedProfile.source}</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Recipe</span>
+            <p className="mt-0.5 truncate font-black text-[var(--arka-text)]">
+              {resolvedRecipe?.id ?? 'single-asset'}
+            </p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Durata</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedDurationMs} ms</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Impact</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedImpactMs} ms</p>
+          </div>
+        </section>
+      )}
+
+      <div className="grid grid-cols-2 gap-2">
+        <label className="grid gap-1 text-[11px] font-bold text-[var(--arka-text-muted)]">
+          Categoria
+          <select
+            value={curationCategory}
+            onChange={(event) => setCurationCategory(event.target.value as VfxCurationCategory | 'all')}
+            className="h-8 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
+          >
+            <option value="all">Tutte</option>
+            {VFX_CURATION_CATEGORIES.map((category) => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-2 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-[11px] font-bold text-[var(--arka-text-muted)]">
+          <input type="checkbox" checked={curatedOnly} onChange={(event) => setCuratedOnly(event.target.checked)} />
+          Solo candidati
+        </label>
+      </div>
+      <p className="text-[10px] text-[var(--arka-text-muted)]">
+        Prima selezione da verificare in anteprima. Include effetti candidati, preferiti e speciali.
+      </p>
+
       <label className="grid gap-1 text-xs font-bold text-[var(--arka-text-muted)]">
-        Asset
+        Cerca asset
         <input
           type="search"
           value={assetSearch}
           onChange={(event) => setAssetSearch(event.target.value)}
-          placeholder="Cerca asset, es. lightning, generated, gif..."
+          placeholder="Cerca nome, tipo o categoria, es. electric..."
           className="h-8 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
         />
+      </label>
+      <p role="status" className="text-[11px] text-[var(--arka-text-muted)]">
+        {filteredAssetIds.length === 0 ? 'Nessun asset corrisponde ai filtri.' : `${filteredAssetIds.length} di ${assetIds.length} asset corrispondono ai filtri.`}
+        {!selectedAssetMatchesFilters && ' L’asset selezionato resta disponibile fuori filtro.'}
+      </p>
+      <label className="grid min-w-0 gap-1 text-xs font-bold text-[var(--arka-text-muted)]">
+        Asset
         <select
           value={draft.assetId}
           onChange={(event) => {
             const asset = MOVE_VFX_ASSETS[event.target.value]
             if (asset) update(toOverride(selectedMoveId, asset))
           }}
-          className="h-9 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
+          className="h-9 min-w-0 w-full rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
         >
           {visibleAssetIds.map((assetId) => (
             <option key={assetId} value={assetId}>
               {MOVE_VFX_ASSETS[assetId].label}
+              {assetId === draft.assetId && !selectedAssetMatchesFilters ? ' (selezionato · fuori filtro)' : ''}
             </option>
           ))}
         </select>

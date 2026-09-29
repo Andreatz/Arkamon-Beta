@@ -1,6 +1,9 @@
 import { assetUrl } from '@/utils/assetUrl'
 import { getMossa, getPokemon } from '@data/index'
-import { resolveMoveVfxAsset } from './resolveMoveVfxAsset'
+import {
+  resolveMoveVfxAsset,
+  resolveMoveVfxRecipe,
+} from './resolveMoveVfxAsset'
 import { getMoveVfxAsset } from './vfxManifest'
 
 const preloaded = new Set<string>()
@@ -27,7 +30,14 @@ export function preloadMoveVfxForPokemon(speciesIds: number[]) {
     for (const moveId of species.mosse) {
       if (!moveId) continue
       const move = getMossa(moveId)
-      if (move) assetIds.add(resolveMoveVfxAsset(move).id)
+      if (!move) continue
+
+      const recipe = resolveMoveVfxRecipe(move)
+      if (recipe) {
+        for (const step of recipe.steps) assetIds.add(step.assetId)
+      } else {
+        assetIds.add(resolveMoveVfxAsset(move).id)
+      }
     }
   }
 

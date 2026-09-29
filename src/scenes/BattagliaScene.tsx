@@ -17,12 +17,24 @@ import {
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
-import type { PokemonIstanza, MossaDef, RisultatoMossa, StatoAlterato } from '@/types'
+import type {
+  PokemonIstanza,
+  MossaDef,
+  RisultatoMossa,
+  StatoAlterato,
+  TipoPokemon,
+} from '@/types'
 import type { AdminBattleLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
+import {
+  ArkamonBattleSprite,
+} from '@/components/arkamon/ArkamonBattleSprite'
+import type {
+  ArkamonBattleAnimation,
+} from '@/components/arkamon/arkamonAnimationManifest'
 import {
   MoveVfx,
   type MoveVfxEvent,
@@ -36,8 +48,15 @@ import {
 import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
 import {
   getMoveVfxDurationMs,
+  getMoveVfxFeedback,
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
+import { resolveMoveVfxProfile } from '@/components/vfx/moveVfxProfiles'
+import type { AdminBattleLayout } from '@/theme/adminThemeTypes'
+import {
+  getBattleDamagePosition,
+  getBattleSideCenter,
+} from '@/components/vfx/battleVfxPosition'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -47,6 +66,25 @@ const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: 
 
 const INFOBOX_VISIBLE_MS = 2000
 const DICE_ROLL_VISIBLE_MS = 2000
+
+const PHYSICAL_VFX_ARCHETYPES = new Set(['blunt', 'slash', 'bite', 'charge'])
+
+function getBattleAnimationForMove(move: MossaDef): ArkamonBattleAnimation {
+  return PHYSICAL_VFX_ARCHETYPES.has(resolveMoveVfxProfile(move).archetype)
+    ? 'physical'
+    : 'special'
+}
+
+const VFX_TYPE_COLORS: Record<TipoPokemon, string> = {
+  Normale: '#f8fafc',
+  Fuoco: '#fb923c',
+  Acqua: '#38bdf8',
+  Erba: '#4ade80',
+  Elettro: '#fde047',
+  Terra: '#d6a15f',
+  Psico: '#e879f9',
+  Oscurità: '#a78bfa',
+}
 
 type PendingSwitch = {
   motivo: string
@@ -97,6 +135,10 @@ export function BattagliaScene() {
   const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
   const diceRollTimerRef = useRef<number | null>(null)
   const diceRollIdRef = useRef(0)
+  const [damagePopup, setDamagePopup] = useState<DamagePopupDisplay | null>(null)
+  const damagePopupIdRef = useRef(0)
+  const [impactPulse, setImpactPulse] = useState<ImpactPulseDisplay | null>(null)
+  const impactPulseIdRef = useRef(0)
   const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
   const moveVfxTimerRef = useRef<number | null>(null)
   const moveVfxIdRef = useRef(0)
@@ -105,6 +147,10 @@ export function BattagliaScene() {
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [turnoA, setTurnoA] = useState(true)
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
+  const [impactFlash, setImpactFlash] = useState<'A' | 'B' | null>(null)
+  const [shakeStrengthPx, setShakeStrengthPx] = useState(8)
+  const [shakeDurationMs, setShakeDurationMs] = useState(260)
+  const [cameraShake, setCameraShake] = useState<{ px: number; ms: number } | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
   const [mostraMoseB, setMostraMoseB] = useState(false)
   const [attesaAvversario, setAttesaAvversario] = useState<PokemonIstanza | null>(null)
@@ -265,10 +311,30 @@ export function BattagliaScene() {
     side: 'A' | 'B',
     playHitSound = true
   ) => {
+    const feedback = getMoveVfxFeedback(move)
+
     scheduleFeedbackTimer(() => {
-      setShaking(side)
+      if (feedback.targetShakeMs > 0 && feedback.targetShakePx > 0) {
+        setShakeStrengthPx(feedback.targetShakePx)
+        setShakeDurationMs(feedback.targetShakeMs)
+        setShaking(side)
+        scheduleFeedbackTimer(() => setShaking(null), feedback.targetShakeMs)
+      }
+
+      if (feedback.targetFlashMs > 0) {
+        setImpactFlash(side)
+        scheduleFeedbackTimer(() => setImpactFlash(null), feedback.targetFlashMs)
+      }
+
+      if (feedback.cameraShakeMs > 0 && feedback.cameraShakePx > 0) {
+        setCameraShake({
+          px: feedback.cameraShakePx,
+          ms: feedback.cameraShakeMs,
+        })
+        scheduleFeedbackTimer(() => setCameraShake(null), feedback.cameraShakeMs)
+      }
+
       if (playHitSound) playSound('hit')
-      scheduleFeedbackTimer(() => setShaking(null), 400)
     }, getMoveVfxImpactDelayMs(move))
   }
 
@@ -277,11 +343,40 @@ export function BattagliaScene() {
     side: 'A' | 'B',
     targetSide: 'A' | 'B',
     playHitSound: boolean,
+    onImpact: () => void,
     onComplete: () => void
   ) => {
     setAzioneInCorso(true)
     const vfxDurationMs = mostraVfxMossa(risultato.mossa, side)
+    const impactDelayMs = getMoveVfxImpactDelayMs(risultato.mossa)
+    const feedback = getMoveVfxFeedback(risultato.mossa)
     scheduleImpactFeedback(risultato.mossa, targetSide, playHitSound)
+    scheduleFeedbackTimer(() => {
+      onImpact()
+
+      const pulseId = ++impactPulseIdRef.current
+      setImpactPulse({
+        id: pulseId,
+        side: targetSide,
+        color: VFX_TYPE_COLORS[risultato.mossa.tipo],
+        strength: Math.max(0.85, 0.9 + feedback.cameraShakePx * 0.06),
+      })
+      scheduleFeedbackTimer(() => {
+        setImpactPulse((current) => (current?.id === pulseId ? null : current))
+      }, 560)
+
+      if (risultato.dannoFinale > 0) {
+        const popupId = ++damagePopupIdRef.current
+        setDamagePopup({
+          id: popupId,
+          side: targetSide,
+          amount: risultato.dannoFinale,
+        })
+        scheduleFeedbackTimer(() => {
+          setDamagePopup((current) => (current?.id === popupId ? null : current))
+        }, 760)
+      }
+    }, impactDelayMs)
     scheduleFeedbackTimer(() => {
       mostraLancioDadi(risultato, side, () => {
         onComplete()
@@ -494,10 +589,17 @@ export function BattagliaScene() {
     if (ris.statoApplicato && nuovoB.hp > 0) {
       nuovoB = applicaStato(nuovoB, ris.statoApplicato)
     }
-    eseguiSequenzaOffensiva(ris, 'A', 'B', nuovoB.hp > 0, () => {
-      setPkmnB(nuovoB)
-      const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
-      setSquadraB(nuovaSquadraB)
+    const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
+    eseguiSequenzaOffensiva(
+      ris,
+      'A',
+      'B',
+      nuovoB.hp > 0,
+      () => {
+        setPkmnB(nuovoB)
+        setSquadraB(nuovaSquadraB)
+      },
+      () => {
       mostraMessaggi([...statoRes.messaggi, ...ris.messaggi])
 
       let aDopoAutodanno = pkmnAEffettivo
@@ -695,10 +797,17 @@ export function BattagliaScene() {
     if (ris.statoApplicato && nuovoA.hp > 0) {
       nuovoA = applicaStato(nuovoA, ris.statoApplicato)
     }
-    eseguiSequenzaOffensiva(ris, 'B', 'A', nuovoA.hp > 0, () => {
-      setPkmnA(nuovoA)
-      const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
-      setSquadraA(nuovaSquadraA)
+    const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
+    eseguiSequenzaOffensiva(
+      ris,
+      'B',
+      'A',
+      nuovoA.hp > 0,
+      () => {
+        setPkmnA(nuovoA)
+        setSquadraA(nuovaSquadraA)
+      },
+      () => {
       mostraMessaggi([...messaggiIniziali, ...ris.messaggi])
 
       let bDopoAutodanno = bEffettivo
@@ -790,17 +899,55 @@ export function BattagliaScene() {
     })
     .filter((entry): entry is { mossa: MossaDef; idx: 0 | 1 | 2 } => entry !== null)
 
+  const activeAnimationA: ArkamonBattleAnimation | undefined =
+    moveVfx?.side === 'A'
+      ? getBattleAnimationForMove(moveVfx.move)
+      : terminata && esito === 'vittoria'
+      ? 'victory'
+      : undefined
+  const activeAnimationB: ArkamonBattleAnimation | undefined =
+    moveVfx?.side === 'B'
+      ? getBattleAnimationForMove(moveVfx.move)
+      : terminata && esito === 'sconfitta'
+      ? 'victory'
+      : undefined
+
   return (
-    <div
+    <motion.div
       data-battle-layout-root
       className="w-full h-full relative bg-cover bg-center"
       style={{ backgroundImage: `url(${bgBattaglia})` }}
+      animate={
+        cameraShake
+          ? {
+              x: [0, -cameraShake.px, cameraShake.px, -cameraShake.px * 0.6, cameraShake.px * 0.4, 0],
+              y: [0, cameraShake.px * 0.25, -cameraShake.px * 0.2, cameraShake.px * 0.15, 0],
+            }
+          : { x: 0, y: 0 }
+      }
+      transition={{
+        duration: cameraShake ? cameraShake.ms / 1000 : 0.08,
+        ease: 'easeOut',
+      }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
       <AnimatePresence>
         {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {impactPulse && (
+          <ImpactPulseOverlay key={impactPulse.id} pulse={impactPulse} layout={battleLayout} />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {damagePopup && (
+          <DamagePopupOverlay key={damagePopup.id} popup={damagePopup} layout={battleLayout}
+/>
+        )}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -843,7 +990,11 @@ export function BattagliaScene() {
             istanza={pkmnB}
             position="top-right"
             shaking={shaking === 'B'}
+            shakePx={shakeStrengthPx}
+            shakeDurationMs={shakeDurationMs}
+            flashing={impactFlash === 'B'}
             lunging={shaking === 'A'}
+            activeAnimation={activeAnimationB}
           />
         </BattleLayoutItem>
       </AnimatePresence>
@@ -861,7 +1012,11 @@ export function BattagliaScene() {
             istanza={pkmnA}
             position="bottom-left"
             shaking={shaking === 'A'}
+            shakePx={shakeStrengthPx}
+            shakeDurationMs={shakeDurationMs}
+            flashing={impactFlash === 'A'}
             lunging={shaking === 'B'}
+            activeAnimation={activeAnimationA}
           />
         </BattleLayoutItem>
       </AnimatePresence>
@@ -1083,7 +1238,7 @@ export function BattagliaScene() {
           onSelect={scegliPokemonCambio}
         />
       )}
-    </div>
+    </motion.div>
   )
 }
 
@@ -1117,6 +1272,114 @@ function BattleLayoutItem({
     >
       {children}
     </AdminLayoutItem>
+  )
+}
+
+type ImpactPulseDisplay = {
+  id: number
+  side: 'A' | 'B'
+  color: string
+  strength: number
+}
+
+function ImpactPulseOverlay({
+  pulse,
+  layout,
+}: {
+  pulse: ImpactPulseDisplay
+  layout: AdminBattleLayout
+}) {
+  const point = getBattleSideCenter(layout, pulse.side)
+
+  const position = {
+    left: `${point.x}%`,
+    top: `${point.y}%`,
+  }
+
+  return (
+    <div
+      className="pointer-events-none absolute z-[64] -translate-x-1/2 -translate-y-1/2"
+      style={position}
+      aria-hidden="true"
+    >
+      <motion.div
+        initial={{ opacity: 0.95, scale: 0.25 }}
+        animate={{
+          opacity: [0.95, 0.72, 0],
+          scale: [
+            0.25,
+            pulse.strength,
+            pulse.strength * 1.9,
+          ],
+        }}
+        exit={{ opacity: 0 }}
+        transition={{
+          duration: 0.5,
+          ease: 'easeOut',
+        }}
+        className="h-28 w-28 rounded-full border-[3px]"
+        style={{
+          borderColor: pulse.color,
+          background: `radial-gradient(circle, ${pulse.color}55 0%, ${pulse.color}22 42%, transparent 70%)`,
+          boxShadow: `0 0 18px ${pulse.color}, 0 0 42px ${pulse.color}88, inset 0 0 20px ${pulse.color}66`,
+          mixBlendMode: 'screen',
+        }}
+      />
+    </div>
+  )
+}
+
+type DamagePopupDisplay = {
+  id: number
+  side: 'A' | 'B'
+  amount: number
+}
+
+function DamagePopupOverlay({
+  popup,
+  layout,
+}: {
+  popup: DamagePopupDisplay
+  layout: AdminBattleLayout
+}) {
+  const point = getBattleDamagePosition(layout, popup.side)
+
+  const position = {
+    left: `${point.x}%`,
+    top: `${point.y}%`,
+  }
+
+  return (
+    <div
+      className="pointer-events-none absolute z-[70] -translate-x-1/2 -translate-y-1/2"
+      style={position}
+      aria-hidden="true"
+    >
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 10,
+          scale: 0.72,
+        }}
+        animate={{
+          opacity: 1,
+          y: -18,
+          scale: 1.08,
+        }}
+        exit={{
+          opacity: 0,
+          y: -38,
+          scale: 0.9,
+        }}
+        transition={{
+          duration: 0.32,
+          ease: 'easeOut',
+        }}
+        className="text-4xl font-black text-rose-300 [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_4px_8px_rgba(0,0,0,0.65)]"
+      >
+        -{popup.amount}
+      </motion.div>
+    </div>
   )
 }
 
@@ -1355,24 +1618,49 @@ function PokemonBattleSlot({
   istanza,
   position,
   shaking,
+  shakePx,
+  shakeDurationMs,
+  flashing,
   lunging,
+  activeAnimation,
 }: {
   istanza: PokemonIstanza
   position: 'top-right' | 'bottom-left'
   shaking: boolean
+  shakePx: number
+  shakeDurationMs: number
+  flashing: boolean
   lunging: boolean
+  activeAnimation?: ArkamonBattleAnimation
 }) {
   const isPlayer = position === 'bottom-left'
-  const spriteFolder = isPlayer ? 'back_sprites' : 'front_sprites'
-  const spriteSrc = assetUrl(`/sprites/${spriteFolder}/${istanza.specieId}.png`)
   const spriteScale = useAdminStore((state) => state.theme.spriteScales[String(istanza.specieId)] ?? 1)
+  const [spriteFailed, setSpriteFailed] = useState(false)
   const isKO = istanza.hp <= 0
+  const battleAnimation: ArkamonBattleAnimation = isKO
+    ? 'ko'
+    : shaking
+    ? 'hit'
+    : activeAnimation ?? (lunging ? 'physical' : 'idle')
 
-  const innerAnim = shaking
-    ? { x: [0, -8, 8, -8, 8, 0] }
+  useEffect(() => {
+    setSpriteFailed(false)
+  }, [istanza.specieId])
+
+  const horizontalMotion = shaking
+    ? [0, -shakePx, shakePx, -shakePx, shakePx, 0]
     : lunging
-    ? { x: isPlayer ? [0, 30, 0] : [0, -30, 0] }
-    : {}
+    ? isPlayer
+      ? [0, 30, 0]
+      : [0, -30, 0]
+    : 0
+  const innerDuration = shaking
+    ? shakeDurationMs / 1000
+    : lunging
+    ? 0.4
+    : flashing
+    ? 0.16
+    : 0.2
 
   return (
     <motion.div
@@ -1387,27 +1675,30 @@ function PokemonBattleSlot({
       transition={{ type: 'spring', stiffness: 110, damping: 16 }}
     >
       <motion.div
-        animate={innerAnim}
-        transition={{ duration: 0.4 }}
+        animate={{
+          x: horizontalMotion,
+          filter: flashing
+            ? ['brightness(1)', 'brightness(2.5) saturate(0.35)', 'brightness(1)']
+            : 'brightness(1)',
+        }}
+        transition={{ duration: innerDuration, ease: 'easeOut' }}
         className="flex h-full w-full items-center justify-center drop-shadow-2xl"
       >
-        <img
-          src={spriteSrc}
-          alt={istanza.nome}
-          className="w-full h-full object-contain"
-          style={{ transform: `scale(${spriteScale})`, transformOrigin: 'center bottom' }}
-          onError={(e) => {
-            ;(e.currentTarget as HTMLImageElement).style.display = 'none'
-            const sib = e.currentTarget.nextElementSibling as HTMLElement | null
-            if (sib) sib.style.display = 'flex'
-          }}
-        />
-        <span
-          className="text-5xl items-center justify-center w-full h-full rounded-full bg-arka-surface border-4 border-white"
-          style={{ display: 'none' }}
-        >
-          {isPlayer ? '🐺' : '🦈'}
-        </span>
+        {!spriteFailed ? (
+          <ArkamonBattleSprite
+            speciesId={istanza.specieId}
+            name={istanza.nome}
+            side={isPlayer ? 'back' : 'front'}
+            animation={battleAnimation}
+            scale={spriteScale}
+            className="w-full h-full object-contain"
+            onError={() => setSpriteFailed(true)}
+          />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center rounded-full border-4 border-white bg-arka-surface text-5xl">
+            {isPlayer ? '🐺' : '🦈'}
+          </span>
+        )}
       </motion.div>
     </motion.div>
   )

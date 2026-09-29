@@ -12,7 +12,9 @@
     "vfx:runtime": "node scripts/build-vfx-runtime-assets.mjs",
     "deploy": "npm run build && gh-pages -d dist",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "vfx:sheets": "node scripts/build-vfx-spritesheets.mjs --input ./vfx-source/raw --output ./public/vfx/generated --fps 24 --maxColumns 8 --maxCellWidth 640 --maxCellHeight 640 --overwrite",
+    "vfx:build": "npm run vfx:sheets && npm run vfx:runtime"
   },
   "dependencies": {
     "framer-motion": "11.18.2",

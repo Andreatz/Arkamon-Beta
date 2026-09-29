@@ -1,5 +1,7 @@
 export type VfxPlaybackKind = 'sprite-sheet' | 'gif' | 'static-image'
 
+export type VfxMotion = 'static' | 'projectile'
+
 export type VfxAnchor =
   | 'attacker'
   | 'target'
@@ -24,6 +26,7 @@ export interface SpriteSheetMeta {
   columns: number
   rows: number
   frameCount: number
+  startFrame?: number
   fps: number
 }
 
@@ -47,4 +50,68 @@ export interface MoveVfxAsset {
   blendMode?: VfxBlendMode
   opacity?: number
   loop?: boolean
+  motion?: VfxMotion
+}
+
+export interface VfxRecipeStep {
+  id: string
+  assetId: string
+  startAtMs: number
+  durationMs?: number
+  anchor?: VfxAnchor
+  layer?: VfxLayer
+  motion?: VfxMotion
+  scaleMultiplier?: number
+  offsetX?: number
+  offsetY?: number
+  opacity?: number
+  blendMode?: VfxBlendMode
+}
+
+export interface MoveVfxRecipe {
+  id: string
+  label: string
+  durationMs: number
+  impactAtMs: number
+  steps: VfxRecipeStep[]
+}
+
+export type VfxArchetype =
+  | 'blunt'
+  | 'slash'
+  | 'bite'
+  | 'charge'
+  | 'beam'
+  | 'wave'
+  | 'storm'
+  | 'eruption'
+  | 'aura'
+  | 'psychic'
+  | 'plant'
+  | 'fire'
+  | 'electric'
+  | 'water'
+  | 'dark'
+  | 'heal'
+  | 'status'
+  | 'supreme'
+
+export type VfxIntensity = 'subtle' | 'light' | 'medium' | 'heavy'
+
+export type VfxProfileSource = 'explicit' | 'effect' | 'name' | 'type-fallback'
+
+export interface MoveVfxFeedback {
+  targetShakePx: number
+  targetShakeMs: number
+  targetFlashMs: number
+  cameraShakePx: number
+  cameraShakeMs: number
+  hitStopMs: number
+}
+
+export interface MoveVfxProfile {
+  archetype: VfxArchetype
+  intensity: VfxIntensity
+  source: VfxProfileSource
+  feedback: MoveVfxFeedback
 }

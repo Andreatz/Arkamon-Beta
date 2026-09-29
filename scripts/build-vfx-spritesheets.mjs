@@ -10,6 +10,8 @@ const DEFAULT_FPS = 24
 const DEFAULT_PADDING = 0
 const DEFAULT_MAX_COLUMNS = 8
 const DEFAULT_MIN_FRAMES = 2
+const DEFAULT_MAX_CELL_WIDTH = 640
+const DEFAULT_MAX_CELL_HEIGHT = 640
 
 function printHelp() {
   console.log(`
@@ -66,6 +68,8 @@ function parseArgs(argv) {
     padding: DEFAULT_PADDING,
     maxColumns: DEFAULT_MAX_COLUMNS,
     minFrames: DEFAULT_MIN_FRAMES,
+    maxCellWidth: DEFAULT_MAX_CELL_WIDTH,
+    maxCellHeight: DEFAULT_MAX_CELL_HEIGHT,
     manifest: 'sprite-manifest.json',
     overwrite: false,
     verbose: false,
@@ -111,6 +115,8 @@ function parseArgs(argv) {
       '--cellWidth': 'cellWidth',
       '--cellHeight': 'cellHeight',
       '--manifest': 'manifest',
+      '--maxCellWidth': 'maxCellWidth',
+      '--maxCellHeight': 'maxCellHeight',
     }
 
     const key = keyMap[rawKey]
@@ -123,7 +129,7 @@ function parseArgs(argv) {
 
     if (inlineValue == null) i++
 
-    if (key === 'fps' || key === 'padding' || key === 'maxColumns' || key === 'minFrames' || key === 'cellWidth' || key === 'cellHeight') {
+    if (key === 'fps' || key === 'padding' || key === 'maxColumns' || key === 'minFrames' || key === 'cellWidth' || key === 'cellHeight' || key === 'maxCellWidth' || key === 'maxCellHeight') {
       args[key] = Number(nextValue)
     } else if (key === 'extensions') {
       args.extensions = nextValue
@@ -243,8 +249,25 @@ async function makeSheetForSequence(sequence, config) {
   const maxIntrinsicWidth = Math.max(...intrinsicWidths)
   const maxIntrinsicHeight = Math.max(...intrinsicHeights)
 
-  const cellWidth = config.cellWidth || maxIntrinsicWidth
-  const cellHeight = config.cellHeight || maxIntrinsicHeight
+  let cellWidth
+  let cellHeight
+
+  if (config.cellWidth || config.cellHeight) {
+    cellWidth = config.cellWidth || maxIntrinsicWidth
+    cellHeight = config.cellHeight || maxIntrinsicHeight
+  } else {
+    const maxCellWidth = config.maxCellWidth || maxIntrinsicWidth
+    const maxCellHeight = config.maxCellHeight || maxIntrinsicHeight
+
+    const scale = Math.min(
+      1,
+      maxCellWidth / maxIntrinsicWidth,
+      maxCellHeight / maxIntrinsicHeight
+    )
+
+    cellWidth = Math.max(1, Math.round(maxIntrinsicWidth * scale))
+    cellHeight = Math.max(1, Math.round(maxIntrinsicHeight * scale))
+  }
 
   const frameCount = framePaths.length
   const columns = Math.max(1, Math.min(config.maxColumns, frameCount))
@@ -355,6 +378,8 @@ async function main() {
   ensurePositiveNumber(args.fps, 'fps')
   ensurePositiveNumber(args.maxColumns, 'maxColumns')
   ensurePositiveNumber(args.minFrames, 'minFrames')
+  ensurePositiveNumber(args.maxCellWidth, 'maxCellWidth')
+  ensurePositiveNumber(args.maxCellHeight, 'maxCellHeight')
   if (args.cellWidth != null) ensurePositiveNumber(args.cellWidth, 'cellWidth')
   if (args.cellHeight != null) ensurePositiveNumber(args.cellHeight, 'cellHeight')
   if (!Number.isFinite(args.padding) || args.padding < 0) {
