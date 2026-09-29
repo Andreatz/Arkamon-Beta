@@ -1,7 +1,13 @@
 import { useMemo, useState } from 'react'
 import { MOSSE } from '@data/index'
 import { SpriteMoveVfx } from '@/components/vfx/SpriteMoveVfx'
-import { resolveMoveVfxAsset } from '@/components/vfx/resolveMoveVfxAsset'
+import {
+  getMoveVfxDurationMs,
+  getMoveVfxImpactDelayMs,
+  resolveMoveVfxAsset,
+  resolveMoveVfxRecipe,
+} from '@/components/vfx/resolveMoveVfxAsset'
+import { resolveMoveVfxProfile } from '@/components/vfx/moveVfxProfiles'
 import {
   MOVE_VFX_ASSETS,
   type MoveVfxAssetId,
@@ -73,6 +79,10 @@ export function AdminVfxEditor() {
   const resetOverrides = useVfxAdminStore((state) => state.resetOverrides)
   const selectedMove = MOSSE.find((move) => move.id === selectedMoveId) ?? MOSSE[0]
   const resolvedAsset = selectedMove ? resolveMoveVfxAsset(selectedMove) : MOVE_VFX_ASSETS.punch
+  const resolvedProfile = selectedMove ? resolveMoveVfxProfile(selectedMove) : null
+  const resolvedRecipe = selectedMove ? resolveMoveVfxRecipe(selectedMove) : undefined
+  const resolvedDurationMs = selectedMove ? getMoveVfxDurationMs(selectedMove) : resolvedAsset.durationMs
+  const resolvedImpactMs = selectedMove ? getMoveVfxImpactDelayMs(selectedMove) : resolvedAsset.impactAtMs ?? 0
   const draft = overrides[selectedMoveId] ?? toOverride(selectedMoveId, resolvedAsset)
   const exportJson = useMemo(
     () => JSON.stringify(Object.values(overrides).sort((a, b) => a.moveId - b.moveId), null, 2),
@@ -138,6 +148,37 @@ export function AdminVfxEditor() {
           </div>
         </div>
       </section>
+
+      {resolvedProfile && (
+        <section className="grid grid-cols-2 gap-2 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] p-3 text-[11px]">
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Archetipo</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedProfile.archetype}</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Intensità</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedProfile.intensity}</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Classificazione</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedProfile.source}</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Recipe</span>
+            <p className="mt-0.5 truncate font-black text-[var(--arka-text)]">
+              {resolvedRecipe?.id ?? 'single-asset'}
+            </p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Durata</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedDurationMs} ms</p>
+          </div>
+          <div>
+            <span className="font-bold text-[var(--arka-text-muted)]">Impact</span>
+            <p className="mt-0.5 font-black text-[var(--arka-text)]">{resolvedImpactMs} ms</p>
+          </div>
+        </section>
+      )}
 
       <label className="grid gap-1 text-xs font-bold text-[var(--arka-text-muted)]">
         Asset
