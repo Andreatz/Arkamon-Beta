@@ -50,6 +50,15 @@ describe('MOVE_VFX_RECIPES', () => {
     expect(getMoveVfxImpactDelayMs(electricMove)).toBe(recipe?.impactAtMs)
   })
 
+  it('keeps the Vyrath/Wormaren vertical slice on composite recipes', () => {
+    const byId = (id: number) => MOSSE.find((move) => move.id === id)!
+
+    expect(resolveMoveVfxRecipe(byId(1))?.id).toBe('neutral-beam')
+    expect(resolveMoveVfxRecipe(byId(111))?.id).toBe('nature-shimmer')
+    expect(resolveMoveVfxRecipe(byId(82))?.id).toBe('heavy-impact')
+    expect(resolveMoveVfxRecipe(byId(192))?.id).toBe('fire-pulse-impact')
+  })
+
   it('bypasses automatic recipes when an admin override is active', () => {
     const electricMove = MOSSE.find((move) => resolveMoveVfxAsset(move).id === 'energyGif')
     expect(electricMove).toBeTruthy()
