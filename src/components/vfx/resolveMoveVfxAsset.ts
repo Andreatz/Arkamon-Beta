@@ -4,7 +4,11 @@ import {
   MOVE_VFX_ASSETS,
   type MoveVfxAssetId,
 } from './vfxManifest'
-import type { MoveVfxAsset } from './types'
+import {
+  MOVE_VFX_RECIPE_BY_PRIMARY_ASSET,
+  MOVE_VFX_RECIPES,
+} from './vfxRecipes'
+import type { MoveVfxAsset, MoveVfxRecipe } from './types'
 import { getAdminMoveVfxOverride } from '@store/vfxAdminStore'
 
 const BY_EFFECT: Partial<Record<string, MoveVfxAssetId>> = {
@@ -57,14 +61,18 @@ function byType(move: MossaDef): MoveVfxAssetId {
   return variants[move.id % variants.length] ?? 'punch'
 }
 
-export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
-  const assetId =
+function resolveBaseMoveVfxAssetId(move: MossaDef): MoveVfxAssetId {
+  return (
     MOVE_VFX_BY_MOVE_ID[move.id] ??
     (move.effetto ? BY_EFFECT[move.effetto] : undefined) ??
     byName(move) ??
     byType(move) ??
     'punch'
+  )
+}
 
+export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
+  const assetId = resolveBaseMoveVfxAssetId(move)
   const baseAsset = MOVE_VFX_ASSETS[assetId] ?? MOVE_VFX_ASSETS.punch
   const adminOverride = getAdminMoveVfxOverride(move.id)
 
@@ -83,10 +91,20 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
   }
 }
 
+export function resolveMoveVfxRecipe(move: MossaDef): MoveVfxRecipe | undefined {
+  // An admin override is an explicit request for a single asset. Keep the editor
+  // predictable by bypassing automatic recipes while an override is active.
+  if (getAdminMoveVfxOverride(move.id)) return undefined
+
+  const assetId = resolveBaseMoveVfxAssetId(move)
+  const recipeId = MOVE_VFX_RECIPE_BY_PRIMARY_ASSET[assetId]
+  return recipeId ? MOVE_VFX_RECIPES[recipeId] : undefined
+}
+
 export function getMoveVfxImpactDelayMs(move: MossaDef): number {
-  return resolveMoveVfxAsset(move).impactAtMs ?? 0
+  return resolveMoveVfxRecipe(move)?.impactAtMs ?? resolveMoveVfxAsset(move).impactAtMs ?? 0
 }
 
 export function getMoveVfxDurationMs(move: MossaDef): number {
-  return resolveMoveVfxAsset(move).durationMs
+  return resolveMoveVfxRecipe(move)?.durationMs ?? resolveMoveVfxAsset(move).durationMs
 }
