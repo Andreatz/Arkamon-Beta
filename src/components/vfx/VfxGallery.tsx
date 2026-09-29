@@ -94,12 +94,21 @@ export function VfxGallery() {
   const [scale, setScale] = useState(1)
   const [background, setBackground] = useState<Background>('battle')
   const [kindFilter, setKindFilter] = useState<KindFilter>('all')
+  const [assetSearch, setAssetSearch] = useState('')
   const asset = MOVE_VFX_ASSETS[selectedId]
   const point = POSITIONS[side][anchor]
-  const visibleAssets = useMemo(
-    () => Object.values(MOVE_VFX_ASSETS).filter((entry) => kindFilter === 'all' || entry.kind === kindFilter),
-    [kindFilter]
-  )
+  const visibleAssets = useMemo(() => {
+    const query = assetSearch.trim().toLowerCase()
+    return Object.values(MOVE_VFX_ASSETS).filter((entry) => {
+      const matchesKind = kindFilter === 'all' || entry.kind === kindFilter
+      const matchesSearch =
+        !query ||
+        entry.id.toLowerCase().includes(query) ||
+        entry.label.toLowerCase().includes(query)
+
+      return matchesKind && matchesSearch
+    })
+  }, [assetSearch, kindFilter])
 
   const selectAsset = (id: MoveVfxAssetId) => {
     setSelectedId(id)
@@ -111,10 +120,17 @@ export function VfxGallery() {
       <aside className="w-72 shrink-0 overflow-y-auto border-r border-white/10 bg-slate-950/95 p-4">
         <h1 className="text-xl font-black text-amber-300">VFX Lab</h1>
         <p className="mt-1 text-xs text-slate-400">Dev-only asset calibration</p>
+        <input
+          type="search"
+          value={assetSearch}
+          onChange={(event) => setAssetSearch(event.target.value)}
+          placeholder="Search VFX..."
+          className="mt-4 w-full rounded bg-slate-800 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-amber-300"
+        />
         <select
           value={kindFilter}
           onChange={(event) => setKindFilter(event.target.value as KindFilter)}
-          className="mt-4 w-full rounded bg-slate-800 px-3 py-2 text-sm"
+          className="mt-3 w-full rounded bg-slate-800 px-3 py-2 text-sm"
         >
           <option value="all">All formats</option>
           <option value="sprite-sheet">Sprite sheets</option>

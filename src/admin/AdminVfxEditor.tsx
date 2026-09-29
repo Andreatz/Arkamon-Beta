@@ -67,6 +67,7 @@ export function AdminVfxEditor() {
   const [selectedMoveId, setSelectedMoveId] = useState(MOSSE[0]?.id ?? 0)
   const [previewSide, setPreviewSide] = useState<'A' | 'B'>('A')
   const [replayId, setReplayId] = useState(1)
+  const [assetSearch, setAssetSearch] = useState('')
   const overrides = useVfxAdminStore((state) => state.overrides)
   const setOverride = useVfxAdminStore((state) => state.setOverride)
   const removeOverride = useVfxAdminStore((state) => state.removeOverride)
@@ -78,6 +79,22 @@ export function AdminVfxEditor() {
     () => JSON.stringify(Object.values(overrides).sort((a, b) => a.moveId - b.moveId), null, 2),
     [overrides]
   )
+  const filteredAssetIds = useMemo(() => {
+    const query = assetSearch.trim().toLowerCase()
+    if (!query) return assetIds
+
+    return assetIds.filter((assetId) => {
+      const asset = MOVE_VFX_ASSETS[assetId]
+      return (
+        assetId.toLowerCase().includes(query) ||
+        asset.label.toLowerCase().includes(query) ||
+        asset.kind.toLowerCase().includes(query)
+      )
+    })
+  }, [assetSearch])
+  const visibleAssetIds = filteredAssetIds.includes(draft.assetId)
+    ? filteredAssetIds
+    : [draft.assetId, ...filteredAssetIds]
 
   const update = (patch: Partial<AdminMoveVfxOverride>) => {
     setOverride({ ...draft, ...patch, moveId: selectedMoveId })
@@ -141,12 +158,22 @@ export function AdminVfxEditor() {
 
       <label className="grid gap-1 text-xs font-bold text-[var(--arka-text-muted)]">
         Asset
+        <input
+          type="search"
+          value={assetSearch}
+          onChange={(event) => setAssetSearch(event.target.value)}
+          placeholder="Cerca asset, es. lightning, generated, gif..."
+          className="h-8 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
+        />
         <select
           value={draft.assetId}
-          onChange={(event) => update(toOverride(selectedMoveId, MOVE_VFX_ASSETS[event.target.value as MoveVfxAssetId]))}
+          onChange={(event) => {
+            const asset = MOVE_VFX_ASSETS[event.target.value]
+            if (asset) update(toOverride(selectedMoveId, asset))
+          }}
           className="h-9 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
         >
-          {assetIds.map((assetId) => (
+          {visibleAssetIds.map((assetId) => (
             <option key={assetId} value={assetId}>
               {MOVE_VFX_ASSETS[assetId].label}
             </option>

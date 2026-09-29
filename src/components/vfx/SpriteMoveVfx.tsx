@@ -111,7 +111,6 @@ export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
 
   const visualStyle: CSSProperties = {
     opacity: asset.opacity ?? 1,
-    mixBlendMode: asset.blendMode ?? 'normal',
     transform: [
       `scale(${(asset.scale ?? 1) * (compact ? 0.78 : 1)})`,
       effect.side === 'B' && asset.mirrorForEnemy ? 'scaleX(-1)' : '',
@@ -123,7 +122,7 @@ export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
   const visual = assetFailed ? (
     <FallbackVfx effectId={effect.id} />
   ) : asset.kind === 'gif' ? (
-    <GifVfx asset={asset} effectId={effect.id} style={visualStyle} onError={onAssetError} />
+    <GifVfx asset={asset} effectId={effect.id} style={visualStyle} blendMode="normal" onError={onAssetError} />
   ) : asset.kind === 'sprite-sheet' && asset.sprite ? (
     <AnimatedSprite
       src={assetUrl(asset.src)}
@@ -146,6 +145,7 @@ export function SpriteMoveVfx({ effect }: { effect: MoveVfxEvent }) {
       data-move-vfx-asset={asset.id}
       style={{
         zIndex: Z_INDEX[asset.layer],
+        mixBlendMode: asset.blendMode ?? 'normal',
       }}
       aria-hidden="true"
     >

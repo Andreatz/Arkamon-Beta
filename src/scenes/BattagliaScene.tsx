@@ -1,4 +1,4 @@
-import { useGameStore, creaIstanza } from '@store/gameStore'
+import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
 import { useState, useEffect, useRef, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -73,6 +73,9 @@ export function BattagliaScene() {
   const aggiungiPokemon = useGameStore((s) => s.aggiungiPokemon)
   const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
+  const giocatore = useGameStore((s) =>
+    s.giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
+  )
   const risolviBattagliaNPC = useGameStore((s) => s.risolviBattagliaNPC)
   const usaOggetto = useGameStore((s) => s.usaOggetto)
   const battleLayout = useAdminStore((s) => s.theme.layouts.battle)
@@ -134,11 +137,20 @@ export function BattagliaScene() {
     )
     playSound('battle-start')
     if (battaglia) {
+      const turnoInizialeA = battaglia.turnoCorrente === 'A'
       setPkmnA(battaglia.pokemonA)
       setPkmnB(battaglia.pokemonB)
       setSquadraA(battaglia.squadraA ?? [battaglia.pokemonA])
       setSquadraB(battaglia.squadraB ?? [battaglia.pokemonB])
       setInfoBoxMessaggi(battaglia.log.slice(-4))
+      setTurnoA(turnoInizialeA)
+      if (!turnoInizialeA) {
+        if (battaglia.tipo === 'PVP') {
+          setAttesaPassaggio({ direzione: 'A→B', pendingB: battaglia.pokemonB })
+        } else {
+          setAttesaAvversario(battaglia.pokemonB)
+        }
+      }
     } else {
       const a = creaIstanza(1, 5)
       const b = creaIstanza(13, 5)
@@ -294,7 +306,7 @@ export function BattagliaScene() {
   const tornaIndietro = () => {
     if (isNPC && esito) risolviBattagliaNPC(esito)
     for (const p of squadraA) aggiornaPokemon(giocatoreAttivo, p)
-    terminaBattaglia(true)
+    terminaBattaglia(false)
 
     if (evoluzioniInAttesa.length > 0) {
       vaiAScena('evoluzione', {
@@ -410,14 +422,18 @@ export function BattagliaScene() {
     if (xpRes.evoluzionePendente) {
       playSound('evolution')
       messaggi.push(`Cosa? ${attivo.nome} si sta evolvendo!`)
-      setEvoluzioniInAttesa((prev) => [
-        ...prev,
-        {
-          istanzaId: attivo.istanzaId,
-          oldSpecieId: attivo.specieId,
-          newSpecieId: xpRes.evoluzionePendente!.nuovaSpecieId,
-        },
-      ])
+      setEvoluzioniInAttesa((prev) =>
+        prev.some((evoluzione) => evoluzione.istanzaId === attivo.istanzaId)
+          ? prev
+          : [
+              ...prev,
+              {
+                istanzaId: attivo.istanzaId,
+                oldSpecieId: attivo.specieId,
+                newSpecieId: xpRes.evoluzionePendente!.nuovaSpecieId,
+              },
+            ]
+      )
     }
     mostraMessaggi(messaggi)
     return xpRes.istanza
@@ -506,6 +522,24 @@ export function BattagliaScene() {
         if (nextB && isNPC) {
           mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
           setPkmnB(nextB)
+          if (aggiornatoA.hp <= 0) {
+            const nextA = squadraA.find(
+              (p) => p.istanzaId !== aggiornatoA.istanzaId && p.hp > 0
+            )
+            if (nextA) {
+              mostraMessaggi([`${aggiornatoA.nome} è esausto!`])
+              apriScambio({
+                motivo: `${aggiornatoA.nome} non può continuare.`,
+                prossimoPasso: 'passaAB',
+                pendingB: nextB,
+              })
+              return
+            }
+            mostraMessaggi(['Hai perso la battaglia...'])
+            setEsito('sconfitta')
+            setTerminata(true)
+            return
+          }
           // BR.3: il nuovo Pokémon nemico attacca subito (VBA: Cells(12,2)="B")
           passaTurnoAaB(nextB, 800)
           return
@@ -545,6 +579,10 @@ export function BattagliaScene() {
   const eseguiCattura = () => {
     if (terminata || !turnoA || azioneInCorso) return
     resetInfoBox()
+    if (!haSpazioPokemon(giocatore)) {
+      mostraMessaggi(['Squadra e deposito sono pieni: libera uno slot prima di catturare.'])
+      return
+    }
     const ris = tentaCattura(pkmnB)
     mostraMessaggi([
       `Lanci una pokeball...`,
@@ -564,6 +602,10 @@ export function BattagliaScene() {
 
   const eseguiMasterball = () => {
     if (terminata || !turnoA || azioneInCorso) return
+    if (!haSpazioPokemon(giocatore)) {
+      mostraMessaggi(['Squadra e deposito sono pieni: libera uno slot prima di catturare.'])
+      return
+    }
     if (!usaOggetto(giocatoreAttivo, 'masterball')) return
     resetInfoBox()
     mostraMessaggi([
@@ -588,6 +630,9 @@ export function BattagliaScene() {
       mostraMessaggi(statoRes.messaggi)
       mostraMessaggi([`${bEffettivo.nome} è caduto!`])
       playSound('ko')
+      const aggiornatoA = premiaConXP(pkmnA, bEffettivo)
+      setPkmnA(aggiornatoA)
+      setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
       const nextB = squadraB.find(
         (p) => p.istanzaId !== bEffettivo.istanzaId && p.hp > 0
       )
@@ -597,9 +642,6 @@ export function BattagliaScene() {
         setTurnoA(true)
         return
       }
-      const aggiornatoA = premiaConXP(pkmnA, bEffettivo)
-      setPkmnA(aggiornatoA)
-      setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
       mostraMessaggi(['Hai vinto la battaglia!'])
       playSound('victory')
       setEsito('vittoria')
@@ -668,6 +710,7 @@ export function BattagliaScene() {
         setPkmnB(bDopoAutodanno)
         setSquadraB((sq) => updateInSquadra(sq, bDopoAutodanno))
       }
+      const nuovaSquadraB = updateInSquadra(squadraB, bDopoAutodanno)
 
       if (nuovoA.hp <= 0) {
         const nextA = nuovaSquadraA.find(
@@ -675,6 +718,25 @@ export function BattagliaScene() {
         )
         if (nextA) {
           mostraMessaggi([`${nuovoA.nome} è KO!`])
+          if (bDopoAutodanno.hp <= 0) {
+            const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
+            setPkmnA(aggiornatoA)
+            setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
+            const nextB = nuovaSquadraB.find(
+              (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
+            )
+            if (!nextB || !isNPC) {
+              mostraMessaggi(['Hai vinto la battaglia!'])
+              playSound('victory')
+              setEsito('vittoria')
+              setTerminata(true)
+              return
+            }
+            mostraMessaggi([
+              `${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`,
+            ])
+            setPkmnB(nextB)
+          }
           apriScambio({
             motivo: `${nuovoA.nome} è KO.`,
             prossimoPasso: 'passaAdA',
@@ -689,7 +751,10 @@ export function BattagliaScene() {
       }
 
       if (bDopoAutodanno.hp <= 0) {
-        const nextB = squadraB.find(
+        const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
+        setPkmnA(aggiornatoA)
+        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
+        const nextB = nuovaSquadraB.find(
           (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
         )
         if (nextB && isNPC) {
@@ -698,9 +763,6 @@ export function BattagliaScene() {
           setTurnoA(true)
           return
         }
-        const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
-        setPkmnA(aggiornatoA)
-        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
         mostraMessaggi(['Hai vinto la battaglia!'])
         playSound('victory')
         setEsito('vittoria')

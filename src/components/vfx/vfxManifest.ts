@@ -1,3 +1,4 @@
+import { GENERATED_MOVE_VFX_ASSETS } from './generatedVfxAssets'
 import type { MoveVfxAsset } from './types'
 
 const sheet = (
@@ -52,7 +53,7 @@ const gif = (
   ...options,
 })
 
-export const MOVE_VFX_ASSETS = {
+const CORE_MOVE_VFX_ASSETS = {
   slash: sheet('slash', 'Slash', 'vfx/moves/slash/slash_60fps.png'),
   thrust: sheet('thrust', 'Thrust', 'vfx/moves/thrust/thrust_60fps.png'),
   punch: sheet('punch', 'Punch', 'vfx/moves/punch/punch_60fps.png'),
@@ -220,7 +221,12 @@ export const MOVE_VFX_ASSETS = {
   }),
 } satisfies Record<string, MoveVfxAsset>
 
-export type MoveVfxAssetId = keyof typeof MOVE_VFX_ASSETS
+export const MOVE_VFX_ASSETS: Record<string, MoveVfxAsset> = {
+  ...CORE_MOVE_VFX_ASSETS,
+  ...GENERATED_MOVE_VFX_ASSETS,
+}
+
+export type MoveVfxAssetId = string
 
 export const DEFAULT_PRELOAD_VFX_ASSET_IDS: MoveVfxAssetId[] = [
   'punch',
@@ -234,5 +240,5 @@ export const DEFAULT_PRELOAD_VFX_ASSET_IDS: MoveVfxAssetId[] = [
 ]
 
 export function getMoveVfxAsset(id: string): MoveVfxAsset | undefined {
-  return MOVE_VFX_ASSETS[id as MoveVfxAssetId]
+  return MOVE_VFX_ASSETS[id]
 }

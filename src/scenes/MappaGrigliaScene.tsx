@@ -26,7 +26,7 @@ import {
   puòMuoversi,
 } from '@engine/movimento'
 import type { RisultatoInterazione } from '@engine/movimento'
-import { calcolaHPMax } from '@engine/battleEngine'
+import { calcolaHPMax, determinaIniziativa } from '@engine/battleEngine'
 import { generaIncontroDaCespuglio } from '@engine/encounters'
 import { getIncontri } from '@data/index'
 import { MAPPE_GRIGLIA, PERCORSO_1 } from '@data/mappe-griglia'
@@ -346,12 +346,12 @@ export function MappaGrigliaScene() {
   }
 
   const cellaClick = (x: number, y: number) => {
-    if (isMovibile(x, y)) {
-      tentaMovimento(x - posAttivo.x, y - posAttivo.y)
-      return
-    }
     if (isInteragibile(x, y)) {
       eseguiInterazione(x, y)
+      return
+    }
+    if (isMovibile(x, y)) {
+      tentaMovimento(x - posAttivo.x, y - posAttivo.y)
     }
   }
 
@@ -408,7 +408,7 @@ export function MappaGrigliaScene() {
           pokemonB: selvatico,
           hpMaxA: calcolaHPMax(primo),
           hpMaxB: calcolaHPMax(selvatico),
-          turnoCorrente: 'A',
+          turnoCorrente: determinaIniziativa(primo.livello, selvatico.livello),
           luogoRitorno: 'mappa-griglia',
           log: [`Appare ${selvatico.nome} selvatico!`],
           evoluzioneInAttesa: null,

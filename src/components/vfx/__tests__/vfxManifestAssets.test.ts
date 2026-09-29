@@ -17,8 +17,11 @@ describe('MOVE_VFX_ASSETS', () => {
       expect(asset.sprite.frameCount).toBeLessThanOrEqual(
         asset.sprite.columns * asset.sprite.rows
       )
-      expect(asset.sprite.frameWidth).toBe(192)
-      expect(asset.sprite.frameHeight).toBe(192)
+      expect(asset.sprite.frameWidth).toBeGreaterThan(0)
+      expect(asset.sprite.frameHeight).toBeGreaterThan(0)
+      expect(asset.sprite.columns).toBeGreaterThan(0)
+      expect(asset.sprite.rows).toBeGreaterThan(0)
+      expect(asset.sprite.fps).toBeGreaterThan(0)
     }
   })
 
