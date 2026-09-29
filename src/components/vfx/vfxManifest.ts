@@ -27,6 +27,7 @@ const sheet = (
   scale: 1,
   mirrorForEnemy: true,
   blendMode: 'screen',
+  motion: 'static',
   ...options,
 })
 
@@ -49,12 +50,15 @@ const gif = (
   scale: 1,
   mirrorForEnemy: true,
   blendMode: 'screen',
+  motion: 'static',
   ...options,
 })
 
 export const MOVE_VFX_ASSETS = {
   slash: sheet('slash', 'Slash', 'vfx/moves/slash/slash_60fps.png'),
-  thrust: sheet('thrust', 'Thrust', 'vfx/moves/thrust/thrust_60fps.png'),
+  thrust: sheet('thrust', 'Thrust', 'vfx/moves/thrust/thrust_60fps.png', {
+    motion: 'projectile',
+  }),
   punch: sheet('punch', 'Punch', 'vfx/moves/punch/punch_60fps.png'),
   buff: sheet('buff', 'Buff', 'vfx/moves/buff/buff_60fps.png', {
     sprite: {
@@ -164,6 +168,7 @@ export const MOVE_VFX_ASSETS = {
     durationMs: 2160,
     width: 320,
     height: 320,
+    motion: 'projectile',
   }),
   waterTorrentGif: gif('waterTorrentGif', 'Water Torrent', 'vfx/moves/water/water_03.gif', {
     durationMs: 3020,
@@ -175,6 +180,7 @@ export const MOVE_VFX_ASSETS = {
     durationMs: 480,
     width: 310,
     height: 310,
+    motion: 'projectile',
   }),
   lightningGif: gif('lightningGif', 'Lightning', 'vfx/moves/energy/lightning_01.gif', {
     durationMs: 1160,
@@ -185,6 +191,7 @@ export const MOVE_VFX_ASSETS = {
     durationMs: 800,
     width: 320,
     height: 240,
+    motion: 'projectile',
   }),
   fireWaveGif: gif('fireWaveGif', 'Fire Wave', 'vfx/moves/burst/fire_05.gif', {
     durationMs: 2160,
@@ -227,9 +234,12 @@ export const DEFAULT_PRELOAD_VFX_ASSET_IDS: MoveVfxAssetId[] = [
   'waterGif',
   'energyGif',
   'fireballGif',
+  'fireImpactGif',
   'lightningGif',
   'psychicGif',
+  'psychicBurstGif',
   'cureGif',
+  'shimmer',
   'slash',
 ]
 
