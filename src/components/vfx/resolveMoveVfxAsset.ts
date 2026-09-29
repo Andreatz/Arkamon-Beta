@@ -1,74 +1,23 @@
-import type { MossaDef, TipoPokemon } from '@/types'
+import type { MossaDef } from '@/types'
 import { MOVE_VFX_BY_MOVE_ID } from './moveVfxOverrides'
-import {
-  MOVE_VFX_ASSETS,
-  type MoveVfxAssetId,
-} from './vfxManifest'
+import { MOVE_VFX_ASSETS, type MoveVfxAssetId } from './vfxManifest'
 import {
   MOVE_VFX_RECIPE_BY_PRIMARY_ASSET,
   MOVE_VFX_RECIPES,
 } from './vfxRecipes'
-import type { MoveVfxAsset, MoveVfxRecipe } from './types'
+import {
+  resolveMoveVfxProfile,
+  resolveProfileAssetId,
+} from './moveVfxProfiles'
+import type {
+  MoveVfxAsset,
+  MoveVfxFeedback,
+  MoveVfxRecipe,
+} from './types'
 import { getAdminMoveVfxOverride } from '@store/vfxAdminStore'
 
-const BY_EFFECT: Partial<Record<string, MoveVfxAssetId>> = {
-  CURA: 'cure',
-  CURA_PCT: 'cure',
-  CONFUSIONE: 'confuseGif',
-  SONNO: 'debuff',
-  VELENO: 'poisonGif',
-  SUPREMA: 'burst',
-}
-
-const BY_TYPE: Record<TipoPokemon, MoveVfxAssetId[]> = {
-  Fuoco: ['fireballGif', 'fireImpactGif', 'firePulseGif', 'fireWaveGif'],
-  Acqua: ['waterGif', 'waterTorrentGif'],
-  Erba: ['shimmer', 'slash'],
-  Elettro: ['energyGif', 'lightningGif'],
-  Terra: ['punch', 'guardBreakGif'],
-  Psico: ['psychicGif', 'psychicBurstGif', 'confuseGif'],
-  Oscurità: ['debuff', 'slash'],
-  Normale: ['punch', 'thrust', 'gutsPunchGif'],
-}
-
-const NAME_RULES: { words: string[]; assetId: MoveVfxAssetId }[] = [
-  { words: ['taglio', 'lama', 'artiglio', 'fendente', 'slash', 'squarcio'], assetId: 'slash' },
-  { words: ['pugno', 'colpo', 'botta', 'punch', 'impatto'], assetId: 'punch' },
-  { words: ['cura', 'guarigione', 'heal', 'risveglio', 'respiro'], assetId: 'cure' },
-  { words: ['barriera', 'protezione'], assetId: 'barrier' },
-  { words: ['scudo', 'guardia'], assetId: 'shield' },
-  { words: ['confusione'], assetId: 'confuseGif' },
-  { words: ['psico', 'mente', 'mentale'], assetId: 'psychicGif' },
-  { words: ['acqua', 'onda', 'spruzzo', 'marea', 'alluvione'], assetId: 'waterGif' },
-  { words: ['fulmine', 'tuono', 'tensione', 'scarica', 'elettr'], assetId: 'energyGif' },
-  { words: ['fiamma', 'fuoco', 'incendio', 'brace', 'lavic'], assetId: 'burst' },
-]
-
-export function normalizeVfxText(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-}
-
-function byName(move: MossaDef): MoveVfxAssetId | undefined {
-  const name = normalizeVfxText(move.nome)
-  return NAME_RULES.find((rule) => rule.words.some((word) => name.includes(word)))?.assetId
-}
-
-function byType(move: MossaDef): MoveVfxAssetId {
-  const variants = BY_TYPE[move.tipo]
-  return variants[move.id % variants.length] ?? 'punch'
-}
-
 function resolveBaseMoveVfxAssetId(move: MossaDef): MoveVfxAssetId {
-  return (
-    MOVE_VFX_BY_MOVE_ID[move.id] ??
-    (move.effetto ? BY_EFFECT[move.effetto] : undefined) ??
-    byName(move) ??
-    byType(move) ??
-    'punch'
-  )
+  return MOVE_VFX_BY_MOVE_ID[move.id] ?? resolveProfileAssetId(move)
 }
 
 export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
@@ -99,6 +48,10 @@ export function resolveMoveVfxRecipe(move: MossaDef): MoveVfxRecipe | undefined 
   const assetId = resolveBaseMoveVfxAssetId(move)
   const recipeId = MOVE_VFX_RECIPE_BY_PRIMARY_ASSET[assetId]
   return recipeId ? MOVE_VFX_RECIPES[recipeId] : undefined
+}
+
+export function getMoveVfxFeedback(move: MossaDef): MoveVfxFeedback {
+  return resolveMoveVfxProfile(move).feedback
 }
 
 export function getMoveVfxImpactDelayMs(move: MossaDef): number {
