@@ -120,6 +120,11 @@ describe('applicaXP (regola: 1 xp = 1 livello, cap a 100)', () => {
     expect(r.istanza.xp).toBe(0)
     expect(r.evoluzionePendente).toBe(null)
   })
+  it('il level-up conserva gli HP correnti', () => {
+    const r = applicaXP(mkIstanza(1, 5, 4), 1)
+    expect(r.istanza.livello).toBe(6)
+    expect(r.istanza.hp).toBe(4)
+  })
   it('Vyrath lvl 14 + 1 xp → lvl 15 con evoluzionePendente (id 2)', () => {
     const r = applicaXP(mkIstanza(1, 14), 1)
     expect(r.istanza.livello).toBe(15)

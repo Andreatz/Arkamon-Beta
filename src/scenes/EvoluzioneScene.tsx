@@ -125,7 +125,7 @@ export function EvoluzioneScene() {
         specieId: newSpec.id,
         nome: newSpec.nome,
       }
-      evoluto.hp = calcolaHPMax(evoluto)
+      evoluto.hp = Math.min(istanza.hp, calcolaHPMax(evoluto))
       aggiornaPokemon(giocatoreId, evoluto)
       playSound('level-up')
       setFase('post')

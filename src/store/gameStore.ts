@@ -86,7 +86,7 @@ interface GameState {
   /** Imposta il nome visualizzato di un giocatore. */
   impostaNomeGiocatore: (giocatoreId: 1 | 2, nome: string) => void
 
-  /** Aggiunge un pokemon alla squadra (se piena va in deposito) */
+  /** Aggiunge un pokemon alla squadra (se piena va in deposito). */
   aggiungiPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
 
   /** Aggiorna un pokemon esistente (HP, livello, evoluzione...) */
@@ -127,7 +127,7 @@ interface GameState {
   /** Aggiorna lo stato della battaglia in corso */
   aggiornaBattaglia: (patch: Partial<StatoBattaglia>) => void
 
-  /** Termina la battaglia, opzionalmente curando la squadra */
+  /** Termina la battaglia, pulendo gli stati e opzionalmente curando la squadra. */
   terminaBattaglia: (curaCompleta: boolean) => void
 
   // === ACTIONS OVERWORLD (Fase E) ===
@@ -218,14 +218,18 @@ function normalizePosizioneAvatar(posizione: PosizioneAvatar | undefined): Posiz
  * Cerca il primo slot libero nel deposito (box × slot).
  * Il deposito ha 30 box × 35 slot, identici a Excel.
  */
-function trovaSlotDepositoLibero(deposito: Record<string, PokemonIstanza>): string {
+function trovaSlotDepositoLibero(deposito: Record<string, PokemonIstanza>): string | null {
   for (let box = 1; box <= 30; box++) {
     for (let slot = 1; slot <= 35; slot++) {
       const chiave = `${box}:${slot}`
       if (!deposito[chiave]) return chiave
     }
   }
-  return '1:1' // fallback (deposito pieno: 1050 pokemon — improbabile)
+  return null
+}
+
+export function haSpazioPokemon(giocatore: StatoGiocatore): boolean {
+  return giocatore.squadra.length < 6 || trovaSlotDepositoLibero(giocatore.deposito) !== null
 }
 
 export const useGameStore = create<GameState>()(
@@ -281,6 +285,7 @@ export const useGameStore = create<GameState>()(
           }
           // Squadra piena → deposito
           const slot = trovaSlotDepositoLibero(g.deposito)
+          if (!slot) return s
           return {
             [chiaveG]: { ...g, deposito: { ...g.deposito, [slot]: istanza } },
           } as Partial<GameState>
@@ -368,7 +373,7 @@ export const useGameStore = create<GameState>()(
         const giocatore =
           state.giocatoreAttivo === 1 ? state.giocatore1 : state.giocatore2
         if (giocatore.squadra.length === 0) return false
-        const pokemonA = giocatore.squadra.find((p) => p.hp > 0) ?? giocatore.squadra[0]
+        const pokemonA = giocatore.squadra.find((p) => p.hp > 0)
         if (!pokemonA) return false
 
         // Per il Rivale (tipo PVP), il primo slot è lo starter scartato
@@ -457,7 +462,10 @@ export const useGameStore = create<GameState>()(
         set((s) => {
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
           const g = s[chiaveG]
-          const squadraCurata = g.squadra.map((p) => ({ ...p, hp: calcolaHPMax(p) }))
+          const squadraCurata = g.squadra.map((p) => {
+            const { stato: _stato, ...senzaStato } = p
+            return { ...senzaStato, hp: calcolaHPMax(senzaStato) }
+          })
           return { [chiaveG]: { ...g, squadra: squadraCurata } } as Partial<GameState>
         }),
 
@@ -482,20 +490,34 @@ export const useGameStore = create<GameState>()(
 
       terminaBattaglia: (curaCompleta) =>
         set((s) => {
-          if (!curaCompleta) return { battaglia: null }
-          // Cura HP a max e pulisce eventuali stati alterati (porting di
-          // Mod_Battle_Engine.PulisciStato + post-battaglia VBA).
-          const curaSquadra = (squadra: PokemonIstanza[]) =>
+          const pulisciSquadra = (squadra: PokemonIstanza[]) =>
             squadra.map((p) => {
               const specie = getPokemon(p.specieId)
               if (!specie) return p
               const { stato: _stato, ...senzaStato } = p
-              return { ...senzaStato, hp: calcolaHPMax(senzaStato) }
+              return curaCompleta
+                ? { ...senzaStato, hp: calcolaHPMax(senzaStato) }
+                : senzaStato
             })
+          const pulisciDeposito = (deposito: Record<string, PokemonIstanza>) =>
+            Object.fromEntries(
+              Object.entries(deposito).map(([slot, p]) => {
+                const { stato: _stato, ...senzaStato } = p
+                return [slot, senzaStato]
+              })
+            )
           return {
             battaglia: null,
-            giocatore1: { ...s.giocatore1, squadra: curaSquadra(s.giocatore1.squadra) },
-            giocatore2: { ...s.giocatore2, squadra: curaSquadra(s.giocatore2.squadra) },
+            giocatore1: {
+              ...s.giocatore1,
+              squadra: pulisciSquadra(s.giocatore1.squadra),
+              deposito: pulisciDeposito(s.giocatore1.deposito),
+            },
+            giocatore2: {
+              ...s.giocatore2,
+              squadra: pulisciSquadra(s.giocatore2.squadra),
+              deposito: pulisciDeposito(s.giocatore2.deposito),
+            },
           }
         }),
 

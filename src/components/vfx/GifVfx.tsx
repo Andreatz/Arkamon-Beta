@@ -13,12 +13,14 @@ export function GifVfx({
   effectId,
   className,
   style,
+  blendMode = asset.blendMode ?? 'normal',
   onError,
 }: {
   asset: MoveVfxAsset
   effectId: number
   className?: string
   style?: CSSProperties
+  blendMode?: CSSProperties['mixBlendMode']
   onError?: () => void
 }) {
   const reduceMotion = useReducedMotion()
@@ -35,7 +37,7 @@ export function GifVfx({
           borderRadius: '999px',
           background: 'radial-gradient(circle, rgba(255,255,255,0.9), rgba(251,191,36,0.38) 48%, transparent 72%)',
           opacity: asset.opacity ?? 1,
-          mixBlendMode: asset.blendMode ?? 'normal',
+          mixBlendMode: blendMode,
           pointerEvents: 'none',
           ...style,
         }}
@@ -57,7 +59,7 @@ export function GifVfx({
         width: asset.width,
         height: asset.height,
         opacity: asset.opacity ?? 1,
-        mixBlendMode: asset.blendMode ?? 'normal',
+        mixBlendMode: blendMode,
         pointerEvents: 'none',
         objectFit: 'contain',
         ...style,

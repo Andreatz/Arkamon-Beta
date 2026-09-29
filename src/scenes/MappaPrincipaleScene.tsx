@@ -272,6 +272,11 @@ export function MappaPrincipaleScene() {
     }
   }
 
+  const apriDeposito = () => {
+    useGameStore.setState({ giocatoreAttivo })
+    vaiAScena('deposito')
+  }
+
   const click = (nome: string, tipo: Tipo) => {
     if (layoutEditing) return
     if (nome === activeNodeName) {
@@ -695,7 +700,7 @@ export function MappaPrincipaleScene() {
         zIndex={35}
       >
         <button
-          onClick={() => vaiAScena('deposito')}
+          onClick={apriDeposito}
           className="arka-button-secondary h-full w-full overflow-hidden px-2 py-1 text-sm"
         >
           <span className="arka-layout-content block truncate">Deposito</span>

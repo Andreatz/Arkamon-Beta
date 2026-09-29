@@ -473,7 +473,6 @@ export function applicaXP(
     nuova.xp -= xpRichiestoPerLivello(nuova.livello)
     nuova.livello += 1
     livelliGuadagnati += 1
-    nuova.hp = calcolaHPMax(nuova)
 
     const specie = getPokemon(nuova.specieId)
     if (

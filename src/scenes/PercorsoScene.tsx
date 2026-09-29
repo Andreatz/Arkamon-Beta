@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
 import { getIncontri } from '@data/index'
-import { calcolaHPMax } from '@engine/battleEngine'
+import { calcolaHPMax, determinaIniziativa } from '@engine/battleEngine'
 import { generaIncontroDaCespuglio } from '@engine/encounters'
 import { useAdminStore } from '@store/adminStore'
 import { useGameStore } from '@store/gameStore'
@@ -37,7 +37,7 @@ export function PercorsoScene() {
     const selvatico = generaIncontroDaCespuglio(incontri)
     if (!selvatico) return
 
-    const primoDellaSquadra = giocatore.squadra[0]
+    const primoDellaSquadra = giocatore.squadra.find((pokemon) => pokemon.hp > 0)
     if (!primoDellaSquadra) return
 
     segnaCespuglioVisitato(giocatoreAttivo, luogo, cespuglio)
@@ -48,7 +48,7 @@ export function PercorsoScene() {
       pokemonB: selvatico,
       hpMaxA: calcolaHPMax(primoDellaSquadra),
       hpMaxB: calcolaHPMax(selvatico),
-      turnoCorrente: 'A',
+      turnoCorrente: determinaIniziativa(primoDellaSquadra.livello, selvatico.livello),
       luogoRitorno: luogo,
       log: [`Appare ${selvatico.nome} selvatico!`],
       evoluzioneInAttesa: null,

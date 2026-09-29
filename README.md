@@ -6,7 +6,7 @@ Versione web del progetto originariamente prototipato in PowerPoint + VBA.
 
 ## Avvio Rapido
 
-Requisiti: **Node.js 18+**.
+Requisiti: **Node.js 20.19+**.
 
 ```bash
 npm install
@@ -21,9 +21,9 @@ npm test
 ## Stato Attuale
 
 - Branch di lavoro: `main`
-- Ultima verifica: **25 maggio 2026**
+- Ultima verifica: **1 giugno 2026**
 - Build: `npm run build` pulito
-- Test: **309/309 verdi**
+- Test: **363/363 verdi**
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
 
 ## Funzionalita Implementate
@@ -37,7 +37,7 @@ npm test
 - Rivale e Capipalestra con squadre complete da 6 Pokemon.
 - Deposito con box, squadra, selezione e scambio slot.
 - Evoluzione post-battaglia con animazione.
-- Overworld a griglia completo in formato `MappaGriglia`: movimento a turni, 2 azioni, interazioni, camera responsive, debug grid, transizioni chiare, avatar leggibili, tutte le citta e tutti i percorsi storici registrati.
+- Mappa principale con movimento a turni, percorsi e citta interattivi.
 - Bilanciamento codificato: progressione mappe, range livelli, economia, incontri e soglie stati/cure/Supreme.
 - Audio generativo Web Audio: musica per scene, effetti principali e toggle muto persistito.
 - Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
@@ -48,7 +48,7 @@ npm test
 ```text
 src/
   data/                 Dati statici e loader tipizzati
-    mappe-griglia/      Mappe MVP del nuovo overworld
+    mappe-griglia/      Prototipo legacy dell'overworld a griglia
   engine/               Logica pura testabile
   store/                Stato globale Zustand + localStorage
   scenes/               Schermate React
@@ -89,9 +89,7 @@ Vedi: [docs/ADMIN_MODE.md](./docs/ADMIN_MODE.md)
 - [x] Fase B: stati, cure, Supreme, oggetti
 - [x] Fase C: sprite, sfondi, animazioni, code-splitting
 - [x] Fase BR: Battle Refresh
-- [x] Fase E.1-E.6: Overworld a griglia MVP
-- [x] Fase E.7-E.9: polish overworld
-- [x] Fase E.8: migrazione completa delle mappe a griglia
+- [x] Mappa principale alternativa con movimento a turni
 - [x] Priorita 3: bilanciamento
 - [x] Fase C audio: sound effects e musica
 - [x] Fase D desktop: scaffold Tauri
@@ -113,7 +111,7 @@ GITHUB_PAGES=true npm run build
 
 Il progetto include lo scaffold Tauri 2 in `src-tauri/`.
 
-Requisiti desktop: **Node.js 18+** e **Rust/Cargo**.
+Requisiti desktop: **Node.js 20.19+** e **Rust/Cargo**.
 
 ```bash
 npm run tauri:dev
