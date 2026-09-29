@@ -1,210 +1,183 @@
-import { useMemo, useState, type CSSProperties } from 'react'
-import { AnimatedSprite } from './AnimatedSprite'
-import { FallbackVfx } from './FallbackVfx'
-import { GifVfx } from './GifVfx'
-import type { MoveVfxAsset, VfxAnchor, VfxPlaybackKind } from './types'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { VfxPreviewPanel, type VfxPreviewBackground } from './VfxPreviewPanel'
+import type { VfxAnchor, VfxPlaybackKind } from './types'
 import { MOVE_VFX_ASSETS, type MoveVfxAssetId } from './vfxManifest'
-import { assetUrl } from '@/utils/assetUrl'
+import {
+  filterVfxAssetIds,
+  getVfxCuration,
+  VFX_CURATION_CATEGORIES,
+  type VfxCurationCategory,
+} from './vfxCuration'
 
-type Side = 'A' | 'B'
-type Background = 'dark' | 'light' | 'battle'
 type KindFilter = 'all' | VfxPlaybackKind
 
 const ANCHORS: VfxAnchor[] = ['attacker', 'target', 'self', 'center', 'screen']
-const SCALES = [0.5, 1, 1.5, 2]
+const SCALES = [0.5, 0.75, 1, 1.5, 2]
+const CONTROL_CLASS = 'min-w-0 rounded bg-slate-800 px-3 py-2 text-xs text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-amber-300'
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 
-const POSITIONS: Record<Side, Record<VfxAnchor, { x: number; y: number }>> = {
-  A: {
-    attacker: { x: 25, y: 64 },
-    target: { x: 77, y: 32 },
-    self: { x: 25, y: 64 },
-    center: { x: 50, y: 48 },
-    screen: { x: 50, y: 50 },
-  },
-  B: {
-    attacker: { x: 77, y: 32 },
-    target: { x: 25, y: 64 },
-    self: { x: 77, y: 32 },
-    center: { x: 50, y: 48 },
-    screen: { x: 50, y: 50 },
-  },
+function subscribeReducedMotion(onChange: () => void) {
+  const media = window.matchMedia(REDUCED_MOTION_QUERY)
+  media.addEventListener('change', onChange)
+  return () => media.removeEventListener('change', onChange)
 }
 
-function AssetVisual({
-  asset,
-  replayId,
-  side,
-  scale,
-}: {
-  asset: MoveVfxAsset
-  replayId: number
-  side: Side
-  scale: number
-}) {
-  const [failed, setFailed] = useState(false)
-  const onError = () => setFailed(true)
-  const style: CSSProperties = {
-    transform: [
-      `scale(${scale})`,
-      side === 'B' && asset.mirrorForEnemy ? 'scaleX(-1)' : '',
-      side === 'B' && asset.rotateDegForEnemy ? `rotate(${asset.rotateDegForEnemy}deg)` : '',
-    ].filter(Boolean).join(' '),
-    mixBlendMode: asset.blendMode ?? 'normal',
-    opacity: asset.opacity ?? 1,
-  }
-
-  if (failed) return <FallbackVfx effectId={replayId} />
-
-  if (asset.kind === 'gif') {
-    return <GifVfx asset={asset} effectId={replayId} style={style} onError={onError} />
-  }
-
-  if (asset.kind === 'sprite-sheet' && asset.sprite) {
-    return (
-      <AnimatedSprite
-        key={`${asset.id}-${replayId}`}
-        src={assetUrl(asset.src)}
-        {...asset.sprite}
-        width={asset.width}
-        height={asset.height}
-        durationMs={asset.durationMs}
-        loop={asset.loop}
-        style={style}
-        onError={onError}
-      />
-    )
-  }
-
-  return (
-    <img
-      src={assetUrl(asset.src)}
-      alt=""
-      decoding="async"
-      onError={onError}
-      style={{ width: asset.width, height: asset.height, objectFit: 'contain', ...style }}
-    />
-  )
+function getReducedMotion() {
+  return window.matchMedia(REDUCED_MOTION_QUERY).matches
 }
 
 export function VfxGallery() {
   const [selectedId, setSelectedId] = useState<MoveVfxAssetId>('slash')
+  const [referenceId, setReferenceId] = useState<MoveVfxAssetId | null>(null)
   const [replayId, setReplayId] = useState(1)
-  const [side, setSide] = useState<Side>('A')
-  const [anchor, setAnchor] = useState<VfxAnchor>('target')
+  const [side, setSide] = useState<'A' | 'B'>('A')
+  const [anchor, setAnchor] = useState<VfxAnchor | 'default'>('default')
   const [scale, setScale] = useState(1)
-  const [background, setBackground] = useState<Background>('battle')
+  const [background, setBackground] = useState<VfxPreviewBackground>('battle')
+  const [repeat, setRepeat] = useState(false)
   const [kindFilter, setKindFilter] = useState<KindFilter>('all')
   const [assetSearch, setAssetSearch] = useState('')
+  const [category, setCategory] = useState<VfxCurationCategory | 'all'>('all')
+  const [curatedOnly, setCuratedOnly] = useState(false)
+  const reduceMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, () => true)
   const asset = MOVE_VFX_ASSETS[selectedId]
-  const point = POSITIONS[side][anchor]
-  const visibleAssets = useMemo(() => {
-    const query = assetSearch.trim().toLowerCase()
-    return Object.values(MOVE_VFX_ASSETS).filter((entry) => {
-      const matchesKind = kindFilter === 'all' || entry.kind === kindFilter
-      const matchesSearch =
-        !query ||
-        entry.id.toLowerCase().includes(query) ||
-        entry.label.toLowerCase().includes(query)
+  const reference = referenceId ? MOVE_VFX_ASSETS[referenceId] : undefined
+  const visibleAssetIds = useMemo(() => filterVfxAssetIds(MOVE_VFX_ASSETS, {
+    search: assetSearch,
+    category,
+    curatedOnly,
+  }).filter((id) => kindFilter === 'all' || MOVE_VFX_ASSETS[id].kind === kindFilter), [assetSearch, category, curatedOnly, kindFilter])
+  const selectedIndex = visibleAssetIds.indexOf(selectedId)
+  const playbackKey = `${selectedId}-${referenceId}-${replayId}-${side}-${anchor}-${scale}-${background}-${reduceMotion}`
+  const repeatDelay = Math.max(asset.durationMs, reference?.durationMs ?? 0) + 500
 
-      return matchesKind && matchesSearch
-    })
-  }, [assetSearch, kindFilter])
+  useEffect(() => {
+    if (!repeat || reduceMotion) return
+    // Both panels restart together, after the longer effect has finished.
+    const timer = window.setTimeout(() => setReplayId((value) => value + 1), repeatDelay)
+    return () => window.clearTimeout(timer)
+  }, [repeat, reduceMotion, repeatDelay, playbackKey])
 
   const selectAsset = (id: MoveVfxAssetId) => {
     setSelectedId(id)
     setReplayId((value) => value + 1)
   }
 
+  const resetFilters = () => {
+    setAssetSearch('')
+    setCategory('all')
+    setCuratedOnly(false)
+    setKindFilter('all')
+  }
+
   return (
-    <div className="flex h-full w-full bg-slate-950 text-slate-100">
-      <aside className="w-72 shrink-0 overflow-y-auto border-r border-white/10 bg-slate-950/95 p-4">
+    <div className="flex h-full w-full flex-col overflow-y-auto bg-slate-950 text-slate-100 md:flex-row md:overflow-hidden">
+      <aside className="w-full shrink-0 space-y-3 border-b border-white/10 p-4 md:w-72 md:overflow-y-auto md:border-b-0 md:border-r">
         <h1 className="text-xl font-black text-amber-300">VFX Lab</h1>
-        <p className="mt-1 text-xs text-slate-400">Dev-only asset calibration</p>
-        <input
-          type="search"
-          value={assetSearch}
-          onChange={(event) => setAssetSearch(event.target.value)}
-          placeholder="Search VFX..."
-          className="mt-4 w-full rounded bg-slate-800 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-amber-300"
-        />
-        <select
-          value={kindFilter}
-          onChange={(event) => setKindFilter(event.target.value as KindFilter)}
-          className="mt-3 w-full rounded bg-slate-800 px-3 py-2 text-sm"
-        >
-          <option value="all">All formats</option>
-          <option value="sprite-sheet">Sprite sheets</option>
-          <option value="gif">GIF</option>
-          <option value="static-image">Static images</option>
-        </select>
-        <div className="mt-3 space-y-1">
-          {visibleAssets.map((entry) => (
-            <button
-              key={entry.id}
-              onClick={() => selectAsset(entry.id as MoveVfxAssetId)}
-              className={`w-full rounded px-3 py-2 text-left text-sm ${
-                entry.id === selectedId ? 'bg-amber-400 font-black text-slate-950' : 'bg-slate-900 hover:bg-slate-800'
-              }`}
-            >
-              {entry.label}
-              <span className="block text-[10px] opacity-70">{entry.kind}</span>
-            </button>
-          ))}
+        <p className="text-xs text-slate-400">Confronta i candidati prima di assegnarli alle mosse.</p>
+        <a href={`${window.location.pathname}${window.location.search}`} className="inline-block text-xs text-amber-300 underline">Torna al gioco</a>
+        <label className="grid gap-1 text-xs">
+          Cerca VFX
+          <input type="search" value={assetSearch} onChange={(event) => setAssetSearch(event.target.value)} placeholder="Nome, tipo o categoria..." className={CONTROL_CLASS} />
+        </label>
+        <label className="grid gap-1 text-xs">
+          Categoria
+          <select value={category} onChange={(event) => setCategory(event.target.value as VfxCurationCategory | 'all')} className={CONTROL_CLASS}>
+            <option value="all">Tutte</option>
+            {VFX_CURATION_CATEGORIES.map((value) => <option key={value} value={value}>{value}</option>)}
+          </select>
+        </label>
+        <label className="flex items-center gap-2 text-xs">
+          <input type="checkbox" checked={curatedOnly} onChange={(event) => setCuratedOnly(event.target.checked)} />
+          Solo candidati
+        </label>
+        <label className="grid gap-1 text-xs">
+          Formato
+          <select value={kindFilter} onChange={(event) => setKindFilter(event.target.value as KindFilter)} className={CONTROL_CLASS}>
+            <option value="all">Tutti i formati</option>
+            <option value="sprite-sheet">Sprite sheet</option>
+            <option value="gif">GIF</option>
+            <option value="static-image">Immagini statiche</option>
+          </select>
+        </label>
+        <button type="button" onClick={resetFilters} className={`${CONTROL_CLASS} w-full`}>Azzera filtri</button>
+        <p role="status" className="text-xs text-slate-400">
+          {visibleAssetIds.length} di {Object.keys(MOVE_VFX_ASSETS).length} effetti
+          {selectedIndex < 0 ? '. Anteprima selezionata fuori filtro.' : ''}
+        </p>
+        <div className="max-h-56 space-y-1 overflow-y-auto md:max-h-none md:overflow-visible">
+          {visibleAssetIds.length === 0 && <p className="text-xs text-slate-400">Nessun effetto corrisponde ai filtri.</p>}
+          {visibleAssetIds.map((id) => {
+            const entry = MOVE_VFX_ASSETS[id]
+            const curation = getVfxCuration(id)
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={id === selectedId}
+                onClick={() => selectAsset(id)}
+                className={`w-full break-words rounded px-3 py-2 text-left text-xs outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${id === selectedId ? 'bg-amber-400 font-black text-slate-950' : 'bg-slate-900 hover:bg-slate-800'}`}
+              >
+                {entry.label}
+                <span className="mt-1 block text-[10px] opacity-70">{curation ? `${curation.categories.join(' · ')} · ${curation.priority ?? 'candidate'}` : entry.kind}</span>
+              </button>
+            )
+          })}
         </div>
       </aside>
 
-      <main className="flex min-w-0 flex-1 flex-col">
-        <div className="flex flex-wrap items-center gap-2 border-b border-white/10 bg-slate-900/95 p-3 text-xs">
-          <button className="rounded bg-amber-400 px-4 py-2 font-black text-slate-950" onClick={() => setReplayId((value) => value + 1)}>
-            Replay
-          </button>
-          <select value={side} onChange={(event) => setSide(event.target.value as Side)} className="rounded bg-slate-800 px-3 py-2">
-            <option value="A">Side A</option>
-            <option value="B">Side B</option>
-          </select>
-          <select value={anchor} onChange={(event) => setAnchor(event.target.value as VfxAnchor)} className="rounded bg-slate-800 px-3 py-2">
-            {ANCHORS.map((value) => <option key={value}>{value}</option>)}
-          </select>
-          <select value={scale} onChange={(event) => setScale(Number(event.target.value))} className="rounded bg-slate-800 px-3 py-2">
-            {SCALES.map((value) => <option key={value} value={value}>{value}x</option>)}
-          </select>
-          <select value={background} onChange={(event) => setBackground(event.target.value as Background)} className="rounded bg-slate-800 px-3 py-2">
-            <option value="battle">Battle background</option>
-            <option value="dark">Dark background</option>
-            <option value="light">Light background</option>
-          </select>
-          <span className="ml-auto text-slate-300">
-            {asset.width}x{asset.height} | {asset.durationMs} ms | {asset.anchor} | {asset.layer}
-          </span>
+      <main className="flex min-w-0 flex-1 flex-col md:overflow-y-auto">
+        <div className="space-y-3 border-b border-white/10 bg-slate-900 p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" className="rounded bg-amber-400 px-4 py-2 text-xs font-black text-slate-950" onClick={() => setReplayId((value) => value + 1)}>Replay sincronizzato</button>
+            <button type="button" disabled={selectedIndex <= 0} onClick={() => selectAsset(visibleAssetIds[selectedIndex - 1])} className={`${CONTROL_CLASS} disabled:opacity-40`}>Precedente</button>
+            <button type="button" disabled={visibleAssetIds.length === 0 || selectedIndex === visibleAssetIds.length - 1} onClick={() => selectAsset(visibleAssetIds[selectedIndex + 1])} className={`${CONTROL_CLASS} disabled:opacity-40`}>Successivo</button>
+            <button type="button" disabled={referenceId === selectedId} onClick={() => { setReferenceId(selectedId); setReplayId((value) => value + 1) }} className={`${CONTROL_CLASS} disabled:opacity-40`}>Fissa come riferimento</button>
+            {reference && <button type="button" onClick={() => { setReferenceId(null); setReplayId((value) => value + 1) }} className={CONTROL_CLASS}>Rimuovi riferimento</button>}
+          </div>
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="grid gap-1 text-xs">
+              Lato attaccante
+              <select value={side} onChange={(event) => setSide(event.target.value as 'A' | 'B')} className={CONTROL_CLASS}>
+                <option value="A">A</option><option value="B">B</option>
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs">
+              Posizione
+              <select value={anchor} onChange={(event) => setAnchor(event.target.value as VfxAnchor | 'default')} className={CONTROL_CLASS}>
+                <option value="default">Originale dell’asset</option>
+                {ANCHORS.map((value) => <option key={value} value={value}>{value}</option>)}
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs">
+              Scala di confronto
+              <select value={scale} onChange={(event) => setScale(Number(event.target.value))} className={CONTROL_CLASS}>
+                {SCALES.map((value) => <option key={value} value={value}>{value}×</option>)}
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs">
+              Sfondo
+              <select value={background} onChange={(event) => setBackground(event.target.value as VfxPreviewBackground)} className={CONTROL_CLASS}>
+                <option value="battle">Battaglia</option><option value="dark">Scuro</option><option value="light">Chiaro</option>
+              </select>
+            </label>
+            <label className="flex items-center gap-2 py-2 text-xs">
+              <input type="checkbox" checked={repeat && !reduceMotion} disabled={!!reduceMotion} onChange={(event) => setRepeat(event.target.checked)} />
+              Ripeti automaticamente
+            </label>
+          </div>
+          <p className="text-[11px] text-slate-400">
+            Fissa un riferimento, poi scegli un altro effetto. I controlli si applicano a entrambe le anteprime; 1× mantiene la scala originale.
+            {reduceMotion ? ' Ripetizione disattivata dalle preferenze di movimento ridotto.' : ''}
+          </p>
         </div>
-
-        <div
-          className={`relative flex-1 overflow-hidden ${
-            background === 'dark' ? 'bg-slate-950' : background === 'light' ? 'bg-slate-200' : 'bg-cover bg-center'
-          }`}
-          style={background === 'battle' ? { backgroundImage: `url(${assetUrl('backgrounds/battle_forest.jpg')})` } : undefined}
-        >
-          <div className="absolute left-[25%] top-[64%] h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-emerald-300/80 bg-emerald-500/20 text-center text-xs font-black leading-[6rem]">
-            A
-          </div>
-          <div className="absolute left-[77%] top-[32%] h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-rose-300/80 bg-rose-500/20 text-center text-xs font-black leading-[6rem]">
-            B
-          </div>
-          <div
-            key={`${selectedId}-${replayId}-${side}-${anchor}-${scale}`}
-            className="pointer-events-none absolute flex items-center justify-center"
-            style={{
-              left: `${point.x}%`,
-              top: `${point.y}%`,
-              width: anchor === 'screen' ? '100%' : asset.width,
-              height: anchor === 'screen' ? '100%' : asset.height,
-              marginLeft: anchor === 'screen' ? '-50%' : -(asset.width / 2),
-              marginTop: anchor === 'screen' ? '-50%' : -(asset.height / 2),
-            }}
-          >
-            <AssetVisual asset={asset} replayId={replayId} side={side} scale={scale} />
-          </div>
+        <div className={`grid flex-1 gap-3 p-3 ${reference ? 'lg:grid-cols-2' : ''}`}>
+          {reference && (
+            <VfxPreviewPanel title="Riferimento" asset={reference} replayId={replayId} playbackKey={playbackKey} side={side} anchor={anchor} scale={scale} background={background} />
+          )}
+          <VfxPreviewPanel title="Candidato" asset={asset} replayId={replayId} playbackKey={playbackKey} side={side} anchor={anchor} scale={scale} background={background} />
         </div>
+        <p className="px-3 pb-3 text-[11px] text-slate-400">La selezione e il riferimento restano in questa sessione. Il confronto non modifica le associazioni delle mosse.</p>
       </main>
     </div>
   )

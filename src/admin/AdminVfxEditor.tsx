@@ -118,6 +118,16 @@ export function AdminVfxEditor() {
       <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
         Gli override VFX restano in memoria fino al refresh. Esporta il JSON per conservarli.
       </p>
+      {import.meta.env.DEV && (
+        <a
+          href={`${window.location.pathname}${window.location.search}#vfx-lab`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-block rounded-md border border-[var(--arka-primary)] px-3 py-2 text-xs font-bold text-[var(--arka-primary-hover)]"
+        >
+          Confronta effetti nel VFX Lab ↗
+        </a>
+      )}
 
       <label className="grid gap-1 text-xs font-bold text-[var(--arka-text-muted)]">
         Mossa
