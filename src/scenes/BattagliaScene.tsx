@@ -52,6 +52,11 @@ import {
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
 import { resolveMoveVfxProfile } from '@/components/vfx/moveVfxProfiles'
+import type { AdminBattleLayout } from '@/theme/adminThemeTypes'
+import {
+  getBattleDamagePosition,
+  getBattleSideCenter,
+} from '@/components/vfx/battleVfxPosition'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
@@ -934,13 +939,14 @@ export function BattagliaScene() {
 
       <AnimatePresence>
         {impactPulse && (
-          <ImpactPulseOverlay key={impactPulse.id} pulse={impactPulse} />
+          <ImpactPulseOverlay key={impactPulse.id} pulse={impactPulse} layout={battleLayout} />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
         {damagePopup && (
-          <DamagePopupOverlay key={damagePopup.id} popup={damagePopup} />
+          <DamagePopupOverlay key={damagePopup.id} popup={damagePopup} layout={battleLayout}
+/>
         )}
       </AnimatePresence>
 
@@ -1276,11 +1282,19 @@ type ImpactPulseDisplay = {
   strength: number
 }
 
-function ImpactPulseOverlay({ pulse }: { pulse: ImpactPulseDisplay }) {
-  const position =
-    pulse.side === 'A'
-      ? { left: '25%', top: '64%' }
-      : { left: '77%', top: '32%' }
+function ImpactPulseOverlay({
+  pulse,
+  layout,
+}: {
+  pulse: ImpactPulseDisplay
+  layout: AdminBattleLayout
+}) {
+  const point = getBattleSideCenter(layout, pulse.side)
+
+  const position = {
+    left: `${point.x}%`,
+    top: `${point.y}%`,
+  }
 
   return (
     <div
@@ -1292,10 +1306,17 @@ function ImpactPulseOverlay({ pulse }: { pulse: ImpactPulseDisplay }) {
         initial={{ opacity: 0.95, scale: 0.25 }}
         animate={{
           opacity: [0.95, 0.72, 0],
-          scale: [0.25, pulse.strength, pulse.strength * 1.9],
+          scale: [
+            0.25,
+            pulse.strength,
+            pulse.strength * 1.9,
+          ],
         }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        transition={{
+          duration: 0.5,
+          ease: 'easeOut',
+        }}
         className="h-28 w-28 rounded-full border-[3px]"
         style={{
           borderColor: pulse.color,
@@ -1314,11 +1335,19 @@ type DamagePopupDisplay = {
   amount: number
 }
 
-function DamagePopupOverlay({ popup }: { popup: DamagePopupDisplay }) {
-  const position =
-    popup.side === 'A'
-      ? { left: '25%', top: '56%' }
-      : { left: '77%', top: '24%' }
+function DamagePopupOverlay({
+  popup,
+  layout,
+}: {
+  popup: DamagePopupDisplay
+  layout: AdminBattleLayout
+}) {
+  const point = getBattleDamagePosition(layout, popup.side)
+
+  const position = {
+    left: `${point.x}%`,
+    top: `${point.y}%`,
+  }
 
   return (
     <div
@@ -1327,10 +1356,25 @@ function DamagePopupOverlay({ popup }: { popup: DamagePopupDisplay }) {
       aria-hidden="true"
     >
       <motion.div
-        initial={{ opacity: 0, y: 10, scale: 0.72 }}
-        animate={{ opacity: 1, y: -18, scale: 1.08 }}
-        exit={{ opacity: 0, y: -38, scale: 0.9 }}
-        transition={{ duration: 0.32, ease: 'easeOut' }}
+        initial={{
+          opacity: 0,
+          y: 10,
+          scale: 0.72,
+        }}
+        animate={{
+          opacity: 1,
+          y: -18,
+          scale: 1.08,
+        }}
+        exit={{
+          opacity: 0,
+          y: -38,
+          scale: 0.9,
+        }}
+        transition={{
+          duration: 0.32,
+          ease: 'easeOut',
+        }}
         className="text-4xl font-black text-rose-300 [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_4px_8px_rgba(0,0,0,0.65)]"
       >
         -{popup.amount}

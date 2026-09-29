@@ -4,6 +4,10 @@ import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from './AnimatedSprite'
 import { FallbackVfx } from './FallbackVfx'
 import { GifVfx } from './GifVfx'
+import { useAdminStore } from '@store/adminStore'
+import {
+  getBattleVfxAnchorPosition,
+} from './battleVfxPosition'
 import type {
   MoveVfxAsset,
   VfxAnchor,
@@ -12,23 +16,6 @@ import type {
   VfxMotion,
 } from './types'
 
-type Position = { x: number; y: number }
-
-const POSITIONS = {
-  A: {
-    attacker: { x: 25, y: 64 },
-    target: { x: 77, y: 32 },
-    self: { x: 25, y: 64 },
-  },
-  B: {
-    attacker: { x: 77, y: 32 },
-    target: { x: 25, y: 64 },
-    self: { x: 77, y: 32 },
-  },
-} satisfies Record<'A' | 'B', Record<'attacker' | 'target' | 'self', Position>>
-
-const CENTER: Position = { x: 50, y: 48 }
-
 export const VFX_Z_INDEX: Record<VfxLayer, number> = {
   'behind-pokemon': 30,
   'over-pokemon': 45,
@@ -36,11 +23,6 @@ export const VFX_Z_INDEX: Record<VfxLayer, number> = {
 }
 
 const COMPACT_VFX_QUERY = '(max-width: 640px)'
-
-function getPosition(side: 'A' | 'B', anchor: VfxAnchor): Position {
-  if (anchor === 'center' || anchor === 'screen') return CENTER
-  return POSITIONS[side][anchor]
-}
 
 function StaticImageVfx({
   asset,
@@ -103,6 +85,9 @@ export function MoveVfxLayer({
   blendMode?: VfxBlendMode
 }) {
   const reduceMotion = useReducedMotion()
+  const battleLayout = useAdminStore(
+    (state) => state.theme.layouts.battle
+  )
   const [assetFailed, setAssetFailed] = useState(false)
   const [compact, setCompact] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(COMPACT_VFX_QUERY).matches
@@ -111,8 +96,16 @@ export function MoveVfxLayer({
   const anchor = target === 'self' ? 'self' : anchorOverride ?? asset.anchor
   const layer = layerOverride ?? asset.layer
   const motionType = motionOverride ?? asset.motion ?? 'static'
-  const destination = getPosition(side, anchor)
-  const attacker = getPosition(side, 'attacker')
+  const destination = getBattleVfxAnchorPosition(
+    battleLayout,
+    side,
+    anchor
+  )
+  const attacker = getBattleVfxAnchorPosition(
+    battleLayout,
+    side,
+    'attacker'
+  )
   const projectile = anchor === 'target' && motionType === 'projectile'
   const isScreen = anchor === 'screen'
 
