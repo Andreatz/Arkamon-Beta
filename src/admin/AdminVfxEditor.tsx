@@ -11,6 +11,7 @@ import { resolveMoveVfxProfile } from '@/components/vfx/moveVfxProfiles'
 import {
   filterVfxAssetIds,
   getVfxCuration,
+  getVfxCurationPreviewAsset,
   VFX_CURATION_CATEGORIES,
   type VfxCurationCategory,
 } from '@/components/vfx/vfxCuration'
@@ -271,7 +272,7 @@ export function AdminVfxEditor() {
           value={draft.assetId}
           onChange={(event) => {
             const asset = MOVE_VFX_ASSETS[event.target.value]
-            if (asset) update(toOverride(selectedMoveId, asset))
+            if (asset) update(toOverride(selectedMoveId, getVfxCurationPreviewAsset(asset)))
           }}
           className="h-9 min-w-0 w-full rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
         >

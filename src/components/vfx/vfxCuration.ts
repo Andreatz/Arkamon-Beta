@@ -1,4 +1,4 @@
-import type { MoveVfxAsset } from './types'
+import type { MoveVfxAsset, VfxAnchor, VfxIntensity } from './types'
 
 export const VFX_CURATION_CATEGORIES = [
   'physical',
@@ -24,6 +24,12 @@ export type VfxCurationCategory = typeof VFX_CURATION_CATEGORIES[number]
 export interface VfxCurationEntry {
   categories: readonly VfxCurationCategory[]
   priority?: 'candidate' | 'preferred' | 'special'
+  reviewed?: boolean
+  intensity?: VfxIntensity
+  preview?: {
+    anchor?: VfxAnchor
+    scaleMultiplier?: number
+  }
   notes?: string
 }
 
@@ -31,8 +37,11 @@ export interface VfxCurationEntry {
 // Keep editorial metadata here: generatedVfxAssets.ts belongs to the asset pipeline.
 export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
   'generated:anglercompany-img_ladderpuzzle_shock-images_nested_sheet': {
-    categories: ['electric', 'impact'],
+    categories: ['psychic', 'impact'],
     priority: 'preferred',
+    reviewed: true,
+    preview: { anchor: 'center', scaleMultiplier: 1.5 },
+    notes: 'Scelto per mosse psichiche: allineamento centrale e zoom 1.5×.',
   },
   'generated:anglercompany-img_subboss_chargedcannon_blue_hit-images_nested_sheet': {
     categories: ['beam', 'impact'],
@@ -76,7 +85,11 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
   },
   'generated:direction-img_effect_skill_spark_0-images_nested_sheet': {
     categories: ['electric', 'impact'],
-    priority: 'candidate',
+    priority: 'preferred',
+    reviewed: true,
+    intensity: 'medium',
+    preview: { scaleMultiplier: 1.5 },
+    notes: 'Scelto per mosse Elettro medie, zoom 1.5×. Posizione originale.',
   },
   'generated:direction1-img_effect_skill_overswingdouble_0-images_nested_sheet': {
     categories: ['slash', 'physical'],
@@ -141,6 +154,23 @@ export function getVfxCuration(assetId: string): VfxCurationEntry | undefined {
   return Object.prototype.hasOwnProperty.call(VFX_CURATION, assetId)
     ? VFX_CURATION[assetId]
     : undefined
+}
+
+// Apply saved visual decisions without mutating the generated manifest.
+// Explicit Lab controls replace saved values, so choosing 1.5× never applies it twice.
+export function getVfxCurationPreviewAsset(
+  asset: MoveVfxAsset,
+  { anchor = 'default', scale = 'default' }: {
+    anchor?: VfxAnchor | 'default'
+    scale?: number | 'default'
+  } = {}
+): MoveVfxAsset {
+  const preview = getVfxCuration(asset.id)?.preview
+  return {
+    ...asset,
+    anchor: anchor === 'default' ? preview?.anchor ?? asset.anchor : anchor,
+    scale: (asset.scale ?? 1) * (scale === 'default' ? preview?.scaleMultiplier ?? 1 : scale),
+  }
 }
 
 export function filterVfxAssetIds(

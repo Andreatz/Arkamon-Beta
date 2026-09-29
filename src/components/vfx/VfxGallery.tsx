@@ -32,7 +32,7 @@ export function VfxGallery() {
   const [replayId, setReplayId] = useState(1)
   const [side, setSide] = useState<'A' | 'B'>('A')
   const [anchor, setAnchor] = useState<VfxAnchor | 'default'>('default')
-  const [scale, setScale] = useState(1)
+  const [scale, setScale] = useState<number | 'default'>('default')
   const [background, setBackground] = useState<VfxPreviewBackground>('battle')
   const [repeat, setRepeat] = useState(false)
   const [kindFilter, setKindFilter] = useState<KindFilter>('all')
@@ -145,13 +145,14 @@ export function VfxGallery() {
             <label className="grid gap-1 text-xs">
               Posizione
               <select value={anchor} onChange={(event) => setAnchor(event.target.value as VfxAnchor | 'default')} className={CONTROL_CLASS}>
-                <option value="default">Originale dell’asset</option>
+                <option value="default">Salvata / originale</option>
                 {ANCHORS.map((value) => <option key={value} value={value}>{value}</option>)}
               </select>
             </label>
             <label className="grid gap-1 text-xs">
               Scala di confronto
-              <select value={scale} onChange={(event) => setScale(Number(event.target.value))} className={CONTROL_CLASS}>
+              <select value={scale} onChange={(event) => setScale(event.target.value === 'default' ? 'default' : Number(event.target.value))} className={CONTROL_CLASS}>
+                <option value="default">Salvata / originale</option>
                 {SCALES.map((value) => <option key={value} value={value}>{value}×</option>)}
               </select>
             </label>
@@ -167,7 +168,7 @@ export function VfxGallery() {
             </label>
           </div>
           <p className="text-[11px] text-slate-400">
-            Fissa un riferimento, poi scegli un altro effetto. I controlli si applicano a entrambe le anteprime; 1× mantiene la scala originale.
+            Fissa un riferimento, poi scegli un altro effetto. “Salvata / originale” usa le regolazioni del catalogo, se presenti. Le scelte manuali sostituiscono quelle salvate; 1× mostra la scala originale.
             {reduceMotion ? ' Ripetizione disattivata dalle preferenze di movimento ridotto.' : ''}
           </p>
         </div>

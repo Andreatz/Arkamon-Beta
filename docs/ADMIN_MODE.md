@@ -43,8 +43,12 @@ in una nuova scheda. È disponibile solo con il server di sviluppo, all'indirizz
    la ripetizione automatica.
 
 Il Lab usa lo stesso renderer VFX della battaglia, compresi gli anchor del layout
-Admin, movimento, scala base, offset e specchiatura. La scala di confronto `1×`
-mantiene quella dell'asset; la posizione predefinita rispetta il suo anchor.
+Admin, movimento, scala base, offset e specchiatura. La modalità **Salvata / originale**
+applica le regolazioni della curation, se presenti, altrimenti quelle dell'asset.
+Le scelte manuali di posizione e scala sostituiscono le regolazioni salvate:
+`1×` mantiene la scala originale e `1.5×` non viene applicato due volte.
+Anche la selezione di un asset nell'Admin VFX parte dalle regolazioni salvate,
+che rimangono modificabili nei campi Scala e Anchor.
 Le anteprime mostrano categorie, priorità e note della curation. Un filtro non
 cancella l'effetto selezionato né il riferimento.
 

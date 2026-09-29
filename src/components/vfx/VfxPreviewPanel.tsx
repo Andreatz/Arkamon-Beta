@@ -2,7 +2,7 @@ import { useAdminStore } from '@store/adminStore'
 import { assetUrl } from '@/utils/assetUrl'
 import { getBattleSideCenter } from './battleVfxPosition'
 import { MoveVfxLayer } from './MoveVfxLayer'
-import { getVfxCuration } from './vfxCuration'
+import { getVfxCuration, getVfxCurationPreviewAsset } from './vfxCuration'
 import type { MoveVfxAsset, VfxAnchor } from './types'
 
 export type VfxPreviewBackground = 'dark' | 'light' | 'battle'
@@ -23,11 +23,12 @@ export function VfxPreviewPanel({
   playbackKey: string
   side: 'A' | 'B'
   anchor: VfxAnchor | 'default'
-  scale: number
+  scale: number | 'default'
   background: VfxPreviewBackground
 }) {
   const layout = useAdminStore((state) => state.theme.layouts.battle)
   const curation = getVfxCuration(asset.id)
+  const previewAsset = getVfxCurationPreviewAsset(asset, { anchor, scale })
 
   return (
     <section aria-label={title} className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-slate-700 bg-slate-900">
@@ -56,11 +57,9 @@ export function VfxPreviewPanel({
         })}
         <MoveVfxLayer
           key={playbackKey}
-          asset={asset}
+          asset={previewAsset}
           effectId={replayId}
           side={side}
-          anchor={anchor === 'default' ? undefined : anchor}
-          scaleMultiplier={scale}
         />
       </div>
       <footer className="space-y-2 p-3 text-[10px] text-slate-400">
@@ -70,9 +69,11 @@ export function VfxPreviewPanel({
             <span key={category} className="rounded border border-slate-600 px-2 py-0.5">{category}</span>
           ))}
           <span>{curation?.priority ?? 'Non classificato'}</span>
+          {curation?.reviewed && <span>· Valutato visivamente</span>}
+          {curation?.intensity && <span>· Intensità: {curation.intensity}</span>}
         </div>
         {curation?.notes && <p className="text-xs">{curation.notes}</p>}
-        <p>{asset.durationMs} ms · {asset.width} × {asset.height} · {anchor === 'default' ? asset.anchor : anchor} · {asset.motion ?? 'static'} · scala base {asset.scale ?? 1}×</p>
+        <p>{asset.durationMs} ms · {asset.width} × {asset.height} · {previewAsset.anchor} · {asset.motion ?? 'static'} · scala effettiva {previewAsset.scale}×</p>
         <p className="break-all">{asset.id}</p>
       </footer>
     </section>
