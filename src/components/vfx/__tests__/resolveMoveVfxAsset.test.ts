@@ -39,8 +39,8 @@ describe('resolveMoveVfxAsset', () => {
     const waterAttack = resolveMoveVfxAsset(move(9004, 'Acqua'))
     expect(waterAttack.id).toBe('waterGif')
     expect(waterAttack.anchor).toBe('target')
-    expect(['punch', 'thrust', 'gutsPunchGif']).toContain(
-      resolveMoveVfxAsset(move(9005, 'Normale')).id
+    expect(resolveMoveVfxAsset(move(9005, 'Normale')).id).toBe(
+      'generated:lynn-img_skill_hithard_hit-images_nested_sheet'
     )
   })
 

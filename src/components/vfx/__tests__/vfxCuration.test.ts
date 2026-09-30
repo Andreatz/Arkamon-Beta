@@ -3,11 +3,53 @@ import { MOVE_VFX_ASSETS } from '../vfxManifest'
 import {
   filterVfxAssetIds,
   getVfxCuration,
+  getVfxCurationPreviewAsset,
   VFX_CURATION,
   VFX_CURATION_CATEGORIES,
 } from '../vfxCuration'
 
 describe('VFX curation', () => {
+  it('preserves the confirmed heavy electric calibration', () => {
+    const id = 'generated:highmountain-img_effect_tynus_lightning_2-images_nested_sheet'
+    expect(getVfxCuration(id)).toMatchObject({ reviewed: true, intensity: 'heavy', categories: ['electric', 'impact'] })
+    expect(getVfxCurationPreviewAsset(MOVE_VFX_ASSETS[id])).toMatchObject({ anchor: 'target', scale: 1.5 })
+  })
+
+  it('reduces the review to confirmed choices and proposals while keeping reserves accessible', () => {
+    const reserve = 'generated:hekatoneff_1011-img_hit-images_nested_sheet'
+    const result = filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true })
+    expect(result).toHaveLength(10)
+    expect(result.filter((id) => getVfxCuration(id)?.reviewed)).toHaveLength(10)
+    expect(result).not.toContain(reserve)
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS)).toContain(reserve)
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true, category: 'electric' })).toHaveLength(3)
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true, search: 'no-matching-effect' })).toEqual([])
+  })
+
+  it('keeps the reviewed psychic effect out of electric results', () => {
+    const id = 'generated:anglercompany-img_ladderpuzzle_shock-images_nested_sheet'
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { category: 'electric' })).not.toContain(id)
+    expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { category: 'psychic' })).toContain(id)
+    expect(getVfxCurationPreviewAsset(MOVE_VFX_ASSETS[id])).toMatchObject({ anchor: 'center', scale: 1.5 })
+  })
+
+  it('saves medium electric Spark calibration without modifying generated assets', () => {
+    const id = 'generated:direction-img_effect_skill_spark_0-images_nested_sheet'
+    const asset = MOVE_VFX_ASSETS[id]
+    const original = { ...asset }
+    expect(getVfxCuration(id)).toMatchObject({ reviewed: true, intensity: 'medium' })
+    expect(getVfxCurationPreviewAsset(asset)).toMatchObject({ anchor: asset.anchor, scale: 1.5 })
+    expect(asset).toEqual(original)
+  })
+
+  it('replaces saved calibration with manual controls instead of multiplying it twice', () => {
+    const asset = MOVE_VFX_ASSETS['generated:anglercompany-img_ladderpuzzle_shock-images_nested_sheet']
+    expect(getVfxCurationPreviewAsset(asset, { anchor: 'target', scale: 1.5 }))
+      .toMatchObject({ anchor: 'target', scale: 1.5 })
+    expect(getVfxCurationPreviewAsset(asset, { scale: 1 }).scale).toBe(1)
+    expect(getVfxCurationPreviewAsset(MOVE_VFX_ASSETS.punch)).toEqual(MOVE_VFX_ASSETS.punch)
+  })
+
   it('keeps the editorial catalogue linked to real assets after regeneration', () => {
     for (const [assetId, entry] of Object.entries(VFX_CURATION)) {
       expect(MOVE_VFX_ASSETS[assetId], assetId).toBeDefined()

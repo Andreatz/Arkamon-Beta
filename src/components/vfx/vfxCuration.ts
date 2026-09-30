@@ -1,4 +1,4 @@
-import type { MoveVfxAsset } from './types'
+import type { MoveVfxAsset, VfxAnchor, VfxArchetype, VfxIntensity } from './types'
 
 export const VFX_CURATION_CATEGORIES = [
   'physical',
@@ -24,19 +24,65 @@ export type VfxCurationCategory = typeof VFX_CURATION_CATEGORIES[number]
 export interface VfxCurationEntry {
   categories: readonly VfxCurationCategory[]
   priority?: 'candidate' | 'preferred' | 'special'
+  reviewed?: boolean
+  recommendation?: 'proposed' | 'reserve'
+  intensity?: VfxIntensity
+  // Explicit battle role: semantic tags alone cannot distinguish slash from blunt.
+  battleArchetype?: VfxArchetype
+  preview?: {
+    anchor?: VfxAnchor
+    scaleMultiplier?: number
+  }
   notes?: string
 }
 
-// Initial shortlist based on asset names and previous previews, pending visual review.
+// Reviewed selections and remaining candidates; reviewed entries are user-confirmed.
 // Keep editorial metadata here: generatedVfxAssets.ts belongs to the asset pipeline.
 export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
-  'generated:anglercompany-img_ladderpuzzle_shock-images_nested_sheet': {
-    categories: ['electric', 'impact'],
+  'generated:anglercompany-img_finalboss_minitail_hit-images_flat_sheet': {
+    battleArchetype: 'psychic',
+    categories: ['psychic', 'impact'],
     priority: 'preferred',
+    reviewed: true,
+    intensity: 'light',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Confermato per mosse Psico leggere: sul bersaglio, zoom 1.25×.',
+  },
+  'generated:basiceff-img_tjrjump-images_nested_sheet': {
+    battleArchetype: 'blunt',
+    categories: ['physical', 'impact'],
+    priority: 'preferred',
+    reviewed: true,
+    intensity: 'light',
+    preview: { anchor: 'target', scaleMultiplier: 1 },
+    notes: 'Confermato per impatti fisici leggeri: sul bersaglio, zoom 1×.',
+  },
+  'gif:27c650209255d638948a6215ffea9c78': {
+    battleArchetype: 'slash',
+    categories: ['slash', 'physical'],
+    priority: 'preferred',
+    reviewed: true,
+    intensity: 'medium',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Confermato per Slash medi: tre artigli sul bersaglio, zoom 1.25×. Fondo nero gestito con screen.',
+  },
+  'generated:anglercompany-img_ladderpuzzle_shock-images_nested_sheet': {
+    battleArchetype: 'psychic',
+    categories: ['psychic', 'impact'],
+    priority: 'preferred',
+    reviewed: true,
+    intensity: 'heavy',
+    preview: { anchor: 'center', scaleMultiplier: 1.5 },
+    notes: 'Confermato per mosse Psico forti: allineamento centrale, zoom 1.5×.',
   },
   'generated:anglercompany-img_subboss_chargedcannon_blue_hit-images_nested_sheet': {
-    categories: ['beam', 'impact'],
-    priority: 'candidate',
+    battleArchetype: 'electric',
+    categories: ['electric', 'impact'],
+    priority: 'preferred',
+    reviewed: true,
+    intensity: 'light',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Confermato per mosse Elettro leggere: sul bersaglio, zoom 1.25×.',
   },
   'generated:anglercompany-img_subboss_chargedcannon_red_hit-images_nested_sheet': {
     categories: ['beam', 'fire', 'impact'],
@@ -53,6 +99,8 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
   'generated:basiceff-img_itemlevelup-images_nested_sheet': {
     categories: ['buff', 'aura'],
     priority: 'candidate',
+    recommendation: 'reserve',
+    notes: 'Riserva UI: contiene la scritta LEVEL UP, non adatto a una mossa generica.',
   },
   'generated:basiceff-img_psychicworkupward-images_nested_sheet': {
     categories: ['psychic', 'aura'],
@@ -75,28 +123,52 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     priority: 'candidate',
   },
   'generated:direction-img_effect_skill_spark_0-images_nested_sheet': {
+    battleArchetype: 'electric',
     categories: ['electric', 'impact'],
-    priority: 'candidate',
+    priority: 'preferred',
+    reviewed: true,
+    intensity: 'medium',
+    preview: { anchor: 'target', scaleMultiplier: 1.5 },
+    notes: 'Confermato per mosse Elettro medie: sul bersaglio, zoom 1.5×.',
   },
   'generated:direction1-img_effect_skill_overswingdouble_0-images_nested_sheet': {
+    battleArchetype: 'slash',
     categories: ['slash', 'physical'],
     priority: 'preferred',
+    reviewed: true,
+    intensity: 'light',
+    preview: { anchor: 'target', scaleMultiplier: 1 },
+    notes: 'Confermato per Slash leggeri: doppio arco sul bersaglio, zoom 1×.',
   },
   'generated:fieldgimmickeff-img_thunder-images_nested_sheet': {
     categories: ['electric'],
     priority: 'preferred',
+    recommendation: 'reserve',
+    notes: 'Alternativa: fulmine stretto con nuvola e detriti. Meno neutro dei tre Elettro selezionati.',
   },
   'generated:hekatoneff_1001-img_explosion-images_nested_sheet': {
-    categories: ['fire', 'impact'],
+    battleArchetype: 'psychic',
+    categories: ['psychic', 'impact'],
     priority: 'preferred',
+    reviewed: true,
+    intensity: 'medium',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Confermato per mosse Psico medie: sul bersaglio, zoom 1.25×.',
   },
   'generated:hekatoneff_1011-img_hit-images_nested_sheet': {
-    categories: ['impact', 'physical'],
+    categories: ['psychic', 'aura'],
     priority: 'candidate',
+    recommendation: 'reserve',
+    notes: 'Portale con sagoma scura: riservare a evocazioni, non a impatti fisici generici.',
   },
   'generated:highmountain-img_effect_tynus_lightning_2-images_nested_sheet': {
-    categories: ['electric', 'supreme'],
-    priority: 'special',
+    battleArchetype: 'electric',
+    categories: ['electric', 'impact'],
+    priority: 'preferred',
+    reviewed: true,
+    intensity: 'heavy',
+    preview: { anchor: 'target', scaleMultiplier: 1.5 },
+    notes: 'Confermato per mosse Elettro forti: sul bersaglio, zoom 1.5×.',
   },
   'generated:lynn-img_skill_heal_effect-images_nested_sheet': {
     categories: ['heal', 'aura'],
@@ -107,12 +179,19 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     priority: 'candidate',
   },
   'generated:lynn-img_skill_hithard_hit-images_nested_sheet': {
+    battleArchetype: 'blunt',
     categories: ['impact', 'physical'],
     priority: 'preferred',
+    reviewed: true,
+    intensity: 'medium',
+    preview: { anchor: 'target', scaleMultiplier: 1 },
+    notes: 'Confermato per impatti fisici medi: sul bersaglio, zoom 1×.',
   },
   'generated:lynn-img_skill_sneakattackhit-images_nested_sheet': {
-    categories: ['physical', 'slash'],
+    categories: ['dark', 'impact'],
     priority: 'candidate',
+    recommendation: 'reserve',
+    notes: 'Impatto nero, viola e verde; conservare per Oscurità, non come taglio neutro.',
   },
   'generated:mobeff-img_apcrevive_0-images_nested_sheet': {
     categories: ['heal', 'buff'],
@@ -143,12 +222,48 @@ export function getVfxCuration(assetId: string): VfxCurationEntry | undefined {
     : undefined
 }
 
+export function getVfxReviewLabel(entry: VfxCurationEntry | undefined): string {
+  if (entry?.reviewed) return 'Confermato'
+  if (entry?.recommendation === 'proposed') return 'Proposta'
+  if (entry?.recommendation === 'reserve') return 'Riserva'
+  return 'Da valutare'
+}
+
+// Only explicitly assigned, confirmed effects can replace a battle fallback.
+export function getCuratedBattleAssetId(
+  archetype: VfxArchetype,
+  intensity: VfxIntensity
+): string | undefined {
+  return Object.entries(VFX_CURATION).find(([, entry]) =>
+    entry?.reviewed && entry.priority === 'preferred'
+    && entry.battleArchetype === archetype && entry.intensity === intensity
+  )?.[0]
+}
+
+// Apply saved visual decisions without mutating the generated manifest.
+// Explicit Lab controls replace saved values, so choosing 1.5× never applies it twice.
+export function getVfxCurationPreviewAsset(
+  asset: MoveVfxAsset,
+  { anchor = 'default', scale = 'default' }: {
+    anchor?: VfxAnchor | 'default'
+    scale?: number | 'default'
+  } = {}
+): MoveVfxAsset {
+  const preview = getVfxCuration(asset.id)?.preview
+  return {
+    ...asset,
+    anchor: anchor === 'default' ? preview?.anchor ?? asset.anchor : anchor,
+    scale: (asset.scale ?? 1) * (scale === 'default' ? preview?.scaleMultiplier ?? 1 : scale),
+  }
+}
+
 export function filterVfxAssetIds(
   assets: Readonly<Record<string, MoveVfxAsset>>,
-  { search = '', category = 'all', curatedOnly = false }: {
+  { search = '', category = 'all', curatedOnly = false, recommendedOnly = false }: {
     search?: string
     category?: VfxCurationCategory | 'all'
     curatedOnly?: boolean
+    recommendedOnly?: boolean
   } = {}
 ): string[] {
   const query = search.trim().toLowerCase()
@@ -159,6 +274,7 @@ export function filterVfxAssetIds(
 
     // All entries are shortlisted, including preferred and special effects.
     if (curatedOnly && !curation) return false
+    if (recommendedOnly && !curation?.reviewed && curation?.recommendation !== 'proposed') return false
     if (category !== 'all' && !curation?.categories.includes(category)) return false
 
     return !query || [assetId, asset.label, asset.kind, ...(curation?.categories ?? [])]

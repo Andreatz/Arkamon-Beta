@@ -31,6 +31,11 @@ Nel tab `VFX`, usa **Confronta effetti nel VFX Lab** per aprire il laboratorio
 in una nuova scheda. È disponibile solo con il server di sviluppo, all'indirizzo
 `/#vfx-lab` (mantieni l'eventuale percorso base dell'applicazione).
 
+Il Lab apre con **Solo selezione consigliata** attivo: mostra le scelte confermate
+e le proposte della scrematura, distinguendole dalle riserve. **Azzera filtri**
+riporta all'intero catalogo. La selezione è documentata in
+[VFX_CURATION_REVIEW.md](./VFX_CURATION_REVIEW.md).
+
 1. Scegli una categoria e attiva **Solo candidati** per vedere la prima selezione
    del catalogo, inclusi effetti preferiti e speciali. Puoi combinare questi filtri
    con ricerca e formato.
@@ -43,8 +48,18 @@ in una nuova scheda. È disponibile solo con il server di sviluppo, all'indirizz
    la ripetizione automatica.
 
 Il Lab usa lo stesso renderer VFX della battaglia, compresi gli anchor del layout
-Admin, movimento, scala base, offset e specchiatura. La scala di confronto `1×`
-mantiene quella dell'asset; la posizione predefinita rispetta il suo anchor.
+Admin, movimento, scala base, offset e specchiatura. La modalità **Salvata / originale**
+applica le regolazioni della curation, se presenti, altrimenti quelle dell'asset.
+Le scelte manuali di posizione e scala sostituiscono le regolazioni salvate:
+`1×` mantiene la scala originale e `1.5×` non viene applicato due volte.
+Anche la selezione di un asset nell'Admin VFX parte dalle regolazioni salvate,
+che rimangono modificabili nei campi Scala e Anchor.
+Le dieci scelte confermate di Psico, Elettro, tagli e impatti fisici sono anche
+collegate automaticamente alle mosse con archetipo e intensità corrispondenti.
+Gli override Admin e le assegnazioni specifiche per mossa hanno precedenza;
+**Ripristina mossa** rimuove l'override temporaneo e torna alla scelta automatica
+o all'assegnazione specifica esistente. Esempi di mosse per ogni ruolo sono in
+[VFX_CURATION_REVIEW.md](./VFX_CURATION_REVIEW.md#collegamento-alle-mosse).
 Le anteprime mostrano categorie, priorità e note della curation. Un filtro non
 cancella l'effetto selezionato né il riferimento.
 

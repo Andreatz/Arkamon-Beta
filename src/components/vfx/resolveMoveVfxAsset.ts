@@ -15,6 +15,7 @@ import type {
   MoveVfxRecipe,
 } from './types'
 import { getAdminMoveVfxOverride } from '@store/vfxAdminStore'
+import { getCuratedBattleAssetId, getVfxCurationPreviewAsset } from './vfxCuration'
 
 function resolveBaseMoveVfxAssetId(move: MossaDef): MoveVfxAssetId {
   return MOVE_VFX_BY_MOVE_ID[move.id] ?? resolveProfileAssetId(move)
@@ -25,7 +26,15 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
   const baseAsset = MOVE_VFX_ASSETS[assetId] ?? MOVE_VFX_ASSETS.punch
   const adminOverride = getAdminMoveVfxOverride(move.id)
 
-  if (!adminOverride) return baseAsset
+  if (!adminOverride) {
+    // Preserve explicit per-move settings. Automatic selections share the exact
+    // saved calibration used in the Lab, applied once to the original asset.
+    const profile = resolveMoveVfxProfile(move)
+    const curatedAssetId = getCuratedBattleAssetId(profile.archetype, profile.intensity)
+    return MOVE_VFX_BY_MOVE_ID[move.id] === undefined && assetId === curatedAssetId
+      ? getVfxCurationPreviewAsset(baseAsset)
+      : baseAsset
+  }
 
   return {
     ...MOVE_VFX_ASSETS[adminOverride.assetId],

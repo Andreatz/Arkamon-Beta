@@ -1,5 +1,6 @@
 import type { MossaDef, TipoPokemon } from '@/types'
 import type { MoveVfxAssetId } from './vfxManifest'
+import { getCuratedBattleAssetId } from './vfxCuration'
 import type {
   MoveVfxFeedback,
   MoveVfxProfile,
@@ -53,8 +54,13 @@ const EXPLICIT_ARCHETYPE_BY_MOVE_ID: Partial<
   Record<number, { archetype: VfxArchetype; intensity?: VfxIntensity }>
 > = {
   1: { archetype: 'beam', intensity: 'light' },
+  // Initial visual tiers for the curated families; these do not affect damage.
+  6: { archetype: 'electric', intensity: 'heavy' },
+  29: { archetype: 'blunt', intensity: 'light' },
   37: { archetype: 'fire', intensity: 'medium' },
+  38: { archetype: 'electric', intensity: 'light' },
   42: { archetype: 'plant', intensity: 'medium' },
+  44: { archetype: 'psychic', intensity: 'heavy' },
   70: { archetype: 'slash', intensity: 'light' },
   101: { archetype: 'aura', intensity: 'light' },
   118: { archetype: 'psychic', intensity: 'light' },
@@ -183,6 +189,9 @@ export function resolveProfileAssetId(
   move: MossaDef,
   profile = resolveMoveVfxProfile(move)
 ): MoveVfxAssetId {
+  const curatedAssetId = getCuratedBattleAssetId(profile.archetype, profile.intensity)
+  if (curatedAssetId) return curatedAssetId
+
   switch (profile.archetype) {
     case 'heal':
       return 'cure'

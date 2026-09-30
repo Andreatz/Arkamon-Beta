@@ -131,7 +131,8 @@ export function MoveVfxLayer({
 
   const visualStyle: CSSProperties = {
     opacity: opacity ?? asset.opacity ?? 1,
-    mixBlendMode: blendMode ?? asset.blendMode ?? 'normal',
+    // Blend the whole layer with the scene, outside the animated stacking context.
+    mixBlendMode: 'normal',
     transform: [
       `scale(${(asset.scale ?? 1) * scaleMultiplier * (compact ? 0.78 : 1)})`,
       side === 'B' && asset.mirrorForEnemy ? 'scaleX(-1)' : '',
@@ -162,7 +163,7 @@ export function MoveVfxLayer({
   return (
     <div
       className="pointer-events-none absolute inset-0 overflow-visible"
-      style={{ zIndex: VFX_Z_INDEX[layer] }}
+      style={{ zIndex: VFX_Z_INDEX[layer], mixBlendMode: blendMode ?? asset.blendMode ?? 'normal' }}
       aria-hidden="true"
     >
       <motion.div
