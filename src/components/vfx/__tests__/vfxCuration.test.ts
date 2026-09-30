@@ -19,7 +19,7 @@ describe('VFX curation', () => {
     const reserve = 'generated:hekatoneff_1011-img_hit-images_nested_sheet'
     const result = filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true })
     expect(result).toHaveLength(10)
-    expect(result.filter((id) => getVfxCuration(id)?.reviewed)).toHaveLength(3)
+    expect(result.filter((id) => getVfxCuration(id)?.reviewed)).toHaveLength(10)
     expect(result).not.toContain(reserve)
     expect(filterVfxAssetIds(MOVE_VFX_ASSETS)).toContain(reserve)
     expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true, category: 'electric' })).toHaveLength(3)
