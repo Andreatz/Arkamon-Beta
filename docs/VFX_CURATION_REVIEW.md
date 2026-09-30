@@ -10,9 +10,10 @@ specifiche già esistenti.
 
 ## Selezione ridotta
 
-Nel VFX Lab **Solo selezione consigliata**, attivo all'apertura, mostra questi
-10 effetti, tutti **Confermati** dall'utente. L'etichetta **Proposta** rimane
-disponibile per le future selezioni preliminari non ancora approvate.
+Nel VFX Lab **Solo selezione consigliata**, attivo all'apertura, mostra
+18 effetti: i 10 **Confermati** dall'utente riportati sotto e le 8 **Proposte**
+del secondo giro. Il filtro Categoria permette di confrontare una famiglia
+alla volta. Le proposte non vengono assegnate automaticamente alle mosse.
 
 | Famiglia / ruolo | Effetto | Stato | Posizione | Zoom | Motivo |
 | --- | --- | --- | --- | --- | --- |
@@ -29,6 +30,38 @@ disponibile per le future selezioni preliminari non ancora approvate.
 
 Gli zoom sono relativi alla scala originale; il Lab mostra la scala effettiva.
 Le scelte sono salvate in `src/components/vfx/vfxCuration.ts`.
+
+## Secondo giro: Fuoco, Acqua e cure
+
+Queste sono proposte editoriali dopo la scrematura visiva, non conferme dell'utente.
+Posizione e zoom sono punti di partenza per il confronto nel Lab.
+
+| Ruolo proposto | Effetto | Posizione | Zoom | Da valutare |
+| --- | --- | --- | --- | --- |
+| Fuoco leggero | Mitra Aura F 2 | target | 1.25× | Piccola fiamma verticale; coda breve, 292 ms |
+| Fuoco medio | CannonJump | target | 1.25× | Esplosione verticale arancione; molto rapida, 292 ms |
+| Fuoco forte | Mitra Aura F 0 | target | 1.25× | Esplosione ampia e fiamme residue, 625 ms |
+| Acqua leggero | WaterSmash1 | target | 1.5× | Impatto compatto e gocce; sorgente 130 × 114, 542 ms |
+| Acqua medio | GIF 59ad165cefdf8a14f3b4e35ad7e8e8a8 | target | 1.25× | Vortice circolare azzurro, 400 ms |
+| Acqua forte | Shark Kick Effect | target | 1.25× | Arco con spruzzi e pinne: potrebbe essere più adatto ai tagli Acqua, 720 ms |
+| Cura leggera | Lynn Heal SpecialAffected | self | 1.25× | Scie verdi sottili, 375 ms |
+| Cura ampia | Lynn Heal Effect | self | 1× | Vegetazione e luce verde: valutare se riservarla alle cure Erba, 708 ms |
+
+Per il confronto mantieni **Solo selezione consigliata** e scegli `fire`, `water`
+o `heal`. Fissa il primo effetto come riferimento e usa **Successivo** per gli
+altri. **Ripeti automaticamente** aiuta a leggere gli effetti più brevi.
+Per ogni proposta sono sufficienti conferma/scarto, ruolo, zoom e posizione.
+Le due GIF Acqua usano già screen per fondere il nero con la scena.
+
+Nessuna proposta ha `battleArchetype` o `reviewed: true`. Le 49 associazioni
+confermate e le assegnazioni esistenti di Fuoco, Acqua e cure restano invariate.
+La classificazione leggera/ampia delle cure serve al confronto visivo: non
+introduce nuovi livelli di guarigione nelle regole del gioco.
+
+Verifica del secondo giro: 406/406 test e build superati; le otto proposte
+caricano nel Lab e sono state controllate da entrambi i lati (16 anteprime).
+I filtri mostrano 3 Fuoco, 3 Acqua e 2 cure. La console del Lab non segnala
+errori; il mapping runtime continua a usare 49 mosse confermate e zero proposte.
 
 ## Riserve e riclassificazioni
 
@@ -110,5 +143,5 @@ da questo intervento. La build passa con il warning già presente sulla dimensio
 del bundle principale (oltre 600 kB).
 La verifica non equivale a una revisione estetica completa delle 49 mosse.
 
-Il prossimo giro di valutazione può concentrarsi sulle mosse rappresentative,
-poi sulle famiglie ancora senza selezione (per esempio Fuoco, Acqua e cure).
+Il prossimo passo è raccogliere le scelte visive sulle otto proposte del secondo
+giro; solo dopo la conferma si aggiungeranno i rispettivi ruoli nel mapping.

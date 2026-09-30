@@ -4,6 +4,7 @@ import {
   filterVfxAssetIds,
   getVfxCuration,
   getVfxCurationPreviewAsset,
+  getCuratedBattleAssetId,
   VFX_CURATION,
   VFX_CURATION_CATEGORIES,
 } from '../vfxCuration'
@@ -18,8 +19,20 @@ describe('VFX curation', () => {
   it('reduces the review to confirmed choices and proposals while keeping reserves accessible', () => {
     const reserve = 'generated:hekatoneff_1011-img_hit-images_nested_sheet'
     const result = filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true })
-    expect(result).toHaveLength(10)
+    expect(result).toHaveLength(18)
     expect(result.filter((id) => getVfxCuration(id)?.reviewed)).toHaveLength(10)
+    const proposals = result.filter((id) => getVfxCuration(id)?.recommendation === 'proposed')
+    expect(proposals).toHaveLength(8)
+    for (const id of proposals) {
+      expect(getVfxCuration(id)?.reviewed).not.toBe(true)
+      expect(getVfxCuration(id)?.battleArchetype).toBeUndefined()
+    }
+    for (const [category, count] of [['fire', 3], ['water', 3], ['heal', 2]] as const) {
+      expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true, category })).toHaveLength(count)
+      for (const intensity of ['subtle', 'light', 'medium', 'heavy'] as const) {
+        expect(getCuratedBattleAssetId(category, intensity)).toBeUndefined()
+      }
+    }
     expect(result).not.toContain(reserve)
     expect(filterVfxAssetIds(MOVE_VFX_ASSETS)).toContain(reserve)
     expect(filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true, category: 'electric' })).toHaveLength(3)
