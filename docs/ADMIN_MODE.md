@@ -54,6 +54,12 @@ Le scelte manuali di posizione e scala sostituiscono le regolazioni salvate:
 `1×` mantiene la scala originale e `1.5×` non viene applicato due volte.
 Anche la selezione di un asset nell'Admin VFX parte dalle regolazioni salvate,
 che rimangono modificabili nei campi Scala e Anchor.
+Le dieci scelte confermate di Psico, Elettro, tagli e impatti fisici sono anche
+collegate automaticamente alle mosse con archetipo e intensità corrispondenti.
+Gli override Admin e le assegnazioni specifiche per mossa hanno precedenza;
+**Ripristina mossa** rimuove l'override temporaneo e torna alla scelta automatica
+o all'assegnazione specifica esistente. Esempi di mosse per ogni ruolo sono in
+[VFX_CURATION_REVIEW.md](./VFX_CURATION_REVIEW.md#collegamento-alle-mosse).
 Le anteprime mostrano categorie, priorità e note della curation. Un filtro non
 cancella l'effetto selezionato né il riferimento.
 

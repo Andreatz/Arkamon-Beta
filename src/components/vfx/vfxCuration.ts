@@ -1,4 +1,4 @@
-import type { MoveVfxAsset, VfxAnchor, VfxIntensity } from './types'
+import type { MoveVfxAsset, VfxAnchor, VfxArchetype, VfxIntensity } from './types'
 
 export const VFX_CURATION_CATEGORIES = [
   'physical',
@@ -27,6 +27,8 @@ export interface VfxCurationEntry {
   reviewed?: boolean
   recommendation?: 'proposed' | 'reserve'
   intensity?: VfxIntensity
+  // Explicit battle role: semantic tags alone cannot distinguish slash from blunt.
+  battleArchetype?: VfxArchetype
   preview?: {
     anchor?: VfxAnchor
     scaleMultiplier?: number
@@ -38,6 +40,7 @@ export interface VfxCurationEntry {
 // Keep editorial metadata here: generatedVfxAssets.ts belongs to the asset pipeline.
 export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
   'generated:anglercompany-img_finalboss_minitail_hit-images_flat_sheet': {
+    battleArchetype: 'psychic',
     categories: ['psychic', 'impact'],
     priority: 'preferred',
     reviewed: true,
@@ -46,6 +49,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     notes: 'Confermato per mosse Psico leggere: sul bersaglio, zoom 1.25×.',
   },
   'generated:basiceff-img_tjrjump-images_nested_sheet': {
+    battleArchetype: 'blunt',
     categories: ['physical', 'impact'],
     priority: 'preferred',
     reviewed: true,
@@ -54,6 +58,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     notes: 'Confermato per impatti fisici leggeri: sul bersaglio, zoom 1×.',
   },
   'gif:27c650209255d638948a6215ffea9c78': {
+    battleArchetype: 'slash',
     categories: ['slash', 'physical'],
     priority: 'preferred',
     reviewed: true,
@@ -62,6 +67,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     notes: 'Confermato per Slash medi: tre artigli sul bersaglio, zoom 1.25×. Fondo nero gestito con screen.',
   },
   'generated:anglercompany-img_ladderpuzzle_shock-images_nested_sheet': {
+    battleArchetype: 'psychic',
     categories: ['psychic', 'impact'],
     priority: 'preferred',
     reviewed: true,
@@ -70,6 +76,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     notes: 'Confermato per mosse Psico forti: allineamento centrale, zoom 1.5×.',
   },
   'generated:anglercompany-img_subboss_chargedcannon_blue_hit-images_nested_sheet': {
+    battleArchetype: 'electric',
     categories: ['electric', 'impact'],
     priority: 'preferred',
     reviewed: true,
@@ -116,6 +123,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     priority: 'candidate',
   },
   'generated:direction-img_effect_skill_spark_0-images_nested_sheet': {
+    battleArchetype: 'electric',
     categories: ['electric', 'impact'],
     priority: 'preferred',
     reviewed: true,
@@ -124,6 +132,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     notes: 'Confermato per mosse Elettro medie: sul bersaglio, zoom 1.5×.',
   },
   'generated:direction1-img_effect_skill_overswingdouble_0-images_nested_sheet': {
+    battleArchetype: 'slash',
     categories: ['slash', 'physical'],
     priority: 'preferred',
     reviewed: true,
@@ -138,6 +147,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     notes: 'Alternativa: fulmine stretto con nuvola e detriti. Meno neutro dei tre Elettro selezionati.',
   },
   'generated:hekatoneff_1001-img_explosion-images_nested_sheet': {
+    battleArchetype: 'psychic',
     categories: ['psychic', 'impact'],
     priority: 'preferred',
     reviewed: true,
@@ -152,6 +162,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     notes: 'Portale con sagoma scura: riservare a evocazioni, non a impatti fisici generici.',
   },
   'generated:highmountain-img_effect_tynus_lightning_2-images_nested_sheet': {
+    battleArchetype: 'electric',
     categories: ['electric', 'impact'],
     priority: 'preferred',
     reviewed: true,
@@ -168,6 +179,7 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     priority: 'candidate',
   },
   'generated:lynn-img_skill_hithard_hit-images_nested_sheet': {
+    battleArchetype: 'blunt',
     categories: ['impact', 'physical'],
     priority: 'preferred',
     reviewed: true,
@@ -215,6 +227,17 @@ export function getVfxReviewLabel(entry: VfxCurationEntry | undefined): string {
   if (entry?.recommendation === 'proposed') return 'Proposta'
   if (entry?.recommendation === 'reserve') return 'Riserva'
   return 'Da valutare'
+}
+
+// Only explicitly assigned, confirmed effects can replace a battle fallback.
+export function getCuratedBattleAssetId(
+  archetype: VfxArchetype,
+  intensity: VfxIntensity
+): string | undefined {
+  return Object.entries(VFX_CURATION).find(([, entry]) =>
+    entry?.reviewed && entry.priority === 'preferred'
+    && entry.battleArchetype === archetype && entry.intensity === intensity
+  )?.[0]
 }
 
 // Apply saved visual decisions without mutating the generated manifest.

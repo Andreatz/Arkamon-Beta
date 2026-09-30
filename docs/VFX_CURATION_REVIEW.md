@@ -4,8 +4,9 @@ La scrematura considera i 113 asset importati (90 sprite sheet e 23 GIF),
 con quattro fotogrammi distribuiti lungo ciascuna animazione. I 29 asset di base
 rimangono disponibili come fallback. Non è una validazione finale di tutte le
 animazioni in battaglia: i dieci effetti sono stati confermati dall'utente nel Lab,
-con le regolazioni riportate sotto, e restano da provare su mosse rappresentative.
-Non sono state modificate le associazioni delle mosse.
+con le regolazioni riportate sotto. Il mapping runtime per archetipo/intensità
+applica ora queste scelte a 49 delle 220 mosse, mantenendo le assegnazioni
+specifiche già esistenti.
 
 ## Selezione ridotta
 
@@ -55,7 +56,59 @@ normal; un override Admin o di recipe resta prioritario. Gli originali e il file
 
 Questa è una correzione di visualizzazione, non una conversione dei file in RGBA.
 
-## Passaggio successivo
+## Collegamento alle mosse
 
-Creare il mapping archetipo/intensità e provarlo su mosse rappresentative.
-Tutte e dieci le scelte sono confermate e non richiedono un'altra approvazione.
+Ogni selezione confermata dichiara `battleArchetype` e `intensity` nella curation.
+I tag descrittivi non determinano il mapping: la GIF con gli artigli, ad esempio,
+ha anche il tag physical ma appartiene al ruolo slash, non blunt.
+Solo voci confermate e preferred con un ruolo esplicito possono sostituire il
+fallback. Le combinazioni ancora senza scelta, come slash/heavy e blunt/heavy,
+mantengono gli effetti precedenti.
+
+Precedenza: override temporaneo Admin → assegnazione specifica per ID mossa →
+selezione confermata per archetipo/intensità → fallback precedente. Cure, stati,
+Supreme, raggi e tempeste mantengono i propri profili e recipe. Il tipo Elettro
+da solo non sostituisce, ad esempio, un archetipo storm con un impatto electric.
+
+Le regolazioni di posizione e zoom vengono applicate una sola volta agli asset
+automatici, partendo dal manifest originale. Il Lab e la battaglia condividono
+lo stesso helper di calibrazione. Gli override espliciti restano prioritari.
+Durata e istante d'impatto vengono dall'asset selezionato; i dieci effetti
+confermati sono riprodotti singolarmente, senza aggiungere recipe non valutate.
+
+Mosse rappresentative per verificare tutti i ruoli:
+
+| Ruolo | Mossa | Effetto |
+| --- | --- | --- |
+| Psico leggero | #118 Penna Arcobaleno | MiniTail Hit |
+| Psico medio | #119 Ali Elusive | Hekaton Explosion |
+| Psico forte | #44 Collasso nervoso | LadderPuzzle Shock |
+| Elettro leggero | #38 Scossa | ChargedCannon Blue Hit |
+| Elettro medio | #5 Voltaggio | Spark 0 |
+| Elettro forte | #6 Alta tensione | Tynus Lightning 2 |
+| Slash leggero | #70 Puntura anestetica | OverSwingDouble 0 |
+| Slash medio | #130 Pinna Rotante | GIF con tre artigli |
+| Fisico leggero | #29 Colpo felpato | TJRJump |
+| Fisico medio | #129 Colpo Rabbioso | Lynn HitHard Hit |
+
+Scossa, Alta tensione, Colpo felpato e Collasso nervoso ricevono ora un livello
+visivo esplicito per coprire i ruoli mancanti nei profili precedenti. È una
+classificazione editoriale iniziale delle mosse, distinta dalla conferma visiva
+degli asset: non cambia danni, dadi o progressione. Le altre intensità restano
+quelle già definite nei profili.
+
+## Verifica e passo successivo
+
+I test coprono i dieci ruoli, la calibrazione, i tempi, l'assenza di mutazioni del
+manifest e la precedenza degli override. Nel browser sono state controllate
+tutte e dieci le anteprime da entrambi i lati, inclusa la rimozione a fine effetto.
+Una battaglia PvP locale Psycroak/Teslat ha verificato Collasso nervoso dal lato A
+e Alta tensione dal lato B, con danno e passaggio di turno. Nessun errore di
+caricamento degli asset; la console segnala un warning React sui ref di
+`BattleLayoutItem` dentro `AnimatePresence/PopChild`, in codice non modificato
+da questo intervento. La build passa con il warning già presente sulla dimensione
+del bundle principale (oltre 600 kB).
+La verifica non equivale a una revisione estetica completa delle 49 mosse.
+
+Il prossimo giro di valutazione può concentrarsi sulle mosse rappresentative,
+poi sulle famiglie ancora senza selezione (per esempio Fuoco, Acqua e cure).
