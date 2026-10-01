@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react'
-import { MOSSE } from '@data/index'
+import {
+  VFX_MOVE_PREVIEWS,
+  getMoveVfxAssignment,
+  MOVE_VFX_ASSIGNMENT_COUNTS,
+} from '@/components/vfx/moveVfxAssignments'
 import { SpriteMoveVfx } from '@/components/vfx/SpriteMoveVfx'
 import {
   getMoveVfxDurationMs,
@@ -77,7 +81,7 @@ function NumericField({
 }
 
 export function AdminVfxEditor() {
-  const [selectedMoveId, setSelectedMoveId] = useState(MOSSE[0]?.id ?? 0)
+  const [selectedMoveId, setSelectedMoveId] = useState(VFX_MOVE_PREVIEWS[0]?.id ?? 0)
   const [previewSide, setPreviewSide] = useState<'A' | 'B'>('A')
   const [replayId, setReplayId] = useState(1)
   const [assetSearch, setAssetSearch] = useState('')
@@ -87,7 +91,8 @@ export function AdminVfxEditor() {
   const setOverride = useVfxAdminStore((state) => state.setOverride)
   const removeOverride = useVfxAdminStore((state) => state.removeOverride)
   const resetOverrides = useVfxAdminStore((state) => state.resetOverrides)
-  const selectedMove = MOSSE.find((move) => move.id === selectedMoveId) ?? MOSSE[0]
+  const selectedMove = VFX_MOVE_PREVIEWS.find((move) => move.id === selectedMoveId) ?? VFX_MOVE_PREVIEWS[0]
+  const assignment = selectedMove ? getMoveVfxAssignment(selectedMove) : undefined
   const resolvedAsset = selectedMove ? resolveMoveVfxAsset(selectedMove) : MOVE_VFX_ASSETS.punch
   const resolvedProfile = selectedMove ? resolveMoveVfxProfile(selectedMove) : null
   const resolvedRecipe = selectedMove ? resolveMoveVfxRecipe(selectedMove) : undefined
@@ -119,6 +124,10 @@ export function AdminVfxEditor() {
       <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
         Gli override VFX restano in memoria fino al refresh. Esporta il JSON per conservarli.
       </p>
+      <p className="text-xs text-[var(--arka-text-muted)]">
+        Moveset: {MOVE_VFX_ASSIGNMENT_COUNTS.total} mosse · {MOVE_VFX_ASSIGNMENT_COUNTS.assigned} VFX distinti riservati
+        {' · '}{MOVE_VFX_ASSIGNMENT_COUNTS.missing} da creare · {MOVE_VFX_ASSIGNMENT_COUNTS.needsAdaptation} da adattare.
+      </p>
       {import.meta.env.DEV && (
         <a
           href={`${window.location.pathname}${window.location.search}#vfx-lab`}
@@ -135,15 +144,34 @@ export function AdminVfxEditor() {
         <select
           value={selectedMoveId}
           onChange={(event) => setSelectedMoveId(Number(event.target.value))}
-          className="h-9 rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
+          className="h-9 min-w-0 w-full rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-2 text-xs text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
         >
-          {MOSSE.map((move) => (
-            <option key={move.id} value={move.id}>
-              #{move.id} {move.nome}
-            </option>
-          ))}
+          {VFX_MOVE_PREVIEWS.map((move) => {
+            const entry = getMoveVfxAssignment(move)
+            return (
+              <option key={move.id} value={move.id}>
+                #{entry?.sourceMoveId ?? move.id} {move.nome}{entry?.assetId ? '' : ' — VFX mancante'}
+              </option>
+            )
+          })}
         </select>
       </label>
+
+      {assignment && (
+        <div className="rounded-md border border-[var(--arka-border)] px-3 py-2 text-xs text-[var(--arka-text-muted)]" role="status">
+          <p className="font-bold">
+            {assignment.assetId ? assignment.review === 'needs-adaptation' ? 'VFX riservato — da adattare' : 'VFX specifico assegnato'
+              : 'VFX specifico mancante — anteprima con effetto generico'}
+            {overrides[selectedMoveId] ? ' · Modifica temporanea attiva' : ''}
+          </p>
+          <p>{assignment.type} · {assignment.tier === 'status' ? 'Status / danno fisso' : { light: 'Leggera', medium: 'Media', heavy: 'Forte' }[assignment.tier]}</p>
+          <p>{assignment.notes}</p>
+          {assignment.gameMoveId === null && <p>Disponibile per il confronto visivo; mossa ancora da integrare nel gioco.</p>}
+          {assignment.gameMoveId !== null && assignment.gameMoveId !== assignment.sourceMoveId && (
+            <p>ID nel moveset: {assignment.sourceMoveId} · ID nel gioco: {assignment.gameMoveId} (riconciliati per nome).</p>
+          )}
+        </div>
+      )}
 
       <section className="overflow-hidden rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)]">
         <div className="relative h-48 overflow-hidden bg-[radial-gradient(circle_at_center,#294d68,#102538_72%)]">

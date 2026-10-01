@@ -1,5 +1,12 @@
 # Prima selezione visiva VFX
 
+**Stato attuale — 1 ottobre 2026:** il [catalogo individuale del moveset](vfx-moveset-assignments/README.md)
+assegna le 142 risorse esistenti a 142 mosse distinte su 276, con 134 VFX mancanti
+e 16 risorse da adattare. I colori del file sostituiscono i vecchi livelli stimati.
+Le calibrazioni confermate sotto restano valide; le precedenti associazioni
+condivise a 49 mosse sono superate dal catalogo individuale. Il resto di questo
+documento conserva il registro della prima selezione e delle verifiche precedenti.
+
 La scrematura considera i 113 asset importati (90 sprite sheet e 23 GIF),
 con quattro fotogrammi distribuiti lungo ciascuna animazione. I 29 asset di base
 rimangono disponibili come fallback. Non è una validazione finale di tutte le
