@@ -1,3 +1,4 @@
+import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { useEffect } from 'react'
 import { useGameStore } from '@store/gameStore'
 import {
@@ -9,7 +10,7 @@ import {
 } from '@/utils/soundManager'
 
 export function AudioController() {
-  const scena = useGameStore((s) => s.scenaCorrente.scena)
+  const scena = useSceneNavigation().scena
   const audioMuted = useGameStore((s) => s.audioMuted)
   const setMutedStore = useGameStore((s) => s.setAudioMuted)
 

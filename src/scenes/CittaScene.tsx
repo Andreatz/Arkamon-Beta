@@ -1,3 +1,4 @@
+import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { motion } from 'framer-motion'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
@@ -18,7 +19,7 @@ const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
  * Il layout admin è condiviso da tutte le città.
  */
 export function CittaScene() {
-  const scenaCorrente = useGameStore((s) => s.scenaCorrente)
+  const scenaCorrente = useSceneNavigation()
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const giocatore = useGameStore((s) =>
     giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2

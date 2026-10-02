@@ -1,3 +1,4 @@
+import { useSceneInputBlocked } from '@/components/transitions/SceneNavigationContext'
 /**
  * Scena overworld a griglia (Fasi E.3 → E.5).
  *
@@ -219,6 +220,7 @@ function AvatarSlot({ giocatoreId, pos, cella, attivo, leader }: AvatarSlotProps
 // ----------------------------------------------------------------
 
 export function MappaGrigliaScene() {
+  const sceneInputBlocked = useSceneInputBlocked()
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const posizione1 = useGameStore((s) => s.posizione1)
   const posizione2 = useGameStore((s) => s.posizione2)
@@ -488,6 +490,8 @@ export function MappaGrigliaScene() {
   // Tastiera
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (sceneInputBlocked || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return
+      if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable="true"], .arka-admin-panel')) return
       const k = e.key.toLowerCase()
       if (k === 'w' || k === 'arrowup') {
         e.preventDefault()
@@ -509,7 +513,7 @@ export function MappaGrigliaScene() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posAttivo, turno, mappa])
+  }, [posAttivo, turno, mappa, sceneInputBlocked])
 
   const areaMappa = useMemo(
     () => ({
