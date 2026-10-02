@@ -1,0 +1,41 @@
+{
+  "validation_passed": true,
+  "package_snapshot": "2026-10-02T14:46:43+00:00",
+  "asset_validation_snapshot": "2026-10-02T14:39:10+00:00",
+  "counts": {
+    "expected": 276,
+    "completed": 276,
+    "pending": 0,
+    "visual_review_passed": 276,
+    "visual_review_pending": 0,
+    "with_warnings": 49
+  },
+  "png_count": 276,
+  "entries": 280,
+  "zip_size_bytes": 489671485,
+  "zip_sha256": "241926b8c75bf09c46467dcfbca1c7539752ba18d0cfa781694cf7f9720b57aa",
+  "unique_png_hashes": 276,
+  "provenance": {
+    "global_generation_mode": "built-in image_gen",
+    "individual_tool_records": 170,
+    "individual_generation_prompt_records": 170,
+    "originals_and_catalog_prompts_preserved": 276,
+    "note": "Earlier records preserve originals, catalog prompts and source paths but may not record the exact additional generation instructions individually."
+  },
+  "independent_checks": [
+    "zip_crc_passed",
+    "png_count_matches_manifest",
+    "all276_metadata_ids",
+    "embedded_html_metadata_matches_manifest",
+    "correct_internal_external_relative_png_paths",
+    "actual_and_archived_png_hashes_match",
+    "source_original_hashes_match",
+    "all276_technical_and_static_visual_pass",
+    "review_notes_are_nonempty_lists",
+    "review_reports_match_current_assets",
+    "standalone_and_packed_readme_links",
+    "complete_state_truthful"
+  ],
+  "runtime_browser_verified": false,
+  "runtime_note": "Browser automation blocked file://. No browser execution or game playback is claimed."
+}

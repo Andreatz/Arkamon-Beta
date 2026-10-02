@@ -1,4 +1,5 @@
 import type { MoveVfxAsset, VfxAnchor, VfxArchetype, VfxIntensity } from './types'
+import movesetCatalog from '../../../public/vfx/moves/ai-generated/catalog.json'
 
 export const VFX_CURATION_CATEGORIES = [
   'physical',
@@ -17,6 +18,8 @@ export const VFX_CURATION_CATEGORIES = [
   'aura',
   'screen',
   'supreme',
+  'plant',
+  'earth',
 ] as const
 
 export type VfxCurationCategory = typeof VFX_CURATION_CATEGORIES[number]
@@ -38,7 +41,7 @@ export interface VfxCurationEntry {
 
 // Reviewed selections and remaining candidates; reviewed entries are user-confirmed.
 // Keep editorial metadata here: generatedVfxAssets.ts belongs to the asset pipeline.
-export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
+const LEGACY_VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
   // Second review round: proposals are preview-only until the user confirms them.
   'generated:highmountain-img_effect_mitra_aura_f_2-images_nested_sheet': {
     categories: ['fire', 'aura'],
@@ -267,6 +270,24 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     categories: ['screen', 'supreme'],
     priority: 'special',
   },
+}
+
+// The new sheets have passed asset review; their in-game calibration is still a
+// proposal. reviewed=true remains reserved for choices confirmed by the user.
+const MOVESET_VFX_CURATION: Record<string, VfxCurationEntry> = Object.fromEntries(
+  movesetCatalog.assets.map((entry) => [entry.id, {
+    categories: entry.categories as VfxCurationCategory[],
+    priority: 'candidate' as const,
+    recommendation: 'proposed' as const,
+    intensity: entry.intensity as VfxIntensity,
+    preview: { anchor: entry.anchor as VfxAnchor, scaleMultiplier: 1 },
+    notes: entry.notes,
+  }])
+)
+
+export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
+  ...LEGACY_VFX_CURATION,
+  ...MOVESET_VFX_CURATION,
 }
 
 export function getVfxCuration(assetId: string): VfxCurationEntry | undefined {
