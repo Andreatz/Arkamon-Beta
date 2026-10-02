@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "verifiedDate": "2026-10-02",
+  "branch": "feature/vfx-recipe-engine",
+  "runtimeAssetsImported": 276,
+  "originalVersionsImported": 306,
+  "allImportedFileHashesVerified": true,
+  "generatedManifest": {
+    "command": "npm run vfx:runtime",
+    "generatedAssets": 389,
+    "totalRuntimeAssetsIncludingCore": 418,
+    "editedManually": false
+  },
+  "assignments": {
+    "moves": 276,
+    "uniqueAssets": 276,
+    "missing": 0,
+    "gameMoves": 220,
+    "previewOnlyMoves": 56,
+    "newAssignmentsReview": "proposed"
+  },
+  "tests": {
+    "command": "npm test",
+    "filesPassed": 30,
+    "testsPassed": 417,
+    "all276PngDimensionsAlphaGridEndpointsAndHashesChecked": true
+  },
+  "build": {
+    "command": "npm run build",
+    "passed": true,
+    "nonBlockingWarnings": ["Browserslist dataset age", "JavaScript chunk over 600 kB"]
+  },
+  "reproducibility": {
+    "promptRebuildByteIdentical": true,
+    "portableZipRebuilt": true,
+    "zipEntries": 280,
+    "zipPngAssets": 276,
+    "zipCrcPassed": true,
+    "allZipPngHashesPassed": true,
+    "zipVersionedInGit": false
+  },
+  "browser": {
+    "page": "/#vfx-lab",
+    "transport": "HTTP local development app",
+    "newAssetsVisible": 276,
+    "statusFilterVisible": 56,
+    "earthFilterVisible": 23,
+    "move256SearchAndSelectionPassed": true,
+    "move256AnimationObservedOnTarget": true,
+    "move256NormalBlendAndTransparentBackgroundObserved": true,
+    "capturedConsoleErrors": 0,
+    "standaloneOfflineViewerBrowserTest": "not-completed; original file scheme restriction",
+    "all276BattleCalibrationValidated": false,
+    "userConfirmationOfNewAssets": false
+  }
+}

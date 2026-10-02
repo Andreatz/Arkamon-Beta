@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { MOSSE } from '@data/index'
 import { useVfxAdminStore } from '@store/vfxAdminStore'
 import { MOVE_VFX_ASSETS } from '../vfxManifest'
+import { getMoveVfxAssignment } from '../moveVfxAssignments'
 import { resolveMoveVfxProfile, resolveProfileAssetId } from '../moveVfxProfiles'
 import { VFX_CURATION, getCuratedBattleAssetId, getVfxCurationPreviewAsset } from '../vfxCuration'
 import {
@@ -26,20 +27,23 @@ const cases = [
   [129, 'blunt', 'medium', 'generated:lynn-img_skill_hithard_hit-images_nested_sheet', 'target', 1],
 ] as const
 
-describe('confirmed VFX in battle', () => {
+describe('individual battle VFX and preserved legacy calibration', () => {
   afterEach(() => useVfxAdminStore.getState().resetOverrides())
 
-  it.each(cases)('maps move %i to %s/%s with the saved calibration and asset timing',
+  it.each(cases)('keeps move %i at %s/%s while retaining its legacy calibration',
     (id, archetype, intensity, assetId, anchor, scale) => {
       const move = byId(id)
       expect(resolveMoveVfxProfile(move)).toMatchObject({ archetype, intensity })
       const original = { ...MOVE_VFX_ASSETS[assetId] }
+      expect(getVfxCurationPreviewAsset(MOVE_VFX_ASSETS[assetId])).toMatchObject({ id: assetId, anchor, scale })
+      const assignment = getMoveVfxAssignment(move)!
       const asset = resolveMoveVfxAsset(move)
-      expect(asset).toMatchObject({ id: assetId, anchor, scale })
-      expect(asset).toEqual(getVfxCurationPreviewAsset(MOVE_VFX_ASSETS[assetId]))
+      expect(asset).toMatchObject({ id: assignment.assetId, anchor: assignment.anchor, scale: 1, blendMode: 'normal' })
+      expect(asset.id).toMatch(/^moveset:/)
+      expect(asset).toEqual(MOVE_VFX_ASSETS[assignment.assetId!])
       expect(resolveMoveVfxRecipe(move)).toBeUndefined()
-      expect(getMoveVfxDurationMs(move)).toBe(original.durationMs)
-      expect(getMoveVfxImpactDelayMs(move)).toBe(original.impactAtMs)
+      expect(getMoveVfxDurationMs(move)).toBe(asset.durationMs)
+      expect(getMoveVfxImpactDelayMs(move)).toBe(asset.impactAtMs)
       expect(getMoveVfxImpactDelayMs(move)).toBeLessThanOrEqual(getMoveVfxDurationMs(move))
       expect(resolveMoveVfxAsset(move)).toEqual(asset)
       expect(MOVE_VFX_ASSETS[assetId]).toEqual(original)
@@ -66,7 +70,8 @@ describe('confirmed VFX in battle', () => {
     expect(getCuratedBattleAssetId('slash', 'heavy')).toBeUndefined()
     expect(resolveProfileAssetId(byId(70), heavySlash)).toBe('slash')
     expect(getCuratedBattleAssetId('blunt', 'heavy')).toBeUndefined()
-    expect(resolveMoveVfxAsset(byId(44)).id).toBe('generated:hekatoneff_1001-img_explosion-images_nested_sheet')
+    expect(resolveProfileAssetId(byId(44))).toBe('generated:hekatoneff_1001-img_explosion-images_nested_sheet')
+    expect(resolveMoveVfxAsset(byId(44)).id).toBe('moveset:044')
   })
 
   it('lets an Admin override replace saved calibration without multiplying zoom twice', () => {

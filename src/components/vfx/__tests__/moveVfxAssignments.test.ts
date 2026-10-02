@@ -9,13 +9,18 @@ import { resolveMoveVfxProfile } from '../moveVfxProfiles'
 describe('individual moveset VFX assignments', () => {
   afterEach(() => useVfxAdminStore.getState().resetOverrides())
 
-  it('covers all 276 source IDs with 142 distinct assets and 134 explicit gaps', () => {
+  it('covers all 276 source IDs with distinct generated assets and no gaps', () => {
     expect(MOVE_VFX_ASSIGNMENTS.map((entry) => entry.sourceMoveId)).toEqual(Array.from({ length: 276 }, (_, i) => i + 1))
-    expect(MOVE_VFX_ASSIGNMENT_COUNTS).toEqual({ total: 276, assigned: 142, missing: 134, needsAdaptation: 16 })
+    expect(MOVE_VFX_ASSIGNMENT_COUNTS).toEqual({ total: 276, assigned: 276, missing: 0, needsAdaptation: 0 })
     const assigned = MOVE_VFX_ASSIGNMENTS.filter((entry) => entry.assetId)
     const ids = assigned.map((entry) => entry.assetId!)
     expect(new Set(ids).size).toBe(ids.length)
-    expect([...ids].sort()).toEqual(Object.keys(MOVE_VFX_ASSETS).sort())
+    expect([...ids].sort()).toEqual(Object.keys(MOVE_VFX_ASSETS).filter((id) => id.startsWith('moveset:')).sort())
+    for (const entry of assigned) {
+      expect(entry.assetId).toBe(`moveset:${String(entry.sourceMoveId).padStart(3, '0')}`)
+      expect(entry.review).toBe('proposed')
+      expect(entry.scale).toBe(1)
+    }
     expect(new Set(VFX_MOVE_PREVIEWS.map((move) => move.id)).size).toBe(276)
   })
 
@@ -23,10 +28,8 @@ describe('individual moveset VFX assignments', () => {
     for (const move of VFX_MOVE_PREVIEWS) {
       const entry = getMoveVfxAssignment(move)!
       expect(entry).toBeDefined()
-      if (!entry.assetId) {
-        expect(entry.review).toBe('missing')
-        continue
-      }
+      expect(entry.assetId).not.toBeNull()
+      if (!entry.assetId) throw new Error(`Missing VFX for source move ${entry.sourceMoveId}`)
       const original = structuredClone(MOVE_VFX_ASSETS[entry.assetId])
       expect(resolveMoveVfxAsset(move)).toMatchObject({ id: entry.assetId, anchor: entry.anchor, scale: entry.scale })
       expect(resolveMoveVfxRecipe(move)).toBeUndefined()
@@ -64,6 +67,18 @@ describe('individual moveset VFX assignments', () => {
     expect(move.dadiPerLivello).toEqual({})
     expect(MOSSE.some((item) => item.id === 256)).toBe(false)
     expect(resolveMoveVfxProfile(move).feedback.targetShakePx).toBe(0)
+  })
+
+  it('keeps source moves 221–276 as previews without expanding the combat catalog', () => {
+    expect(MOSSE).toHaveLength(220)
+    for (const entry of MOVE_VFX_ASSIGNMENTS.filter((item) => item.sourceMoveId >= 221)) {
+      expect(entry.gameMoveId).toBeNull()
+      expect(MOSSE.some((move) => move.id === entry.sourceMoveId)).toBe(false)
+      const preview = VFX_MOVE_PREVIEWS.find((move) => move.id === entry.sourceMoveId)!
+      expect(preview.dadiPerLivello).toEqual({})
+      expect(preview.incrementoPerLivello).toEqual({})
+      expect(resolveMoveVfxAsset(preview).id).toBe(entry.assetId)
+    }
   })
 
   it('keeps the two Boro Breath and two Comando draconico IDs distinct', () => {
