@@ -1,6 +1,6 @@
 # Transizioni Arkamon: il D6 custodisce la creatura
 
-La transizione tra scene usa un oggetto riconoscibile: un dado D6 cremisi e nero, con sei punti sulla faccia chiara e il simbolo circolare fornito dall'utente sul medaglione superiore (anello rosso, centro nero e segno bianco). Il dado entra con un lancio, rimbalza, si assesta e si apre esattamente lungo la linea nera centrale originale. Si solleva l'intera metà superiore; le fossette attraversate dalla linea vengono divise tra le due metà, senza un secondo taglio più in alto. Un breve bagliore accompagna il logo ufficiale e l'arrivo alla nuova scena. Il percorso a caselle sullo sfondo collega l'oggetto all'esplorazione da boardgame.
+La transizione tra scene usa un oggetto riconoscibile: un dado D6 cremisi e nero, con sei punti sulla faccia chiara e il simbolo circolare fornito dall'utente sul medaglione superiore (anello rosso, centro nero e segno bianco). Il dado entra con un lancio, rimbalza, si assesta e si apre esattamente lungo la linea nera centrale originale. Si solleva l'intera metà superiore con un varco ampio e chiaramente visibile; le fossette attraversate dalla linea vengono divise tra le due metà, senza un secondo taglio più in alto. Una luce calda nasce dalla cavità interna e aumenta insieme all'apertura, accompagnando il logo ufficiale e l'arrivo alla nuova scena. Il percorso a caselle sullo sfondo collega l'oggetto all'esplorazione da boardgame.
 
 Il movimento è decorativo: non estrae risultati, non consuma dadi o turni e non cambia lo stato della partita. Il simbolo unisce i due elementi del gioco: le creature custodite e il viaggio guidato dai D6.
 
@@ -12,7 +12,7 @@ La versione ibernata non appare nemmeno come riserva in caso di errore del video
 
 ## Illustrazioni e risorse
 
-Le due pose sono state modificate con il generatore di immagini integrato. Gli originali, i prompt completi, il riferimento del simbolo conservato senza modifiche e la provenienza sono in [art-source/transitions/arkamon-d6](../art-source/transitions/arkamon-d6/prompts.md). La normalizzazione conserva il disegno: stesso fattore di scala per entrambe le pose, margini trasparenti su una tela 1024 × 1024 e WebP senza perdita.
+Le due pose sono state modificate con il generatore di immagini integrato. Gli originali, i prompt completi, il riferimento del simbolo conservato senza modifiche e la provenienza sono in [art-source/transitions/arkamon-d6](../art-source/transitions/arkamon-d6/prompts.md). La normalizzazione conserva il disegno: le due sagome vengono allineate alla stessa larghezza e alla stessa base, con spazio trasparente sopra per l'apertura più ampia, su una tela 1024 × 1024 e WebP senza perdita.
 
 Le risorse usate dal gioco sono:
 
@@ -21,6 +21,8 @@ Le risorse usate dal gioco sono:
 - Il logo esistente `public/ui/logo_arkamon.png`, senza modifiche.
 
 Le pose vengono precaricate e decodificate all'apertura dell'app. Se una posa non si carica, resta visibile il dado chiuso oppure una faccia a sei punti. Il percorso e i nodi sono elementi vettoriali decorativi.
+
+Il bagliore animato è contenuto nel dado e ne segue posizione e rotazione. Una sorgente stretta illumina il varco, mentre un alone caldo e raggi discreti stanno dietro alla sagoma. La luce resta spenta fino all'inizio dell'apertura e raggiunge il picco quando il dado è aperto. Se la posa aperta non si carica o è attivo il movimento ridotto, la luce viene disattivata. La battaglia non monta né il dado né questi elementi luminosi.
 
 ## Integrazione
 

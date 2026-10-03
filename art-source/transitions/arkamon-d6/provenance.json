@@ -1,38 +1,46 @@
 {
   "generator": "built-in image_gen",
   "date": "2026-10-03",
-  "revision": "Supplied circular emblem; two equal halves opening on original black midline seam",
+  "revision": "Wider central opening, warm interior core and hero-attached animated glow",
   "reference": {
     "path": "art-source/transitions/arkamon-d6/reference-symbol.png",
     "sha256": "1f090fbb1a5e5c14df8ef0170dfadb9742fd8d3c41e90f59ed1675d92e83ff9f"
   },
-  "normalization": "Same 880px contain scale in 1024px transparent canvas for both poses; lossless WebP, artwork unaltered",
+  "normalization": "Both visible silhouettes registered to width 775px and bottom y=944 in 1024px transparent canvas; lossless WebP; illustrations unaltered",
   "poses": [
     {
       "pose": "closed",
       "original": "art-source/transitions/arkamon-d6/closed-original.png",
       "runtime": "public/ui/transitions/arkamon-d6-closed.webp",
       "original_sha256": "45659814f94b15da185aad178344532b1bb179c6710f760a2fbd03357e8f2268",
-      "runtime_sha256": "55430ccfa5e776ea5b7cf5eea14a67c6c53cc9e8806c8ca2ae64f9419d41a7a3",
-      "runtime_bytes": 602302,
+      "runtime_sha256": "64b87516af4980e4cd97dd71f10133c7704dca7ff4b53e96e5bce84c40eacabe",
+      "runtime_bytes": 588700,
       "size": [
         1024,
         1024
       ],
-      "alpha": true
+      "alpha": true,
+      "registration": {
+        "width": 775,
+        "bottom": 944
+      }
     },
     {
       "pose": "open",
       "original": "art-source/transitions/arkamon-d6/open-original.png",
       "runtime": "public/ui/transitions/arkamon-d6-open.webp",
-      "original_sha256": "9e8a494dab9b6c713eff971eb04bad3399476849db37c5b71944e639512f5971",
-      "runtime_sha256": "ea345f5e2e06d0731d5e08005fd73270379bb3a26c1ab8cdad7f318f2a15e84e",
-      "runtime_bytes": 676172,
+      "original_sha256": "319e9cdd1409c756b547c5cc273558c1a75b635a2f4c6db05bc2f37ee4edcffa",
+      "runtime_sha256": "9f3c4fde7e073e3cd8ef6b249416052b9aca5625c8c7f5a80669e704f0f81693",
+      "runtime_bytes": 732562,
       "size": [
         1024,
         1024
       ],
-      "alpha": true
+      "alpha": true,
+      "registration": {
+        "width": 775,
+        "bottom": 944
+      }
     }
   ]
 }

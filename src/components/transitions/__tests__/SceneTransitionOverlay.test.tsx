@@ -30,6 +30,7 @@ describe('scene transition artwork selection', () => {
       expect(markup).not.toContain('arkamon-d6-open.webp')
       expect(markup).not.toContain('arka-d6-board')
       expect(markup).not.toContain('arka-d6-fallback')
+      expect(markup).not.toContain('data-transition-light="dice-interior"')
     }
   })
 

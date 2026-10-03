@@ -33,6 +33,12 @@ export function ArkamonDiceArtwork() {
       </svg>
       <div className="arka-d6-landing-shadow" />
       <div className="arka-d6-hero">
+        {!openFailed ? (
+          <div className="arka-d6-interior-light" data-transition-light="dice-interior">
+            <div className="arka-d6-interior-light__halo" />
+            <div className="arka-d6-interior-light__rays" />
+          </div>
+        ) : null}
         {closedFailed ? (
           <div className="arka-d6-fallback">
             {Array.from({ length: 6 }, (_, index) => <span key={index} />)}
@@ -47,11 +53,15 @@ export function ArkamonDiceArtwork() {
           />
         )}
         {!openFailed ? (
-          <img className="arka-d6-open" src={assetUrl(ARKAMON_D6_OPEN_PATH)} alt="" draggable={false} onError={() => setOpenFailed(true)} />
+          <>
+            <img className="arka-d6-open" src={assetUrl(ARKAMON_D6_OPEN_PATH)} alt="" draggable={false} onError={() => setOpenFailed(true)} />
+            <div className="arka-d6-interior-light arka-d6-interior-light--source">
+              <div className="arka-d6-interior-light__source" />
+            </div>
+          </>
         ) : null}
       </div>
       <img className="arka-d6-wordmark" src={assetUrl(ARKAMON_LOGO_PATH)} alt="" draggable={false} />
-      <div className="arka-d6-capture-light" />
     </div>
   )
 }
