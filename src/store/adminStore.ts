@@ -17,6 +17,7 @@ import type {
   AdminLayoutRect,
 } from '@/theme/adminThemeTypes'
 import { compactRoadPoints } from '@/utils/mainMapRoadGeometry'
+import { migrateDepositLayout } from '@/theme/depositLayoutMigration'
 import {
   cloneAdminTheme,
   defaultAdminTheme,
@@ -168,10 +169,7 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
         ...defaultLuogoLayout,
         ...theme?.layouts?.luogo,
       },
-      deposit: {
-        ...defaultDepositLayout,
-        ...theme?.layouts?.deposit,
-      },
+      deposit: migrateDepositLayout(theme?.layouts?.deposit),
       evolution: {
         ...defaultEvolutionLayout,
         ...theme?.layouts?.evolution,

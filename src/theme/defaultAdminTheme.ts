@@ -79,10 +79,10 @@ export const defaultLuogoLayout = {
 }
 
 export const defaultDepositLayout = {
-  hud: { x: 3, y: 3, w: 94, h: 9 },
-  boxGrid: { x: 4, y: 16, w: 66, h: 68 },
-  teamPanel: { x: 73, y: 16, w: 23, h: 68 },
-  infoBar: { x: 12, y: 88, w: 76, h: 8 },
+  hud: { x: 31.5, y: 4.4, w: 62, h: 6.2 },
+  boxGrid: { x: 31.5, y: 12.5, w: 62, h: 79 },
+  teamPanel: { x: 1.9, y: 2, w: 27.1, h: 92.5 },
+  infoBar: { x: 31.5, y: 93, w: 67, h: 6 },
 }
 
 export const defaultEvolutionLayout = {

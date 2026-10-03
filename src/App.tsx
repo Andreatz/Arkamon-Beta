@@ -18,6 +18,7 @@ import { AdminOverlay } from '@/admin/AdminOverlay'
 import { AdminRuntime } from '@/admin/AdminRuntime'
 import { VfxGallery } from '@/components/vfx/VfxGallery'
 import { BattleDiceLab } from '@/components/battle/BattleDiceLab'
+import { DepositLab } from '@/components/deposit/DepositLab'
 
 /**
  * Router delle scene.
@@ -39,6 +40,10 @@ function App() {
 
   if (import.meta.env.DEV && window.location.hash === '#dice-lab') {
     return <BattleDiceLab />
+  }
+
+  if (import.meta.env.DEV && window.location.hash === '#deposit-lab') {
+    return <DepositLab />
   }
 
   return (
