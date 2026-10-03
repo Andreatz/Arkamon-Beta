@@ -1,15 +1,20 @@
 {
   "generator": "built-in image_gen",
   "date": "2026-10-03",
-  "normalization": "RGBA contain 880px centered in 1024px transparent canvas; lossless WebP, artwork unaltered",
+  "revision": "Supplied circular emblem; two equal halves opening on original black midline seam",
+  "reference": {
+    "path": "art-source/transitions/arkamon-d6/reference-symbol.png",
+    "sha256": "1f090fbb1a5e5c14df8ef0170dfadb9742fd8d3c41e90f59ed1675d92e83ff9f"
+  },
+  "normalization": "Same 880px contain scale in 1024px transparent canvas for both poses; lossless WebP, artwork unaltered",
   "poses": [
     {
       "pose": "closed",
       "original": "art-source/transitions/arkamon-d6/closed-original.png",
       "runtime": "public/ui/transitions/arkamon-d6-closed.webp",
-      "original_sha256": "17aad38f46e6c5ca1719a77e11c1f33eda8383bee9edac1974e66d40cdaf4d76",
-      "runtime_sha256": "e97bd9fd0246be4b1cd78abb66baa898bd1aba4205458f6ef59a9e2880d6a410",
-      "runtime_bytes": 650224,
+      "original_sha256": "45659814f94b15da185aad178344532b1bb179c6710f760a2fbd03357e8f2268",
+      "runtime_sha256": "55430ccfa5e776ea5b7cf5eea14a67c6c53cc9e8806c8ca2ae64f9419d41a7a3",
+      "runtime_bytes": 602302,
       "size": [
         1024,
         1024
@@ -20,9 +25,9 @@
       "pose": "open",
       "original": "art-source/transitions/arkamon-d6/open-original.png",
       "runtime": "public/ui/transitions/arkamon-d6-open.webp",
-      "original_sha256": "b224c9353460b343da63aeeef4675305c6a4845f77a79e49091b56dfa264e12f",
-      "runtime_sha256": "2ec2d3173061e72aaaccfbb819d7fa441f1b807c2cb5b38670f03ac4ff0fd79e",
-      "runtime_bytes": 696216,
+      "original_sha256": "9e8a494dab9b6c713eff971eb04bad3399476849db37c5b71944e639512f5971",
+      "runtime_sha256": "ea345f5e2e06d0731d5e08005fd73270379bb3a26c1ab8cdad7f318f2a15e84e",
+      "runtime_bytes": 676172,
       "size": [
         1024,
         1024

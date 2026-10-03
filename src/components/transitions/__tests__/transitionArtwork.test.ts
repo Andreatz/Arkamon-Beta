@@ -11,9 +11,18 @@ interface PoseProvenance {
   original_sha256: string
   runtime_sha256: string
 }
-const provenance = JSON.parse(readFileSync(join(process.cwd(), 'art-source/transitions/arkamon-d6/provenance.json'), 'utf8')) as { poses: PoseProvenance[] }
+const provenance = JSON.parse(readFileSync(join(process.cwd(), 'art-source/transitions/arkamon-d6/provenance.json'), 'utf8')) as {
+  reference: { path: string; sha256: string }
+  poses: PoseProvenance[]
+}
 
 describe('Arkamon capture D6 artwork', () => {
+  it('preserves the supplied emblem source alongside the paired artwork', () => {
+    const reference = readFileSync(join(process.cwd(), provenance.reference.path))
+    expect(createHash('sha256').update(reference).digest('hex')).toBe(provenance.reference.sha256)
+    expect(provenance.reference.sha256).toBe('1f090fbb1a5e5c14df8ef0170dfadb9742fd8d3c41e90f59ed1675d92e83ff9f')
+  })
+
   it('retains distinct open and closed poses with their unmodified generated originals', () => {
     expect(provenance.poses.map((pose) => pose.pose).sort()).toEqual(['closed', 'open'])
     expect(new Set(provenance.poses.map((pose) => pose.runtime_sha256)).size).toBe(2)

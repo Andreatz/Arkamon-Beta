@@ -32,6 +32,7 @@ export function SceneTransitionOverlay({ phase, profile, startCovered, onCovered
     setFinishRequested(true)
   }, [])
   const videoFailed = useCallback(() => {
+    if (videoTerminal.current) return
     videoTerminal.current = true
     videoRef.current?.pause()
     setVideoReady(false)
@@ -90,7 +91,7 @@ export function SceneTransitionOverlay({ phase, profile, startCovered, onCovered
       style={style}
       aria-hidden="true"
     >
-      <ArkamonDiceArtwork />
+      {profile.mode === 'arkamon-dice' ? <ArkamonDiceArtwork /> : null}
       {profile.mode === 'battle-video' ? (
         <video
           ref={videoRef}

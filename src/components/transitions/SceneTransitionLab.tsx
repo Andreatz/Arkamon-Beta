@@ -102,7 +102,11 @@ export function SceneTransitionLab() {
           {!active && !showDestination ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-950/70 p-4">
               <img src={assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" className="h-auto w-52 max-w-[55%] object-contain sm:w-72" />
-              <img src={assetUrl('/ui/transitions/arkamon-d6-closed.webp')} alt="Dado D6 cremisi e nero" className="h-auto w-36 max-w-[35%] object-contain sm:w-56" />
+              {choice === 'battle' ? (
+                <p className="px-4 py-6 text-5xl font-black italic text-red-300 sm:text-7xl">VS</p>
+              ) : (
+                <img src={assetUrl('/ui/transitions/arkamon-d6-closed.webp')} alt="Dado D6 cremisi e nero" className="h-auto w-36 max-w-[35%] object-contain sm:w-56" />
+              )}
             </div>
           ) : (
             <div className="absolute bottom-0 left-0 right-0 space-y-1 p-5 sm:p-8">
@@ -125,7 +129,7 @@ export function SceneTransitionLab() {
           ) : null}
         </div>
 
-        <p className="text-xs leading-relaxed text-slate-400">Il D6 custodisce la forza degli Arkamon e accompagna ogni nuova tappa. L’ingresso in battaglia conserva il video dedicato. L’anteprima non avvia una partita.</p>
+        <p className="text-xs leading-relaxed text-slate-400">Il D6 custodisce la forza degli Arkamon e accompagna le mappe e le schermate. L’ingresso in battaglia usa esclusivamente il video VS dedicato, con una breve copertura scura durante il caricamento. L’anteprima non avvia una partita.</p>
       </div>
     </main>
   )
