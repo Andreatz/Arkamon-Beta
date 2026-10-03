@@ -11,6 +11,7 @@ export interface AnimatedSpriteProps {
   fps: number
   width: number
   height: number
+  responsive?: boolean
   durationMs?: number
   loop?: boolean
   className?: string
@@ -48,6 +49,7 @@ export function AnimatedSprite({
   fps,
   width,
   height,
+  responsive = false,
   durationMs,
   loop = false,
   className,
@@ -137,18 +139,22 @@ export function AnimatedSprite({
   )
   const scaleX = width / frameWidth
   const scaleY = height / frameHeight
-  const backgroundPosition = `-${col * frameWidth * scaleX}px -${row * frameHeight * scaleY}px`
+  const backgroundPosition = responsive
+    ? `${columns > 1 ? col * 100 / (columns - 1) : 0}% ${rows > 1 ? row * 100 / (rows - 1) : 0}%`
+    : `-${col * frameWidth * scaleX}px -${row * frameHeight * scaleY}px`
 
   return (
     <div
       className={className}
       style={{
-        width,
-        height,
+        width: responsive ? '100%' : width,
+        height: responsive ? '100%' : height,
         backgroundImage: `url(${src})`,
         backgroundPosition,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: `${columns * frameWidth * scaleX}px ${rows * frameHeight * scaleY}px`,
+        backgroundSize: responsive
+          ? `${columns * 100}% ${rows * 100}%`
+          : `${columns * frameWidth * scaleX}px ${rows * frameHeight * scaleY}px`,
         ...style,
       }}
       aria-hidden="true"

@@ -46,6 +46,11 @@ import {
   preloadVfxAssets,
 } from '@/components/vfx/preloadVfxAssets'
 import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
+import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
+import {
+  BATTLE_DICE_ASSET_IDS,
+  BATTLE_DICE_ROLL_VISIBLE_MS,
+} from '@/components/battle/battleDiceAssets'
 import {
   getMoveVfxDurationMs,
   getMoveVfxFeedback,
@@ -65,7 +70,6 @@ const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: 
 }
 
 const INFOBOX_VISIBLE_MS = 2000
-const DICE_ROLL_VISIBLE_MS = 2000
 
 const PHYSICAL_VFX_ARCHETYPES = new Set(['blunt', 'slash', 'bite', 'charge'])
 
@@ -170,7 +174,7 @@ export function BattagliaScene() {
   const luogoRitornoRef = useRef(battaglia?.luogoRitorno ?? 'mappa-principale')
 
   useEffect(() => {
-    preloadVfxAssets(DEFAULT_PRELOAD_VFX_ASSET_IDS)
+    preloadVfxAssets([...DEFAULT_PRELOAD_VFX_ASSET_IDS, ...BATTLE_DICE_ASSET_IDS])
     preloadMoveVfxForPokemon(
       battaglia
         ? [
@@ -272,7 +276,7 @@ export function BattagliaScene() {
       setDiceRoll(null)
       diceRollTimerRef.current = null
       onComplete()
-    }, DICE_ROLL_VISIBLE_MS)
+    }, BATTLE_DICE_ROLL_VISIBLE_MS)
   }
 
   const mostraVfxMossa = (
@@ -1380,96 +1384,6 @@ function DamagePopupOverlay({
         -{popup.amount}
       </motion.div>
     </div>
-  )
-}
-
-type DiceRollDisplay = {
-  id: number
-  side: 'A' | 'B'
-  moveName: string
-  rolls: number[]
-  increment: number
-  damage: number
-}
-
-const DIE_PIPS: Record<number, string[]> = {
-  1: ['col-start-2 row-start-2'],
-  2: ['col-start-1 row-start-1', 'col-start-3 row-start-3'],
-  3: ['col-start-1 row-start-1', 'col-start-2 row-start-2', 'col-start-3 row-start-3'],
-  4: [
-    'col-start-1 row-start-1',
-    'col-start-3 row-start-1',
-    'col-start-1 row-start-3',
-    'col-start-3 row-start-3',
-  ],
-  5: [
-    'col-start-1 row-start-1',
-    'col-start-3 row-start-1',
-    'col-start-2 row-start-2',
-    'col-start-1 row-start-3',
-    'col-start-3 row-start-3',
-  ],
-  6: [
-    'col-start-1 row-start-1',
-    'col-start-3 row-start-1',
-    'col-start-1 row-start-2',
-    'col-start-3 row-start-2',
-    'col-start-1 row-start-3',
-    'col-start-3 row-start-3',
-  ],
-}
-
-function DiceRollOverlay({ roll }: { roll: DiceRollDisplay }) {
-  const total = roll.rolls.reduce((sum, value) => sum + value, 0)
-
-  return (
-    <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.88, y: -18 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.94, y: 12 }}
-        transition={{ duration: 0.22 }}
-        className="relative -top-6 w-[min(560px,88vw)] rounded-md border border-white/20 bg-slate-950/88 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
-      >
-        <p className="text-[11px] font-black uppercase text-blue-300 arka-letter-outline">
-          {roll.side === 'A' ? 'Lancio giocatore' : 'Lancio avversario'}
-        </p>
-        <h3 className="mt-1 text-lg font-black">{roll.moveName}</h3>
-        <div className="mt-3 flex min-h-16 flex-wrap items-center justify-center gap-3">
-          {roll.rolls.map((value, index) => (
-            <DieFace key={`${roll.id}-${index}`} value={value} index={index} />
-          ))}
-        </div>
-        <p className="mt-3 text-xs font-bold text-slate-200">
-          Dadi: {roll.rolls.join(' + ')}
-          {roll.increment > 0 ? ` + ${roll.increment}` : ''}
-          {' = '}
-          {total + roll.increment}
-        </p>
-        <p className="mt-1 text-base font-black text-rose-300">
-          Danno finale: {roll.damage}
-        </p>
-      </motion.div>
-    </div>
-  )
-}
-
-function DieFace({ value, index }: { value: number; index: number }) {
-  return (
-    <motion.div
-      initial={{ y: -70, rotate: -180, opacity: 0 }}
-      animate={{ y: 0, rotate: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 16, delay: index * 0.08 }}
-      className="grid h-14 w-14 shrink-0 grid-cols-3 grid-rows-3 rounded-md border-2 border-slate-300 bg-white p-2 shadow-lg"
-      aria-label={`Dado: ${value}`}
-    >
-      {(DIE_PIPS[value] ?? []).map((position, pipIndex) => (
-        <span
-          key={`${position}-${pipIndex}`}
-          className={`${position} h-2.5 w-2.5 place-self-center rounded-full bg-slate-950`}
-        />
-      ))}
-    </motion.div>
   )
 }
 

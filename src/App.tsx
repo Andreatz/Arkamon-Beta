@@ -17,6 +17,7 @@ import { AudioController } from '@components/AudioController'
 import { AdminOverlay } from '@/admin/AdminOverlay'
 import { AdminRuntime } from '@/admin/AdminRuntime'
 import { VfxGallery } from '@/components/vfx/VfxGallery'
+import { BattleDiceLab } from '@/components/battle/BattleDiceLab'
 
 /**
  * Router delle scene.
@@ -34,6 +35,10 @@ function App() {
 
   if (import.meta.env.DEV && window.location.hash === '#vfx-lab') {
     return <VfxGallery />
+  }
+
+  if (import.meta.env.DEV && window.location.hash === '#dice-lab') {
+    return <BattleDiceLab />
   }
 
   return (
