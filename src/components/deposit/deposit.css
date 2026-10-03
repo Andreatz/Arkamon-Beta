@@ -80,6 +80,7 @@
 }
 
 .deposit-portrait {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,18 +100,12 @@
 }
 
 .deposit-portrait img {
-  width: 118%;
-  height: 118%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: auto;
   max-width: none;
-  flex-shrink: 0;
-  object-fit: contain;
   user-select: none;
-}
-
-.deposit-team-portrait img {
-  width: 145%;
-  height: 145%;
-  transform: translateY(14%);
 }
 
 .deposit-box-grid {

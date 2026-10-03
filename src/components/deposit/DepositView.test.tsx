@@ -4,6 +4,8 @@ import { describe, expect, it, vi } from 'vitest'
 import type { PokemonIstanza } from '@/types'
 import { createDepositPreview } from './DepositLab'
 import { DepositView, getAdjacentDepositBox } from './DepositView'
+import { DEPOSIT_PORTRAIT_FRAMING } from './depositPortraitFraming'
+import pokemonSpecies from '@/data/pokemon.json'
 
 vi.mock('@/admin/AdminLayoutItem', () => ({
   AdminLayoutItem: ({ children }: { children: ReactNode }) => <>{children}</>,
@@ -81,6 +83,38 @@ describe('DepositView', () => {
       'Squadra, posto 6: vuoto',
     ])
     expect(buttons).toHaveLength(41)
+  })
+
+  it('has a valid face framing for every registered species and evolution', () => {
+    expect(Object.keys(DEPOSIT_PORTRAIT_FRAMING).map(Number).sort((a, b) => a - b))
+      .toEqual(pokemonSpecies.map((species) => species.id).sort((a, b) => a - b))
+    for (const framing of Object.values(DEPOSIT_PORTRAIT_FRAMING)) {
+      expect(Number.isFinite(framing.x) && Number.isFinite(framing.y) && Number.isFinite(framing.zoom)).toBe(true)
+      expect(framing.x).toBeGreaterThan(0)
+      expect(framing.x).toBeLessThan(1)
+      expect(framing.y).toBeGreaterThan(0)
+      expect(framing.y).toBeLessThan(1)
+      expect(framing.zoom).toBeGreaterThanOrEqual(1)
+      expect(framing.zoom).toBeLessThanOrEqual(6)
+    }
+  })
+
+  it('preserves the species face framing when a creature moves between team and storage', () => {
+    const preview = createDepositPreview()
+    const pokemon = preview.squadra[0]
+    const renderOccupant = (inTeam: boolean) => renderToStaticMarkup(
+      <DepositView squadra={inTeam ? [pokemon] : []} deposito={inTeam ? {} : { '1:1': pokemon }}
+        onSwap={() => {}} onBack={() => {}} />,
+    )
+    const teamMarkup = renderOccupant(true)
+    const boxMarkup = renderOccupant(false)
+    const imageStyle = (markup: string) => markup.match(/<img[^>]*front_sprites[^>]*style="([^"]+)"/)?.[1]
+
+    expect(imageStyle(teamMarkup)).toBeDefined()
+    expect(imageStyle(boxMarkup)).toBe(imageStyle(teamMarkup))
+    expect(imageStyle(teamMarkup)).toContain('translate(')
+    expect(teamMarkup).toContain('deposit-team-portrait')
+    expect(boxMarkup).toContain('deposit-box-portrait')
   })
 
   it.each([
