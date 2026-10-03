@@ -74,7 +74,7 @@
   left: 50%;
   width: 37%;
   aspect-ratio: 1;
-  filter: var(--scene-artwork-filter) drop-shadow(0 24px 22px #000a);
+  filter: var(--scene-artwork-filter);
   animation: arka-d6-launch var(--scene-dice-ms) cubic-bezier(0.23, 0.75, 0.18, 1) both;
   will-change: transform;
   isolation: isolate;
@@ -87,6 +87,7 @@
   height: 100%;
   object-fit: contain;
   z-index: 1;
+  filter: drop-shadow(0 24px 22px #000a);
 }
 
 .arka-d6-closed { animation: arka-d6-closed-pose var(--scene-dice-ms) linear both; }
@@ -127,7 +128,9 @@
 
 .arka-d6-interior-light__halo,
 .arka-d6-interior-light__rays,
-.arka-d6-interior-light__source {
+.arka-d6-interior-light__wave,
+.arka-d6-interior-light__source,
+.arka-d6-interior-light__flash {
   position: absolute;
   top: var(--d6-glow-y);
   left: var(--d6-glow-x);
@@ -135,32 +138,56 @@
 }
 
 .arka-d6-interior-light__halo {
-  width: 94%;
-  height: 49%;
+  width: 280%;
+  height: 210%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, #fff4cfd9 0%, #ffb35d85 19%, #e838254d 38%, transparent 68%);
-  filter: blur(9px);
+  background: radial-gradient(ellipse, #fffdf4 0%, #fff0c8ed 12%, #ffce82bb 28%, #ff683a66 46%, transparent 70%);
+  filter: blur(12px);
+  animation: arka-d6-bloom var(--scene-dice-ms) cubic-bezier(0.16, 0.8, 0.26, 1) both;
 }
 
 .arka-d6-interior-light__rays {
-  width: 110%;
-  height: 75%;
+  width: 420%;
+  height: 340%;
   background: conic-gradient(from 12deg,
-    transparent 0deg 28deg, #ffead244 31deg, transparent 35deg 93deg,
-    #ffdfb933 96deg, transparent 101deg 175deg, #ffddc23d 179deg,
-    transparent 184deg 240deg, #ffc78f33 243deg, transparent 248deg 305deg,
-    #ffe7ce3d 309deg, transparent 314deg 360deg);
-  mask-image: radial-gradient(ellipse, #000 6%, transparent 65%);
-  filter: blur(2px);
+    transparent 0deg 10deg, #fffdf3f2 13deg 16deg, transparent 20deg 44deg,
+    #fff1cce6 48deg 53deg, transparent 59deg 83deg, #fff9e9eb 87deg 90deg,
+    transparent 96deg 130deg, #ffd49ecf 135deg 141deg, transparent 146deg 171deg,
+    #fffdf5f2 175deg 179deg, transparent 185deg 214deg, #fff0cfde 220deg 225deg,
+    transparent 232deg 253deg, #fff8e6ed 258deg 263deg, transparent 270deg 302deg,
+    #ffe4b8d9 307deg 312deg, transparent 319deg 343deg, #fffdf3e6 347deg 352deg,
+    transparent 357deg 360deg);
+  mask-image: radial-gradient(ellipse, #000 3% 18%, #000b 35%, transparent 68%);
+  filter: blur(3px);
+  animation: arka-d6-beams var(--scene-dice-ms) cubic-bezier(0.12, 0.9, 0.2, 1) both;
+}
+
+.arka-d6-interior-light__wave {
+  width: 310%;
+  height: 250%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #fff6d9dd 0%, #ffdda6a6 24%, #ff864c55 47%, transparent 68%);
+  filter: blur(10px);
+  animation: arka-d6-light-wave var(--scene-dice-ms) cubic-bezier(0.08, 0.8, 0.24, 1) both;
 }
 
 .arka-d6-interior-light__source {
   width: var(--d6-glow-width);
-  height: 8%;
+  height: 18%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, #fffbed 0%, #fff1cfcc 18%, #ffa35e66 45%, transparent 72%);
+  background: radial-gradient(ellipse, #fff 0% 15%, #fffcecfa 30%, #ffdc99d9 50%, #ff8e5280 64%, transparent 78%);
   mix-blend-mode: screen;
   filter: blur(2px);
+}
+
+.arka-d6-interior-light__flash {
+  width: 180%;
+  height: 130%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #fffdf4 0%, #fff4d3ed 13%, #ffd69d99 30%, transparent 62%);
+  mix-blend-mode: screen;
+  filter: blur(6px);
+  animation: arka-d6-core-flash var(--scene-dice-ms) ease-out both;
 }
 
 .arka-d6-fallback {
@@ -215,10 +242,31 @@
 }
 @keyframes arka-d6-interior-light {
   0%, 57% { opacity: 0; }
-  64% { opacity: 0.16; }
-  71% { opacity: 0.72; }
-  76%, 86% { opacity: 1; }
-  100% { opacity: 0.12; }
+  63% { opacity: 0.2; }
+  70%, 80% { opacity: 1; }
+  100% { opacity: 0.1; }
+}
+@keyframes arka-d6-bloom {
+  0%, 57% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(0.12); }
+  70% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(0.94); }
+  100% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(1.25); }
+}
+@keyframes arka-d6-beams {
+  0%, 59% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(0.04); opacity: 0; }
+  70%, 77% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(1.18); opacity: 0.25; }
+}
+@keyframes arka-d6-light-wave {
+  0%, 63% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(0.08); opacity: 0; }
+  67% { opacity: 0.9; }
+  80% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(1.1); opacity: 0.45; }
+  100% { transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(1.5); opacity: 0; }
+}
+@keyframes arka-d6-core-flash {
+  0%, 62% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(0.1); }
+  70% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(1); }
+  79% { opacity: 0.48; }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--d6-glow-angle)) scale(1.2); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -37,6 +37,7 @@ export function ArkamonDiceArtwork() {
           <div className="arka-d6-interior-light" data-transition-light="dice-interior">
             <div className="arka-d6-interior-light__halo" />
             <div className="arka-d6-interior-light__rays" />
+            <div className="arka-d6-interior-light__wave" />
           </div>
         ) : null}
         {closedFailed ? (
@@ -57,6 +58,7 @@ export function ArkamonDiceArtwork() {
             <img className="arka-d6-open" src={assetUrl(ARKAMON_D6_OPEN_PATH)} alt="" draggable={false} onError={() => setOpenFailed(true)} />
             <div className="arka-d6-interior-light arka-d6-interior-light--source">
               <div className="arka-d6-interior-light__source" />
+              <div className="arka-d6-interior-light__flash" />
             </div>
           </>
         ) : null}

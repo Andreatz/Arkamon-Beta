@@ -22,7 +22,7 @@ Le risorse usate dal gioco sono:
 
 Le pose vengono precaricate e decodificate all'apertura dell'app. Se una posa non si carica, resta visibile il dado chiuso oppure una faccia a sei punti. Il percorso e i nodi sono elementi vettoriali decorativi.
 
-Il bagliore animato è contenuto nel dado e ne segue posizione e rotazione. Una sorgente stretta illumina il varco, mentre un alone caldo e raggi discreti stanno dietro alla sagoma. La luce resta spenta fino all'inizio dell'apertura e raggiunge il picco quando il dado è aperto. Se la posa aperta non si carica o è attivo il movimento ridotto, la luce viene disattivata. La battaglia non monta né il dado né questi elementi luminosi.
+Il bagliore nasce dalla cavità del dado e ne segue posizione e rotazione. Un nucleo bianco e caldo esplode all'apertura: raggi lunghi si proiettano all'esterno, un alone ampio illumina il fondale e un'onda di luce si espande dalla sorgente. Un breve lampo attraversa anche il fronte della sagoma. La luce resta spenta durante il lancio e raggiunge il picco prima della rivelazione della nuova scena. L'espansione usa trasformazioni e opacità senza aggiungere immagini. Se la posa aperta non si carica o è attivo il movimento ridotto, la luce viene disattivata. La battaglia non monta né il dado né questi elementi luminosi.
 
 ## Integrazione
 
