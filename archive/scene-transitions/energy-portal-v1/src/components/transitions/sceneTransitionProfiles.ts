@@ -4,7 +4,7 @@ export const TRANSITION_VIDEO_PATH = '/assets/Transizione Battaglia.mp4'
 export const TRANSITION_VIDEO_START_SECONDS = 5
 export const TRANSITION_VIDEO_SEGMENT_SECONDS = 3
 
-export type SceneTransitionMode = 'arkamon-dice' | 'battle-video'
+export type SceneTransitionMode = 'portal' | 'battle-video'
 
 export interface SceneTransitionProfile {
   readonly mode: SceneTransitionMode
@@ -43,21 +43,21 @@ function destinationLabel(destination: NavigazioneScena): string {
   return SCENE_LABELS[destination.scena]
 }
 
-/** The capture D6 joins navigation, creatures and the board; battles retain their VS video. */
+/** Keeps the VS video exclusive to battles and uses an energy portal for other scenes. */
 export function getSceneTransitionProfile(destination: NavigazioneScena): SceneTransitionProfile {
   const battle = destination.scena === 'battaglia'
   const evolution = destination.scena === 'evoluzione'
-  const durationMs = battle ? 3000 : evolution ? 1900 : 1600
-  const coverMs = battle ? 180 : 240
-  const blendMs = battle ? 950 : evolution ? 400 : 300
+  const durationMs = battle ? 3000 : evolution ? 1800 : 1250
+  const coverMs = 180
+  const blendMs = battle ? 950 : evolution ? 500 : 350
 
   return {
-    mode: battle ? 'battle-video' : 'arkamon-dice',
+    mode: battle ? 'battle-video' : 'portal',
     playbackRate: 1,
     durationMs,
     coverMs,
     blendMs,
-    filter: evolution ? 'saturate(1.1) brightness(1.08)' : 'none',
+    filter: evolution ? 'hue-rotate(245deg)' : 'none',
     label: destinationLabel(destination),
     // Metadata, seeking or playback can stall; always release the input blocker.
     failSafeMs: Math.min(8000, coverMs + durationMs + blendMs + 1500),

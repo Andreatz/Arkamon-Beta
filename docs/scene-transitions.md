@@ -1,27 +1,39 @@
-# Transizioni fra scene
+# Transizioni Arkamon: il D6 custodisce la creatura
 
-I cambi di schermata usano un portale di energia blu e dorata: nebulosa in rotazione, raggi, scariche e anelli che si espandono. L'evoluzione usa la stessa animazione in violetto, con un ritmo più lento. L'ingresso in battaglia mantiene il video originale e il simbolo VS; il video non compare nei normali passaggi.
+La transizione tra scene usa un oggetto riconoscibile: un dado D6 cremisi e nero, con sei punti sulla faccia chiara e un sigillo ad artigli sul coperchio. Il dado entra con un lancio, rimbalza, si assesta e si apre. Un breve bagliore accompagna il logo ufficiale e l'arrivo alla nuova scena. Il percorso a caselle sullo sfondo collega l'oggetto all'esplorazione da boardgame.
 
-| Destinazione | Effetto | Durata indicativa |
-| --- | --- | --- |
-| Titolo, laboratorio, mappe, città, percorsi e deposito | Portale blu e dorato | 1,43 s |
-| Evoluzione | Portale violetto | 1,98 s |
-| Battaglia | Video originale, dal secondo 5 al secondo 8 | Circa 3 s, oltre all'eventuale caricamento |
+Il movimento è decorativo: non estrae risultati, non consuma dadi o turni e non cambia lo stato della partita. Il simbolo unisce i due elementi del gioco: le creature custodite e il viaggio guidato dai D6.
 
-La scena di destinazione viene montata soltanto dopo i primi 180 ms, quando l'effetto copre interamente il gioco. Nel frattempo la città o il percorso in uscita conserva il proprio luogo. La musica segue la scena visualizzata.
+## Versione precedente ibernata
 
-Durante il passaggio i controlli della scena sono temporaneamente inattivi. La griglia protegge anche il movimento tramite tastiera; gli strumenti Admin rimangono disponibili. Le richieste ravvicinate usano l'ultima destinazione, e i completamenti di animazioni precedenti vengono ignorati. Un reindirizzamento automatico mantiene la copertura senza esporre una scena vuota.
+Il portale di energia è conservato integralmente in [archive/scene-transitions/energy-portal-v1](../archive/scene-transitions/energy-portal-v1/README.md), con i nove file originali e un manifesto SHA-256. Nessun file attivo importa quell'archivio. I suoi due test conservano il contenuto originale con estensione `.test.ts.snapshot`, così restano esclusi dalla scoperta automatica. Il README descrive il ripristino.
 
-La preferenza di sistema `prefers-reduced-motion` rende il cambio immediato e salta il video. Se il video di battaglia fallisce o rimane fermo, il portale fornisce una riserva animata e un limite di tempo libera sempre i comandi.
+La versione ibernata non appare nemmeno come riserva in caso di errore del video di battaglia.
 
-## Modifiche e verifiche
+## Illustrazioni e risorse
 
-- `src/components/transitions/sceneTransitionProfiles.ts`: tempi, modalità e colore per destinazione.
-- `sceneTransitions.css`: portale e riserva animata del video.
-- `SceneTransition.tsx`: cambio di scena e blocco temporaneo dei comandi.
-- `sceneTransitionState.ts`: coordinamento delle richieste e dei completamenti.
-- `SceneNavigationContext.ts`: navigazione visualizzata e stato dei comandi.
+Le due pose sono state create con il generatore di immagini integrato. Gli originali, i prompt completi e la provenienza sono in [art-source/transitions/arkamon-d6](../art-source/transitions/arkamon-d6/prompts.md). La normalizzazione conserva il disegno: proporzione originale, margini trasparenti su una tela 1024 × 1024 e WebP senza perdita.
 
-Le mappe interne alla griglia mantengono la propria animazione esistente, senza rimontare tutta la scena a ogni turno o movimento. Il VFX Lab resta accessibile tramite `#vfx-lab`. Il catalogo VFX generato non viene modificato.
+Le risorse usate dal gioco sono:
 
-Eseguire `npm test` e `npm run build` prima del commit. I test del coordinamento verificano il cambio sotto copertura, i cambi di luogo, le richieste multiple, l'annullamento, i reindirizzamenti, i completamenti obsoleti e il movimento ridotto. La verifica visiva nel browser completa questi controlli per i percorsi provati; non equivale a una revisione manuale di tutte le combinazioni di scene.
+- `public/ui/transitions/arkamon-d6-closed.webp`
+- `public/ui/transitions/arkamon-d6-open.webp`
+- Il logo esistente `public/ui/logo_arkamon.png`, senza modifiche.
+
+Le pose vengono precaricate e decodificate all'apertura dell'app. Se una posa non si carica, resta visibile il dado chiuso oppure una faccia a sei punti. Il percorso e i nodi sono elementi vettoriali decorativi.
+
+## Integrazione
+
+Il coordinatore delle scene mantiene l'ultima scena presentata durante la copertura e applica la nuova navigazione quando l'overlay è opaco. Conserva il payload della scena uscente, impedisce clic e tasti di movimento durante il passaggio e rilascia il blocco alla fine. Un secondo cambio di scena mentre l'overlay è già visibile mantiene la copertura.
+
+- Mappe, città, laboratorio, deposito e schermate: D6, circa 1,84 secondi complessivi.
+- Evoluzione: stesso D6, circa 2,14 secondi, leggero aumento della luminosità senza cambiare il colore del marchio.
+- Battaglia: mantiene il segmento finale del video VS esistente (secondi 5–8). Il D6 copre l'attesa del video; un limite temporale o un errore libera sempre la navigazione.
+
+La preferenza di movimento ridotto viene rispettata dal coordinatore: il cambio scena è immediato e non riproduce la transizione. L'anteprima offre in quel caso una vista statica.
+
+## Anteprima
+
+In sviluppo aprire `http://localhost:3000/#transition-lab`. Il pulsante **Riproduci** mostra l'overlay reale per mappe, evoluzione o battaglia. La pagina non avvia una partita e non cambia il salvataggio. Il pulsante e il selettore restano disabilitati durante la riproduzione.
+
+La pagina è riservata allo sviluppo, come il VFX Lab. Per la verifica eseguire `npm test` e `npm run build`, controllare la riproduzione nel browser e un passaggio reale dal menu al laboratorio. I test dell'archivio confrontano i nove file byte per byte e controllano che la vecchia grafica non sia attiva. I test delle immagini verificano provenienza, integrità e trasparenza effettiva dei WebP.

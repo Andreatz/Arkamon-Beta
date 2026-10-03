@@ -1,0 +1,33 @@
+{
+  "generator": "built-in image_gen",
+  "date": "2026-10-03",
+  "normalization": "RGBA contain 880px centered in 1024px transparent canvas; lossless WebP, artwork unaltered",
+  "poses": [
+    {
+      "pose": "closed",
+      "original": "art-source/transitions/arkamon-d6/closed-original.png",
+      "runtime": "public/ui/transitions/arkamon-d6-closed.webp",
+      "original_sha256": "17aad38f46e6c5ca1719a77e11c1f33eda8383bee9edac1974e66d40cdaf4d76",
+      "runtime_sha256": "e97bd9fd0246be4b1cd78abb66baa898bd1aba4205458f6ef59a9e2880d6a410",
+      "runtime_bytes": 650224,
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": true
+    },
+    {
+      "pose": "open",
+      "original": "art-source/transitions/arkamon-d6/open-original.png",
+      "runtime": "public/ui/transitions/arkamon-d6-open.webp",
+      "original_sha256": "b224c9353460b343da63aeeef4675305c6a4845f77a79e49091b56dfa264e12f",
+      "runtime_sha256": "2ec2d3173061e72aaaccfbb819d7fa441f1b807c2cb5b38670f03ac4ff0fd79e",
+      "runtime_bytes": 696216,
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": true
+    }
+  ]
+}

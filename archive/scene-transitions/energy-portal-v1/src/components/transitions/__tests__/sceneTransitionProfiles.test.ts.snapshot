@@ -20,27 +20,25 @@ describe('scene transition profiles', () => {
     expect(battle.filter).toBe('none')
   })
 
-  it('uses a capture D6 with enough time to land and open during ordinary navigation', () => {
+  it('uses a brief portal instead of the VS video for ordinary scene changes', () => {
     const general = getSceneTransitionProfile({ scena: 'deposito' })
-    expect(general.mode).toBe('arkamon-dice')
+    expect(general.mode).toBe('portal')
     expect(general.durationMs).toBeGreaterThan(1000)
-    expect(general.durationMs + general.coverMs).toBeLessThan(2200)
-    // The open pose is fully visible at 71% of the animation, before the reveal starts.
-    expect((general.durationMs + general.coverMs) * 0.71)
-      .toBeLessThan(general.coverMs + general.durationMs - general.blendMs)
+    expect(general.durationMs).toBeLessThan(1500)
+    expect(general.coverMs).toBe(180)
+    expect(general.blendMs).toBe(350)
     expect(general.filter).toBe('none')
   })
 
-  it('lets the same crimson D6 linger slightly longer for evolution', () => {
+  it('gives evolution a violet tint and a duration between ordinary navigation and battle', () => {
     const general = getSceneTransitionProfile({ scena: 'deposito' })
     const evolution = getSceneTransitionProfile({ scena: 'evoluzione' })
     const battle = getSceneTransitionProfile({ scena: 'battaglia' })
-    expect(evolution.mode).toBe('arkamon-dice')
+    expect(evolution.mode).toBe('portal')
     expect(evolution.durationMs).toBeGreaterThan(general.durationMs)
     expect(evolution.durationMs).toBeLessThan(battle.durationMs)
-    expect(evolution.filter).not.toContain('hue-rotate(')
-    expect((evolution.durationMs + evolution.coverMs) * 0.71)
-      .toBeLessThan(evolution.coverMs + evolution.durationMs - evolution.blendMs)
+    expect(evolution.filter).toContain('hue-rotate(')
+    expect(evolution.blendMs).toBe(500)
   })
 
   const scenes: SceneId[] = [

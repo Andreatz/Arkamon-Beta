@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
 import { LaboratorioScene } from '@scenes/LaboratorioScene'
@@ -9,6 +10,8 @@ import { CittaScene } from '@scenes/CittaScene'
 import { DepositoScene } from '@scenes/DepositoScene'
 import { EvoluzioneScene } from '@scenes/EvoluzioneScene'
 import { SceneTransition } from '@/components/transitions/SceneTransition'
+import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
+import { SceneTransitionLab } from '@/components/transitions/SceneTransitionLab'
 import type { NavigazioneScena, SceneId } from '@/types'
 import { AudioController } from '@components/AudioController'
 import { AdminOverlay } from '@/admin/AdminOverlay'
@@ -22,6 +25,12 @@ import { VfxGallery } from '@/components/vfx/VfxGallery'
  */
 function App() {
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
+
+  useEffect(() => { preloadSceneTransitionArtwork() }, [])
+
+  if (import.meta.env.DEV && window.location.hash === '#transition-lab') {
+    return <SceneTransitionLab />
+  }
 
   if (import.meta.env.DEV && window.location.hash === '#vfx-lab') {
     return <VfxGallery />

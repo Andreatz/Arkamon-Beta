@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "status": "hibernated",
+  "sourcebranch": "feature/vfx-recipe-engine",
+  "originalcommit": "330fa451e1eba67f9758f9cadc509049408025f0",
+  "archiveddate": "2026-10-03",
+  "note": "Exact copies of the former active transition sources and guide; no runtime import.",
+  "files": [
+    {
+      "path": "docs/scene-transitions.md",
+      "size": 2537,
+      "sha256": "c39afb0b5448656ca016088d29a6604ad1aba3c768b753e42ce7e5848c6f1dcc",
+      "originalPath": "docs/scene-transitions.md",
+      "storedPath": "docs/scene-transitions.md"
+    },
+    {
+      "path": "src/components/transitions/__tests__/sceneTransitionProfiles.test.ts",
+      "size": 3833,
+      "sha256": "5856838da9ac40cc733e5a4c922b1ea4d32b3233e881657b37ba13ce67ccc9a9",
+      "originalPath": "src/components/transitions/__tests__/sceneTransitionProfiles.test.ts",
+      "storedPath": "src/components/transitions/__tests__/sceneTransitionProfiles.test.ts.snapshot"
+    },
+    {
+      "path": "src/components/transitions/__tests__/sceneTransitionState.test.ts",
+      "size": 7006,
+      "sha256": "e2a6d91b3ea19d4aaf897abd0435fe3a5f8f476e8352cf5a6688be6922357306",
+      "originalPath": "src/components/transitions/__tests__/sceneTransitionState.test.ts",
+      "storedPath": "src/components/transitions/__tests__/sceneTransitionState.test.ts.snapshot"
+    },
+    {
+      "path": "src/components/transitions/SceneNavigationContext.ts",
+      "size": 669,
+      "sha256": "754453812d0741b00a05133074f27a26ff90e7baf995f19578ec8a7c3358145e",
+      "originalPath": "src/components/transitions/SceneNavigationContext.ts",
+      "storedPath": "src/components/transitions/SceneNavigationContext.ts"
+    },
+    {
+      "path": "src/components/transitions/SceneTransition.tsx",
+      "size": 4340,
+      "sha256": "54a85630b5f1577a02c3b4db35275a356d2c7a6e39e062850e3a3505bb0c86b1",
+      "originalPath": "src/components/transitions/SceneTransition.tsx",
+      "storedPath": "src/components/transitions/SceneTransition.tsx"
+    },
+    {
+      "path": "src/components/transitions/SceneTransitionOverlay.tsx",
+      "size": 5998,
+      "sha256": "92d1808e6f583d371842cb07859826e6e4081a6be97464c6ddd54fb6a7aa8f13",
+      "originalPath": "src/components/transitions/SceneTransitionOverlay.tsx",
+      "storedPath": "src/components/transitions/SceneTransitionOverlay.tsx"
+    },
+    {
+      "path": "src/components/transitions/sceneTransitionProfiles.ts",
+      "size": 2411,
+      "sha256": "bccb2cf580648a9cedbe66dd93c46381df024e82917dd2f433bb95bc7fa557da",
+      "originalPath": "src/components/transitions/sceneTransitionProfiles.ts",
+      "storedPath": "src/components/transitions/sceneTransitionProfiles.ts"
+    },
+    {
+      "path": "src/components/transitions/sceneTransitions.css",
+      "size": 4442,
+      "sha256": "2b585f95881d002effd8c462961e4647e5b668a1e339b05e1db8de9c8490f234",
+      "originalPath": "src/components/transitions/sceneTransitions.css",
+      "storedPath": "src/components/transitions/sceneTransitions.css"
+    },
+    {
+      "path": "src/components/transitions/sceneTransitionState.ts",
+      "size": 2600,
+      "sha256": "4359dfb54a98c81806051e8c982aa697992e40fbbb80d3dd7ce6dfcde6e90bc4",
+      "originalPath": "src/components/transitions/sceneTransitionState.ts",
+      "storedPath": "src/components/transitions/sceneTransitionState.ts"
+    }
+  ]
+}
