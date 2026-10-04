@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert all original Darklaw action frames into lossless transparent atlases.
+"""Convert an Arkamon's original action frames into lossless transparent atlases.
 
 Requires Python3.10+, Pillow, NumPy and FFmpeg. All original frames/FPS are
 preserved. Initial camera calibration is fixed per clip; the common scale,
@@ -8,6 +8,8 @@ Example:
   python scripts/build-arkamon-idle.py --source-dir animation-source/raw/5/front \
     --output public/sprites/arkamon/5/front --qa-dir ../qa \
     --reference public/sprites/front_sprites/5.png --ffmpeg /path/to/ffmpeg
+  python scripts/build-arkamon-idle.py --species-id 20 \
+    --reference public/sprites/front_sprites/20.png --ffmpeg /path/to/ffmpeg
 """
 from __future__ import annotations
 
@@ -23,6 +25,8 @@ import tempfile
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageOps
+
+SCREEN_DOMINANCE_CLEANUP = False
 
 
 def ffmpeg_path(explicit: str | None) -> str:
@@ -81,6 +85,13 @@ def key_alpha(image: Image.Image, cutoff: float = 0.08) -> tuple[np.ndarray, np.
                      & (np.abs(rgb[:, :, 2] / denominator - bg[2] / bg[1]) < .12)
                      & (excess > 12))
     alpha[screen_colour] = 0.0
+    if SCREEN_DOMINANCE_CLEANUP:
+        # Some source screens include a nonuniform green haze. Remove its
+        # dominant screen chroma as well as the corner colour. This optional
+        # mode is intended for characters without intrinsic green features.
+        foreground_max = np.maximum(rgb[:, :, 0], rgb[:, :, 2])
+        haze = (rgb[:, :, 1] > foreground_max * 1.18) & (excess > 12)
+        alpha[haze] = 0.0
     alpha[alpha < cutoff] = 0.0
     return rgb, alpha, bg
 
@@ -195,7 +206,7 @@ def inspect_clip(ffmpeg: str, source: Path, action: str, decoded: Path,
             core = (alpha > .9) & (rgb.max(axis=2) < 210)
             first_core = Image.fromarray(core.astype(np.uint8)*255).getbbox()
     if first_core is None:
-        raise ValueError(f'The first {action} frame has no calibratable Darklaw body.')
+        raise ValueError(f'The first {action} frame has no calibratable character body.')
     info.update({'sha256': source_hash, 'sizeBytes': source.stat().st_size,
                  'decodedFrameCount': len(paths), 'durationFromFramesSeconds':len(paths)/info['fps']})
     result = {'action': action, 'source': source, 'info': info, 'paths': paths,
@@ -286,6 +297,11 @@ def normalize_frame(image: Image.Image, clip: dict, common: dict, cutoff: float)
     pixels = np.asarray(resized).copy()
     edge = pixels[:,:,3] < 255
     pixels[:,:,1] = np.where(edge,np.minimum(pixels[:,:,1],np.maximum(pixels[:,:,0],pixels[:,:,2])),pixels[:,:,1])
+    # Lossless output can still contain a few chroma pixels from resampling an
+    # opaque source edge. Remove only dominant green spill left over there.
+    channel_max = np.maximum(pixels[:,:,0],pixels[:,:,2]).astype(np.int16)
+    spill = pixels[:,:,1].astype(np.int16) > channel_max + 8
+    pixels[:,:,1] = np.where(spill,channel_max,pixels[:,:,1])
     pixels[pixels[:,:,3] == 0,:3] = 0
     tile = Image.new('RGBA',(common['cellWidth'],common['cellHeight']),(0,0,0,0))
     tile.paste(Image.fromarray(pixels),position)
@@ -321,7 +337,7 @@ def save_video_preview(frames: list[Image.Image], qa: Path, fps: float,
 
 def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
                  ffmpeg: str, battle: Path | None, cutoff: float, columns: int,
-                 idle_first: Image.Image | None) -> tuple[dict,Image.Image]:
+                 idle_first: Image.Image | None, species_id: int = 5) -> tuple[dict,Image.Image]:
     action,info = clip['action'],clip['info']
     count,fps = len(clip['paths']),info['fps']
     max_cells = common['maxTextureDimension']//common['cellWidth']
@@ -363,8 +379,8 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
         frame_boxes.append(frame.getchannel('A').getbbox())
         if not visible.any():
             blank_frames.append(index)
-    metadata = {'schemaVersion':1,'speciesId':5,'view':'front','action':action,
-                'source':{'file':f'animation-source/raw/5/front/{action}.mp4',**info},
+    metadata = {'schemaVersion':1,'speciesId':species_id,'view':'front','action':action,
+                'source':{'file':f'animation-source/raw/{species_id}/front/{action}.mp4',**info},
                 'sampling':{'method':'Every decoded source frame, in original order, at original FPS; no skipping, interpolation, generation, reversal or crossfade.',
                             'allSourceFramesPreserved':True,'sourceFrameIndices':list(range(count)),
                             'sampleTimesSeconds':[round(i/fps,6) for i in range(count)],
@@ -382,7 +398,9 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
                              'outputFrameAlphaBounds':[list(b) if b else None for b in frame_boxes],
                              'scale':common['sharedScale'],'groundPivot':common['groundPivot']},
                 'key':{'method':'Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.',
-                       'alphaCutoff':cutoff,'screenColourRatioTolerance':.12},
+                       'alphaCutoff':cutoff,'screenColourRatioTolerance':.12,
+                       'screenDominanceCleanup':SCREEN_DOMINANCE_CLEANUP,
+                       'screenDominanceRatio':1.18 if SCREEN_DOMINANCE_CLEANUP else None},
                 'qa':{'losslessDecodedRgbaMatches':True,'remainingGreenDominantPixelsOver8':green_count,
                       'occupiedPixelsAllFrames':occupied,'redDominantPixelsAllFrames':red_count,
                       'transparentFrameIndices':blank_frames,'loopSeam':seam,
@@ -408,9 +426,11 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
 
 
 def main() -> None:
+    global SCREEN_DOMINANCE_CLEANUP
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--source-dir',type=Path,default=Path('animation-source/raw/5/front'))
-    parser.add_argument('--output',type=Path,default=Path('public/sprites/arkamon/5/front'))
+    parser.add_argument('--species-id',type=int,default=5)
+    parser.add_argument('--source-dir',type=Path)
+    parser.add_argument('--output',type=Path)
     parser.add_argument('--actions',nargs='+',choices=['idle','attack','hit','victory','ko'],default=['idle','attack','hit','victory','ko'])
     parser.add_argument('--qa-dir',type=Path)
     parser.add_argument('--decoded-dir',type=Path)
@@ -424,8 +444,15 @@ def main() -> None:
     parser.add_argument('--occupancy',type=float,default=1874/2048)
     parser.add_argument('--ground',type=float,default=1956/2048)
     parser.add_argument('--alpha-cutoff',type=float,default=.08)
+    parser.add_argument('--screen-dominance-cleanup',action='store_true',
+                        help='Remove nonuniform green screen haze; use only when the character has no intrinsic green features.')
     parser.add_argument('--analyze-only',action='store_true')
     args = parser.parse_args()
+    SCREEN_DOMINANCE_CLEANUP = args.screen_dominance_cleanup
+    if args.species_id <= 0:
+        parser.error('Species ID must be positive.')
+    args.source_dir = args.source_dir or Path(f'animation-source/raw/{args.species_id}/front')
+    args.output = args.output or Path(f'public/sprites/arkamon/{args.species_id}/front')
     if args.base_cell < 64 or args.max_texture < args.base_cell or args.columns < 0 or args.padding < 0:
         parser.error('Base cell must be at least64, texture must fit it, and columns/padding must be nonnegative.')
     if not 0 < args.occupancy <= 1 or not 0 < args.ground <= 1 or not 0 <= args.alpha_cutoff < 1:
@@ -455,11 +482,11 @@ def main() -> None:
             return
         all_metadata,idle_first = {},None
         for clip in clips:
-            metadata,first = convert_clip(clip,common,output,qa,ffmpeg,args.battle_background,args.alpha_cutoff,args.columns,idle_first)
+            metadata,first = convert_clip(clip,common,output,qa,ffmpeg,args.battle_background,args.alpha_cutoff,args.columns,idle_first,args.species_id)
             all_metadata[clip['action']] = metadata
             if clip['action']=='idle':
                 idle_first = first
-            (output/'animation-set.metadata.json').write_text(json.dumps({'schemaVersion':1,'speciesId':5,'view':'front','normalization':common,'actions':all_metadata},indent=2)+'\n',encoding='utf-8')
+            (output/'animation-set.metadata.json').write_text(json.dumps({'schemaVersion':1,'speciesId':args.species_id,'view':'front','normalization':common,'actions':all_metadata},indent=2)+'\n',encoding='utf-8')
         if qa:
             cell = common['cellWidth']
             contact = Image.new('RGB',(cell*len(clips),cell+28),(239,243,248))

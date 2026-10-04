@@ -31,12 +31,19 @@ import { playSound } from '@/utils/soundManager'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import {
   ArkamonBattleSprite,
+  type ArkamonAnimationCue,
 } from '@/components/arkamon/ArkamonBattleSprite'
 import {
   getArkamonAnimationAsset,
   getArkamonAnimationDurationMs,
   type ArkamonBattleAnimation,
 } from '@/components/arkamon/arkamonAnimationManifest'
+import { prepareArkamonAnimationPlayback } from '@/components/arkamon/preloadArkamonAnimations'
+import {
+  createBattleAnimationPlayback,
+  createBattleVisualSequence,
+  planBattleAnimationPlayback,
+} from '@/components/battle/battleVisualSequence'
 import {
   MoveVfx,
   type MoveVfxEvent,
@@ -46,6 +53,7 @@ import {
 import {
   preloadMoveVfxForPokemon,
   preloadVfxAssets,
+  prepareMoveVfxPlayback,
 } from '@/components/vfx/preloadVfxAssets'
 import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
 import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
@@ -54,13 +62,11 @@ import {
   BATTLE_DICE_ROLL_VISIBLE_MS,
 } from '@/components/battle/battleDiceAssets'
 import {
-  getMoveVfxDurationMs,
   getMoveVfxFeedback,
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
 import type { AdminBattleLayout } from '@/theme/adminThemeTypes'
 import {
-  getBattleDamagePosition,
   getBattleSideCenter,
 } from '@/components/vfx/battleVfxPosition'
 
@@ -132,23 +138,37 @@ export function BattagliaScene() {
   const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
   const diceRollTimerRef = useRef<number | null>(null)
   const diceRollIdRef = useRef(0)
-  const [damagePopup, setDamagePopup] = useState<DamagePopupDisplay | null>(null)
-  const damagePopupIdRef = useRef(0)
   const [impactPulse, setImpactPulse] = useState<ImpactPulseDisplay | null>(null)
   const impactPulseIdRef = useRef(0)
   const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
-  const moveVfxTimerRef = useRef<number | null>(null)
   const moveVfxIdRef = useRef(0)
+  const moveVfxCallbacksRef = useRef<{
+    id: number
+    onStart: () => void
+    onImpact: () => void
+    onComplete: () => void
+  } | null>(null)
   const [spriteActions, setSpriteActions] = useState<Partial<Record<'A' | 'B', {
     animation: 'attack' | 'hit'
     replayKey: number
   }>>>({})
   const spriteActionIdRef = useRef(0)
+  const [heldHitReactions, setHeldHitReactions] = useState<Partial<Record<'A' | 'B', boolean>>>({})
   const spriteCompletionWaitersRef = useRef<Partial<Record<'A' | 'B', {
     animation: ArkamonBattleAnimation
     replayKey?: number
     onComplete: () => void
   }>>>({})
+  const spriteStartWaitersRef = useRef<Partial<Record<'A' | 'B', {
+    animation: 'attack' | 'hit'
+    replayKey?: number
+    onStart: () => void
+  }>>>({})
+  const spriteCueWaitersRef = useRef<Partial<Record<'A' | 'B', {
+    replayKey?: number
+    onRelease: () => void
+  }>>>({})
+  const activePlaybackRef = useRef<{ cancel: () => void } | null>(null)
   const feedbackTimersRef = useRef<Set<number>>(new Set())
   const messaggiTurnoBRef = useRef<string[]>([])
   const [azioneInCorso, setAzioneInCorso] = useState(false)
@@ -233,14 +253,16 @@ export function BattagliaScene() {
       if (diceRollTimerRef.current !== null) {
         window.clearTimeout(diceRollTimerRef.current)
       }
-      if (moveVfxTimerRef.current !== null) {
-        window.clearTimeout(moveVfxTimerRef.current)
-      }
+      activePlaybackRef.current?.cancel()
+      activePlaybackRef.current = null
+      moveVfxCallbacksRef.current = null
       for (const timer of feedbackTimersRef.current) {
         window.clearTimeout(timer)
       }
       feedbackTimersRef.current.clear()
       spriteCompletionWaitersRef.current = {}
+      spriteStartWaitersRef.current = {}
+      spriteCueWaitersRef.current = {}
     }
   }, [])
 
@@ -287,25 +309,27 @@ export function BattagliaScene() {
   const mostraVfxMossa = (
     move: MossaDef,
     side: MoveVfxSide,
+    id: number,
+    callbacks: Omit<NonNullable<typeof moveVfxCallbacksRef.current>, 'id'>,
     target: MoveVfxTarget = 'opponent'
-  ): number => {
-    if (moveVfxTimerRef.current !== null) {
-      window.clearTimeout(moveVfxTimerRef.current)
-    }
-
+  ) => {
+    moveVfxCallbacksRef.current = { id, ...callbacks }
     setMoveVfx({
-      id: ++moveVfxIdRef.current,
+      id,
       move,
       side,
       target,
     })
-    playSpriteAction(side, 'attack', 450)
-    const durationMs = getMoveVfxDurationMs(move)
-    moveVfxTimerRef.current = window.setTimeout(() => {
-      setMoveVfx(null)
-      moveVfxTimerRef.current = null
-    }, durationMs)
-    return durationMs
+  }
+
+  const notifyMoveVfx = (id: number, event: 'onStart' | 'onImpact' | 'onComplete') => {
+    const callbacks = moveVfxCallbacksRef.current
+    if (!callbacks || callbacks.id !== id) return
+    if (event === 'onComplete') {
+      moveVfxCallbacksRef.current = null
+      setMoveVfx((current) => current?.id === id ? null : current)
+    }
+    callbacks[event]()
   }
 
   const scheduleFeedbackTimer = (callback: () => void, delayMs: number) => {
@@ -320,8 +344,15 @@ export function BattagliaScene() {
     const replayKey = ++spriteActionIdRef.current
     const waiter = spriteCompletionWaitersRef.current[side]
     if (waiter?.animation === animation) waiter.replayKey = replayKey
+    const startWaiter = spriteStartWaitersRef.current[side]
+    if (startWaiter?.animation === animation) startWaiter.replayKey = replayKey
+    const cueWaiter = spriteCueWaitersRef.current[side]
+    if (animation === 'attack' && cueWaiter) cueWaiter.replayKey = replayKey
     setSpriteActions((current) => ({ ...current, [side]: { animation, replayKey } }))
-    // Static sprites retain their short feedback; dedicated clips latch until completion.
+    const pokemon = side === 'A' ? pkmnA : pkmnB
+    // Keep native requests alive through their actual completion, including a gated hit.
+    if (pokemon && getArkamonAnimationAsset(pokemon.specieId, side === 'A' ? 'back' : 'front', animation)) return
+    // Static sprites retain their short procedural feedback.
     scheduleFeedbackTimer(() => {
       setSpriteActions((current) => current[side]?.replayKey === replayKey
         ? { ...current, [side]: undefined }
@@ -329,19 +360,31 @@ export function BattagliaScene() {
     }, requestMs)
   }
 
-  const dedicatedClipDuration = (side: 'A' | 'B', animation: ArkamonBattleAnimation) => {
-    const pokemon = side === 'A' ? pkmnA : pkmnB
-    return pokemon ? getArkamonAnimationDurationMs(pokemon.specieId, side === 'A' ? 'back' : 'front', animation) : 0
-  }
-
   const completeSpriteAction = (side: 'A' | 'B', animation: ArkamonBattleAnimation, replayKey: number) => {
+    setSpriteActions((current) => current[side]?.animation === animation && current[side]?.replayKey === replayKey
+      ? { ...current, [side]: undefined }
+      : current)
     const waiter = spriteCompletionWaitersRef.current[side]
     if (!waiter || waiter.animation !== animation || (waiter.replayKey !== undefined && waiter.replayKey !== replayKey)) return
     delete spriteCompletionWaitersRef.current[side]
     waiter.onComplete()
   }
 
-  const scheduleImpactFeedback = (
+  const startSpriteAction = (side: 'A' | 'B', animation: ArkamonBattleAnimation, replayKey: number) => {
+    const waiter = spriteStartWaitersRef.current[side]
+    if (!waiter || waiter.animation !== animation || waiter.replayKey !== replayKey) return
+    delete spriteStartWaitersRef.current[side]
+    waiter.onStart()
+  }
+
+  const releaseSpriteAction = (side: 'A' | 'B', animation: ArkamonBattleAnimation, replayKey: number) => {
+    const waiter = spriteCueWaitersRef.current[side]
+    if (!waiter || animation !== 'attack' || waiter.replayKey !== replayKey) return
+    delete spriteCueWaitersRef.current[side]
+    waiter.onRelease()
+  }
+
+  const playImpactFeedback = (
     move: MossaDef,
     side: 'A' | 'B',
     playHitSound = true,
@@ -349,30 +392,117 @@ export function BattagliaScene() {
   ) => {
     const feedback = getMoveVfxFeedback(move)
 
-    scheduleFeedbackTimer(() => {
-      if (playHitAnimation) playSpriteAction(side, 'hit', Math.max(240, feedback.targetShakeMs))
-      if (feedback.targetShakeMs > 0 && feedback.targetShakePx > 0) {
-        setShakeStrengthPx(feedback.targetShakePx)
-        setShakeDurationMs(feedback.targetShakeMs)
-        setShaking(side)
-        scheduleFeedbackTimer(() => setShaking(null), feedback.targetShakeMs)
-      }
+    if (playHitAnimation) playSpriteAction(side, 'hit', Math.max(240, feedback.targetShakeMs))
+    if (feedback.targetShakeMs > 0 && feedback.targetShakePx > 0) {
+      setShakeStrengthPx(feedback.targetShakePx)
+      setShakeDurationMs(feedback.targetShakeMs)
+      setShaking(side)
+      scheduleFeedbackTimer(() => setShaking(null), feedback.targetShakeMs)
+    }
 
-      if (feedback.targetFlashMs > 0) {
-        setImpactFlash(side)
-        scheduleFeedbackTimer(() => setImpactFlash(null), feedback.targetFlashMs)
-      }
+    if (feedback.targetFlashMs > 0) {
+      setImpactFlash(side)
+      scheduleFeedbackTimer(() => setImpactFlash(null), feedback.targetFlashMs)
+    }
 
-      if (feedback.cameraShakeMs > 0 && feedback.cameraShakePx > 0) {
-        setCameraShake({
-          px: feedback.cameraShakePx,
-          ms: feedback.cameraShakeMs,
-        })
-        scheduleFeedbackTimer(() => setCameraShake(null), feedback.cameraShakeMs)
-      }
+    if (feedback.cameraShakeMs > 0 && feedback.cameraShakePx > 0) {
+      setCameraShake({
+        px: feedback.cameraShakePx,
+        ms: feedback.cameraShakeMs,
+      })
+      scheduleFeedbackTimer(() => setCameraShake(null), feedback.cameraShakeMs)
+    }
 
-      if (playHitSound) playSound('hit')
-    }, getMoveVfxImpactDelayMs(move))
+    if (playHitSound) playSound('hit')
+  }
+
+  const playMoveVisuals = (
+    move: MossaDef,
+    side: 'A' | 'B',
+    targetSide: 'A' | 'B' | null,
+    targetAnimation: 'hit' | 'ko',
+    onImpact: () => void,
+    onComplete: () => void
+  ) => {
+    const attacker = side === 'A' ? pkmnA : pkmnB
+    const target = targetSide === 'A' ? pkmnA : targetSide === 'B' ? pkmnB : null
+    if (!attacker) return
+    const attackerView = side === 'A' ? 'back' : 'front'
+    const targetView = targetSide === 'A' ? 'back' : 'front'
+    const attackAsset = getArkamonAnimationAsset(attacker.specieId, attackerView, 'attack')
+    const targetAsset = target ? getArkamonAnimationAsset(target.specieId, targetView, targetAnimation) : undefined
+    const dedicatedAttack = !!attackAsset
+    const dedicatedHit = targetAnimation === 'hit' && !!targetAsset
+    setHeldHitReactions(targetSide && dedicatedHit ? { [targetSide]: true } : {})
+    const plan = planBattleAnimationPlayback(
+      attackAsset ? (attackAsset.releaseFrame ?? 0) / attackAsset.fps * 1000 : 0,
+      dedicatedHit && targetAsset ? (targetAsset.reactionFrame ?? 0) / targetAsset.fps * 1000 : 0,
+      getMoveVfxImpactDelayMs(move)
+    )
+    const effectId = ++moveVfxIdRef.current
+    const sequence = createBattleVisualSequence({
+      waitForAttacker: dedicatedAttack,
+      waitForTarget: !!targetAsset,
+      onRelease: () => mostraVfxMossa(move, side, effectId, {
+        onStart: () => playback.vfxStart(),
+        onImpact: () => sequence.impact(),
+        onComplete: () => sequence.vfxComplete(),
+      }, targetSide ? 'opponent' : 'self'),
+      onImpact: () => {
+        setHeldHitReactions({})
+        onImpact()
+      },
+      onComplete: () => {
+        playback.cancel()
+        if (activePlaybackRef.current === active) activePlaybackRef.current = null
+        onComplete()
+      },
+    })
+    const playback = createBattleAnimationPlayback({
+      plan,
+      dedicatedAttack,
+      dedicatedHit,
+      schedule: scheduleFeedbackTimer,
+      startAttack: () => {
+        if (dedicatedAttack) {
+          spriteStartWaitersRef.current[side] = { animation: 'attack', onStart: () => playback.attackerStart() }
+          spriteCueWaitersRef.current[side] = { onRelease: () => playback.release() }
+          spriteCompletionWaitersRef.current[side] = {
+            animation: 'attack', onComplete: () => {
+              playback.release()
+              sequence.attackerComplete()
+            },
+          }
+        }
+        playSpriteAction(side, 'attack', 450)
+      },
+      startHit: () => {
+        if (!targetSide) return
+        spriteStartWaitersRef.current[targetSide] = { animation: 'hit', onStart: () => playback.targetStart() }
+        spriteCompletionWaitersRef.current[targetSide] = { animation: 'hit', onComplete: () => {
+          playback.targetStart()
+          sequence.targetComplete()
+        } }
+        playSpriteAction(targetSide, 'hit', 240)
+      },
+      onRelease: () => sequence.release(),
+    })
+    const active = { cancel: () => { playback.cancel(); sequence.cancel() } }
+    activePlaybackRef.current?.cancel()
+    activePlaybackRef.current = active
+    if (targetSide && targetAnimation === 'ko' && targetAsset) {
+      spriteCompletionWaitersRef.current[targetSide] = {
+        animation: 'ko', replayKey: 0, onComplete: () => sequence.targetComplete(),
+      }
+    }
+    // All resources are ready before either clip's native clock can start.
+    void Promise.all([
+      prepareArkamonAnimationPlayback(attacker.specieId, attackerView, 'attack'),
+      target ? prepareArkamonAnimationPlayback(target.specieId, targetView, targetAnimation) : Promise.resolve(),
+      prepareMoveVfxPlayback(move, effectId),
+    ]).then(() => {
+      if (activePlaybackRef.current === active) playback.start()
+    })
   }
 
   const eseguiSequenzaOffensiva = (
@@ -386,39 +516,13 @@ export function BattagliaScene() {
     if (actionInProgressRef.current) return
     actionInProgressRef.current = true
     setAzioneInCorso(true)
-    const vfxDurationMs = mostraVfxMossa(risultato.mossa, side)
-    const impactDelayMs = getMoveVfxImpactDelayMs(risultato.mossa)
     const feedback = getMoveVfxFeedback(risultato.mossa)
     const target = targetSide === 'A' ? pkmnA : pkmnB
     const targetAnimation = target && target.hp <= risultato.dannoFinale ? 'ko' : 'hit'
-    let attackerFinished = dedicatedClipDuration(side, 'attack') === 0
-    let targetFinished = dedicatedClipDuration(targetSide, targetAnimation) === 0
-    let vfxFinished = false
-    let advanced = false
-    const finishVisuals = () => {
-      if (advanced || !vfxFinished || !attackerFinished || !targetFinished) return
-      advanced = true
-      mostraLancioDadi(risultato, side, () => {
-        onComplete()
-        actionInProgressRef.current = false
-        setAzioneInCorso(false)
-      })
-    }
-    if (!attackerFinished) {
-      spriteCompletionWaitersRef.current[side] = {
-        animation: 'attack', replayKey: spriteActionIdRef.current,
-        onComplete: () => { attackerFinished = true; finishVisuals() },
-      }
-    }
-    if (!targetFinished) {
-      spriteCompletionWaitersRef.current[targetSide] = {
-        animation: targetAnimation, replayKey: targetAnimation === 'ko' ? 0 : undefined,
-        onComplete: () => { targetFinished = true; finishVisuals() },
-      }
-    }
-    scheduleImpactFeedback(risultato.mossa, targetSide, playHitSound, targetAnimation === 'hit')
-    scheduleFeedbackTimer(() => {
+    const targetHasHit = target && !!getArkamonAnimationAsset(target.specieId, targetSide === 'A' ? 'back' : 'front', 'hit')
+    playMoveVisuals(risultato.mossa, side, targetSide, targetAnimation, () => {
       onImpact()
+      playImpactFeedback(risultato.mossa, targetSide, playHitSound, targetAnimation === 'hit' && !targetHasHit)
 
       const pulseId = ++impactPulseIdRef.current
       setImpactPulse({
@@ -431,22 +535,13 @@ export function BattagliaScene() {
         setImpactPulse((current) => (current?.id === pulseId ? null : current))
       }, 560)
 
-      if (risultato.dannoFinale > 0) {
-        const popupId = ++damagePopupIdRef.current
-        setDamagePopup({
-          id: popupId,
-          side: targetSide,
-          amount: risultato.dannoFinale,
-        })
-        scheduleFeedbackTimer(() => {
-          setDamagePopup((current) => (current?.id === popupId ? null : current))
-        }, 760)
-      }
-    }, impactDelayMs)
-    scheduleFeedbackTimer(() => {
-      vfxFinished = true
-      finishVisuals()
-    }, vfxDurationMs)
+    }, () => {
+      mostraLancioDadi(risultato, side, () => {
+        onComplete()
+        actionInProgressRef.current = false
+        setAzioneInCorso(false)
+      })
+    })
   }
 
   const eseguiSequenzaCura = (
@@ -457,27 +552,11 @@ export function BattagliaScene() {
     if (actionInProgressRef.current) return
     actionInProgressRef.current = true
     setAzioneInCorso(true)
-    const vfxDurationMs = mostraVfxMossa(move, side, 'self')
-    let attackerFinished = dedicatedClipDuration(side, 'attack') === 0
-    let vfxFinished = false
-    let advanced = false
-    const finishVisuals = () => {
-      if (advanced || !vfxFinished || !attackerFinished) return
-      advanced = true
+    playMoveVisuals(move, side, null, 'hit', () => {}, () => {
       onComplete()
       actionInProgressRef.current = false
       setAzioneInCorso(false)
-    }
-    if (!attackerFinished) {
-      spriteCompletionWaitersRef.current[side] = {
-        animation: 'attack', replayKey: spriteActionIdRef.current,
-        onComplete: () => { attackerFinished = true; finishVisuals() },
-      }
-    }
-    scheduleFeedbackTimer(() => {
-      vfxFinished = true
-      finishVisuals()
-    }, vfxDurationMs)
+    })
   }
 
   const tornaIndietro = () => {
@@ -1027,19 +1106,16 @@ export function BattagliaScene() {
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
       <AnimatePresence>
-        {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} />}
+        {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx}
+          onStart={() => notifyMoveVfx(moveVfx.id, 'onStart')}
+          onImpact={() => notifyMoveVfx(moveVfx.id, 'onImpact')}
+          onComplete={() => notifyMoveVfx(moveVfx.id, 'onComplete')}
+        />}
       </AnimatePresence>
 
       <AnimatePresence>
         {impactPulse && (
           <ImpactPulseOverlay key={impactPulse.id} pulse={impactPulse} layout={battleLayout} />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {damagePopup && (
-          <DamagePopupOverlay key={damagePopup.id} popup={damagePopup} layout={battleLayout}
-/>
         )}
       </AnimatePresence>
 
@@ -1089,6 +1165,9 @@ export function BattagliaScene() {
             lunging={shaking === 'A'}
             activeAnimation={activeAnimationB}
             replayKey={spriteActions.B?.replayKey ?? 0}
+            holdReactionUntilImpact={heldHitReactions.B ?? false}
+            onAnimationStart={(animation, replayKey) => startSpriteAction('B', animation, replayKey)}
+            onAnimationCue={(animation, replayKey) => releaseSpriteAction('B', animation, replayKey)}
             onAnimationComplete={(animation, replayKey) => completeSpriteAction('B', animation, replayKey)}
           />
         </BattleLayoutItem>
@@ -1113,6 +1192,9 @@ export function BattagliaScene() {
             lunging={shaking === 'B'}
             activeAnimation={activeAnimationA}
             replayKey={spriteActions.A?.replayKey ?? 0}
+            holdReactionUntilImpact={heldHitReactions.A ?? false}
+            onAnimationStart={(animation, replayKey) => startSpriteAction('A', animation, replayKey)}
+            onAnimationCue={(animation, replayKey) => releaseSpriteAction('A', animation, replayKey)}
             onAnimationComplete={(animation, replayKey) => completeSpriteAction('A', animation, replayKey)}
           />
         </BattleLayoutItem>
@@ -1426,60 +1508,6 @@ function ImpactPulseOverlay({
   )
 }
 
-type DamagePopupDisplay = {
-  id: number
-  side: 'A' | 'B'
-  amount: number
-}
-
-function DamagePopupOverlay({
-  popup,
-  layout,
-}: {
-  popup: DamagePopupDisplay
-  layout: AdminBattleLayout
-}) {
-  const point = getBattleDamagePosition(layout, popup.side)
-
-  const position = {
-    left: `${point.x}%`,
-    top: `${point.y}%`,
-  }
-
-  return (
-    <div
-      className="pointer-events-none absolute z-[70] -translate-x-1/2 -translate-y-1/2"
-      style={position}
-      aria-hidden="true"
-    >
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 10,
-          scale: 0.72,
-        }}
-        animate={{
-          opacity: 1,
-          y: -18,
-          scale: 1.08,
-        }}
-        exit={{
-          opacity: 0,
-          y: -38,
-          scale: 0.9,
-        }}
-        transition={{
-          duration: 0.32,
-          ease: 'easeOut',
-        }}
-        className="text-4xl font-black text-rose-300 [text-shadow:-2px_-2px_0_#111,2px_-2px_0_#111,-2px_2px_0_#111,2px_2px_0_#111,0_4px_8px_rgba(0,0,0,0.65)]"
-      >
-        -{popup.amount}
-      </motion.div>
-    </div>
-  )
-}
-
 function InfoBox({
   messaggi,
   showOpponentButton,
@@ -1631,6 +1659,9 @@ function PokemonBattleSlot({
   lunging,
   activeAnimation,
   replayKey,
+  holdReactionUntilImpact,
+  onAnimationStart,
+  onAnimationCue,
   onAnimationComplete,
 }: {
   istanza: PokemonIstanza
@@ -1642,6 +1673,9 @@ function PokemonBattleSlot({
   lunging: boolean
   activeAnimation?: ArkamonBattleAnimation
   replayKey: number
+  holdReactionUntilImpact: boolean
+  onAnimationStart: (animation: ArkamonBattleAnimation, replayKey: number) => void
+  onAnimationCue: (animation: ArkamonBattleAnimation, replayKey: number, cue: ArkamonAnimationCue) => void
   onAnimationComplete: (animation: ArkamonBattleAnimation, replayKey: number) => void
 }) {
   const isPlayer = position === 'bottom-left'
@@ -1660,9 +1694,30 @@ function PokemonBattleSlot({
 
   const completionCallbackRef = useRef(onAnimationComplete)
   completionCallbackRef.current = onAnimationComplete
+  const startCallbackRef = useRef(onAnimationStart)
+  startCallbackRef.current = onAnimationStart
+  const cueCallbackRef = useRef(onAnimationCue)
+  cueCallbackRef.current = onAnimationCue
   const currentIdentityRef = useRef(spriteIdentity)
   currentIdentityRef.current = spriteIdentity
   const completedTokenRef = useRef<string | null>(null)
+  const startedTokenRef = useRef<string | null>(null)
+  const releasedTokenRef = useRef<string | null>(null)
+  const deferredFailedHitRef = useRef<{ identity: string; replayKey: number } | null>(null)
+  const notifyAnimationStart = useCallback((animation: ArkamonBattleAnimation, startedReplayKey: number) => {
+    if (currentIdentityRef.current !== spriteIdentity) return
+    const token = `${spriteIdentity}:${animation}:${startedReplayKey}`
+    if (startedTokenRef.current === token) return
+    startedTokenRef.current = token
+    startCallbackRef.current(animation, startedReplayKey)
+  }, [spriteIdentity])
+  const notifyAnimationCue = useCallback((animation: ArkamonBattleAnimation, releasedReplayKey: number, cue: ArkamonAnimationCue) => {
+    if (currentIdentityRef.current !== spriteIdentity) return
+    const token = `${spriteIdentity}:${animation}:${releasedReplayKey}:${cue}`
+    if (releasedTokenRef.current === token) return
+    releasedTokenRef.current = token
+    cueCallbackRef.current(animation, releasedReplayKey, cue)
+  }, [spriteIdentity])
   const notifyAnimationComplete = useCallback((animation: ArkamonBattleAnimation, completedReplayKey: number) => {
     if (currentIdentityRef.current !== spriteIdentity) return
     const token = `${spriteIdentity}:${animation}:${completedReplayKey}`
@@ -1672,13 +1727,27 @@ function PokemonBattleSlot({
   }, [spriteIdentity])
 
   useEffect(() => {
+    const failedHit = deferredFailedHitRef.current
+    if (failedHit && failedHit.identity !== spriteIdentity) deferredFailedHitRef.current = null
+    else if (failedHit && !holdReactionUntilImpact) {
+      deferredFailedHitRef.current = null
+      notifyAnimationComplete('hit', failedHit.replayKey)
+    }
     if (battleAnimation === 'idle') {
       completedTokenRef.current = null
+      startedTokenRef.current = null
+      releasedTokenRef.current = null
       return
     }
     // A missing PNG leaves the emoji visible, but future actions must still release their waiter.
-    if (spriteFailed) notifyAnimationComplete(battleAnimation, animationReplayKey)
-  }, [spriteFailed, battleAnimation, animationReplayKey, notifyAnimationComplete])
+    if (spriteFailed) {
+      notifyAnimationStart(battleAnimation, animationReplayKey)
+      if (battleAnimation === 'attack') notifyAnimationCue(battleAnimation, animationReplayKey, 'release')
+      if (battleAnimation === 'hit' && holdReactionUntilImpact) {
+        deferredFailedHitRef.current = { identity: spriteIdentity, replayKey: animationReplayKey }
+      } else notifyAnimationComplete(battleAnimation, animationReplayKey)
+    }
+  }, [spriteFailed, spriteIdentity, holdReactionUntilImpact, battleAnimation, animationReplayKey, notifyAnimationStart, notifyAnimationCue, notifyAnimationComplete])
 
   const horizontalMotion = usesDedicatedSprites
     ? 0
@@ -1726,6 +1795,9 @@ function PokemonBattleSlot({
             side={side}
             animation={battleAnimation}
             replayKey={animationReplayKey}
+            holdReactionUntilImpact={holdReactionUntilImpact}
+            onAnimationStart={notifyAnimationStart}
+            onAnimationCue={notifyAnimationCue}
             onAnimationComplete={notifyAnimationComplete}
             scale={spriteScale}
             className="w-full h-full object-contain"

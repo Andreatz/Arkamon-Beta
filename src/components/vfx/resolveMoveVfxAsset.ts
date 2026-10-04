@@ -73,7 +73,12 @@ export function getMoveVfxFeedback(move: MossaDef): MoveVfxFeedback {
 }
 
 export function getMoveVfxImpactDelayMs(move: MossaDef): number {
-  return resolveMoveVfxRecipe(move)?.impactAtMs ?? resolveMoveVfxAsset(move).impactAtMs ?? 0
+  const impactMs = resolveMoveVfxRecipe(move)?.impactAtMs ?? resolveMoveVfxAsset(move).impactAtMs ?? 0
+  const durationMs = getMoveVfxDurationMs(move)
+  const finiteDurationMs = Number.isFinite(durationMs) ? Math.max(0, durationMs) : 0
+  // An editor override may shorten the effect past its original impact marker.
+  // The native hit planner and the rendered effect must use this same clock.
+  return Math.max(0, Math.min(Number.isFinite(impactMs) ? impactMs : 0, finiteDurationMs))
 }
 
 export function getMoveVfxDurationMs(move: MossaDef): number {

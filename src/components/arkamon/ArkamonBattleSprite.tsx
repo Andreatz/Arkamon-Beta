@@ -17,6 +17,8 @@ import {
 } from './arkamonAnimationManifest'
 import { getArkamonMotionProfile } from './arkamonMotionProfiles'
 
+export type ArkamonAnimationCue = 'release' | 'reaction'
+
 function getProceduralMotion(
   speciesId: number,
   side: ArkamonSpriteSide,
@@ -144,11 +146,16 @@ export function ArkamonBattleSprite({
   animation,
   scale = 1,
   animationEnabled = true,
+  playbackPaused = false,
+  holdReactionUntilImpact = false,
   finishActionBeforeIdle = true,
   replayKey = 0,
   className = '',
   onError,
   onAnimationComplete,
+  onAnimationReady,
+  onAnimationStart,
+  onAnimationCue,
 }: {
   speciesId: number
   name: string
@@ -156,15 +163,32 @@ export function ArkamonBattleSprite({
   animation: ArkamonBattleAnimation
   scale?: number
   animationEnabled?: boolean
+  /** Mount and paint the native first frame while keeping its action clock stopped. */
+  playbackPaused?: boolean
+  /** Keep the native hit immediately before its reaction until the VFX impact arrives. */
+  holdReactionUntilImpact?: boolean
   /** Battle feedback can request idle early; a manual preview may interrupt it. */
   finishActionBeforeIdle?: boolean
   replayKey?: number
   className?: string
   onError?: () => void
   onAnimationComplete?: (animation: ArkamonBattleAnimation, replayKey: number) => void
+  onAnimationReady?: (animation: ArkamonBattleAnimation, replayKey: number) => void
+  onAnimationStart?: (animation: ArkamonBattleAnimation, replayKey: number) => void
+  onAnimationCue?: (animation: ArkamonBattleAnimation, replayKey: number, cue: ArkamonAnimationCue) => void
 }) {
   const reduceMotion = useReducedMotion()
   const resolved = animationEnabled ? resolveArkamonAnimationAsset(speciesId, side, animation) : undefined
+  const callbacksRef = useRef({ onAnimationStart, onAnimationCue, onAnimationReady })
+  callbacksRef.current = { onAnimationStart, onAnimationCue, onAnimationReady }
+  useEffect(() => {
+    if (resolved || playbackPaused || animation === 'idle') return
+    callbacksRef.current.onAnimationStart?.(animation, replayKey)
+    if (animation === 'attack') callbacksRef.current.onAnimationCue?.(animation, replayKey, 'release')
+  }, [animation, replayKey, speciesId, side, !!resolved, playbackPaused])
+  useEffect(() => {
+    if (!resolved && animationEnabled && animation !== 'idle') callbacksRef.current.onAnimationReady?.(animation, replayKey)
+  }, [animation, replayKey, speciesId, side, !!resolved, animationEnabled])
   const transformStyle: CSSProperties = {
     transform: `scale(${scale})`,
     transformOrigin: 'center bottom',
@@ -185,18 +209,23 @@ export function ArkamonBattleSprite({
           side={side}
           animation={animation}
           animationEnabled={animationEnabled}
+          playbackPaused={playbackPaused}
+          holdReactionUntilImpact={holdReactionUntilImpact}
           finishActionBeforeIdle={finishActionBeforeIdle}
           replayKey={replayKey}
           reduceMotion={!!reduceMotion}
           onError={onError}
           onAnimationComplete={onAnimationComplete}
+          onAnimationReady={onAnimationReady}
+          onAnimationStart={onAnimationStart}
+          onAnimationCue={onAnimationCue}
         />
       </div>
     )
   }
 
   const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
-  const procedural = getProceduralMotion(speciesId, side, animation, !!reduceMotion || !animationEnabled)
+  const procedural = getProceduralMotion(speciesId, side, animation, !!reduceMotion || !animationEnabled || playbackPaused)
 
   return (
     <div
@@ -204,7 +233,7 @@ export function ArkamonBattleSprite({
       style={transformStyle}
       data-arkamon-animation={animation}
       data-arkamon-renderer="procedural"
-      data-arkamon-playback={reduceMotion || !animationEnabled ? 'paused' : 'playing'}
+      data-arkamon-playback={reduceMotion || !animationEnabled || playbackPaused ? 'paused' : 'playing'}
     >
       <motion.img
         src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
@@ -225,21 +254,31 @@ function AnimatedArkamonVisual({
   side,
   animation,
   animationEnabled,
+  playbackPaused,
+  holdReactionUntilImpact,
   finishActionBeforeIdle,
   replayKey,
   reduceMotion,
   onError,
   onAnimationComplete,
+  onAnimationReady,
+  onAnimationStart,
+  onAnimationCue,
 }: {
   speciesId: number
   side: ArkamonSpriteSide
   animation: ArkamonBattleAnimation
   animationEnabled: boolean
+  playbackPaused: boolean
+  holdReactionUntilImpact: boolean
   finishActionBeforeIdle: boolean
   replayKey: number
   reduceMotion: boolean
   onError?: () => void
   onAnimationComplete?: (animation: ArkamonBattleAnimation, replayKey: number) => void
+  onAnimationReady?: (animation: ArkamonBattleAnimation, replayKey: number) => void
+  onAnimationStart?: (animation: ArkamonBattleAnimation, replayKey: number) => void
+  onAnimationCue?: (animation: ArkamonBattleAnimation, replayKey: number, cue: ArkamonAnimationCue) => void
 }) {
   const [run, setRun] = useState<ArkamonPlaybackState>(() => ({
     animation, replayKey, generation: 0,
@@ -262,6 +301,40 @@ function AnimatedArkamonVisual({
   const mountedRef = useRef(true)
   const completionCallbackRef = useRef(onAnimationComplete)
   completionCallbackRef.current = onAnimationComplete
+  const readyCallbackRef = useRef(onAnimationReady)
+  readyCallbackRef.current = onAnimationReady
+  const readyGenerationRef = useRef(-1)
+  const onClipReady = useCallback(() => {
+    const current = runRef.current
+    if (!mountedRef.current || current.generation !== run.generation || current.animation === 'idle' || readyGenerationRef.current === run.generation) return
+    readyGenerationRef.current = run.generation
+    readyCallbackRef.current?.(current.animation, current.replayKey)
+  }, [run.generation])
+  const startCallbackRef = useRef(onAnimationStart)
+  startCallbackRef.current = onAnimationStart
+  const cueCallbackRef = useRef(onAnimationCue)
+  cueCallbackRef.current = onAnimationCue
+  const startedGenerationRef = useRef(-1)
+  const releasedGenerationRef = useRef(-1)
+  const reactionGenerationRef = useRef(-1)
+  const onClipStart = useCallback(() => {
+    const current = runRef.current
+    if (!mountedRef.current || current.generation !== run.generation || current.animation === 'idle' || startedGenerationRef.current === run.generation) return
+    startedGenerationRef.current = run.generation
+    startCallbackRef.current?.(current.animation, current.replayKey)
+  }, [run.generation])
+  const onReleaseCue = useCallback(() => {
+    const current = runRef.current
+    if (!mountedRef.current || current.generation !== run.generation || current.animation !== 'attack' || releasedGenerationRef.current === run.generation) return
+    releasedGenerationRef.current = run.generation
+    cueCallbackRef.current?.(current.animation, current.replayKey, 'release')
+  }, [run.generation])
+  const onReactionCue = useCallback(() => {
+    const current = runRef.current
+    if (!mountedRef.current || current.generation !== run.generation || current.animation !== 'hit' || reactionGenerationRef.current === run.generation) return
+    reactionGenerationRef.current = run.generation
+    cueCallbackRef.current?.(current.animation, current.replayKey, 'reaction')
+  }, [run.generation])
   const onClipComplete = useCallback(() => {
     const current = runRef.current
     const next = completeArkamonPlayback(current, run.generation)
@@ -271,9 +344,14 @@ function AnimatedArkamonVisual({
     completionCallbackRef.current?.(current.animation, current.replayKey)
   }, [run.generation])
   const onFallbackError = useCallback(() => {
-    if (dedicatedOneShot) onClipComplete()
+    onClipReady()
+    if (!playbackPaused) {
+      onClipStart()
+      onReleaseCue()
+      if (dedicatedOneShot && !(run.animation === 'hit' && holdReactionUntilImpact)) onClipComplete()
+    }
     onError?.()
-  }, [dedicatedOneShot, onClipComplete, onError])
+  }, [dedicatedOneShot, run.animation, holdReactionUntilImpact, playbackPaused, onClipComplete, onClipReady, onClipStart, onReleaseCue, onError])
 
   useEffect(() => {
     mountedRef.current = true
@@ -284,28 +362,38 @@ function AnimatedArkamonVisual({
 
   const clipDurationMs = getArkamonAnimationDurationMs(speciesId, side, run.animation)
   useEffect(() => {
-    if (!dedicatedOneShot || run.completed) return
+    if (!dedicatedOneShot || run.completed || playbackPaused) return
     if (reduceMotion) {
+      onClipStart()
+      onReleaseCue()
       onClipComplete()
       return
     }
     // An unavailable sheet still completes its static fallback and cannot trap the view.
     if (sheetFailed) {
+      onClipStart()
+      if (run.animation === 'hit' && holdReactionUntilImpact) return
+      const cueTimer = run.animation === 'attack'
+        ? window.setTimeout(onReleaseCue, (animated.releaseFrame ?? 0) / animated.fps * 1000)
+        : undefined
       const timer = window.setTimeout(onClipComplete, clipDurationMs)
-      return () => window.clearTimeout(timer)
+      return () => {
+        window.clearTimeout(timer)
+        window.clearTimeout(cueTimer)
+      }
     }
-  }, [dedicatedOneShot, run.completed, reduceMotion, sheetFailed, clipDurationMs, onClipComplete])
+  }, [dedicatedOneShot, run.completed, run.animation, holdReactionUntilImpact, playbackPaused, reduceMotion, sheetFailed, clipDurationMs, animated.releaseFrame, animated.fps, onClipComplete, onClipStart, onReleaseCue])
 
   const viewport = animated.viewport ?? { width: animated.width, height: animated.height, left: 0, top: 0 }
   const aspect = viewport.width / viewport.height
-  const paused = !animationEnabled || reduceMotion || (run.animation === 'ko' && resolved.isIdleFallback)
+  const paused = playbackPaused || !animationEnabled || reduceMotion || (run.animation === 'ko' && resolved.isIdleFallback)
   const useProcedural = sheetFailed || resolved.isIdleFallback
   const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
 
   useEffect(() => {
     const neutral = getProceduralMotion(speciesId, side, run.animation, true)
     if (useProcedural) {
-      const procedural = getProceduralMotion(speciesId, side, run.animation, reduceMotion || !animationEnabled)
+      const procedural = getProceduralMotion(speciesId, side, run.animation, reduceMotion || !animationEnabled || playbackPaused || (run.animation === 'hit' && holdReactionUntilImpact))
       // Replay only the action transform; the mounted idle player keeps its phase.
       void controls.start({
         ...neutral.animate,
@@ -316,7 +404,7 @@ function AnimatedArkamonVisual({
       controls.set(neutral.animate)
     }
     return () => controls.stop()
-  }, [controls, speciesId, side, run.animation, reduceMotion, animationEnabled, useProcedural, run.replayKey])
+  }, [controls, speciesId, side, run.animation, holdReactionUntilImpact, playbackPaused, reduceMotion, animationEnabled, useProcedural, run.replayKey])
 
   return (
     <motion.div
@@ -335,6 +423,7 @@ function AnimatedArkamonVisual({
       data-arkamon-active-animation={run.animation}
       data-arkamon-replay-key={run.replayKey}
       data-arkamon-motion={useProcedural ? 'procedural' : 'none'}
+      data-arkamon-reaction-gated={run.animation === 'hit' && holdReactionUntilImpact}
       data-arkamon-playback={paused ? 'paused' : run.completed ? 'complete' : 'playing'}
     >
       {sheetFailed ? (
@@ -343,12 +432,14 @@ function AnimatedArkamonVisual({
           alt=""
           aria-hidden="true"
           className="h-full w-full object-contain"
+          onLoad={onClipReady}
           onError={onFallbackError}
           draggable={false}
         />
       ) : (
         <AnimatedSprite
           src={assetUrl(animated.src)}
+          renderMode="canvas"
           frameWidth={animated.frameWidth}
           frameHeight={animated.frameHeight}
           columns={animated.columns}
@@ -364,9 +455,14 @@ function AnimatedArkamonVisual({
           loop={animated.loop ?? resolved.animation === 'idle'}
           responsive
           paused={paused}
+          holdBeforeFrame={run.animation === 'hit' && holdReactionUntilImpact ? animated.reactionFrame : undefined}
           replayKey={run.generation}
           waitForLoad
           onComplete={dedicatedOneShot ? onClipComplete : undefined}
+          onReady={onClipReady}
+          onStart={onClipStart}
+          cueFrame={run.animation === 'attack' ? animated.releaseFrame ?? 0 : run.animation === 'hit' ? animated.reactionFrame : undefined}
+          onCue={run.animation === 'hit' ? onReactionCue : onReleaseCue}
           onError={onSheetError}
           style={animated.viewport ? {
             position: 'absolute',

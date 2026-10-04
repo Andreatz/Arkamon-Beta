@@ -50,11 +50,13 @@ describe('complete action playback', () => {
   })
 })
 
-function renderDarklaw(animation: ArkamonBattleAnimation = 'idle', animationEnabled = true) {
+function renderDarklaw(animation: ArkamonBattleAnimation = 'idle', animationEnabled = true, playbackPaused = false, holdReactionUntilImpact = false) {
   return renderToStaticMarkup(
     <ArkamonBattleSprite
       speciesId={5} name="Darklaw" side="front" animation={animation}
       animationEnabled={animationEnabled} scale={1.75} className="h-full w-full"
+      playbackPaused={playbackPaused}
+      holdReactionUntilImpact={holdReactionUntilImpact}
     />
   )
 }
@@ -87,6 +89,34 @@ describe('Arkamon battle sprite visual selection', () => {
   it('uses reduced motion when the preference is set at mount', () => {
     motionPreference.reduced = true
     expect(renderDarklaw()).toContain('data-sprite-paused="true"')
+  })
+
+  it('paints the full native attack sheet while its synchronized clock is paused', () => {
+    const markup = renderDarklaw('attack', true, true)
+    expect(markup).toContain('data-arkamon-asset-animation="attack"')
+    expect(markup).toContain('/sprites/arkamon/5/front/attack.webp')
+    expect(markup).toContain('data-sprite-frame-count="96"')
+    expect(markup).toContain('data-sprite-fps="24"')
+    expect(markup).toContain('data-sprite-frame="0"')
+    expect(markup).toContain('data-sprite-paused="true"')
+    expect(markup).toContain('data-arkamon-playback="paused"')
+    expect(markup).not.toContain('/front_sprites/5.png')
+  })
+
+  it('gates the native hit at its reaction marker while retaining the full source frames', () => {
+    const markup = renderDarklaw('hit', true, false, true)
+    expect(markup).toContain('data-sprite-hold-before-frame="28"')
+    expect(markup).toContain('data-arkamon-reaction-gated="true"')
+    expect(markup).toContain('data-sprite-frame-count="96"')
+    expect(markup).toContain('/sprites/arkamon/5/front/hit.webp')
+    expect(markup).toContain('data-sprite-paused="false"')
+  })
+
+  it.each(['attack', 'ko'] as const)('keeps %s playback outside the defender reaction gate', (animation) => {
+    const markup = renderDarklaw(animation, true, false, true)
+    expect(markup).not.toContain('data-sprite-hold-before-frame=')
+    expect(markup).toContain('data-arkamon-reaction-gated="false"')
+    expect(markup).toContain('data-sprite-frame-count="96"')
   })
 
   it('uses the original PNG when animations are explicitly disabled', () => {

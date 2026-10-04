@@ -15,6 +15,10 @@ export interface ArkamonAnimationAsset extends SpriteSheetMeta {
   height: number
   durationMs?: number
   loop?: boolean
+  /** Native source frame where an attack releases its effect. */
+  releaseFrame?: number
+  /** Native source frame where the defender visibly reacts to the impact. */
+  reactionFrame?: number
   /** The common battle view inside a padded frame; padding may extend beyond it. */
   viewport?: { width: number; height: number; left: number; top: number }
 }
@@ -23,58 +27,48 @@ export type ArkamonAnimationSet = Partial<
   Record<ArkamonSpriteSide, Partial<Record<ArkamonBattleAnimation, ArkamonAnimationAsset>>>
 >
 
+const FRONT_ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
+
+function frontAnimationSet(
+  speciesId: number,
+  cellSize: number,
+  viewport: NonNullable<ArkamonAnimationAsset['viewport']>,
+  releaseFrame: number,
+  reactionFrame: number,
+): ArkamonAnimationSet {
+  const front: Partial<Record<ArkamonBattleAnimation, ArkamonAnimationAsset>> = {}
+  for (const animation of FRONT_ANIMATIONS) {
+    front[animation] = {
+      src: `/sprites/arkamon/${speciesId}/front/${animation}.webp`,
+      frameWidth: cellSize,
+      frameHeight: cellSize,
+      columns: 10,
+      rows: 10,
+      frameCount: 96,
+      fps: 24,
+      width: cellSize,
+      height: cellSize,
+      durationMs: 96 / 24 * 1000,
+      loop: animation === 'idle',
+      viewport,
+      ...(animation === 'attack' ? { releaseFrame } : {}),
+      ...(animation === 'hit' ? { reactionFrame } : {}),
+    }
+  }
+  return { front }
+}
+
 /**
- * Add species and views incrementally. An idle sheet remains the visual during
- * actions without a dedicated sheet; species and views without an idle retain
- * their existing static PNGs and procedural motion.
+ * Frame grids and padded views match each species' conversion metadata.
+ * Action cues are native source-frame indices chosen from the original videos.
+ * Other species and the back views retain their existing sprites.
  */
 export const ARKAMON_ANIMATION_MANIFEST: Partial<Record<number, ArkamonAnimationSet>> = {
-  5: {
-    front: {
-      idle: {
-        src: '/sprites/arkamon/5/front/idle.webp',
-        frameWidth: 640,
-        frameHeight: 640,
-        columns: 10,
-        rows: 10,
-        frameCount: 96,
-        fps: 24,
-        width: 640,
-        height: 640,
-        loop: true,
-        durationMs: 4000,
-        viewport: { width: 384, height: 384, left: 177, top: 140 },
-      },
-      attack: {
-        src: '/sprites/arkamon/5/front/attack.webp',
-        frameWidth: 640, frameHeight: 640, columns: 10, rows: 10,
-        frameCount: 96, fps: 24, width: 640, height: 640,
-        durationMs: 4000, loop: false,
-        viewport: { width: 384, height: 384, left: 177, top: 140 },
-      },
-      hit: {
-        src: '/sprites/arkamon/5/front/hit.webp',
-        frameWidth: 640, frameHeight: 640, columns: 10, rows: 10,
-        frameCount: 96, fps: 24, width: 640, height: 640,
-        durationMs: 4000, loop: false,
-        viewport: { width: 384, height: 384, left: 177, top: 140 },
-      },
-      victory: {
-        src: '/sprites/arkamon/5/front/victory.webp',
-        frameWidth: 640, frameHeight: 640, columns: 10, rows: 10,
-        frameCount: 96, fps: 24, width: 640, height: 640,
-        durationMs: 4000, loop: false,
-        viewport: { width: 384, height: 384, left: 177, top: 140 },
-      },
-      ko: {
-        src: '/sprites/arkamon/5/front/ko.webp',
-        frameWidth: 640, frameHeight: 640, columns: 10, rows: 10,
-        frameCount: 96, fps: 24, width: 640, height: 640,
-        durationMs: 4000, loop: false,
-        viewport: { width: 384, height: 384, left: 177, top: 140 },
-      },
-    },
-  },
+  5: frontAnimationSet(5, 640, { width: 384, height: 384, left: 177, top: 140 }, 31, 28),
+  6: frontAnimationSet(6, 704, { width: 320, height: 320, left: 208, top: 191 }, 47, 27),
+  7: frontAnimationSet(7, 704, { width: 384, height: 384, left: 152, top: 156 }, 51, 26),
+  8: frontAnimationSet(8, 768, { width: 384, height: 384, left: 234, top: 186 }, 26, 37),
+  20: frontAnimationSet(20, 704, { width: 384, height: 384, left: 150, top: 153 }, 56, 29),
 }
 
 export function getArkamonAnimationAsset(

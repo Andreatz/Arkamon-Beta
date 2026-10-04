@@ -13,6 +13,12 @@ export interface MoveVfxEvent {
 
 export const MOVE_VFX_VISIBLE_MS = 3400
 
-export function MoveVfx({ effect }: { effect: MoveVfxEvent }) {
-  return <SpriteMoveVfx effect={effect} />
+export interface MoveVfxPlaybackCallbacks {
+  onStart?: () => void
+  onImpact?: () => void
+  onComplete?: () => void
+}
+
+export function MoveVfx({ effect, ...callbacks }: { effect: MoveVfxEvent } & MoveVfxPlaybackCallbacks) {
+  return <SpriteMoveVfx effect={effect} {...callbacks} />
 }
