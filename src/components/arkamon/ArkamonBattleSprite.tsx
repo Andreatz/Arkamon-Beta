@@ -1,6 +1,7 @@
-import type { CSSProperties } from 'react'
+import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import {
   motion,
+  useAnimation,
   useReducedMotion,
   type TargetAndTransition,
   type Transition,
@@ -8,9 +9,10 @@ import {
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '@/components/vfx/AnimatedSprite'
 import {
-  getArkamonAnimationAsset,
+  resolveArkamonAnimationAsset,
   type ArkamonBattleAnimation,
   type ArkamonSpriteSide,
+  type ResolvedArkamonAnimation,
 } from './arkamonAnimationManifest'
 import { getArkamonMotionProfile } from './arkamonMotionProfiles'
 
@@ -130,6 +132,8 @@ export function ArkamonBattleSprite({
   side,
   animation,
   scale = 1,
+  animationEnabled = true,
+  replayKey = 0,
   className = '',
   onError,
 }: {
@@ -138,24 +142,136 @@ export function ArkamonBattleSprite({
   side: ArkamonSpriteSide
   animation: ArkamonBattleAnimation
   scale?: number
+  animationEnabled?: boolean
+  replayKey?: number
   className?: string
   onError?: () => void
 }) {
   const reduceMotion = useReducedMotion()
-  const animated = getArkamonAnimationAsset(speciesId, side, animation)
+  const resolved = animationEnabled ? resolveArkamonAnimationAsset(speciesId, side, animation) : undefined
   const transformStyle: CSSProperties = {
     transform: `scale(${scale})`,
     transformOrigin: 'center bottom',
   }
 
-  if (animated) {
+  if (resolved) {
     return (
       <div
         className={`flex items-center justify-center ${className}`}
-        style={transformStyle}
+        style={{ ...transformStyle, width: '100%', height: '100%', containerType: 'size' }}
+        role="img"
+        aria-label={name}
         data-arkamon-animation={animation}
-        data-arkamon-renderer="sprite-sheet"
       >
+        <AnimatedArkamonVisual
+          key={`${speciesId}:${side}:${resolved.asset.src}`}
+          speciesId={speciesId}
+          side={side}
+          animation={animation}
+          resolved={resolved}
+          animationEnabled={animationEnabled}
+          replayKey={replayKey}
+          reduceMotion={!!reduceMotion}
+          onError={onError}
+        />
+      </div>
+    )
+  }
+
+  const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
+  const procedural = getProceduralMotion(speciesId, side, animation, !!reduceMotion || !animationEnabled)
+
+  return (
+    <div
+      className={className}
+      style={transformStyle}
+      data-arkamon-animation={animation}
+      data-arkamon-renderer="procedural"
+      data-arkamon-playback={reduceMotion || !animationEnabled ? 'paused' : 'playing'}
+    >
+      <motion.img
+        src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
+        alt={name}
+        className="h-full w-full object-contain"
+        animate={procedural.animate}
+        transition={procedural.transition}
+        onError={onError}
+        draggable={false}
+      />
+    </div>
+  )
+}
+
+/** The key above scopes a failed sheet to its species, view, and source. */
+function AnimatedArkamonVisual({
+  speciesId,
+  side,
+  animation,
+  resolved,
+  animationEnabled,
+  replayKey,
+  reduceMotion,
+  onError,
+}: {
+  speciesId: number
+  side: ArkamonSpriteSide
+  animation: ArkamonBattleAnimation
+  resolved: ResolvedArkamonAnimation
+  animationEnabled: boolean
+  replayKey: number
+  reduceMotion: boolean
+  onError?: () => void
+}) {
+  const [sheetFailed, setSheetFailed] = useState(false)
+  const controls = useAnimation()
+  const onSheetError = useCallback(() => setSheetFailed(true), [])
+  const animated = resolved.asset
+  const aspect = animated.width / animated.height
+  const paused = !animationEnabled || reduceMotion || (animation === 'ko' && resolved.isIdleFallback)
+  const useProcedural = sheetFailed || resolved.isIdleFallback
+  const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
+
+  useEffect(() => {
+    const neutral = getProceduralMotion(speciesId, side, animation, true)
+    if (useProcedural) {
+      const procedural = getProceduralMotion(speciesId, side, animation, reduceMotion || !animationEnabled)
+      // Replay only the action transform; the mounted idle player keeps its phase.
+      void controls.start({
+        ...neutral.animate,
+        ...procedural.animate,
+        transition: procedural.transition,
+      })
+    } else {
+      controls.set(neutral.animate)
+    }
+    return () => controls.stop()
+  }, [controls, speciesId, side, animation, reduceMotion, animationEnabled, useProcedural, replayKey])
+
+  return (
+    <motion.div
+      // Both dimensions are constrained by the battle slot, with no stretching.
+      style={{
+        width: `min(100cqw, ${aspect * 100}cqh)`,
+        height: `min(100cqh, ${100 / aspect}cqw)`,
+        aspectRatio: String(aspect),
+        transformOrigin: 'center bottom',
+      }}
+      animate={controls}
+      data-arkamon-renderer={sheetFailed ? 'procedural' : 'sprite-sheet'}
+      data-arkamon-asset-animation={resolved.animation}
+      data-arkamon-motion={useProcedural ? 'procedural' : 'none'}
+      data-arkamon-playback={paused ? 'paused' : 'playing'}
+    >
+      {sheetFailed ? (
+        <img
+          src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-contain"
+          onError={onError}
+          draggable={false}
+        />
+      ) : (
         <AnimatedSprite
           src={assetUrl(animated.src)}
           frameWidth={animated.frameWidth}
@@ -168,32 +284,12 @@ export function ArkamonBattleSprite({
           width={animated.width}
           height={animated.height}
           durationMs={animated.durationMs}
-          loop={animated.loop ?? animation === 'idle'}
-          onError={onError}
+          loop={animated.loop ?? resolved.animation === 'idle'}
+          responsive
+          paused={paused}
+          onError={onSheetError}
         />
-      </div>
-    )
-  }
-
-  const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
-  const procedural = getProceduralMotion(speciesId, side, animation, !!reduceMotion)
-
-  return (
-    <div
-      className={className}
-      style={transformStyle}
-      data-arkamon-animation={animation}
-      data-arkamon-renderer="procedural"
-    >
-      <motion.img
-        src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
-        alt={name}
-        className="h-full w-full object-contain"
-        animate={procedural.animate}
-        transition={procedural.transition}
-        onError={onError}
-        draggable={false}
-      />
-    </div>
+      )}
+    </motion.div>
   )
 }

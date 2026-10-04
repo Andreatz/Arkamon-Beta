@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 
 export interface AnimatedSpriteProps {
   src: string
@@ -14,6 +14,8 @@ export interface AnimatedSpriteProps {
   responsive?: boolean
   durationMs?: number
   loop?: boolean
+  /** Hold the current frame without scheduling playback. */
+  paused?: boolean
   className?: string
   style?: CSSProperties
   onComplete?: () => void
@@ -52,11 +54,13 @@ export function AnimatedSprite({
   responsive = false,
   durationMs,
   loop = false,
+  paused = false,
   className,
   style,
   onComplete,
   onError,
 }: AnimatedSpriteProps) {
+  const playbackId = useId()
   const [frame, setFrame] = useState(0)
   const completeRef = useRef(false)
 
@@ -70,6 +74,7 @@ export function AnimatedSprite({
   }, [onError, src])
 
   useEffect(() => {
+    if (paused) return
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const totalFrames = Math.max(1, columns * rows)
     const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
@@ -126,7 +131,7 @@ export function AnimatedSprite({
       mounted = false
       cancelAnimationFrame(animationFrame)
     }
-  }, [columns, durationMs, fps, frameCount, loop, onComplete, rows, startFrame])
+  }, [columns, durationMs, fps, frameCount, loop, onComplete, paused, rows, startFrame])
 
   const totalFrames = Math.max(1, columns * rows)
   const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
@@ -146,6 +151,9 @@ export function AnimatedSprite({
   return (
     <div
       className={className}
+      data-sprite-frame={absoluteFrame}
+      data-sprite-instance={playbackId}
+      data-sprite-paused={paused}
       style={{
         width: responsive ? '100%' : width,
         height: responsive ? '100%' : height,
