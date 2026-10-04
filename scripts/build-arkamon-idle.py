@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Convert an original green-screen idle video into a static transparent atlas.
+"""Convert all original Darklaw action frames into lossless transparent atlases.
 
-Requires Python 3.10+, Pillow, NumPy, and FFmpeg. The optional imageio-ffmpeg
-package can supply the FFmpeg executable. No frame is generated or interpolated.
+Requires Python3.10+, Pillow, NumPy and FFmpeg. All original frames/FPS are
+preserved. Initial camera calibration is fixed per clip; the common scale,
+ground plane and logical viewport come from idle. No synthetic frames are used.
 Example:
-  python scripts/build-arkamon-idle.py --source animation-source/raw/5/front/idle.mp4 \
+  python scripts/build-arkamon-idle.py --source-dir animation-source/raw/5/front \
     --output public/sprites/arkamon/5/front --qa-dir ../qa \
     --reference public/sprites/front_sprites/5.png --ffmpeg /path/to/ffmpeg
 """
@@ -55,7 +56,7 @@ def probe(ffmpeg: str, source: Path) -> dict:
             "ffmpegVersion": version}
 
 
-def remove_green(image: Image.Image, cutoff: float = 0.08) -> tuple[Image.Image, list]:
+def key_alpha(image: Image.Image, cutoff: float = 0.08) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Estimate soft coverage from green excess, then unmix and remove edge spill.
 
     The corner estimate is recalculated per source frame; the spatial transform
@@ -73,7 +74,19 @@ def remove_green(image: Image.Image, cutoff: float = 0.08) -> tuple[Image.Image,
         raise ValueError("Source corners are not sufficiently green for this converter.")
     excess = rgb[:, :, 1] - np.maximum(rgb[:, :, 0], rgb[:, :, 2])
     alpha = np.clip(1.0 - np.maximum(excess, 0.0) / bg_excess, 0.0, 1.0)
+    # Darker screen patches and source shadows retain the screen chromaticity.
+    # Match colour ratios, rather than brightness, to prevent a tinted floor line.
+    denominator = np.maximum(rgb[:, :, 1], 1.0)
+    screen_colour = ((np.abs(rgb[:, :, 0] / denominator - bg[0] / bg[1]) < .12)
+                     & (np.abs(rgb[:, :, 2] / denominator - bg[2] / bg[1]) < .12)
+                     & (excess > 12))
+    alpha[screen_colour] = 0.0
     alpha[alpha < cutoff] = 0.0
+    return rgb, alpha, bg
+
+
+def remove_green(image: Image.Image, cutoff: float = 0.08) -> tuple[Image.Image, list]:
+    rgb, alpha, bg = key_alpha(image, cutoff)
     safe_alpha = np.maximum(alpha, 1.0 / 255.0)
     recovered = np.clip((rgb - (1.0 - alpha[:, :, None]) * bg) / safe_alpha[:, :, None], 0, 255)
     edge = alpha < 0.999
@@ -97,6 +110,10 @@ def frame_difference(a: Image.Image, b: Image.Image) -> dict:
     aa = np.asarray(a, dtype=np.float32) / 255
     bb = np.asarray(b, dtype=np.float32) / 255
     body = np.maximum(aa[:, :, 3], bb[:, :, 3]) > 0.1
+    if not body.any():
+        return {"bodyPremultipliedRgbMeanAbsoluteDifference": 0.0,
+                "bodyAlphaMeanAbsoluteDifference": 0.0,
+                "bodyChangedPixelFractionOver5Percent": 0.0}
     a_rgb = aa[:, :, :3] * aa[:, :, 3:4]
     b_rgb = bb[:, :, :3] * bb[:, :, 3:4]
     mae = np.abs(a_rgb - b_rgb).mean(axis=2)
@@ -132,157 +149,327 @@ def save_contacts(frames: list[Image.Image], qa: Path, battle: Path | None, fps:
     seam.save(qa / "loop-seam.jpg", quality=96, subsampling=0)
 
 
+def alpha_bounds(alpha: np.ndarray) -> tuple[int, int, int, int] | None:
+    return Image.fromarray(np.rint(alpha * 255).astype(np.uint8)).getbbox()
+
+
+def union_bounds(boxes: list) -> tuple[int, int, int, int]:
+    present = [b for b in boxes if b is not None]
+    if not present:
+        raise ValueError('A clip contains no visible keyed pixels.')
+    return (min(b[0] for b in present), min(b[1] for b in present),
+            max(b[2] for b in present), max(b[3] for b in present))
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def inspect_clip(ffmpeg: str, source: Path, action: str, decoded: Path,
+                 temporary: Path, cutoff: float) -> dict:
+    info = probe(ffmpeg, source)
+    source_hash = sha256(source)
+    cache_report = decoded.parent / 'source-audit.json'
+    cache = json.loads(cache_report.read_text(encoding='utf-8')) if cache_report.exists() else {}
+    paths = sorted((decoded / action).glob('frame-*.png'))
+    if not (paths and cache.get(action, {}).get('sha256') == source_hash
+            and len(paths) == cache[action]['decodedFrameCount']):
+        folder = temporary / action
+        folder.mkdir(parents=True, exist_ok=True)
+        subprocess.run([ffmpeg, '-hide_banner', '-loglevel', 'error', '-y', '-i', str(source),
+                        '-map', '0:v:0', '-an', '-sn', '-fps_mode', 'passthrough',
+                        '-start_number', '0', str(folder / 'frame-%04d.png')], check=True)
+        paths = sorted(folder.glob('frame-*.png'))
+    if not paths:
+        raise ValueError(f'No original frames decoded for {action}.')
+    boxes = []
+    first_core = None
+    for i, path in enumerate(paths):
+        with Image.open(path) as image:
+            if image.size != (info['width'], info['height']):
+                raise ValueError('Decoded source frame dimensions do not match the video.')
+            rgb, alpha, _ = key_alpha(image, cutoff)
+        boxes.append(alpha_bounds(alpha))
+        if i == 0:
+            # Ignore bright glints/rings when calibrating the initial body pose.
+            core = (alpha > .9) & (rgb.max(axis=2) < 210)
+            first_core = Image.fromarray(core.astype(np.uint8)*255).getbbox()
+    if first_core is None:
+        raise ValueError(f'The first {action} frame has no calibratable Darklaw body.')
+    info.update({'sha256': source_hash, 'sizeBytes': source.stat().st_size,
+                 'decodedFrameCount': len(paths), 'durationFromFramesSeconds':len(paths)/info['fps']})
+    result = {'action': action, 'source': source, 'info': info, 'paths': paths,
+              'boxes': boxes, 'union': union_bounds(boxes), 'firstCore': first_core}
+    print(json.dumps({'inspectedAction':action, 'frames':len(paths), 'fps':info['fps'],
+                      'firstCoreBodyBounds':first_core,'unionAlphaBounds':result['union']}),flush=True)
+    return result
+
+
+def common_plan(clips: list[dict], reference: Path | None, base_cell: int,
+                ground: float, occupancy: float, padding: int, max_texture: int) -> dict:
+    idle = next(c for c in clips if c['action'] == 'idle')
+    first = idle['firstCore']
+    anchor = ((first[0]+first[2])/2, first[3])
+    body_height = first[3]-first[1]
+    reference_meta = None
+    if reference:
+        image = Image.open(reference).convert('RGBA')
+        box = bounds(image)
+        occupancy = (box[3]-box[1])/image.height
+        ground = box[3]/image.height
+        reference_meta = {'size':list(image.size),'alphaBounds':list(box),
+                          'bodyHeightFraction':occupancy,'groundFraction':ground}
+    idle_crop = idle['union']
+    scale = min(base_cell*occupancy/(idle_crop[3]-idle_crop[1]),
+                (base_cell-2)/(idle_crop[2]-idle_crop[0]))
+    origin = (base_cell/2-anchor[0]*scale, round(base_cell*ground)-anchor[1]*scale)
+    virtual_boxes = []
+    for clip in clips:
+        box = clip['firstCore']
+        camera_scale = body_height/(box[3]-box[1])
+        camera_origin = (anchor[0]-camera_scale*(box[0]+box[2])/2,
+                         anchor[1]-camera_scale*box[3])
+        clip['camera'] = {'nativeToIdleCoordinateScale':camera_scale,
+                          'nativeToIdleCoordinateOffset':list(camera_origin),
+                          'initialBodyCoreBounds':list(box),
+                          'initialBodyHeightInIdleCoordinates':body_height,
+                          'initialGroundInIdleCoordinates':anchor[1],
+                          'constantForEntireClip':True}
+        for box in clip['boxes']:
+            if box is not None:
+                virtual_boxes.append((box[0]*camera_scale+camera_origin[0],
+                                      box[1]*camera_scale+camera_origin[1],
+                                      box[2]*camera_scale+camera_origin[0],
+                                      box[3]*camera_scale+camera_origin[1]))
+    common = union_bounds(virtual_boxes)
+    output_box = (math.floor(common[0]*scale+origin[0]), math.floor(common[1]*scale+origin[1]),
+                  math.ceil(common[2]*scale+origin[0]), math.ceil(common[3]*scale+origin[1]))
+    left = max(0,padding-output_box[0])
+    top = max(0,padding-output_box[1])
+    right = max(0,output_box[2]+padding-base_cell)
+    bottom = max(0,output_box[3]+padding-base_cell)
+    padded_width, padded_height = base_cell+left+right, base_cell+top+bottom
+    cell = math.ceil(max(padded_width,padded_height)/64)*64
+    left += (cell-padded_width)//2
+    top += (cell-padded_height)//2
+    max_cells = max_texture//cell
+    if any(len(c['paths']) > max_cells*max_cells for c in clips):
+        raise ValueError('The padded frame grid exceeds the maximum texture size; increase --max-texture explicitly.')
+    viewport = {'width':base_cell,'height':base_cell,'left':left,'top':top}
+    result = {'schemaVersion':1,'referenceAction':'idle','referenceFrameIndex':0,
+              'reference':reference_meta,'idleBodyCoreBounds':list(first),
+              'idleBodyHeightSourcePixels':body_height,'idleBodyHeightOutputPixels':body_height*scale,
+              'idleGroundSourcePixels':anchor[1],'sourceCoordinateSystem':list((idle['info']['width'],idle['info']['height'])),
+              'sharedScale':scale,'logicalCanvasOrigin':list(origin),
+              'canonicalUnionAlphaBounds':list(common),'logicalUnionAlphaBounds':list(output_box),
+              'cellWidth':cell,'cellHeight':cell,'viewport':viewport,
+              'groundPivot':[base_cell/2+left,round(base_cell*ground)+top],
+              'paddingPixels':padding,'maxTextureDimension':max_texture,
+              'notes':'Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.'}
+    return result
+
+
+def normalize_frame(image: Image.Image, clip: dict, common: dict, cutoff: float) -> Image.Image:
+    keyed,_ = remove_green(image,cutoff)
+    crop = clip['union']
+    camera = clip['camera']
+    scale = common['sharedScale']*camera['nativeToIdleCoordinateScale']
+    size = (max(1,round((crop[2]-crop[0])*scale)),max(1,round((crop[3]-crop[1])*scale)))
+    offset = camera['nativeToIdleCoordinateOffset']
+    origin = common['logicalCanvasOrigin']
+    viewport = common['viewport']
+    position = (round((crop[0]*camera['nativeToIdleCoordinateScale']+offset[0])*common['sharedScale']+origin[0])+viewport['left'],
+                round((crop[1]*camera['nativeToIdleCoordinateScale']+offset[1])*common['sharedScale']+origin[1])+viewport['top'])
+    if min(position) < 0 or position[0]+size[0] > common['cellWidth'] or position[1]+size[1] > common['cellHeight']:
+        raise ValueError(f"The fixed {clip['action']} transform would clip the source animation.")
+    resized = keyed.crop(crop).resize(size,Image.Resampling.LANCZOS)
+    pixels = np.asarray(resized).copy()
+    edge = pixels[:,:,3] < 255
+    pixels[:,:,1] = np.where(edge,np.minimum(pixels[:,:,1],np.maximum(pixels[:,:,0],pixels[:,:,2])),pixels[:,:,1])
+    pixels[pixels[:,:,3] == 0,:3] = 0
+    tile = Image.new('RGBA',(common['cellWidth'],common['cellHeight']),(0,0,0,0))
+    tile.paste(Image.fromarray(pixels),position)
+    return tile
+
+
+def save_video_preview(frames: list[Image.Image], qa: Path, fps: float,
+                       battle: Path | None, ffmpeg: str) -> Path:
+    cell = frames[0].width
+    background = (ImageOps.fit(Image.open(battle).convert('RGB'),(cell,cell))
+                  if battle else Image.new('RGB',(cell,cell),(25,35,49)))
+    target = qa/'preview-battle.mp4'
+    process = subprocess.Popen([ffmpeg,'-hide_banner','-loglevel','error','-y','-f','rawvideo',
+                                '-pixel_format','rgb24','-video_size',f'{cell}x{cell}',
+                                '-framerate',str(fps),'-i','pipe:0','-an','-c:v','libx264',
+                                '-preset','veryfast','-crf','18','-pix_fmt','yuv420p',
+                                '-movflags','+faststart',str(target)],stdin=subprocess.PIPE,
+                               stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+    try:
+        for frame in frames:
+            rendered = background.copy()
+            rendered.paste(frame,(0,0),frame)
+            process.stdin.write(rendered.tobytes())
+        process.stdin.close()
+        error = process.stderr.read().decode('utf-8',errors='replace')
+        if process.wait() != 0:
+            raise RuntimeError(f'Could not encode QA preview: {error}')
+    finally:
+        if process.poll() is None:
+            process.kill()
+    return target
+
+
+def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
+                 ffmpeg: str, battle: Path | None, cutoff: float, columns: int,
+                 idle_first: Image.Image | None) -> tuple[dict,Image.Image]:
+    action,info = clip['action'],clip['info']
+    count,fps = len(clip['paths']),info['fps']
+    max_cells = common['maxTextureDimension']//common['cellWidth']
+    preferred = columns if columns else math.ceil(math.sqrt(count))
+    columns = max(math.ceil(count/max_cells),min(preferred,max_cells))
+    rows = math.ceil(count/columns)
+    frames = []
+    for path in clip['paths']:
+        with Image.open(path) as image:
+            frames.append(normalize_frame(image,clip,common,cutoff))
+    cell = common['cellWidth']
+    atlas = Image.new('RGBA',(cell*columns,cell*rows),(0,0,0,0))
+    for index,frame in enumerate(frames):
+        atlas.paste(frame,(index%columns*cell,index//columns*cell))
+    atlas_path,poster_path = output/f'{action}.webp',output/f'{action}-poster.webp'
+    # Method controls compression effort only; every RGBA pixel remains lossless.
+    atlas.save(atlas_path,format='WEBP',lossless=True,quality=100,method=4,exact=True)
+    frames[0].save(poster_path,format='WEBP',lossless=True,quality=100,method=4,exact=True)
+    with Image.open(atlas_path) as loaded:
+        if loaded.size != atlas.size or getattr(loaded,'n_frames',1) != 1:
+            raise RuntimeError('The atlas must be a static image with the declared dimensions.')
+        if not np.array_equal(np.asarray(loaded.convert('RGBA')),np.asarray(atlas)):
+            raise RuntimeError('The lossless atlas failed its decoded RGBA equality check.')
+    adjacent = [frame_difference(frames[i],frames[i+1]) for i in range(count-1)]
+    seam = frame_difference(frames[-1],frames[0])
+    differences = [x['bodyPremultipliedRgbMeanAbsoluteDifference'] for x in adjacent]
+    median = float(np.median(differences)) if differences else 0
+    seam.update({'adjacentMedianBodyRgbDifference':round(median,6),
+                 'adjacentMaxBodyRgbDifference':max(differences,default=0),
+                 'seamToAdjacentMedianRatio':round(seam['bodyPremultipliedRgbMeanAbsoluteDifference']/max(median,1e-9),3)})
+    green_count,occupied,red_count = 0,0,0
+    frame_boxes,blank_frames = [],[]
+    for index,frame in enumerate(frames):
+        pixels = np.asarray(frame).astype(np.int16)
+        visible = pixels[:,:,3] > 16
+        green_count += int(((pixels[:,:,1] > np.maximum(pixels[:,:,0],pixels[:,:,2])+8)&visible).sum())
+        occupied += int(visible.sum())
+        red_count += int(((pixels[:,:,0]>pixels[:,:,1]+35)&(pixels[:,:,0]>pixels[:,:,2]+20)&visible).sum())
+        frame_boxes.append(frame.getchannel('A').getbbox())
+        if not visible.any():
+            blank_frames.append(index)
+    metadata = {'schemaVersion':1,'speciesId':5,'view':'front','action':action,
+                'source':{'file':f'animation-source/raw/5/front/{action}.mp4',**info},
+                'sampling':{'method':'Every decoded source frame, in original order, at original FPS; no skipping, interpolation, generation, reversal or crossfade.',
+                            'allSourceFramesPreserved':True,'sourceFrameIndices':list(range(count)),
+                            'sampleTimesSeconds':[round(i/fps,6) for i in range(count)],
+                            'firstSampleSeconds':0,'lastSampleSeconds':(count-1)/fps},
+                'sheet':{'file':atlas_path.name,'format':'static lossless WebP RGBA','animated':False,
+                         'cellWidth':cell,'cellHeight':cell,'columns':columns,'rows':rows,
+                         'frameCount':count,'fps':fps,'durationSeconds':count/fps,'durationMs':round(1000*count/fps),
+                         'width':atlas.width,'height':atlas.height,'sizeBytes':atlas_path.stat().st_size,
+                         'sha256':sha256(atlas_path),'viewport':common['viewport']},
+                'poster':{'file':poster_path.name,'frameIndex':0,'sizeBytes':poster_path.stat().st_size,'sha256':sha256(poster_path)},
+                'viewport':common['viewport'],
+                'transform':{'fixedTransformAcrossFrames':True,'sharedTransform':common,
+                             'cameraCalibration':clip['camera'],'sourceUnionAlphaBounds':list(clip['union']),
+                             'sourceFrameAlphaBounds':[list(b) if b else None for b in clip['boxes']],
+                             'outputFrameAlphaBounds':[list(b) if b else None for b in frame_boxes],
+                             'scale':common['sharedScale'],'groundPivot':common['groundPivot']},
+                'key':{'method':'Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.',
+                       'alphaCutoff':cutoff,'screenColourRatioTolerance':.12},
+                'qa':{'losslessDecodedRgbaMatches':True,'remainingGreenDominantPixelsOver8':green_count,
+                      'occupiedPixelsAllFrames':occupied,'redDominantPixelsAllFrames':red_count,
+                      'transparentFrameIndices':blank_frames,'loopSeam':seam,
+                      'loopSeamPerfect':seam['bodyPremultipliedRgbMeanAbsoluteDifference']==0,
+                      'originalFinalFramePreserved':True,
+                      'sourceFramesTouchingEdges':[i for i,b in enumerate(clip['boxes']) if b and (b[0]==0 or b[1]==0 or b[2]==info['width'] or b[3]==info['height'])],
+                      'notes':'Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.'}}
+    if green_count:
+        raise RuntimeError(f'{action} retains {green_count} green-dominant pixels.')
+    if idle_first is not None:
+        metadata['qa']['returnToIdleFirst'] = frame_difference(frames[-1],idle_first)
+    if qa:
+        folder = qa/action
+        folder.mkdir(parents=True,exist_ok=True)
+        save_contacts(frames,folder,battle,fps)
+        preview = save_video_preview(frames,folder,fps,battle,ffmpeg)
+        metadata['qa']['preview'] = {'file':str(preview.relative_to(qa)),'sizeBytes':preview.stat().st_size,'sha256':sha256(preview)}
+        frames[-1].save(folder/'last-frame.png')
+    (output/f'{action}.metadata.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf-8')
+    print(json.dumps({'completedAction':action,'sheet':metadata['sheet'],'greenPixels':green_count,
+                      'transparentFrameIndices':blank_frames,'loopSeam':seam}),flush=True)
+    return metadata,frames[0]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--qa-dir", type=Path)
-    parser.add_argument("--reference", type=Path)
-    parser.add_argument("--battle-background", type=Path)
-    parser.add_argument("--ffmpeg")
-    parser.add_argument("--fps", type=int, default=12)
-    parser.add_argument("--frames", type=int, default=48)
-    parser.add_argument("--cell", type=int, default=384)
-    parser.add_argument("--columns", type=int, default=8)
-    parser.add_argument("--occupancy", type=float, default=1874 / 2048)
-    parser.add_argument("--ground", type=float, default=1956 / 2048)
-    parser.add_argument("--alpha-cutoff", type=float, default=.08)
+    parser.add_argument('--source-dir',type=Path,default=Path('animation-source/raw/5/front'))
+    parser.add_argument('--output',type=Path,default=Path('public/sprites/arkamon/5/front'))
+    parser.add_argument('--actions',nargs='+',choices=['idle','attack','hit','victory','ko'],default=['idle','attack','hit','victory','ko'])
+    parser.add_argument('--qa-dir',type=Path)
+    parser.add_argument('--decoded-dir',type=Path)
+    parser.add_argument('--reference',type=Path)
+    parser.add_argument('--battle-background',type=Path)
+    parser.add_argument('--ffmpeg')
+    parser.add_argument('--base-cell',type=int,default=384)
+    parser.add_argument('--columns',type=int,default=0)
+    parser.add_argument('--max-texture',type=int,default=8192)
+    parser.add_argument('--padding',type=int,default=16)
+    parser.add_argument('--occupancy',type=float,default=1874/2048)
+    parser.add_argument('--ground',type=float,default=1956/2048)
+    parser.add_argument('--alpha-cutoff',type=float,default=.08)
+    parser.add_argument('--analyze-only',action='store_true')
     args = parser.parse_args()
-    for name in ("fps", "frames", "cell", "columns"):
-        if getattr(args, name) <= 0:
-            parser.error(f"--{name} must be a positive integer.")
-    if not 0 < args.occupancy <= 1:
-        parser.error("--occupancy must be greater than 0 and at most 1.")
-    if not 0 < args.ground <= 1:
-        parser.error("--ground must be greater than 0 and at most 1.")
-    if not 0 <= args.alpha_cutoff < 1:
-        parser.error("--alpha-cutoff must be at least 0 and less than 1.")
-    source, output = args.source.resolve(), args.output.resolve()
+    if args.base_cell < 64 or args.max_texture < args.base_cell or args.columns < 0 or args.padding < 0:
+        parser.error('Base cell must be at least64, texture must fit it, and columns/padding must be nonnegative.')
+    if not 0 < args.occupancy <= 1 or not 0 < args.ground <= 1 or not 0 <= args.alpha_cutoff < 1:
+        parser.error('Occupancy/ground must be in(0,1], alpha cutoff in[0,1).')
+    actions = list(dict.fromkeys(args.actions))
+    if 'idle' not in actions:
+        parser.error('Include idle to establish the common reference scale and ground plane.')
+    actions.remove('idle')
+    actions.insert(0,'idle')
     ffmpeg = ffmpeg_path(args.ffmpeg)
-    info = probe(ffmpeg, source)
-    stride = round(info["fps"] / args.fps)
-    if stride < 1 or not math.isclose(info["fps"], stride * args.fps, abs_tol=.001):
-        raise SystemExit("This converter requires an integer source/output FPS ratio; it never interpolates.")
-    if info["durationSeconds"] + .001 < args.frames / args.fps:
-        raise SystemExit("The source is shorter than the requested animation duration.")
-    output.mkdir(parents=True, exist_ok=True)
+    output = args.output.resolve()
+    output.mkdir(parents=True,exist_ok=True)
     qa = args.qa_dir.resolve() if args.qa_dir else None
     if qa:
-        qa.mkdir(parents=True, exist_ok=True)
-    frame_boxes, backgrounds, keyed = [], [], []
-    with tempfile.TemporaryDirectory(prefix="arkamon-idle-") as temporary:
-        decode = Path(temporary)
-        filter_string = f"select='not(mod(n,{stride}))',setpts=N/({args.fps}*TB)"
-        command = [ffmpeg, "-hide_banner", "-loglevel", "error", "-y", "-i", str(source),
-                   "-vf", filter_string, "-fps_mode", "passthrough", "-frames:v", str(args.frames),
-                   str(decode / "frame-%03d.png")]
-        subprocess.run(command, check=True)
-        paths = sorted(decode.glob("frame-*.png"))
-        if len(paths) != args.frames:
-            raise SystemExit(f"Expected {args.frames} decoded frames, received {len(paths)}.")
-        for path in paths:
-            rgba, background = remove_green(Image.open(path), args.alpha_cutoff)
-            frame_boxes.append(bounds(rgba))
-            backgrounds.append(background)
-            keyed.append(rgba)
+        qa.mkdir(parents=True,exist_ok=True)
+    decoded = args.decoded_dir.resolve() if args.decoded_dir else Path('__no_decode_cache__')
+    with tempfile.TemporaryDirectory(prefix='arkamon-all-original-frames-') as folder:
+        clips = [inspect_clip(ffmpeg,(args.source_dir/f'{action}.mp4').resolve(),action,decoded,Path(folder),args.alpha_cutoff) for action in actions]
+        common = common_plan(clips,args.reference,args.base_cell,args.ground,args.occupancy,args.padding,args.max_texture)
+        common['cameraCalibrations'] = {c['action']:c['camera'] for c in clips}
+        common_path = output/'animation-set.normalization.json'
+        common_path.write_text(json.dumps(common,indent=2)+'\n',encoding='utf-8')
         if qa:
-            Image.open(paths[0]).save(qa / "source-first.png")
-            Image.open(paths[-1]).save(qa / "source-last.png")
-    crop = (min(b[0] for b in frame_boxes), min(b[1] for b in frame_boxes),
-            max(b[2] for b in frame_boxes), max(b[3] for b in frame_boxes))
-    ref_meta = None
-    occupancy, ground = args.occupancy, args.ground
-    if args.reference:
-        reference = Image.open(args.reference).convert("RGBA")
-        ref_box = bounds(reference)
-        occupancy = (ref_box[3] - ref_box[1]) / reference.height
-        ground = ref_box[3] / reference.height
-        ref_meta = {"size": list(reference.size), "alphaBounds": list(ref_box),
-                    "bodyHeightFraction": occupancy, "groundFraction": ground}
-    crop_width, crop_height = crop[2] - crop[0], crop[3] - crop[1]
-    scale = min(args.cell * occupancy / crop_height, (args.cell - 2) / crop_width)
-    target_width, target_height = round(crop_width * scale), round(crop_height * scale)
-    position = (round((args.cell - target_width) / 2), round(args.cell * ground) - target_height)
-    if position[1] < 0 or position[1] + target_height > args.cell:
-        raise SystemExit("Requested occupancy and ground placement would clip the sprite.")
-    normalized = []
-    for image in keyed:
-        tile = Image.new("RGBA", (args.cell, args.cell), (0, 0, 0, 0))
-        resized = image.crop(crop).resize((target_width, target_height), Image.Resampling.LANCZOS)
-        # Remove any tiny rounding overshoot from the resampling filter.
-        pixels = np.asarray(resized).copy()
-        soft_edge = pixels[:, :, 3] < 255
-        pixels[:, :, 1] = np.where(soft_edge,
-                                   np.minimum(pixels[:, :, 1], np.maximum(pixels[:, :, 0], pixels[:, :, 2])),
-                                   pixels[:, :, 1])
-        pixels[pixels[:, :, 3] == 0, :3] = 0
-        tile.paste(Image.fromarray(pixels), position)
-        normalized.append(tile)
-    rows = math.ceil(args.frames / args.columns)
-    atlas = Image.new("RGBA", (args.cell * args.columns, args.cell * rows), (0, 0, 0, 0))
-    for i, tile in enumerate(normalized):
-        atlas.paste(tile, (i % args.columns * args.cell, i // args.columns * args.cell))
-    atlas_path, poster_path = output / "idle.webp", output / "idle-poster.webp"
-    atlas.save(atlas_path, format="WEBP", lossless=True, quality=100, method=6, exact=True)
-    normalized[0].save(poster_path, format="WEBP", lossless=True, quality=100, method=6, exact=True)
-    loaded = Image.open(atlas_path)
-    if getattr(loaded, "n_frames", 1) != 1 or loaded.size != atlas.size:
-        raise RuntimeError("The atlas must be a single static image with the expected dimensions.")
-    if not np.array_equal(np.asarray(loaded.convert("RGBA")), np.asarray(atlas)):
-        raise RuntimeError("The lossless atlas failed the decoded RGBA equality check.")
-    adjacent = [frame_difference(normalized[i], normalized[i + 1]) for i in range(len(normalized) - 1)]
-    seam = frame_difference(normalized[-1], normalized[0])
-    adjacent_mae = [m["bodyPremultipliedRgbMeanAbsoluteDifference"] for m in adjacent]
-    adjacent_median = float(np.median(adjacent_mae)) if adjacent_mae else 0.0
-    seam["adjacentMedianBodyRgbDifference"] = round(adjacent_median, 6)
-    seam["adjacentMaxBodyRgbDifference"] = round(float(max(adjacent_mae, default=0.0)), 6)
-    seam["seamToAdjacentMedianRatio"] = round(seam["bodyPremultipliedRgbMeanAbsoluteDifference"] / max(adjacent_median, 1e-9), 3)
-    green_pixels, occupied_pixels, red_pixels = 0, 0, 0
-    for tile in normalized:
-        pixels = np.asarray(tile).astype(np.int16)
-        body = pixels[:, :, 3] > 16
-        green = (pixels[:, :, 1] > np.maximum(pixels[:, :, 0], pixels[:, :, 2]) + 8) & body
-        red = (pixels[:, :, 0] > pixels[:, :, 1] + 35) & (pixels[:, :, 0] > pixels[:, :, 2] + 20) & body
-        green_pixels += int(green.sum())
-        occupied_pixels += int(body.sum())
-        red_pixels += int(red.sum())
-    metadata = {"schemaVersion": 1, "speciesId": 5, "view": "front", "action": "idle",
-                "source": {"file": "animation-source/raw/5/front/idle.mp4", "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
-                           "sizeBytes": source.stat().st_size, **info},
-                "sampling": {"method": "select original source frames; no interpolation or generation",
-                             "sourceFrameIndices": list(range(0, args.frames * stride, stride)),
-                             "sampleTimesSeconds": [round(i / args.fps, 6) for i in range(args.frames)],
-                             "firstSampleSeconds": 0, "lastSampleSeconds": (args.frames - 1) / args.fps},
-                "sheet": {"file": "idle.webp", "format": "static lossless WebP RGBA", "animated": False,
-                          "cellWidth": args.cell, "cellHeight": args.cell, "columns": args.columns, "rows": rows,
-                          "frameCount": args.frames, "fps": args.fps, "durationSeconds": args.frames / args.fps,
-                          "width": atlas.width, "height": atlas.height, "sizeBytes": atlas_path.stat().st_size},
-                "poster": {"file": "idle-poster.webp", "frameIndex": 0, "sizeBytes": poster_path.stat().st_size},
-                "transform": {"sourceUnionAlphaBounds": list(crop), "sourceFrameAlphaBounds": [list(b) for b in frame_boxes],
-                              "fixedTransformAcrossFrames": True, "scale": scale, "resizedCrop": [target_width, target_height],
-                              "pasteOrigin": list(position), "groundPivot": [args.cell / 2, round(args.cell * ground)],
-                              "reference": ref_meta},
-                "key": {"method": "corner-sampled green excess soft alpha; background unmix and edge despill before and after resampling",
-                        "alphaCutoff": args.alpha_cutoff, "backgroundRgbByFrame": backgrounds},
-                "qa": {"losslessDecodedRgbaMatches": True, "remainingGreenDominantPixelsOver8": green_pixels,
-                       "occupiedPixelsAllFrames": occupied_pixels, "redDominantPixelsAllFrames": red_pixels,
-                       "loopSeam": seam, "loopSeamPerfect": False,
-                       "notes": "The source seam is measured and preserved; no loop correction or crossfade was applied."}}
-    if qa:
-        durations = [round((i + 1) * 1000 / args.fps) - round(i * 1000 / args.fps) for i in range(args.frames)]
-        preview = qa / "idle-transparent-preview.webp"
-        normalized[0].save(preview, format="WEBP", save_all=True, append_images=normalized[1:],
-                           duration=durations, loop=0, lossless=True, quality=100, method=4,
-                           exact=True, minimize_size=False, background=(0, 0, 0, 0))
-        save_contacts(normalized, qa, args.battle_background, args.fps)
-        metadata["qa"]["previewSizeBytes"] = preview.stat().st_size
-        (qa / "conversion-metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    (output / "idle.metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"sourceUnionAlphaBounds": crop, "sourceFirstAlphaBounds": frame_boxes[0],
-                      "sourceLastAlphaBounds": frame_boxes[-1], "sheet": metadata["sheet"],
-                      "transform": {k: metadata["transform"][k] for k in ["scale", "resizedCrop", "pasteOrigin", "groundPivot"]},
-                      "qa": metadata["qa"]}, indent=2))
+            (qa/'common-normalization.json').write_text(json.dumps(common,indent=2)+'\n',encoding='utf-8')
+        print(json.dumps({'commonNormalization':common}),flush=True)
+        if args.analyze_only:
+            return
+        all_metadata,idle_first = {},None
+        for clip in clips:
+            metadata,first = convert_clip(clip,common,output,qa,ffmpeg,args.battle_background,args.alpha_cutoff,args.columns,idle_first)
+            all_metadata[clip['action']] = metadata
+            if clip['action']=='idle':
+                idle_first = first
+            (output/'animation-set.metadata.json').write_text(json.dumps({'schemaVersion':1,'speciesId':5,'view':'front','normalization':common,'actions':all_metadata},indent=2)+'\n',encoding='utf-8')
+        if qa:
+            cell = common['cellWidth']
+            contact = Image.new('RGB',(cell*len(clips),cell+28),(239,243,248))
+            draw = ImageDraw.Draw(contact)
+            for i,clip in enumerate(clips):
+                poster = Image.open(output/f"{clip['action']}-poster.webp").convert('RGBA')
+                contact.paste(poster,(i*cell,0),poster)
+                draw.text((i*cell+12,cell+6),f"{clip['action']} initial pose / common ground",fill=(20,30,42))
+            contact.save(qa/'initial-poses-common-canvas.jpg',quality=96,subsampling=0)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

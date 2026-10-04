@@ -3,78 +3,58 @@ import {
   ARKAMON_ANIMATION_MANIFEST,
   getArkamonAnimationAsset,
   resolveArkamonAnimationAsset,
+  type ArkamonBattleAnimation,
 } from '../arkamonAnimationManifest'
 
+// Type checking rejects an additional legacy animation key in the public API.
+const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
+  idle: true, attack: true, hit: true, victory: true, ko: true,
+}
+const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
+
 describe('Arkamon animation manifest', () => {
-  it('opts only the Darklaw front view into the prototype', () => {
+  it('provides one complete Darklaw front set with a single attack animation', () => {
     expect(Object.keys(ARKAMON_ANIMATION_MANIFEST)).toEqual(['5'])
-    expect(getArkamonAnimationAsset(5, 'front', 'idle')).toMatchObject({
-      src: '/sprites/arkamon/5/front/idle.webp',
-      loop: true,
-    })
-    expect(getArkamonAnimationAsset(5, 'front', 'idle')!.frameCount).toBeGreaterThan(1)
+    expect(Object.keys(ARKAMON_ANIMATION_MANIFEST[5]!.front!).sort()).toEqual([...ANIMATIONS].sort())
+    expect(getArkamonAnimationAsset(5, 'front', 'idle')).toMatchObject({ frameCount: 96, fps: 24, loop: true })
+    expect(ARKAMON_ANIMATION_MANIFEST[5]!.front).not.toHaveProperty('physical')
+    expect(ARKAMON_ANIMATION_MANIFEST[5]!.front).not.toHaveProperty('special')
     expect(resolveArkamonAnimationAsset(5, 'back', 'idle')).toBeUndefined()
-    expect(resolveArkamonAnimationAsset(1, 'front', 'idle')).toBeUndefined()
-    expect(resolveArkamonAnimationAsset(110, 'back', 'physical')).toBeUndefined()
+    expect(resolveArkamonAnimationAsset(1, 'front', 'attack')).toBeUndefined()
+    expect(resolveArkamonAnimationAsset(110, 'back', 'attack')).toBeUndefined()
   })
 
-  it.each(['physical', 'special', 'hit', 'ko', 'victory'] as const)(
-    'retains the animated idle art during %s without a dedicated pose',
-    (animation) => {
-      expect(getArkamonAnimationAsset(5, 'front', animation)).toBeUndefined()
-      expect(resolveArkamonAnimationAsset(5, 'front', animation)).toEqual({
-        asset: getArkamonAnimationAsset(5, 'front', 'idle'),
-        animation: 'idle',
-        isIdleFallback: true,
-      })
-    }
-  )
+  it.each(ANIMATIONS)('selects the dedicated %s sheet rather than an idle substitute', (animation) => {
+    const asset = getArkamonAnimationAsset(5, 'front', animation)
+    expect(asset).toBeDefined()
+    expect(asset!.src).toBe(`/sprites/arkamon/5/front/${animation}.webp`)
+    expect(resolveArkamonAnimationAsset(5, 'front', animation)).toEqual({
+      asset, animation, isIdleFallback: false,
+    })
+    expect(asset!.loop).toBe(animation === 'idle')
+  })
 
-  it('uses a dedicated action sheet before the idle fallback', () => {
+  it('retains a view’s idle as the fallback when a dedicated action is unavailable', () => {
     const front = ARKAMON_ANIMATION_MANIFEST[5]!.front!
-    const original = front.special
-    const special = { ...front.idle!, src: '/dedicated-special.webp', loop: false }
-    front.special = special
+    const hit = front.hit
+    delete front.hit
     try {
-      expect(resolveArkamonAnimationAsset(5, 'front', 'special')).toEqual({
-        asset: special,
-        animation: 'special',
-        isIdleFallback: false,
+      expect(resolveArkamonAnimationAsset(5, 'front', 'hit')).toEqual({
+        asset: front.idle, animation: 'idle', isIdleFallback: true,
       })
     } finally {
-      if (original) front.special = original
-      else delete front.special
+      front.hit = hit
     }
   })
 
-  it('marks the idle itself as an exact animation to avoid a second idle bounce', () => {
-    expect(resolveArkamonAnimationAsset(5, 'front', 'idle')).toMatchObject({
-      animation: 'idle',
-      isIdleFallback: false,
-    })
-  })
-
-  it('keeps every animation in bounds and preserves its frame aspect ratio', () => {
-    for (const species of Object.values(ARKAMON_ANIMATION_MANIFEST)) {
-      if (!species) continue
-      for (const side of Object.values(species)) {
-        if (!side) continue
-        for (const animation of Object.values(side)) {
-          if (!animation) continue
-          expect((animation.startFrame ?? 0) + animation.frameCount).toBeLessThanOrEqual(
-            animation.columns * animation.rows
-          )
-          expect(animation.frameCount).toBeGreaterThan(0)
-          expect(animation.fps).toBeGreaterThan(0)
-          expect(animation.frameWidth).toBeGreaterThan(0)
-          expect(animation.frameHeight).toBeGreaterThan(0)
-          expect(animation.width).toBeGreaterThan(0)
-          expect(animation.height).toBeGreaterThan(0)
-          expect(animation.width / animation.height).toBeCloseTo(
-            animation.frameWidth / animation.frameHeight
-          )
-        }
-      }
+  it('retains all source frames at native timing within the frame grid', () => {
+    for (const animation of ANIMATIONS) {
+      const asset = getArkamonAnimationAsset(5, 'front', animation)!
+      expect(asset.frameCount).toBe(96)
+      expect(asset.fps).toBe(24)
+      expect(asset.durationMs).toBe(4000)
+      expect((asset.startFrame ?? 0) + asset.frameCount).toBeLessThanOrEqual(asset.columns * asset.rows)
+      expect(asset.width / asset.height).toBeCloseTo(asset.frameWidth / asset.frameHeight)
     }
   })
 })

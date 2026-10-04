@@ -1,7 +1,7 @@
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import { BATTLE_BG_DEFAULT } from '@/data/backgrounds'
 import { ArkamonBattleSprite } from './ArkamonBattleSprite'
-import type { ArkamonBattleAnimation, ArkamonSpriteSide } from './arkamonAnimationManifest'
+import { getArkamonAnimationAsset, type ArkamonBattleAnimation, type ArkamonSpriteSide } from './arkamonAnimationManifest'
 import './darklawAnimationLab.css'
 
 type PreviewBackground = 'battle' | 'checker' | 'light' | 'dark'
@@ -14,23 +14,13 @@ type PreviewRun = {
 
 const ACTIONS: { animation: ArkamonBattleAnimation; label: string; description: string }[] = [
   { animation: 'idle', label: 'Attesa', description: 'Il respiro e il movimento leggero della posa.' },
-  { animation: 'physical', label: 'Attacco fisico', description: 'Scatto in avanti, poi ritorno alla posa di attesa.' },
-  { animation: 'special', label: 'Attacco speciale', description: 'Carica luminosa, poi ritorno alla posa di attesa.' },
-  { animation: 'hit', label: 'Colpito', description: 'Reazione al colpo, poi ritorno alla posa di attesa.' },
-  { animation: 'ko', label: 'KO', description: 'La posa resta in KO. Premi Attesa per riprendere.' },
-  { animation: 'victory', label: 'Vittoria', description: 'Un breve festeggiamento, poi ritorno alla posa di attesa.' },
+  { animation: 'attack', label: 'Attacco', description: 'Il filmato di attacco si completa, poi riprende l’attesa.' },
+  { animation: 'hit', label: 'Colpito', description: 'La reazione al colpo si completa, poi riprende l’attesa.' },
+  { animation: 'ko', label: 'KO', description: 'La caduta e la dissoluzione si completano. Premi Attesa per riprendere.' },
+  { animation: 'victory', label: 'Vittoria', description: 'Il festeggiamento si completa, poi riprende l’attesa.' },
 ]
 
-const ACTION_DURATION_MS: Record<ArkamonBattleAnimation, number> = {
-  idle: 2100,
-  physical: 1100,
-  special: 1400,
-  hit: 1000,
-  ko: 1000,
-  victory: 2100,
-}
-
-const ACTION_SEQUENCE: ArkamonBattleAnimation[] = ['idle', 'physical', 'special', 'hit', 'victory', 'ko']
+const ACTION_SEQUENCE: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 /** A development-only comparison using the same sprite renderer as battle. */
 export function DarklawAnimationLab() {
@@ -40,27 +30,42 @@ export function DarklawAnimationLab() {
   const [run, setRun] = useState<PreviewRun>({ animation: 'idle', id: 0, sequenceIndex: null })
   const playingSequence = run.sequenceIndex !== null
   const currentAction = ACTIONS.find((action) => action.animation === run.animation) ?? ACTIONS[0]
+  const previewAsset = getArkamonAnimationAsset(5, 'front', run.animation)
+  const viewport = previewAsset?.viewport
+  const canvasCenter = viewport ? viewport.left + viewport.width / 2 : 0
+  const canvasWidthFactor = side === 'front' && previewAsset && viewport
+    ? 2 * Math.max(canvasCenter, previewAsset.frameWidth - canvasCenter) / viewport.width
+    : 1
+  const comparisonStyle = {
+    '--darklaw-preview-scale': scale,
+    '--darklaw-canvas-width-factor': canvasWidthFactor,
+  } as CSSProperties
 
   useEffect(() => {
-    if (run.sequenceIndex !== null) {
-      const nextIndex = run.sequenceIndex + 1
-      if (nextIndex >= ACTION_SEQUENCE.length) return
-      const timer = window.setTimeout(() => {
-        setRun((current) => ({
-          animation: ACTION_SEQUENCE[nextIndex],
-          id: current.id + 1,
-          sequenceIndex: nextIndex === ACTION_SEQUENCE.length - 1 ? null : nextIndex,
-        }))
-      }, ACTION_DURATION_MS[run.animation])
-      return () => window.clearTimeout(timer)
-    }
-
-    if (run.animation === 'idle' || run.animation === 'ko') return
+    if (run.animation !== 'idle' || run.sequenceIndex !== 0) return
+    const idle = getArkamonAnimationAsset(5, 'front', 'idle')
+    if (!idle) return
+    const durationMs = idle.durationMs ?? idle.frameCount / idle.fps * 1000
     const timer = window.setTimeout(() => {
-      setRun((current) => ({ animation: 'idle', id: current.id + 1, sequenceIndex: null }))
-    }, ACTION_DURATION_MS[run.animation])
+      setRun((current) => current.id !== run.id ? current : {
+        animation: ACTION_SEQUENCE[1], id: current.id + 1, sequenceIndex: 1,
+      })
+    }, durationMs)
     return () => window.clearTimeout(timer)
   }, [run.animation, run.id, run.sequenceIndex])
+
+  const onAnimationComplete = useCallback((animation: ArkamonBattleAnimation, replayKey: number) => {
+    setRun((current) => {
+      if (current.id !== replayKey || current.animation !== animation || animation === 'idle') return current
+      if (current.sequenceIndex !== null) {
+        const nextIndex = current.sequenceIndex + 1
+        return nextIndex < ACTION_SEQUENCE.length
+          ? { animation: ACTION_SEQUENCE[nextIndex], id: current.id + 1, sequenceIndex: nextIndex }
+          : { ...current, sequenceIndex: null }
+      }
+      return animation === 'ko' ? current : { animation: 'idle', id: current.id + 1, sequenceIndex: null }
+    })
+  }, [])
 
   const playAction = (animation: ArkamonBattleAnimation) => {
     setRun((current) => ({ animation, id: current.id + 1, sequenceIndex: null }))
@@ -86,7 +91,7 @@ export function DarklawAnimationLab() {
           <div>
             <p className="darklaw-lab__eyebrow">Arkamon · Anteprima animazione</p>
             <h1>Darklaw prende vita<span aria-hidden="true">.</span></h1>
-            <p className="darklaw-lab__intro">Confronta la posa originale con il nuovo movimento di attesa, poi prova le azioni di battaglia.</p>
+            <p className="darklaw-lab__intro">Confronta la posa originale con i nuovi filmati di Darklaw: attesa, attacco, colpito, vittoria e KO.</p>
           </div>
           <a className="darklaw-lab__back" href={`${window.location.pathname}${window.location.search}`}>Torna al gioco <span aria-hidden="true">↗</span></a>
         </header>
@@ -117,10 +122,10 @@ export function DarklawAnimationLab() {
               <button type="button" aria-pressed={side === 'back'} onClick={() => selectSide('back')}>Retro</button>
             </div>
           </fieldset>
-          <p className="darklaw-lab__settings-note">{side === 'front' ? 'Stessa dimensione di visualizzazione.' : 'Il retro usa lo sprite statico esistente.'}</p>
+          <p className="darklaw-lab__settings-note">{side === 'front' ? 'Stessa dimensione di visualizzazione, limitata allo spazio disponibile.' : 'Il retro usa lo sprite statico esistente.'}</p>
         </section>
 
-        <div className="darklaw-lab__comparison" data-preview-side={side} data-preview-background={background} data-preview-scale={scale}>
+        <div className="darklaw-lab__comparison" style={comparisonStyle} data-preview-side={side} data-preview-background={background} data-preview-scale={scale}>
           <section className="darklaw-lab__card" aria-labelledby="darklaw-static-title">
             <div className="darklaw-lab__card-heading">
               <div><p className="darklaw-lab__card-kicker">Riferimento</p><h2 id="darklaw-static-title">Posa originale</h2></div>
@@ -131,7 +136,6 @@ export function DarklawAnimationLab() {
               <div className="darklaw-lab__sprite-slot" role="img" aria-label={`Darklaw, posa originale ${side === 'front' ? 'frontale' : 'di retro'}`}>
                 <ArkamonBattleSprite speciesId={5} name="Darklaw" side={side} animation="idle" animationEnabled={false} scale={scale} className="darklaw-lab__sprite" />
               </div>
-              <span className="darklaw-lab__baseline" aria-hidden="true" />
             </div>
             <p className="darklaw-lab__card-note">La posa di riferimento resta ferma per facilitare il confronto.</p>
           </section>
@@ -144,11 +148,10 @@ export function DarklawAnimationLab() {
             <div className={`darklaw-lab__stage darklaw-lab__stage--${background}`} style={stageStyle} data-preview-card="animated" data-preview-animation={run.animation}>
               <span className="darklaw-lab__stage-caption">Darklaw <span aria-hidden="true">/</span> {side === 'front' ? 'Frontale' : 'Retro'}</span>
               <div className="darklaw-lab__sprite-slot" role="img" aria-label={`Darklaw ${side === 'front' ? `animato, ${currentAction.label}` : 'di retro, sprite statico esistente'}`}>
-                <ArkamonBattleSprite key={side} speciesId={5} name="Darklaw" side={side} animation={run.animation} animationEnabled={side === 'front'} replayKey={run.id} scale={scale} className="darklaw-lab__sprite" />
+                <ArkamonBattleSprite key={side} speciesId={5} name="Darklaw" side={side} animation={run.animation} animationEnabled={side === 'front'} replayKey={run.id} finishActionBeforeIdle={false} onAnimationComplete={onAnimationComplete} scale={scale} className="darklaw-lab__sprite" />
               </div>
-              <span className="darklaw-lab__baseline" aria-hidden="true" />
             </div>
-            <p className="darklaw-lab__card-note">{side === 'front' ? 'Il movimento di attesa continua durante le azioni di battaglia.' : 'Questa prova riguarda il frontale. Il retro conserva la posa originale.'}</p>
+            <p className="darklaw-lab__card-note">{side === 'front' ? 'Ogni azione riproduce il filmato completo. Il KO mantiene l’esito della dissoluzione.' : 'Questa prova riguarda il frontale. Il retro conserva la posa originale.'}</p>
           </section>
         </div>
 

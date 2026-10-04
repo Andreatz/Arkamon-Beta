@@ -16,6 +16,10 @@ export interface AnimatedSpriteProps {
   loop?: boolean
   /** Hold the current frame without scheduling playback. */
   paused?: boolean
+  /** Replay a one-shot without replacing its loaded DOM element. */
+  replayKey?: number
+  /** Begin the clock only after the sheet is ready to display. */
+  waitForLoad?: boolean
   className?: string
   style?: CSSProperties
   onComplete?: () => void
@@ -55,6 +59,8 @@ export function AnimatedSprite({
   durationMs,
   loop = false,
   paused = false,
+  replayKey = 0,
+  waitForLoad = false,
   className,
   style,
   onComplete,
@@ -62,19 +68,41 @@ export function AnimatedSprite({
 }: AnimatedSpriteProps) {
   const playbackId = useId()
   const [frame, setFrame] = useState(0)
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null)
+  const [finished, setFinished] = useState(false)
+  const [frameIdentity, setFrameIdentity] = useState(() => ({ src, replayKey }))
   const completeRef = useRef(false)
+  const onCompleteRef = useRef(onComplete)
+  const onErrorRef = useRef(onError)
+  const ready = !waitForLoad || loadedSrc === src
+
+  // A new source or replay starts at its own first frame before it can paint.
+  if (frameIdentity.src !== src || frameIdentity.replayKey !== replayKey) {
+    setFrameIdentity({ src, replayKey })
+    setFrame(0)
+    setFinished(false)
+  }
+
+  useEffect(() => { onCompleteRef.current = onComplete }, [onComplete])
+  useEffect(() => { onErrorRef.current = onError }, [onError])
 
   useEffect(() => {
     const image = new Image()
+    let active = true
+    const loaded = () => { if (active) setLoadedSrc(src) }
+    image.onload = loaded
+    image.onerror = () => { if (active) onErrorRef.current?.() }
     image.src = src
-    image.onerror = () => onError?.()
+    if (image.complete && image.naturalWidth > 0) loaded()
     return () => {
+      active = false
+      image.onload = null
       image.onerror = null
     }
-  }, [onError, src])
+  }, [src])
 
   useEffect(() => {
-    if (paused) return
+    if (paused || !ready) return
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const totalFrames = Math.max(1, columns * rows)
     const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
@@ -89,12 +117,14 @@ export function AnimatedSprite({
     let startTime: number | null = null
 
     completeRef.current = false
+    setFinished(false)
     setFrame(0)
 
     const complete = () => {
       if (completeRef.current) return
       completeRef.current = true
-      onComplete?.()
+      setFinished(true)
+      onCompleteRef.current?.()
     }
 
     if (reducedMotion) {
@@ -131,7 +161,7 @@ export function AnimatedSprite({
       mounted = false
       cancelAnimationFrame(animationFrame)
     }
-  }, [columns, durationMs, fps, frameCount, loop, onComplete, paused, rows, startFrame])
+  }, [columns, durationMs, fps, frameCount, loop, paused, ready, replayKey, rows, src, startFrame])
 
   const totalFrames = Math.max(1, columns * rows)
   const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
@@ -154,6 +184,10 @@ export function AnimatedSprite({
       data-sprite-frame={absoluteFrame}
       data-sprite-instance={playbackId}
       data-sprite-paused={paused}
+      data-sprite-ready={ready}
+      data-sprite-fps={fps}
+      data-sprite-frame-count={frameCount}
+      data-sprite-playback={!ready ? 'loading' : paused ? 'paused' : finished ? 'complete' : 'playing'}
       style={{
         width: responsive ? '100%' : width,
         height: responsive ? '100%' : height,

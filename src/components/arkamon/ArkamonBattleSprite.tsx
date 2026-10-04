@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import {
   motion,
   useAnimation,
@@ -10,9 +10,10 @@ import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '@/components/vfx/AnimatedSprite'
 import {
   resolveArkamonAnimationAsset,
+  getArkamonAnimationAsset,
+  getArkamonAnimationDurationMs,
   type ArkamonBattleAnimation,
   type ArkamonSpriteSide,
-  type ResolvedArkamonAnimation,
 } from './arkamonAnimationManifest'
 import { getArkamonMotionProfile } from './arkamonMotionProfiles'
 
@@ -33,35 +34,15 @@ function getProceduralMotion(
   }
 
   switch (animation) {
-    case 'physical':
+    case 'attack':
       return {
         animate: {
-          x: [0, direction * profile.physicalDistance, 0],
-          y: [0, -profile.physicalLift, 0],
-          rotate: [0, direction * profile.physicalTilt, 0],
-          scale: [1, profile.physicalScale, 1],
+          x: [0, direction * profile.attackDistance, 0],
+          y: [0, -profile.attackLift, 0],
+          rotate: [0, direction * profile.attackTilt, 0],
+          scale: [1, profile.attackScale, 1],
         },
         transition: { duration: 0.46, ease: 'easeInOut' },
-      }
-
-    case 'special':
-      return {
-        animate: {
-          y: [0, -profile.specialLift, 0],
-          rotate: [
-            0,
-            direction * profile.specialTilt,
-            -direction * profile.specialTilt * 0.65,
-            0,
-          ],
-          scale: [1, profile.specialScale, 1],
-          filter: [
-            'brightness(1) drop-shadow(0 0 0 transparent)',
-            `brightness(1.28) drop-shadow(0 0 18px ${profile.specialGlow})`,
-            'brightness(1) drop-shadow(0 0 0 transparent)',
-          ],
-        },
-        transition: { duration: 0.72, ease: 'easeInOut' },
       }
 
     case 'hit':
@@ -126,6 +107,36 @@ function getProceduralMotion(
   }
 }
 
+export interface ArkamonPlaybackState {
+  animation: ArkamonBattleAnimation
+  replayKey: number
+  generation: number
+  requestedAnimation: ArkamonBattleAnimation
+  requestedReplayKey: number
+  completed: boolean
+}
+
+/** Ignore an early idle request while a dedicated action is still playing. */
+export function requestArkamonPlayback(
+  current: ArkamonPlaybackState,
+  animation: ArkamonBattleAnimation,
+  replayKey: number,
+  holdCurrentClip: boolean
+): ArkamonPlaybackState {
+  if (current.requestedAnimation === animation && current.requestedReplayKey === replayKey) return current
+  const requested = { requestedAnimation: animation, requestedReplayKey: replayKey }
+  if (animation === 'idle' && holdCurrentClip && !current.completed) return { ...current, ...requested }
+  return { ...current, ...requested, animation, replayKey, generation: current.generation + 1, completed: false }
+}
+
+/** A generation guard prevents a finished or interrupted clip from changing a newer one. */
+export function completeArkamonPlayback(current: ArkamonPlaybackState, generation: number): ArkamonPlaybackState {
+  if (current.generation !== generation || current.completed || current.animation === 'idle') return current
+  return current.animation === 'ko'
+    ? { ...current, completed: true }
+    : { ...current, animation: 'idle', generation: current.generation + 1, completed: false }
+}
+
 export function ArkamonBattleSprite({
   speciesId,
   name,
@@ -133,9 +144,11 @@ export function ArkamonBattleSprite({
   animation,
   scale = 1,
   animationEnabled = true,
+  finishActionBeforeIdle = true,
   replayKey = 0,
   className = '',
   onError,
+  onAnimationComplete,
 }: {
   speciesId: number
   name: string
@@ -143,9 +156,12 @@ export function ArkamonBattleSprite({
   animation: ArkamonBattleAnimation
   scale?: number
   animationEnabled?: boolean
+  /** Battle feedback can request idle early; a manual preview may interrupt it. */
+  finishActionBeforeIdle?: boolean
   replayKey?: number
   className?: string
   onError?: () => void
+  onAnimationComplete?: (animation: ArkamonBattleAnimation, replayKey: number) => void
 }) {
   const reduceMotion = useReducedMotion()
   const resolved = animationEnabled ? resolveArkamonAnimationAsset(speciesId, side, animation) : undefined
@@ -164,15 +180,16 @@ export function ArkamonBattleSprite({
         data-arkamon-animation={animation}
       >
         <AnimatedArkamonVisual
-          key={`${speciesId}:${side}:${resolved.asset.src}`}
+          key={`${speciesId}:${side}`}
           speciesId={speciesId}
           side={side}
           animation={animation}
-          resolved={resolved}
           animationEnabled={animationEnabled}
+          finishActionBeforeIdle={finishActionBeforeIdle}
           replayKey={replayKey}
           reduceMotion={!!reduceMotion}
           onError={onError}
+          onAnimationComplete={onAnimationComplete}
         />
       </div>
     )
@@ -202,39 +219,93 @@ export function ArkamonBattleSprite({
   )
 }
 
-/** The key above scopes a failed sheet to its species, view, and source. */
+/** Keep playback within this creature/view even when the battle's feedback timer ends. */
 function AnimatedArkamonVisual({
   speciesId,
   side,
   animation,
-  resolved,
   animationEnabled,
+  finishActionBeforeIdle,
   replayKey,
   reduceMotion,
   onError,
+  onAnimationComplete,
 }: {
   speciesId: number
   side: ArkamonSpriteSide
   animation: ArkamonBattleAnimation
-  resolved: ResolvedArkamonAnimation
   animationEnabled: boolean
+  finishActionBeforeIdle: boolean
   replayKey: number
   reduceMotion: boolean
   onError?: () => void
+  onAnimationComplete?: (animation: ArkamonBattleAnimation, replayKey: number) => void
 }) {
-  const [sheetFailed, setSheetFailed] = useState(false)
-  const controls = useAnimation()
-  const onSheetError = useCallback(() => setSheetFailed(true), [])
+  const [run, setRun] = useState<ArkamonPlaybackState>(() => ({
+    animation, replayKey, generation: 0,
+    requestedAnimation: animation, requestedReplayKey: replayKey, completed: false,
+  }))
+  const currentAsset = getArkamonAnimationAsset(speciesId, side, run.animation)
+  const dedicatedOneShot = run.animation !== 'idle' && !!currentAsset && !currentAsset.loop
+  const requestedRun = requestArkamonPlayback(run, animation, replayKey, dedicatedOneShot && finishActionBeforeIdle)
+  // Updating during render makes a new action visible immediately, including KO.
+  if (requestedRun !== run) setRun(requestedRun)
+
+  const resolved = resolveArkamonAnimationAsset(speciesId, side, run.animation)!
   const animated = resolved.asset
-  const aspect = animated.width / animated.height
-  const paused = !animationEnabled || reduceMotion || (animation === 'ko' && resolved.isIdleFallback)
+  const [failedSource, setFailedSource] = useState<string | null>(null)
+  const sheetFailed = failedSource === animated.src
+  const controls = useAnimation()
+  const onSheetError = useCallback(() => setFailedSource(animated.src), [animated.src])
+  const runRef = useRef(run)
+  runRef.current = run
+  const mountedRef = useRef(true)
+  const completionCallbackRef = useRef(onAnimationComplete)
+  completionCallbackRef.current = onAnimationComplete
+  const onClipComplete = useCallback(() => {
+    const current = runRef.current
+    const next = completeArkamonPlayback(current, run.generation)
+    if (!mountedRef.current || next === current) return
+    runRef.current = next
+    setRun(next)
+    completionCallbackRef.current?.(current.animation, current.replayKey)
+  }, [run.generation])
+  const onFallbackError = useCallback(() => {
+    if (dedicatedOneShot) onClipComplete()
+    onError?.()
+  }, [dedicatedOneShot, onClipComplete, onError])
+
+  useEffect(() => {
+    mountedRef.current = true
+    return () => { mountedRef.current = false }
+  }, [])
+
+  useEffect(() => { setFailedSource(null) }, [animated.src])
+
+  const clipDurationMs = getArkamonAnimationDurationMs(speciesId, side, run.animation)
+  useEffect(() => {
+    if (!dedicatedOneShot || run.completed) return
+    if (reduceMotion) {
+      onClipComplete()
+      return
+    }
+    // An unavailable sheet still completes its static fallback and cannot trap the view.
+    if (sheetFailed) {
+      const timer = window.setTimeout(onClipComplete, clipDurationMs)
+      return () => window.clearTimeout(timer)
+    }
+  }, [dedicatedOneShot, run.completed, reduceMotion, sheetFailed, clipDurationMs, onClipComplete])
+
+  const viewport = animated.viewport ?? { width: animated.width, height: animated.height, left: 0, top: 0 }
+  const aspect = viewport.width / viewport.height
+  const paused = !animationEnabled || reduceMotion || (run.animation === 'ko' && resolved.isIdleFallback)
   const useProcedural = sheetFailed || resolved.isIdleFallback
   const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
 
   useEffect(() => {
-    const neutral = getProceduralMotion(speciesId, side, animation, true)
+    const neutral = getProceduralMotion(speciesId, side, run.animation, true)
     if (useProcedural) {
-      const procedural = getProceduralMotion(speciesId, side, animation, reduceMotion || !animationEnabled)
+      const procedural = getProceduralMotion(speciesId, side, run.animation, reduceMotion || !animationEnabled)
       // Replay only the action transform; the mounted idle player keeps its phase.
       void controls.start({
         ...neutral.animate,
@@ -245,7 +316,7 @@ function AnimatedArkamonVisual({
       controls.set(neutral.animate)
     }
     return () => controls.stop()
-  }, [controls, speciesId, side, animation, reduceMotion, animationEnabled, useProcedural, replayKey])
+  }, [controls, speciesId, side, run.animation, reduceMotion, animationEnabled, useProcedural, run.replayKey])
 
   return (
     <motion.div
@@ -255,12 +326,16 @@ function AnimatedArkamonVisual({
         height: `min(100cqh, ${100 / aspect}cqw)`,
         aspectRatio: String(aspect),
         transformOrigin: 'center bottom',
+        position: 'relative',
+        overflow: 'visible',
       }}
       animate={controls}
       data-arkamon-renderer={sheetFailed ? 'procedural' : 'sprite-sheet'}
       data-arkamon-asset-animation={resolved.animation}
+      data-arkamon-active-animation={run.animation}
+      data-arkamon-replay-key={run.replayKey}
       data-arkamon-motion={useProcedural ? 'procedural' : 'none'}
-      data-arkamon-playback={paused ? 'paused' : 'playing'}
+      data-arkamon-playback={paused ? 'paused' : run.completed ? 'complete' : 'playing'}
     >
       {sheetFailed ? (
         <img
@@ -268,7 +343,7 @@ function AnimatedArkamonVisual({
           alt=""
           aria-hidden="true"
           className="h-full w-full object-contain"
-          onError={onError}
+          onError={onFallbackError}
           draggable={false}
         />
       ) : (
@@ -278,8 +353,10 @@ function AnimatedArkamonVisual({
           frameHeight={animated.frameHeight}
           columns={animated.columns}
           rows={animated.rows}
-          frameCount={animated.frameCount}
-          startFrame={animated.startFrame}
+          frameCount={reduceMotion && run.animation === 'ko' ? 1 : animated.frameCount}
+          startFrame={reduceMotion && run.animation === 'ko'
+            ? (animated.startFrame ?? 0) + animated.frameCount - 1
+            : animated.startFrame}
           fps={animated.fps}
           width={animated.width}
           height={animated.height}
@@ -287,7 +364,17 @@ function AnimatedArkamonVisual({
           loop={animated.loop ?? resolved.animation === 'idle'}
           responsive
           paused={paused}
+          replayKey={run.generation}
+          waitForLoad
+          onComplete={dedicatedOneShot ? onClipComplete : undefined}
           onError={onSheetError}
+          style={animated.viewport ? {
+            position: 'absolute',
+            width: `${animated.frameWidth / viewport.width * 100}%`,
+            height: `${animated.frameHeight / viewport.height * 100}%`,
+            left: `${-viewport.left / viewport.width * 100}%`,
+            top: `${-viewport.top / viewport.height * 100}%`,
+          } : undefined}
         />
       )}
     </motion.div>
