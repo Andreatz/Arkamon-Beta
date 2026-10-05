@@ -15,23 +15,31 @@ asset del catalogo generato. Non modificare `generatedVfxAssets.ts` a mano.
 
 Le immagini hanno trasparenza RGBA reale. Il pannello usa la composizione
 normale, senza anchor, offset amministrativi o specchiatura dell'avversario.
-I dadi partono insieme, così anche i lanci da 20 dadi terminano entro la
-finestra esistente di 2.000 ms. La griglia adatta dimensioni e colonne al
-numero di dadi e alla larghezza disponibile.
+I dadi partono insieme. La griglia adatta dimensioni e colonne al numero di
+dadi e alla larghezza disponibile.
 
-La rappresentazione non genera numeri casuali e non controlla la prosecuzione
-del turno: usa esclusivamente `RisultatoMossa.tiriDado`. Danno, incrementi,
-sequenza mossa/impatto/risultati e timer di battaglia restano quelli del motore.
+La rappresentazione non genera numeri casuali: usa esclusivamente
+`RisultatoMossa.tiriDado`. Danno e incrementi restano quelli del motore.
+La barra salute conserva il valore precedente durante la mossa e il VFX.
+Quando tutti i dadi hanno mostrato il primo fotogramma del proprio risultato
+e il pannello ha completato l'ingresso, un passaggio di disegno sblocca insieme
+il calo della barra e la scritta "Danno finale". I due secondi di permanenza
+del pannello iniziano da questa comparsa effettiva, così un'immagine lenta non
+fa sparire i dadi prima che siano leggibili. Lo stato risolto del Pokémon può
+già avviare il KO all'impatto: soltanto gli HP mostrati restano in attesa.
 Le immagini vengono precaricate entrando in battaglia. Se un caricamento
 fallisce, compare il valore numerico senza interrompere l'azione. Con movimento
-ridotto viene mostrato direttamente il risultato finale.
+ridotto viene mostrato direttamente il risultato finale, dopo il caricamento.
+Il valore numerico alternativo usa lo stesso segnale di visibilità. Lanci
+senza dadi e callback ripetuti o relativi a un vecchio lancio non bloccano il turno.
 
 ## Anteprima e verifica
 
 In sviluppo aprire `http://localhost:3000/#dice-lab`. L'anteprima usa lo stesso
 componente della battaglia, con risultati fissi, scelta del lato, riproduzione
 e simulazione delle immagini mancanti. Non cambia la partita. Il risultato
-resta visibile nell'anteprima; in battaglia il pannello si chiude dopo 2 secondi.
+resta visibile nell'anteprima; in battaglia il pannello si chiude 2 secondi dopo
+la comparsa dei risultati.
 
 Validazione del 3 ottobre 2026:
 

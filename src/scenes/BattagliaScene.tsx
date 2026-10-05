@@ -136,8 +136,18 @@ export function BattagliaScene() {
   const [squadraB, setSquadraB] = useState<PokemonIstanza[]>([])
   const [infoBoxMessaggi, setInfoBoxMessaggi] = useState<string[]>([])
   const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
+  const [pendingHealth, setPendingHealth] = useState<{
+    side: 'A' | 'B'
+    instanceId: string
+    hp: number
+  } | null>(null)
   const diceRollTimerRef = useRef<number | null>(null)
   const diceRollIdRef = useRef(0)
+  const diceRollCallbacksRef = useRef<{
+    id: number
+    onVisible: () => void
+    onComplete: () => void
+  } | null>(null)
   const [impactPulse, setImpactPulse] = useState<ImpactPulseDisplay | null>(null)
   const impactPulseIdRef = useRef(0)
   const [moveVfx, setMoveVfx] = useState<MoveVfxEvent | null>(null)
@@ -253,6 +263,7 @@ export function BattagliaScene() {
       if (diceRollTimerRef.current !== null) {
         window.clearTimeout(diceRollTimerRef.current)
       }
+      diceRollCallbacksRef.current = null
       activePlaybackRef.current?.cancel()
       activePlaybackRef.current = null
       moveVfxCallbacksRef.current = null
@@ -285,24 +296,36 @@ export function BattagliaScene() {
   const mostraLancioDadi = (
     risultato: RisultatoMossa,
     side: 'A' | 'B',
+    onVisible: () => void,
     onComplete: () => void
   ) => {
     if (diceRollTimerRef.current !== null) {
       window.clearTimeout(diceRollTimerRef.current)
+      diceRollTimerRef.current = null
     }
 
+    const id = ++diceRollIdRef.current
+    diceRollCallbacksRef.current = { id, onVisible, onComplete }
     setDiceRoll({
-      id: ++diceRollIdRef.current,
+      id,
       side,
       moveName: risultato.mossa.nome,
       rolls: risultato.tiriDado,
       increment: risultato.incremento,
       damage: risultato.dannoFinale,
     })
+  }
+
+  const revealLancioDadi = (id: number) => {
+    const callbacks = diceRollCallbacksRef.current
+    if (!callbacks || callbacks.id !== id || diceRollTimerRef.current !== null) return
+    callbacks.onVisible()
     diceRollTimerRef.current = window.setTimeout(() => {
+      if (diceRollCallbacksRef.current !== callbacks) return
       setDiceRoll(null)
       diceRollTimerRef.current = null
-      onComplete()
+      diceRollCallbacksRef.current = null
+      callbacks.onComplete()
     }, BATTLE_DICE_ROLL_VISIBLE_MS)
   }
 
@@ -518,6 +541,8 @@ export function BattagliaScene() {
     setAzioneInCorso(true)
     const feedback = getMoveVfxFeedback(risultato.mossa)
     const target = targetSide === 'A' ? pkmnA : pkmnB
+    // Keep the bar at its pre-attack HP while resolved HP can start a native KO.
+    setPendingHealth(target ? { side: targetSide, instanceId: target.istanzaId, hp: target.hp } : null)
     const targetAnimation = target && target.hp <= risultato.dannoFinale ? 'ko' : 'hit'
     const targetHasHit = target && !!getArkamonAnimationAsset(target.specieId, targetSide === 'A' ? 'back' : 'front', 'hit')
     playMoveVisuals(risultato.mossa, side, targetSide, targetAnimation, () => {
@@ -536,7 +561,7 @@ export function BattagliaScene() {
       }, 560)
 
     }, () => {
-      mostraLancioDadi(risultato, side, () => {
+      mostraLancioDadi(risultato, side, () => setPendingHealth(null), () => {
         onComplete()
         actionInProgressRef.current = false
         setAzioneInCorso(false)
@@ -1120,7 +1145,9 @@ export function BattagliaScene() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {diceRoll && <DiceRollOverlay key={diceRoll.id} roll={diceRoll} />}
+        {diceRoll && (
+          <DiceRollOverlay key={diceRoll.id} roll={diceRoll} onVisible={() => revealLancioDadi(diceRoll.id)} />
+        )}
       </AnimatePresence>
 
       {isNPC && (
@@ -1210,7 +1237,7 @@ export function BattagliaScene() {
         <HpBar
           nome={pkmnB.nome}
           livello={pkmnB.livello}
-          hp={pkmnB.hp}
+          hp={pendingHealth?.side === 'B' && pendingHealth.instanceId === pkmnB.istanzaId ? pendingHealth.hp : pkmnB.hp}
           hpMax={hpMaxB}
           stato={pkmnB.stato?.tipo}
           side="enemy"
@@ -1227,7 +1254,7 @@ export function BattagliaScene() {
         <HpBar
           nome={pkmnA.nome}
           livello={pkmnA.livello}
-          hp={pkmnA.hp}
+          hp={pendingHealth?.side === 'A' && pendingHealth.instanceId === pkmnA.istanzaId ? pendingHealth.hp : pkmnA.hp}
           hpMax={hpMaxA}
           stato={pkmnA.stato?.tipo}
           side="player"
@@ -1842,6 +1869,8 @@ function HpBar({
   return (
     <div
       className={`arka-battle-font relative z-20 h-full w-full text-white arka-letter-outline ${className}`}
+      data-battle-hp-side={side}
+      data-battle-hp={hp}
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',

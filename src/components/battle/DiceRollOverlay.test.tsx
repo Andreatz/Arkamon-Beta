@@ -15,7 +15,7 @@ function rollWith(rolls: number[], overrides: Partial<DiceRollDisplay> = {}): Di
 }
 
 describe('battle dice overlay', () => {
-  it('displays every engine result, the increment and the final damage without recalculating them', () => {
+  it('preserves engine values while withholding final damage before dice are displayed', () => {
     const markup = renderToStaticMarkup(
       <DiceRollOverlay roll={rollWith([1, 2, 3, 4, 5, 6], { damage: 14 })} />,
     )
@@ -26,7 +26,8 @@ describe('battle dice overlay', () => {
       expect(markup).toContain(`aria-label="Dado: ${value}"`)
     }
     expect(markup).toContain('Dadi: 1 + 2 + 3 + 4 + 5 + 6 + 2 = 23')
-    expect(markup).toContain('Danno finale: 14')
+    expect(markup).not.toContain('Danno finale')
+    expect(markup).toContain('data-dice-revealed="false"')
     expect(markup.match(/class="battle-die-frames"/g)).toHaveLength(6)
   })
 
@@ -43,7 +44,7 @@ describe('battle dice overlay', () => {
         .toHaveLength(expectedCount)
     }
     expect(markup).toContain(`Dadi: ${rolls.join(' + ')} + 4 = 70`)
-    expect(markup).toContain('Danno finale: 100')
+    expect(markup).not.toContain('Danno finale')
     expect(markup).toContain('--battle-dice-columns:6')
     expect(markup).toContain('--battle-dice-mobile-columns:4')
   })
@@ -61,6 +62,6 @@ describe('battle dice overlay', () => {
     expect(markup.match(/class="battle-die-fallback"/g)).toHaveLength(2)
     expect(markup).not.toContain('battle-die-frames')
     expect(markup).toContain('Dadi: 2 + 6 + 1 = 9')
-    expect(markup).toContain('Danno finale: 5')
+    expect(markup).not.toContain('Danno finale')
   })
 })

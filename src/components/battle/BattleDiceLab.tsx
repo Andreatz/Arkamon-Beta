@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from '@/utils/assetUrl'
 import { preloadVfxAssets } from '../vfx/preloadVfxAssets'
 import { DiceRollOverlay, type DiceRollDisplay } from './DiceRollOverlay'
@@ -25,16 +25,25 @@ export function BattleDiceLab() {
   const [forceFallback, setForceFallback] = useState(false)
   const [run, setRun] = useState<PreviewRun | null>(null)
   const [playing, setPlaying] = useState(false)
+  const visibleTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
     preloadVfxAssets(Object.values(BATTLE_DICE_ASSET_IDS))
   }, [])
 
   useEffect(() => {
-    if (!run) return
-    const timer = window.setTimeout(() => setPlaying(false), BATTLE_DICE_ROLL_VISIBLE_MS)
-    return () => window.clearTimeout(timer)
-  }, [run])
+    return () => {
+      if (visibleTimerRef.current !== null) window.clearTimeout(visibleTimerRef.current)
+    }
+  }, [])
+
+  const diceVisible = () => {
+    if (visibleTimerRef.current !== null) return
+    visibleTimerRef.current = window.setTimeout(() => {
+      visibleTimerRef.current = null
+      setPlaying(false)
+    }, BATTLE_DICE_ROLL_VISIBLE_MS)
+  }
 
   const replay = () => {
     if (playing) return
@@ -133,7 +142,7 @@ export function BattleDiceLab() {
           <img src={assetUrl('/backgrounds/battle_forest.jpg')} alt="" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-slate-950/25" />
           {run ? (
-            <DiceRollOverlay key={run.roll.id} roll={run.roll} forceFallback={run.forceFallback} />
+            <DiceRollOverlay key={run.roll.id} roll={run.roll} forceFallback={run.forceFallback} onVisible={diceVisible} />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
               <img src={assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" className="h-auto w-64 max-w-[65%] object-contain" />

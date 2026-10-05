@@ -1,9 +1,12 @@
-import { useCallback, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '../vfx/AnimatedSprite'
 import { getBattleDiceSequence } from './battleDiceAssets'
+import { createBattleDiceReveal } from './battleDiceReveal'
 import './battleDice.css'
+
+const useDiceLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
 export interface DiceRollDisplay {
   id: number
@@ -14,11 +17,49 @@ export interface DiceRollDisplay {
   damage: number
 }
 
-export function DiceRollOverlay({ roll, forceFallback = false }: {
+interface DiceRollOverlayProps {
   roll: DiceRollDisplay
   forceFallback?: boolean
-}) {
+  onVisible?: () => void
+}
+
+export function DiceRollOverlay(props: DiceRollOverlayProps) {
+  return <DiceRollPresentation key={props.roll.id} {...props} />
+}
+
+function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRollOverlayProps) {
   const reducedMotion = Boolean(useReducedMotion())
+  const [damageVisible, setDamageVisible] = useState(false)
+  const revealRef = useRef<ReturnType<typeof createBattleDiceReveal> | null>(null)
+  const onVisibleRef = useRef(onVisible)
+  onVisibleRef.current = onVisible
+  const diceCount = roll.rolls.length
+
+  useDiceLayoutEffect(() => {
+    const reveal = createBattleDiceReveal({
+      diceCount,
+      scheduleAfterPaint: (callback) => {
+        let secondFrame = 0
+        const firstFrame = requestAnimationFrame(() => {
+          secondFrame = requestAnimationFrame(callback)
+        })
+        return () => {
+          cancelAnimationFrame(firstFrame)
+          cancelAnimationFrame(secondFrame)
+        }
+      },
+      onReveal: () => {
+        setDamageVisible(true)
+        onVisibleRef.current?.()
+      },
+    })
+    revealRef.current = reveal
+    if (reducedMotion) reveal.panelVisible()
+    return () => {
+      reveal.cancel()
+      if (revealRef.current === reveal) revealRef.current = null
+    }
+  }, [diceCount, reducedMotion])
   const total = roll.rolls.reduce((sum, value) => sum + value, 0)
   const gridStyle = {
     '--battle-dice-columns': Math.max(1, Math.min(roll.rolls.length, 6)),
@@ -28,12 +69,17 @@ export function DiceRollOverlay({ roll, forceFallback = false }: {
   } as CSSProperties
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center">
+    <div
+      className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
+      data-dice-roll-id={roll.id}
+      data-dice-revealed={damageVisible}
+    >
       <motion.div
         initial={reducedMotion ? false : { opacity: 0, scale: 0.88, y: -18 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 12 }}
         transition={{ duration: reducedMotion ? 0 : 0.22 }}
+        onAnimationComplete={() => revealRef.current?.panelVisible()}
         className="battle-dice-panel rounded-md border border-white/20 bg-slate-950/90 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
       >
         <p className="text-[11px] font-black uppercase text-blue-300 arka-letter-outline">
@@ -42,7 +88,12 @@ export function DiceRollOverlay({ roll, forceFallback = false }: {
         <h3 className="mt-1 text-lg font-black">{roll.moveName}</h3>
         <div className="battle-dice-grid" style={gridStyle}>
           {roll.rolls.map((value, index) => (
-            <BattleDie key={`${roll.id}-${index}-${value}`} value={value} forceFallback={forceFallback} />
+            <BattleDie
+              key={`${roll.id}-${index}-${value}`}
+              value={value}
+              forceFallback={forceFallback}
+              onVisible={() => revealRef.current?.dieVisible(index)}
+            />
           ))}
         </div>
         <p className="mt-3 text-xs font-bold leading-relaxed text-slate-200">
@@ -50,13 +101,21 @@ export function DiceRollOverlay({ roll, forceFallback = false }: {
           {roll.increment > 0 ? ` + ${roll.increment}` : ''}
           {' = '}{total + roll.increment}
         </p>
-        <p className="mt-1 text-base font-black text-rose-300">Danno finale: {roll.damage}</p>
+        <div className="mt-1 min-h-6" aria-live="polite">
+          {damageVisible ? (
+            <p className="text-base font-black text-rose-300">Danno finale: {roll.damage}</p>
+          ) : null}
+        </div>
       </motion.div>
     </div>
   )
 }
 
-function BattleDie({ value, forceFallback }: { value: number; forceFallback: boolean }) {
+function BattleDie({ value, forceFallback, onVisible }: {
+  value: number
+  forceFallback: boolean
+  onVisible: () => void
+}) {
   const [phase, setPhase] = useState<'intro' | 'result'>('intro')
   const [failed, setFailed] = useState(false)
   const reducedMotion = Boolean(useReducedMotion())
@@ -65,10 +124,20 @@ function BattleDie({ value, forceFallback }: { value: number; forceFallback: boo
   const sequence = getBattleDiceSequence(value)
   const showingResult = reducedMotion || phase === 'result'
   const segment = sequence && (showingResult ? sequence.result : sequence.intro)
+  const showingFallback = failed || forceFallback || !segment
+  const onVisibleRef = useRef(onVisible)
+  onVisibleRef.current = onVisible
+  const notifyVisible = useCallback(() => onVisibleRef.current(), [])
+
+  useEffect(() => {
+    if (!showingFallback) return
+    const frame = requestAnimationFrame(notifyVisible)
+    return () => cancelAnimationFrame(frame)
+  }, [showingFallback, notifyVisible])
 
   return (
     <div className="battle-die" role="img" aria-label={`Dado: ${value}`}>
-      {failed || forceFallback || !segment ? (
+      {showingFallback ? (
         <span className="battle-die-fallback" aria-hidden="true">{value}</span>
       ) : (
         <div className="battle-die-sprite">
@@ -81,6 +150,8 @@ function BattleDie({ value, forceFallback }: { value: number; forceFallback: boo
             responsive
             className="battle-die-frames"
             loop={false}
+            waitForLoad
+            onStart={showingResult ? notifyVisible : undefined}
             onComplete={showingResult ? undefined : revealResult}
             onError={showFallback}
           />

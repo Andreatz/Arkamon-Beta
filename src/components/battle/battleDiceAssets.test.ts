@@ -77,7 +77,7 @@ describe('battle dice sprite sequences', () => {
     expect(durations.size).toBe(1)
   })
 
-  it('decodes the actual sheets and keeps every played region within the image grid with a visible final frame', async () => {
+  it('decodes sheets with visible first intro, first result and final result frames', async () => {
     for (let value = 1; value <= 6; value++) {
       const sequence = sequenceFor(value)
       for (const region of [sequence.intro, sequence.result]) {
@@ -95,6 +95,21 @@ describe('battle dice sprite sequences', () => {
         expect(sprite.frameCount).toBeGreaterThan(0)
         expect((sprite.startFrame ?? 0) + sprite.frameCount)
           .toBeLessThanOrEqual(sprite.columns * sprite.rows)
+
+        // Readiness must correspond to a visible die, including reduced-motion
+        // results that skip the rolling intro and start at the result segment.
+        const firstFrame = sprite.startFrame ?? 0
+        const firstAlpha = await sharp(path)
+          .extract({
+            left: (firstFrame % sprite.columns) * sprite.frameWidth,
+            top: Math.floor(firstFrame / sprite.columns) * sprite.frameHeight,
+            width: sprite.frameWidth,
+            height: sprite.frameHeight,
+          })
+          .extractChannel('alpha')
+          .raw()
+          .toBuffer()
+        expect(firstAlpha.some((pixel) => pixel > 0), `${region.src} first frame ${firstFrame}`).toBe(true)
       }
 
       const { src, sprite } = sequence.result
