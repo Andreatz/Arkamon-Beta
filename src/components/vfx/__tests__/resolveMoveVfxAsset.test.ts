@@ -3,7 +3,7 @@ import { MOSSE } from '@data/index'
 import type { MossaDef, TipoPokemon } from '@/types'
 import { useVfxAdminStore } from '@store/vfxAdminStore'
 import { getGifRuntimeSrc } from '../GifVfx'
-import { getMoveVfxDurationMs, resolveMoveVfxAsset } from '../resolveMoveVfxAsset'
+import { getMoveVfxDurationMs, getMoveVfxImpactDelayMs, resolveMoveVfxAsset } from '../resolveMoveVfxAsset'
 
 function move(
   id: number,
@@ -90,5 +90,58 @@ describe('resolveMoveVfxAsset', () => {
     expect(asset.layer).toBe('front-ui')
     expect(asset.mirrorForEnemy).toBe(false)
     expect(asset.blendMode).toBe('lighten')
+  })
+
+  it('aligns the hit with the shortened effect when an editor duration ends before its native impact', () => {
+    const configuredMove = MOSSE.find((entry) => entry.id === 31)!
+    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(563)
+    useVfxAdminStore.getState().setOverride({
+      moveId: 31,
+      assetId: 'moveset:031',
+      scale: 1,
+      offsetX: 0,
+      offsetY: 0,
+      durationMs: 250,
+      anchor: 'center',
+      layer: 'over-pokemon',
+      mirrorForEnemy: true,
+      blendMode: 'normal',
+    })
+    expect(getMoveVfxDurationMs(configuredMove)).toBe(250)
+    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(250)
+  })
+
+  it('keeps the original impact when an editor duration extends the effect', () => {
+    const configuredMove = MOSSE.find((entry) => entry.id === 31)!
+    useVfxAdminStore.getState().setOverride({
+      moveId: 31,
+      assetId: 'moveset:031',
+      scale: 1,
+      offsetX: 0,
+      offsetY: 0,
+      durationMs: 2000,
+      anchor: 'center',
+      layer: 'over-pokemon',
+      mirrorForEnemy: true,
+      blendMode: 'normal',
+    })
+    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(563)
+  })
+
+  it.each([0, -100, Number.NaN, Number.POSITIVE_INFINITY])('keeps the hit delay finite for an invalid editor duration (%s)', (durationMs) => {
+    const configuredMove = MOSSE.find((entry) => entry.id === 31)!
+    useVfxAdminStore.getState().setOverride({
+      moveId: 31,
+      assetId: 'moveset:031',
+      scale: 1,
+      offsetX: 0,
+      offsetY: 0,
+      durationMs,
+      anchor: 'center',
+      layer: 'over-pokemon',
+      mirrorForEnemy: true,
+      blendMode: 'normal',
+    })
+    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(0)
   })
 })

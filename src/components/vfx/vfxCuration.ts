@@ -1,4 +1,5 @@
 import type { MoveVfxAsset, VfxAnchor, VfxArchetype, VfxIntensity } from './types'
+import movesetCatalog from '../../../public/vfx/moves/ai-generated/catalog.json'
 
 export const VFX_CURATION_CATEGORIES = [
   'physical',
@@ -17,6 +18,8 @@ export const VFX_CURATION_CATEGORIES = [
   'aura',
   'screen',
   'supreme',
+  'plant',
+  'earth',
 ] as const
 
 export type VfxCurationCategory = typeof VFX_CURATION_CATEGORIES[number]
@@ -38,7 +41,48 @@ export interface VfxCurationEntry {
 
 // Reviewed selections and remaining candidates; reviewed entries are user-confirmed.
 // Keep editorial metadata here: generatedVfxAssets.ts belongs to the asset pipeline.
-export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
+const LEGACY_VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
+  // Second review round: proposals are preview-only until the user confirms them.
+  'generated:highmountain-img_effect_mitra_aura_f_2-images_nested_sheet': {
+    categories: ['fire', 'aura'],
+    priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'light',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Proposta Fuoco leggero: piccola fiamma verticale, sul bersaglio a 1.25×. Verificare la leggibilità della coda breve.',
+  },
+  'generated:basiceff-img_cannonjump-images_nested_sheet': {
+    categories: ['fire', 'impact'],
+    priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'medium',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Proposta Fuoco medio: esplosione verticale arancione, sul bersaglio a 1.25×. Animazione rapida (292 ms).',
+  },
+  'generated:highmountain-img_effect_mitra_aura_f_0-images_nested_sheet': {
+    categories: ['fire', 'impact'],
+    priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'heavy',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Proposta Fuoco forte: esplosione ampia con fiamme residue, sul bersaglio a 1.25×. Da confrontare con CannonJump.',
+  },
+  'gif:59ad165cefdf8a14f3b4e35ad7e8e8a8': {
+    categories: ['water'],
+    priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'medium',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Proposta Acqua medio: vortice circolare azzurro, sul bersaglio a 1.25×. Il fondo nero usa screen.',
+  },
+  'gif:shark-kick-effect': {
+    categories: ['water', 'slash'],
+    priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'heavy',
+    preview: { anchor: 'target', scaleMultiplier: 1.25 },
+    notes: 'Proposta Acqua forte: ampio arco acquatico con spruzzi e sagome di pinne, sul bersaglio a 1.25×. Valutare se riservarlo ai tagli Acqua. Fondo nero gestito con screen.',
+  },
   'generated:anglercompany-img_finalboss_minitail_hit-images_flat_sheet': {
     battleArchetype: 'psychic',
     categories: ['psychic', 'impact'],
@@ -172,11 +216,19 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
   },
   'generated:lynn-img_skill_heal_effect-images_nested_sheet': {
     categories: ['heal', 'aura'],
-    priority: 'preferred',
+    priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'medium',
+    preview: { anchor: 'self', scaleMultiplier: 1 },
+    notes: 'Proposta cura ampia: vegetazione e luce verde sull’utilizzatore, zoom 1×. Valutare se adatta a tutte le cure o solo a quelle Erba.',
   },
   'generated:lynn-img_skill_heal_specialaffected-images_nested_sheet': {
     categories: ['heal', 'buff'],
     priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'light',
+    preview: { anchor: 'self', scaleMultiplier: 1.25 },
+    notes: 'Proposta cura leggera: scie verdi sottili sull’utilizzatore, zoom 1.25×. Alternativa breve e meno vegetale a Heal Effect.',
   },
   'generated:lynn-img_skill_hithard_hit-images_nested_sheet': {
     battleArchetype: 'blunt',
@@ -199,7 +251,11 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
   },
   'generated:onusereff-img_eventeffect_watersmash1-images_nested_sheet': {
     categories: ['water', 'impact'],
-    priority: 'preferred',
+    priority: 'candidate',
+    recommendation: 'proposed',
+    intensity: 'light',
+    preview: { anchor: 'target', scaleMultiplier: 1.5 },
+    notes: 'Proposta Acqua leggero: piccolo impatto azzurro con gocce, sul bersaglio a 1.5×. La sorgente è compatta (130 × 114).',
   },
   'generated:basiceff-img_jobchangedkain-images_nested_sheet': {
     categories: ['aura', 'supreme'],
@@ -214,6 +270,24 @@ export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> =
     categories: ['screen', 'supreme'],
     priority: 'special',
   },
+}
+
+// The new sheets have passed asset review; their in-game calibration is still a
+// proposal. reviewed=true remains reserved for choices confirmed by the user.
+const MOVESET_VFX_CURATION: Record<string, VfxCurationEntry> = Object.fromEntries(
+  movesetCatalog.assets.map((entry) => [entry.id, {
+    categories: entry.categories as VfxCurationCategory[],
+    priority: 'candidate' as const,
+    recommendation: 'proposed' as const,
+    intensity: entry.intensity as VfxIntensity,
+    preview: { anchor: entry.anchor as VfxAnchor, scaleMultiplier: 1 },
+    notes: entry.notes,
+  }])
+)
+
+export const VFX_CURATION: Readonly<Partial<Record<string, VfxCurationEntry>>> = {
+  ...LEGACY_VFX_CURATION,
+  ...MOVESET_VFX_CURATION,
 }
 
 export function getVfxCuration(assetId: string): VfxCurationEntry | undefined {

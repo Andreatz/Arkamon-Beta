@@ -17,6 +17,7 @@ import type {
   AdminLayoutRect,
 } from '@/theme/adminThemeTypes'
 import { compactRoadPoints } from '@/utils/mainMapRoadGeometry'
+import { migrateDepositLayout } from '@/theme/depositLayoutMigration'
 import {
   cloneAdminTheme,
   defaultAdminTheme,
@@ -75,6 +76,7 @@ type SceneLayoutUpdate =
   | { scene: 'evolution'; key: AdminEvolutionLayoutKey; rect: AdminLayoutRect }
 
 interface AdminState {
+  defaultThemeRevision?: string
   enabled: boolean
   panelOpen: boolean
   layoutEditing: boolean
@@ -168,10 +170,7 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
         ...defaultLuogoLayout,
         ...theme?.layouts?.luogo,
       },
-      deposit: {
-        ...defaultDepositLayout,
-        ...theme?.layouts?.deposit,
-      },
+      deposit: migrateDepositLayout(theme?.layouts?.deposit),
       evolution: {
         ...defaultEvolutionLayout,
         ...theme?.layouts?.evolution,
@@ -187,6 +186,7 @@ export const useAdminStore = create<AdminState>()(
       panelOpen: false,
       layoutEditing: false,
       layoutUndoStack: [],
+      defaultThemeRevision: 'notte-viola-2026-10-05',
       theme: cloneAdminTheme(defaultAdminTheme),
 
       toggleEnabled: () =>
@@ -392,7 +392,8 @@ export const useAdminStore = create<AdminState>()(
       resetTheme: () =>
         set({
           layoutUndoStack: [],
-          theme: cloneAdminTheme(defaultAdminTheme),
+          defaultThemeRevision: 'notte-viola-2026-10-05',
+      theme: cloneAdminTheme(defaultAdminTheme),
         }),
 
       applyVisualTheme: (theme) =>
@@ -425,11 +426,15 @@ export const useAdminStore = create<AdminState>()(
       merge: (persisted, current) => {
         const saved = persisted as Partial<AdminState> | undefined
 
+        if (saved?.theme && saved.defaultThemeRevision !== 'notte-viola-2026-10-05') {
+          try { localStorage.setItem('arkamon-admin-theme-before-notte-viola', JSON.stringify(saved.theme)) } catch { /* Storage may be unavailable. */ }
+        }
         return {
           ...current,
           ...saved,
           layoutUndoStack: [],
-          theme: normalizeTheme(saved?.theme),
+          defaultThemeRevision: 'notte-viola-2026-10-05',
+          theme: saved?.defaultThemeRevision === 'notte-viola-2026-10-05' ? normalizeTheme(saved?.theme) : cloneAdminTheme(defaultAdminTheme),
         }
       },
     }

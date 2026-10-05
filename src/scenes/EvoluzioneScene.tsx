@@ -1,3 +1,4 @@
+import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { useGameStore } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
@@ -38,7 +39,7 @@ type EvoluzioneSpec = {
 }
 
 export function EvoluzioneScene() {
-  const scenaCorrente = useGameStore((s) => s.scenaCorrente)
+  const scenaCorrente = useSceneNavigation()
   const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const giocatore1 = useGameStore((s) => s.giocatore1)

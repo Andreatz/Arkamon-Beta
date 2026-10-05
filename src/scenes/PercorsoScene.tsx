@@ -1,3 +1,4 @@
+import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { motion } from 'framer-motion'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
@@ -16,7 +17,7 @@ const CESPUGLI = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const
  * Il layout admin è condiviso da tutti i percorsi.
  */
 export function PercorsoScene() {
-  const scenaCorrente = useGameStore((s) => s.scenaCorrente)
+  const scenaCorrente = useSceneNavigation()
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const cespuglioVisitato = useGameStore((s) => s.cespuglioVisitato)
   const segnaCespuglioVisitato = useGameStore((s) => s.segnaCespuglioVisitato)
@@ -48,7 +49,7 @@ export function PercorsoScene() {
       pokemonB: selvatico,
       hpMaxA: calcolaHPMax(primoDellaSquadra),
       hpMaxB: calcolaHPMax(selvatico),
-      turnoCorrente: determinaIniziativa(primoDellaSquadra.livello, selvatico.livello),
+      turnoCorrente: determinaIniziativa(primoDellaSquadra.livello, selvatico.livello, Math.random, primoDellaSquadra.stato?.tipo, selvatico.stato?.tipo),
       luogoRitorno: luogo,
       log: [`Appare ${selvatico.nome} selvatico!`],
       evoluzioneInAttesa: null,

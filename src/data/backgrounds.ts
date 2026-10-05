@@ -47,7 +47,7 @@ export const BATTLE_BG_DEFAULT = assetUrl('/backgrounds/battle_forest.jpg')
 export const LABORATORY_BG = assetUrl('/backgrounds/laboratory.png')
 
 /** Background della scena Deposito. */
-export const DEPOSIT_BG = assetUrl('/backgrounds/deposit.png')
+export const DEPOSIT_BG = assetUrl('/backgrounds/deposito.png')
 
 /** Background della scena Evoluzione. */
 export const EVOLUTION_BG = assetUrl('/backgrounds/evolution.png')

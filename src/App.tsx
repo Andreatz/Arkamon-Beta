@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { BattleRulesLab } from '@/components/battle/BattleRulesLab'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
 import { LaboratorioScene } from '@scenes/LaboratorioScene'
@@ -9,16 +10,19 @@ import { PercorsoScene } from '@scenes/PercorsoScene'
 import { CittaScene } from '@scenes/CittaScene'
 import { DepositoScene } from '@scenes/DepositoScene'
 import { EvoluzioneScene } from '@scenes/EvoluzioneScene'
-import { AnimatePresence, motion } from 'framer-motion'
+import { SceneTransition } from '@/components/transitions/SceneTransition'
+import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
+import { SceneTransitionLab } from '@/components/transitions/SceneTransitionLab'
+import type { NavigazioneScena, SceneId } from '@/types'
 import { AudioController } from '@components/AudioController'
 import { AdminOverlay } from '@/admin/AdminOverlay'
 import { AdminRuntime } from '@/admin/AdminRuntime'
 import { VfxGallery } from '@/components/vfx/VfxGallery'
-import { assetUrl } from '@/utils/assetUrl'
+import { BattleDiceLab } from '@/components/battle/BattleDiceLab'
+import { DepositLab } from '@/components/deposit/DepositLab'
+import { DarklawAnimationLab } from '@/components/arkamon/DarklawAnimationLab'
 
-const BATTLE_TRANSITION_VIDEO = '/assets/Transizione Battaglia.mp4'
-const BATTLE_TRANSITION_START_SECONDS = 5
-const BATTLE_TRANSITION_BLEND_MS = 950
+const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 
 /**
  * Router delle scene.
@@ -26,92 +30,56 @@ const BATTLE_TRANSITION_BLEND_MS = 950
  * Aggiungi qui ogni nuova scena man mano che la implementi.
  */
 function App() {
+  const [hash, setHash] = useState(window.location.hash)
+  useEffect(() => { const sync = () => setHash(window.location.hash); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync) }, [])
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
 
-  if (import.meta.env.DEV && window.location.hash === '#vfx-lab') {
-    return <VfxGallery />
+  useEffect(() => { preloadSceneTransitionArtwork() }, [])
+
+  if (import.meta.env.DEV && hash === '#battle-rules-lab') return <LabShell><BattleRulesLab /></LabShell>
+
+  if (import.meta.env.DEV && hash === '#audio-lab') {
+    return <LabShell><Suspense fallback={<div role="status">Caricamento laboratorio audio…</div>}><AudioLab /></Suspense></LabShell>
+  }
+
+  if (import.meta.env.DEV && hash === '#transition-lab') {
+    return <LabShell><SceneTransitionLab /></LabShell>
+  }
+
+  if (import.meta.env.DEV && hash === '#vfx-lab') {
+    return <LabShell><VfxGallery /></LabShell>
+  }
+
+  if (import.meta.env.DEV && hash === '#dice-lab') {
+    return <LabShell><BattleDiceLab /></LabShell>
+  }
+
+  if (import.meta.env.DEV && hash === '#deposit-lab') {
+    return <LabShell><DepositLab /></LabShell>
+  }
+
+  if (import.meta.env.DEV && hash === '#arkamon-lab') {
+    return <LabShell><DarklawAnimationLab /></LabShell>
   }
 
   return (
     <div className="arka-stage">
       <AdminRuntime />
-      <AudioController />
       <AdminOverlay />
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={scenaCorrente.scena}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute inset-0"
-        >
-          {renderScena(scenaCorrente.scena)}
-          {scenaCorrente.scena === 'battaglia' ? <BattleIntroTransition /> : null}
-        </motion.div>
-      </AnimatePresence>
+      <SceneTransition navigation={scenaCorrente} renderScene={renderPresentedScene}>
+        <AudioController />
+      </SceneTransition>
     </div>
   )
 }
 
-function BattleIntroTransition() {
-  const [hidden, setHidden] = useState(false)
-  const [blending, setBlending] = useState(false)
-  const timeoutRef = useRef<number | null>(null)
+function LabShell({ children }: { children: React.ReactNode }) { return <><AdminRuntime /><AdminOverlay />{children}</> }
 
-  const finish = useCallback(() => {
-    setBlending(true)
-    if (timeoutRef.current !== null) return
-    timeoutRef.current = window.setTimeout(() => {
-      setHidden(true)
-    }, BATTLE_TRANSITION_BLEND_MS)
-  }, [])
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [])
-
-  if (hidden) return null
-
-  return (
-    <motion.div
-      className="pointer-events-auto absolute inset-0 z-[90] bg-black"
-      initial={{ opacity: 1 }}
-      animate={{ opacity: blending ? 0 : 1 }}
-      transition={{ duration: BATTLE_TRANSITION_BLEND_MS / 1000, ease: 'easeOut' }}
-      aria-hidden="true"
-    >
-      <video
-        className="h-full w-full object-cover"
-        src={assetUrl(BATTLE_TRANSITION_VIDEO)}
-        muted
-        playsInline
-        preload="auto"
-        onLoadedMetadata={(event) => {
-          const video = event.currentTarget
-          if (Number.isFinite(video.duration) && video.duration > BATTLE_TRANSITION_START_SECONDS) {
-            video.currentTime = BATTLE_TRANSITION_START_SECONDS
-          }
-          void video.play().catch(finish)
-        }}
-        onTimeUpdate={(event) => {
-          const video = event.currentTarget
-          if (!Number.isFinite(video.duration)) return
-          const remainingMs = (video.duration - video.currentTime) * 1000
-          if (remainingMs <= BATTLE_TRANSITION_BLEND_MS) finish()
-        }}
-        onEnded={finish}
-        onError={finish}
-      />
-    </motion.div>
-  )
+function renderPresentedScene(navigation: NavigazioneScena) {
+  return renderScena(navigation.scena)
 }
 
-function renderScena(scena: string) {
+function renderScena(scena: SceneId) {
   switch (scena) {
     case 'titolo':
       return <TitoloScene />

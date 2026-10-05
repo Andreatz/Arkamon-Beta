@@ -11,16 +11,14 @@ describe('Arkamon procedural battle motion profiles', () => {
 
     expect(ARKAMON_MOTION_PROFILES[1]).toBeTruthy()
     expect(ARKAMON_MOTION_PROFILES[13]).toBeTruthy()
-    expect(vyrath.physicalDistance).toBeGreaterThan(wormaren.physicalDistance)
-    expect(wormaren.physicalScale).toBeGreaterThan(vyrath.physicalScale)
-    expect(vyrath.specialGlow).not.toBe(wormaren.specialGlow)
+    expect(vyrath.attackDistance).toBeGreaterThan(wormaren.attackDistance)
+    expect(wormaren.attackScale).toBeGreaterThan(vyrath.attackScale)
   })
 
   it('provides a safe default profile to every other species', () => {
     const fallback = getArkamonMotionProfile(9999)
 
     expect(fallback.idleSeconds).toBeGreaterThan(0)
-    expect(fallback.physicalDistance).toBeGreaterThan(0)
-    expect(fallback.specialScale).toBeGreaterThan(1)
+    expect(fallback.attackDistance).toBeGreaterThan(0)
   })
 })

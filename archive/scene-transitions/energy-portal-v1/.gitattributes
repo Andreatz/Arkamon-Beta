@@ -1,0 +1,5 @@
+# Preserve the exact original source bytes for manifest integrity.
+src/** -text
+docs/** -text
+README.md text eol=lf
+manifest.json text eol=lf

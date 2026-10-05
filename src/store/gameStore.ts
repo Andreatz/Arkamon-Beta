@@ -405,7 +405,7 @@ export const useGameStore = create<GameState>()(
         if (squadraB.length === 0) return false
 
         const pokemonB = squadraB[0]
-        const turnoCorrente = determinaIniziativa(pokemonA.livello, pokemonB.livello)
+        const turnoCorrente = determinaIniziativa(pokemonA.livello, pokemonB.livello, Math.random, pokemonA.stato?.tipo, pokemonB.stato?.tipo)
         const tipo = allenatore.tipo === 'PVP' ? 'PVP' : 'NPC'
 
         set({

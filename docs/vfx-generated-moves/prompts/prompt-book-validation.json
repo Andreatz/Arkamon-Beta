@@ -1,0 +1,4177 @@
+{
+  "move_count": 276,
+  "unique_source_ids": 276,
+  "species_count": 110,
+  "tiers": {
+    "light": 76,
+    "medium": 86,
+    "heavy": 58,
+    "status": 56
+  },
+  "all_reference_images_exist": true,
+  "individually_authored_concepts": 276,
+  "word_count_range": [
+    425,
+    577
+  ],
+  "utf8_clean": true,
+  "moves": [
+    {
+      "id": 1,
+      "name": "Soffio",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        1
+      ],
+      "filename": "vfx_001_soffio.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 448
+    },
+    {
+      "id": 2,
+      "name": "Assalto",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        2
+      ],
+      "filename": "vfx_002_assalto.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 449
+    },
+    {
+      "id": 3,
+      "name": "Impatto verticale",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        3
+      ],
+      "filename": "vfx_003_impatto_verticale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 450
+    },
+    {
+      "id": 4,
+      "name": "Carica ossidrica",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        4
+      ],
+      "filename": "vfx_004_carica_ossidrica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 451
+    },
+    {
+      "id": 5,
+      "name": "Voltaggio",
+      "type": "Elettro",
+      "tier": "light",
+      "origins": [
+        86
+      ],
+      "filename": "vfx_005_voltaggio.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 439
+    },
+    {
+      "id": 6,
+      "name": "Alta tensione",
+      "type": "Elettro",
+      "tier": "medium",
+      "origins": [
+        87
+      ],
+      "filename": "vfx_006_alta_tensione.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 445
+    },
+    {
+      "id": 7,
+      "name": "Stormo di fulmini",
+      "type": "Elettro",
+      "tier": "heavy",
+      "origins": [
+        88
+      ],
+      "filename": "vfx_007_stormo_di_fulmini.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 456
+    },
+    {
+      "id": 8,
+      "name": "Nevischio",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        71
+      ],
+      "filename": "vfx_008_nevischio.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 450
+    },
+    {
+      "id": 9,
+      "name": "Valanga",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        72
+      ],
+      "filename": "vfx_009_valanga.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 461
+    },
+    {
+      "id": 10,
+      "name": "Tormenta glaciale",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        73
+      ],
+      "filename": "vfx_010_tormenta_glaciale.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 458
+    },
+    {
+      "id": 11,
+      "name": "Lapillo",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        16
+      ],
+      "filename": "vfx_011_lapillo.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 443
+    },
+    {
+      "id": 12,
+      "name": "Roccia fusa",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        17
+      ],
+      "filename": "vfx_012_roccia_fusa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 448
+    },
+    {
+      "id": 13,
+      "name": "Cratere",
+      "type": "Terra",
+      "tier": "heavy",
+      "origins": [
+        18
+      ],
+      "filename": "vfx_013_cratere.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 452
+    },
+    {
+      "id": 14,
+      "name": "Conduttore",
+      "type": "Elettro",
+      "tier": "light",
+      "origins": [
+        26
+      ],
+      "filename": "vfx_014_conduttore.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 439
+    },
+    {
+      "id": 15,
+      "name": "Circuito chiuso",
+      "type": "Elettro",
+      "tier": "medium",
+      "origins": [
+        27
+      ],
+      "filename": "vfx_015_circuito_chiuso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 453
+    },
+    {
+      "id": 16,
+      "name": "Sprint",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        42
+      ],
+      "filename": "vfx_016_sprint.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 443
+    },
+    {
+      "id": 17,
+      "name": "Scatto",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        43
+      ],
+      "filename": "vfx_017_scatto.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 450
+    },
+    {
+      "id": 18,
+      "name": "Elettroscontro",
+      "type": "Elettro",
+      "tier": "light",
+      "origins": [
+        24
+      ],
+      "filename": "vfx_018_elettroscontro.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 438
+    },
+    {
+      "id": 19,
+      "name": "Elettrocarica",
+      "type": "Elettro",
+      "tier": "medium",
+      "origins": [
+        25
+      ],
+      "filename": "vfx_019_elettrocarica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 20,
+      "name": "Spruzzo",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        56
+      ],
+      "filename": "vfx_020_spruzzo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 447
+    },
+    {
+      "id": 21,
+      "name": "Alta marea",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        57
+      ],
+      "filename": "vfx_021_alta_marea.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 460
+    },
+    {
+      "id": 22,
+      "name": "Spavento",
+      "type": "Psico",
+      "tier": "light",
+      "origins": [
+        67
+      ],
+      "filename": "vfx_022_spavento.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 444
+    },
+    {
+      "id": 23,
+      "name": "Terrore",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        68
+      ],
+      "filename": "vfx_023_terrore.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 448
+    },
+    {
+      "id": 24,
+      "name": "Paradosso",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        21
+      ],
+      "filename": "vfx_024_paradosso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 438
+    },
+    {
+      "id": 25,
+      "name": "Ultimo sangue",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        66
+      ],
+      "filename": "vfx_025_ultimo_sangue.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 469
+    },
+    {
+      "id": 26,
+      "name": "Arrembaggio",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        82
+      ],
+      "filename": "vfx_026_arrembaggio.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 454
+    },
+    {
+      "id": 27,
+      "name": "Onda anomala",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        61
+      ],
+      "filename": "vfx_027_onda_anomala.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 459
+    },
+    {
+      "id": 28,
+      "name": "Zampata",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        5
+      ],
+      "filename": "vfx_028_zampata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 435
+    },
+    {
+      "id": 29,
+      "name": "Colpo felpato",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        6
+      ],
+      "filename": "vfx_029_colpo_felpato.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 442
+    },
+    {
+      "id": 30,
+      "name": "Artigli del terrore",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        7
+      ],
+      "filename": "vfx_030_artigli_del_terrore.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 444
+    },
+    {
+      "id": 31,
+      "name": "Abisso tenebroso",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        8
+      ],
+      "filename": "vfx_031_abisso_tenebroso.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 449
+    },
+    {
+      "id": 32,
+      "name": "Alito incandescente",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        92
+      ],
+      "filename": "vfx_032_alito_incandescente.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 441
+    },
+    {
+      "id": 33,
+      "name": "Sbuffo magmatico",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        93
+      ],
+      "filename": "vfx_033_sbuffo_magmatico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 445
+    },
+    {
+      "id": 34,
+      "name": "Soffio lavico",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        94
+      ],
+      "filename": "vfx_034_soffio_lavico.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 451
+    },
+    {
+      "id": 35,
+      "name": "Mani brucianti",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        74
+      ],
+      "filename": "vfx_035_mani_brucianti.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 450
+    },
+    {
+      "id": 36,
+      "name": "Palla di fuoco",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        75
+      ],
+      "filename": "vfx_036_palla_di_fuoco.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 450
+    },
+    {
+      "id": 37,
+      "name": "Ardemonio",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        76
+      ],
+      "filename": "vfx_037_ardemonio.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 450
+    },
+    {
+      "id": 38,
+      "name": "Scossa",
+      "type": "Elettro",
+      "tier": "light",
+      "origins": [
+        36
+      ],
+      "filename": "vfx_038_scossa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 442
+    },
+    {
+      "id": 39,
+      "name": "Lampo",
+      "type": "Elettro",
+      "tier": "medium",
+      "origins": [
+        37
+      ],
+      "filename": "vfx_039_lampo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 445
+    },
+    {
+      "id": 40,
+      "name": "Lotta tonante",
+      "type": "Elettro",
+      "tier": "heavy",
+      "origins": [
+        38
+      ],
+      "filename": "vfx_040_lotta_tonante.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 445
+    },
+    {
+      "id": 41,
+      "name": "Fioritura",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        28
+      ],
+      "filename": "vfx_041_fioritura.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 443
+    },
+    {
+      "id": 42,
+      "name": "Florilegio letale",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        29
+      ],
+      "filename": "vfx_042_florilegio_letale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 43,
+      "name": "Controllo mentale",
+      "type": "Psico",
+      "tier": "light",
+      "origins": [
+        84
+      ],
+      "filename": "vfx_043_controllo_mentale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 437
+    },
+    {
+      "id": 44,
+      "name": "Collasso nervoso",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        85
+      ],
+      "filename": "vfx_044_collasso_nervoso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 443
+    },
+    {
+      "id": 45,
+      "name": "Urlo straziante",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        45
+      ],
+      "filename": "vfx_045_urlo_straziante.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 438
+    },
+    {
+      "id": 46,
+      "name": "Materia oscura",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        46
+      ],
+      "filename": "vfx_046_materia_oscura.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 447
+    },
+    {
+      "id": 47,
+      "name": "Spazzata",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        101
+      ],
+      "filename": "vfx_047_spazzata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 437
+    },
+    {
+      "id": 48,
+      "name": "Falcidiata",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        102
+      ],
+      "filename": "vfx_048_falcidiata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 442
+    },
+    {
+      "id": 49,
+      "name": "Inumidire",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        69
+      ],
+      "filename": "vfx_049_inumidire.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 450
+    },
+    {
+      "id": 50,
+      "name": "Attacco fradicio",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        70
+      ],
+      "filename": "vfx_050_attacco_fradicio.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 453
+    },
+    {
+      "id": 51,
+      "name": "Tempesta magnetica",
+      "type": "Elettro",
+      "tier": "heavy",
+      "origins": [
+        22
+      ],
+      "filename": "vfx_051_tempesta_magnetica.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 442
+    },
+    {
+      "id": 52,
+      "name": "Temporale",
+      "type": "Elettro",
+      "tier": "medium",
+      "origins": [
+        23
+      ],
+      "filename": "vfx_052_temporale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 440
+    },
+    {
+      "id": 53,
+      "name": "Angoscia",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        83
+      ],
+      "filename": "vfx_053_angoscia.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 437
+    },
+    {
+      "id": 54,
+      "name": "Avanzata",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        65
+      ],
+      "filename": "vfx_054_avanzata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 453
+    },
+    {
+      "id": 55,
+      "name": "Sussurro",
+      "type": "Psico",
+      "tier": "light",
+      "origins": [
+        9
+      ],
+      "filename": "vfx_055_sussurro.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 431
+    },
+    {
+      "id": 56,
+      "name": "Sesto senso",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        10
+      ],
+      "filename": "vfx_056_sesto_senso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 437
+    },
+    {
+      "id": 57,
+      "name": "Intreccio mentale",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        11
+      ],
+      "filename": "vfx_057_intreccio_mentale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 435
+    },
+    {
+      "id": 58,
+      "name": "Occhio universale",
+      "type": "Psico",
+      "tier": "heavy",
+      "origins": [
+        12
+      ],
+      "filename": "vfx_058_occhio_universale.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 447
+    },
+    {
+      "id": 59,
+      "name": "Assorbilinfa",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        95
+      ],
+      "filename": "vfx_059_assorbilinfa.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 442
+    },
+    {
+      "id": 60,
+      "name": "Avanguardia",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        96
+      ],
+      "filename": "vfx_060_avanguardia.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 444
+    },
+    {
+      "id": 61,
+      "name": "Sciame operaio",
+      "type": "Erba",
+      "tier": "heavy",
+      "origins": [
+        97
+      ],
+      "filename": "vfx_061_sciame_operaio.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 455
+    },
+    {
+      "id": 62,
+      "name": "Manto d'ombra",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        79
+      ],
+      "filename": "vfx_062_manto_d_ombra.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 448
+    },
+    {
+      "id": 63,
+      "name": "Buio pesto",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        80
+      ],
+      "filename": "vfx_063_buio_pesto.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 440
+    },
+    {
+      "id": 64,
+      "name": "Fiamma nera",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        81
+      ],
+      "filename": "vfx_064_fiamma_nera.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 446
+    },
+    {
+      "id": 65,
+      "name": "Foglia caduca",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        52
+      ],
+      "filename": "vfx_065_foglia_caduca.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 452
+    },
+    {
+      "id": 66,
+      "name": "Risveglio verde",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        53
+      ],
+      "filename": "vfx_066_risveglio_verde.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 456
+    },
+    {
+      "id": 67,
+      "name": "Forza della natura",
+      "type": "Erba",
+      "tier": "heavy",
+      "origins": [
+        54
+      ],
+      "filename": "vfx_067_forza_della_natura.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 454
+    },
+    {
+      "id": 68,
+      "name": "Luna storta",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        30
+      ],
+      "filename": "vfx_068_luna_storta.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 437
+    },
+    {
+      "id": 69,
+      "name": "Luna rossa",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        31
+      ],
+      "filename": "vfx_069_luna_rossa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 451
+    },
+    {
+      "id": 70,
+      "name": "Puntura anestetica",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        105
+      ],
+      "filename": "vfx_070_puntura_anestetica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 438
+    },
+    {
+      "id": 71,
+      "name": "Sete di sangue",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        106
+      ],
+      "filename": "vfx_071_sete_di_sangue.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 445
+    },
+    {
+      "id": 72,
+      "name": "Predigestione",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        47
+      ],
+      "filename": "vfx_072_predigestione.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 462
+    },
+    {
+      "id": 73,
+      "name": "Divoramento",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        48
+      ],
+      "filename": "vfx_073_divoramento.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 451
+    },
+    {
+      "id": 74,
+      "name": "Cerino",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        32
+      ],
+      "filename": "vfx_074_cerino.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 436
+    },
+    {
+      "id": 75,
+      "name": "Cimitero di fiamme",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        33
+      ],
+      "filename": "vfx_075_cimitero_di_fiamme.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 448
+    },
+    {
+      "id": 76,
+      "name": "Scossa d'assestamento",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        103
+      ],
+      "filename": "vfx_076_scossa_d_assestamento.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 438
+    },
+    {
+      "id": 77,
+      "name": "Canyon",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        104
+      ],
+      "filename": "vfx_077_canyon.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 449
+    },
+    {
+      "id": 78,
+      "name": "Rivolta",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        44
+      ],
+      "filename": "vfx_078_rivolta.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 440
+    },
+    {
+      "id": 79,
+      "name": "Guerriglia",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        64
+      ],
+      "filename": "vfx_079_guerriglia.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 451
+    },
+    {
+      "id": 80,
+      "name": "Fangospruzzo",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        20
+      ],
+      "filename": "vfx_080_fangospruzzo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 81,
+      "name": "Fornace",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        77
+      ],
+      "filename": "vfx_081_fornace.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 436
+    },
+    {
+      "id": 82,
+      "name": "Sotterrare",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        13
+      ],
+      "filename": "vfx_082_sotterrare.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 438
+    },
+    {
+      "id": 83,
+      "name": "Sepoltura",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        14
+      ],
+      "filename": "vfx_083_sepoltura.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 441
+    },
+    {
+      "id": 84,
+      "name": "Emersione",
+      "type": "Terra",
+      "tier": "heavy",
+      "origins": [
+        15
+      ],
+      "filename": "vfx_084_emersione.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 449
+    },
+    {
+      "id": 85,
+      "name": "Area 51",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        39
+      ],
+      "filename": "vfx_085_area_51.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 453
+    },
+    {
+      "id": 86,
+      "name": "Viaggio temporale",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        40
+      ],
+      "filename": "vfx_086_viaggio_temporale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 452
+    },
+    {
+      "id": 87,
+      "name": "Ritorno al futuro",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        41
+      ],
+      "filename": "vfx_087_ritorno_al_futuro.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 463
+    },
+    {
+      "id": 88,
+      "name": "Occhiolino",
+      "type": "Psico",
+      "tier": "light",
+      "origins": [
+        89
+      ],
+      "filename": "vfx_088_occhiolino.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 432
+    },
+    {
+      "id": 89,
+      "name": "Pressione spirituale",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        90
+      ],
+      "filename": "vfx_089_pressione_spirituale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 436
+    },
+    {
+      "id": 90,
+      "name": "Assorbianima",
+      "type": "Psico",
+      "tier": "heavy",
+      "origins": [
+        91
+      ],
+      "filename": "vfx_090_assorbianima.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 437
+    },
+    {
+      "id": 91,
+      "name": "Immersione",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        58
+      ],
+      "filename": "vfx_091_immersione.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 92,
+      "name": "Affondare",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        59
+      ],
+      "filename": "vfx_092_affondare.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 93,
+      "name": "Morte dagli abissi",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        60
+      ],
+      "filename": "vfx_093_morte_dagli_abissi.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 459
+    },
+    {
+      "id": 94,
+      "name": "Getto del peso",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        34
+      ],
+      "filename": "vfx_094_getto_del_peso.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 448
+    },
+    {
+      "id": 95,
+      "name": "Bombardamento",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        35
+      ],
+      "filename": "vfx_095_bombardamento.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 442
+    },
+    {
+      "id": 96,
+      "name": "Gufata",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        99
+      ],
+      "filename": "vfx_096_gufata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 449
+    },
+    {
+      "id": 97,
+      "name": "Picchiata fatale",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        100
+      ],
+      "filename": "vfx_097_picchiata_fatale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 446
+    },
+    {
+      "id": 98,
+      "name": "Fiammella",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        49
+      ],
+      "filename": "vfx_098_fiammella.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 441
+    },
+    {
+      "id": 99,
+      "name": "Spirale ardente",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        50
+      ],
+      "filename": "vfx_099_spirale_ardente.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 100,
+      "name": "Testata bassa",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        62
+      ],
+      "filename": "vfx_100_testata_bassa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 451
+    },
+    {
+      "id": 101,
+      "name": "Lana magica",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        63
+      ],
+      "filename": "vfx_101_lana_magica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 473
+    },
+    {
+      "id": 102,
+      "name": "Funerale del deserto",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        19
+      ],
+      "filename": "vfx_102_funerale_del_deserto.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 451
+    },
+    {
+      "id": 103,
+      "name": "Sbuffo lavico",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        51
+      ],
+      "filename": "vfx_103_sbuffo_lavico.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 449
+    },
+    {
+      "id": 104,
+      "name": "Sradicamento",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        78
+      ],
+      "filename": "vfx_104_sradicamento.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 440
+    },
+    {
+      "id": 105,
+      "name": "Jumpscare",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        55
+      ],
+      "filename": "vfx_105_jumpscare.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 466
+    },
+    {
+      "id": 106,
+      "name": "Legnata",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        98
+      ],
+      "filename": "vfx_106_legnata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 444
+    },
+    {
+      "id": 107,
+      "name": "Sguardo glaciale",
+      "type": "Psico",
+      "tier": "heavy",
+      "origins": [
+        109
+      ],
+      "filename": "vfx_107_sguardo_glaciale.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 447
+    },
+    {
+      "id": 108,
+      "name": "Ordine sovrano",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        110
+      ],
+      "filename": "vfx_108_ordine_sovrano.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 455
+    },
+    {
+      "id": 109,
+      "name": "Vortice divino",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        107
+      ],
+      "filename": "vfx_109_vortice_divino.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 455
+    },
+    {
+      "id": 110,
+      "name": "Fiamma celestiale",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        108
+      ],
+      "filename": "vfx_110_fiamma_celestiale.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 448
+    },
+    {
+      "id": 111,
+      "name": "Brezza Profumata",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        1
+      ],
+      "filename": "vfx_111_brezza_profumata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 435
+    },
+    {
+      "id": 112,
+      "name": "Vento Silvano",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        2
+      ],
+      "filename": "vfx_112_vento_silvano.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 439
+    },
+    {
+      "id": 113,
+      "name": "Maestrale Boschivo",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        3
+      ],
+      "filename": "vfx_113_maestrale_boschivo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 114,
+      "name": "Tempesta di Fiori",
+      "type": "Erba",
+      "tier": "heavy",
+      "origins": [
+        4
+      ],
+      "filename": "vfx_114_tempesta_di_fiori.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 442
+    },
+    {
+      "id": 115,
+      "name": "Ciuffo Verde",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        86
+      ],
+      "filename": "vfx_115_ciuffo_verde.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 116,
+      "name": "Mazzetto Erboso",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        87
+      ],
+      "filename": "vfx_116_mazzetto_erboso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 442
+    },
+    {
+      "id": 117,
+      "name": "Cespuglio Rigoglioso",
+      "type": "Erba",
+      "tier": "heavy",
+      "origins": [
+        88
+      ],
+      "filename": "vfx_117_cespuglio_rigoglioso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 450
+    },
+    {
+      "id": 118,
+      "name": "Penna Arcobaleno",
+      "type": "Psico",
+      "tier": "light",
+      "origins": [
+        71
+      ],
+      "filename": "vfx_118_penna_arcobaleno.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 119,
+      "name": "Ali Elusive",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        72
+      ],
+      "filename": "vfx_119_ali_elusive.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 120,
+      "name": "Piumaggio Illusorio",
+      "type": "Psico",
+      "tier": "heavy",
+      "origins": [
+        73
+      ],
+      "filename": "vfx_120_piumaggio_illusorio.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 449
+    },
+    {
+      "id": 121,
+      "name": "Bollobrace",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        16
+      ],
+      "filename": "vfx_121_bollobrace.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 425
+    },
+    {
+      "id": 122,
+      "name": "Fauci incandescenti",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        17
+      ],
+      "filename": "vfx_122_fauci_incandescenti.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 439
+    },
+    {
+      "id": 123,
+      "name": "Detonazione lavica",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        18
+      ],
+      "filename": "vfx_123_detonazione_lavica.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 443
+    },
+    {
+      "id": 124,
+      "name": "Cerchio Ondoso",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        26
+      ],
+      "filename": "vfx_124_cerchio_ondoso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 438
+    },
+    {
+      "id": 125,
+      "name": "Spirale Acquatica",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        27
+      ],
+      "filename": "vfx_125_spirale_acquatica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 446
+    },
+    {
+      "id": 126,
+      "name": "Polverone",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        42
+      ],
+      "filename": "vfx_126_polverone.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 127,
+      "name": "Marcia del deserto",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        43
+      ],
+      "filename": "vfx_127_marcia_del_deserto.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 444
+    },
+    {
+      "id": 128,
+      "name": "Ringhio Ribelle",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        24
+      ],
+      "filename": "vfx_128_ringhio_ribelle.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 447
+    },
+    {
+      "id": 129,
+      "name": "Colpo Rabbioso",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        25
+      ],
+      "filename": "vfx_129_colpo_rabbioso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 454
+    },
+    {
+      "id": 130,
+      "name": "Pinna Rotante",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        56
+      ],
+      "filename": "vfx_130_pinna_rotante.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 454
+    },
+    {
+      "id": 131,
+      "name": "Danza dei Fondali",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        57
+      ],
+      "filename": "vfx_131_danza_dei_fondali.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 468
+    },
+    {
+      "id": 132,
+      "name": "Terrore del Fienile",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        67
+      ],
+      "filename": "vfx_132_terrore_del_fienile.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 453
+    },
+    {
+      "id": 133,
+      "name": "Spauracchio Contadino",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        68
+      ],
+      "filename": "vfx_133_spauracchio_contadino.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 456
+    },
+    {
+      "id": 134,
+      "name": "Foglia Quantica",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        21
+      ],
+      "filename": "vfx_134_foglia_quantica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 450
+    },
+    {
+      "id": 135,
+      "name": "Incendio a Staffetta",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        66
+      ],
+      "filename": "vfx_135_incendio_a_staffetta.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 456
+    },
+    {
+      "id": 136,
+      "name": "Maremoto Sotterraneo",
+      "type": "Terra",
+      "tier": "heavy",
+      "origins": [
+        82
+      ],
+      "filename": "vfx_136_maremoto_sotterraneo.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 450
+    },
+    {
+      "id": 137,
+      "name": "Sbattimuso",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        61
+      ],
+      "filename": "vfx_137_sbattimuso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 461
+    },
+    {
+      "id": 138,
+      "name": "Dardo di Fiamma",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        5
+      ],
+      "filename": "vfx_138_dardo_di_fiamma.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 447
+    },
+    {
+      "id": 139,
+      "name": "Pioggia di Scintille",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        6
+      ],
+      "filename": "vfx_139_pioggia_di_scintille.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 441
+    },
+    {
+      "id": 140,
+      "name": "Furia Fuliggine",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        7
+      ],
+      "filename": "vfx_140_furia_fuliggine.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 442
+    },
+    {
+      "id": 141,
+      "name": "Mantello di Carbone",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        8
+      ],
+      "filename": "vfx_141_mantello_di_carbone.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 453
+    },
+    {
+      "id": 142,
+      "name": "Sguardo Minaccioso",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        92
+      ],
+      "filename": "vfx_142_sguardo_minaccioso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 437
+    },
+    {
+      "id": 143,
+      "name": "Ombra Rossa",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        93
+      ],
+      "filename": "vfx_143_ombra_rossa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 440
+    },
+    {
+      "id": 144,
+      "name": "Piaga delle Tenebre",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        94
+      ],
+      "filename": "vfx_144_piaga_delle_tenebre.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 446
+    },
+    {
+      "id": 145,
+      "name": "Lancio di Libri",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        74
+      ],
+      "filename": "vfx_145_lancio_di_libri.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 473
+    },
+    {
+      "id": 146,
+      "name": "Pugno Saggio",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        75
+      ],
+      "filename": "vfx_146_pugno_saggio.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 455
+    },
+    {
+      "id": 147,
+      "name": "Conoscenza Antica",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        76
+      ],
+      "filename": "vfx_147_conoscenza_antica.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 456
+    },
+    {
+      "id": 148,
+      "name": "Salto Idroelettrico",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        36
+      ],
+      "filename": "vfx_148_salto_idroelettrico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 444
+    },
+    {
+      "id": 149,
+      "name": "Cascata Elettrificata",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        37
+      ],
+      "filename": "vfx_149_cascata_elettrificata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 150,
+      "name": "Idroscarica",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        38
+      ],
+      "filename": "vfx_150_idroscarica.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 444
+    },
+    {
+      "id": 151,
+      "name": "Scatto veloce",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        28
+      ],
+      "filename": "vfx_151_scatto_veloce.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 453
+    },
+    {
+      "id": 152,
+      "name": "Corsa inarrestabile",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        29
+      ],
+      "filename": "vfx_152_corsa_inarrestabile.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 444
+    },
+    {
+      "id": 153,
+      "name": "Respiro profondo",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        84
+      ],
+      "filename": "vfx_153_respiro_profondo.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 459
+    },
+    {
+      "id": 154,
+      "name": "Tocco di pace",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        85
+      ],
+      "filename": "vfx_154_tocco_di_pace.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 459
+    },
+    {
+      "id": 155,
+      "name": "Volo Furtivo",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        45
+      ],
+      "filename": "vfx_155_volo_furtivo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 444
+    },
+    {
+      "id": 156,
+      "name": "Sferzata Celata",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        46
+      ],
+      "filename": "vfx_156_sferzata_celata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 458
+    },
+    {
+      "id": 157,
+      "name": "Fendente Ombraverde",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        101
+      ],
+      "filename": "vfx_157_fendente_ombraverde.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 436
+    },
+    {
+      "id": 158,
+      "name": "Lama Sanguisuga",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        102
+      ],
+      "filename": "vfx_158_lama_sanguisuga.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 159,
+      "name": "Leccata Fangosa",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        69
+      ],
+      "filename": "vfx_159_leccata_fangosa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 453
+    },
+    {
+      "id": 160,
+      "name": "Baratro Melmoso",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        70
+      ],
+      "filename": "vfx_160_baratro_melmoso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 454
+    },
+    {
+      "id": 161,
+      "name": "Richiamo del Bosco",
+      "type": "Erba",
+      "tier": "heavy",
+      "origins": [
+        22
+      ],
+      "filename": "vfx_161_richiamo_del_bosco.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 449
+    },
+    {
+      "id": 162,
+      "name": "Trappola Saltellante",
+      "type": "Erba",
+      "tier": "medium",
+      "origins": [
+        23
+      ],
+      "filename": "vfx_162_trappola_saltellante.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 163,
+      "name": "Assalto Marziano",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        83
+      ],
+      "filename": "vfx_163_assalto_marziano.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 451
+    },
+    {
+      "id": 164,
+      "name": "Canto del Crepuscolo",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        65
+      ],
+      "filename": "vfx_164_canto_del_crepuscolo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 466
+    },
+    {
+      "id": 165,
+      "name": "Tocco Ghiacciato",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        9
+      ],
+      "filename": "vfx_165_tocco_ghiacciato.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 441
+    },
+    {
+      "id": 166,
+      "name": "Squarcio Glaciale",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        10
+      ],
+      "filename": "vfx_166_squarcio_glaciale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 444
+    },
+    {
+      "id": 167,
+      "name": "Fredda Illusione",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        11
+      ],
+      "filename": "vfx_167_fredda_illusione.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 451
+    },
+    {
+      "id": 168,
+      "name": "Bora Eterea",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        12
+      ],
+      "filename": "vfx_168_bora_eterea.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 453
+    },
+    {
+      "id": 169,
+      "name": "Ronzio Psichico",
+      "type": "Psico",
+      "tier": "light",
+      "origins": [
+        95
+      ],
+      "filename": "vfx_169_ronzio_psichico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 439
+    },
+    {
+      "id": 170,
+      "name": "Sciame Mentale",
+      "type": "Psico",
+      "tier": "medium",
+      "origins": [
+        96
+      ],
+      "filename": "vfx_170_sciame_mentale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 440
+    },
+    {
+      "id": 171,
+      "name": "Organizzazione Psionica",
+      "type": "Psico",
+      "tier": "heavy",
+      "origins": [
+        97
+      ],
+      "filename": "vfx_171_organizzazione_psionica.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 440
+    },
+    {
+      "id": 172,
+      "name": "Aspirafuoco",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        79
+      ],
+      "filename": "vfx_172_aspirafuoco.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 173,
+      "name": "Aura Incandescente",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        80
+      ],
+      "filename": "vfx_173_aura_incandescente.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 448
+    },
+    {
+      "id": 174,
+      "name": "Cannone Infernale",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        81
+      ],
+      "filename": "vfx_174_cannone_infernale.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 445
+    },
+    {
+      "id": 175,
+      "name": "Spruzzata di Foglie",
+      "type": "Acqua",
+      "tier": "light",
+      "origins": [
+        52
+      ],
+      "filename": "vfx_175_spruzzata_di_foglie.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 448
+    },
+    {
+      "id": 176,
+      "name": "Spirale Umida",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        53
+      ],
+      "filename": "vfx_176_spirale_umida.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 456
+    },
+    {
+      "id": 177,
+      "name": "Alluvione di Germogli",
+      "type": "Acqua",
+      "tier": "heavy",
+      "origins": [
+        54
+      ],
+      "filename": "vfx_177_alluvione_di_germogli.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 451
+    },
+    {
+      "id": 178,
+      "name": "Scintilla Lunare",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        30
+      ],
+      "filename": "vfx_178_scintilla_lunare.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 442
+    },
+    {
+      "id": 179,
+      "name": "Eclissi Infuocata",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        31
+      ],
+      "filename": "vfx_179_eclissi_infuocata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 445
+    },
+    {
+      "id": 180,
+      "name": "Puntura veloce",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        105
+      ],
+      "filename": "vfx_180_puntura_veloce.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 446
+    },
+    {
+      "id": 181,
+      "name": "Danza del pungiglione",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        106
+      ],
+      "filename": "vfx_181_danza_del_pungiglione.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 446
+    },
+    {
+      "id": 182,
+      "name": "Colpo di Liana",
+      "type": "Normale",
+      "tier": "light",
+      "origins": [
+        47
+      ],
+      "filename": "vfx_182_colpo_di_liana.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 467
+    },
+    {
+      "id": 183,
+      "name": "Agguato Silvestre",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        48
+      ],
+      "filename": "vfx_183_agguato_silvestre.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 452
+    },
+    {
+      "id": 184,
+      "name": "Ruggito fulminante",
+      "type": "Elettro",
+      "tier": "light",
+      "origins": [
+        32
+      ],
+      "filename": "vfx_184_ruggito_fulminante.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 438
+    },
+    {
+      "id": 185,
+      "name": "Tuono regale",
+      "type": "Elettro",
+      "tier": "heavy",
+      "origins": [
+        33
+      ],
+      "filename": "vfx_185_tuono_regale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 444
+    },
+    {
+      "id": 186,
+      "name": "Braciere Profondo",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        103
+      ],
+      "filename": "vfx_186_braciere_profondo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 187,
+      "name": "Fiamma Sotterranea",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        104
+      ],
+      "filename": "vfx_187_fiamma_sotterranea.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 446
+    },
+    {
+      "id": 188,
+      "name": "Pulviscolo Ionizzate",
+      "type": "Elettro",
+      "tier": "heavy",
+      "origins": [
+        44
+      ],
+      "filename": "vfx_188_pulviscolo_ionizzate.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 443
+    },
+    {
+      "id": 189,
+      "name": "Gemma Smeraldina",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        64
+      ],
+      "filename": "vfx_189_gemma_smeraldina.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 440
+    },
+    {
+      "id": 190,
+      "name": "Abbraccio Traballante",
+      "type": "Erba",
+      "tier": "light",
+      "origins": [
+        20
+      ],
+      "filename": "vfx_190_abbraccio_traballante.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 444
+    },
+    {
+      "id": 191,
+      "name": "Surriscaldamento",
+      "type": "Elettro",
+      "tier": "medium",
+      "origins": [
+        77
+      ],
+      "filename": "vfx_191_surriscaldamento.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 439
+    },
+    {
+      "id": 192,
+      "name": "Scottatura",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        13
+      ],
+      "filename": "vfx_192_scottatura.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 433
+    },
+    {
+      "id": 193,
+      "name": "Sabbia Ardente",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        14
+      ],
+      "filename": "vfx_193_sabbia_ardente.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 440
+    },
+    {
+      "id": 194,
+      "name": "Tornado di Fuoco e Sabbia",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        15
+      ],
+      "filename": "vfx_194_tornado_di_fuoco_e_sabbia.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 453
+    },
+    {
+      "id": 195,
+      "name": "Bruciatura Laser",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        39
+      ],
+      "filename": "vfx_195_bruciatura_laser.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 453
+    },
+    {
+      "id": 196,
+      "name": "Fiamma Futuristica",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        40
+      ],
+      "filename": "vfx_196_fiamma_futuristica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 439
+    },
+    {
+      "id": 197,
+      "name": "Scarica Pulsar",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        41
+      ],
+      "filename": "vfx_197_scarica_pulsar.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 456
+    },
+    {
+      "id": 198,
+      "name": "Polvere Ardente",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        89
+      ],
+      "filename": "vfx_198_polvere_ardente.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 435
+    },
+    {
+      "id": 199,
+      "name": "Sfolgorio Magico",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        90
+      ],
+      "filename": "vfx_199_sfolgorio_magico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 442
+    },
+    {
+      "id": 200,
+      "name": "Turbinio di Fuochi Fatui",
+      "type": "Fuoco",
+      "tier": "heavy",
+      "origins": [
+        91
+      ],
+      "filename": "vfx_200_turbinio_di_fuochi_fatui.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 444
+    },
+    {
+      "id": 201,
+      "name": "Nuotata Inquietante",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        58
+      ],
+      "filename": "vfx_201_nuotata_inquietante.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 444
+    },
+    {
+      "id": 202,
+      "name": "Squalo Ombra",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        59
+      ],
+      "filename": "vfx_202_squalo_ombra.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 456
+    },
+    {
+      "id": 203,
+      "name": "Fauci dell'abisso",
+      "type": "Oscurità",
+      "tier": "heavy",
+      "origins": [
+        60
+      ],
+      "filename": "vfx_203_fauci_dell_abisso.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 454
+    },
+    {
+      "id": 204,
+      "name": "Eco del Guardiano",
+      "type": "Oscurità",
+      "tier": "light",
+      "origins": [
+        34
+      ],
+      "filename": "vfx_204_eco_del_guardiano.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 450
+    },
+    {
+      "id": 205,
+      "name": "Presenza Custode",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        35
+      ],
+      "filename": "vfx_205_presenza_custode.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 447
+    },
+    {
+      "id": 206,
+      "name": "Fumo Inquieto",
+      "type": "Fuoco",
+      "tier": "light",
+      "origins": [
+        99
+      ],
+      "filename": "vfx_206_fumo_inquieto.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 436
+    },
+    {
+      "id": 207,
+      "name": "Fiamma a 270°",
+      "type": "Fuoco",
+      "tier": "medium",
+      "origins": [
+        100
+      ],
+      "filename": "vfx_207_fiamma_a_270.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 446
+    },
+    {
+      "id": 208,
+      "name": "Morsa Terrigena",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        49
+      ],
+      "filename": "vfx_208_morsa_terrigena.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 442
+    },
+    {
+      "id": 209,
+      "name": "Soffocaterra",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        50
+      ],
+      "filename": "vfx_209_soffocaterra.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 463
+    },
+    {
+      "id": 210,
+      "name": "Battito Terrestre",
+      "type": "Terra",
+      "tier": "light",
+      "origins": [
+        62
+      ],
+      "filename": "vfx_210_battito_terrestre.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 24,
+      "duration": "667 ms",
+      "words": 446
+    },
+    {
+      "id": 211,
+      "name": "Zoccolata Fangosa",
+      "type": "Terra",
+      "tier": "medium",
+      "origins": [
+        63
+      ],
+      "filename": "vfx_211_zoccolata_fangosa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 454
+    },
+    {
+      "id": 212,
+      "name": "Scontro Colossale",
+      "type": "Normale",
+      "tier": "medium",
+      "origins": [
+        19
+      ],
+      "filename": "vfx_212_scontro_colossale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 454
+    },
+    {
+      "id": 213,
+      "name": "Movimento Continentale",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        51
+      ],
+      "filename": "vfx_213_movimento_continentale.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 461
+    },
+    {
+      "id": 214,
+      "name": "Passo Furtivo",
+      "type": "Oscurità",
+      "tier": "medium",
+      "origins": [
+        78
+      ],
+      "filename": "vfx_214_passo_furtivo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 438
+    },
+    {
+      "id": 215,
+      "name": "Cucù Settete",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        55
+      ],
+      "filename": "vfx_215_cucu_settete.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 468
+    },
+    {
+      "id": 216,
+      "name": "Rugiada Mattutina",
+      "type": "Acqua",
+      "tier": "medium",
+      "origins": [
+        98
+      ],
+      "filename": "vfx_216_rugiada_mattutina.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 467
+    },
+    {
+      "id": 217,
+      "name": "Boro Breath",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        109
+      ],
+      "filename": "vfx_217_boro_breath.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 464
+    },
+    {
+      "id": 218,
+      "name": "Boro Breath",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        110
+      ],
+      "filename": "vfx_218_boro_breath.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 464
+    },
+    {
+      "id": 219,
+      "name": "Visione Musiva",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        107
+      ],
+      "filename": "vfx_219_visione_musiva.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 462
+    },
+    {
+      "id": 220,
+      "name": "Ordine Imperiale",
+      "type": "Normale",
+      "tier": "heavy",
+      "origins": [
+        108
+      ],
+      "filename": "vfx_220_ordine_imperiale.png",
+      "anchor": "center",
+      "motion": "static",
+      "fps": 16,
+      "duration": "1000 ms",
+      "words": 461
+    },
+    {
+      "id": 221,
+      "name": "Furia Ionica",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        3,
+        4
+      ],
+      "filename": "vfx_221_furia_ionica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 557
+    },
+    {
+      "id": 222,
+      "name": "Colpo Cibernetico",
+      "type": "Status (Danno Fisso)",
+      "tier": "status",
+      "origins": [
+        87,
+        88
+      ],
+      "filename": "vfx_222_colpo_cibernetico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 566
+    },
+    {
+      "id": 223,
+      "name": "Scheggia Gelida",
+      "type": "Status (Danno Fisso)",
+      "tier": "status",
+      "origins": [
+        72,
+        73
+      ],
+      "filename": "vfx_223_scheggia_gelida.png",
+      "anchor": "target",
+      "motion": "projectile",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 575
+    },
+    {
+      "id": 224,
+      "name": "Flusso Vitale",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        17,
+        18
+      ],
+      "filename": "vfx_224_flusso_vitale.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 553
+    },
+    {
+      "id": 225,
+      "name": "Impatto Voltaico",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        27
+      ],
+      "filename": "vfx_225_impatto_voltaico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 476
+    },
+    {
+      "id": 226,
+      "name": "Calma Piatta",
+      "type": "Status (Sonno)",
+      "tier": "status",
+      "origins": [
+        43,
+        44
+      ],
+      "filename": "vfx_226_calma_piatta.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 544
+    },
+    {
+      "id": 227,
+      "name": "Impatto Statico",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        25
+      ],
+      "filename": "vfx_227_impatto_statico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 474
+    },
+    {
+      "id": 228,
+      "name": "Illusione Sincronica",
+      "type": "Status (Confusione)",
+      "tier": "status",
+      "origins": [
+        57
+      ],
+      "filename": "vfx_228_illusione_sincronica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 477
+    },
+    {
+      "id": 229,
+      "name": "Fuga Mentale",
+      "type": "Status (Confusione)",
+      "tier": "status",
+      "origins": [
+        68
+      ],
+      "filename": "vfx_229_fuga_mentale.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 471
+    },
+    {
+      "id": 230,
+      "name": "Barriera elettrica",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        21
+      ],
+      "filename": "vfx_230_barriera_elettrica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 478
+    },
+    {
+      "id": 231,
+      "name": "Tocco Risanante",
+      "type": "Status (Cura Status e Recupero Basso HP)",
+      "tier": "status",
+      "origins": [
+        66
+      ],
+      "filename": "vfx_231_tocco_risanante.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 481
+    },
+    {
+      "id": 232,
+      "name": "Soffio Purificante",
+      "type": "Status (Cura Status e Recupero Basso HP)",
+      "tier": "status",
+      "origins": [
+        82
+      ],
+      "filename": "vfx_232_soffio_purificante.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 474
+    },
+    {
+      "id": 233,
+      "name": "Acqua Curativa",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        61
+      ],
+      "filename": "vfx_233_acqua_curativa.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 478
+    },
+    {
+      "id": 234,
+      "name": "Ombra del Riposo",
+      "type": "Status (Sonno)",
+      "tier": "status",
+      "origins": [
+        7,
+        8
+      ],
+      "filename": "vfx_234_ombra_del_riposo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 552
+    },
+    {
+      "id": 235,
+      "name": "Morso Ardente",
+      "type": "Status (Danno Fisso)",
+      "tier": "status",
+      "origins": [
+        93,
+        94
+      ],
+      "filename": "vfx_235_morso_ardente.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 560
+    },
+    {
+      "id": 236,
+      "name": "Caos Psichico",
+      "type": "Status (Confusione)",
+      "tier": "status",
+      "origins": [
+        75,
+        76
+      ],
+      "filename": "vfx_236_caos_psichico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 552
+    },
+    {
+      "id": 237,
+      "name": "Battito Animale",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        37,
+        38
+      ],
+      "filename": "vfx_237_battito_animale.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 559
+    },
+    {
+      "id": 238,
+      "name": "Rilascio Cinetico",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        29
+      ],
+      "filename": "vfx_238_rilascio_cinetico.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 468
+    },
+    {
+      "id": 239,
+      "name": "Scioglimento Muscolare",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        85
+      ],
+      "filename": "vfx_239_scioglimento_muscolare.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 466
+    },
+    {
+      "id": 240,
+      "name": "Disperdi Tensione",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        46
+      ],
+      "filename": "vfx_240_disperdi_tensione.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 472
+    },
+    {
+      "id": 241,
+      "name": "Abbraccio Curativo",
+      "type": "Status (Cura Status e Recupero Basso HP)",
+      "tier": "status",
+      "origins": [
+        102
+      ],
+      "filename": "vfx_241_abbraccio_curativo.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 474
+    },
+    {
+      "id": 242,
+      "name": "Papille Paralizzanti",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        70
+      ],
+      "filename": "vfx_242_papille_paralizzanti.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 480
+    },
+    {
+      "id": 243,
+      "name": "Siero Corrosivo",
+      "type": "Status (Veleno)",
+      "tier": "status",
+      "origins": [
+        22
+      ],
+      "filename": "vfx_243_siero_corrosivo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 461
+    },
+    {
+      "id": 244,
+      "name": "Rilascio Elettrico",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        23
+      ],
+      "filename": "vfx_244_rilascio_elettrico.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 470
+    },
+    {
+      "id": 245,
+      "name": "Fine della Stasi",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        83
+      ],
+      "filename": "vfx_245_fine_della_stasi.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 462
+    },
+    {
+      "id": 246,
+      "name": "Defibrillazione",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        65
+      ],
+      "filename": "vfx_246_defibrillazione.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 470
+    },
+    {
+      "id": 247,
+      "name": "Sguardo Ipnotico",
+      "type": "Status (Confusione)",
+      "tier": "status",
+      "origins": [
+        11,
+        12
+      ],
+      "filename": "vfx_247_sguardo_ipnotico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 551
+    },
+    {
+      "id": 248,
+      "name": "Iniezione Velenosa",
+      "type": "Status (Veleno)",
+      "tier": "status",
+      "origins": [
+        96,
+        97
+      ],
+      "filename": "vfx_248_iniezione_velenosa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 552
+    },
+    {
+      "id": 249,
+      "name": "Impatto Genetico",
+      "type": "Status (Danno Fisso)",
+      "tier": "status",
+      "origins": [
+        80,
+        81
+      ],
+      "filename": "vfx_249_impatto_genetico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 556
+    },
+    {
+      "id": 250,
+      "name": "Soffio della Foresta",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        53,
+        54
+      ],
+      "filename": "vfx_250_soffio_della_foresta.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 573
+    },
+    {
+      "id": 251,
+      "name": "Sonno stellato",
+      "type": "Status (Sonno)",
+      "tier": "status",
+      "origins": [
+        31
+      ],
+      "filename": "vfx_251_sonno_stellato.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 465
+    },
+    {
+      "id": 252,
+      "name": "Goccia Tossica",
+      "type": "Status (Veleno)",
+      "tier": "status",
+      "origins": [
+        106
+      ],
+      "filename": "vfx_252_goccia_tossica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 459
+    },
+    {
+      "id": 253,
+      "name": "Folgorazione",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        48
+      ],
+      "filename": "vfx_253_folgorazione.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 477
+    },
+    {
+      "id": 254,
+      "name": "Gargantua",
+      "type": "Status (Sonno)",
+      "tier": "status",
+      "origins": [
+        33
+      ],
+      "filename": "vfx_254_gargantua.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 465
+    },
+    {
+      "id": 255,
+      "name": "Lento Recupero",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        104
+      ],
+      "filename": "vfx_255_lento_recupero.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 476
+    },
+    {
+      "id": 256,
+      "name": "Stasi Elettrica",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        44
+      ],
+      "filename": "vfx_256_stasi_elettrica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 480
+    },
+    {
+      "id": 257,
+      "name": "Palmo del Risveglio",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        64
+      ],
+      "filename": "vfx_257_palmo_del_risveglio.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 475
+    },
+    {
+      "id": 258,
+      "name": "Vento del Disordine",
+      "type": "Status (Confusione)",
+      "tier": "status",
+      "origins": [
+        20
+      ],
+      "filename": "vfx_258_vento_del_disordine.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 464
+    },
+    {
+      "id": 259,
+      "name": "Barriera Psichica",
+      "type": "Status (Confusione)",
+      "tier": "status",
+      "origins": [
+        77
+      ],
+      "filename": "vfx_259_barriera_psichica.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 465
+    },
+    {
+      "id": 260,
+      "name": "RInnovo Neurostatico",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        14,
+        15
+      ],
+      "filename": "vfx_260_rinnovo_neurostatico.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 546
+    },
+    {
+      "id": 261,
+      "name": "Dono del Tempo",
+      "type": "Status (Danno Fisso)",
+      "tier": "status",
+      "origins": [
+        40,
+        41
+      ],
+      "filename": "vfx_261_dono_del_tempo.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 577
+    },
+    {
+      "id": 262,
+      "name": "Sospiro Fiabesco",
+      "type": "Status (Sonno)",
+      "tier": "status",
+      "origins": [
+        90,
+        91
+      ],
+      "filename": "vfx_262_sospiro_fiabesco.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 548
+    },
+    {
+      "id": 263,
+      "name": "Rugiada Curativa",
+      "type": "Status (Cura Status e Recupero Basso HP)",
+      "tier": "status",
+      "origins": [
+        59,
+        60
+      ],
+      "filename": "vfx_263_rugiada_curativa.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 568
+    },
+    {
+      "id": 264,
+      "name": "Reset Corporeo",
+      "type": "Status (Cura Paralisi)",
+      "tier": "status",
+      "origins": [
+        35
+      ],
+      "filename": "vfx_264_reset_corporeo.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 469
+    },
+    {
+      "id": 265,
+      "name": "Onde Rilassanti",
+      "type": "Status (Sonno)",
+      "tier": "status",
+      "origins": [
+        100
+      ],
+      "filename": "vfx_265_onde_rilassanti.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 453
+    },
+    {
+      "id": 266,
+      "name": "Aura Velenosa",
+      "type": "Status (Veleno)",
+      "tier": "status",
+      "origins": [
+        50
+      ],
+      "filename": "vfx_266_aura_velenosa.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 462
+    },
+    {
+      "id": 267,
+      "name": "Ristoro Completo",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        63
+      ],
+      "filename": "vfx_267_ristoro_completo.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 481
+    },
+    {
+      "id": 268,
+      "name": "Melodia Sfasata",
+      "type": "Status (Confusione)",
+      "tier": "status",
+      "origins": [
+        19
+      ],
+      "filename": "vfx_268_melodia_sfasata.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 472
+    },
+    {
+      "id": 269,
+      "name": "Spirito della Fuoco",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        51
+      ],
+      "filename": "vfx_269_spirito_della_fuoco.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 490
+    },
+    {
+      "id": 270,
+      "name": "Catene rigide",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        78
+      ],
+      "filename": "vfx_270_catene_rigide.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 472
+    },
+    {
+      "id": 271,
+      "name": "Torpore Artico",
+      "type": "Status (Paralisi)",
+      "tier": "status",
+      "origins": [
+        55
+      ],
+      "filename": "vfx_271_torpore_artico.png",
+      "anchor": "target",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 485
+    },
+    {
+      "id": 272,
+      "name": "Linfa Ristoratrice",
+      "type": "Status (Recupero Alto HP)",
+      "tier": "status",
+      "origins": [
+        98
+      ],
+      "filename": "vfx_272_linfa_ristoratrice.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 469
+    },
+    {
+      "id": 273,
+      "name": "Comando draconico",
+      "type": "Status (Immunità da Status)",
+      "tier": "status",
+      "origins": [
+        107
+      ],
+      "filename": "vfx_273_comando_draconico.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 479
+    },
+    {
+      "id": 274,
+      "name": "Comando draconico",
+      "type": "Status (Immunità da Status)",
+      "tier": "status",
+      "origins": [
+        108
+      ],
+      "filename": "vfx_274_comando_draconico.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 483
+    },
+    {
+      "id": 275,
+      "name": "Imposizione oculare",
+      "type": "Status (Immunità da Status)",
+      "tier": "status",
+      "origins": [
+        109
+      ],
+      "filename": "vfx_275_imposizione_oculare.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 469
+    },
+    {
+      "id": 276,
+      "name": "Ordine galattico",
+      "type": "Status (Immunità da Status)",
+      "tier": "status",
+      "origins": [
+        110
+      ],
+      "filename": "vfx_276_ordine_galattico.png",
+      "anchor": "self",
+      "motion": "static",
+      "fps": 20,
+      "duration": "800 ms",
+      "words": 470
+    }
+  ]
+}

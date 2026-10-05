@@ -25,9 +25,9 @@ describe('applyAdminTheme', () => {
     expect(properties.get('--arka-primary')).toBe(defaultAdminTheme.colors.primary)
     expect(properties.get('--arka-bg')).toBe(defaultAdminTheme.colors.bg)
     expect(properties.get('--hp-high')).toBe(defaultAdminTheme.colors.hpHigh)
-    expect(properties.get('--arka-panel-radius')).toBe('16px')
+    expect(properties.get('--arka-panel-radius')).toBe(`${defaultAdminTheme.ui.panelRadius}px`)
     expect(properties.get('--arka-stage-scale')).toBe('1')
-    expect(properties.get('--arka-font-scale')).toBe('1')
+    expect(properties.get('--arka-font-scale')).toBe(String(defaultAdminTheme.ui.fontScale))
   })
 
   it('non genera errori con un tema valido', () => {

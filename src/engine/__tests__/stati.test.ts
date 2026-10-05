@@ -90,25 +90,25 @@ describe('risolviStatoInizioTurno - Avvelenato', () => {
 })
 
 describe('risolviStatoInizioTurno - Addormentato', () => {
-  it('rng < 0.5 → svegliato (stato pulito), puoAgire=true', () => {
+  it('dado 4-6 → svegliato (stato pulito), puoAgire=true', () => {
     const i = applicaStato(mkIstanza(1, 5), 'Addormentato')
-    const r = risolviStatoInizioTurno(i, 12, () => 0.3)
+    const r = risolviStatoInizioTurno(i, 12, () => 0.8)
     expect(r.istanza.stato).toBeUndefined()
     expect(r.puoAgire).toBe(true)
   })
-  it('rng >= 0.5 → resta addormentato, turno saltato, durata -1', () => {
+  it('dado 1-3 → resta addormentato, turno saltato, durata -1', () => {
     const i = applicaStato(mkIstanza(1, 5), 'Addormentato') // dur 3
-    const r = risolviStatoInizioTurno(i, 12, () => 0.7)
+    const r = risolviStatoInizioTurno(i, 12, () => 0.2)
     expect(r.puoAgire).toBe(false)
     expect(r.istanza.stato?.turniRimanenti).toBe(2)
   })
-  it('durata 1 + rng >= 0.5 → cleared dopo turno saltato', () => {
+  it('durata 1 + dado 1-3 → cleared dopo turno saltato', () => {
     const base = mkIstanza(1, 5)
     const i: PokemonIstanza = {
       ...base,
       stato: { tipo: 'Addormentato', turniRimanenti: 1 },
     }
-    const r = risolviStatoInizioTurno(i, 12, () => 0.7)
+    const r = risolviStatoInizioTurno(i, 12, () => 0.2)
     expect(r.puoAgire).toBe(false)
     expect(r.istanza.stato).toBeUndefined()
   })

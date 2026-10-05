@@ -1,3 +1,23 @@
+import selections from '@/data/audio-selections.json'
+import { assetUrl } from './assetUrl'
+
+const activeClips = new Set<HTMLAudioElement>()
+export function playSelectedAudio(key: string): () => void {
+  const choice = (selections.choices as Record<string, { soundId: string; volume: number }>)[key]
+  const clip = choice && (selections.sounds as Record<string, { src: string }>)[choice.soundId]
+  if (muted || !clip || typeof Audio === 'undefined') return () => {}
+  const player = new Audio(assetUrl(clip.src))
+  player.volume = choice.volume
+  const stop = () => { player.pause(); activeClips.delete(player) }
+  // Bound overlapping effects during rapid UI input.
+  if (activeClips.size >= 8) { const oldest = activeClips.values().next().value; oldest?.pause(); if (oldest) activeClips.delete(oldest) }
+  activeClips.add(player)
+  player.onended = stop
+  player.onerror = stop
+  void player.play().catch(stop)
+  return stop
+}
+
 export type SoundId =
   | 'click'
   | 'battle-start'
@@ -123,7 +143,7 @@ function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1): void {
 
 export function setAudioMuted(nextMuted: boolean): void {
   muted = nextMuted
-  if (muted) stopMusic()
+  if (muted) { stopMusic(); for (const clip of activeClips) clip.pause(); activeClips.clear() }
 }
 
 export function isAudioMuted(): boolean {
@@ -132,6 +152,7 @@ export function isAudioMuted(): boolean {
 
 export function playSound(sound: SoundId): void {
   if (muted) return
+  if (selections.choices[`event:${sound}`]) { playSelectedAudio(`event:${sound}`); return }
   for (const step of SOUND_BANK[sound]) playTone(step)
 }
 

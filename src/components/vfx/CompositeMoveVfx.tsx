@@ -64,6 +64,7 @@ export function CompositeMoveVfx({
       className="pointer-events-none absolute inset-0 overflow-visible"
       data-move-vfx-id={effect.move.id}
       data-move-vfx-recipe={recipe.id}
+      data-move-vfx-event={effect.id}
       aria-hidden="true"
     >
       {recipe.steps.map((step, index) => (

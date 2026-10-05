@@ -1,6 +1,7 @@
 import type { MossaDef, TipoPokemon } from '@/types'
 import type { MoveVfxAssetId } from './vfxManifest'
 import { getCuratedBattleAssetId } from './vfxCuration'
+import { getMoveVfxAssignment } from './moveVfxAssignments'
 import type {
   MoveVfxFeedback,
   MoveVfxProfile,
@@ -129,7 +130,7 @@ function buildProfile(
   }
 }
 
-export function resolveMoveVfxProfile(move: MossaDef): MoveVfxProfile {
+function inferMoveVfxProfile(move: MossaDef): MoveVfxProfile {
   if (move.effetto === 'CURA' || move.effetto === 'CURA_PCT') {
     return buildProfile('heal', 'effect', 'subtle')
   }
@@ -161,6 +162,20 @@ export function resolveMoveVfxProfile(move: MossaDef): MoveVfxProfile {
 
   const fallback = TYPE_FALLBACK[move.tipo] ?? 'blunt'
   return buildProfile(fallback, 'type-fallback')
+}
+
+export function resolveMoveVfxProfile(move: MossaDef): MoveVfxProfile {
+  const profile = inferMoveVfxProfile(move)
+  const assignment = getMoveVfxAssignment(move)
+  if (!assignment) return profile
+  const intensity = assignment.tier === 'status' ? 'subtle' : assignment.tier
+  return {
+    ...profile,
+    archetype: assignment.tier === 'status' && profile.archetype !== 'heal' ? 'status' : profile.archetype,
+    intensity,
+    // Healing/status animation size must not introduce physical hit reactions.
+    feedback: FEEDBACK[profile.archetype === 'heal' ? 'subtle' : intensity],
+  }
 }
 
 const BEAM_BY_TYPE: Record<TipoPokemon, MoveVfxAssetId> = {

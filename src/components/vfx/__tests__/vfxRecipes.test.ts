@@ -40,9 +40,7 @@ describe('MOVE_VFX_RECIPES', () => {
   })
 
   it('uses recipe timing for matching moves', () => {
-    const electricMove = MOSSE.find((move) => resolveMoveVfxAsset(move).id === 'energyGif')
-    expect(electricMove).toBeTruthy()
-    if (!electricMove) return
+    const electricMove = { ...MOSSE[0], id: 9000, nome: 'Dardo elettrico', tipo: 'Elettro' as const }
 
     const recipe = resolveMoveVfxRecipe(electricMove)
     expect(recipe?.id).toBe('electric-bolt')
@@ -50,19 +48,18 @@ describe('MOVE_VFX_RECIPES', () => {
     expect(getMoveVfxImpactDelayMs(electricMove)).toBe(recipe?.impactAtMs)
   })
 
-  it('keeps the Vyrath/Wormaren vertical slice on composite recipes', () => {
-    const byId = (id: number) => MOSSE.find((move) => move.id === id)!
-
-    expect(resolveMoveVfxRecipe(byId(1))?.id).toBe('neutral-beam')
-    expect(resolveMoveVfxRecipe(byId(111))?.id).toBe('nature-shimmer')
-    expect(resolveMoveVfxRecipe(byId(82))?.id).toBe('heavy-impact')
-    expect(resolveMoveVfxRecipe(byId(192))?.id).toBe('fire-pulse-impact')
+  it('uses single specific effects for configured moves and retains recipes for unassigned moves', () => {
+    for (const move of MOSSE) {
+      expect(resolveMoveVfxAsset(move).id).toMatch(/^moveset:/)
+      expect(resolveMoveVfxRecipe(move)).toBeUndefined()
+    }
+    const unassigned = { ...MOSSE[0], id: 9000, nome: 'Dardo elettrico', tipo: 'Elettro' as const }
+    expect(resolveMoveVfxRecipe(unassigned)?.id).toBe('electric-bolt')
   })
 
   it('bypasses automatic recipes when an admin override is active', () => {
-    const electricMove = MOSSE.find((move) => resolveMoveVfxAsset(move).id === 'energyGif')
-    expect(electricMove).toBeTruthy()
-    if (!electricMove) return
+    const electricMove = { ...MOSSE[0], id: 9000, nome: 'Dardo elettrico', tipo: 'Elettro' as const }
+    expect(resolveMoveVfxRecipe(electricMove)?.id).toBe('electric-bolt')
 
     useVfxAdminStore.getState().setOverride({
       moveId: electricMove.id,

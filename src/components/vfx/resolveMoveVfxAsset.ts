@@ -16,9 +16,10 @@ import type {
 } from './types'
 import { getAdminMoveVfxOverride } from '@store/vfxAdminStore'
 import { getCuratedBattleAssetId, getVfxCurationPreviewAsset } from './vfxCuration'
+import { getMoveVfxAssignment } from './moveVfxAssignments'
 
 function resolveBaseMoveVfxAssetId(move: MossaDef): MoveVfxAssetId {
-  return MOVE_VFX_BY_MOVE_ID[move.id] ?? resolveProfileAssetId(move)
+  return getMoveVfxAssignment(move)?.assetId ?? MOVE_VFX_BY_MOVE_ID[move.id] ?? resolveProfileAssetId(move)
 }
 
 export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
@@ -27,6 +28,14 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
   const adminOverride = getAdminMoveVfxOverride(move.id)
 
   if (!adminOverride) {
+    const assignment = getMoveVfxAssignment(move)
+    if (assignment?.assetId) {
+      return {
+        ...baseAsset,
+        anchor: assignment.anchor ?? baseAsset.anchor,
+        scale: assignment.scale ?? baseAsset.scale,
+      }
+    }
     // Preserve explicit per-move settings. Automatic selections share the exact
     // saved calibration used in the Lab, applied once to the original asset.
     const profile = resolveMoveVfxProfile(move)
@@ -52,7 +61,7 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
 export function resolveMoveVfxRecipe(move: MossaDef): MoveVfxRecipe | undefined {
   // An admin override is an explicit request for a single asset. Keep the editor
   // predictable by bypassing automatic recipes while an override is active.
-  if (getAdminMoveVfxOverride(move.id)) return undefined
+  if (getAdminMoveVfxOverride(move.id) || getMoveVfxAssignment(move)?.assetId) return undefined
 
   const assetId = resolveBaseMoveVfxAssetId(move)
   const recipeId = MOVE_VFX_RECIPE_BY_PRIMARY_ASSET[assetId]
@@ -64,7 +73,12 @@ export function getMoveVfxFeedback(move: MossaDef): MoveVfxFeedback {
 }
 
 export function getMoveVfxImpactDelayMs(move: MossaDef): number {
-  return resolveMoveVfxRecipe(move)?.impactAtMs ?? resolveMoveVfxAsset(move).impactAtMs ?? 0
+  const impactMs = resolveMoveVfxRecipe(move)?.impactAtMs ?? resolveMoveVfxAsset(move).impactAtMs ?? 0
+  const durationMs = getMoveVfxDurationMs(move)
+  const finiteDurationMs = Number.isFinite(durationMs) ? Math.max(0, durationMs) : 0
+  // An editor override may shorten the effect past its original impact marker.
+  // The native hit planner and the rendered effect must use this same clock.
+  return Math.max(0, Math.min(Number.isFinite(impactMs) ? impactMs : 0, finiteDurationMs))
 }
 
 export function getMoveVfxDurationMs(move: MossaDef): number {

@@ -3,14 +3,10 @@ export interface ArkamonMotionProfile {
   idleTilt: number
   idleScale: number
   idleSeconds: number
-  physicalDistance: number
-  physicalLift: number
-  physicalTilt: number
-  physicalScale: number
-  specialLift: number
-  specialTilt: number
-  specialScale: number
-  specialGlow: string
+  attackDistance: number
+  attackLift: number
+  attackTilt: number
+  attackScale: number
   hitScale: number
   koTilt: number
   victoryLift: number
@@ -22,14 +18,10 @@ const DEFAULT_MOTION_PROFILE: ArkamonMotionProfile = {
   idleTilt: 0.35,
   idleScale: 1.012,
   idleSeconds: 2.6,
-  physicalDistance: 16,
-  physicalLift: 4,
-  physicalTilt: 2,
-  physicalScale: 1.04,
-  specialLift: 4,
-  specialTilt: 1.2,
-  specialScale: 1.055,
-  specialGlow: 'rgba(203, 213, 225, 0.82)',
+  attackDistance: 16,
+  attackLift: 4,
+  attackTilt: 2,
+  attackScale: 1.04,
   hitScale: 0.95,
   koTilt: 7,
   victoryLift: 8,
@@ -48,14 +40,10 @@ export const ARKAMON_MOTION_PROFILES: Partial<Record<number, ArkamonMotionProfil
     idleTilt: 0.55,
     idleScale: 1.018,
     idleSeconds: 2.35,
-    physicalDistance: 22,
-    physicalLift: 8,
-    physicalTilt: 3.2,
-    physicalScale: 1.055,
-    specialLift: 7,
-    specialTilt: 2.2,
-    specialScale: 1.075,
-    specialGlow: 'rgba(191, 219, 254, 0.95)',
+    attackDistance: 22,
+    attackLift: 8,
+    attackTilt: 3.2,
+    attackScale: 1.055,
     hitScale: 0.93,
     koTilt: 10,
     victoryLift: 12,
@@ -68,14 +56,10 @@ export const ARKAMON_MOTION_PROFILES: Partial<Record<number, ArkamonMotionProfil
     idleTilt: 0.9,
     idleScale: 1.022,
     idleSeconds: 3.1,
-    physicalDistance: 14,
-    physicalLift: 3,
-    physicalTilt: 5,
-    physicalScale: 1.085,
-    specialLift: 3,
-    specialTilt: 4.5,
-    specialScale: 1.095,
-    specialGlow: 'rgba(217, 164, 88, 0.95)',
+    attackDistance: 14,
+    attackLift: 3,
+    attackTilt: 5,
+    attackScale: 1.085,
     hitScale: 0.9,
     koTilt: 13,
     victoryLift: 6,
