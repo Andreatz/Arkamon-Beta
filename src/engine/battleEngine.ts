@@ -19,6 +19,7 @@ import { getPokemon, getMossa, efficaciaTipo, CRESCITA_HP } from '@data/index'
 
 /** Durata iniziale (turni) per ciascuno stato. -1 = indefinita. */
 export const DURATA_STATO: Record<StatoAlterato, number> = {
+  Paralizzato: -1,
   Confuso: 2,
   Addormentato: 3,
   Avvelenato: -1,
@@ -29,6 +30,8 @@ export const DURATA_STATO: Record<StatoAlterato, number> = {
  * Le chiavi corrispondono a `MossaDef.effetto` (campo già presente).
  */
 const EFFETTO_TO_STATO: Record<string, StatoAlterato> = {
+  PARALISI: 'Paralizzato',
+  PARALIZZATO: 'Paralizzato',
   CONFUSIONE: 'Confuso',
   SONNO: 'Addormentato',
   VELENO: 'Avvelenato',
@@ -87,6 +90,7 @@ export function risolviStatoInizioTurno(
   puoAgire: boolean
   dannoSubito: number
   messaggi: string[]
+  tiroStato?: number
 } {
   if (!istanza.stato) {
     return { istanza, puoAgire: true, dannoSubito: 0, messaggi: [] }
@@ -97,14 +101,21 @@ export function risolviStatoInizioTurno(
   let hp = istanza.hp
   let dannoSubito = 0
   let puoAgire = true
+  let tiroStato: number | undefined
 
-  if (stato.tipo === 'Avvelenato') {
+  if (stato.tipo === 'Paralizzato') {
+    tiroStato = rollD6(1, rng)
+    if (tiroStato >= 5) { stato = undefined; messaggi.push(`${istanza.nome}: dado ${tiroStato}, paralisi terminata!`) }
+    else messaggi.push(`${istanza.nome}: dado ${tiroStato}, resta paralizzato e agisce per secondo.`)
+  } else if (stato.tipo === 'Avvelenato') {
     dannoSubito = Math.max(1, Math.floor(hpMax * 0.1))
     hp = Math.max(0, hp - dannoSubito)
     messaggi.push(`${istanza.nome} subisce ${dannoSubito} danni dal veleno.`)
     // Veleno indefinito: nessun decremento
   } else if (stato.tipo === 'Addormentato') {
-    if (rng() < 0.5) {
+    tiroStato = rollD6(1, rng)
+    messaggi.push(`Tentativo di risveglio: dado ${tiroStato} (4–6 per svegliarsi).`)
+    if (tiroStato >= 4) {
       messaggi.push(`${istanza.nome} si è svegliato!`)
       stato = undefined
     } else {
@@ -130,6 +141,7 @@ export function risolviStatoInizioTurno(
   }
 
   return {
+    tiroStato,
     istanza: { ...istanza, hp, stato },
     puoAgire,
     dannoSubito,
@@ -325,6 +337,7 @@ export function applicaMossaCura(
   istanza: PokemonIstanza
   hpRecuperato: number
   messaggi: string[]
+  tiroStato?: number
 } {
   const messaggi = [`${attaccante.nome} usa ${mossa.nome}!`]
   if (!èMossaCura(mossa) || mossa.valoreEffetto == null) {
@@ -497,8 +510,11 @@ export function applicaXP(
 export function determinaIniziativa(
   livelloA: number,
   livelloB: number,
-  rng: () => number = Math.random
+  rng: () => number = Math.random,
+  statoA?: StatoAlterato,
+  statoB?: StatoAlterato
 ): Lato {
+  if ((statoA === 'Paralizzato') !== (statoB === 'Paralizzato')) return statoA === 'Paralizzato' ? 'B' : 'A'
   if (livelloA > livelloB) return 'A'
   if (livelloB > livelloA) return 'B'
   return rng() < 0.5 ? 'A' : 'B'

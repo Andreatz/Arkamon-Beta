@@ -1,3 +1,6 @@
+import { nextBattleSide } from '@/components/battle/battleRoundOrder'
+import { BattleOpeningOverlay } from '@/components/battle/BattleOpeningOverlay'
+import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
 import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
@@ -71,6 +74,7 @@ import {
 } from '@/components/vfx/battleVfxPosition'
 
 const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
+  Paralizzato: { label: 'PAR', color: 'bg-amber-500', emoji: '⚡' },
   Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
   Addormentato: { label: 'ZZZ', color: 'bg-blue-500', emoji: '😴' },
   Avvelenato: { label: 'PSN', color: 'bg-purple-600', emoji: '☠️' },
@@ -184,6 +188,19 @@ export function BattagliaScene() {
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
+  const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
+  const [statusRoll, setStatusRoll] = useState<{ value: number; title: string; done: () => void } | null>(null)
+  const statusPending = useRef(false)
+  const actedThisRound = useRef(new Set<'A' | 'B'>())
+  const latestPokemon = useRef({ A: pkmnA, B: pkmnB })
+  latestPokemon.current = { A: pkmnA, B: pkmnB }
+  function nextSide(side: 'A' | 'B', a = latestPokemon.current.A, b = latestPokemon.current.B): 'A' | 'B' {
+    return nextBattleSide(actedThisRound.current, side, battaglia?.turnoCorrente ?? 'A', a?.stato?.tipo, b?.stato?.tipo)
+  }
+  function presentStatus(result: ReturnType<typeof risolviStatoInizioTurno>, pokemon: PokemonIstanza, done: () => void) {
+    statusPending.current = true
+    setStatusRoll({ value: result.tiroStato!, title: `${pokemon.nome} · ${pokemon.stato?.tipo === 'Paralizzato' ? 'Paralisi: esci con 5–6' : 'Sonno: svegliati con 4–6'}`, done: () => { statusPending.current = false; setStatusRoll(null); done() } })
+  }
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   const [impactFlash, setImpactFlash] = useState<'A' | 'B' | null>(null)
   const [shakeStrengthPx, setShakeStrengthPx] = useState(8)
@@ -436,7 +453,7 @@ export function BattagliaScene() {
       scheduleFeedbackTimer(() => setCameraShake(null), feedback.cameraShakeMs)
     }
 
-    if (playHitSound) playSound('hit')
+    if (playHitSound && !getMoveVfxAssignment(move)) playSound('hit')
   }
 
   const playMoveVisuals = (
@@ -622,6 +639,7 @@ export function BattagliaScene() {
   }
 
   const passaTurnoAaB = (nuovoB: PokemonIstanza, delayMs = 1500) => {
+    if (nextSide('A', latestPokemon.current.A, nuovoB) === 'A') { setTurnoA(true); return }
     setTurnoA(false)
     if (isPvP) {
       setAttesaPassaggio({ direzione: 'A→B', pendingB: nuovoB })
@@ -630,7 +648,8 @@ export function BattagliaScene() {
     window.setTimeout(() => setAttesaAvversario(nuovoB), Math.min(delayMs, 250))
   }
 
-  const passaTurnoBaA = () => {
+  const passaTurnoBaA = (updatedA = latestPokemon.current.A, updatedB = latestPokemon.current.B) => {
+    if (nextSide('B', updatedA, updatedB) === 'B' && latestPokemon.current.B) { setTurnoA(false); if (isPvP) setAttesaPassaggio({ direzione: 'A→B', pendingB: latestPokemon.current.B }); else setAttesaAvversario(latestPokemon.current.B); return }
     setAttesaAvversario(null)
     if (isPvP) {
       setAttesaPassaggio({ direzione: 'B→A' })
@@ -720,11 +739,13 @@ export function BattagliaScene() {
     return xpRes.istanza
   }
 
-  const eseguiMossa = (numeroMossa: 0 | 1 | 2) => {
+  const eseguiMossa = (numeroMossa: 0 | 1 | 2, resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>) => {
+    if (coinOpen || statusPending.current) return
     if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current) return
     resetInfoBox()
 
-    const statoRes = risolviStatoInizioTurno(pkmnA, hpMaxA)
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA)
+    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => eseguiMossa(numeroMossa, statoRes)); return }
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
@@ -906,10 +927,12 @@ export function BattagliaScene() {
     setTerminata(true)
   }
 
-  const turnoAvversario = (statoBcorrente: PokemonIstanza) => {
+  const turnoAvversario = (statoBcorrente: PokemonIstanza, resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>) => {
+    if (coinOpen || statusPending.current) return
     resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
-    const statoRes = risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
+    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, statoBcorrente, () => turnoAvversario(statoBcorrente, statoRes)); return }
     const bEffettivo = statoRes.istanza
     setPkmnB(bEffettivo)
     setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
@@ -1076,7 +1099,7 @@ export function BattagliaScene() {
         return
       }
 
-      passaTurnoBaA()
+      passaTurnoBaA(nuovoA, bDopoAutodanno)
     })
   }
 
@@ -1111,6 +1134,7 @@ export function BattagliaScene() {
 
   return (
     <motion.div
+      ref={(node) => { if (node) for (const child of Array.from(node.children)) if (child instanceof HTMLElement && child.getAttribute('role') !== 'dialog') child.inert = coinOpen || statusRoll !== null }}
       data-battle-layout-root
       className="w-full h-full relative bg-cover bg-center"
       style={{ backgroundImage: `url(${bgBattaglia})` }}
@@ -1127,11 +1151,13 @@ export function BattagliaScene() {
         ease: 'easeOut',
       }}
     >
+      {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
+      {statusRoll ? <BattleOpeningOverlay kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
       <AnimatePresence>
-        {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx}
+        {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} soundEnabled
           onStart={() => notifyMoveVfx(moveVfx.id, 'onStart')}
           onImpact={() => notifyMoveVfx(moveVfx.id, 'onImpact')}
           onComplete={() => notifyMoveVfx(moveVfx.id, 'onComplete')}
@@ -1877,20 +1903,21 @@ function HpBar({
         backgroundRepeat: 'no-repeat',
       }}
     >
+          {badge && (
+            <span
+              className={`absolute right-0 top-full mt-1 z-30 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${badge.color} text-white`}
+              title={stato} aria-label={`Stato: ${stato}`}
+            >
+              {badge.emoji} {badge.label}
+            </span>
+          )}
       <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
         <span
           data-admin-layout-text-key="pokemon-name"
           className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.25vw,18px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           {nome}
-          {badge && (
-            <span
-              className={`ml-2 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${badge.color} text-white`}
-              title={stato}
-            >
-              {badge.emoji} {badge.label}
-            </span>
-          )}
+
         </span>
         <span
           data-admin-layout-text-key="pokemon-level"

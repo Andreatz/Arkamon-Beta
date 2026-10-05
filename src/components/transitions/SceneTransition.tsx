@@ -5,6 +5,7 @@ import { SceneInputContext, SceneNavigationContext } from './SceneNavigationCont
 import { SceneTransitionOverlay } from './SceneTransitionOverlay'
 import { createSceneTransitionState, getSceneKey, sceneTransitionReducer } from './sceneTransitionState'
 import { getSceneTransitionProfile } from './sceneTransitionProfiles'
+import { playSelectedAudio } from '@/utils/soundManager'
 import './sceneTransitions.css'
 
 interface SceneTransitionProps {
@@ -22,6 +23,9 @@ export function SceneTransition({ navigation, renderScene, children }: SceneTran
       ? { ...initialState, phase: 'cover' as const, revision: 1 }
       : initialState
   })
+  useLayoutEffect(() => {
+    if (state.phase === 'cover' && state.target.scena !== 'battaglia') return playSelectedAudio('event:transition')
+  }, [state.phase, state.revision, state.target.scena])
   const lastRequest = useRef({ navigation, reducedMotion })
   const sceneRef = useRef<HTMLDivElement>(null)
   const wasTransitioning = useRef(false)

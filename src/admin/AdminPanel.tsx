@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
 import { AdminAssetEditor } from './AdminAssetEditor'
 import { AdminColorEditor } from './AdminColorEditor'
@@ -25,12 +25,16 @@ const tabs: { id: AdminTab; label: string }[] = [
 ]
 
 export function AdminPanel() {
+  const [width, setWidth] = useState(() => { try { return Math.max(360, Math.min(1200, Number(localStorage.getItem('arkamon-admin-width')) || 720)) } catch { return 720 } })
+  const [expanded, setExpanded] = useState(false)
+  useEffect(() => { try { localStorage.setItem('arkamon-admin-width', String(width)) } catch { /* Optional preference. */ } }, [width])
   const [activeTab, setActiveTab] = useState<AdminTab>('colors')
   const setPanelOpen = useAdminStore((state) => state.setPanelOpen)
 
   return (
     <section
       data-admin-marker={ADMIN_MODE_MARKER}
+      style={{ width: expanded ? 'calc(100% - 1.5rem)' : `min(${width}px, calc(100% - 1.5rem))`, height: expanded ? 'calc(100% - 4rem)' : undefined, fontSize: '14px' }}
       className="arka-admin-panel pointer-events-auto absolute right-3 top-12 flex max-h-[calc(100%-4rem)] w-[min(25rem,calc(100%-1.5rem))] flex-col overflow-hidden rounded-[var(--arka-panel-radius)] border border-[var(--arka-primary)] bg-[var(--arka-surface)] text-[var(--arka-text)] shadow-2xl"
     >
       <header className="flex items-start justify-between gap-3 border-b border-[var(--arka-border)] px-4 py-3">
@@ -49,7 +53,14 @@ export function AdminPanel() {
         </button>
       </header>
 
-      <nav className="grid grid-cols-8 border-b border-[var(--arka-border)] text-[10px] font-bold">
+      <div className="flex flex-wrap items-center gap-3 border-b border-[var(--arka-border)] p-3">
+        <label className="flex items-center gap-2 text-xs">Larghezza pannello <input aria-label="Larghezza pannello Admin" type="range" min="360" max="1200" step="20" value={width} onChange={(e) => setWidth(Number(e.target.value))} /> {width}px</label>
+        <button type="button" className="rounded border px-3 py-2" onClick={() => setExpanded(!expanded)}>{expanded ? 'Riduci pannello' : 'Espandi pannello'}</button>
+        <details className="w-full"><summary className="cursor-pointer font-bold">Apri un laboratorio</summary><div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">{[
+          ['battle-rules-lab', 'Moneta e status'], ['vfx-lab', 'VFX mosse'], ['audio-lab', 'Suoni'], ['arkamon-lab', 'Animazioni Arkamon'], ['dice-lab', 'Dadi'], ['transition-lab', 'Transizioni'], ['deposit-lab', 'Deposito'],
+        ].map(([hash, label]) => <a key={hash} className="rounded border p-2 text-center" href={`${import.meta.env.BASE_URL}#${hash}`} onClick={(e) => { e.preventDefault(); window.location.assign(`${import.meta.env.BASE_URL}#${hash}`); window.location.reload() }}>{label}</a>)}</div></details>
+      </div>
+      <nav className="grid grid-cols-4 sm:grid-cols-8 border-b border-[var(--arka-border)] text-[10px] font-bold">
         {tabs.map((tab) => (
           <button
             key={tab.id}

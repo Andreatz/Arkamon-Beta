@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { BattleRulesLab } from '@/components/battle/BattleRulesLab'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
 import { LaboratorioScene } from '@scenes/LaboratorioScene'
@@ -21,34 +22,44 @@ import { BattleDiceLab } from '@/components/battle/BattleDiceLab'
 import { DepositLab } from '@/components/deposit/DepositLab'
 import { DarklawAnimationLab } from '@/components/arkamon/DarklawAnimationLab'
 
+const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
+
 /**
  * Router delle scene.
  * Sostituisce il sistema VBA delle slide PowerPoint identificate da ID.
  * Aggiungi qui ogni nuova scena man mano che la implementi.
  */
 function App() {
+  const [hash, setHash] = useState(window.location.hash)
+  useEffect(() => { const sync = () => setHash(window.location.hash); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync) }, [])
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
 
   useEffect(() => { preloadSceneTransitionArtwork() }, [])
 
-  if (import.meta.env.DEV && window.location.hash === '#transition-lab') {
-    return <SceneTransitionLab />
+  if (import.meta.env.DEV && hash === '#battle-rules-lab') return <LabShell><BattleRulesLab /></LabShell>
+
+  if (import.meta.env.DEV && hash === '#audio-lab') {
+    return <LabShell><Suspense fallback={<div role="status">Caricamento laboratorio audio…</div>}><AudioLab /></Suspense></LabShell>
   }
 
-  if (import.meta.env.DEV && window.location.hash === '#vfx-lab') {
-    return <VfxGallery />
+  if (import.meta.env.DEV && hash === '#transition-lab') {
+    return <LabShell><SceneTransitionLab /></LabShell>
   }
 
-  if (import.meta.env.DEV && window.location.hash === '#dice-lab') {
-    return <BattleDiceLab />
+  if (import.meta.env.DEV && hash === '#vfx-lab') {
+    return <LabShell><VfxGallery /></LabShell>
   }
 
-  if (import.meta.env.DEV && window.location.hash === '#deposit-lab') {
-    return <DepositLab />
+  if (import.meta.env.DEV && hash === '#dice-lab') {
+    return <LabShell><BattleDiceLab /></LabShell>
   }
 
-  if (import.meta.env.DEV && window.location.hash === '#arkamon-lab') {
-    return <DarklawAnimationLab />
+  if (import.meta.env.DEV && hash === '#deposit-lab') {
+    return <LabShell><DepositLab /></LabShell>
+  }
+
+  if (import.meta.env.DEV && hash === '#arkamon-lab') {
+    return <LabShell><DarklawAnimationLab /></LabShell>
   }
 
   return (
@@ -61,6 +72,8 @@ function App() {
     </div>
   )
 }
+
+function LabShell({ children }: { children: React.ReactNode }) { return <><AdminRuntime /><AdminOverlay />{children}</> }
 
 function renderPresentedScene(navigation: NavigazioneScena) {
   return renderScena(navigation.scena)

@@ -4,6 +4,7 @@ import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '../vfx/AnimatedSprite'
 import { getBattleDiceSequence } from './battleDiceAssets'
 import { createBattleDiceReveal } from './battleDiceReveal'
+import { playSelectedAudio } from '@/utils/soundManager'
 import './battleDice.css'
 
 const useDiceLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -49,6 +50,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRo
         }
       },
       onReveal: () => {
+        playSelectedAudio('event:dice')
         setDamageVisible(true)
         onVisibleRef.current?.()
       },
@@ -111,7 +113,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRo
   )
 }
 
-function BattleDie({ value, forceFallback, onVisible }: {
+export function BattleDie({ value, forceFallback, onVisible }: {
   value: number
   forceFallback: boolean
   onVisible: () => void

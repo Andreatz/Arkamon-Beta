@@ -410,7 +410,7 @@ export function MappaGrigliaScene() {
           pokemonB: selvatico,
           hpMaxA: calcolaHPMax(primo),
           hpMaxB: calcolaHPMax(selvatico),
-          turnoCorrente: determinaIniziativa(primo.livello, selvatico.livello),
+          turnoCorrente: determinaIniziativa(primo.livello, selvatico.livello, Math.random, primo.stato?.tipo, selvatico.stato?.tipo),
           luogoRitorno: 'mappa-griglia',
           log: [`Appare ${selvatico.nome} selvatico!`],
           evoluzioneInAttesa: null,

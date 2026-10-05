@@ -49,7 +49,7 @@ export function PercorsoScene() {
       pokemonB: selvatico,
       hpMaxA: calcolaHPMax(primoDellaSquadra),
       hpMaxB: calcolaHPMax(selvatico),
-      turnoCorrente: determinaIniziativa(primoDellaSquadra.livello, selvatico.livello),
+      turnoCorrente: determinaIniziativa(primoDellaSquadra.livello, selvatico.livello, Math.random, primoDellaSquadra.stato?.tipo, selvatico.stato?.tipo),
       luogoRitorno: luogo,
       log: [`Appare ${selvatico.nome} selvatico!`],
       evoluzioneInAttesa: null,

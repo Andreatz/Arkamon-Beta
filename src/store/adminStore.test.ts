@@ -143,7 +143,7 @@ describe('adminStore', () => {
     ])
 
     useAdminStore.getState().resetMainMapRoads()
-    expect(useAdminStore.getState().theme.layouts.mainMapRoads).toEqual({})
+    expect(useAdminStore.getState().theme.layouts.mainMapRoads).toEqual(defaultAdminTheme.layouts.mainMapRoads)
 
     useAdminStore.getState().undoLayoutChange()
 

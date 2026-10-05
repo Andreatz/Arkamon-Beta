@@ -29,7 +29,7 @@ export type TipoBattaglia = 'Selvatico' | 'NPC' | 'PVP'
 export type Lato = 'A' | 'B'
 
 /** Stati alterati di un pokemon in battaglia (porting roadmap Fase B). */
-export type StatoAlterato = 'Confuso' | 'Addormentato' | 'Avvelenato'
+export type StatoAlterato = 'Paralizzato' | 'Confuso' | 'Addormentato' | 'Avvelenato'
 
 /** Stato attivo su un pokemon. turniRimanenti = -1 → indefinito (es. veleno). */
 export interface Stato {
