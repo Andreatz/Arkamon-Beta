@@ -27,6 +27,52 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 
 SCREEN_DOMINANCE_CLEANUP = False
+SCREEN_FRINGE_CLEANUP = False
+
+
+def action_key_options(action: str) -> dict:
+    """Keep pale hit dust, without treating a sustained victory aura as sparks."""
+    return {'preserve_effects': action != 'idle',
+            'neutral_tolerance': 30 if action == 'hit' else 10,
+            'preserve_bloom': action != 'victory'}
+
+
+def screen_fringe_mask(rgb: np.ndarray, preserve_effects: bool = False,
+                       neutral_tolerance: float = 10, preserve_bloom: bool = True) -> tuple[np.ndarray, np.ndarray]:
+    """Find baked yellow/green screen fringe, preserving bright warm effects.
+
+    This profile is opt-in: intrinsic green character features would also match.
+    Work on original RGB, before despill can turn green contamination yellow.
+    """
+    red, green, blue = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
+    maximum = rgb.max(axis=2)
+    minimum = rgb.min(axis=2)
+    delta = maximum - minimum
+    safe_delta = np.maximum(delta, 1)
+    hue = np.where(maximum == red, ((green-blue)/safe_delta) % 6,
+                   np.where(maximum == green, (blue-red)/safe_delta+2,
+                            (red-green)/safe_delta+4)) * 60
+    saturation = delta / np.maximum(maximum, 1)
+    warm_light = ((red >= 230) & (green <= red+6)) | ((red >= 190) & (red > green+15))
+    fringe = ((hue >= 35) & (hue < 170) & (saturation > .20)
+              & (green > blue+12) & (green > 24) & ~warm_light)
+    if preserve_effects:
+        # Hit/KO footage includes neutral smoke and cyan trails mixed with the
+        # screen. These have more blue than yellow/olive outline contamination.
+        fringe &= red > blue+neutral_tolerance
+        # Preserve local golden bloom around native warm light cores, without
+        # protecting the entire screen or an unlit character silhouette.
+        seed = (red >= 190) & (green <= red+25) & (red > blue+50)
+        if preserve_bloom and seed.any():
+            # Binary square dilation via summed-area windows is equivalent to
+            # MaxFilter(17), avoiding a 289-value scan per native source pixel.
+            padded = np.pad(seed.astype(np.uint8), 8, mode='edge')
+            integral = np.pad(padded, ((1,0),(1,0))).cumsum(axis=0,dtype=np.int32).cumsum(axis=1,dtype=np.int32)
+            nearby = (integral[17:,17:]-integral[:-17,17:]
+                      -integral[17:,:-17]+integral[:-17,:-17]) > 0
+            warm_bloom = nearby & (hue < 65) & (red >= green-25)
+            fringe &= ~warm_bloom
+    return fringe, np.clip((45-hue)/10, 0, 1)
 
 
 def ffmpeg_path(explicit: str | None) -> str:
@@ -60,7 +106,8 @@ def probe(ffmpeg: str, source: Path) -> dict:
             "ffmpegVersion": version}
 
 
-def key_alpha(image: Image.Image, cutoff: float = 0.08) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def key_alpha(image: Image.Image, cutoff: float = 0.08, preserve_effects: bool = False,
+              neutral_tolerance: float = 10, preserve_bloom: bool = True) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Estimate soft coverage from green excess, then unmix and remove edge spill.
 
     The corner estimate is recalculated per source frame; the spatial transform
@@ -92,12 +139,18 @@ def key_alpha(image: Image.Image, cutoff: float = 0.08) -> tuple[np.ndarray, np.
         foreground_max = np.maximum(rgb[:, :, 0], rgb[:, :, 2])
         haze = (rgb[:, :, 1] > foreground_max * 1.18) & (excess > 12)
         alpha[haze] = 0.0
+    if SCREEN_FRINGE_CLEANUP:
+        fringe, coverage = screen_fringe_mask(rgb, preserve_effects, neutral_tolerance, preserve_bloom)
+        # Global within this opt-in character profile: a connected-background
+        # mask misses contaminated holes enclosed by limbs or flame outlines.
+        alpha[fringe] *= coverage[fringe]
     alpha[alpha < cutoff] = 0.0
     return rgb, alpha, bg
 
 
-def remove_green(image: Image.Image, cutoff: float = 0.08) -> tuple[Image.Image, list]:
-    rgb, alpha, bg = key_alpha(image, cutoff)
+def remove_green(image: Image.Image, cutoff: float = 0.08, preserve_effects: bool = False,
+                 neutral_tolerance: float = 10, preserve_bloom: bool = True) -> tuple[Image.Image, list]:
+    rgb, alpha, bg = key_alpha(image, cutoff, preserve_effects, neutral_tolerance, preserve_bloom)
     safe_alpha = np.maximum(alpha, 1.0 / 255.0)
     recovered = np.clip((rgb - (1.0 - alpha[:, :, None]) * bg) / safe_alpha[:, :, None], 0, 255)
     edge = alpha < 0.999
@@ -199,7 +252,7 @@ def inspect_clip(ffmpeg: str, source: Path, action: str, decoded: Path,
         with Image.open(path) as image:
             if image.size != (info['width'], info['height']):
                 raise ValueError('Decoded source frame dimensions do not match the video.')
-            rgb, alpha, _ = key_alpha(image, cutoff)
+            rgb, alpha, _ = key_alpha(image, cutoff, **action_key_options(action))
         boxes.append(alpha_bounds(alpha))
         if i == 0:
             # Ignore bright glints/rings when calibrating the initial body pose.
@@ -280,8 +333,31 @@ def common_plan(clips: list[dict], reference: Path | None, base_cell: int,
     return result
 
 
+def reuse_normalization(clips: list[dict], previous: Path, species_id: int) -> dict:
+    """Re-key existing assets without changing their established screen geometry."""
+    common = json.loads((previous/'animation-set.normalization.json').read_text(encoding='utf-8'))
+    for clip in clips:
+        old = json.loads((previous/f"{clip['action']}.metadata.json").read_text(encoding='utf-8'))
+        if (old['speciesId'] != species_id or old['action'] != clip['action']
+                or old['source']['sha256'] != clip['info']['sha256']
+                or old['source']['width'] != clip['info']['width']
+                or old['source']['height'] != clip['info']['height']
+                or old['sheet']['frameCount'] != len(clip['paths'])
+                or old['sheet']['fps'] != clip['info']['fps']
+                or old['transform']['sharedTransform'] != common):
+            raise ValueError(f"Cannot reuse {clip['action']} geometry: source or metadata differs.")
+        crop = tuple(old['transform']['sourceUnionAlphaBounds'])
+        actual = clip['union']
+        if actual[0] < crop[0] or actual[1] < crop[1] or actual[2] > crop[2] or actual[3] > crop[3]:
+            raise ValueError(f"Re-keyed {clip['action']} would exceed the previous source crop.")
+        clip['union'] = crop
+        clip['camera'] = old['transform']['cameraCalibration']
+        clip['previousMetadata'] = old
+    return common
+
+
 def normalize_frame(image: Image.Image, clip: dict, common: dict, cutoff: float) -> Image.Image:
-    keyed,_ = remove_green(image,cutoff)
+    keyed,_ = remove_green(image,cutoff,**action_key_options(clip['action']))
     crop = clip['union']
     camera = clip['camera']
     scale = common['sharedScale']*camera['nativeToIdleCoordinateScale']
@@ -341,7 +417,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
     action,info = clip['action'],clip['info']
     count,fps = len(clip['paths']),info['fps']
     max_cells = common['maxTextureDimension']//common['cellWidth']
-    preferred = columns if columns else math.ceil(math.sqrt(count))
+    preferred = columns if columns else clip.get('previousMetadata', {}).get('sheet', {}).get('columns', math.ceil(math.sqrt(count)))
     columns = max(math.ceil(count/max_cells),min(preferred,max_cells))
     rows = math.ceil(count/columns)
     frames = []
@@ -368,7 +444,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
     seam.update({'adjacentMedianBodyRgbDifference':round(median,6),
                  'adjacentMaxBodyRgbDifference':max(differences,default=0),
                  'seamToAdjacentMedianRatio':round(seam['bodyPremultipliedRgbMeanAbsoluteDifference']/max(median,1e-9),3)})
-    green_count,occupied,red_count = 0,0,0
+    green_count,occupied,red_count,yellow_green_count = 0,0,0,0
     frame_boxes,blank_frames = [],[]
     for index,frame in enumerate(frames):
         pixels = np.asarray(frame).astype(np.int16)
@@ -376,6 +452,11 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
         green_count += int(((pixels[:,:,1] > np.maximum(pixels[:,:,0],pixels[:,:,2])+8)&visible).sum())
         occupied += int(visible.sum())
         red_count += int(((pixels[:,:,0]>pixels[:,:,1]+35)&(pixels[:,:,0]>pixels[:,:,2]+20)&visible).sum())
+        # Independent diagnostic on saved output colours, including olive/yellow
+        # that the green-dominance check cannot see. Legitimate gold can match.
+        yellow_green_count += int(((pixels[:,:,1] >= .93*pixels[:,:,0])
+                                   & (pixels[:,:,1] > 32) & (pixels[:,:,2] < .78*pixels[:,:,1])
+                                   & (pixels[:,:,0] > pixels[:,:,2]+10) & visible).sum())
         frame_boxes.append(frame.getchannel('A').getbbox())
         if not visible.any():
             blank_frames.append(index)
@@ -400,8 +481,20 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
                 'key':{'method':'Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.',
                        'alphaCutoff':cutoff,'screenColourRatioTolerance':.12,
                        'screenDominanceCleanup':SCREEN_DOMINANCE_CLEANUP,
-                       'screenDominanceRatio':1.18 if SCREEN_DOMINANCE_CLEANUP else None},
+                       'screenDominanceRatio':1.18 if SCREEN_DOMINANCE_CLEANUP else None,
+                       'screenFringeCleanup':SCREEN_FRINGE_CLEANUP,
+                       'screenFringeProfile':({'hueFadeDegrees':[35,45], 'hueEndDegrees':170,
+                                              'minimumSaturation':.20, 'minimumGreenMinusBlue':12,
+                                              'warmLightProtection':'R >= 230 and G <= R+6, or R >= 190 and R > G+15',
+                                              'preserveNeutralAndCyanEffects':action != 'idle',
+                                              'neutralRedBlueTolerance':30 if action == 'hit' else 10,
+                                              'warmBloomRadiusSourcePixels':8 if action not in ('idle','victory') else 0,
+                                              'warmBloomProtection':('Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.' if action not in ('idle','victory') else None),
+                                              'scope':'Original RGB, including enclosed screen pockets; opt-in for characters without green features.'}
+                                             if SCREEN_FRINGE_CLEANUP else None)},
                 'qa':{'losslessDecodedRgbaMatches':True,'remainingGreenDominantPixelsOver8':green_count,
+                      'yellowGreenDiagnosticPixelsAllFrames':yellow_green_count,
+                      'yellowGreenDiagnosticNote':'Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.',
                       'occupiedPixelsAllFrames':occupied,'redDominantPixelsAllFrames':red_count,
                       'transparentFrameIndices':blank_frames,'loopSeam':seam,
                       'loopSeamPerfect':seam['bodyPremultipliedRgbMeanAbsoluteDifference']==0,
@@ -410,6 +503,8 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
                       'notes':'Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.'}}
     if green_count:
         raise RuntimeError(f'{action} retains {green_count} green-dominant pixels.')
+    if 'timing' in clip.get('previousMetadata', {}):
+        metadata['timing'] = clip['previousMetadata']['timing']
     if idle_first is not None:
         metadata['qa']['returnToIdleFirst'] = frame_difference(frames[-1],idle_first)
     if qa:
@@ -426,7 +521,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
 
 
 def main() -> None:
-    global SCREEN_DOMINANCE_CLEANUP
+    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--species-id',type=int,default=5)
     parser.add_argument('--source-dir',type=Path)
@@ -446,9 +541,14 @@ def main() -> None:
     parser.add_argument('--alpha-cutoff',type=float,default=.08)
     parser.add_argument('--screen-dominance-cleanup',action='store_true',
                         help='Remove nonuniform green screen haze; use only when the character has no intrinsic green features.')
+    parser.add_argument('--screen-fringe-cleanup',action='store_true',
+                        help='Remove baked yellow/green fringe and enclosed screen pockets while protecting warm light; opt-in only for characters without green features.')
+    parser.add_argument('--reuse-normalization',type=Path,
+                        help='Reuse source-verified geometry, crops, camera calibration and timing markers from an existing asset directory.')
     parser.add_argument('--analyze-only',action='store_true')
     args = parser.parse_args()
     SCREEN_DOMINANCE_CLEANUP = args.screen_dominance_cleanup
+    SCREEN_FRINGE_CLEANUP = args.screen_fringe_cleanup
     if args.species_id <= 0:
         parser.error('Species ID must be positive.')
     args.source_dir = args.source_dir or Path(f'animation-source/raw/{args.species_id}/front')
@@ -471,8 +571,11 @@ def main() -> None:
     decoded = args.decoded_dir.resolve() if args.decoded_dir else Path('__no_decode_cache__')
     with tempfile.TemporaryDirectory(prefix='arkamon-all-original-frames-') as folder:
         clips = [inspect_clip(ffmpeg,(args.source_dir/f'{action}.mp4').resolve(),action,decoded,Path(folder),args.alpha_cutoff) for action in actions]
-        common = common_plan(clips,args.reference,args.base_cell,args.ground,args.occupancy,args.padding,args.max_texture)
-        common['cameraCalibrations'] = {c['action']:c['camera'] for c in clips}
+        if args.reuse_normalization:
+            common = reuse_normalization(clips,args.reuse_normalization.resolve(),args.species_id)
+        else:
+            common = common_plan(clips,args.reference,args.base_cell,args.ground,args.occupancy,args.padding,args.max_texture)
+            common['cameraCalibrations'] = {c['action']:c['camera'] for c in clips}
         common_path = output/'animation-set.normalization.json'
         common_path.write_text(json.dumps(common,indent=2)+'\n',encoding='utf-8')
         if qa:

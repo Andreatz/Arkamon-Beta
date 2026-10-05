@@ -231,8 +231,8 @@
     "durationMs": 4000,
     "width": 7040,
     "height": 7040,
-    "sizeBytes": 9326112,
-    "sha256": "898b292678246ba8d00233c583fa3a8e2472153b38be67ad6138fc3def881881",
+    "sizeBytes": 9323782,
+    "sha256": "7d4d85b807f11f4e257c42bbedb19d855130ec0f6dc6d0bc3e99eddbc32006da",
     "viewport": {
       "width": 384,
       "height": 384,
@@ -243,8 +243,8 @@
   "poster": {
     "file": "ko-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 93862,
-    "sha256": "620fac9c31a419869cad74de16f6385d663f45be330cfa1f0bc986a5979681bd"
+    "sizeBytes": 93926,
+    "sha256": "98f4c077683778ff7275063cba2846a72295baeb5e360038644f0b456309514b"
   },
   "viewport": {
     "width": 384,
@@ -1081,7 +1081,7 @@
       ],
       [
         168,
-        176,
+        177,
         529,
         543
       ],
@@ -1587,21 +1587,41 @@
   "key": {
     "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
     "alphaCutoff": 0.08,
-    "screenColourRatioTolerance": 0.12
+    "screenColourRatioTolerance": 0.12,
+    "screenDominanceCleanup": false,
+    "screenDominanceRatio": null,
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features.",
+      "neutralRedBlueTolerance": 10
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "occupiedPixelsAllFrames": 4961030,
-    "redDominantPixelsAllFrames": 76822,
+    "yellowGreenDiagnosticPixelsAllFrames": 21,
+    "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+    "occupiedPixelsAllFrames": 4961035,
+    "redDominantPixelsAllFrames": 76841,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.234243,
-      "bodyAlphaMeanAbsoluteDifference": 0.93096,
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.234242,
+      "bodyAlphaMeanAbsoluteDifference": 0.930938,
       "bodyChangedPixelFractionOver5Percent": 0.942008,
-      "adjacentMedianBodyRgbDifference": 0.064053,
+      "adjacentMedianBodyRgbDifference": 0.064033,
       "adjacentMaxBodyRgbDifference": 0.156125,
-      "seamToAdjacentMedianRatio": 3.657
+      "seamToAdjacentMedianRatio": 3.658
     },
     "loopSeamPerfect": false,
     "originalFinalFramePreserved": true,
@@ -1611,14 +1631,14 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.228319,
-      "bodyAlphaMeanAbsoluteDifference": 0.824359,
-      "bodyChangedPixelFractionOver5Percent": 0.965859
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.239037,
+      "bodyAlphaMeanAbsoluteDifference": 0.942895,
+      "bodyChangedPixelFractionOver5Percent": 0.952013
     },
     "preview": {
       "file": "ko\\preview-battle.mp4",
-      "sizeBytes": 755562,
-      "sha256": "ab783c408ab34c2f221eb28603fa691bd9789fe66651f6c3461c31319e29158b"
+      "sizeBytes": 499015,
+      "sha256": "98bf247f1d172ad33ac2e7aa65946bfa2de2cafb5c6796bacb6d836740c767d6"
     }
   }
 }

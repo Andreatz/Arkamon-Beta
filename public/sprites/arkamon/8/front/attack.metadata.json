@@ -231,8 +231,8 @@
     "durationMs": 4000,
     "width": 7680,
     "height": 7680,
-    "sizeBytes": 10555666,
-    "sha256": "ed58dacc61f680c5a70313789cfe6570f445f3cdbbe03855268bd4a85a6ee84c",
+    "sizeBytes": 9435520,
+    "sha256": "64c93fbba353a92d1492027d12274e8cea61c5e9bce5a84b9dbb7e0ff9f72138",
     "viewport": {
       "width": 384,
       "height": 384,
@@ -243,8 +243,8 @@
   "poster": {
     "file": "attack-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 98988,
-    "sha256": "90bf1a978d7e31857243e15cfc21cd52d308d020e1d0711f3d6deb1ca9a70536"
+    "sizeBytes": 87366,
+    "sha256": "b8a824e56acf64ad202adc2bbad85fec0aa6cc23afd52e8d97096aeae497c788"
   },
   "viewport": {
     "width": 384,
@@ -683,13 +683,13 @@
       ],
       [
         322,
-        154,
+        158,
         1534,
         1052
       ],
       [
         324,
-        144,
+        148,
         1542,
         1052
       ],
@@ -700,7 +700,7 @@
         1054
       ],
       [
-        330,
+        332,
         118,
         1513,
         1050
@@ -1254,7 +1254,7 @@
         571
       ],
       [
-        157,
+        158,
         253,
         586,
         571
@@ -1267,30 +1267,30 @@
       ],
       [
         157,
-        246,
+        248,
         593,
         571
       ],
       [
-        158,
+        160,
         240,
         593,
         571
       ],
       [
-        159,
+        160,
         235,
         582,
         570
       ],
       [
-        158,
+        160,
         230,
         562,
         570
       ],
       [
-        158,
+        159,
         227,
         539,
         568
@@ -1314,7 +1314,7 @@
         571
       ],
       [
-        238,
+        240,
         231,
         589,
         571
@@ -1339,7 +1339,7 @@
       ],
       [
         159,
-        240,
+        239,
         586,
         571
       ],
@@ -1410,7 +1410,7 @@
         571
       ],
       [
-        167,
+        168,
         231,
         620,
         571
@@ -1422,7 +1422,7 @@
         571
       ],
       [
-        165,
+        167,
         227,
         617,
         571
@@ -1442,7 +1442,7 @@
       [
         183,
         220,
-        614,
+        613,
         570
       ],
       [
@@ -1460,7 +1460,7 @@
       [
         210,
         216,
-        526,
+        525,
         566
       ],
       [
@@ -1587,35 +1587,55 @@
   "key": {
     "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
     "alphaCutoff": 0.08,
-    "screenColourRatioTolerance": 0.12
+    "screenColourRatioTolerance": 0.12,
+    "screenDominanceCleanup": false,
+    "screenDominanceRatio": null,
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features.",
+      "neutralRedBlueTolerance": 10
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "occupiedPixelsAllFrames": 5283768,
-    "redDominantPixelsAllFrames": 998663,
+    "yellowGreenDiagnosticPixelsAllFrames": 37882,
+    "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+    "occupiedPixelsAllFrames": 4221363,
+    "redDominantPixelsAllFrames": 888479,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.10329,
-      "bodyAlphaMeanAbsoluteDifference": 0.126601,
-      "bodyChangedPixelFractionOver5Percent": 0.613767,
-      "adjacentMedianBodyRgbDifference": 0.076822,
-      "adjacentMaxBodyRgbDifference": 0.195043,
-      "seamToAdjacentMedianRatio": 1.345
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.074971,
+      "bodyAlphaMeanAbsoluteDifference": 0.209404,
+      "bodyChangedPixelFractionOver5Percent": 0.527035,
+      "adjacentMedianBodyRgbDifference": 0.060475,
+      "adjacentMaxBodyRgbDifference": 0.217552,
+      "seamToAdjacentMedianRatio": 1.24
     },
     "loopSeamPerfect": false,
     "originalFinalFramePreserved": true,
     "sourceFramesTouchingEdges": [],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.138655,
-      "bodyAlphaMeanAbsoluteDifference": 0.409984,
-      "bodyChangedPixelFractionOver5Percent": 0.801053
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.103368,
+      "bodyAlphaMeanAbsoluteDifference": 0.530203,
+      "bodyChangedPixelFractionOver5Percent": 0.743215
     },
     "preview": {
       "file": "attack\\preview-battle.mp4",
-      "sizeBytes": 728382,
-      "sha256": "61a43ea3c73a18399f7ace957e37f02fb17a1724cab7b62811da83060939e3b5"
+      "sizeBytes": 571561,
+      "sha256": "3197161f14cd930713679382b534bbb88f6e486af9f5a8ff7d6a0ccbbda5bd82"
     }
   },
   "timing": {

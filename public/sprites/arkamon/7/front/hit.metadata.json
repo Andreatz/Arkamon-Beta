@@ -231,8 +231,8 @@
     "durationMs": 4000,
     "width": 7040,
     "height": 7040,
-    "sizeBytes": 11375328,
-    "sha256": "e1d518e099282a68f45d352403c685b0cd5be14940515debfcff6ef7a4522890",
+    "sizeBytes": 11381142,
+    "sha256": "01c497824e5593cc884747f308d79a657cc0e31c931a7bc5f494f4eaa760ccc1",
     "viewport": {
       "width": 384,
       "height": 384,
@@ -1587,20 +1587,40 @@
   "key": {
     "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
     "alphaCutoff": 0.08,
-    "screenColourRatioTolerance": 0.12
+    "screenColourRatioTolerance": 0.12,
+    "screenDominanceCleanup": false,
+    "screenDominanceRatio": null,
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "neutralRedBlueTolerance": 30,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features."
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "occupiedPixelsAllFrames": 5651375,
-    "redDominantPixelsAllFrames": 444819,
+    "yellowGreenDiagnosticPixelsAllFrames": 13334,
+    "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+    "occupiedPixelsAllFrames": 5631450,
+    "redDominantPixelsAllFrames": 435327,
     "transparentFrameIndices": [],
     "loopSeam": {
       "bodyPremultipliedRgbMeanAbsoluteDifference": 0.097792,
       "bodyAlphaMeanAbsoluteDifference": 0.09019,
       "bodyChangedPixelFractionOver5Percent": 0.489445,
       "adjacentMedianBodyRgbDifference": 0.08889,
-      "adjacentMaxBodyRgbDifference": 0.156459,
+      "adjacentMaxBodyRgbDifference": 0.166065,
       "seamToAdjacentMedianRatio": 1.1
     },
     "loopSeamPerfect": false,
@@ -1608,14 +1628,14 @@
     "sourceFramesTouchingEdges": [],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.173057,
-      "bodyAlphaMeanAbsoluteDifference": 0.378897,
-      "bodyChangedPixelFractionOver5Percent": 0.864729
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.179648,
+      "bodyAlphaMeanAbsoluteDifference": 0.425455,
+      "bodyChangedPixelFractionOver5Percent": 0.840963
     },
     "preview": {
       "file": "hit\\preview-battle.mp4",
-      "sizeBytes": 697451,
-      "sha256": "12e6001b424f8227ebcef1f2413c4944b8c880e2d8d1b668f7f9f3f166cea435"
+      "sizeBytes": 554697,
+      "sha256": "8044d0f35b8d8208e3d7b033816be65edf868fb4a4251c36e1962273a639a878"
     }
   },
   "timing": {

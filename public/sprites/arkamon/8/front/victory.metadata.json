@@ -231,8 +231,8 @@
     "durationMs": 4000,
     "width": 7680,
     "height": 7680,
-    "sizeBytes": 11040386,
-    "sha256": "eae12c73c07494f147da33d517d11a2b876cd3faef622b431f963ead78dff232",
+    "sizeBytes": 11359394,
+    "sha256": "2ce86f80106c75c641ac574955d711161cca3c463de3d82dca7407a950cdcf8a",
     "viewport": {
       "width": 384,
       "height": 384,
@@ -243,8 +243,8 @@
   "poster": {
     "file": "victory-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 105752,
-    "sha256": "504bfa1366405d7dc418b412424435efb65fa575de387e24435c6b3575721e6c"
+    "sizeBytes": 110094,
+    "sha256": "782dff18519f2247b9209de45234291ab6af1443e9ad6f72de0dcf1e9c105930"
   },
   "viewport": {
     "width": 384,
@@ -1422,7 +1422,7 @@
         577
       ],
       [
-        156,
+        157,
         208,
         577,
         577
@@ -1434,19 +1434,19 @@
         577
       ],
       [
-        150,
+        151,
         205,
         587,
         577
       ],
       [
-        148,
+        149,
         203,
         593,
         577
       ],
       [
-        145,
+        146,
         202,
         602,
         577
@@ -1464,7 +1464,7 @@
         577
       ],
       [
-        140,
+        141,
         202,
         622,
         577
@@ -1476,7 +1476,7 @@
         577
       ],
       [
-        139,
+        138,
         200,
         626,
         577
@@ -1587,21 +1587,41 @@
   "key": {
     "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
     "alphaCutoff": 0.08,
-    "screenColourRatioTolerance": 0.12
+    "screenColourRatioTolerance": 0.12,
+    "screenDominanceCleanup": false,
+    "screenDominanceRatio": null,
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "neutralRedBlueTolerance": 10,
+      "warmBloomRadiusSourcePixels": 0,
+      "warmBloomProtection": null,
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features."
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "occupiedPixelsAllFrames": 6014278,
-    "redDominantPixelsAllFrames": 1685434,
+    "yellowGreenDiagnosticPixelsAllFrames": 5045,
+    "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+    "occupiedPixelsAllFrames": 5640536,
+    "redDominantPixelsAllFrames": 1645090,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.047336,
-      "bodyAlphaMeanAbsoluteDifference": 0.044355,
-      "bodyChangedPixelFractionOver5Percent": 0.270867,
-      "adjacentMedianBodyRgbDifference": 0.040057,
-      "adjacentMaxBodyRgbDifference": 0.121636,
-      "seamToAdjacentMedianRatio": 1.182
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.0459,
+      "bodyAlphaMeanAbsoluteDifference": 0.071765,
+      "bodyChangedPixelFractionOver5Percent": 0.277244,
+      "adjacentMedianBodyRgbDifference": 0.035923,
+      "adjacentMaxBodyRgbDifference": 0.127395,
+      "seamToAdjacentMedianRatio": 1.278
     },
     "loopSeamPerfect": false,
     "originalFinalFramePreserved": true,
@@ -1610,14 +1630,14 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.144239,
-      "bodyAlphaMeanAbsoluteDifference": 0.534253,
-      "bodyChangedPixelFractionOver5Percent": 0.836558
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.111236,
+      "bodyAlphaMeanAbsoluteDifference": 0.596135,
+      "bodyChangedPixelFractionOver5Percent": 0.804438
     },
     "preview": {
       "file": "victory\\preview-battle.mp4",
-      "sizeBytes": 562848,
-      "sha256": "65b443be2d6dafed1add0dde55ac7e0c8cd2043df8722c47c542a0e7ba2c3710"
+      "sizeBytes": 522322,
+      "sha256": "3200523fd326c2d8e4554c75096ed0a4a1e0ab70f47f70e5186eee9a7f89d933"
     }
   }
 }

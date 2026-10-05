@@ -231,8 +231,8 @@
     "durationMs": 4000,
     "width": 7040,
     "height": 7040,
-    "sizeBytes": 11860390,
-    "sha256": "5f968ea9f56b8c7e1fbc78f2bfe98297e777ca7d84def0bbd3eff666ef232917",
+    "sizeBytes": 11859938,
+    "sha256": "c2a9ce5b145df250069aa0f13d62426da9791fcf32dba999c8cf93d1b57d9081",
     "viewport": {
       "width": 384,
       "height": 384,
@@ -243,8 +243,8 @@
   "poster": {
     "file": "attack-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 97684,
-    "sha256": "4a0be8e62795b00d07b49d8c2abfb35c035c18169eda3f99b1651e6ab60aa356"
+    "sizeBytes": 98366,
+    "sha256": "7139716dec18080fb3c1145891d3c36b0428202f213596fb09a922b8600194c7"
   },
   "viewport": {
     "width": 384,
@@ -1587,21 +1587,41 @@
   "key": {
     "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
     "alphaCutoff": 0.08,
-    "screenColourRatioTolerance": 0.12
+    "screenColourRatioTolerance": 0.12,
+    "screenDominanceCleanup": false,
+    "screenDominanceRatio": null,
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features.",
+      "neutralRedBlueTolerance": 10
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "occupiedPixelsAllFrames": 6169129,
-    "redDominantPixelsAllFrames": 134194,
+    "yellowGreenDiagnosticPixelsAllFrames": 160,
+    "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+    "occupiedPixelsAllFrames": 6167542,
+    "redDominantPixelsAllFrames": 134218,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.091141,
-      "bodyAlphaMeanAbsoluteDifference": 0.092689,
-      "bodyChangedPixelFractionOver5Percent": 0.442979,
-      "adjacentMedianBodyRgbDifference": 0.066259,
-      "adjacentMaxBodyRgbDifference": 0.212448,
-      "seamToAdjacentMedianRatio": 1.376
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.091102,
+      "bodyAlphaMeanAbsoluteDifference": 0.092593,
+      "bodyChangedPixelFractionOver5Percent": 0.4427,
+      "adjacentMedianBodyRgbDifference": 0.066409,
+      "adjacentMaxBodyRgbDifference": 0.212224,
+      "seamToAdjacentMedianRatio": 1.372
     },
     "loopSeamPerfect": false,
     "originalFinalFramePreserved": true,
@@ -1610,14 +1630,14 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.17889,
-      "bodyAlphaMeanAbsoluteDifference": 0.414811,
-      "bodyChangedPixelFractionOver5Percent": 0.870518
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.183128,
+      "bodyAlphaMeanAbsoluteDifference": 0.462134,
+      "bodyChangedPixelFractionOver5Percent": 0.840509
     },
     "preview": {
       "file": "attack\\preview-battle.mp4",
-      "sizeBytes": 802681,
-      "sha256": "60281d4dbf6d5563a06d28d97bc219f5f5d6e6515aaac72258ecf0508b092d0b"
+      "sizeBytes": 635299,
+      "sha256": "c43dc715af771dd3627a6219ef957de0354b5ebff59073bb3d2bb94eb39b4df0"
     }
   },
   "timing": {

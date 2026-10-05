@@ -231,8 +231,8 @@
     "durationMs": 4000,
     "width": 7680,
     "height": 7680,
-    "sizeBytes": 10494010,
-    "sha256": "c7d19e70c4ce6034fc0c958b9f44e3d715d38de12bb6be83fff8114e3c402ae4",
+    "sizeBytes": 9780212,
+    "sha256": "5ac6f3fe4306ed70396d06a3d50e16b8392f2d72438ca074c96f692533320fd5",
     "viewport": {
       "width": 384,
       "height": 384,
@@ -243,8 +243,8 @@
   "poster": {
     "file": "ko-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 101776,
-    "sha256": "6a799e694e3780ab5f702c255789c107869ed3a7c29c4a400b934fa5e321bb9d"
+    "sizeBytes": 90696,
+    "sha256": "828bb41fc405855c225522540569a26b34cb8a017e8a068beac651578e9b7443"
   },
   "viewport": {
     "width": 384,
@@ -856,7 +856,7 @@
         1045
       ],
       [
-        8,
+        10,
         6,
         1896,
         1050
@@ -989,7 +989,7 @@
       ],
       [
         64,
-        0,
+        2,
         1920,
         1054
       ],
@@ -1340,13 +1340,13 @@
       [
         134,
         182,
-        666,
+        665,
         568
       ],
       [
         137,
         188,
-        674,
+        673,
         569
       ],
       [
@@ -1356,7 +1356,7 @@
         568
       ],
       [
-        129,
+        131,
         182,
         689,
         568
@@ -1364,13 +1364,13 @@
       [
         66,
         182,
-        696,
+        694,
         568
       ],
       [
         29,
         182,
-        702,
+        701,
         568
       ],
       [
@@ -1386,7 +1386,7 @@
         568
       ],
       [
-        65,
+        67,
         182,
         721,
         569
@@ -1394,7 +1394,7 @@
       [
         64,
         182,
-        725,
+        724,
         574
       ],
       [
@@ -1406,31 +1406,31 @@
       [
         61,
         182,
-        729,
+        727,
         585
       ],
       [
         49,
         182,
-        731,
+        729,
         585
       ],
       [
         37,
         182,
         732,
-        579
+        577
       ],
       [
         29,
         182,
-        735,
+        733,
         580
       ],
       [
         29,
         182,
-        737,
+        735,
         574
       ],
       [
@@ -1442,19 +1442,19 @@
       [
         29,
         183,
-        741,
+        739,
         578
       ],
       [
-        64,
+        65,
         182,
-        743,
+        741,
         581
       ],
       [
-        61,
+        60,
         182,
-        745,
+        744,
         584
       ],
       [
@@ -1490,13 +1490,13 @@
       [
         36,
         182,
-        737,
+        735,
         553
       ],
       [
         34,
         182,
-        737,
+        736,
         550
       ],
       [
@@ -1521,34 +1521,34 @@
         29,
         182,
         739,
-        561
+        560
       ],
       [
         29,
         182,
-        740,
-        563
+        739,
+        562
       ],
       [
-        68,
+        69,
         182,
-        740,
+        739,
         566
       ],
       [
-        65,
+        66,
         182,
         741,
-        567
+        565
       ],
       [
-        62,
+        64,
         182,
         742,
         569
       ],
       [
-        60,
+        61,
         182,
         744,
         568
@@ -1560,7 +1560,7 @@
         585
       ],
       [
-        54,
+        55,
         182,
         746,
         583
@@ -1587,21 +1587,41 @@
   "key": {
     "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
     "alphaCutoff": 0.08,
-    "screenColourRatioTolerance": 0.12
+    "screenColourRatioTolerance": 0.12,
+    "screenDominanceCleanup": false,
+    "screenDominanceRatio": null,
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features.",
+      "neutralRedBlueTolerance": 10
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "occupiedPixelsAllFrames": 5148793,
-    "redDominantPixelsAllFrames": 1244484,
+    "yellowGreenDiagnosticPixelsAllFrames": 38991,
+    "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+    "occupiedPixelsAllFrames": 4268670,
+    "redDominantPixelsAllFrames": 1024938,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.159062,
-      "bodyAlphaMeanAbsoluteDifference": 0.856148,
-      "bodyChangedPixelFractionOver5Percent": 0.930394,
-      "adjacentMedianBodyRgbDifference": 0.082842,
-      "adjacentMaxBodyRgbDifference": 0.24957,
-      "seamToAdjacentMedianRatio": 1.92
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.114059,
+      "bodyAlphaMeanAbsoluteDifference": 0.893501,
+      "bodyChangedPixelFractionOver5Percent": 0.887828,
+      "adjacentMedianBodyRgbDifference": 0.074057,
+      "adjacentMaxBodyRgbDifference": 0.272023,
+      "seamToAdjacentMedianRatio": 1.54
     },
     "loopSeamPerfect": false,
     "originalFinalFramePreserved": true,
@@ -1656,14 +1676,14 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.177719,
-      "bodyAlphaMeanAbsoluteDifference": 0.826812,
-      "bodyChangedPixelFractionOver5Percent": 0.944061
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.132571,
+      "bodyAlphaMeanAbsoluteDifference": 0.948583,
+      "bodyChangedPixelFractionOver5Percent": 0.88085
     },
     "preview": {
       "file": "ko\\preview-battle.mp4",
-      "sizeBytes": 772186,
-      "sha256": "444412922b4bdef3b2931c691365caf5c5ea3aba904961e8891a00db801ead10"
+      "sizeBytes": 557218,
+      "sha256": "1eee2fbb550dad1764d26b0615267c74e7cc8afa4e73913e4a5e2e7e25e71ff6"
     }
   }
 }
