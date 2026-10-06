@@ -4,6 +4,8 @@ import {
   èMossaCura,
   scegliMossaIA,
   calcolaHPMax,
+  applicaStato,
+  risolviStatoInizioTurno,
 } from '@engine/battleEngine'
 import type { PokemonIstanza, MossaDef } from '@/types'
 
@@ -110,6 +112,19 @@ describe('applicaMossaCura', () => {
     expect(r.hpRecuperato).toBe(0)
     expect(r.istanza.stato).toBeUndefined()
     expect(r.messaggi.some((m) => m.toLowerCase().includes('veleno'))).toBe(true)
+  })
+  it('la cura elimina il contatore progressivo e un nuovo veleno riparte dal 10%', () => {
+    const primo = risolviStatoInizioTurno(applicaStato(mkIstanza(1, 5), 'Avvelenato'), 12)
+    const secondo = risolviStatoInizioTurno(primo.istanza, 12)
+    expect(secondo.istanza.stato?.turniTrascorsi).toBe(2)
+    const cura = applicaMossaCura(secondo.istanza, mkMossa('CURA', 5), 12)
+    expect(cura.istanza.stato).toBeUndefined()
+    const nuovoVeleno = applicaStato(cura.istanza, 'Avvelenato')
+    expect(nuovoVeleno.stato?.turniTrascorsi).toBe(0)
+    const nuovoTick = risolviStatoInizioTurno(nuovoVeleno, 12)
+    expect(nuovoTick.dannoSubito).toBe(1)
+    expect(nuovoTick.istanza.stato?.turniTrascorsi).toBe(1)
+    expect(secondo.istanza.stato?.turniTrascorsi).toBe(2)
   })
 })
 

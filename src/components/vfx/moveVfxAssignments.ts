@@ -51,7 +51,8 @@ export const VFX_MOVE_PREVIEWS: MossaDef[] = MOVE_VFX_ASSIGNMENTS.map((entry) =>
     id: entry.sourceMoveId,
     nome: entry.name,
     tipo: entry.element,
-    effetto: entry.type.includes('Recupero') || entry.type.includes('Cura Status') ? 'CURA'
+    effetto: entry.type.includes('Recupero') || entry.type.includes('Cura') ? 'CURA'
+      : entry.type.includes('Paralisi') ? 'PARALISI'
       : entry.type.includes('Confusione') ? 'CONFUSIONE'
       : entry.type.includes('Sonno') ? 'SONNO'
       : entry.type.includes('Veleno') ? 'VELENO' : null,

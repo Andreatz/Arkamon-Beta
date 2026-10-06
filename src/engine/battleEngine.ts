@@ -10,6 +10,7 @@ import type {
   RisultatoMossa,
   Lato,
   StatoAlterato,
+  Stato,
 } from '@/types'
 import { getPokemon, getMossa, efficaciaTipo, CRESCITA_HP } from '@data/index'
 
@@ -37,6 +38,15 @@ const EFFETTO_TO_STATO: Record<string, StatoAlterato> = {
   VELENO: 'Avvelenato',
 }
 
+/** Percentuale del prossimo tick di veleno, condivisa con la sua descrizione nella UI. */
+export function percentualeProssimoTickVeleno(stato: Stato): number {
+  const turniTrascorsi = typeof stato.turniTrascorsi === 'number' && Number.isFinite(stato.turniTrascorsi)
+    ? Math.max(0, Math.floor(stato.turniTrascorsi)) : 0
+  return (turniTrascorsi + 1) * 10
+}
+
+export const percentualeVelenoProssimoTurno = percentualeProssimoTickVeleno
+
 /** Applica uno stato a un'istanza (sovrascrive eventuale stato precedente). */
 export function applicaStato(
   istanza: PokemonIstanza,
@@ -44,7 +54,11 @@ export function applicaStato(
 ): PokemonIstanza {
   return {
     ...istanza,
-    stato: { tipo, turniRimanenti: DURATA_STATO[tipo] },
+    stato: {
+      tipo,
+      turniRimanenti: DURATA_STATO[tipo],
+      ...(tipo === 'Avvelenato' ? { turniTrascorsi: 0 } : {}),
+    },
   }
 }
 
@@ -73,10 +87,13 @@ export function tentaApplicaStato(
 /**
  * Risolve lo stato all'inizio del turno del pokemon.
  *
- * - Avvelenato: subisce 10% dell'hpMax come danno, lo stato persiste.
+ * - Avvelenato: subisce 10%, 20%, 30%... degli HP massimi ai tick successivi.
+ *   Il contatore rimane nello stato della creatura, anche tra cambi e salvataggi.
  * - Addormentato: 50% probabilità di svegliarsi (clear). Altrimenti
  *   turno saltato e turniRimanenti -= 1; al raggiungimento di 0 si
  *   sveglia comunque al prossimo turno.
+ * - Paralizzato: un D6; esce con 5-6 (2/6), altrimenti conserva la
+ *   priorità ridotta senza perdere l'azione.
  * - Confuso: 50% probabilità di colpirsi da solo (1d6 danno + turno
  *   perso). Altrimenti agisce normalmente. turniRimanenti -= 1 in
  *   entrambi i casi; al raggiungimento di 0 lo stato si pulisce.
@@ -108,9 +125,12 @@ export function risolviStatoInizioTurno(
     if (tiroStato >= 5) { stato = undefined; messaggi.push(`${istanza.nome}: dado ${tiroStato}, paralisi terminata!`) }
     else messaggi.push(`${istanza.nome}: dado ${tiroStato}, resta paralizzato e agisce per secondo.`)
   } else if (stato.tipo === 'Avvelenato') {
-    dannoSubito = Math.max(1, Math.floor(hpMax * 0.1))
+    const percentuale = percentualeProssimoTickVeleno(stato)
+    const turniTrascorsi = percentuale / 10
+    dannoSubito = Math.max(1, Math.floor(hpMax * turniTrascorsi / 10))
     hp = Math.max(0, hp - dannoSubito)
-    messaggi.push(`${istanza.nome} subisce ${dannoSubito} danni dal veleno.`)
+    stato = { ...stato, turniTrascorsi }
+    messaggi.push(`${istanza.nome} subisce ${dannoSubito} danni dal veleno (${percentuale}% degli HP massimi).`)
     // Veleno indefinito: nessun decremento
   } else if (stato.tipo === 'Addormentato') {
     tiroStato = rollD6(1, rng)
@@ -123,6 +143,7 @@ export function risolviStatoInizioTurno(
       puoAgire = false
       const tr = stato.turniRimanenti - 1
       stato = tr > 0 ? { ...stato, turniRimanenti: tr } : undefined
+      if (!stato) messaggi.push(`${istanza.nome} si sveglia dopo tre turni di sonno; agirà al prossimo turno.`)
     }
   } else if (stato.tipo === 'Confuso') {
     const tr = stato.turniRimanenti - 1
@@ -225,7 +246,8 @@ export function calcolaDanno(
   const mossa = getMossa(mossaId)
   if (!mossa) return null
 
-  const { dadi, incremento } = getMossaAlLivello(mossa, attaccante.livello)
+  const soloStato = èMossaSoloStato(mossa)
+  const { dadi, incremento } = soloStato ? { dadi: 0, incremento: 0 } : getMossaAlLivello(mossa, attaccante.livello)
 
   // Tiri singoli (per popolare RisultatoMossa.tiriDado, utile alla UI)
   const tiri: number[] = []
@@ -233,23 +255,23 @@ export function calcolaDanno(
   const sommaDadi = tiri.reduce((a, b) => a + b, 0)
   const dannoBase = sommaDadi + incremento
 
-  const moltTipo = efficaciaTipo(mossa.tipo, specieDif.tipo)
+  const moltTipo = soloStato ? 1 : efficaciaTipo(mossa.tipo, specieDif.tipo)
   const stab = moltTipo > 1
   // undefined conserva la classificazione delle mosse legacy per chiamanti/IA.
   // Le azioni umane passano false per l'attacco normale e true per la Suprema.
-  const suprema = supremaAttiva ?? èMossaSuprema(mossa)
+  const suprema = !soloStato && (supremaAttiva ?? èMossaSuprema(mossa))
   const dannoOrdinario = Math.max(
     1,
     roundHalfUp(dannoBase * moltTipo)
   )
-  const dannoFinale = dannoOrdinario * (suprema ? 2 : 1)
+  const dannoFinale = soloStato ? 0 : dannoOrdinario * (suprema ? 2 : 1)
 
   const messaggi: string[] = [`${attaccante.nome} usa ${mossa.nome}!`]
   if (suprema) messaggi.push('💥 MOSSA SUPREMA! 💥')
   if (moltTipo > 1) messaggi.push('È superefficace!')
   else if (moltTipo < 1 && moltTipo > 0) messaggi.push('Non è molto efficace...')
   else if (moltTipo === 0) messaggi.push('Non ha effetto!')
-  messaggi.push(`${difensore.nome} subisce ${dannoFinale} danni.`)
+  if (!soloStato) messaggi.push(`${difensore.nome} subisce ${dannoFinale} danni.`)
 
   // Il costo della Suprema è fisso: 50% degli HP massimi, mai degli HP correnti.
   let autodanno = 0
@@ -311,6 +333,11 @@ export function costoSuprema(hpMaxAttaccante: number): number {
   return Math.max(1, Math.floor(hpMaxAttaccante * RAPPORTO_AUTODANNO_SUPREMA))
 }
 
+/** Uno status puro è un'azione senza dadi offensivi o danno al bersaglio. */
+export function èMossaSoloStato(mossa: MossaDef): boolean {
+  return mossa.soloStato === true
+}
+
 /** Calcola l'autodanno fisso delle mosse legacy Suprema. Min 1, 50% HP massimi. */
 export function autodannoSuprema(
   mossa: MossaDef,
@@ -329,7 +356,7 @@ export function calcolaAzioneSuprema(
 ): RisultatoMossa | null {
   const mossaId = getPokemon(attaccante.specieId)?.mosse[numeroMossa]
   const mossa = mossaId ? getMossa(mossaId) : undefined
-  if (!mossa || èMossaCura(mossa)) return null
+  if (!mossa || èMossaCura(mossa) || èMossaSoloStato(mossa)) return null
   return calcolaDanno(attaccante, difensore, numeroMossa, rng, true)
 }
 
@@ -456,6 +483,13 @@ export function scegliMossaIA(
     const { dadi, incremento } = getMossaAlLivello(mossa, attaccante.livello)
     let punteggio = dadi * 3.5 + incremento
     punteggio *= efficaciaTipo(mossa.tipo, specieDif.tipo)
+    if (èMossaSoloStato(mossa)) {
+      // La paralisi è utile se sottrae la priorità all'avversario per i round futuri.
+      // Con pochi HP residui un attacco resta preferibile; uno stato già presente blocca il nuovo.
+      const difensoreHaPriorita = attaccante.stato?.tipo === 'Paralizzato' || difensore.livello > attaccante.livello
+      punteggio = difensore.stato || difensore.hp <= 0 ? Number.NEGATIVE_INFINITY
+        : mossa.effetto === 'PARALISI' && difensoreHaPriorita && difensore.hp > 1 ? difensore.hp : -1
+    }
     if (mossa.effetto && EFFETTI_CURA.has(mossa.effetto)) {
       punteggio = hpRatio <= 0.3 ? 100 : -1
     }
@@ -524,6 +558,50 @@ export function applicaXP(
   return { istanza: nuova, livelliGuadagnati, evoluzionePendente }
 }
 
+/**
+ * Risolve la progressione dell'attaccante dopo il danno al bersaglio, prima
+ * del contraccolpo. Il KO diretto assegna XP anche se la Suprema esaurirà poi
+ * l'attaccante; il livello aumenta senza curarlo. Il costo della Suprema usa
+ * gli HP massimi al nuovo livello, prima di un'eventuale evoluzione pendente.
+ * I messaggi sostituiscono il costo preventivo di calcolaDanno e rispettano
+ * l'ordine danno/KO → livello → contraccolpo. La UI gestisce l'evoluzione.
+ */
+export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa): {
+  istanza: PokemonIstanza
+  istanzaPrimaDelContraccolpo: PokemonIstanza
+  xpAssegnata: number
+  livelliGuadagnati: number
+  evoluzionePendente: { nuovaSpecieId: number } | null
+  autodanno: number
+  messaggi: string[]
+} {
+  const attaccante = risultato.attaccante
+  const xpAssegnata = risultato.difensoreSvenuto && risultato.difensore.hp > 0 && attaccante.hp > 0
+    ? xpGuadagnato(risultato.difensore) : 0
+  const progressione = xpAssegnata > 0
+    ? applicaXP(attaccante, xpAssegnata)
+    : { istanza: { ...attaccante }, livelliGuadagnati: 0, evoluzionePendente: null }
+  const istanzaPrimaDelContraccolpo = progressione.istanza
+  const suprema = risultato.suprema ?? èMossaSuprema(risultato.mossa)
+  const autodanno = suprema
+    ? costoSuprema(calcolaHPMax(istanzaPrimaDelContraccolpo)) : (risultato.autodanno ?? 0)
+  const messaggioAutodannoPreventivo = `${attaccante.nome} si scarica e perde ${risultato.autodanno} HP!`
+  const messaggi = risultato.messaggi.filter((messaggio) => messaggio !== messaggioAutodannoPreventivo)
+  if (progressione.livelliGuadagnati > 0) {
+    messaggi.push(`${attaccante.nome} è salito al livello ${istanzaPrimaDelContraccolpo.livello}!`)
+  }
+  if (autodanno > 0) messaggi.push(`${attaccante.nome} si scarica e perde ${autodanno} HP!`)
+
+  return {
+    ...progressione,
+    istanza: { ...istanzaPrimaDelContraccolpo, hp: Math.max(0, istanzaPrimaDelContraccolpo.hp - autodanno) },
+    istanzaPrimaDelContraccolpo,
+    xpAssegnata,
+    autodanno,
+    messaggi,
+  }
+}
+
 // =============================================================
 // HELPER DI BATTAGLIA
 // =============================================================
@@ -547,13 +625,23 @@ export function squadraSconfitta(squadra: PokemonIstanza[] | undefined): boolean
   return squadra.every((p) => p.hp <= 0)
 }
 
-/** Recoil can exhaust both teams: the player needs a healthy reserve to continue. */
+/**
+ * Se entrambi gli ultimi Pokémon vanno KO nella stessa azione, vince il lato
+ * che ha abbattuto il bersaglio prima del contraccolpo. Il chiamante passa
+ * questo lato solo dopo un KO diretto; senza tale contesto vale l'esito usuale.
+ */
 export function esitoSquadre(
   squadraA: PokemonIstanza[],
-  squadraB: PokemonIstanza[]
+  squadraB: PokemonIstanza[],
+  latoVincitoreScontro?: Lato
 ): EsitoBattaglia | null {
-  if (squadraSconfitta(squadraA)) return 'sconfitta'
-  if (squadraSconfitta(squadraB)) return 'vittoria'
+  const sconfittaA = squadraSconfitta(squadraA)
+  const sconfittaB = squadraSconfitta(squadraB)
+  if (sconfittaA && sconfittaB && latoVincitoreScontro) {
+    return latoVincitoreScontro === 'A' ? 'vittoria' : 'sconfitta'
+  }
+  if (sconfittaA) return 'sconfitta'
+  if (sconfittaB) return 'vittoria'
   return null
 }
 

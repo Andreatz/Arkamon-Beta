@@ -6,6 +6,8 @@ import {
   calcolaDanno,
   calcolaHPMax,
   costoSuprema,
+  esitoSquadre,
+  risolviAttaccanteDopoMossa,
   scegliMossaIA,
 } from '@engine/battleEngine'
 import * as gameData from '@data/index'
@@ -144,6 +146,131 @@ describe('costoSuprema per la UI', () => {
     expect(costoSuprema(12)).toBe(6)
     expect(costoSuprema(19)).toBe(9)
     expect(costoSuprema(1)).toBe(1)
+  })
+})
+
+describe('KO del bersaglio, XP e contraccolpo Suprema', () => {
+  it('assegna il livello prima del costo nuovo, senza curare, anche se il contraccolpo manda KO', () => {
+    const att = mkIstanza(1, 6, 6)
+    const dif = mkIstanza(13, 5, 1)
+    const ris = calcolaAzioneSuprema(att, dif, 0, () => 0)!
+    expect(ris.difensoreSvenuto).toBe(true)
+    expect(ris.autodanno).toBe(6)
+
+    const risolto = risolviAttaccanteDopoMossa(ris)
+    expect(risolto.xpAssegnata).toBe(1)
+    expect(risolto.livelliGuadagnati).toBe(1)
+    expect(risolto.istanzaPrimaDelContraccolpo).toMatchObject({ livello: 7, xp: 0, hp: 6 })
+    expect(calcolaHPMax(risolto.istanzaPrimaDelContraccolpo)).toBe(15)
+    expect(risolto.autodanno).toBe(7)
+    expect(risolto.istanza).toMatchObject({ livello: 7, xp: 0, hp: 0 })
+    expect(risolto.evoluzionePendente).toBeNull()
+    const messaggioKO = `${dif.nome} non può più combattere!`
+    const messaggioLivello = `${att.nome} è salito al livello 7!`
+    const messaggioCosto = `${att.nome} si scarica e perde 7 HP!`
+    expect(risolto.messaggi.indexOf(messaggioKO)).toBeLessThan(risolto.messaggi.indexOf(messaggioLivello))
+    expect(risolto.messaggi.indexOf(messaggioLivello)).toBeLessThan(risolto.messaggi.indexOf(messaggioCosto))
+    expect(risolto.messaggi.filter((messaggio) => messaggio.includes('si scarica'))).toEqual([messaggioCosto])
+  })
+
+  it('conserva l’evoluzione pendente dopo XP e KO, usando il massimo della specie ancora attuale', () => {
+    const att = mkIstanza(1, 14, 13)
+    const ris = calcolaAzioneSuprema(att, mkIstanza(13, 5, 1), 0, () => 0)!
+    expect(calcolaHPMax(att)).toBe(25)
+    expect(ris.autodanno).toBe(12)
+
+    const risolto = risolviAttaccanteDopoMossa(ris)
+    expect(risolto.istanzaPrimaDelContraccolpo).toMatchObject({ specieId: 1, livello: 15, hp: 13 })
+    expect(calcolaHPMax(risolto.istanzaPrimaDelContraccolpo)).toBe(27)
+    expect(risolto.autodanno).toBe(13)
+    expect(risolto.istanza).toMatchObject({ specieId: 1, livello: 15, hp: 0 })
+    expect(risolto.evoluzionePendente).toEqual({ nuovaSpecieId: 2 })
+    expect(risolto.messaggi.some((messaggio) => messaggio.includes('evolvendo'))).toBe(false)
+  })
+
+  it('senza KO del bersaglio mantiene livello e XP e applica soltanto il costo corrente', () => {
+    const att = { ...mkIstanza(1, 10, 5), xp: 0.5 }
+    const dif = mkIstanza(13, 40)
+    const ris = calcolaAzioneSuprema(att, dif, 0, () => 0)!
+    expect(ris.difensoreSvenuto).toBe(false)
+
+    const risolto = risolviAttaccanteDopoMossa(ris)
+    expect(risolto.istanza).toMatchObject({ livello: 10, xp: 0.5, hp: 0 })
+    expect(risolto.xpAssegnata).toBe(0)
+    expect(risolto.livelliGuadagnati).toBe(0)
+    expect(risolto.autodanno).toBe(9)
+    expect(risolto.evoluzionePendente).toBeNull()
+    expect(risolto.messaggi.some((messaggio) => messaggio.includes('salito al livello'))).toBe(false)
+    expect(dif.hp).toBe(64)
+    expect(dif.xp).toBe(0)
+  })
+
+  it('un attacco normale assegna XP senza introdurre costo o Suprema dai metadati legacy', () => {
+    const att = mkIstanza(107, 5, 6)
+    const ris = calcolaDanno(att, mkIstanza(1, 5, 1), 0, () => 0, false)!
+    expect(ris.mossa.effetto).toBe('SUPREMA')
+    const risolto = risolviAttaccanteDopoMossa(ris)
+    expect(risolto.istanza).toMatchObject({ livello: 6, hp: 6, xp: 0 })
+    expect(risolto.xpAssegnata).toBe(1)
+    expect(risolto.autodanno).toBe(0)
+    expect(risolto.messaggi.some((messaggio) => messaggio.includes('si scarica'))).toBe(false)
+  })
+
+  it('gestisce livello massimo e conserva gli input e lo stato alterato', () => {
+    const att = { ...mkIstanza(1, 100, 3), stato: { tipo: 'Avvelenato' as const, turniRimanenti: -1, turniTrascorsi: 2 } }
+    const dif = mkIstanza(13, 5, 1)
+    const ris = calcolaAzioneSuprema(att, dif, 0, () => 0)!
+    const inputAtt = structuredClone(att)
+    const inputDif = structuredClone(dif)
+    const inputMessaggi = [...ris.messaggi]
+    Object.freeze(att.stato)
+    Object.freeze(att)
+    Object.freeze(dif)
+    Object.freeze(ris.messaggi)
+    Object.freeze(ris)
+
+    const risolto = risolviAttaccanteDopoMossa(ris)
+    expect(risolto.istanza).toMatchObject({ livello: 100, hp: 0, xp: 0, stato: inputAtt.stato })
+    expect(risolto.livelliGuadagnati).toBe(0)
+    expect(risolto.evoluzionePendente).toBeNull()
+    expect(risolto.autodanno).toBe(Math.floor(calcolaHPMax(att) / 2))
+    expect(att).toEqual(inputAtt)
+    expect(dif).toEqual(inputDif)
+    expect(ris.messaggi).toEqual(inputMessaggi)
+    expect(risolto.istanza).not.toBe(att)
+  })
+
+  it('non assegna XP per un bersaglio già KO o un attaccante già esausto', () => {
+    const att = mkIstanza(1, 6)
+    const risBersaglioGiaKO = calcolaDanno(att, mkIstanza(13, 5, 0), 0, () => 0, false)!
+    expect(risolviAttaccanteDopoMossa(risBersaglioGiaKO).xpAssegnata).toBe(0)
+    const risAttaccanteGiaKO = calcolaDanno(mkIstanza(1, 6, 0), mkIstanza(13, 5, 1), 0, () => 0, false)!
+    expect(risolviAttaccanteDopoMossa(risAttaccanteGiaKO).xpAssegnata).toBe(0)
+  })
+
+  it.each(['A', 'B'] as const)('nel doppio ultimo KO vince l’attaccante %s', (lato) => {
+    const att = mkIstanza(1, 14, 13)
+    const dif = mkIstanza(13, 5, 1)
+    const ris = calcolaAzioneSuprema(att, dif, 0, () => 0)!
+    const dopoAttacco = risolviAttaccanteDopoMossa(ris).istanza
+    const dopoDifesa = { ...dif, hp: Math.max(0, dif.hp - ris.dannoFinale) }
+    const squadraA = [lato === 'A' ? dopoAttacco : dopoDifesa]
+    const squadraB = [lato === 'B' ? dopoAttacco : dopoDifesa]
+    expect(esitoSquadre(squadraA, squadraB, lato)).toBe(lato === 'A' ? 'vittoria' : 'sconfitta')
+  })
+
+  it.each(['A', 'B'] as const)('l’attaccante %s esausto perde se il difensore conserva riserve', (lato) => {
+    const att = mkIstanza(1, 14, 13)
+    const dif = mkIstanza(13, 5, 1)
+    const ris = calcolaAzioneSuprema(att, dif, 0, () => 0)!
+    const dopoAttacco = risolviAttaccanteDopoMossa(ris).istanza
+    const dopoDifesa = { ...dif, hp: 0 }
+    const riserva = mkIstanza(5, 5, 9)
+    const squadraA = lato === 'A' ? [dopoAttacco] : [dopoDifesa, riserva]
+    const squadraB = lato === 'B' ? [dopoAttacco] : [dopoDifesa, riserva]
+    expect(esitoSquadre(squadraA, squadraB, lato)).toBe(lato === 'A' ? 'sconfitta' : 'vittoria')
+    const entrambeConRiserve = lato === 'A' ? [[...squadraA, riserva], squadraB] : [squadraA, [...squadraB, riserva]]
+    expect(esitoSquadre(entrambeConRiserve[0], entrambeConRiserve[1], lato)).toBeNull()
   })
 })
 

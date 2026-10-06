@@ -35,6 +35,8 @@ export type StatoAlterato = 'Paralizzato' | 'Confuso' | 'Addormentato' | 'Avvele
 export interface Stato {
   tipo: StatoAlterato
   turniRimanenti: number
+  /** Tick di veleno già applicati; assente nei vecchi salvataggi equivale a 0. */
+  turniTrascorsi?: number
 }
 
 // =============================================================
@@ -67,6 +69,8 @@ export interface MossaDef {
   effetto: string | null
   /** Valore numerico associato all'effetto */
   valoreEffetto: number | null
+  /** Mossa che applica soltanto uno stato: nessun danno, tiro offensivo o Suprema. */
+  soloStato?: boolean
   /** Numero di dadi D6 per livello {"5": 1, "6": 1, ...} */
   dadiPerLivello: Record<string, number>
   /** Incremento fisso per livello {"5": 0, "6": 0, ...} */

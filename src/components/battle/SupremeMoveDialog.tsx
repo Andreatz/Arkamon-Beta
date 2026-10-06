@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef } from 'react'
-import { èMossaCura } from '@/engine/battleEngine'
+import { èMossaCura, èMossaSoloStato } from '@/engine/battleEngine'
 import type { MossaDef } from '@/types'
 import { makeDialogBackgroundInert } from './modalFocus'
 
@@ -21,7 +21,7 @@ export function SupremeMoveDialog({ moves, level, recoil, pokemonName, onChoose,
   const dismissedRef = useRef(false)
   const onCloseRef = useRef(onClose)
   onCloseRef.current = onClose
-  const attacks = moves.filter(({ mossa }) => !èMossaCura(mossa))
+  const attacks = moves.filter(({ mossa }) => !èMossaCura(mossa) && !èMossaSoloStato(mossa))
 
   const dismiss = () => {
     if (dismissedRef.current) return
@@ -107,7 +107,10 @@ export function SupremeMoveDialog({ moves, level, recoil, pokemonName, onChoose,
       <div className="flex max-h-full w-full max-w-lg flex-col gap-4 overflow-y-auto rounded-2xl border border-amber-300 bg-slate-900 p-4 text-center text-white shadow-2xl sm:gap-6 sm:p-8 [&>*]:shrink-0">
         <h2 id={titleId} className="text-xl font-bold">Mossa Suprema</h2>
         <p id={descriptionId} className="text-sm leading-relaxed sm:text-base">
-          Scegli l’attacco: danno ×2. {pokemonName} perderà {recoil} HP (50% degli HP massimi).
+          Scegli l’attacco: danno ×2. Contraccolpo: {recoil} HP al livello attuale (50% degli HP massimi).
+        </p>
+        <p className="text-xs leading-relaxed text-slate-300">
+          Se il bersaglio va KO, {pokemonName} guadagna prima esperienza e livelli. Il contraccolpo si calcola poi sugli HP massimi aggiornati.
         </p>
         <p className="text-sm text-slate-300">{pokemonName} · Livello {level}</p>
         <div className="grid gap-2">
