@@ -92,8 +92,8 @@ export function risolviStatoInizioTurno(
   messaggi: string[]
   tiroStato?: number
 } {
-  if (!istanza.stato) {
-    return { istanza, puoAgire: true, dannoSubito: 0, messaggi: [] }
+  if (!istanza.stato || istanza.hp <= 0) {
+    return { istanza, puoAgire: istanza.hp > 0, dannoSubito: 0, messaggi: [] }
   }
 
   const messaggi: string[] = []
@@ -143,7 +143,7 @@ export function risolviStatoInizioTurno(
   return {
     tiroStato,
     istanza: { ...istanza, hp, stato },
-    puoAgire,
+    puoAgire: puoAgire && hp > 0,
     dannoSubito,
     messaggi,
   }
@@ -523,6 +523,16 @@ export function determinaIniziativa(
 export function squadraSconfitta(squadra: PokemonIstanza[] | undefined): boolean {
   if (!squadra || squadra.length === 0) return false
   return squadra.every((p) => p.hp <= 0)
+}
+
+/** Recoil can exhaust both teams: the player needs a healthy reserve to continue. */
+export function esitoSquadre(
+  squadraA: PokemonIstanza[],
+  squadraB: PokemonIstanza[]
+): EsitoBattaglia | null {
+  if (squadraSconfitta(squadraA)) return 'sconfitta'
+  if (squadraSconfitta(squadraB)) return 'vittoria'
+  return null
 }
 
 // =============================================================

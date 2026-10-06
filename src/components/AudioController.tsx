@@ -7,10 +7,12 @@ import {
   playSound,
   setAudioMuted,
   stopMusic,
+  unlockAudio,
 } from '@/utils/soundManager'
 
 export function AudioController() {
   const scena = useSceneNavigation().scena
+  const inDeposito = scena === 'deposito'
   const audioMuted = useGameStore((s) => s.audioMuted)
   const setMutedStore = useGameStore((s) => s.setAudioMuted)
 
@@ -25,25 +27,40 @@ export function AudioController() {
 
   useEffect(() => {
     const onPointerDown = (event: PointerEvent) => {
+      unlockAudio()
       const target = event.target
       if (target instanceof Element && target.closest('button')) {
         playSound('click')
       }
     }
-
+    const onKeyDown = () => unlockAudio()
     window.addEventListener('pointerdown', onPointerDown)
-    return () => window.removeEventListener('pointerdown', onPointerDown)
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('keydown', onKeyDown)
+      stopMusic()
+    }
   }, [])
 
   return (
     <button
       type="button"
-      className="fixed bottom-4 right-4 z-50 rounded-md border border-white/15 bg-black/70 px-3 py-2 text-xs font-bold text-white shadow-xl backdrop-blur transition hover:bg-black/85"
-      onClick={() => setMutedStore(!audioMuted)}
+      className={`z-50 flex items-center justify-center rounded-md border border-white/15 bg-black/70 font-bold text-white shadow-xl backdrop-blur transition hover:bg-black/85 ${inDeposito
+        ? 'absolute right-[0.75%] top-1/2 aspect-square w-[5%] max-w-9 -translate-y-1/2 p-0 text-[clamp(10px,2.4vw,18px)]'
+        : 'fixed bottom-4 right-4 px-3 py-2 text-xs'}`}
+      onClick={() => {
+        setAudioMuted(!audioMuted)
+        if (audioMuted) unlockAudio()
+        setMutedStore(!audioMuted)
+      }}
       aria-pressed={!audioMuted}
+      aria-label={inDeposito ? (audioMuted ? 'Attiva audio' : 'Disattiva audio') : undefined}
       title={audioMuted ? 'Audio disattivato' : 'Audio attivo'}
     >
-      {audioMuted ? 'Audio OFF' : 'Audio ON'}
+      {inDeposito
+        ? <span aria-hidden="true">{audioMuted ? '🔇' : '🔊'}</span>
+        : audioMuted ? 'Audio OFF' : 'Audio ON'}
     </button>
   )
 }

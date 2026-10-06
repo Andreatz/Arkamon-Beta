@@ -29,7 +29,7 @@ const ANIMATED_SPECIES = Object.keys(ARKAMON_ANIMATION_MANIFEST)
 
 const ACTION_SEQUENCE: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
-/** A development-only comparison using the same sprite renderer as battle. */
+/** A comparison using the same sprite renderer as battle. */
 export function DarklawAnimationLab() {
   const [speciesId, setSpeciesId] = useState(ANIMATED_SPECIES[0] ?? 5)
   const speciesName = getPokemon(speciesId)?.nome ?? `Arkamon #${speciesId}`
@@ -113,7 +113,7 @@ export function DarklawAnimationLab() {
             <h1>{speciesName} prende vita<span aria-hidden="true">.</span></h1>
             <p className="darklaw-lab__intro">Confronta la posa originale con i nuovi filmati di {speciesName}: attesa, attacco, colpito, vittoria e KO.</p>
           </div>
-          <a className="darklaw-lab__back" href={`${window.location.pathname}${window.location.search}`}>Torna al gioco <span aria-hidden="true">↗</span></a>
+          <a className="darklaw-lab__back" href="#">Torna al gioco <span aria-hidden="true">↗</span></a>
         </header>
 
         <section className="darklaw-lab__settings" aria-label="Impostazioni dell’anteprima">
@@ -202,7 +202,7 @@ export function DarklawAnimationLab() {
 
         <ArkamonAttackPreview key={speciesId} speciesId={speciesId} stageStyle={stageStyle} background={background} />
 
-        <footer className="darklaw-lab__footer"><span className="darklaw-lab__prototype">Prototipo</span><p>Anteprima disponibile solo in sviluppo. I comandi di questa pagina non modificano la partita.</p></footer>
+        <footer className="darklaw-lab__footer"><span className="darklaw-lab__prototype">Prototipo</span><p>Anteprima delle animazioni. I comandi di questa pagina non modificano la partita.</p></footer>
       </div>
     </main>
   )

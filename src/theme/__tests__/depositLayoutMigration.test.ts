@@ -16,6 +16,17 @@ describe('deposit layout migration', () => {
     expect(legacy.teamPanel).toEqual({ x: 73, y: 16, w: 23, h: 68 })
   })
 
+  it('keeps the portrait team left of the box grid with circular 16:9 cells', () => {
+    const { teamPanel, boxGrid, hud } = migrateDepositLayout(legacy)
+    expect(teamPanel.x + teamPanel.w).toBeLessThan(boxGrid.x)
+    expect(hud.x).toBe(boxGrid.x)
+    expect(hud.y + hud.h).toBeLessThan(boxGrid.y)
+    // A 7 by 5 grid must have square cells inside the 16:9 game stage.
+    const cellAspectRatio = ((boxGrid.w / 7) * (16 / 9)) / (boxGrid.h / 5)
+    expect(cellAspectRatio).toBeCloseTo(1, 1)
+    expect(teamPanel.w).toBeGreaterThan(legacy.teamPanel.w)
+  })
+
   it('preserves customized rectangles while migrating the remaining old defaults', () => {
     const customTeam = { x: 5, y: 10, w: 25, h: 80 }
     const result = migrateDepositLayout({ ...legacy, teamPanel: customTeam })

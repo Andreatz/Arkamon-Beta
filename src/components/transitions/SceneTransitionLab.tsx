@@ -57,7 +57,7 @@ export function SceneTransitionLab() {
             <h1 className="text-2xl font-black sm:text-3xl">Anteprima transizioni</h1>
             <p className="text-sm leading-relaxed text-slate-300">Il dado apre il mondo: un D6 cremisi, la forza custodita al suo interno e una nuova tappa dell’avventura.</p>
           </div>
-          <a href={`${window.location.pathname}${window.location.search}`} className="rounded-lg border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-300">Torna al gioco</a>
+          <a href="#" className="rounded-lg border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-300">Torna al gioco</a>
         </header>
 
         <div className="flex flex-wrap items-end gap-4">

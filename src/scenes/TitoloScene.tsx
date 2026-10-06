@@ -15,7 +15,8 @@ const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
 export function TitoloScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const reset = useGameStore((s) => s.reset)
-  const haGiocatori = useGameStore((s) => s.giocatore1.squadra.length > 0)
+  const haGiocatori = useGameStore((s) => s.giocatore1.squadra.length > 0 || s.giocatore2.squadra.length > 0)
+  const starterCompletati = useGameStore((s) => s.giocatore1.squadra.length > 0 && s.giocatore2.squadra.length > 0)
   const titleLogo = useAdminStore((s) => s.theme.assets.titleLogo)
   const titleBackground = useAdminStore((s) => s.theme.assets.titleBackground)
   const [logoFailed, setLogoFailed] = useState(false)
@@ -96,7 +97,7 @@ export function TitoloScene() {
         {haGiocatori && (
           <button
             className="arka-button-secondary text-lg"
-            onClick={() => vaiAScena('mappa-principale')}
+            onClick={() => vaiAScena(starterCompletati ? 'mappa-principale' : 'laboratorio')}
           >
             Continua
           </button>

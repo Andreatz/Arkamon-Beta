@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   AUDIO_EVENTI,
   isAudioMuted,
@@ -35,5 +35,28 @@ describe('soundManager', () => {
     expect(() => playSound('click')).not.toThrow()
     setAudioMuted(false)
     expect(isAudioMuted()).toBe(false)
+  })
+
+  it('sblocca Web Audio sul gesto utente e gestisce un rifiuto del browser', async () => {
+    vi.resetModules()
+    const resume = vi.fn().mockRejectedValue(new Error('autoplay denied'))
+    const construct = vi.fn()
+    class FakeContext {
+      state = 'suspended'
+      resume = resume
+      constructor() { construct() }
+    }
+    vi.stubGlobal('window', { AudioContext: FakeContext })
+    try {
+      const audio = await import('../soundManager')
+      audio.setAudioMuted(true)
+      audio.unlockAudio()
+      expect(construct).not.toHaveBeenCalled()
+      audio.setAudioMuted(false)
+      audio.unlockAudio()
+      expect(construct).toHaveBeenCalledOnce()
+      expect(resume).toHaveBeenCalledOnce()
+      await Promise.resolve()
+    } finally { vi.unstubAllGlobals() }
   })
 })

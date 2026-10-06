@@ -86,8 +86,13 @@ interface GameState {
   /** Imposta il nome visualizzato di un giocatore. */
   impostaNomeGiocatore: (giocatoreId: 1 | 2, nome: string) => void
 
+  /** Assegna uno starter disponibile al prossimo giocatore che deve sceglierlo. */
+  scegliStarter: (specieId: number) => boolean
+
   /** Aggiunge un pokemon alla squadra (se piena va in deposito). */
   aggiungiPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
+  /** Capture, optional Masterball consumption and the finished battle save form one update. */
+  concludiCattura: (giocatoreId: 1 | 2, istanza: PokemonIstanza, patch: Partial<StatoBattaglia>, masterball?: boolean) => boolean
 
   /** Aggiorna un pokemon esistente (HP, livello, evoluzione...) */
   aggiornaPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
@@ -183,6 +188,8 @@ const giocatoreVuoto = (id: 1 | 2): StatoGiocatore => ({
   caselleConsumate: new Set(),
 })
 
+export const STARTER_IDS = [1, 5, 9] as const
+
 /** Posizione overworld iniziale di default (Fase E). */
 const posizioneIniziale = (): PosizioneAvatar => ({
   mappaId: 'mappa-principale',
@@ -276,6 +283,28 @@ export const useGameStore = create<GameState>()(
           } as Partial<GameState>
         }),
 
+      scegliStarter: (specieId) => {
+        const state = get()
+        const giocatoreId = state.giocatore1.squadra.length === 0
+          ? 1
+          : state.giocatore2.squadra.length === 0 ? 2 : null
+        const scelti = [...state.giocatore1.squadra, ...state.giocatore2.squadra]
+          .map((pokemon) => pokemon.specieId)
+        if (!giocatoreId || !STARTER_IDS.some((id) => id === specieId) || scelti.includes(specieId)) {
+          return false
+        }
+        const istanza = creaIstanza(specieId, 5)
+        if (!istanza) return false
+        const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+        const rimanenti = STARTER_IDS.filter((id) => id !== specieId && !scelti.includes(id))
+        set({
+          [chiaveG]: { ...state[chiaveG], squadra: [istanza] },
+          giocatoreAttivo: giocatoreId === 1 ? 2 : state.turnoOverworld.giocatoreAttivo,
+          ...(giocatoreId === 2 && rimanenti.length === 1 ? { rivaleStarterId: rimanenti[0] } : {}),
+        } as Partial<GameState>)
+        return true
+      },
+
       aggiungiPokemon: (giocatoreId, istanza) =>
         set((s) => {
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
@@ -290,6 +319,28 @@ export const useGameStore = create<GameState>()(
             [chiaveG]: { ...g, deposito: { ...g.deposito, [slot]: istanza } },
           } as Partial<GameState>
         }),
+
+      concludiCattura: (giocatoreId, istanza, patch, masterball = false) => {
+        const state = get()
+        const battle = state.battaglia
+        const key = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+        const player = state[key]
+        if (!battle || battle.tipo !== 'Selvatico' || battle.checkpoint?.phase === 'ended'
+          || battle.pokemonB.istanzaId !== istanza.istanzaId || !haSpazioPokemon(player)
+          || battle.pokemonB.hp <= 0 || patch.checkpoint?.phase !== 'ended' || patch.checkpoint.outcome !== 'vittoria'
+          || (masterball && (player.inventario.masterball ?? 0) <= 0)) return false
+        const slot = player.squadra.length >= 6 ? trovaSlotDepositoLibero(player.deposito) : null
+        const nextPlayer = {
+          ...player,
+          squadra: slot ? player.squadra : [...player.squadra, istanza],
+          deposito: slot ? { ...player.deposito, [slot]: istanza } : player.deposito,
+          inventario: masterball
+            ? { ...player.inventario, masterball: (player.inventario.masterball ?? 0) - 1 }
+            : player.inventario,
+        }
+        set({ [key]: nextPlayer, battaglia: { ...battle, ...patch } } as Partial<GameState>)
+        return true
+      },
 
       aggiornaPokemon: (giocatoreId, istanza) =>
         set((s) => {
@@ -373,6 +424,7 @@ export const useGameStore = create<GameState>()(
         const giocatore =
           state.giocatoreAttivo === 1 ? state.giocatore1 : state.giocatore2
         if (giocatore.squadra.length === 0) return false
+        if (giocatore.allenatoriSconfitti.has(allenatoreId)) return false
         const pokemonA = giocatore.squadra.find((p) => p.hp > 0)
         if (!pokemonA) return false
 
@@ -430,7 +482,7 @@ export const useGameStore = create<GameState>()(
       risolviBattagliaNPC: (esito) => {
         const state = get()
         const b = state.battaglia
-        if (!b || b.allenatoreId === undefined || b.tipo === 'Selvatico') return
+        if (!b || b.allenatoreId === undefined || b.tipo === 'Selvatico' || b.ricompenseApplicate) return
 
         // tipoAvv per il calcolo monete: derivato da allenatore.tipo
         // (Capopalestra → +1000, NPC → +200, PVP → 0)
@@ -450,6 +502,7 @@ export const useGameStore = create<GameState>()(
         if (esito === 'vittoria') nuoviSconfitti.add(b.allenatoreId)
 
         set({
+          battaglia: { ...b, ricompenseApplicate: true },
           [chiaveG]: {
             ...g,
             monete: Math.max(0, g.monete + delta),
@@ -531,6 +584,7 @@ export const useGameStore = create<GameState>()(
         const da = state[chiavePos]
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
         if (state.turnoOverworld.azioniRimaste <= 0) return false
+        if (nuovaPos.mappaId !== mappa.id) return false
         if (!puòMuoversi(da, { x: nuovaPos.x, y: nuovaPos.y }, mappa)) return false
 
         const turnoNuovo = consumaAzione(state.turnoOverworld, 'movimento')
@@ -547,6 +601,11 @@ export const useGameStore = create<GameState>()(
       interagisciCasella: (giocatoreId, mappa, x, y) => {
         const state = get()
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) {
+          return { tipo: 'no-op' }
+        }
+        if (state.turnoOverworld.azioniRimaste <= 0) return { tipo: 'no-op' }
+        const posizione = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        if (posizione.mappaId !== mappa.id || Math.abs(posizione.x - x) + Math.abs(posizione.y - y) !== 1) {
           return { tipo: 'no-op' }
         }
         const casella: Casella | undefined = mappa.caselle[y]?.[x]
@@ -681,30 +740,22 @@ export const useGameStore = create<GameState>()(
         // Riconverti gli array in Set dopo il caricamento.
         // Per save preesistenti: fallback a default per i campi nuovi
         // (inventario, caselleConsumate, posizione, turnoOverworld).
-        const p = persisted as Partial<GameState> & {
-          giocatore1: StatoGiocatore
-          giocatore2: StatoGiocatore
+        const p = (persisted && typeof persisted === 'object' ? persisted : {}) as Partial<GameState>
+        const ripristinaGiocatore = (saved: StatoGiocatore | undefined, fallback: StatoGiocatore): StatoGiocatore => {
+          const g = { ...fallback, ...saved }
+          return {
+            ...g,
+            cespugliVisitati: new Set(g.cespugliVisitati ?? []),
+            allenatoriSconfitti: new Set(g.allenatoriSconfitti ?? []),
+            inventario: g.inventario ?? { masterball: 1 },
+            caselleConsumate: new Set(g.caselleConsumate ?? []),
+          }
         }
-        const inv = (g: StatoGiocatore) => g.inventario ?? { masterball: 1 }
-        const consumate = (g: StatoGiocatore) =>
-          new Set((g.caselleConsumate as unknown as string[] | undefined) ?? [])
         return {
           ...current,
           ...p,
-          giocatore1: {
-            ...p.giocatore1,
-            cespugliVisitati: new Set(p.giocatore1.cespugliVisitati as unknown as string[]),
-            allenatoriSconfitti: new Set(p.giocatore1.allenatoriSconfitti as unknown as number[]),
-            inventario: inv(p.giocatore1),
-            caselleConsumate: consumate(p.giocatore1),
-          },
-          giocatore2: {
-            ...p.giocatore2,
-            cespugliVisitati: new Set(p.giocatore2.cespugliVisitati as unknown as string[]),
-            allenatoriSconfitti: new Set(p.giocatore2.allenatoriSconfitti as unknown as number[]),
-            inventario: inv(p.giocatore2),
-            caselleConsumate: consumate(p.giocatore2),
-          },
+          giocatore1: ripristinaGiocatore(p.giocatore1, current.giocatore1),
+          giocatore2: ripristinaGiocatore(p.giocatore2, current.giocatore2),
           posizione1: normalizePosizioneAvatar(p.posizione1),
           posizione2: normalizePosizioneAvatar(p.posizione2),
           turnoOverworld: p.turnoOverworld ?? { giocatoreAttivo: 1, azioniRimaste: 2 },

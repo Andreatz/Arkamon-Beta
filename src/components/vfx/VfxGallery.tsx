@@ -79,7 +79,7 @@ export function VfxGallery() {
       <aside className="w-full shrink-0 space-y-3 border-b border-white/10 p-4 md:w-72 md:overflow-y-auto md:border-b-0 md:border-r">
         <h1 className="text-xl font-black text-amber-300">VFX Lab</h1>
         <p className="text-xs text-slate-400">Confronta i candidati prima di assegnarli alle mosse.</p>
-        <a href={`${window.location.pathname}${window.location.search}`} className="inline-block text-xs text-amber-300 underline">Torna al gioco</a>
+        <a href="#" className="inline-block text-xs text-amber-300 underline">Torna al gioco</a>
         <label className="grid gap-1 text-xs">
           Cerca VFX
           <input type="search" value={assetSearch} onChange={(event) => setAssetSearch(event.target.value)} placeholder="Nome, tipo o categoria..." className={CONTROL_CLASS} />

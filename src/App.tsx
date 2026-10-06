@@ -36,29 +36,29 @@ function App() {
 
   useEffect(() => { preloadSceneTransitionArtwork() }, [])
 
-  if (import.meta.env.DEV && hash === '#battle-rules-lab') return <LabShell><BattleRulesLab /></LabShell>
+  if (hash === '#battle-rules-lab') return <LabShell><BattleRulesLab /></LabShell>
 
-  if (import.meta.env.DEV && hash === '#audio-lab') {
+  if (hash === '#audio-lab') {
     return <LabShell><Suspense fallback={<div role="status">Caricamento laboratorio audio…</div>}><AudioLab /></Suspense></LabShell>
   }
 
-  if (import.meta.env.DEV && hash === '#transition-lab') {
+  if (hash === '#transition-lab') {
     return <LabShell><SceneTransitionLab /></LabShell>
   }
 
-  if (import.meta.env.DEV && hash === '#vfx-lab') {
+  if (hash === '#vfx-lab') {
     return <LabShell><VfxGallery /></LabShell>
   }
 
-  if (import.meta.env.DEV && hash === '#dice-lab') {
+  if (hash === '#dice-lab') {
     return <LabShell><BattleDiceLab /></LabShell>
   }
 
-  if (import.meta.env.DEV && hash === '#deposit-lab') {
+  if (hash === '#deposit-lab') {
     return <LabShell><DepositLab /></LabShell>
   }
 
-  if (import.meta.env.DEV && hash === '#arkamon-lab') {
+  if (hash === '#arkamon-lab') {
     return <LabShell><DarklawAnimationLab /></LabShell>
   }
 
@@ -73,7 +73,11 @@ function App() {
   )
 }
 
-function LabShell({ children }: { children: React.ReactNode }) { return <><AdminRuntime /><AdminOverlay />{children}</> }
+function LabShell({ children }: { children: React.ReactNode }) {
+  return <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
+    <AdminRuntime /><AdminOverlay />{children}
+  </div>
+}
 
 function renderPresentedScene(navigation: NavigazioneScena) {
   return renderScena(navigation.scena)

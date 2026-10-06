@@ -32,6 +32,7 @@ export function CittaScene() {
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Venezia'
+  const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
   const tutti = getAllenatoriInLuogo(luogo).filter((a) => a.tipo !== 'PVP')
   const allenatoriOrdinati = [...tutti].sort((a, b) => {
     if (a.tipo === b.tipo) return a.id - b.id
@@ -39,7 +40,7 @@ export function CittaScene() {
   })
 
   const sfida = (allenatoreId: number) => {
-    if (giocatore.allenatoriSconfitti.has(allenatoreId)) return
+    if (layoutEditing || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
     const ok = iniziaBattagliaNPC(allenatoreId, luogo)
     if (ok) vaiAScena('battaglia')
   }
@@ -131,7 +132,12 @@ export function CittaScene() {
         onChange={(rect) => updateLuogoLayout('contentGrid', rect)}
         zIndex={10}
       >
-        <div className="grid h-full w-full grid-cols-3 gap-4 overflow-hidden p-1">
+        <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
+          {!haPokemonVivi && (
+            <p role="status" className="arka-panel col-span-3 p-3 text-center text-amber-200">
+              La squadra è esausta. Curala al Centro Pokémon per tornare a combattere.
+            </p>
+          )}
           <motion.button
             whileHover={!layoutEditing ? { scale: 1.05, y: -4 } : {}}
             whileTap={!layoutEditing ? { scale: 0.95 } : {}}
@@ -156,7 +162,7 @@ export function CittaScene() {
                 key={a.id}
                 whileHover={!layoutEditing && !sconfitto ? { scale: 1.05, y: -4 } : {}}
                 whileTap={!layoutEditing && !sconfitto ? { scale: 0.95 } : {}}
-                disabled={layoutEditing || sconfitto}
+                disabled={layoutEditing || sconfitto || !haPokemonVivi}
                 onClick={() => sfida(a.id)}
                 className={`arka-panel flex flex-col items-center justify-center p-6
                   ${sconfitto ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:border-arka-accent'}

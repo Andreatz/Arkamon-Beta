@@ -8,6 +8,7 @@ import { AdminPresetEditor } from './AdminPresetEditor'
 import { AdminSpriteScaleEditor } from './AdminSpriteScaleEditor'
 import { AdminUiEditor } from './AdminUiEditor'
 import { AdminVfxEditor } from './AdminVfxEditor'
+import './adminPanel.css'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 
@@ -58,7 +59,7 @@ export function AdminPanel() {
         <button type="button" className="rounded border px-3 py-2" onClick={() => setExpanded(!expanded)}>{expanded ? 'Riduci pannello' : 'Espandi pannello'}</button>
         <details className="w-full"><summary className="cursor-pointer font-bold">Apri un laboratorio</summary><div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">{[
           ['battle-rules-lab', 'Moneta e status'], ['vfx-lab', 'VFX mosse'], ['audio-lab', 'Suoni'], ['arkamon-lab', 'Animazioni Arkamon'], ['dice-lab', 'Dadi'], ['transition-lab', 'Transizioni'], ['deposit-lab', 'Deposito'],
-        ].map(([hash, label]) => <a key={hash} className="rounded border p-2 text-center" href={`${import.meta.env.BASE_URL}#${hash}`} onClick={(e) => { e.preventDefault(); window.location.assign(`${import.meta.env.BASE_URL}#${hash}`); window.location.reload() }}>{label}</a>)}</div></details>
+        ].map(([hash, label]) => <a key={hash} className="rounded border p-2 text-center" href={`#${hash}`} onClick={() => setPanelOpen(false)}>{label}</a>)}</div></details>
       </div>
       <nav className="grid grid-cols-4 sm:grid-cols-8 border-b border-[var(--arka-border)] text-[10px] font-bold">
         {tabs.map((tab) => (

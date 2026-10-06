@@ -10,6 +10,7 @@ import { EVOLUTION_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
 import type { AdminEvolutionLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
+import type { PokemonIstanza } from '@/types'
 
 /**
  * Scena Evoluzione: animazione per ogni Pokémon che ha raggiunto la
@@ -38,6 +39,13 @@ type EvoluzioneSpec = {
   newSpecieId: number
 }
 
+/** Il payload sopravvive al reload; una specie già aggiornata non va evoluta di nuovo. */
+export function getPendingEvolutionQueue(evoluzioni: EvoluzioneSpec[], squadra: PokemonIstanza[]): EvoluzioneSpec[] {
+  return evoluzioni.filter((evoluzione) =>
+    squadra.some((pokemon) => pokemon.istanzaId === evoluzione.istanzaId && pokemon.specieId === evoluzione.oldSpecieId),
+  )
+}
+
 export function EvoluzioneScene() {
   const scenaCorrente = useSceneNavigation()
   const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
@@ -49,10 +57,16 @@ export function EvoluzioneScene() {
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const initialPayloadRef = useRef(scenaCorrente.payload)
-  const evoluzioni = (initialPayloadRef.current?.evoluzioni as EvoluzioneSpec[]) ?? []
   const luogoRitorno =
     (initialPayloadRef.current?.luogoRitorno as string) ?? 'mappa-principale'
   const giocatoreId = (initialPayloadRef.current?.giocatoreId as 1 | 2) ?? 1
+
+  // Filtra solo al mount: il cambio di specie durante questa animazione deve
+  // mantenere la schermata di conferma, fino al click su Continua/Fine.
+  const [evoluzioni] = useState(() => getPendingEvolutionQueue(
+    (initialPayloadRef.current?.evoluzioni as EvoluzioneSpec[]) ?? [],
+    (giocatoreId === 1 ? giocatore1 : giocatore2).squadra,
+  ))
 
   const [indice, setIndice] = useState(0)
   const [fase, setFase] = useState<'pre' | 'morphing' | 'post'>('pre')

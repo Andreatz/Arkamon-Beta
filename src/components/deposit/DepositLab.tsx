@@ -61,7 +61,7 @@ export function DepositLab() {
         deposito={preview.deposito}
         giocatoreNome="Anteprima"
         onSwap={swap}
-        onBack={() => window.location.assign(`${window.location.pathname}${window.location.search}`)}
+        onBack={() => { window.location.hash = '' }}
       />
       <button
         type="button"

@@ -20,18 +20,19 @@ npm test
 
 ## Stato Attuale
 
-- Branch di lavoro: `main`
-- Ultima verifica: **1 giugno 2026**
-- Build: `npm run build` pulito
-- Test: **363/363 verdi**
+- Branch di lavoro: `feature/vfx-recipe-engine`
+- Ultima verifica: **6 ottobre 2026**
+- Build web: `npm run build` completato senza errori
+- Test: **723/723 verdi in 58 file**
+- Verifica interattiva del gameplay: **completata per i passaggi documentati**; risultati e limiti nel [report di verifica del 6 ottobre 2026](./docs/gameplay-audit-2026-10-06.md).
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
 
 ## Funzionalita Implementate
 
-- Dati convertiti in JSON: 110 Pokemon, 220 mosse, tipi, mappe, incontri e allenatori.
+- Dati convertiti in JSON: 110 Pokemon, 220 mosse runtime, tipi, mappe, incontri e allenatori; catalogo di 276 mosse per le anteprime VFX/audio.
 - Battle engine: danno D6, bonus STAB sulle debolezze tipo, iniziativa, cattura, AI, XP, monete.
 - Battle Refresh completato: sprite grandi, HP bar PNG, InfoBox a blocchi, pulsante avversario, modal scambio post-KO, pulsante `Prosegui`.
-- Stati alterati: Confuso, Addormentato, Avvelenato, immunita stato singolo, cura che rimuove veleno.
+- Stati alterati: Paralizzato, Confuso, Addormentato, Avvelenato, immunita stato singolo, cura che rimuove veleno.
 - Mosse speciali: cure percentuali, mosse Supreme con autodanno, Masterball.
 - Battaglie selvatiche, NPC, Capopalestra e PvP locale.
 - Rivale e Capipalestra con squadre complete da 6 Pokemon.
@@ -39,7 +40,7 @@ npm test
 - Evoluzione post-battaglia con animazione.
 - Mappa principale con movimento a turni, percorsi e citta interattivi.
 - Bilanciamento codificato: progressione mappe, range livelli, economia, incontri e soglie stati/cure/Supreme.
-- Audio generativo Web Audio: musica per scene, effetti principali e toggle muto persistito.
+- Audio da file per mosse, eventi, dadi e transizioni; musica generativa Web Audio per scene, effetti generativi di riserva e toggle muto persistito.
 - Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
 - Deploy GitHub Pages configurato.
 
