@@ -2,6 +2,8 @@
 
 Questo aggiornamento completa le regole degli status e modifica la sequenza della Mossa Suprema secondo la scelta dell'utente. La suite completa supera **774 test in 60 file**; TypeScript e build di produzione completati con successo.
 
+Questa verifica precede le puntualizzazioni sulla paralisi permanente e sul primo turno obbligatorio del sonno. Le osservazioni sui vecchi dadi di status qui sotto sono storiche; le regole correnti sono in [Status e segnalini](./status.md) e la verifica successiva in [Correzione paralisi e sonno](./status-corrections-audit-2026-10-06.md). La regola del doppio KO resta valida.
+
 ## Doppio KO
 
 Il bersaglio riceve prima il danno dell'attacco. Se va KO, l'attaccante riceve XP e sale di livello conservando gli HP correnti. Il contraccolpo viene poi ricalcolato sul massimo del nuovo livello. Il KO per contraccolpo non cancella gli XP già ricevuti e non premia anche il bersaglio sconfitto.

@@ -6,7 +6,7 @@ La scelta non consuma il turno né HP. **Annulla** o **Escape** torna alle azion
 
 ## Regola
 
-1. Risolvi lo stato a inizio turno. Se il Pokémon non può agire o va KO prima dell'attacco, la Suprema non viene eseguita e il suo costo non viene applicato.
+1. Risolvi lo stato a inizio turno. La paralisi richiede 3–6 per attaccare e rimane anche dopo un successo; il primo turno di sonno viene sempre saltato senza dado. Se il Pokémon non può agire o va KO prima dell'attacco, la Suprema non viene eseguita e il suo costo non viene applicato.
 2. Calcola l'attacco scelto con i suoi dadi, bonus, efficacia di tipo, arrotondamento e minimo ordinari.
 3. Infliggi **due volte il danno finale ordinario** al bersaglio.
 4. Se il bersaglio va KO, l'attaccante vince questo specifico scontro e riceve **prima XP e livelli**, conservando gli HP correnti senza cura automatica.
@@ -31,7 +31,7 @@ La finestra di scelta mostra il costo al livello attuale e spiega il ricalcolo d
 
 La suite completa aggiornata supera **774 test in 60 file**. I test della Suprema usano mosse reali e verificano danno ordinario ×2 dopo arrotondamento, resistenza, HP massimi dispari, costo indipendente dagli HP correnti, assenza di accumulo ×4, esclusione delle cure e degli status puri e conservazione degli effetti offensivi. I nuovi test verificano XP prima del contraccolpo, costo al nuovo livello, HP conservati senza cura, risultato del doppio KO per A e B e gestione delle riserve. Due test del tema verificano importazione e caricamento di configurazioni precedenti prive dei nuovi pulsanti. TypeScript e build di produzione sono completati con successo.
 
-Prove iniziali nel browser con App e motore reali, in scenari locali senza sostituire i dadi (precedenti all'aggiornamento dell'ordine XP/contraccolpo):
+Prove iniziali nel browser con App e motore reali, in scenari locali senza sostituire i dadi (precedenti all'aggiornamento dell'ordine XP/contraccolpo e alle ultime regole di paralisi/sonno):
 
 - Suprema di A: Vyrath 19→10 HP; Wormaren avversario 64→56 HP. Ricarica conserva HP e turno B.
 - Suprema di B PvP: Vyrath 19→10 HP; Wormaren giocatore 64→48 HP. Ricarica conserva HP e passaggio al giocatore.

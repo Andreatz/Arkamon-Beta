@@ -8,6 +8,7 @@ import {
   risolviStatoInizioTurno,
 } from '@engine/battleEngine'
 import type { PokemonIstanza, MossaDef } from '@/types'
+import { getMossa } from '@data/index'
 
 function mkIstanza(specieId: number, livello: number, hp?: number): PokemonIstanza {
   const istanza: PokemonIstanza = {
@@ -126,6 +127,44 @@ describe('applicaMossaCura', () => {
     expect(nuovoTick.istanza.stato?.turniTrascorsi).toBe(1)
     expect(secondo.istanza.stato?.turniTrascorsi).toBe(2)
   })
+  it.each([59, 66, 153, 154])('la cura runtime %i rimuove la paralisi anche a HP pieni', (id) => {
+    const iniziale = applicaStato(mkIstanza(1, 5), 'Paralizzato')
+    const risultato = applicaMossaCura(iniziale, getMossa(id)!, 12)
+    expect(risultato.istanza.stato).toBeUndefined()
+    expect(risultato.istanza.hp).toBe(12)
+    expect(risultato.hpRecuperato).toBe(0)
+    expect(risultato.messaggi).toContain('Test è guarito dalla paralisi!')
+    expect(iniziale.stato?.tipo).toBe('Paralizzato')
+  })
+  it('una cura a HP parziali ripristina gli HP e rimuove la paralisi', () => {
+    const iniziale = applicaStato(mkIstanza(95, 5, 4), 'Paralizzato')
+    const risultato = applicaMossaCura(iniziale, getMossa(59)!, 12)
+    expect(risultato.istanza.hp).toBe(7)
+    expect(risultato.hpRecuperato).toBe(3)
+    expect(risultato.istanza.stato).toBeUndefined()
+    expect(iniziale.hp).toBe(4)
+    expect(iniziale.stato?.tipo).toBe('Paralizzato')
+  })
+  it.each(['Addormentato', 'Confuso'] as const)('le cure HP non eliminano %s', (tipo) => {
+    const iniziale = applicaStato(mkIstanza(1, 5, 4), tipo)
+    const risultato = applicaMossaCura(iniziale, getMossa(59)!, 12)
+    expect(risultato.istanza.stato).toEqual(iniziale.stato)
+    expect(risultato.hpRecuperato).toBe(3)
+  })
+  it('la cura di paralisi si esegue senza dado offensivo ed elimina la penalità sui turni successivi', () => {
+    const iniziale = applicaStato(mkIstanza(95, 5), 'Paralizzato')
+    const primaDellaCura = risolviStatoInizioTurno(iniziale, 12, () => {
+      throw new Error('La cura non deve tirare per la paralisi')
+    }, false)
+    expect(primaDellaCura.puoAgire).toBe(true)
+    const curato = applicaMossaCura(primaDellaCura.istanza, getMossa(59)!, 12)
+    const attaccoSuccessivo = risolviStatoInizioTurno(curato.istanza, 12, () => {
+      throw new Error('La paralisi curata non tira nei turni successivi')
+    })
+    expect(attaccoSuccessivo.puoAgire).toBe(true)
+    expect(attaccoSuccessivo.tiroStato).toBeUndefined()
+    expect(attaccoSuccessivo.istanza.stato).toBeUndefined()
+  })
 })
 
 describe('scegliMossaIA — priorità mosse curative', () => {
@@ -141,5 +180,15 @@ describe('scegliMossaIA — priorità mosse curative', () => {
     const idx = scegliMossaIA(att, dif)
     expect(idx).toBeGreaterThanOrEqual(0)
     expect(idx).toBeLessThanOrEqual(2)
+  })
+  it.each([
+    [53, 0], [84, 1], [85, 1], [95, 0],
+  ] as const)('specie %i preferisce la cura %i per la paralisi permanente anche a HP pieni e livello alto', (specieId, slot) => {
+    for (const livello of [5, 100]) {
+      const attaccante = applicaStato(mkIstanza(specieId, livello), 'Paralizzato')
+      const difensore = mkIstanza(13, livello)
+      expect(scegliMossaIA(attaccante, difensore, () => 0)).toBe(slot)
+      expect(attaccante.stato?.tipo).toBe('Paralizzato')
+    }
   })
 })

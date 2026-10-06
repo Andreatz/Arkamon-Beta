@@ -4,11 +4,15 @@ Regole aggiornate il 6 ottobre 2026 e utilizzate dal motore, dalla battaglia e d
 
 | Status | Risoluzione a inizio turno | Segnalino |
 | --- | --- | --- |
-| Paralizzato | Agisce per secondo. Un d6: 5–6 rimuove la paralisi (33,3%); 1–4 la mantiene senza impedire l'attacco. Quando guarisce torna all'ordine del round basato su livello e moneta. | Fulmine giallo, PAR, 5–6. |
-| Addormentato | Fino a tre turni di sonno. Un d6 ogni turno: 4–6 sveglia e permette di agire (50%); 1–3 salta il turno e riduce la durata. Dopo il terzo fallimento il sonno termina e si agisce dal turno successivo. | Luna e Zzz azzurre, turni rimanenti. |
+| Paralizzato | Agisce per secondo. Prima di un attacco tira un d6: 1–2 impedisce l'attacco e consuma il turno; 3–6 permette l'attacco (66,7%). In entrambi i casi la paralisi rimane. Guarisce soltanto con una cura. | Fulmine giallo, PAR, 3–6. |
+| Addormentato | Il primo turno si dorme sempre, senza dado. Dal secondo turno un d6: 4–6 sveglia e permette di agire (50%); 1–3 salta il turno e riduce la durata. Si saltano al massimo tre turni, incluso il primo obbligatorio; dopo il terzo turno di sonno si agisce dal turno successivo. | Luna e Zzz azzurre, turni rimanenti. |
 | Avvelenato | Danno fisso senza dado: primo turno 10% degli HP massimi, secondo 20%, terzo 30%, ecc. Arrotondamento per difetto, minimo 1 HP; HP limitati a zero. | Goccia viola con teschio, PSN, percentuale del prossimo turno. |
 
-La paralisi usa il recupero 5–6 scelto dall'utente: due risultati su sei. Il 25% inizialmente proposto non è rappresentabile con un singolo d6 uniforme.
+Il dado della paralisi verifica la possibilità di attaccare, non la guarigione. Le cure e le azioni non offensive, come l'uso della Masterball, non richiedono questo dado. La paralisi resta anche dopo una sostituzione, un salvataggio o la fine della battaglia; dopo una cura torna l'ordine del round basato su livello e moneta. Queste regole sostituiscono la precedente guarigione casuale con 5–6.
+
+Le mosse di cura HP disponibili (Assorbilinfa, Risveglio verde, Respiro profondo e Tocco di pace) rimuovono anche paralisi e veleno, compresi i casi con HP già pieni. Il Centro Pokémon e la cura completa eliminano gli status. Al momento l'inventario giocabile contiene solo la Masterball: non è stato aggiunto un nuovo oggetto curativo. Il sonno continua a impedire anche le azioni non offensive durante i turni saltati.
+
+Il sonno appena applicato ha tre turni rimanenti: il primo passaggio obbligatorio lo porta a due senza consumare un dado. Un salvataggio con due o un turno rimanente riprende dai tentativi di risveglio, senza ripetere il primo turno.
 
 Il veleno usa un contatore per istanza (`stato.turniTrascorsi`), conservato nel salvataggio della battaglia. Un vecchio avvelenamento senza contatore parte dal 10%. Applicare nuovamente il veleno dopo una cura riparte dal 10%; un Pokémon KO non accumula altri tick. I segnalini sono SVG e testo leggibile, con descrizione accessibile e regola completa al passaggio del puntatore. Compaiono accanto alle barre HP di entrambi i lati e nel laboratorio.
 
@@ -34,4 +38,4 @@ Queste nove mosse applicano solo lo status: zero danni, nessun tiro offensivo e 
 
 ## Laboratorio
 
-Aprire `#battle-rules-lab` permette di provare i veri d6 di paralisi e sonno e far avanzare il veleno su una dimostrazione separata con 100 HP. Le prove non cambiano la partita. «Reimposta» ripristina lo status iniziale e il contatore.
+Aprire `#battle-rules-lab` permette di provare il d6 della paralisi, curarla anche a HP pieni, verificare il primo turno obbligatorio del sonno e i successivi d6 di risveglio, e far avanzare il veleno su una dimostrazione separata con 100 HP. Le prove non cambiano la partita. «Reimposta» ripristina lo status iniziale e il contatore.

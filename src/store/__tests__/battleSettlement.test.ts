@@ -42,6 +42,28 @@ describe('atomic capture and reward settlement', () => {
     expect(original.concludiCattura(1, b, { checkpoint }, true)).toBe(false)
     expect(useGameStore.getState()).toBe(original)
   })
+  it.each([false, true])('preserva PAR dopo la cattura e la chiusura, anche se la squadra è piena: %s', (squadraPiena) => {
+    const par = { tipo: 'Paralizzato' as const, turniRimanenti: -1 }
+    const player = { ...a, stato: par }
+    const captured = { ...b, stato: par }
+    const squadra = squadraPiena
+      ? [player, ...Array.from({ length: 5 }, (_, i) => ({ ...a, istanzaId: `reserve-${i}` }))]
+      : [player]
+    useGameStore.setState((state) => ({
+      giocatore1: { ...state.giocatore1, squadra },
+      battaglia: { ...state.battaglia!, pokemonA: player, pokemonB: captured, squadraA: squadra },
+    }))
+
+    expect(useGameStore.getState().concludiCattura(1, captured, { checkpoint }, true)).toBe(true)
+    useGameStore.getState().terminaBattaglia(false)
+
+    const state = useGameStore.getState()
+    expect(state.battaglia).toBeNull()
+    expect(state.giocatore1.inventario.masterball).toBe(0)
+    expect(state.giocatore1.squadra[0]).toEqual(player)
+    const ricevuto = squadraPiena ? state.giocatore1.deposito['1:1'] : state.giocatore1.squadra[1]
+    expect(ricevuto).toEqual(captured)
+  })
   it('settles NPC coins once, including after serializing and restoring the finished battle', () => {
     const npc = ALLENATORI.find((trainer) => trainer.tipo === 'NPC')!
     useGameStore.setState((state) => ({ battaglia: { ...state.battaglia!, tipo: 'NPC', allenatoreId: npc.id, checkpoint } }))

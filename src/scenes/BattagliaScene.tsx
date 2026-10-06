@@ -209,15 +209,14 @@ export function BattagliaScene() {
     updatePkmnB(pokemon)
   }
   function nextSide(side: 'A' | 'B', a = latestPokemon.current.A, b = latestPokemon.current.B): 'A' | 'B' {
-    // The opening side may have been reversed by pre-existing paralysis.
-    // Once it clears, restore the level/coin priority rather than that forced order.
+    // La paralisi modifica la priorità finché una cura non la rimuove.
     const initial = initialCheckpoint?.initialPriority ?? 'A'
     return nextBattleSide(actedThisRound.current, side, initial, a?.stato?.tipo, b?.stato?.tipo)
   }
   function presentStatus(result: ReturnType<typeof risolviStatoInizioTurno>, pokemon: PokemonIstanza, done: () => void) {
     statusPending.current = true
     let continued = false
-    setStatusRoll({ id: ++statusRollIdRef.current, value: result.tiroStato!, title: `${pokemon.nome} · ${pokemon.stato?.tipo === 'Paralizzato' ? 'Paralisi: esci con 5–6' : 'Sonno: svegliati con 4–6'}`, done: () => {
+    setStatusRoll({ id: ++statusRollIdRef.current, value: result.tiroStato!, title: `${pokemon.nome} · ${pokemon.stato?.tipo === 'Paralizzato' ? 'Paralisi: attacchi con 3–6' : 'Sonno: svegliati con 4–6'}`, done: () => {
       if (continued) return
       continued = true
       statusPending.current = false
@@ -823,14 +822,15 @@ export function BattagliaScene() {
 
   const preparaTurnoGiocatore = (
     onReady: (pokemon: PokemonIstanza, messages: string[]) => void,
-    resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>
+    resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>,
+    verificaAttacco = true
   ) => {
     if (coinOpen || statusPending.current) return
     if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current || scambioRichiesto || attesaPassaggio || attesaAvversario) return
     resetInfoBox()
 
-    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA)
-    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes)); return }
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA, Math.random, verificaAttacco)
+    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes, verificaAttacco)); return }
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
@@ -875,11 +875,11 @@ export function BattagliaScene() {
     onReady(pkmnAEffettivo, statoRes.messaggi)
   }
 
-  const eseguiMossa = (numeroMossa: 0 | 1 | 2, suprema = false) => preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
-
+  const eseguiMossa = (numeroMossa: 0 | 1 | 2, suprema = false) => {
     const mossaScelta = specieA.mosse[numeroMossa]
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
+    preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
     if (mossaScelta && èMossaCura(mossaScelta)) {
       if (suprema) return
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
@@ -949,7 +949,8 @@ export function BattagliaScene() {
       }
       passaTurnoAaB(prossimoB, nuovoB.hp <= 0 ? 800 : 1500)
     })
-  })
+    }, undefined, !mossaScelta || !èMossaCura(mossaScelta))
+  }
 
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
   const salvaCatturaConclusa = (masterball = false) => {
@@ -995,7 +996,7 @@ export function BattagliaScene() {
       }
       mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
       passaTurnoAaB(pkmnB, 0)
-    })
+    }, undefined, false)
   }
 
   const eseguiMasterball = () => {
@@ -1014,7 +1015,7 @@ export function BattagliaScene() {
       playSound('capture')
       setEsito('vittoria')
       setTerminata(true)
-    })
+    }, undefined, false)
   }
 
   const turnoAvversario = (statoBcorrente: PokemonIstanza, resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>) => {
@@ -1022,7 +1023,8 @@ export function BattagliaScene() {
     if (terminata || actionInProgressRef.current || azioneInCorso || scambioRichiesto) return
     resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
-    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
+    // B sceglie la mossa dopo gli altri status: il tiro PAR serve solo se attacca.
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente, Math.random, false)
     if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, statoBcorrente, () => turnoAvversario(statoBcorrente, statoRes)); return }
     const bEffettivo = statoRes.istanza
     setPkmnB(bEffettivo)
@@ -1083,11 +1085,29 @@ export function BattagliaScene() {
     hpMaxBcorrente: number,
     mossaIdx: 0 | 1 | 2,
     messaggiIniziali: string[] = [],
-    suprema?: boolean
+    suprema?: boolean,
+    resolvedParalysis?: ReturnType<typeof risolviStatoInizioTurno>
   ) => {
     const specieB = getPokemon(bEffettivo.specieId)
     const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
+
+    if (bEffettivo.stato?.tipo === 'Paralizzato' && (!mossaDefB || !èMossaCura(mossaDefB))) {
+      const statoRes = resolvedParalysis ?? risolviStatoInizioTurno(bEffettivo, hpMaxBcorrente)
+      if (!resolvedParalysis && statoRes.tiroStato !== undefined) {
+        presentStatus(statoRes, bEffettivo, () => eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, messaggiIniziali, suprema, statoRes))
+        return
+      }
+      bEffettivo = statoRes.istanza
+      setPkmnB(bEffettivo)
+      setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
+      messaggiIniziali = [...messaggiIniziali, ...statoRes.messaggi]
+      if (!statoRes.puoAgire) {
+        mostraMessaggi(messaggiIniziali)
+        passaTurnoBaA(pkmnA, bEffettivo)
+        return
+      }
+    }
 
     if (mossaDefB && èMossaCura(mossaDefB)) {
       if (suprema) return

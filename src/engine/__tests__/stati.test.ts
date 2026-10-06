@@ -6,6 +6,7 @@ import {
   DURATA_STATO,
   tentaApplicaStato,
   percentualeProssimoTickVeleno,
+  determinaIniziativa,
 } from '@engine/battleEngine'
 import type { PokemonIstanza, Stato } from '@/types'
 
@@ -181,26 +182,43 @@ describe('risolviStatoInizioTurno - Avvelenato', () => {
 })
 
 describe('risolviStatoInizioTurno - Addormentato', () => {
-  it('solo le facce 4, 5 e 6 svegliano: tre esiti su sei, 50%', () => {
+  it('il primo turno obbligatorio non tira dadi e non permette di agire', () => {
+    const iniziale = applicaStato(mkIstanza(1, 5), 'Addormentato')
+    const primo = risolviStatoInizioTurno(iniziale, 12, () => {
+      throw new Error('Il primo turno di sonno non ha tiro di risveglio')
+    })
+    expect(primo.tiroStato).toBeUndefined()
+    expect(primo.puoAgire).toBe(false)
+    expect(primo.istanza.hp).toBe(12)
+    expect(primo.istanza.stato).toEqual({ tipo: 'Addormentato', turniRimanenti: 2 })
+    expect(primo.messaggi.some((messaggio) => messaggio.includes('primo turno'))).toBe(true)
+    expect(iniziale.stato?.turniRimanenti).toBe(3)
+  })
+  it('dal secondo turno solo le facce 4, 5 e 6 svegliano: tre esiti su sei, 50%', () => {
     for (let faccia = 1; faccia <= 6; faccia++) {
+      const secondoTurno: PokemonIstanza = {
+        ...mkIstanza(1, 5), stato: { tipo: 'Addormentato', turniRimanenti: 2 },
+      }
       const risultato = risolviStatoInizioTurno(
-        applicaStato(mkIstanza(1, 5), 'Addormentato'), 12, () => (faccia - 0.5) / 6,
+        secondoTurno, 12, () => (faccia - 0.5) / 6,
       )
       expect(risultato.tiroStato).toBe(faccia)
       expect(risultato.puoAgire).toBe(faccia >= 4)
       expect(risultato.istanza.stato === undefined).toBe(faccia >= 4)
     }
   })
-  it('salta al massimo tre turni falliti e al quarto agisce senza un altro tiro', () => {
+  it('salta al massimo tre turni usando solo due dadi, poi agisce senza un altro tiro', () => {
     let corrente = applicaStato(mkIstanza(1, 5), 'Addormentato')
+    let tiri = 0
     for (let tentativo = 1; tentativo <= 3; tentativo++) {
-      const risultato = risolviStatoInizioTurno(corrente, 12, () => 0)
-      expect(risultato.tiroStato).toBe(1)
+      const risultato = risolviStatoInizioTurno(corrente, 12, () => { tiri += 1; return 0 })
+      expect(risultato.tiroStato).toBe(tentativo === 1 ? undefined : 1)
       expect(risultato.puoAgire).toBe(false)
       expect(risultato.istanza.stato?.turniRimanenti).toBe(tentativo < 3 ? 3 - tentativo : undefined)
       if (tentativo === 3) expect(risultato.messaggi.some((messaggio) => messaggio.includes('agirà al prossimo turno'))).toBe(true)
       corrente = risultato.istanza
     }
+    expect(tiri).toBe(2)
     const quarto = risolviStatoInizioTurno(corrente, 12, () => {
       throw new Error('Il sonno già terminato non richiede un quarto tiro')
     })
@@ -208,17 +226,17 @@ describe('risolviStatoInizioTurno - Addormentato', () => {
     expect(quarto.tiroStato).toBeUndefined()
     expect(quarto.istanza.stato).toBeUndefined()
   })
-  it('dado 4-6 → svegliato (stato pulito), puoAgire=true', () => {
-    const i = applicaStato(mkIstanza(1, 5), 'Addormentato')
+  it('secondo turno, dado 4-6 → svegliato (stato pulito), puoAgire=true', () => {
+    const i = { ...mkIstanza(1, 5), stato: { tipo: 'Addormentato' as const, turniRimanenti: 2 } }
     const r = risolviStatoInizioTurno(i, 12, () => 0.8)
     expect(r.istanza.stato).toBeUndefined()
     expect(r.puoAgire).toBe(true)
   })
-  it('dado 1-3 → resta addormentato, turno saltato, durata -1', () => {
-    const i = applicaStato(mkIstanza(1, 5), 'Addormentato') // dur 3
+  it('secondo turno, dado 1-3 → resta addormentato, turno saltato, durata -1', () => {
+    const i = { ...mkIstanza(1, 5), stato: { tipo: 'Addormentato' as const, turniRimanenti: 2 } }
     const r = risolviStatoInizioTurno(i, 12, () => 0.2)
     expect(r.puoAgire).toBe(false)
-    expect(r.istanza.stato?.turniRimanenti).toBe(2)
+    expect(r.istanza.stato?.turniRimanenti).toBe(1)
   })
   it('durata 1 + dado 1-3 → cleared dopo turno saltato', () => {
     const base = mkIstanza(1, 5)
@@ -229,6 +247,71 @@ describe('risolviStatoInizioTurno - Addormentato', () => {
     const r = risolviStatoInizioTurno(i, 12, () => 0.2)
     expect(r.puoAgire).toBe(false)
     expect(r.istanza.stato).toBeUndefined()
+  })
+  it('ricaricare conserva il turno obbligatorio residuo e poi permette il tiro al secondo', () => {
+    const vecchioSalvataggio: PokemonIstanza = {
+      ...mkIstanza(1, 5), stato: { tipo: 'Addormentato', turniRimanenti: 3 },
+    }
+    const primo = risolviStatoInizioTurno(vecchioSalvataggio, 12, () => {
+      throw new Error('Il vecchio salvataggio con durata3 deve saltare senza dadi')
+    })
+    const ricaricato = JSON.parse(JSON.stringify(primo.istanza)) as PokemonIstanza
+    const secondo = risolviStatoInizioTurno(ricaricato, 12, () => 0.9)
+    expect(secondo.tiroStato).toBe(6)
+    expect(secondo.puoAgire).toBe(true)
+    expect(secondo.istanza.stato).toBeUndefined()
+  })
+  it('il flag per azioni non offensive non aggira il primo turno di sonno', () => {
+    const primo = risolviStatoInizioTurno(applicaStato(mkIstanza(1, 5), 'Addormentato'), 12, () => {
+      throw new Error('Nessun tiro al primo turno obbligatorio')
+    }, false)
+    expect(primo.puoAgire).toBe(false)
+    expect(primo.istanza.stato?.turniRimanenti).toBe(2)
+  })
+})
+
+describe('risolviStatoInizioTurno - Paralizzato permanente', () => {
+  it('1-2 blocca l’attacco e 3-6 lo permette senza rimuovere la paralisi', () => {
+    for (let faccia = 1; faccia <= 6; faccia++) {
+      const iniziale = applicaStato(mkIstanza(1, 5), 'Paralizzato')
+      const risultato = risolviStatoInizioTurno(iniziale, 12, () => (faccia - 0.5) / 6)
+      expect(risultato.tiroStato).toBe(faccia)
+      expect(risultato.puoAgire).toBe(faccia >= 3)
+      expect(risultato.istanza.stato).toEqual({ tipo: 'Paralizzato', turniRimanenti: -1 })
+      expect(risultato.dannoSubito).toBe(0)
+      expect(risultato.istanza.hp).toBe(12)
+      expect(risultato.messaggi.some((messaggio) => messaggio.includes('guarit') || messaggio.includes('terminata'))).toBe(false)
+    }
+  })
+  it('persiste tra attacchi riusciti, falliti e ricarica, continuando a dare priorità al difensore', () => {
+    const iniziale = applicaStato(mkIstanza(1, 40), 'Paralizzato')
+    const riuscito = risolviStatoInizioTurno(iniziale, calcolaHPMax(iniziale), () => 0.9)
+    const ricaricato = JSON.parse(JSON.stringify(riuscito.istanza)) as PokemonIstanza
+    const fallito = risolviStatoInizioTurno(ricaricato, calcolaHPMax(ricaricato), () => 0)
+    expect(riuscito.puoAgire).toBe(true)
+    expect(fallito.puoAgire).toBe(false)
+    expect(fallito.istanza.stato?.tipo).toBe('Paralizzato')
+    expect(determinaIniziativa(40, 5, () => 0, fallito.istanza.stato?.tipo)).toBe('B')
+    expect(iniziale.stato?.turniRimanenti).toBe(-1)
+  })
+  it('una cura o altra azione non offensiva non tira per paralisi e conserva lo stato', () => {
+    const iniziale = applicaStato(mkIstanza(1, 5), 'Paralizzato')
+    const risultato = risolviStatoInizioTurno(iniziale, 12, () => {
+      throw new Error('La paralisi verifica gli attacchi, non le cure')
+    }, false)
+    expect(risultato.puoAgire).toBe(true)
+    expect(risultato.tiroStato).toBeUndefined()
+    expect(risultato.istanza.stato).toEqual(iniziale.stato)
+    expect(risultato.istanza.hp).toBe(12)
+  })
+  it('un vecchio stato con durata finita diventa permanente e un KO non tira', () => {
+    const vecchio: PokemonIstanza = { ...mkIstanza(1, 5), stato: { tipo: 'Paralizzato', turniRimanenti: 1 } }
+    const risultato = risolviStatoInizioTurno(vecchio, 12, () => 0.9)
+    expect(risultato.istanza.stato?.turniRimanenti).toBe(-1)
+    const ko = { ...risultato.istanza, hp: 0 }
+    expect(risolviStatoInizioTurno(ko, 12, () => {
+      throw new Error('Un Pokémon KO non tira per paralisi')
+    })).toMatchObject({ istanza: ko, puoAgire: false, dannoSubito: 0 })
   })
 })
 

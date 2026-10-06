@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import { BattleOpeningOverlay } from './BattleOpeningOverlay'
 import { StatusToken } from './StatusToken'
-import { applicaStato, risolviStatoInizioTurno } from '@/engine/battleEngine'
+import { applicaStato, applicaMossaCura, risolviStatoInizioTurno } from '@/engine/battleEngine'
+import { getMossa } from '@/data'
 import type { PokemonIstanza } from '@/types'
 
 // A separate 100-HP demonstration makes the percentages directly readable.
@@ -15,11 +16,15 @@ export function BattleRulesLab() {
   const [sleep, setSleep] = useState(() => applicaStato(pokemon, 'Addormentato'))
   const [poison, setPoison] = useState(() => applicaStato(pokemon, 'Avvelenato'))
   const [poisonLog, setPoisonLog] = useState('Prima applicazione: prossimo turno 10%.')
-  const attempt = (target: PokemonIstanza, settle: (value: PokemonIstanza) => void) => {
+  const [paralysisLog, setParalysisLog] = useState('La paralisi resta finché non viene curata.')
+  const [sleepLog, setSleepLog] = useState('Primo turno: sonno obbligatorio, senza tiro di risveglio.')
+  const attempt = (target: PokemonIstanza, settle: (value: PokemonIstanza) => void, setLog: (message: string) => void) => {
     const result = risolviStatoInizioTurno(target, 100)
-    setDemo({ id: ++sequence.current, kind: 'die', value: result.tiroStato!,
-      title: target.stato?.tipo === 'Paralizzato' ? 'Paralisi: esci con 5–6 (33,3%)' : 'Sonno: svegliati con 4–6 (50%)',
-      result: result.messaggi.join(' '), settle: () => settle(result.istanza) })
+    const finish = () => { settle(result.istanza); setLog(result.messaggi.join(' ')) }
+    if (result.tiroStato === undefined) { finish(); return }
+    setDemo({ id: ++sequence.current, kind: 'die', value: result.tiroStato,
+      title: target.stato?.tipo === 'Paralizzato' ? 'Paralisi: attacchi con 3–6 (66,7%)' : 'Sonno: svegliati con 4–6 (50%)',
+      result: result.messaggi.join(' '), settle: finish })
   }
   return (
     <main className="relative h-full overflow-y-auto bg-slate-950 p-4 text-white sm:p-8">
@@ -36,16 +41,22 @@ export function BattleRulesLab() {
         <section aria-label="Paralisi" className="rounded-xl border border-amber-500/50 bg-amber-950/20 p-4">
           <h2 className="mb-3 text-lg font-bold">Paralizzato</h2>
           {paralysis.stato ? <StatusToken stato={paralysis.stato} /> : <p role="status">Paralisi terminata.</p>}
-          <p className="my-3 text-sm">Agisci per secondo. Un d6 ogni turno: esci con 5–6, probabilità 33,3%.</p>
-          <button className="rounded border px-3 py-2 disabled:opacity-40" disabled={!paralysis.stato} onClick={() => attempt(paralysis, setParalysis)}>Prova paralisi</button>
-          <button className="ml-2 rounded border px-3 py-2" onClick={() => setParalysis(applicaStato(pokemon, 'Paralizzato'))}>Reimposta paralisi</button>
+          <p className="my-3 text-sm">Agisci per secondo. Un d6 per attaccare: con 1–2 fallisci, con 3–6 attacchi (66,7%). La paralisi guarisce solo con una cura.</p>
+          <p role="status" className="mb-3 text-sm">{paralysisLog}</p>
+          <button className="rounded border px-3 py-2 disabled:opacity-40" disabled={!paralysis.stato} onClick={() => attempt(paralysis, setParalysis, setParalysisLog)}>Prova paralisi</button>
+          <button className="ml-2 rounded border px-3 py-2 disabled:opacity-40" disabled={!paralysis.stato} onClick={() => {
+            const result = applicaMossaCura(paralysis, getMossa(59)!, 100)
+            setParalysis(result.istanza); setParalysisLog(result.messaggi.join(' '))
+          }}>Cura paralisi</button>
+          <button className="mt-2 rounded border px-3 py-2" onClick={() => { setParalysis(applicaStato(pokemon, 'Paralizzato')); setParalysisLog('La paralisi resta finché non viene curata.') }}>Reimposta paralisi</button>
         </section>
         <section aria-label="Sonno" className="rounded-xl border border-sky-500/50 bg-sky-950/20 p-4">
           <h2 className="mb-3 text-lg font-bold">Addormentato</h2>
           {sleep.stato ? <StatusToken stato={sleep.stato} /> : <p role="status">Sonno terminato.</p>}
-          <p className="my-3 text-sm">Massimo tre turni. Un d6 ogni turno: con 4–6 ti svegli e puoi agire (50%).</p>
-          <button className="rounded border px-3 py-2 disabled:opacity-40" disabled={!sleep.stato} onClick={() => attempt(sleep, setSleep)}>Prova sonno</button>
-          <button className="ml-2 rounded border px-3 py-2" onClick={() => setSleep(applicaStato(pokemon, 'Addormentato'))}>Reimposta sonno</button>
+          <p className="my-3 text-sm">Il primo turno si dorme sempre, senza dado. Dal secondo, con 4–6 ti svegli e puoi agire (50%). Massimo tre turni.</p>
+          <p role="status" className="mb-3 text-sm">{sleepLog}</p>
+          <button className="rounded border px-3 py-2 disabled:opacity-40" disabled={!sleep.stato} onClick={() => attempt(sleep, setSleep, setSleepLog)}>Prova sonno</button>
+          <button className="ml-2 rounded border px-3 py-2" onClick={() => { setSleep(applicaStato(pokemon, 'Addormentato')); setSleepLog('Primo turno: sonno obbligatorio, senza tiro di risveglio.') }}>Reimposta sonno</button>
         </section>
         <section aria-label="Veleno" className="rounded-xl border border-violet-500/50 bg-violet-950/20 p-4">
           <h2 className="mb-3 text-lg font-bold">Avvelenato</h2>

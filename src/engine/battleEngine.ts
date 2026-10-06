@@ -89,11 +89,12 @@ export function tentaApplicaStato(
  *
  * - Avvelenato: subisce 10%, 20%, 30%... degli HP massimi ai tick successivi.
  *   Il contatore rimane nello stato della creatura, anche tra cambi e salvataggi.
- * - Addormentato: 50% probabilità di svegliarsi (clear). Altrimenti
- *   turno saltato e turniRimanenti -= 1; al raggiungimento di 0 si
- *   sveglia comunque al prossimo turno.
- * - Paralizzato: un D6; esce con 5-6 (2/6), altrimenti conserva la
- *   priorità ridotta senza perdere l'azione.
+ * - Addormentato: primo turno sempre saltato senza dado. Dal secondo,
+ *   4-6 su D6 sveglia e permette di agire. Si saltano al massimo tre turni.
+ *   Nei vecchi salvataggi turniRimanenti=3 indica il primo turno obbligatorio.
+ * - Paralizzato: resta tale fino a una cura e conserva la priorità ridotta.
+ *   Per un attacco, 1-2 sul D6 perde il turno, 3-6 permette l'azione.
+ *   Le azioni non offensive passano verificaAttacco=false e non tirano per PAR.
  * - Confuso: 50% probabilità di colpirsi da solo (1d6 danno + turno
  *   perso). Altrimenti agisce normalmente. turniRimanenti -= 1 in
  *   entrambi i casi; al raggiungimento di 0 lo stato si pulisce.
@@ -101,7 +102,8 @@ export function tentaApplicaStato(
 export function risolviStatoInizioTurno(
   istanza: PokemonIstanza,
   hpMax: number,
-  rng: () => number = Math.random
+  rng: () => number = Math.random,
+  verificaAttacco = true
 ): {
   istanza: PokemonIstanza
   puoAgire: boolean
@@ -121,9 +123,14 @@ export function risolviStatoInizioTurno(
   let tiroStato: number | undefined
 
   if (stato.tipo === 'Paralizzato') {
-    tiroStato = rollD6(1, rng)
-    if (tiroStato >= 5) { stato = undefined; messaggi.push(`${istanza.nome}: dado ${tiroStato}, paralisi terminata!`) }
-    else messaggi.push(`${istanza.nome}: dado ${tiroStato}, resta paralizzato e agisce per secondo.`)
+    stato = { ...stato, turniRimanenti: DURATA_STATO.Paralizzato }
+    if (verificaAttacco) {
+      tiroStato = rollD6(1, rng)
+      puoAgire = tiroStato >= 3
+      messaggi.push(puoAgire
+        ? `${istanza.nome}: dado ${tiroStato}, può attaccare ma resta paralizzato.`
+        : `${istanza.nome}: dado ${tiroStato}, la paralisi impedisce l'attacco e perde il turno.`)
+    }
   } else if (stato.tipo === 'Avvelenato') {
     const percentuale = percentualeProssimoTickVeleno(stato)
     const turniTrascorsi = percentuale / 10
@@ -133,17 +140,23 @@ export function risolviStatoInizioTurno(
     messaggi.push(`${istanza.nome} subisce ${dannoSubito} danni dal veleno (${percentuale}% degli HP massimi).`)
     // Veleno indefinito: nessun decremento
   } else if (stato.tipo === 'Addormentato') {
-    tiroStato = rollD6(1, rng)
-    messaggi.push(`Tentativo di risveglio: dado ${tiroStato} (4–6 per svegliarsi).`)
-    if (tiroStato >= 4) {
-      messaggi.push(`${istanza.nome} si è svegliato!`)
-      stato = undefined
-    } else {
-      messaggi.push(`${istanza.nome} sta dormendo profondamente...`)
+    if (stato.turniRimanenti >= DURATA_STATO.Addormentato) {
       puoAgire = false
-      const tr = stato.turniRimanenti - 1
-      stato = tr > 0 ? { ...stato, turniRimanenti: tr } : undefined
-      if (!stato) messaggi.push(`${istanza.nome} si sveglia dopo tre turni di sonno; agirà al prossimo turno.`)
+      stato = { ...stato, turniRimanenti: DURATA_STATO.Addormentato - 1 }
+      messaggi.push(`${istanza.nome} salta il primo turno di sonno obbligatorio, senza tiro di risveglio.`)
+    } else {
+      tiroStato = rollD6(1, rng)
+      messaggi.push(`Tentativo di risveglio: dado ${tiroStato} (4–6 per svegliarsi).`)
+      if (tiroStato >= 4) {
+        messaggi.push(`${istanza.nome} si è svegliato!`)
+        stato = undefined
+      } else {
+        messaggi.push(`${istanza.nome} sta dormendo profondamente...`)
+        puoAgire = false
+        const tr = stato.turniRimanenti - 1
+        stato = tr > 0 ? { ...stato, turniRimanenti: tr } : undefined
+        if (!stato) messaggi.push(`${istanza.nome} si sveglia dopo tre turni di sonno; agirà al prossimo turno.`)
+      }
     }
   } else if (stato.tipo === 'Confuso') {
     const tr = stato.turniRimanenti - 1
@@ -364,7 +377,7 @@ export function calcolaAzioneSuprema(
 // MOSSE DI CURA (Fase B)
 // =============================================================
 //
-// BR.3: se l'attaccante è Avvelenato, la cura rimuove anche il veleno.
+// Le cure HP rimuovono anche veleno o paralisi, persino a HP già pieni.
 
 export const EFFETTI_CURA = new Set(['CURA', 'CURA_PCT'])
 
@@ -376,8 +389,8 @@ export function èMossaCura(mossa: MossaDef): boolean {
 /**
  * Applica una mossa di cura sull'attaccante stesso.
  *
- * BR.3: se l'attaccante è Avvelenato, lo stato viene rimosso
- * automaticamente (anche se gli HP sono già al massimo).
+ * Rimuove anche Avvelenato o Paralizzato, pure se gli HP sono al massimo.
+ * Sonno e confusione non vengono curati da queste mosse.
  */
 export function applicaMossaCura(
   attaccante: PokemonIstanza,
@@ -404,15 +417,16 @@ export function applicaMossaCura(
   const nuovoHp = Math.min(hpMax, attaccante.hp + amount)
   const recuperato = nuovoHp - attaccante.hp
 
-  // BR.3: cura automatica del veleno (se presente)
+  // La paralisi permanente può essere rimossa solo da una cura esplicita.
   const haVeleno = attaccante.stato?.tipo === 'Avvelenato'
+  const haParalisi = attaccante.stato?.tipo === 'Paralizzato'
   let istanzaFinale: PokemonIstanza = { ...attaccante, hp: nuovoHp }
-  if (haVeleno) {
+  if (haVeleno || haParalisi) {
     istanzaFinale = { ...istanzaFinale, stato: undefined }
   }
 
-  // Early-exit solo se né HP da recuperare né veleno da curare
-  if (recuperato <= 0 && !haVeleno) {
+  // Nessun effetto solo se non c'è né recupero HP né uno stato curabile.
+  if (recuperato <= 0 && !haVeleno && !haParalisi) {
     messaggi.push(`${attaccante.nome} è già al massimo dell'energia.`)
     return { istanza: attaccante, hpRecuperato: 0, messaggi }
   }
@@ -424,6 +438,9 @@ export function applicaMossaCura(
   }
   if (haVeleno) {
     messaggi.push(`${attaccante.nome} è guarito dal veleno!`)
+  }
+  if (haParalisi) {
+    messaggi.push(`${attaccante.nome} è guarito dalla paralisi!`)
   }
 
   return {
@@ -491,7 +508,9 @@ export function scegliMossaIA(
         : mossa.effetto === 'PARALISI' && difensoreHaPriorita && difensore.hp > 1 ? difensore.hp : -1
     }
     if (mossa.effetto && EFFETTI_CURA.has(mossa.effetto)) {
-      punteggio = hpRatio <= 0.3 ? 100 : -1
+      // La cura esplicita elimina una penalità permanente, anche a HP pieni.
+      punteggio = attaccante.stato?.tipo === 'Paralizzato'
+        ? Number.POSITIVE_INFINITY : hpRatio <= 0.3 ? 100 : -1
     }
     if (èMossaSuprema(mossa)) {
       punteggio = hpRatio > RAPPORTO_AUTODANNO_SUPREMA + 0.05 ? punteggio * 2 : -1

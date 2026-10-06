@@ -19,13 +19,13 @@ export function StatusToken({ stato, compact = false }: StatusTokenProps) {
   const poisonPercent = stato.tipo === 'Avvelenato' ? percentualeProssimoTickVeleno(stato) : 0
   const remaining = Math.max(0, stato.turniRimanenti)
   const detail = stato.tipo === 'Avvelenato' ? `${poisonPercent}%`
-    : stato.tipo === 'Addormentato' || stato.tipo === 'Confuso' ? `${remaining}` : '5–6'
+    : stato.tipo === 'Addormentato' || stato.tipo === 'Confuso' ? `${remaining}` : '3–6'
   const title = stato.tipo === 'Avvelenato'
     ? `Avvelenato: prossimo danno ${poisonPercent}% degli HP massimi (tick ${poisonPercent / 10}). Nessun tiro di recupero.`
     : stato.tipo === 'Paralizzato'
-      ? 'Paralizzato: recupera con 5–6 sul D6 (33,3%); altrimenti agisce per secondo.'
+      ? 'Paralizzato: agisce per secondo. D6: 1–2 non attacca, 3–6 attacca (66,7%). Guarisce solo con una cura.'
       : stato.tipo === 'Addormentato'
-        ? `Addormentato: si sveglia con 4–6 sul D6 (50%); durata massima 3 turni, ${remaining} rimanenti.`
+        ? `Addormentato: primo turno obbligatorio senza dado; dal secondo si sveglia con 4–6 (50%). Massimo 3 turni, ${remaining} rimanenti.`
         : `Confuso: 50% di colpirsi da solo e perdere il turno; ${remaining} turni rimanenti.`
 
   return (

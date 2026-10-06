@@ -23,8 +23,8 @@ npm test
 - Branch di lavoro: `feature/vfx-recipe-engine`
 - Ultima verifica: **6 ottobre 2026**
 - Build web: `npm run build` completato senza errori
-- Test: **774/774 verdi in 60 file**
-- Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md) e [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) del 6 ottobre 2026.
+- Test: **800/800 verdi in 60 file**
+- Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md), [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) e [correzione paralisi/sonno](./docs/status-corrections-audit-2026-10-06.md) del 6 ottobre 2026.
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
 
 ## Funzionalita Implementate
@@ -32,7 +32,7 @@ npm test
 - Dati convertiti in JSON: 110 Pokemon, 229 mosse runtime (incluse 9 mosse di paralisi), tipi, mappe, incontri e allenatori; catalogo di 276 mosse per le anteprime VFX/audio.
 - Battle engine: danno D6, bonus STAB sulle debolezze tipo, iniziativa, cattura, AI, XP, monete.
 - Battle Refresh completato: sprite grandi, HP bar PNG, InfoBox a blocchi, pulsante avversario, modal scambio post-KO, pulsante `Prosegui`.
-- [Stati alterati e segnalini](./docs/status.md): paralisi con recupero d6 5–6 e iniziativa per seconda, sonno fino a 3 turni con risveglio 4–6, veleno crescente 10%→20%→30% degli HP massimi; stato singolo e cure che rimuovono il veleno.
+- [Stati alterati e segnalini](./docs/status.md): paralisi permanente fino a una cura e iniziativa per seconda; d6 1–2 impedisce l'attacco, 3–6 lo permette. Sonno fino a 3 turni, con primo turno obbligatorio senza dado e risveglio 4–6 dal secondo. Veleno crescente 10%→20%→30% degli HP massimi; stato singolo e mosse di cura che rimuovono paralisi e veleno anche a HP pieni.
 - Mosse speciali: cure percentuali, Masterball e pulsante [Mossa Suprema](./docs/mossa-suprema.md) per giocatore e avversario PvP: scegli un attacco, infliggi il doppio del danno e perdi il 50% degli HP massimi (arrotondato per difetto, minimo 1 HP). Il KO del bersaglio assegna XP e livelli prima del contraccolpo; nel doppio KO vince lo specifico scontro chi ha attaccato.
 - Battaglie selvatiche, NPC, Capopalestra e PvP locale.
 - Rivale e Capipalestra con squadre complete da 6 Pokemon.

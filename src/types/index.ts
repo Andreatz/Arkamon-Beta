@@ -31,9 +31,10 @@ export type Lato = 'A' | 'B'
 /** Stati alterati di un pokemon in battaglia (porting roadmap Fase B). */
 export type StatoAlterato = 'Paralizzato' | 'Confuso' | 'Addormentato' | 'Avvelenato'
 
-/** Stato attivo su un pokemon. turniRimanenti = -1 → indefinito (es. veleno). */
+/** Stato attivo: -1 indica durata indefinita. La paralisi termina solo con una cura. */
 export interface Stato {
   tipo: StatoAlterato
+  /** Sonno: 3 = primo turno obbligatorio ancora da saltare, 2/1 = turni con tiro di risveglio. */
   turniRimanenti: number
   /** Tick di veleno già applicati; assente nei vecchi salvataggi equivale a 0. */
   turniTrascorsi?: number
