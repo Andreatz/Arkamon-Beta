@@ -18,7 +18,7 @@ function previewResults(choice: string): number[] {
   return [Number(choice)]
 }
 
-/** Development-only preview of the same dice overlay used by battles. */
+/** Preview of the same dice overlay used by battles, without changing the save. */
 export function BattleDiceLab() {
   const [choice, setChoice] = useState('all')
   const [side, setSide] = useState<'A' | 'B'>('A')
@@ -73,7 +73,7 @@ export function BattleDiceLab() {
             <p className="text-sm leading-relaxed text-slate-300">Osserva il lancio, il bagliore del risultato e la faccia superiore del dado: i punti indicano il valore ottenuto.</p>
           </div>
           <a
-            href={`${window.location.pathname}${window.location.search}`}
+            href="#"
             className="rounded-lg border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300"
           >
             Torna al gioco

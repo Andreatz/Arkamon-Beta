@@ -1,4 +1,5 @@
 import { nextBattleSide } from '@/components/battle/battleRoundOrder'
+import { restoreBattleCheckpoint, settledBattleCheckpoint } from '@/components/battle/battleCheckpoint'
 import { BattleOpeningOverlay } from '@/components/battle/BattleOpeningOverlay'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
@@ -17,6 +18,7 @@ import {
   èMossaCura,
   applicaMossaCura,
   getMossaAlLivello,
+  esitoSquadre,
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
@@ -95,7 +97,7 @@ const VFX_TYPE_COLORS: Record<TipoPokemon, string> = {
 
 type PendingSwitch = {
   motivo: string
-  prossimoPasso: 'continuaA' | 'passaAdA' | 'passaAB'
+  prossimoPasso: 'passaAdA' | 'passaAB'
   pendingB?: PokemonIstanza
 }
 
@@ -115,14 +117,14 @@ export function BattagliaScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const battaglia = useGameStore((s) => s.battaglia)
   const terminaBattaglia = useGameStore((s) => s.terminaBattaglia)
-  const aggiungiPokemon = useGameStore((s) => s.aggiungiPokemon)
+  const aggiornaBattaglia = useGameStore((s) => s.aggiornaBattaglia)
+  const concludiCattura = useGameStore((s) => s.concludiCattura)
   const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const giocatore = useGameStore((s) =>
     s.giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
   )
   const risolviBattagliaNPC = useGameStore((s) => s.risolviBattagliaNPC)
-  const usaOggetto = useGameStore((s) => s.usaOggetto)
   const battleLayout = useAdminStore((s) => s.theme.layouts.battle)
   const customBattleBackground = useAdminStore((s) => s.theme.assets.battleBackground)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
@@ -132,10 +134,11 @@ export function BattagliaScene() {
       ? s.giocatore1.inventario.masterball ?? 0
       : s.giocatore2.inventario.masterball ?? 0
   )
-  const [esito, setEsito] = useState<'vittoria' | 'sconfitta' | null>(null)
+  const [initialCheckpoint] = useState(() => battaglia ? restoreBattleCheckpoint(battaglia) : null)
+  const [esito, setEsito] = useState<'vittoria' | 'sconfitta' | null>(initialCheckpoint?.outcome ?? null)
 
-  const [pkmnA, setPkmnA] = useState<PokemonIstanza | null>(null)
-  const [pkmnB, setPkmnB] = useState<PokemonIstanza | null>(null)
+  const [pkmnA, updatePkmnA] = useState<PokemonIstanza | null>(null)
+  const [pkmnB, updatePkmnB] = useState<PokemonIstanza | null>(null)
   const [squadraA, setSquadraA] = useState<PokemonIstanza[]>([])
   const [squadraB, setSquadraB] = useState<PokemonIstanza[]>([])
   const [infoBoxMessaggi, setInfoBoxMessaggi] = useState<string[]>([])
@@ -188,18 +191,39 @@ export function BattagliaScene() {
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
-  const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
-  const [statusRoll, setStatusRoll] = useState<{ value: number; title: string; done: () => void } | null>(null)
+  const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && !initialCheckpoint?.openingComplete && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
+  const [statusRoll, setStatusRoll] = useState<{ id: number; value: number; title: string; done: () => void } | null>(null)
+  const statusRollIdRef = useRef(0)
   const statusPending = useRef(false)
-  const actedThisRound = useRef(new Set<'A' | 'B'>())
+  const actedThisRound = useRef(new Set<'A' | 'B'>(initialCheckpoint?.actedThisRound ?? []))
   const latestPokemon = useRef({ A: pkmnA, B: pkmnB })
   latestPokemon.current = { A: pkmnA, B: pkmnB }
+  // Turn hand-offs happen in the same callback as HP/status changes and replacements.
+  // Update the ref immediately instead of waiting for the next React render.
+  const setPkmnA = (pokemon: PokemonIstanza | null) => {
+    latestPokemon.current.A = pokemon
+    updatePkmnA(pokemon)
+  }
+  const setPkmnB = (pokemon: PokemonIstanza | null) => {
+    latestPokemon.current.B = pokemon
+    updatePkmnB(pokemon)
+  }
   function nextSide(side: 'A' | 'B', a = latestPokemon.current.A, b = latestPokemon.current.B): 'A' | 'B' {
-    return nextBattleSide(actedThisRound.current, side, battaglia?.turnoCorrente ?? 'A', a?.stato?.tipo, b?.stato?.tipo)
+    // The opening side may have been reversed by pre-existing paralysis.
+    // Once it clears, restore the level/coin priority rather than that forced order.
+    const initial = initialCheckpoint?.initialPriority ?? 'A'
+    return nextBattleSide(actedThisRound.current, side, initial, a?.stato?.tipo, b?.stato?.tipo)
   }
   function presentStatus(result: ReturnType<typeof risolviStatoInizioTurno>, pokemon: PokemonIstanza, done: () => void) {
     statusPending.current = true
-    setStatusRoll({ value: result.tiroStato!, title: `${pokemon.nome} · ${pokemon.stato?.tipo === 'Paralizzato' ? 'Paralisi: esci con 5–6' : 'Sonno: svegliati con 4–6'}`, done: () => { statusPending.current = false; setStatusRoll(null); done() } })
+    let continued = false
+    setStatusRoll({ id: ++statusRollIdRef.current, value: result.tiroStato!, title: `${pokemon.nome} · ${pokemon.stato?.tipo === 'Paralizzato' ? 'Paralisi: esci con 5–6' : 'Sonno: svegliati con 4–6'}`, done: () => {
+      if (continued) return
+      continued = true
+      statusPending.current = false
+      setStatusRoll(null)
+      done()
+    } })
   }
   const [shaking, setShaking] = useState<'A' | 'B' | null>(null)
   const [impactFlash, setImpactFlash] = useState<'A' | 'B' | null>(null)
@@ -218,10 +242,10 @@ export function BattagliaScene() {
     | { direzione: 'B→A' }
     | null
   >(null)
-  const [terminata, setTerminata] = useState(false)
+  const [terminata, setTerminata] = useState(Boolean(initialCheckpoint?.outcome))
   const [evoluzioniInAttesa, setEvoluzioniInAttesa] = useState<
     { istanzaId: string; oldSpecieId: number; newSpecieId: number }[]
-  >([])
+  >(initialCheckpoint?.evolutions ?? [])
   const luogoRitornoRef = useRef(battaglia?.luogoRitorno ?? 'mappa-principale')
 
   useEffect(() => {
@@ -236,7 +260,7 @@ export function BattagliaScene() {
           ]
         : [1, 13]
     )
-    playSound('battle-start')
+    if (!initialCheckpoint?.openingComplete && !initialCheckpoint?.outcome) playSound('battle-start')
     if (battaglia) {
       const turnoInizialeA = battaglia.turnoCorrente === 'A'
       setPkmnA(battaglia.pokemonA)
@@ -245,7 +269,20 @@ export function BattagliaScene() {
       setSquadraB(battaglia.squadraB ?? [battaglia.pokemonB])
       setInfoBoxMessaggi(battaglia.log.slice(-4))
       setTurnoA(turnoInizialeA)
-      if (!turnoInizialeA) {
+      if (initialCheckpoint?.phase === 'switch' && initialCheckpoint.switchRequest) {
+        setScambioRichiesto({
+          ...initialCheckpoint.switchRequest,
+          pendingB: initialCheckpoint.switchRequest.prossimoPasso === 'passaAB' ? battaglia.pokemonB : undefined,
+        })
+      } else if (initialCheckpoint?.phase === 'rival-move') {
+        setTurnoA(false)
+        setMostraMoseB(true)
+        messaggiTurnoBRef.current = initialCheckpoint.rivalMessages
+      } else if (initialCheckpoint?.phase === 'pass-player') {
+        setAttesaPassaggio({ direzione: 'B→A' })
+      } else if (initialCheckpoint?.phase === 'pass-rival') {
+        setAttesaPassaggio({ direzione: 'A→B', pendingB: battaglia.pokemonB })
+      } else if (!turnoInizialeA && !initialCheckpoint?.outcome) {
         if (battaglia.tipo === 'PVP') {
           setAttesaPassaggio({ direzione: 'A→B', pendingB: battaglia.pokemonB })
         } else {
@@ -264,6 +301,41 @@ export function BattagliaScene() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Save only settled turns. Reloading during a cinematic retries that action from
+  // its previous checkpoint; it cannot restore an HP change without its dice.
+  useEffect(() => {
+    if (!battaglia || !pkmnA || !pkmnB || coinOpen || statusRoll || azioneInCorso
+      || actionInProgressRef.current || moveVfx || diceRoll || pendingHealth) return
+    const checkpoint = settledBattleCheckpoint({
+      initialPriority: initialCheckpoint?.initialPriority ?? 'A',
+      actedThisRound: actedThisRound.current,
+      turnA: turnoA,
+      pvp: battaglia.tipo === 'PVP',
+      chooseRivalMove: mostraMoseB,
+      passDirection: attesaPassaggio?.direzione,
+      switchRequest: scambioRichiesto ? { motivo: scambioRichiesto.motivo, prossimoPasso: scambioRichiesto.prossimoPasso } : undefined,
+      outcome: terminata ? esito : null,
+      openingComplete: true,
+      evolutions: evoluzioniInAttesa,
+      rivalMessages: messaggiTurnoBRef.current,
+    })
+    aggiornaBattaglia({
+      pokemonA: pkmnA,
+      pokemonB: pkmnB,
+      squadraA,
+      squadraB,
+      hpMaxA: calcolaHPMax(pkmnA),
+      hpMaxB: calcolaHPMax(pkmnB),
+      turnoCorrente: turnoA ? 'A' : 'B',
+      ...(infoBoxMessaggi.length > 0 ? { log: infoBoxMessaggi } : {}),
+      checkpoint,
+    })
+    // The store patch changes battaglia but must not recursively save the same local state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pkmnA, pkmnB, squadraA, squadraB, coinOpen, statusRoll, azioneInCorso, moveVfx,
+    diceRoll, pendingHealth, turnoA, mostraMoseB, attesaPassaggio, scambioRichiesto,
+    terminata, esito, evoluzioniInAttesa, infoBoxMessaggi, aggiornaBattaglia])
 
   useEffect(() => {
     if (infoBoxMessaggi.length === 0) return
@@ -645,11 +717,11 @@ export function BattagliaScene() {
       setAttesaPassaggio({ direzione: 'A→B', pendingB: nuovoB })
       return
     }
-    window.setTimeout(() => setAttesaAvversario(nuovoB), Math.min(delayMs, 250))
+    scheduleFeedbackTimer(() => setAttesaAvversario(nuovoB), Math.min(delayMs, 250))
   }
 
   const passaTurnoBaA = (updatedA = latestPokemon.current.A, updatedB = latestPokemon.current.B) => {
-    if (nextSide('B', updatedA, updatedB) === 'B' && latestPokemon.current.B) { setTurnoA(false); if (isPvP) setAttesaPassaggio({ direzione: 'A→B', pendingB: latestPokemon.current.B }); else setAttesaAvversario(latestPokemon.current.B); return }
+    if (nextSide('B', updatedA, updatedB) === 'B' && updatedB) { setTurnoA(false); if (isPvP) setAttesaPassaggio({ direzione: 'A→B', pendingB: updatedB }); else setAttesaAvversario(updatedB); return }
     setAttesaAvversario(null)
     if (isPvP) {
       setAttesaPassaggio({ direzione: 'B→A' })
@@ -697,12 +769,7 @@ export function BattagliaScene() {
       return
     }
 
-    if (richiesta.prossimoPasso === 'passaAdA') {
-      passaTurnoBaA()
-      return
-    }
-
-    setTurnoA(true)
+    passaTurnoBaA()
   }
 
   const specieA = getPokemon(pkmnA.specieId)!
@@ -739,33 +806,48 @@ export function BattagliaScene() {
     return xpRes.istanza
   }
 
-  const eseguiMossa = (numeroMossa: 0 | 1 | 2, resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>) => {
+  const preparaTurnoGiocatore = (
+    onReady: (pokemon: PokemonIstanza, messages: string[]) => void,
+    resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>
+  ) => {
     if (coinOpen || statusPending.current) return
-    if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current) return
+    if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current || scambioRichiesto || attesaPassaggio || attesaAvversario) return
     resetInfoBox()
 
     const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA)
-    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => eseguiMossa(numeroMossa, statoRes)); return }
+    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes)); return }
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
 
     if (pkmnAEffettivo.hp <= 0) {
-      mostraMessaggi(statoRes.messaggi)
-      const nextA = squadraA.find(
-        (p) => p.istanzaId !== pkmnAEffettivo.istanzaId && p.hp > 0
-      )
-      if (nextA) {
-        mostraMessaggi([`${pkmnAEffettivo.nome} è caduto!`])
-        apriScambio({
-          motivo: `${pkmnAEffettivo.nome} non può continuare.`,
-          prossimoPasso: 'continuaA',
-        })
-        return
+      const finishKO = () => {
+        actionInProgressRef.current = false
+        setAzioneInCorso(false)
+        mostraMessaggi([...statoRes.messaggi, `${pkmnAEffettivo.nome} è caduto!`])
+        playSound('ko')
+        const nextA = squadraA.find(
+          (p) => p.istanzaId !== pkmnAEffettivo.istanzaId && p.hp > 0
+        )
+        if (nextA) {
+          apriScambio({
+            motivo: `${pkmnAEffettivo.nome} non può continuare.`,
+            prossimoPasso: 'passaAB',
+            pendingB: pkmnB,
+          })
+          return
+        }
+        mostraMessaggi(['Hai perso la battaglia...'])
+        setEsito('sconfitta')
+        setTerminata(true)
       }
-      mostraMessaggi(['Hai perso la battaglia...'])
-      setEsito('sconfitta')
-      setTerminata(true)
+      if (getArkamonAnimationDurationMs(pkmnAEffettivo.specieId, 'back', 'ko') > 0) {
+        actionInProgressRef.current = true
+        setAzioneInCorso(true)
+        spriteCompletionWaitersRef.current.A = { animation: 'ko', replayKey: 0, onComplete: finishKO }
+      } else {
+        finishKO()
+      }
       return
     }
 
@@ -775,6 +857,11 @@ export function BattagliaScene() {
       return
     }
 
+    onReady(pkmnAEffettivo, statoRes.messaggi)
+  }
+
+  const eseguiMossa = (numeroMossa: 0 | 1 | 2) => preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
+
     const mossaScelta = specieA.mosse[numeroMossa]
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
@@ -783,7 +870,7 @@ export function BattagliaScene() {
       eseguiSequenzaCura(mossaScelta, 'A', () => {
         setPkmnA(cura.istanza)
         setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
-        mostraMessaggi([...statoRes.messaggi, ...cura.messaggi])
+        mostraMessaggi([...statusMessages, ...cura.messaggi])
         passaTurnoAaB(pkmnB, 1200)
       })
       return
@@ -807,7 +894,7 @@ export function BattagliaScene() {
         setSquadraB(nuovaSquadraB)
       },
       () => {
-      mostraMessaggi([...statoRes.messaggi, ...ris.messaggi])
+      mostraMessaggi([...statusMessages, ...ris.messaggi])
 
       let aDopoAutodanno = pkmnAEffettivo
       if (ris.autodanno && ris.autodanno > 0) {
@@ -817,6 +904,14 @@ export function BattagliaScene() {
         }
         setPkmnA(aDopoAutodanno)
         setSquadraA((sq) => updateInSquadra(sq, aDopoAutodanno))
+      }
+
+      if (esitoSquadre(updateInSquadra(squadraA, aDopoAutodanno), nuovaSquadraB) === 'sconfitta') {
+        mostraMessaggi(['Hai perso la battaglia...'])
+        playSound('ko')
+        setEsito('sconfitta')
+        setTerminata(true)
+        return
       }
 
       if (nuovoB.hp <= 0) {
@@ -882,53 +977,77 @@ export function BattagliaScene() {
 
       passaTurnoAaB(nuovoB, 1500)
     })
-  }
+  })
 
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
+  const salvaCatturaConclusa = (masterball = false) => {
+    const currentA = latestPokemon.current.A ?? pkmnA
+    const checkpoint = settledBattleCheckpoint({
+      initialPriority: initialCheckpoint?.initialPriority ?? 'A',
+      actedThisRound: actedThisRound.current,
+      turnA: true,
+      pvp: false,
+      chooseRivalMove: false,
+      outcome: 'vittoria',
+      openingComplete: true,
+      evolutions: evoluzioniInAttesa,
+      rivalMessages: [],
+    })
+    return concludiCattura(giocatoreAttivo, pkmnB, {
+      pokemonA: currentA,
+      pokemonB: pkmnB,
+      squadraA: updateInSquadra(squadraA, currentA),
+      squadraB,
+      hpMaxA: calcolaHPMax(currentA),
+      hpMaxB,
+      turnoCorrente: 'A',
+      checkpoint,
+    }, masterball)
+  }
+
   const eseguiCattura = () => {
-    if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current) return
-    resetInfoBox()
     if (!haSpazioPokemon(giocatore)) {
       mostraMessaggi(['Squadra e deposito sono pieni: libera uno slot prima di catturare.'])
       return
     }
-    const ris = tentaCattura(pkmnB)
-    mostraMessaggi([
-      `Lanci una pokeball...`,
-    ])
-    if (ris.riuscita) {
-      mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
-      playSound('capture')
-      aggiungiPokemon(giocatoreAttivo, pkmnB)
-      setEsito('vittoria')
-      setTerminata(true)
-      return
-    }
-    mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
-    setTurnoA(false)
-    setAttesaAvversario(pkmnB)
+    preparaTurnoGiocatore((_pokemon, statusMessages) => {
+      const ris = tentaCattura(pkmnB)
+      mostraMessaggi([...statusMessages, 'Lanci una pokeball...'])
+      if (ris.riuscita) {
+        if (!salvaCatturaConclusa()) return
+        mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
+        playSound('capture')
+        setEsito('vittoria')
+        setTerminata(true)
+        return
+      }
+      mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
+      passaTurnoAaB(pkmnB, 0)
+    })
   }
 
   const eseguiMasterball = () => {
-    if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current) return
     if (!haSpazioPokemon(giocatore)) {
       mostraMessaggi(['Squadra e deposito sono pieni: libera uno slot prima di catturare.'])
       return
     }
-    if (!usaOggetto(giocatoreAttivo, 'masterball')) return
-    resetInfoBox()
-    mostraMessaggi([
-      'Lanci una Masterball...',
-      `${pkmnB.nome} è stato catturato!`,
-    ])
-    playSound('capture')
-    aggiungiPokemon(giocatoreAttivo, pkmnB)
-    setEsito('vittoria')
-    setTerminata(true)
+    if (masterballRimaste <= 0) return
+    preparaTurnoGiocatore((_pokemon, statusMessages) => {
+      if (!salvaCatturaConclusa(true)) return
+      mostraMessaggi([
+        ...statusMessages,
+        'Lanci una Masterball...',
+        `${pkmnB.nome} è stato catturato!`,
+      ])
+      playSound('capture')
+      setEsito('vittoria')
+      setTerminata(true)
+    })
   }
 
   const turnoAvversario = (statoBcorrente: PokemonIstanza, resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>) => {
     if (coinOpen || statusPending.current) return
+    if (terminata || actionInProgressRef.current || azioneInCorso || scambioRichiesto) return
     resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
     const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
@@ -953,7 +1072,7 @@ export function BattagliaScene() {
         if (nextB && isNPC) {
           mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
           setPkmnB(nextB)
-          setTurnoA(true)
+          passaTurnoBaA(aggiornatoA, nextB)
           return
         }
         mostraMessaggi(['Hai vinto la battaglia!'])
@@ -1089,7 +1208,7 @@ export function BattagliaScene() {
         if (nextB && isNPC) {
           mostraMessaggi([`${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`])
           setPkmnB(nextB)
-          setTurnoA(true)
+          passaTurnoBaA(aggiornatoA, nextB)
           return
         }
         mostraMessaggi(['Hai vinto la battaglia!'])
@@ -1134,7 +1253,6 @@ export function BattagliaScene() {
 
   return (
     <motion.div
-      ref={(node) => { if (node) for (const child of Array.from(node.children)) if (child instanceof HTMLElement && child.getAttribute('role') !== 'dialog') child.inert = coinOpen || statusRoll !== null }}
       data-battle-layout-root
       className="w-full h-full relative bg-cover bg-center"
       style={{ backgroundImage: `url(${bgBattaglia})` }}
@@ -1152,7 +1270,7 @@ export function BattagliaScene() {
       }}
     >
       {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
-      {statusRoll ? <BattleOpeningOverlay kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
+      {statusRoll ? <BattleOpeningOverlay key={statusRoll.id} kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 

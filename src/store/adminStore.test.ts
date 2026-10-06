@@ -262,4 +262,25 @@ describe('adminStore', () => {
 
     expect(useAdminStore.getState().theme).toEqual(imported)
   })
+
+  it('importTheme migrates legacy deposit geometry while preserving the supplied visual theme', () => {
+    const imported: AdminTheme = {
+      ...cloneAdminTheme(defaultAdminTheme),
+      layouts: {
+        ...defaultAdminTheme.layouts,
+        deposit: {
+          hud: { x: 3, y: 3, w: 94, h: 9 },
+          boxGrid: { x: 4, y: 16, w: 66, h: 68 },
+          teamPanel: { x: 73, y: 16, w: 23, h: 68 },
+          infoBar: { x: 12, y: 88, w: 76, h: 8 },
+        },
+      },
+    }
+    useAdminStore.getState().importTheme(imported)
+    const theme = useAdminStore.getState().theme
+    expect(theme.layouts.deposit).toEqual(defaultAdminTheme.layouts.deposit)
+    expect(theme.colors).toEqual(imported.colors)
+    expect(theme.ui).toEqual(imported.ui)
+    expect(imported.layouts.deposit.teamPanel.x).toBe(73)
+  })
 })

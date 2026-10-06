@@ -1,7 +1,7 @@
-import { useGameStore, creaIstanza } from '@store/gameStore'
+import { useGameStore, STARTER_IDS } from '@store/gameStore'
 import { getPokemon } from '@data/index'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LABORATORY_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 
@@ -12,26 +12,30 @@ import { assetUrl } from '@/utils/assetUrl'
  * a turno il proprio starter tra ID 1, 5, 9 (le prime forme delle
  * tre famiglie evolutive). Il terzo non scelto andrà al Rivale.
  */
-const STARTER_IDS = [1, 5, 9]
-
 export function LaboratorioScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
-  const aggiungiPokemon = useGameStore((s) => s.aggiungiPokemon)
-  const cambiaGiocatoreAttivo = useGameStore((s) => s.cambiaGiocatoreAttivo)
+  const scegliStarter = useGameStore((s) => s.scegliStarter)
   const impostaNomeGiocatore = useGameStore((s) => s.impostaNomeGiocatore)
-  const assegnaRivaleStarter = useGameStore((s) => s.assegnaRivaleStarter)
-  const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const giocatore1 = useGameStore((s) => s.giocatore1)
   const giocatore2 = useGameStore((s) => s.giocatore2)
   const g1HaStarter = useGameStore((s) => s.giocatore1.squadra.length > 0)
   const g2HaStarter = useGameStore((s) => s.giocatore2.squadra.length > 0)
-  const [starterDisponibili, setStarterDisponibili] = useState(STARTER_IDS)
   const [nomiConfermati, setNomiConfermati] = useState(g1HaStarter || g2HaStarter)
   const [nomeGiocatore1, setNomeGiocatore1] = useState(giocatore1.nome)
   const [nomeGiocatore2, setNomeGiocatore2] = useState(giocatore2.nome)
 
   const tuttiHannoStarter = g1HaStarter && g2HaStarter
+  const giocatoreAttivo = g1HaStarter ? 2 : 1
+  const starterScelti = [...giocatore1.squadra, ...giocatore2.squadra].map((pokemon) => pokemon.specieId)
   const nomeGiocatoreAttivo = giocatoreAttivo === 1 ? giocatore1.nome : giocatore2.nome
+
+  useEffect(() => {
+    if (!tuttiHannoStarter) return
+    const timer = window.setTimeout(() => {
+      if (useGameStore.getState().scenaCorrente.scena === 'laboratorio') vaiAScena('mappa-principale')
+    }, 800)
+    return () => window.clearTimeout(timer)
+  }, [tuttiHannoStarter, vaiAScena])
 
   const confermaNomi = () => {
     impostaNomeGiocatore(1, nomeGiocatore1)
@@ -39,25 +43,9 @@ export function LaboratorioScene() {
     setNomiConfermati(true)
   }
 
-  const scegliStarter = (specieId: number) => {
-    const istanza = creaIstanza(specieId, 5)
-    if (!istanza) return
-    aggiungiPokemon(giocatoreAttivo, istanza)
-    const rimanenti = starterDisponibili.filter((id) => id !== specieId)
-    setStarterDisponibili(rimanenti)
-    if (g1HaStarter && !g2HaStarter) {
-      // Era il turno del 2: lo starter rimasto va al Rivale.
-      // Porting di: AssegnaRivaleEVaiAllaMappa da old_files/Mod_Game_Events.txt
-      if (rimanenti.length === 1) assegnaRivaleStarter(rimanenti[0])
-      setTimeout(() => vaiAScena('mappa-principale'), 800)
-    } else {
-      cambiaGiocatoreAttivo()
-    }
-  }
-
   return (
     <div
-      className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-slate-800 to-slate-950 p-8 bg-cover bg-center"
+      className="relative w-full h-full overflow-y-auto bg-gradient-to-b from-slate-800 to-slate-950 bg-cover bg-center"
       style={{ backgroundImage: `url(${LABORATORY_BG})` }}
     >
       <img
@@ -73,12 +61,13 @@ export function LaboratorioScene() {
         aria-hidden="true"
       />
 
-      <h2 className="arka-readable-title relative z-10 text-4xl font-bold text-arka-accent mb-2">
+      <div className="relative z-10 flex min-h-full w-full flex-col items-center justify-center px-4 py-4 sm:px-8 sm:py-8">
+      <h2 className="arka-readable-title mb-2 text-center text-2xl font-bold text-arka-accent sm:text-4xl">
         Laboratorio del Professore
       </h2>
       {!nomiConfermati ? (
         <form
-          className="arka-panel relative z-10 mt-5 w-[min(34rem,92vw)] space-y-4 p-6"
+          className="arka-panel mt-5 w-full max-w-[34rem] space-y-4 p-4 sm:p-6"
           onSubmit={(event) => {
             event.preventDefault()
             confermaNomi()
@@ -110,17 +99,17 @@ export function LaboratorioScene() {
         </form>
       ) : (
         <>
-      <p className="arka-readable-text relative z-10 text-arka-text-muted mb-8 text-lg">
+      <p className="arka-readable-text mb-4 text-center text-sm text-arka-text-muted sm:mb-8 sm:text-lg">
         {tuttiHannoStarter
           ? 'Tutti hanno scelto! Si parte!'
           : `${nomeGiocatoreAttivo}, scegli il tuo Starter.`}
       </p>
 
-      <div className="relative z-10 flex gap-6">
+      <div className="grid w-full max-w-[45rem] grid-cols-3 gap-2 sm:gap-6">
         {STARTER_IDS.map((id) => {
           const specie = getPokemon(id)
           if (!specie) return null
-          const disponibile = starterDisponibili.includes(id)
+          const disponibile = !tuttiHannoStarter && !starterScelti.includes(id)
 
           return (
             <motion.button
@@ -129,12 +118,12 @@ export function LaboratorioScene() {
               whileTap={disponibile ? { scale: 0.95 } : {}}
               disabled={!disponibile}
               onClick={() => scegliStarter(id)}
-              className={`arka-panel p-6 w-56 flex flex-col items-center gap-3
+              className={`arka-panel flex min-w-0 w-full flex-col items-center gap-2 p-2 sm:gap-3 sm:p-6
                 ${disponibile ? 'cursor-pointer hover:border-arka-accent' : 'opacity-40 cursor-not-allowed'}
               `}
             >
               <div
-                className="w-32 h-32 rounded-full flex items-center justify-center text-5xl overflow-hidden"
+                className="flex h-20 w-20 max-w-full items-center justify-center overflow-hidden rounded-full text-5xl sm:h-32 sm:w-32"
                 style={{ backgroundColor: `var(--tw-color-tipo-${specie.tipo.toLowerCase()})` }}
               >
                 <img
@@ -147,14 +136,15 @@ export function LaboratorioScene() {
                   }}
                 />
               </div>
-              <h3 className="text-2xl font-bold">{specie.nome}</h3>
-              <span className="text-sm text-arka-text-muted">{specie.tipo}</span>
+              <h3 className="w-full break-words text-center text-base font-bold sm:text-2xl">{specie.nome}</h3>
+              <span className="text-xs text-arka-text-muted sm:text-sm">{specie.tipo}</span>
             </motion.button>
           )
         })}
       </div>
         </>
       )}
+      </div>
     </div>
   )
 }

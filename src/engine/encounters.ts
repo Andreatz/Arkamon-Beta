@@ -6,7 +6,6 @@
  * - Mod_Utilities.ScegliIndicePesato
  */
 import type { IncontroSelvatico, Probabilita, PokemonIstanza } from '@/types'
-import { rollD6 } from '@engine/battleEngine'
 import { creaIstanza } from '@store/gameStore'
 
 // Porting di: PesoCategoria da old_files/Mod_Utilities.txt
@@ -52,11 +51,8 @@ export function generaIncontroDaCespuglio(
   if (!incontro) return null
 
   const range = incontro.livelloMax - incontro.livelloMin + 1
-  // Livello uniforme con d6: usa rollD6(1, rng) e mappa, oppure rng() se range > 6
-  const livello =
-    range <= 6
-      ? incontro.livelloMin + (rollD6(1, rng) - 1) % range
-      : incontro.livelloMin + Math.floor(rng() * range)
+  // A modulo of six biases ranges of four or five toward lower levels.
+  const livello = incontro.livelloMin + Math.floor(rng() * range)
 
   return creaIstanza(incontro.pokemonId, livello)
 }

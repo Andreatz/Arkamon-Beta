@@ -99,6 +99,13 @@ describe('store overworld — muoviAvatar', () => {
     const ok = useGameStore.getState().muoviAvatar(1, posIn(1, 0), mappaTest())
     expect(ok).toBe(false)
   })
+
+  it('rifiuta un cambio di mappa mascherato da movimento adiacente', () => {
+    const ok = useGameStore.getState().muoviAvatar(1, { ...posIn(1, 0), mappaId: 'AltraMappa' }, mappaTest())
+    expect(ok).toBe(false)
+    expect(useGameStore.getState().posizione1).toEqual(posIn(1, 1))
+    expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)
+  })
 })
 
 describe('store overworld — interagisciCasella', () => {
@@ -125,6 +132,7 @@ describe('store overworld — interagisciCasella', () => {
   })
 
   it('allenatore → battaglia-npc + consumata', () => {
+    useGameStore.setState({ posizione1: posIn(2, 1) })
     const r = useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 2)
     expect(r).toMatchObject({ tipo: 'battaglia-npc', allenatoreId: 42 })
     const s = useGameStore.getState()
@@ -132,6 +140,7 @@ describe('store overworld — interagisciCasella', () => {
   })
 
   it('uscita → transizione-mappa + sposta avatar sul nuovo spawn', () => {
+    useGameStore.setState({ posizione1: posIn(2, 2) })
     const r = useGameStore.getState().interagisciCasella(1, mappaTest(), 3, 2)
     expect(r).toMatchObject({
       tipo: 'transizione-mappa',
@@ -178,6 +187,27 @@ describe('store overworld — interagisciCasella', () => {
     })
     const r = useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 1)
     expect(r.tipo).toBe('no-op')
+  })
+
+  it('rifiuta caselle lontane senza consumarle o cambiare turno', () => {
+    const r = useGameStore.getState().interagisciCasella(1, mappaTest(), 3, 2)
+    expect(r.tipo).toBe('no-op')
+    expect(useGameStore.getState().posizione1).toEqual(posIn(1, 1))
+    expect(useGameStore.getState().turnoOverworld.giocatoreAttivo).toBe(1)
+    expect(useGameStore.getState().giocatore1.caselleConsumate.size).toBe(0)
+  })
+
+  it('rifiuta interazioni su una mappa diversa da quella occupata', () => {
+    useGameStore.setState({ posizione1: { ...posIn(1, 1), mappaId: 'AltraMappa' } })
+    expect(useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 1).tipo).toBe('no-op')
+    expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)
+  })
+
+  it('rifiuta interazioni quando non restano azioni', () => {
+    useGameStore.setState({ turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 0 } })
+    expect(useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 1).tipo).toBe('no-op')
+    expect(useGameStore.getState().giocatore1.caselleConsumate.size).toBe(0)
+    expect(useGameStore.getState().turnoOverworld.giocatoreAttivo).toBe(1)
   })
 })
 

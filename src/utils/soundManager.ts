@@ -116,8 +116,13 @@ function hasAudio(): boolean {
 function audioContext(): AudioContext | null {
   if (!hasAudio()) return null
   if (!ctx) ctx = new window.AudioContext()
-  if (ctx.state === 'suspended') void ctx.resume()
+  if (ctx.state === 'suspended') void ctx.resume().catch(() => {})
   return ctx
+}
+
+/** Resume Web Audio inside the input gesture; HTML audio clicks do not unlock it. */
+export function unlockAudio(): void {
+  if (!muted) audioContext()
 }
 
 function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1): void {

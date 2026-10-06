@@ -92,4 +92,18 @@ describe('gameStore - invarianti squadra e deposito', () => {
 
     expect(useGameStore.getState().iniziaBattagliaNPC(allenatore.id, allenatore.luogo)).toBe(false)
   })
+
+  it('non permette di sfidare nuovamente un allenatore sconfitto', () => {
+    const allenatore = ALLENATORI[0]
+    useGameStore.setState((state) => ({
+      giocatore1: {
+        ...state.giocatore1,
+        squadra: [pokemon('sano')],
+        allenatoriSconfitti: new Set([allenatore.id]),
+      },
+      giocatoreAttivo: 1,
+    }))
+    expect(useGameStore.getState().iniziaBattagliaNPC(allenatore.id, allenatore.luogo)).toBe(false)
+    expect(useGameStore.getState().battaglia).toBeNull()
+  })
 })

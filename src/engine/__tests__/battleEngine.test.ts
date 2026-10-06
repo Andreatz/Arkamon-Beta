@@ -9,6 +9,7 @@ import {
   applicaXP,
   xpGuadagnato,
   xpRichiestoPerLivello,
+  esitoSquadre,
 } from '@engine/battleEngine'
 import { efficaciaTipo } from '@data/index'
 import type { PokemonIstanza } from '@/types'
@@ -165,5 +166,17 @@ describe('tentaCattura — formula VBA (3 - hp/hpMax)', () => {
     const ris = tentaCattura(v, () => 0) // roll=3
     expect(ris.soglia).toBeCloseTo(12.5)
     expect(ris.riuscita).toBe(true)
+  })
+})
+
+describe('team outcome after damage and supreme recoil', () => {
+  it('treats simultaneous last-Pokémon KO consistently as defeat', () => {
+    expect(esitoSquadre([mkIstanza(1, 5, 0)], [mkIstanza(13, 5, 0)])).toBe('sconfitta')
+  })
+  it('wins after simultaneous active KO when a healthy player reserve remains', () => {
+    expect(esitoSquadre([mkIstanza(1, 5, 0), mkIstanza(5, 5, 1)], [mkIstanza(13, 5, 0)])).toBe('vittoria')
+  })
+  it('continues when both players have healthy replacements', () => {
+    expect(esitoSquadre([mkIstanza(1, 5, 0), mkIstanza(5, 5, 1)], [mkIstanza(13, 5, 0), mkIstanza(20, 5, 1)])).toBeNull()
   })
 })

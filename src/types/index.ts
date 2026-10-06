@@ -172,6 +172,22 @@ export interface StatoBattaglia {
   log: string[]
   /** Flag per evoluzione in attesa post-battaglia */
   evoluzioneInAttesa: { istanzaId: string; nuovaSpecieId: number } | null
+  /** Settled UI turn checkpoint; media playback itself restarts from the last settled turn. */
+  checkpoint?: BattleCheckpoint
+  /** Reward settlement is idempotent even if the game reloads before leaving the scene. */
+  ricompenseApplicate?: boolean
+}
+
+export interface BattleCheckpoint {
+  version: 1
+  initialPriority: Lato
+  actedThisRound: Lato[]
+  phase: 'player' | 'opponent' | 'rival-move' | 'pass-player' | 'pass-rival' | 'switch' | 'ended'
+  openingComplete: boolean
+  outcome: 'vittoria' | 'sconfitta' | null
+  switchRequest?: { motivo: string; prossimoPasso: 'passaAdA' | 'passaAB' }
+  evolutions: { istanzaId: string; oldSpecieId: number; newSpecieId: number }[]
+  rivalMessages: string[]
 }
 
 /** Risultato del calcolo di danno (per UI: HP barre, animazioni) */

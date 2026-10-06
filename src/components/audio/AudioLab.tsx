@@ -44,7 +44,7 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
   const [soundId, setSoundId] = useState(choices['move:1']?.soundId ?? '')
   const [volume, setVolume] = useState(choices['move:1']?.volume ?? 0.45)
   const [cue, setCue] = useState<'start' | 'impact'>(choices['move:1']?.cue ?? 'impact')
-  const [delayMs, setDelayMs] = useState(0)
+  const [delayMs, setDelayMs] = useState(choices['move:1']?.delayMs ?? 0)
   const [message, setMessage] = useState('Scegli una mossa o un evento, poi ascolta i candidati.')
   const [playing, setPlaying] = useState(false)
   const [playedIds, setPlayedIds] = useState<Set<string>>(() => new Set())
@@ -129,9 +129,12 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
     catch { setMessage('Memoria del browser non disponibile. Esporta le scelte per conservarle.'); }
   }
   function removeChoice() {
+    stop()
     const next = { ...choices }
     next[target] = (selections.choices as AudioChoices)[target]
     setChoices(next)
+    const reset = next[target]
+    if (reset) { setSoundId(reset.soundId); setVolume(reset.volume); setCue(reset.cue); setDelayMs(reset.delayMs) }
     try { localStorage.setItem(AUDIO_CHOICES_KEY, JSON.stringify({ version: 1, choices: next })); setMessage('Scelta di Codex ripristinata.') }
     catch { setMessage('Rimozione valida solo per questa sessione: memoria del browser non disponibile.') }
   }
@@ -139,7 +142,10 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
     const blob = new Blob([JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), previewOnly: true, choices,
       sounds: Object.fromEntries(Object.values(choices).map((choice) => [choice.soundId, (selections.sounds as Record<string, { src: string }>)[choice.soundId]?.src ?? byId.get(choice.soundId)?.src])) }, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
-    const link = document.createElement('a'); link.href = url; link.download = 'arkamon-audio-scelte.json'; link.click()
+    const link = document.createElement('a'); link.href = url; link.download = 'arkamon-audio-scelte.json'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
     window.setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
   const soundButton = (file: AudioEntry) => <button key={file.id} type="button" onClick={() => selectSound(file.id)} aria-pressed={soundId === file.id}
@@ -155,7 +161,7 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
       <p className="text-xs tracking-widest text-amber-300">ARKAMON · AUDIO LAB</p>
       <h1 className="text-3xl font-black">Scegli il suono di ogni effetto</h1>
       <p className="max-w-4xl text-sm text-slate-300">{catalog.total.toLocaleString('it')} suoni · {catalog.shortlistCount} candidati · 276 mosse. 286 abbinamenti scelti da Codex sono già attivi nel gioco. Scelte semantiche, senza revisione all’ascolto. Qui puoi confrontarle; le tue modifiche restano locali fino all’integrazione.</p>
-      <div className="flex flex-wrap gap-3"><a className={CONTROL} href={assetUrl('')}>Torna al gioco</a><button className={CONTROL} onClick={exportChoices}>Esporta scelte ({Object.keys(choices).length})</button></div>
+      <div className="flex flex-wrap gap-3"><a className={CONTROL} href="#">Torna al gioco</a><button className={CONTROL} onClick={exportChoices}>Esporta scelte ({Object.keys(choices).length})</button></div>
     </header>
     <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[300px_minmax(0,1fr)_320px]">
       <aside className="space-y-3 rounded-xl border border-slate-700 p-4">

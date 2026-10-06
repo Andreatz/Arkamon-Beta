@@ -25,7 +25,18 @@ describe('status rules with visible die results', () => {
     const result = risolviStatoInizioTurno(applicaStato({ ...base, hp: 5 }, 'Avvelenato'), 100)
     expect(result.dannoSubito).toBe(10)
     expect(result.istanza.hp).toBe(0)
+    expect(result.puoAgire).toBe(false)
     expect(result.tiroStato).toBeUndefined()
+  })
+  it('does not roll status recovery or apply another poison tick to an already fainted Pokémon', () => {
+    for (const status of ['Paralizzato', 'Addormentato', 'Avvelenato'] as const) {
+      const pokemon = applicaStato({ ...base, hp: 0 }, status)
+      const result = risolviStatoInizioTurno(pokemon, 100, () => { throw new Error('A fainted Pokémon must not roll') })
+      expect(result.istanza).toBe(pokemon)
+      expect(result.puoAgire).toBe(false)
+      expect(result.dannoSubito).toBe(0)
+      expect(result.tiroStato).toBeUndefined()
+    }
   })
   it('paralysis takes initiative priority below level; equal levels have fair two-sided outcome', () => {
     expect(determinaIniziativa(20, 5, () => 0, 'Paralizzato')).toBe('B')

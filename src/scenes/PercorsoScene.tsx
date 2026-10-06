@@ -2,7 +2,7 @@ import { useSceneNavigation } from '@/components/transitions/SceneNavigationCont
 import { motion } from 'framer-motion'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
-import { getIncontri } from '@data/index'
+import { getAllenatoriInLuogo, getIncontri } from '@data/index'
 import { calcolaHPMax, determinaIniziativa } from '@engine/battleEngine'
 import { generaIncontroDaCespuglio } from '@engine/encounters'
 import { useAdminStore } from '@store/adminStore'
@@ -22,6 +22,7 @@ export function PercorsoScene() {
   const cespuglioVisitato = useGameStore((s) => s.cespuglioVisitato)
   const segnaCespuglioVisitato = useGameStore((s) => s.segnaCespuglioVisitato)
   const iniziaBattaglia = useGameStore((s) => s.iniziaBattaglia)
+  const iniziaBattagliaNPC = useGameStore((s) => s.iniziaBattagliaNPC)
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const giocatore = useGameStore((s) =>
     giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
@@ -31,6 +32,13 @@ export function PercorsoScene() {
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Percorso_1'
+  const allenatori = getAllenatoriInLuogo(luogo)
+  const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
+
+  const sfidaAllenatore = (allenatoreId: number) => {
+    if (layoutEditing || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
+    if (iniziaBattagliaNPC(allenatoreId, luogo)) vaiAScena('battaglia')
+  }
 
   const apriCespuglio = (cespuglio: string) => {
     if (cespuglioVisitato(giocatoreAttivo, luogo, cespuglio)) return
@@ -145,17 +153,24 @@ export function PercorsoScene() {
         onChange={(rect) => updateLuogoLayout('contentGrid', rect)}
         zIndex={10}
       >
-        <div className="grid h-full w-full grid-cols-7 gap-3 overflow-hidden p-1">
+        <div className="flex h-full w-full flex-col gap-4 overflow-y-auto p-1">
+          {!haPokemonVivi && (
+            <p role="status" className="arka-panel shrink-0 p-3 text-center text-amber-200">
+              La squadra è esausta. Visita un Centro Pokémon prima di affrontare un incontro.
+            </p>
+          )}
+          <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
           {CESPUGLI.map((c) => {
             const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
             const haIncontri = getIncontri(luogo, c).length > 0
-            const disabled = visited || !haIncontri
+            const disabled = visited || !haIncontri || !haPokemonVivi
             return (
               <motion.button
                 key={c}
                 whileHover={!layoutEditing && !disabled ? { scale: 1.05, y: -4 } : {}}
                 whileTap={!layoutEditing && !disabled ? { scale: 0.95 } : {}}
                 disabled={layoutEditing || disabled}
+                aria-label={`Cespuglio ${c}${visited ? ', esplorato' : ''}`}
                 onClick={() => apriCespuglio(c)}
                 className={`arka-panel flex aspect-square flex-col items-center justify-center
                   ${disabled ? 'cursor-not-allowed opacity-30' : 'cursor-pointer hover:border-arka-accent'}
@@ -169,6 +184,34 @@ export function PercorsoScene() {
               </motion.button>
             )
           })}
+          </div>
+          {allenatori.length > 0 && (
+            <section className="shrink-0" aria-label="Allenatori del percorso">
+              <h3 className="arka-readable-title mb-3 text-xl font-bold text-white">Allenatori del percorso</h3>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {allenatori.map((allenatore) => {
+                  const sconfitto = giocatore.allenatoriSconfitti.has(allenatore.id)
+                  return (
+                    <motion.button
+                      key={allenatore.id}
+                      disabled={layoutEditing || sconfitto || !haPokemonVivi}
+                      onClick={() => sfidaAllenatore(allenatore.id)}
+                      aria-label={sconfitto ? `${allenatore.nome}, già sconfitto` : `Sfida ${allenatore.nome}`}
+                      className={`arka-panel flex w-full items-center gap-3 p-4 text-left ${sconfitto || !haPokemonVivi ? 'cursor-not-allowed opacity-40' : 'hover:border-arka-accent'}`}
+                    >
+                      <span className="text-3xl" aria-hidden="true">{sconfitto ? '✅' : allenatore.tipo === 'PVP' ? '⚔️' : '🥋'}</span>
+                      <span>
+                        <span className="block text-lg font-bold">{allenatore.nome}</span>
+                        <span className="block text-xs text-arka-text-muted">
+                          {sconfitto ? 'Già sconfitto' : `Squadra: ${allenatore.squadra.length} Pokémon · Lv. ${allenatore.squadra[0]?.livello ?? '—'}`}
+                        </span>
+                      </span>
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </section>
+          )}
         </div>
       </AdminLayoutItem>
     </div>
