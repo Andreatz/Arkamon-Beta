@@ -213,7 +213,8 @@ export function calcolaDanno(
   attaccante: PokemonIstanza,
   difensore: PokemonIstanza,
   numeroMossa: 0 | 1 | 2,
-  rng: () => number = Math.random
+  rng: () => number = Math.random,
+  supremaAttiva?: boolean
 ): RisultatoMossa | null {
   const specieAtt = getPokemon(attaccante.specieId)
   const specieDif = getPokemon(difensore.specieId)
@@ -234,25 +235,27 @@ export function calcolaDanno(
 
   const moltTipo = efficaciaTipo(mossa.tipo, specieDif.tipo)
   const stab = moltTipo > 1
-  const moltSuprema = èMossaSuprema(mossa) ? 2 : 1
-
-  const dannoFinale = Math.max(
+  // undefined conserva la classificazione delle mosse legacy per chiamanti/IA.
+  // Le azioni umane passano false per l'attacco normale e true per la Suprema.
+  const suprema = supremaAttiva ?? èMossaSuprema(mossa)
+  const dannoOrdinario = Math.max(
     1,
-    roundHalfUp(dannoBase * moltTipo * moltSuprema)
+    roundHalfUp(dannoBase * moltTipo)
   )
+  const dannoFinale = dannoOrdinario * (suprema ? 2 : 1)
 
   const messaggi: string[] = [`${attaccante.nome} usa ${mossa.nome}!`]
-  if (èMossaSuprema(mossa)) messaggi.push('💥 MOSSA SUPREMA! 💥')
+  if (suprema) messaggi.push('💥 MOSSA SUPREMA! 💥')
   if (moltTipo > 1) messaggi.push('È superefficace!')
   else if (moltTipo < 1 && moltTipo > 0) messaggi.push('Non è molto efficace...')
   else if (moltTipo === 0) messaggi.push('Non ha effetto!')
   messaggi.push(`${difensore.nome} subisce ${dannoFinale} danni.`)
 
-  // Autodanno per mosse supreme: l'attaccante perde una % di hpMax
+  // Il costo della Suprema è fisso: 50% degli HP massimi, mai degli HP correnti.
   let autodanno = 0
-  if (èMossaSuprema(mossa)) {
+  if (suprema) {
     const hpMaxAtt = calcolaHPMax(attaccante)
-    autodanno = autodannoSuprema(mossa, hpMaxAtt)
+    autodanno = costoSuprema(hpMaxAtt)
     messaggi.push(`${attaccante.nome} si scarica e perde ${autodanno} HP!`)
   }
 
@@ -288,6 +291,7 @@ export function calcolaDanno(
     messaggi,
     statoApplicato,
     autodanno,
+    suprema,
   }
 }
 
@@ -300,14 +304,33 @@ export function èMossaSuprema(mossa: MossaDef): boolean {
   return mossa.effetto === 'SUPREMA'
 }
 
-/** Calcola l'autodanno della mossa suprema. Min 1. */
+const RAPPORTO_AUTODANNO_SUPREMA = 0.5
+
+/** Costo condiviso da motore e UI; non genera tiri e non dipende dalla mossa. */
+export function costoSuprema(hpMaxAttaccante: number): number {
+  return Math.max(1, Math.floor(hpMaxAttaccante * RAPPORTO_AUTODANNO_SUPREMA))
+}
+
+/** Calcola l'autodanno fisso delle mosse legacy Suprema. Min 1, 50% HP massimi. */
 export function autodannoSuprema(
   mossa: MossaDef,
   hpMaxAttaccante: number
 ): number {
   if (!èMossaSuprema(mossa)) return 0
-  const pct = mossa.valoreEffetto ?? 50
-  return Math.max(1, Math.floor((hpMaxAttaccante * pct) / 100))
+  return costoSuprema(hpMaxAttaccante)
+}
+
+/** Azione Suprema esplicita: potenzia una mossa offensiva senza trasformare una cura. */
+export function calcolaAzioneSuprema(
+  attaccante: PokemonIstanza,
+  difensore: PokemonIstanza,
+  numeroMossa: 0 | 1 | 2,
+  rng: () => number = Math.random
+): RisultatoMossa | null {
+  const mossaId = getPokemon(attaccante.specieId)?.mosse[numeroMossa]
+  const mossa = mossaId ? getMossa(mossaId) : undefined
+  if (!mossa || èMossaCura(mossa)) return null
+  return calcolaDanno(attaccante, difensore, numeroMossa, rng, true)
 }
 
 // =============================================================
@@ -437,8 +460,7 @@ export function scegliMossaIA(
       punteggio = hpRatio <= 0.3 ? 100 : -1
     }
     if (èMossaSuprema(mossa)) {
-      const pctAuto = (mossa.valoreEffetto ?? 50) / 100
-      punteggio = hpRatio > pctAuto + 0.05 ? punteggio * 2 : -1
+      punteggio = hpRatio > RAPPORTO_AUTODANNO_SUPREMA + 0.05 ? punteggio * 2 : -1
     }
 
     if (punteggio > punteggioMax) {

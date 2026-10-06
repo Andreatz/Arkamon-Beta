@@ -23,7 +23,7 @@ npm test
 - Branch di lavoro: `feature/vfx-recipe-engine`
 - Ultima verifica: **6 ottobre 2026**
 - Build web: `npm run build` completato senza errori
-- Test: **723/723 verdi in 58 file**
+- Test: **737/737 verdi in 58 file**
 - Verifica interattiva del gameplay: **completata per i passaggi documentati**; risultati e limiti nel [report di verifica del 6 ottobre 2026](./docs/gameplay-audit-2026-10-06.md).
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
 
@@ -33,7 +33,7 @@ npm test
 - Battle engine: danno D6, bonus STAB sulle debolezze tipo, iniziativa, cattura, AI, XP, monete.
 - Battle Refresh completato: sprite grandi, HP bar PNG, InfoBox a blocchi, pulsante avversario, modal scambio post-KO, pulsante `Prosegui`.
 - Stati alterati: Paralizzato, Confuso, Addormentato, Avvelenato, immunita stato singolo, cura che rimuove veleno.
-- Mosse speciali: cure percentuali, mosse Supreme con autodanno, Masterball.
+- Mosse speciali: cure percentuali, Masterball e pulsante [Mossa Suprema](./docs/mossa-suprema.md) per giocatore e avversario PvP: scegli un attacco, infliggi il doppio del danno e perdi il 50% degli HP massimi (arrotondato per difetto, minimo 1 HP).
 - Battaglie selvatiche, NPC, Capopalestra e PvP locale.
 - Rivale e Capipalestra con squadre complete da 6 Pokemon.
 - Deposito con box, squadra, selezione e scambio slot.

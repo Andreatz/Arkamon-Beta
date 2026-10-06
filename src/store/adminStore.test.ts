@@ -263,6 +263,39 @@ describe('adminStore', () => {
     expect(useAdminStore.getState().theme).toEqual(imported)
   })
 
+  it.each(['import', 'saved'] as const)('aggiunge le aree Suprema al tema legacy %s senza perdere posizioni e stile', (source) => {
+    // Old JSON has no Supreme rectangles; the current interface intentionally requires them.
+    const legacy = JSON.parse(JSON.stringify(defaultAdminTheme)) as AdminTheme
+    const battle = legacy.layouts.battle as Partial<AdminTheme['layouts']['battle']>
+    delete battle.playerSupreme
+    delete battle.enemySupreme
+    legacy.colors.primary = '#123456'
+    legacy.layouts.battle.playerMoves = {
+      x: 40, y: 68, w: 42, h: 24,
+      contentOffsets: { 'move-0-name': { x: 6, y: -4 } },
+    }
+    legacy.layouts.battle.enemyMoves = { x: 2, y: 14, w: 48, h: 21 }
+
+    const current = useAdminStore.getState()
+    let theme: AdminTheme
+    if (source === 'import') {
+      current.importTheme(legacy)
+      theme = useAdminStore.getState().theme
+    } else {
+      theme = useAdminStore.persist.getOptions().merge!({
+        defaultThemeRevision: 'notte-viola-2026-10-05', theme: legacy,
+      }, current).theme
+    }
+
+    expect(theme.colors.primary).toBe('#123456')
+    expect(theme.layouts.battle.playerMoves).toEqual(legacy.layouts.battle.playerMoves)
+    expect(theme.layouts.battle.enemyMoves).toEqual(legacy.layouts.battle.enemyMoves)
+    expect(theme.layouts.battle.playerSupreme).toEqual({ x: 86, y: 72, w: 13, h: 20 })
+    expect(theme.layouts.battle.enemySupreme).toEqual({ x: 54, y: 19, w: 14, h: 24 })
+    expect(legacy.layouts.battle).not.toHaveProperty('playerSupreme')
+    expect(legacy.layouts.battle).not.toHaveProperty('enemySupreme')
+  })
+
   it('importTheme migrates legacy deposit geometry while preserving the supplied visual theme', () => {
     const imported: AdminTheme = {
       ...cloneAdminTheme(defaultAdminTheme),

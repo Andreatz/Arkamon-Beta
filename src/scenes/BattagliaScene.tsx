@@ -1,6 +1,7 @@
 import { nextBattleSide } from '@/components/battle/battleRoundOrder'
 import { restoreBattleCheckpoint, settledBattleCheckpoint } from '@/components/battle/battleCheckpoint'
 import { BattleOpeningOverlay } from '@/components/battle/BattleOpeningOverlay'
+import { SupremeMoveDialog } from '@/components/battle/SupremeMoveDialog'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
@@ -8,6 +9,8 @@ import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   calcolaDanno,
+  calcolaAzioneSuprema,
+  costoSuprema,
   calcolaHPMax,
   scegliMossaIA,
   tentaCattura,
@@ -189,6 +192,7 @@ export function BattagliaScene() {
   const feedbackTimersRef = useRef<Set<number>>(new Set())
   const messaggiTurnoBRef = useRef<string[]>([])
   const [azioneInCorso, setAzioneInCorso] = useState(false)
+  const [supremaSide, setSupremaSide] = useState<'A' | 'B' | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
   const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && !initialCheckpoint?.openingComplete && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
@@ -398,7 +402,7 @@ export function BattagliaScene() {
     setDiceRoll({
       id,
       side,
-      moveName: risultato.mossa.nome,
+      moveName: risultato.suprema ? `${risultato.mossa.nome} · Suprema` : risultato.mossa.nome,
       rolls: risultato.tiriDado,
       increment: risultato.incremento,
       damage: risultato.dannoFinale,
@@ -702,12 +706,12 @@ export function BattagliaScene() {
 
   const specieB = getPokemon(pkmnB.specieId)!
 
-  const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2) => {
+  const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2, suprema = false) => {
     if (terminata || turnoA || !mostraMoseB || azioneInCorso || actionInProgressRef.current) return
     setMostraMoseB(false)
     const messaggiIniziali = messaggiTurnoBRef.current
     messaggiTurnoBRef.current = []
-    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa, messaggiIniziali)
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa, messaggiIniziali, suprema)
   }
 
   const passaTurnoAaB = (nuovoB: PokemonIstanza, delayMs = 1500) => {
@@ -860,12 +864,13 @@ export function BattagliaScene() {
     onReady(pkmnAEffettivo, statoRes.messaggi)
   }
 
-  const eseguiMossa = (numeroMossa: 0 | 1 | 2) => preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
+  const eseguiMossa = (numeroMossa: 0 | 1 | 2, suprema = false) => preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
 
     const mossaScelta = specieA.mosse[numeroMossa]
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
     if (mossaScelta && èMossaCura(mossaScelta)) {
+      if (suprema) return
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
       eseguiSequenzaCura(mossaScelta, 'A', () => {
         setPkmnA(cura.istanza)
@@ -876,7 +881,9 @@ export function BattagliaScene() {
       return
     }
 
-    const ris = calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa)
+    const ris = suprema
+      ? calcolaAzioneSuprema(pkmnAEffettivo, pkmnB, numeroMossa)
+      : calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa, Math.random, false)
     if (!ris) return
 
     let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
@@ -923,7 +930,7 @@ export function BattagliaScene() {
         const nextB = nuovaSquadraB.find(
           (p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0
         )
-        if (nextB && isNPC) {
+        if (nextB && !isSelvatico) {
           mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
           setPkmnB(nextB)
           if (aggiornatoA.hp <= 0) {
@@ -1069,7 +1076,7 @@ export function BattagliaScene() {
         const nextB = squadraB.find(
           (p) => p.istanzaId !== bEffettivo.istanzaId && p.hp > 0
         )
-        if (nextB && isNPC) {
+        if (nextB && !isSelvatico) {
           mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
           setPkmnB(nextB)
           passaTurnoBaA(aggiornatoA, nextB)
@@ -1110,13 +1117,15 @@ export function BattagliaScene() {
     bEffettivo: PokemonIstanza,
     hpMaxBcorrente: number,
     mossaIdx: 0 | 1 | 2,
-    messaggiIniziali: string[] = []
+    messaggiIniziali: string[] = [],
+    suprema?: boolean
   ) => {
     const specieB = getPokemon(bEffettivo.specieId)
     const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
     if (mossaDefB && èMossaCura(mossaDefB)) {
+      if (suprema) return
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
       eseguiSequenzaCura(mossaDefB, 'B', () => {
         setPkmnB(cura.istanza)
@@ -1127,7 +1136,9 @@ export function BattagliaScene() {
       return
     }
 
-    const ris = calcolaDanno(bEffettivo, pkmnA, mossaIdx)
+    const ris = suprema
+      ? calcolaAzioneSuprema(bEffettivo, pkmnA, mossaIdx)
+      : calcolaDanno(bEffettivo, pkmnA, mossaIdx, Math.random, suprema)
     if (!ris) {
       passaTurnoBaA()
       return
@@ -1173,7 +1184,7 @@ export function BattagliaScene() {
             const nextB = nuovaSquadraB.find(
               (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
             )
-            if (!nextB || !isNPC) {
+            if (!nextB || isSelvatico) {
               mostraMessaggi(['Hai vinto la battaglia!'])
               playSound('victory')
               setEsito('vittoria')
@@ -1205,7 +1216,7 @@ export function BattagliaScene() {
         const nextB = nuovaSquadraB.find(
           (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
         )
-        if (nextB && isNPC) {
+        if (nextB && !isSelvatico) {
           mostraMessaggi([`${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`])
           setPkmnB(nextB)
           passaTurnoBaA(aggiornatoA, nextB)
@@ -1271,6 +1282,21 @@ export function BattagliaScene() {
     >
       {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
       {statusRoll ? <BattleOpeningOverlay key={statusRoll.id} kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
+      {supremaSide && !terminata && !azioneInCorso && !coinOpen && !statusRoll && (
+        <SupremeMoveDialog
+          moves={supremaSide === 'A' ? mosseA : mosseB}
+          level={supremaSide === 'A' ? pkmnA.livello : pkmnB.livello}
+          recoil={costoSuprema(supremaSide === 'A' ? hpMaxA : hpMaxB)}
+          pokemonName={supremaSide === 'A' ? pkmnA.nome : pkmnB.nome}
+          onClose={() => setSupremaSide(null)}
+          onChoose={(idx) => {
+            const side = supremaSide
+            setSupremaSide(null)
+            if (side === 'A') eseguiMossa(idx, true)
+            else eseguiMossaPvP_B(idx, true)
+          }}
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -1462,6 +1488,24 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       )}
 
+      {!terminata && !mostraMoseB && !attesaPassaggio && !attesaAvversario && !scambioRichiesto && (
+        <BattleLayoutItem
+          layoutKey="playerSupreme"
+          label="Suprema giocatore"
+          rect={battleLayout.playerSupreme}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <div className="h-full w-full p-0 sm:p-2">
+            <SupremeButton
+              disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !mosseA.some(({ mossa }) => !èMossaCura(mossa))}
+              recoil={costoSuprema(hpMaxA)}
+              onClick={() => setSupremaSide('A')}
+            />
+          </div>
+        </BattleLayoutItem>
+      )}
+
       {isPvP && mostraMoseB && !terminata && !scambioRichiesto && (
         <BattleLayoutItem
           layoutKey="enemyMoves"
@@ -1486,6 +1530,24 @@ export function BattagliaScene() {
                 />
               ))}
             </div>
+          </div>
+        </BattleLayoutItem>
+      )}
+
+      {isPvP && mostraMoseB && !terminata && !scambioRichiesto && (
+        <BattleLayoutItem
+          layoutKey="enemySupreme"
+          label="Suprema rivale"
+          rect={battleLayout.enemySupreme}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <div className="h-full w-full p-0 sm:p-2">
+            <SupremeButton
+              disabled={azioneInCorso || coinOpen || !!statusRoll || !mosseB.some(({ mossa }) => !èMossaCura(mossa))}
+              recoil={costoSuprema(hpMaxB)}
+              onClick={() => setSupremaSide('B')}
+            />
           </div>
         </BattleLayoutItem>
       )}
@@ -2103,6 +2165,26 @@ function ActionButton({
     >
       {children}
     </motion.button>
+  )
+}
+
+function SupremeButton({ disabled, recoil, onClick }: {
+  disabled: boolean
+  recoil: number
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      aria-label="Mossa Suprema"
+      title={`Scegli un attacco: danno doppio, contraccolpo ${recoil} HP (50% degli HP massimi)`}
+      disabled={disabled}
+      onClick={onClick}
+      className="flex h-full w-full min-h-0 min-w-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border-2 border-amber-200 bg-gradient-to-b from-amber-400 to-orange-600 px-0 text-center font-black text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:px-1"
+    >
+      <span className="max-w-full truncate text-[clamp(9px,1.4vw,20px)] leading-tight tracking-tight"><span className="hidden sm:inline">Mossa<br /></span>Suprema</span>
+      <span className="hidden text-[clamp(9px,1vw,14px)] leading-tight sm:block">×2 · −{recoil} HP</span>
+    </button>
   )
 }
 

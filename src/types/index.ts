@@ -209,6 +209,8 @@ export interface RisultatoMossa {
   statoApplicato?: StatoAlterato
   /** Autodanno subito dall'attaccante (es. mossa Suprema). 0/undefined se nessuno. */
   autodanno?: number
+  /** Suprema risolta per questa azione; true significa danno normale ×2 e costo 50% HP massimi. */
+  suprema?: boolean
 }
 
 // =============================================================
