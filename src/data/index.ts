@@ -20,6 +20,7 @@ import crescitaData from './crescita_hp.json'
 import mappeData from './mappe.json'
 import incontriData from './incontri.json'
 import allenatoriData from './allenatori.json'
+import { addStatusMovesToPokemon, STATUS_MOVES } from './statusMoves'
 import {
   CESPUGLI_STANDARD,
   POKEMON_INCONTRI_COMUNI,
@@ -30,8 +31,8 @@ import {
 } from './bilanciamento'
 
 // Cast tipizzati (i JSON non hanno tipi inferiti perfetti dal compilatore)
-export const POKEMON_BASE: PokemonSpecie[] = pokemonData as PokemonSpecie[]
-export const MOSSE: MossaDef[] = mosseData as MossaDef[]
+export const POKEMON_BASE: PokemonSpecie[] = addStatusMovesToPokemon(pokemonData as PokemonSpecie[])
+export const MOSSE: MossaDef[] = [...(mosseData as MossaDef[]), ...STATUS_MOVES]
 export const TABELLA_TIPI: TabellaTipi = tipiData as TabellaTipi
 export const CRESCITA_HP: Record<CategoriaHP, number> =
   crescitaData as Record<CategoriaHP, number>

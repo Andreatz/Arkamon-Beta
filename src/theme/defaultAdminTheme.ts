@@ -1,7 +1,11 @@
 import suppliedTheme from './arkamon-theme.json'
-import type { AdminTheme } from './adminThemeTypes'
+import type { AdminBattleLayout, AdminTheme } from './adminThemeTypes'
 
-export const defaultBattleLayout = suppliedTheme.layouts.battle
+export const defaultBattleLayout = {
+  ...suppliedTheme.layouts.battle,
+  playerSupreme: { x: 86, y: 72, w: 13, h: 20 },
+  enemySupreme: { x: 54, y: 19, w: 14, h: 24 },
+} satisfies AdminBattleLayout
 export const defaultMainMapNodePositions = suppliedTheme.layouts.mainMapNodes
 export const defaultMainMapRoads = suppliedTheme.layouts.mainMapRoads
 export const defaultMainMapUiLayout = suppliedTheme.layouts.mainMapUi
@@ -18,7 +22,7 @@ export const defaultDepositLayout = {
 export const defaultEvolutionLayout = suppliedTheme.layouts.evolution
 export const defaultAdminTheme: AdminTheme = {
   ...suppliedTheme,
-  layouts: { ...suppliedTheme.layouts, deposit: defaultDepositLayout },
+  layouts: { ...suppliedTheme.layouts, battle: defaultBattleLayout, deposit: defaultDepositLayout },
 }
 
 export function cloneAdminTheme(theme: AdminTheme): AdminTheme {

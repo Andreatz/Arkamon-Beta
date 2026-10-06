@@ -1,6 +1,8 @@
 import { nextBattleSide } from '@/components/battle/battleRoundOrder'
 import { restoreBattleCheckpoint, settledBattleCheckpoint } from '@/components/battle/battleCheckpoint'
 import { BattleOpeningOverlay } from '@/components/battle/BattleOpeningOverlay'
+import { SupremeMoveDialog } from '@/components/battle/SupremeMoveDialog'
+import { StatusToken } from '@/components/battle/StatusToken'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
@@ -8,6 +10,9 @@ import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   calcolaDanno,
+  calcolaAzioneSuprema,
+  risolviAttaccanteDopoMossa,
+  costoSuprema,
   calcolaHPMax,
   scegliMossaIA,
   tentaCattura,
@@ -16,6 +21,7 @@ import {
   applicaStato,
   risolviStatoInizioTurno,
   èMossaCura,
+  èMossaSoloStato,
   applicaMossaCura,
   getMossaAlLivello,
   esitoSquadre,
@@ -26,7 +32,7 @@ import type {
   PokemonIstanza,
   MossaDef,
   RisultatoMossa,
-  StatoAlterato,
+  Stato,
   TipoPokemon,
 } from '@/types'
 import type { AdminBattleLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
@@ -74,13 +80,6 @@ import type { AdminBattleLayout } from '@/theme/adminThemeTypes'
 import {
   getBattleSideCenter,
 } from '@/components/vfx/battleVfxPosition'
-
-const STATO_BADGE: Record<StatoAlterato, { label: string; color: string; emoji: string }> = {
-  Paralizzato: { label: 'PAR', color: 'bg-amber-500', emoji: '⚡' },
-  Confuso: { label: 'CONF', color: 'bg-fuchsia-500', emoji: '💫' },
-  Addormentato: { label: 'ZZZ', color: 'bg-blue-500', emoji: '😴' },
-  Avvelenato: { label: 'PSN', color: 'bg-purple-600', emoji: '☠️' },
-}
 
 const INFOBOX_VISIBLE_MS = 2000
 
@@ -189,6 +188,7 @@ export function BattagliaScene() {
   const feedbackTimersRef = useRef<Set<number>>(new Set())
   const messaggiTurnoBRef = useRef<string[]>([])
   const [azioneInCorso, setAzioneInCorso] = useState(false)
+  const [supremaSide, setSupremaSide] = useState<'A' | 'B' | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
   const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && !initialCheckpoint?.openingComplete && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
@@ -209,15 +209,14 @@ export function BattagliaScene() {
     updatePkmnB(pokemon)
   }
   function nextSide(side: 'A' | 'B', a = latestPokemon.current.A, b = latestPokemon.current.B): 'A' | 'B' {
-    // The opening side may have been reversed by pre-existing paralysis.
-    // Once it clears, restore the level/coin priority rather than that forced order.
+    // La paralisi modifica la priorità finché una cura non la rimuove.
     const initial = initialCheckpoint?.initialPriority ?? 'A'
     return nextBattleSide(actedThisRound.current, side, initial, a?.stato?.tipo, b?.stato?.tipo)
   }
   function presentStatus(result: ReturnType<typeof risolviStatoInizioTurno>, pokemon: PokemonIstanza, done: () => void) {
     statusPending.current = true
     let continued = false
-    setStatusRoll({ id: ++statusRollIdRef.current, value: result.tiroStato!, title: `${pokemon.nome} · ${pokemon.stato?.tipo === 'Paralizzato' ? 'Paralisi: esci con 5–6' : 'Sonno: svegliati con 4–6'}`, done: () => {
+    setStatusRoll({ id: ++statusRollIdRef.current, value: result.tiroStato!, title: `${pokemon.nome} · ${pokemon.stato?.tipo === 'Paralizzato' ? 'Paralisi: attacchi con 3–6' : 'Sonno: svegliati con 4–6'}`, done: () => {
       if (continued) return
       continued = true
       statusPending.current = false
@@ -398,7 +397,7 @@ export function BattagliaScene() {
     setDiceRoll({
       id,
       side,
-      moveName: risultato.mossa.nome,
+      moveName: risultato.suprema ? `${risultato.mossa.nome} · Suprema` : risultato.mossa.nome,
       rolls: risultato.tiriDado,
       increment: risultato.incremento,
       damage: risultato.dannoFinale,
@@ -650,6 +649,13 @@ export function BattagliaScene() {
       }, 560)
 
     }, () => {
+      if (èMossaSoloStato(risultato.mossa)) {
+        setPendingHealth(null)
+        onComplete()
+        actionInProgressRef.current = false
+        setAzioneInCorso(false)
+        return
+      }
       mostraLancioDadi(risultato, side, () => setPendingHealth(null), () => {
         onComplete()
         actionInProgressRef.current = false
@@ -702,12 +708,12 @@ export function BattagliaScene() {
 
   const specieB = getPokemon(pkmnB.specieId)!
 
-  const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2) => {
+  const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2, suprema = false) => {
     if (terminata || turnoA || !mostraMoseB || azioneInCorso || actionInProgressRef.current) return
     setMostraMoseB(false)
     const messaggiIniziali = messaggiTurnoBRef.current
     messaggiTurnoBRef.current = []
-    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa, messaggiIniziali)
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), numeroMossa, messaggiIniziali, suprema)
   }
 
   const passaTurnoAaB = (nuovoB: PokemonIstanza, delayMs = 1500) => {
@@ -776,15 +782,15 @@ export function BattagliaScene() {
   const hpMaxA = calcolaHPMax(pkmnA)
   const hpMaxB = calcolaHPMax(pkmnB)
 
-  const premiaConXP = (
+  const presentaPremioXP = (
     attivo: PokemonIstanza,
-    sconfitto: PokemonIstanza
-  ): PokemonIstanza => {
-    const xpRes = applicaXP(attivo, xpGuadagnato(sconfitto))
+    xpRes: ReturnType<typeof applicaXP>,
+    annunciaLivello = true
+  ) => {
     const messaggi: string[] = []
     if (xpRes.livelliGuadagnati > 0) {
       playSound('level-up')
-      messaggi.push(`${attivo.nome} è salito al livello ${xpRes.istanza.livello}!`)
+      if (annunciaLivello) messaggi.push(`${attivo.nome} è salito al livello ${xpRes.istanza.livello}!`)
     }
     if (xpRes.evoluzionePendente) {
       playSound('evolution')
@@ -803,19 +809,28 @@ export function BattagliaScene() {
       )
     }
     mostraMessaggi(messaggi)
+  }
+
+  const premiaConXP = (
+    attivo: PokemonIstanza,
+    sconfitto: PokemonIstanza
+  ): PokemonIstanza => {
+    const xpRes = applicaXP(attivo, xpGuadagnato(sconfitto))
+    presentaPremioXP(attivo, xpRes)
     return xpRes.istanza
   }
 
   const preparaTurnoGiocatore = (
     onReady: (pokemon: PokemonIstanza, messages: string[]) => void,
-    resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>
+    resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>,
+    verificaAttacco = true
   ) => {
     if (coinOpen || statusPending.current) return
     if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current || scambioRichiesto || attesaPassaggio || attesaAvversario) return
     resetInfoBox()
 
-    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA)
-    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes)); return }
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA, Math.random, verificaAttacco)
+    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes, verificaAttacco)); return }
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
@@ -860,12 +875,13 @@ export function BattagliaScene() {
     onReady(pkmnAEffettivo, statoRes.messaggi)
   }
 
-  const eseguiMossa = (numeroMossa: 0 | 1 | 2) => preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
-
+  const eseguiMossa = (numeroMossa: 0 | 1 | 2, suprema = false) => {
     const mossaScelta = specieA.mosse[numeroMossa]
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
+    preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
     if (mossaScelta && èMossaCura(mossaScelta)) {
+      if (suprema) return
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
       eseguiSequenzaCura(mossaScelta, 'A', () => {
         setPkmnA(cura.istanza)
@@ -876,7 +892,9 @@ export function BattagliaScene() {
       return
     }
 
-    const ris = calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa)
+    const ris = suprema
+      ? calcolaAzioneSuprema(pkmnAEffettivo, pkmnB, numeroMossa)
+      : calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa, Math.random, false)
     if (!ris) return
 
     let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
@@ -894,90 +912,45 @@ export function BattagliaScene() {
         setSquadraB(nuovaSquadraB)
       },
       () => {
-      mostraMessaggi([...statusMessages, ...ris.messaggi])
+      const risoluzione = risolviAttaccanteDopoMossa(ris)
+      const aggiornatoA = risoluzione.istanza
+      const nuovaSquadraA = updateInSquadra(squadraA, aggiornatoA)
+      mostraMessaggi([...statusMessages, ...risoluzione.messaggi])
+      if (risoluzione.xpAssegnata) presentaPremioXP(pkmnAEffettivo, risoluzione, false)
+      setPkmnA(aggiornatoA)
+      setSquadraA(nuovaSquadraA)
+      if (nuovoB.hp <= 0 || aggiornatoA.hp <= 0) playSound('ko')
 
-      let aDopoAutodanno = pkmnAEffettivo
-      if (ris.autodanno && ris.autodanno > 0) {
-        aDopoAutodanno = {
-          ...pkmnAEffettivo,
-          hp: Math.max(0, pkmnAEffettivo.hp - ris.autodanno),
-        }
-        setPkmnA(aDopoAutodanno)
-        setSquadraA((sq) => updateInSquadra(sq, aDopoAutodanno))
-      }
-
-      if (esitoSquadre(updateInSquadra(squadraA, aDopoAutodanno), nuovaSquadraB) === 'sconfitta') {
-        mostraMessaggi(['Hai perso la battaglia...'])
-        playSound('ko')
-        setEsito('sconfitta')
+      const esitoDopoMossa = esitoSquadre(nuovaSquadraA, nuovaSquadraB, nuovoB.hp <= 0 ? 'A' : undefined)
+      if (esitoDopoMossa) {
+        const vittoria = esitoDopoMossa === 'vittoria'
+        mostraMessaggi([vittoria ? 'Hai vinto la battaglia!' : 'Hai perso la battaglia...'])
+        if (vittoria) playSound('victory')
+        setEsito(esitoDopoMossa)
         setTerminata(true)
         return
       }
 
+      const prossimoB = nuovoB.hp <= 0
+        ? nuovaSquadraB.find((p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0)!
+        : nuovoB
       if (nuovoB.hp <= 0) {
-        playSound('ko')
-        const aggiornatoA = premiaConXP(aDopoAutodanno, nuovoB)
-        setPkmnA(aggiornatoA)
-        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-
-        const nextB = nuovaSquadraB.find(
-          (p) => p.istanzaId !== nuovoB.istanzaId && p.hp > 0
-        )
-        if (nextB && isNPC) {
-          mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
-          setPkmnB(nextB)
-          if (aggiornatoA.hp <= 0) {
-            const nextA = squadraA.find(
-              (p) => p.istanzaId !== aggiornatoA.istanzaId && p.hp > 0
-            )
-            if (nextA) {
-              mostraMessaggi([`${aggiornatoA.nome} è esausto!`])
-              apriScambio({
-                motivo: `${aggiornatoA.nome} non può continuare.`,
-                prossimoPasso: 'passaAB',
-                pendingB: nextB,
-              })
-              return
-            }
-            mostraMessaggi(['Hai perso la battaglia...'])
-            setEsito('sconfitta')
-            setTerminata(true)
-            return
-          }
-          // BR.3: il nuovo Pokémon nemico attacca subito (VBA: Cells(12,2)="B")
-          passaTurnoAaB(nextB, 800)
-          return
-        }
-        mostraMessaggi(['Hai vinto la battaglia!'])
-        playSound('victory')
-        setEsito('vittoria')
-        setTerminata(true)
+        mostraMessaggi([`L'avversario manda in campo ${prossimoB.nome}!`])
+        setPkmnB(prossimoB)
+      }
+      if (aggiornatoA.hp <= 0) {
+        mostraMessaggi([`${aggiornatoA.nome} è esausto!`])
+        apriScambio({
+          motivo: `${aggiornatoA.nome} non può continuare.`,
+          prossimoPasso: 'passaAB',
+          pendingB: prossimoB,
+        })
         return
       }
-
-      if (aDopoAutodanno.hp <= 0) {
-        const nextA = squadraA.find(
-          (p) => p.istanzaId !== aDopoAutodanno.istanzaId && p.hp > 0
-        )
-        if (nextA) {
-          mostraMessaggi([`${aDopoAutodanno.nome} è esausto!`])
-          apriScambio({
-            motivo: `${aDopoAutodanno.nome} non può continuare.`,
-            prossimoPasso: 'passaAB',
-            pendingB: nuovoB,
-          })
-          return
-        }
-        mostraMessaggi(['Hai perso la battaglia...'])
-        playSound('ko')
-        setEsito('sconfitta')
-        setTerminata(true)
-        return
-      }
-
-      passaTurnoAaB(nuovoB, 1500)
+      passaTurnoAaB(prossimoB, nuovoB.hp <= 0 ? 800 : 1500)
     })
-  })
+    }, undefined, !mossaScelta || !èMossaCura(mossaScelta))
+  }
 
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
   const salvaCatturaConclusa = (masterball = false) => {
@@ -1023,7 +996,7 @@ export function BattagliaScene() {
       }
       mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
       passaTurnoAaB(pkmnB, 0)
-    })
+    }, undefined, false)
   }
 
   const eseguiMasterball = () => {
@@ -1042,7 +1015,7 @@ export function BattagliaScene() {
       playSound('capture')
       setEsito('vittoria')
       setTerminata(true)
-    })
+    }, undefined, false)
   }
 
   const turnoAvversario = (statoBcorrente: PokemonIstanza, resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>) => {
@@ -1050,7 +1023,8 @@ export function BattagliaScene() {
     if (terminata || actionInProgressRef.current || azioneInCorso || scambioRichiesto) return
     resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
-    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente)
+    // B sceglie la mossa dopo gli altri status: il tiro PAR serve solo se attacca.
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente, Math.random, false)
     if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, statoBcorrente, () => turnoAvversario(statoBcorrente, statoRes)); return }
     const bEffettivo = statoRes.istanza
     setPkmnB(bEffettivo)
@@ -1069,7 +1043,7 @@ export function BattagliaScene() {
         const nextB = squadraB.find(
           (p) => p.istanzaId !== bEffettivo.istanzaId && p.hp > 0
         )
-        if (nextB && isNPC) {
+        if (nextB && !isSelvatico) {
           mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
           setPkmnB(nextB)
           passaTurnoBaA(aggiornatoA, nextB)
@@ -1110,13 +1084,33 @@ export function BattagliaScene() {
     bEffettivo: PokemonIstanza,
     hpMaxBcorrente: number,
     mossaIdx: 0 | 1 | 2,
-    messaggiIniziali: string[] = []
+    messaggiIniziali: string[] = [],
+    suprema?: boolean,
+    resolvedParalysis?: ReturnType<typeof risolviStatoInizioTurno>
   ) => {
     const specieB = getPokemon(bEffettivo.specieId)
     const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
+    if (bEffettivo.stato?.tipo === 'Paralizzato' && (!mossaDefB || !èMossaCura(mossaDefB))) {
+      const statoRes = resolvedParalysis ?? risolviStatoInizioTurno(bEffettivo, hpMaxBcorrente)
+      if (!resolvedParalysis && statoRes.tiroStato !== undefined) {
+        presentStatus(statoRes, bEffettivo, () => eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, messaggiIniziali, suprema, statoRes))
+        return
+      }
+      bEffettivo = statoRes.istanza
+      setPkmnB(bEffettivo)
+      setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
+      messaggiIniziali = [...messaggiIniziali, ...statoRes.messaggi]
+      if (!statoRes.puoAgire) {
+        mostraMessaggi(messaggiIniziali)
+        passaTurnoBaA(pkmnA, bEffettivo)
+        return
+      }
+    }
+
     if (mossaDefB && èMossaCura(mossaDefB)) {
+      if (suprema) return
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
       eseguiSequenzaCura(mossaDefB, 'B', () => {
         setPkmnB(cura.istanza)
@@ -1127,7 +1121,9 @@ export function BattagliaScene() {
       return
     }
 
-    const ris = calcolaDanno(bEffettivo, pkmnA, mossaIdx)
+    const ris = suprema
+      ? calcolaAzioneSuprema(bEffettivo, pkmnA, mossaIdx)
+      : calcolaDanno(bEffettivo, pkmnA, mossaIdx, Math.random, suprema)
     if (!ris) {
       passaTurnoBaA()
       return
@@ -1147,78 +1143,50 @@ export function BattagliaScene() {
         setSquadraA(nuovaSquadraA)
       },
       () => {
-      mostraMessaggi([...messaggiIniziali, ...ris.messaggi])
-
-      let bDopoAutodanno = bEffettivo
-      if (ris.autodanno && ris.autodanno > 0) {
-        bDopoAutodanno = {
-          ...bEffettivo,
-          hp: Math.max(0, bEffettivo.hp - ris.autodanno),
-        }
-        setPkmnB(bDopoAutodanno)
-        setSquadraB((sq) => updateInSquadra(sq, bDopoAutodanno))
-      }
+      const risoluzione = risolviAttaccanteDopoMossa(ris)
+      const bDopoAutodanno = risoluzione.istanza
+      mostraMessaggi([...messaggiIniziali, ...risoluzione.messaggi])
+      if (risoluzione.livelliGuadagnati > 0) playSound('level-up')
+      // La squadra B resta nella battaglia; la coda evoluzioni appartiene ad A.
+      setPkmnB(bDopoAutodanno)
       const nuovaSquadraB = updateInSquadra(squadraB, bDopoAutodanno)
+      setSquadraB(nuovaSquadraB)
+      if (nuovoA.hp <= 0 || bDopoAutodanno.hp <= 0) playSound('ko')
 
-      if (nuovoA.hp <= 0) {
-        const nextA = nuovaSquadraA.find(
-          (p) => p.istanzaId !== nuovoA.istanzaId && p.hp > 0
-        )
-        if (nextA) {
-          mostraMessaggi([`${nuovoA.nome} è KO!`])
-          if (bDopoAutodanno.hp <= 0) {
-            const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
-            setPkmnA(aggiornatoA)
-            setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-            const nextB = nuovaSquadraB.find(
-              (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
-            )
-            if (!nextB || !isNPC) {
-              mostraMessaggi(['Hai vinto la battaglia!'])
-              playSound('victory')
-              setEsito('vittoria')
-              setTerminata(true)
-              return
-            }
-            mostraMessaggi([
-              `${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`,
-            ])
-            setPkmnB(nextB)
-          }
-          apriScambio({
-            motivo: `${nuovoA.nome} è KO.`,
-            prossimoPasso: 'passaAdA',
-          })
-          return
-        }
-        mostraMessaggi(['Hai perso la battaglia...'])
-        playSound('ko')
-        setEsito('sconfitta')
-        setTerminata(true)
-        return
-      }
-
-      if (bDopoAutodanno.hp <= 0) {
-        const aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
+      // Se A sopravvive al colpo e B cade per il proprio contraccolpo, A vince.
+      // Nel doppio KO il premio è già stato assegnato al solo attaccante B.
+      let aggiornatoA = nuovoA
+      if (nuovoA.hp > 0 && bDopoAutodanno.hp <= 0) {
+        aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
         setPkmnA(aggiornatoA)
         setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-        const nextB = nuovaSquadraB.find(
-          (p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0
-        )
-        if (nextB && isNPC) {
-          mostraMessaggi([`${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${nextB.nome}!`])
-          setPkmnB(nextB)
-          passaTurnoBaA(aggiornatoA, nextB)
-          return
-        }
-        mostraMessaggi(['Hai vinto la battaglia!'])
-        playSound('victory')
-        setEsito('vittoria')
+      }
+      const esitoDopoMossa = esitoSquadre(updateInSquadra(nuovaSquadraA, aggiornatoA), nuovaSquadraB, nuovoA.hp <= 0 ? 'B' : undefined)
+      if (esitoDopoMossa) {
+        const vittoria = esitoDopoMossa === 'vittoria'
+        mostraMessaggi([vittoria ? 'Hai vinto la battaglia!' : 'Hai perso la battaglia...'])
+        if (vittoria) playSound('victory')
+        setEsito(esitoDopoMossa)
         setTerminata(true)
         return
       }
 
-      passaTurnoBaA(nuovoA, bDopoAutodanno)
+      const prossimoB = bDopoAutodanno.hp <= 0
+        ? nuovaSquadraB.find((p) => p.istanzaId !== bDopoAutodanno.istanzaId && p.hp > 0)!
+        : bDopoAutodanno
+      if (bDopoAutodanno.hp <= 0) {
+        mostraMessaggi([`${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${prossimoB.nome}!`])
+        setPkmnB(prossimoB)
+      }
+      if (nuovoA.hp <= 0) {
+        mostraMessaggi([`${nuovoA.nome} è KO!`])
+        apriScambio({
+          motivo: `${nuovoA.nome} è KO.`,
+          prossimoPasso: 'passaAdA',
+        })
+        return
+      }
+      passaTurnoBaA(aggiornatoA, prossimoB)
     })
   }
 
@@ -1271,6 +1239,21 @@ export function BattagliaScene() {
     >
       {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
       {statusRoll ? <BattleOpeningOverlay key={statusRoll.id} kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
+      {supremaSide && !terminata && !azioneInCorso && !coinOpen && !statusRoll && (
+        <SupremeMoveDialog
+          moves={supremaSide === 'A' ? mosseA : mosseB}
+          level={supremaSide === 'A' ? pkmnA.livello : pkmnB.livello}
+          recoil={costoSuprema(supremaSide === 'A' ? hpMaxA : hpMaxB)}
+          pokemonName={supremaSide === 'A' ? pkmnA.nome : pkmnB.nome}
+          onClose={() => setSupremaSide(null)}
+          onChoose={(idx) => {
+            const side = supremaSide
+            setSupremaSide(null)
+            if (side === 'A') eseguiMossa(idx, true)
+            else eseguiMossaPvP_B(idx, true)
+          }}
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
@@ -1383,7 +1366,7 @@ export function BattagliaScene() {
           livello={pkmnB.livello}
           hp={pendingHealth?.side === 'B' && pendingHealth.instanceId === pkmnB.istanzaId ? pendingHealth.hp : pkmnB.hp}
           hpMax={hpMaxB}
-          stato={pkmnB.stato?.tipo}
+          stato={pkmnB.stato}
           side="enemy"
         />
       </BattleLayoutItem>
@@ -1400,7 +1383,7 @@ export function BattagliaScene() {
           livello={pkmnA.livello}
           hp={pendingHealth?.side === 'A' && pendingHealth.instanceId === pkmnA.istanzaId ? pendingHealth.hp : pkmnA.hp}
           hpMax={hpMaxA}
-          stato={pkmnA.stato?.tipo}
+          stato={pkmnA.stato}
           side="player"
         />
       </BattleLayoutItem>
@@ -1462,6 +1445,24 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       )}
 
+      {!terminata && !mostraMoseB && !attesaPassaggio && !attesaAvversario && !scambioRichiesto && (
+        <BattleLayoutItem
+          layoutKey="playerSupreme"
+          label="Suprema giocatore"
+          rect={battleLayout.playerSupreme}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <div className="h-full w-full p-0 sm:p-2">
+            <SupremeButton
+              disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !mosseA.some(({ mossa }) => !èMossaCura(mossa) && !èMossaSoloStato(mossa))}
+              recoil={costoSuprema(hpMaxA)}
+              onClick={() => setSupremaSide('A')}
+            />
+          </div>
+        </BattleLayoutItem>
+      )}
+
       {isPvP && mostraMoseB && !terminata && !scambioRichiesto && (
         <BattleLayoutItem
           layoutKey="enemyMoves"
@@ -1486,6 +1487,24 @@ export function BattagliaScene() {
                 />
               ))}
             </div>
+          </div>
+        </BattleLayoutItem>
+      )}
+
+      {isPvP && mostraMoseB && !terminata && !scambioRichiesto && (
+        <BattleLayoutItem
+          layoutKey="enemySupreme"
+          label="Suprema rivale"
+          rect={battleLayout.enemySupreme}
+          editing={layoutEditing}
+          onChange={updateBattleLayout}
+        >
+          <div className="h-full w-full p-0 sm:p-2">
+            <SupremeButton
+              disabled={azioneInCorso || coinOpen || !!statusRoll || !mosseB.some(({ mossa }) => !èMossaCura(mossa) && !èMossaSoloStato(mossa))}
+              recoil={costoSuprema(hpMaxB)}
+              onClick={() => setSupremaSide('B')}
+            />
           </div>
         </BattleLayoutItem>
       )}
@@ -1997,14 +2016,13 @@ function HpBar({
   livello: number
   hp: number
   hpMax: number
-  stato?: StatoAlterato
+  stato?: Stato
   side: 'player' | 'enemy'
   className?: string
 }) {
   const hpColors = useAdminStore((state) => state.theme.colors)
   const pct = Math.max(0, Math.min(100, (hp / hpMax) * 100))
   const colore = pct > 60 ? hpColors.hpHigh : pct > 25 ? hpColors.hpMid : hpColors.hpLow
-  const badge = stato ? STATO_BADGE[stato] : null
   const frameSrc = assetUrl(`/ui/hp_bar_${side}.png`)
   const barSrc = assetUrl('/ui/hp_bar.png')
   const barClipId = `hp-bar-inner-${side}`
@@ -2021,14 +2039,7 @@ function HpBar({
         backgroundRepeat: 'no-repeat',
       }}
     >
-          {badge && (
-            <span
-              className={`absolute right-0 top-full mt-1 z-30 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${badge.color} text-white`}
-              title={stato} aria-label={`Stato: ${stato}`}
-            >
-              {badge.emoji} {badge.label}
-            </span>
-          )}
+      {stato && <span className="absolute bottom-full left-0 z-30 -translate-x-1/4 sm:mb-1"><StatusToken stato={stato} compact /></span>}
       <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
         <span
           data-admin-layout-text-key="pokemon-name"
@@ -2106,6 +2117,26 @@ function ActionButton({
   )
 }
 
+function SupremeButton({ disabled, recoil, onClick }: {
+  disabled: boolean
+  recoil: number
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      aria-label="Mossa Suprema"
+      title={`Scegli un attacco: danno doppio, contraccolpo ${recoil} HP al livello attuale; 50% degli HP massimi dopo eventuale salita di livello`}
+      disabled={disabled}
+      onClick={onClick}
+      className="flex h-full w-full min-h-0 min-w-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border-2 border-amber-200 bg-gradient-to-b from-amber-400 to-orange-600 px-0 text-center font-black text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:px-1"
+    >
+      <span className="max-w-full truncate text-[clamp(9px,1.4vw,20px)] leading-tight tracking-tight"><span className="hidden sm:inline">Mossa<br /></span>Suprema</span>
+      <span className="hidden text-[clamp(9px,1vw,14px)] leading-tight sm:block">×2 · −{recoil} HP</span>
+    </button>
+  )
+}
+
 function MoveButton({
   mossa,
   livello,
@@ -2147,9 +2178,11 @@ function MoveButton({
           data-admin-layout-text-key={`${textKeyPrefix}-dice`}
           className="arka-layout-content flex items-center gap-[0.14em] whitespace-nowrap text-[clamp(15px,1.65vw,26px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
-          <span>{dadi}</span>
-          <span className="text-[0.78em]" aria-label="dadi D6">🎲</span>
-          {incremento !== 0 && <span>{incremento > 0 ? `+${incremento}` : incremento}</span>}
+          {èMossaSoloStato(mossa) ? <span className="text-[0.65em]">Status</span> : <>
+            <span>{dadi}</span>
+            <span className="text-[0.78em]" aria-label="dadi D6">🎲</span>
+            {incremento !== 0 && <span>{incremento > 0 ? `+${incremento}` : incremento}</span>}
+          </>}
         </span>
       </div>
       <div className="absolute bottom-[14%] right-[9%] flex h-[22%] w-[15%] items-center justify-center">

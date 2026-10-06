@@ -63,6 +63,8 @@ export type AdminBattleLayoutKey =
   | 'infoBox'
   | 'playerMoves'
   | 'enemyMoves'
+  | 'playerSupreme'
+  | 'enemySupreme'
   | 'turnStatus'
   | 'passTurnButton'
   | 'resultMoney'
@@ -78,6 +80,8 @@ export interface AdminBattleLayout {
   infoBox: AdminLayoutRect
   playerMoves: AdminLayoutRect
   enemyMoves: AdminLayoutRect
+  playerSupreme: AdminLayoutRect
+  enemySupreme: AdminLayoutRect
   turnStatus: AdminLayoutRect
   passTurnButton: AdminLayoutRect
   resultMoney: AdminLayoutRect

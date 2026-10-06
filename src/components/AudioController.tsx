@@ -12,7 +12,7 @@ import {
 
 export function AudioController() {
   const scena = useSceneNavigation().scena
-  const inDeposito = scena === 'deposito'
+  const compactControl = scena === 'deposito' || scena === 'battaglia'
   const audioMuted = useGameStore((s) => s.audioMuted)
   const setMutedStore = useGameStore((s) => s.setAudioMuted)
 
@@ -46,7 +46,7 @@ export function AudioController() {
   return (
     <button
       type="button"
-      className={`z-50 flex items-center justify-center rounded-md border border-white/15 bg-black/70 font-bold text-white shadow-xl backdrop-blur transition hover:bg-black/85 ${inDeposito
+      className={`z-50 flex items-center justify-center rounded-md border border-white/15 bg-black/70 font-bold text-white shadow-xl backdrop-blur transition hover:bg-black/85 ${compactControl
         ? 'absolute right-[0.75%] top-1/2 aspect-square w-[5%] max-w-9 -translate-y-1/2 p-0 text-[clamp(10px,2.4vw,18px)]'
         : 'fixed bottom-4 right-4 px-3 py-2 text-xs'}`}
       onClick={() => {
@@ -55,10 +55,10 @@ export function AudioController() {
         setMutedStore(!audioMuted)
       }}
       aria-pressed={!audioMuted}
-      aria-label={inDeposito ? (audioMuted ? 'Attiva audio' : 'Disattiva audio') : undefined}
+      aria-label={compactControl ? (audioMuted ? 'Attiva audio' : 'Disattiva audio') : undefined}
       title={audioMuted ? 'Audio disattivato' : 'Audio attivo'}
     >
-      {inDeposito
+      {compactControl
         ? <span aria-hidden="true">{audioMuted ? '🔇' : '🔊'}</span>
         : audioMuted ? 'Audio OFF' : 'Audio ON'}
     </button>

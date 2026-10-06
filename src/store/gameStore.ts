@@ -132,7 +132,7 @@ interface GameState {
   /** Aggiorna lo stato della battaglia in corso */
   aggiornaBattaglia: (patch: Partial<StatoBattaglia>) => void
 
-  /** Termina la battaglia, pulendo gli stati e opzionalmente curando la squadra. */
+  /** Termina la battaglia: conserva la paralisi salvo cura completa, pulisce gli altri stati. */
   terminaBattaglia: (curaCompleta: boolean) => void
 
   // === ACTIONS OVERWORLD (Fase E) ===
@@ -547,6 +547,7 @@ export const useGameStore = create<GameState>()(
             squadra.map((p) => {
               const specie = getPokemon(p.specieId)
               if (!specie) return p
+              if (!curaCompleta && p.stato?.tipo === 'Paralizzato') return p
               const { stato: _stato, ...senzaStato } = p
               return curaCompleta
                 ? { ...senzaStato, hp: calcolaHPMax(senzaStato) }
@@ -555,6 +556,7 @@ export const useGameStore = create<GameState>()(
           const pulisciDeposito = (deposito: Record<string, PokemonIstanza>) =>
             Object.fromEntries(
               Object.entries(deposito).map(([slot, p]) => {
+                if (!curaCompleta && p.stato?.tipo === 'Paralizzato') return [slot, p]
                 const { stato: _stato, ...senzaStato } = p
                 return [slot, senzaStato]
               })

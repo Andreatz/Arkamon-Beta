@@ -45,7 +45,7 @@ describe('individual moveset VFX assignments', () => {
       expect(getMoveVfxAssignment(move)).toBe(entry)
       if (entry.assetId) expect(resolveMoveVfxAsset(move).id).toBe(entry.assetId)
     }
-    expect(MOSSE).toHaveLength(220)
+    expect(MOSSE).toHaveLength(229)
     expect(getMoveVfxAssignment({ id: 107, nome: 'Sguardo glaciale' })).toBeUndefined()
   })
 
@@ -59,21 +59,23 @@ describe('individual moveset VFX assignments', () => {
     }
   })
 
-  it('includes Stasi Elettrica for Felvex Oscurità as a paralysis preview without inventing gameplay', () => {
+  it('includes Stasi Elettrica for Felvex Oscurità as an authorized pure paralysis move', () => {
     const move = VFX_MOVE_PREVIEWS.find((item) => item.id === 256)!
     const entry = getMoveVfxAssignment(move)!
     expect(entry).toMatchObject({ name: 'Stasi Elettrica', type: 'Status (Paralisi)', tier: 'status', gameMoveId: null, arkamon: [{ id: 44, name: 'Felvex' }] })
     expect(move.tipo).toBe('Oscurità')
+    expect(move.effetto).toBe('PARALISI')
     expect(move.dadiPerLivello).toEqual({})
-    expect(MOSSE.some((item) => item.id === 256)).toBe(false)
+    expect(MOSSE.find((item) => item.id === 256)).toMatchObject({ effetto: 'PARALISI', soloStato: true, dadiPerLivello: { '5': 0 }, incrementoPerLivello: { '5': 0 } })
     expect(resolveMoveVfxProfile(move).feedback.targetShakePx).toBe(0)
   })
 
-  it('keeps source moves 221–276 as previews without expanding the combat catalog', () => {
-    expect(MOSSE).toHaveLength(220)
+  it('keeps the 47 unimplemented extra moves as previews and integrates only nine pure paralysis moves', () => {
+    expect(MOSSE).toHaveLength(229)
+    const paralysisIds = new Set([221, 225, 227, 230, 242, 253, 256, 270, 271])
     for (const entry of MOVE_VFX_ASSIGNMENTS.filter((item) => item.sourceMoveId >= 221)) {
       expect(entry.gameMoveId).toBeNull()
-      expect(MOSSE.some((move) => move.id === entry.sourceMoveId)).toBe(false)
+      expect(MOSSE.some((move) => move.id === entry.sourceMoveId)).toBe(paralysisIds.has(entry.sourceMoveId))
       const preview = VFX_MOVE_PREVIEWS.find((move) => move.id === entry.sourceMoveId)!
       expect(preview.dadiPerLivello).toEqual({})
       expect(preview.incrementoPerLivello).toEqual({})

@@ -134,6 +134,9 @@ function inferMoveVfxProfile(move: MossaDef): MoveVfxProfile {
   if (move.effetto === 'CURA' || move.effetto === 'CURA_PCT') {
     return buildProfile('heal', 'effect', 'subtle')
   }
+  if (move.soloStato === true || move.effetto === 'PARALISI' || move.effetto === 'PARALIZZATO') {
+    return buildProfile('status', 'effect', 'subtle')
+  }
   if (move.effetto === 'SUPREMA') {
     return buildProfile('supreme', 'effect', 'heavy')
   }

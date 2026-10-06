@@ -31,10 +31,13 @@ export type Lato = 'A' | 'B'
 /** Stati alterati di un pokemon in battaglia (porting roadmap Fase B). */
 export type StatoAlterato = 'Paralizzato' | 'Confuso' | 'Addormentato' | 'Avvelenato'
 
-/** Stato attivo su un pokemon. turniRimanenti = -1 → indefinito (es. veleno). */
+/** Stato attivo: -1 indica durata indefinita. La paralisi termina solo con una cura. */
 export interface Stato {
   tipo: StatoAlterato
+  /** Sonno: 3 = primo turno obbligatorio ancora da saltare, 2/1 = turni con tiro di risveglio. */
   turniRimanenti: number
+  /** Tick di veleno già applicati; assente nei vecchi salvataggi equivale a 0. */
+  turniTrascorsi?: number
 }
 
 // =============================================================
@@ -67,6 +70,8 @@ export interface MossaDef {
   effetto: string | null
   /** Valore numerico associato all'effetto */
   valoreEffetto: number | null
+  /** Mossa che applica soltanto uno stato: nessun danno, tiro offensivo o Suprema. */
+  soloStato?: boolean
   /** Numero di dadi D6 per livello {"5": 1, "6": 1, ...} */
   dadiPerLivello: Record<string, number>
   /** Incremento fisso per livello {"5": 0, "6": 0, ...} */
@@ -209,6 +214,8 @@ export interface RisultatoMossa {
   statoApplicato?: StatoAlterato
   /** Autodanno subito dall'attaccante (es. mossa Suprema). 0/undefined se nessuno. */
   autodanno?: number
+  /** Suprema risolta per questa azione; true significa danno normale ×2 e costo 50% HP massimi. */
+  suprema?: boolean
 }
 
 // =============================================================
