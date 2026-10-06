@@ -260,13 +260,16 @@ describe('store overworld — mappa principale', () => {
     })
   })
 
-  it('blocca un secondo movimento nello stesso turno sulla mappa principale', () => {
+  it('consente due movimenti e blocca il terzo nello stesso turno sulla mappa principale', () => {
     useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')
 
     const ok = useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Piacenza')
 
-    expect(ok).toBe(false)
-    expect(useGameStore.getState().posizione1.luogo).toBe('Percorso_1')
+    expect(ok).toBe(true)
+    expect(useGameStore.getState().posizione1.luogo).toBe('Piacenza')
+    expect(useGameStore.getState().turnoOverworld).toEqual({ giocatoreAttivo: 1, azioniRimaste: 0 })
+    expect(useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_2')).toBe(false)
+    expect(useGameStore.getState().interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'no-op' })
   })
 
   it('rifiuta movimento verso un nodo non collegato', () => {

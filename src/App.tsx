@@ -21,6 +21,7 @@ import { VfxGallery } from '@/components/vfx/VfxGallery'
 import { BattleDiceLab } from '@/components/battle/BattleDiceLab'
 import { DepositLab } from '@/components/deposit/DepositLab'
 import { DarklawAnimationLab } from '@/components/arkamon/DarklawAnimationLab'
+import { getLocalMap } from '@/data/localMaps'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 
@@ -33,6 +34,8 @@ function App() {
   const [hash, setHash] = useState(window.location.hash)
   useEffect(() => { const sync = () => setHash(window.location.hash); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync) }, [])
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
+  const localMapOpen = (scenaCorrente.scena === 'citta' || scenaCorrente.scena === 'percorso')
+    && !!getLocalMap(String(scenaCorrente.payload?.luogo ?? (scenaCorrente.scena === 'citta' ? 'Venezia' : 'Percorso_1')))
 
   useEffect(() => { preloadSceneTransitionArtwork() }, [])
 
@@ -63,7 +66,7 @@ function App() {
   }
 
   return (
-    <div className="arka-stage">
+    <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}`}>
       <AdminRuntime />
       <AdminOverlay />
       <SceneTransition navigation={scenaCorrente} renderScene={renderPresentedScene}>

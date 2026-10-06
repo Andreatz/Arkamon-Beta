@@ -156,6 +156,12 @@ html, body {
     transform-origin: center;
   }
 
+  .arka-stage--local-map {
+    width: 100vw;
+    height: 100vh;
+    aspect-ratio: auto;
+  }
+
   .arka-admin-panel,
   .arka-admin-panel * {
     user-select: text;

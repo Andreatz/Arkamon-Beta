@@ -262,9 +262,12 @@ export interface PosizioneAvatar {
 /** Stato del turno overworld (sequenziale a turni A→B). */
 export interface StatoTurnoOverworld {
   giocatoreAttivo: 1 | 2
-  /** 2 a inizio turno; sulla mappa principale: 1 movimento + 1 interazione. */
+  /** 2 a inizio turno: due movimenti oppure un movimento e un'interazione. */
   azioniRimaste: number
 }
+
+/** Un nodo locale per ogni città/percorso visitato, indipendente dal nodo della mappa principale. */
+export type PosizioniMappeLocali = Record<string, string>
 
 // =============================================================
 // SCENE / NAVIGAZIONE

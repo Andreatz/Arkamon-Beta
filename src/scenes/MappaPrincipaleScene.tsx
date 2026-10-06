@@ -1,6 +1,7 @@
 import { useGameStore } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
 import { MAPPE } from '@data/index'
+import { getLocalMap } from '@/data/localMaps'
 import {
   MAIN_MAP_START_NODE,
   MAIN_MAP_ROAD_CONNECTIONS,
@@ -250,8 +251,9 @@ export function MappaPrincipaleScene() {
   const player1NodeName = getMainMapNodeName(posizione1)
   const player2NodeName = getMainMapNodeName(posizione2)
   const reachableNodeNames = getAdjacentMainMapNodes(activeNodeName)
-  const movimentoDisponibile = turnoOverworld.azioniRimaste > 1
+  const movimentoDisponibile = turnoOverworld.azioniRimaste > 0
   const interazioneDisponibile = turnoOverworld.azioniRimaste > 0
+  const aperturaDisponibile = !!getLocalMap(activeNodeName) || interazioneDisponibile
   const updateMainMapUiLayout = (
     key: AdminMainMapUiLayoutKey,
     rect: AdminLayoutRect
@@ -259,6 +261,12 @@ export function MappaPrincipaleScene() {
 
   const interactWithCurrentNode = () => {
     if (layoutEditing) return
+    if (getLocalMap(activeNodeName)) {
+      if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, activeNodeName)) {
+        vaiAScena(isRouteNode(COORDS[activeNodeName].tipo) ? 'percorso' : 'citta', { luogo: activeNodeName })
+      }
+      return
+    }
     const result = interagisciLuogoMappaPrincipale(giocatoreAttivo)
     if (result.tipo === 'no-op') return
 
@@ -652,8 +660,7 @@ export function MappaPrincipaleScene() {
         <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Azioni:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-white">
-            {movimentoDisponibile ? 'Movimento' : 'Movimento fatto'} ·{' '}
-            {interazioneDisponibile ? 'Interazione' : 'Turno chiuso'}
+            {turnoOverworld.azioniRimaste} azioni · {movimentoDisponibile ? 'Muovi o interagisci' : 'Turno concluso'}
           </span>
         </div>
       </AdminLayoutItem>
@@ -668,10 +675,10 @@ export function MappaPrincipaleScene() {
       >
         <button
           onClick={interactWithCurrentNode}
-          disabled={!interazioneDisponibile}
+          disabled={!aperturaDisponibile}
           className="arka-button h-full w-full overflow-hidden px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-45"
         >
-          <span className="arka-layout-content block truncate">Entra in {activeNodeName.replace('_', ' ')}</span>
+          <span className="arka-layout-content block truncate">{getLocalMap(activeNodeName) ? 'Apri mappa di' : 'Entra in'} {activeNodeName.replace('_', ' ')}</span>
         </button>
       </AdminLayoutItem>
 

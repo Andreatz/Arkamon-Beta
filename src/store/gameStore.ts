@@ -19,6 +19,7 @@ import type {
   StatoTurnoOverworld,
   Casella,
   MappaGriglia,
+  PosizioniMappeLocali,
 } from '@/types'
 import {
   calcolaHPMax,
@@ -33,6 +34,8 @@ import {
   areMainMapNodesConnected,
 } from '@data/mainMapRoads'
 import { scambia, type SlotRef } from '@engine/deposito'
+import { getLocalMap } from '@data/localMaps'
+import { canMoveOnLocalMap, getLocalMapNode } from '@engine/localMapMovement'
 import {
   chiaveCasellaConsumata,
   consumaAzione,
@@ -59,6 +62,8 @@ interface GameState {
   posizione1: PosizioneAvatar
   posizione2: PosizioneAvatar
   turnoOverworld: StatoTurnoOverworld
+  posizioniLocali1: PosizioniMappeLocali
+  posizioniLocali2: PosizioniMappeLocali
 
   // === NAVIGAZIONE ===
   scenaCorrente: NavigazioneScena
@@ -171,6 +176,21 @@ interface GameState {
     giocatoreId: 1 | 2
   ) => { tipo: 'no-op' } | { tipo: 'luogo'; luogo: string }
 
+  /** Prepara il punto d'ingresso locale solo per un giocatore che si trova già nel luogo. */
+  inizializzaPosizioneLocale: (giocatoreId: 1 | 2, luogo: string) => string | null
+
+  /** Aprire il disegno locale non consuma azioni e non sposta il nodo sulla mappa principale. */
+  apriMappaLocale: (giocatoreId: 1 | 2, luogo: string) => boolean
+
+  /** Percorre una sola strada locale e consuma una delle due azioni condivise. */
+  muoviAvatarMappaLocale: (giocatoreId: 1 | 2, luogo: string, nodoDestinazione: string) => boolean
+
+  /** L'interazione chiude il turno ma mantiene il giocatore che deve completare l'attività. */
+  consumaInterazioneMappaLocale: (giocatoreId: 1 | 2, luogo: string) => boolean
+
+  /** Attiva il prossimo turno, anche se già accodato da un'interazione nel luogo. */
+  passaTurnoMappaLocale: () => boolean
+
   /** Reset completo del gioco (Nuova Partita) */
   reset: () => void
 }
@@ -221,6 +241,16 @@ function normalizePosizioneAvatar(posizione: PosizioneAvatar | undefined): Posiz
   return posizioneMappaPrincipale(normalized.luogo ?? MAIN_MAP_START_NODE)
 }
 
+function normalizePosizioniLocali(saved: PosizioniMappeLocali | undefined): PosizioniMappeLocali {
+  if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return {}
+  const positions: PosizioniMappeLocali = {}
+  for (const [luogo, nodeId] of Object.entries(saved)) {
+    const map = getLocalMap(luogo)
+    if (map) positions[luogo] = getLocalMapNode(map, typeof nodeId === 'string' ? nodeId : undefined).id
+  }
+  return positions
+}
+
 /**
  * Cerca il primo slot libero nel deposito (box × slot).
  * Il deposito ha 30 box × 35 slot, identici a Excel.
@@ -250,6 +280,8 @@ export const useGameStore = create<GameState>()(
       posizione1: posizioneIniziale(),
       posizione2: posizioneIniziale(),
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
+      posizioniLocali1: {},
+      posizioniLocali2: {},
       scenaCorrente: { scena: 'titolo' },
       scenaPrecedente: null,
       audioMuted: false,
@@ -674,7 +706,7 @@ export const useGameStore = create<GameState>()(
         const luogoCorrente = luogoMappaPrincipale(posizione)
 
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
-        if (state.turnoOverworld.azioniRimaste <= 1) return false
+        if (state.turnoOverworld.azioniRimaste <= 0) return false
         if (!areMainMapNodesConnected(luogoCorrente, luogoDestinazione)) return false
 
         set({
@@ -682,7 +714,7 @@ export const useGameStore = create<GameState>()(
           giocatoreAttivo: giocatoreId,
           turnoOverworld: {
             ...state.turnoOverworld,
-            azioniRimaste: 1,
+            azioniRimaste: state.turnoOverworld.azioniRimaste - 1,
           },
         } as Partial<GameState>)
         return true
@@ -706,6 +738,70 @@ export const useGameStore = create<GameState>()(
         return { tipo: 'luogo', luogo }
       },
 
+      inizializzaPosizioneLocale: (giocatoreId, luogo) => {
+        const state = get()
+        const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        const map = getLocalMap(luogo)
+        if (!map || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
+          return null
+        }
+        const positionKey = giocatoreId === 1 ? 'posizioniLocali1' : 'posizioniLocali2'
+        const nodeId = getLocalMapNode(map, state[positionKey][luogo]).id
+        if (state[positionKey][luogo] !== nodeId) {
+          set({ [positionKey]: { ...state[positionKey], [luogo]: nodeId } } as Partial<GameState>)
+        }
+        return nodeId
+      },
+
+      apriMappaLocale: (giocatoreId, luogo) => {
+        const state = get()
+        if (state.battaglia || state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
+        if (state.inizializzaPosizioneLocale(giocatoreId, luogo) === null) return false
+        set({ giocatoreAttivo: giocatoreId })
+        return true
+      },
+
+      muoviAvatarMappaLocale: (giocatoreId, luogo, nodoDestinazione) => {
+        const state = get()
+        const map = getLocalMap(luogo)
+        const positionKey = giocatoreId === 1 ? 'posizioniLocali1' : 'posizioniLocali2'
+        const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        if (!map || state.battaglia || state.giocatoreAttivo !== giocatoreId
+          || state.turnoOverworld.giocatoreAttivo !== giocatoreId || state.turnoOverworld.azioniRimaste <= 0
+          || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
+          return false
+        }
+        const from = getLocalMapNode(map, state[positionKey][luogo]).id
+        if (!canMoveOnLocalMap(map, from, nodoDestinazione)) return false
+        set({
+          [positionKey]: { ...state[positionKey], [luogo]: nodoDestinazione },
+          turnoOverworld: consumaAzione(state.turnoOverworld, 'movimento'),
+        } as Partial<GameState>)
+        return true
+      },
+
+      consumaInterazioneMappaLocale: (giocatoreId, luogo) => {
+        const state = get()
+        const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        if (state.battaglia || !getLocalMap(luogo) || state.giocatoreAttivo !== giocatoreId
+          || state.turnoOverworld.giocatoreAttivo !== giocatoreId || state.turnoOverworld.azioniRimaste <= 0
+          || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
+          return false
+        }
+        set({ turnoOverworld: nuovoTurno(giocatoreId) })
+        return true
+      },
+
+      passaTurnoMappaLocale: () => {
+        const state = get()
+        if (state.battaglia) return false
+        const turnoOverworld = state.giocatoreAttivo !== state.turnoOverworld.giocatoreAttivo
+          ? state.turnoOverworld
+          : nuovoTurno(state.giocatoreAttivo)
+        set({ turnoOverworld, giocatoreAttivo: turnoOverworld.giocatoreAttivo })
+        return true
+      },
+
       reset: () =>
         set({
           giocatore1: giocatoreVuoto(1),
@@ -716,6 +812,8 @@ export const useGameStore = create<GameState>()(
           posizione1: posizioneIniziale(),
           posizione2: posizioneIniziale(),
           turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
+          posizioniLocali1: {},
+          posizioniLocali2: {},
           scenaCorrente: { scena: 'titolo' },
           scenaPrecedente: null,
         }),
@@ -761,6 +859,8 @@ export const useGameStore = create<GameState>()(
           posizione1: normalizePosizioneAvatar(p.posizione1),
           posizione2: normalizePosizioneAvatar(p.posizione2),
           turnoOverworld: p.turnoOverworld ?? { giocatoreAttivo: 1, azioniRimaste: 2 },
+          posizioniLocali1: normalizePosizioniLocali(p.posizioniLocali1),
+          posizioniLocali2: normalizePosizioniLocali(p.posizioniLocali2),
           audioMuted: p.audioMuted ?? current.audioMuted,
         }
       },

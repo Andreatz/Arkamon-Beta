@@ -23,9 +23,10 @@ npm test
 - Branch di lavoro: `feature/vfx-recipe-engine`
 - Ultima verifica: **6 ottobre 2026**
 - Build web: `npm run build` completato senza errori
-- Test: **800/800 verdi in 60 file**
+- Test: **850/850 verdi in 63 file**
 - Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md), [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) e [correzione paralisi/sonno](./docs/status-corrections-audit-2026-10-06.md) del 6 ottobre 2026.
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
+- Verifica mappe locali: [movimento dei due giocatori e budget condiviso](./docs/local-maps-audit-2026-10-06.md).
 
 ## Funzionalita Implementate
 
@@ -39,6 +40,7 @@ npm test
 - Deposito con box, squadra, selezione e scambio slot.
 - Evoluzione post-battaglia con animazione.
 - Mappa principale con movimento a turni, percorsi e citta interattivi.
+- [Mappe locali di città e percorsi](./docs/local-maps.md): 16 immagini con pallini e strade percorribili, posizioni separate per G1/G2, curve e ponti, salvataggi e comandi accessibili. Budget condiviso con la mappa principale: due movimenti oppure un movimento e un'interazione. I nuovi punti attendono l'assegnazione delle loro interazioni; le attività esistenti restano in un pannello dedicato.
 - Bilanciamento codificato: progressione mappe, range livelli, economia, incontri e soglie stati/cure/Supreme.
 - Audio da file per mosse, eventi, dadi e transizioni; musica generativa Web Audio per scene, effetti generativi di riserva e toggle muto persistito.
 - Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
