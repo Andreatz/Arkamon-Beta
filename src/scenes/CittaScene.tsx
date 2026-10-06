@@ -7,6 +7,8 @@ import { useAdminStore } from '@store/adminStore'
 import { useGameStore } from '@store/gameStore'
 import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTypes'
 import type { AllenatoreDef } from '@/types'
+import { getLocalMap } from '@/data/localMaps'
+import { LocalMapScene } from './LocalMapScene'
 
 const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
   NPC: 200,
@@ -27,11 +29,15 @@ export function CittaScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const iniziaBattagliaNPC = useGameStore((s) => s.iniziaBattagliaNPC)
   const curaSquadra = useGameStore((s) => s.curaSquadra)
+  const consumaInterazione = useGameStore((s) => s.consumaInterazioneMappaLocale)
+  const turno = useGameStore((s) => s.turnoOverworld)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const luogoLayout = useAdminStore((s) => s.theme.layouts.luogo)
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Venezia'
+  const localMap = getLocalMap(luogo)
+  const interazioneDisponibile = !localMap || (turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0)
   const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
   const tutti = getAllenatoriInLuogo(luogo).filter((a) => a.tipo !== 'PVP')
   const allenatoriOrdinati = [...tutti].sort((a, b) => {
@@ -40,7 +46,8 @@ export function CittaScene() {
   })
 
   const sfida = (allenatoreId: number) => {
-    if (layoutEditing || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
+    if (layoutEditing || !interazioneDisponibile || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
+    if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
     const ok = iniziaBattagliaNPC(allenatoreId, luogo)
     if (ok) vaiAScena('battaglia')
   }
@@ -48,6 +55,88 @@ export function CittaScene() {
   const bg = getBackground(luogo)
   const updateLuogoLayout = (key: AdminLuogoLayoutKey, rect: AdminLayoutRect) =>
     updateSceneLayout({ scene: 'luogo', key, rect })
+
+  const activities = (
+    <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
+          {!haPokemonVivi && (
+            <p role="status" className="arka-panel col-span-3 p-3 text-center text-amber-200">
+              La squadra è esausta. Curala al Centro Pokémon per tornare a combattere.
+            </p>
+          )}
+          <motion.button
+            whileHover={!layoutEditing ? { scale: 1.05, y: -4 } : {}}
+            whileTap={!layoutEditing ? { scale: 0.95 } : {}}
+            disabled={layoutEditing || !interazioneDisponibile}
+            onClick={() => {
+              if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+              curaSquadra(giocatoreAttivo)
+            }}
+            className="arka-panel col-span-1 flex cursor-pointer flex-col items-center justify-center p-6 hover:border-arka-accent"
+          >
+            <span className="arka-layout-content mb-2 text-6xl">🏥</span>
+            <h3 className="arka-layout-content text-xl font-bold">Centro Pokémon</h3>
+            <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
+              Cura tutta la squadra
+            </p>
+          </motion.button>
+
+          {allenatoriOrdinati.map((a) => {
+            const sconfitto = giocatore.allenatoriSconfitti.has(a.id)
+            const primoPkmn = getPokemon(a.squadra[0]?.pokemonId)
+            const isCapo = a.tipo === 'Capopalestra'
+            const ricompensa = RICOMPENSA[a.tipo]
+            return (
+              <motion.button
+                key={a.id}
+                whileHover={!layoutEditing && !sconfitto ? { scale: 1.05, y: -4 } : {}}
+                whileTap={!layoutEditing && !sconfitto ? { scale: 0.95 } : {}}
+                disabled={layoutEditing || !interazioneDisponibile || sconfitto || !haPokemonVivi}
+                onClick={() => sfida(a.id)}
+                className={`arka-panel flex flex-col items-center justify-center p-6
+                  ${sconfitto ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:border-arka-accent'}
+                  ${isCapo && !sconfitto ? 'border-yellow-400 shadow-lg shadow-yellow-500/20' : ''}
+                `}
+              >
+                <span className="arka-layout-content mb-2 text-6xl">
+                  {sconfitto ? '✅' : isCapo ? '👑' : '🥋'}
+                </span>
+                <h3 className={`arka-layout-content text-xl font-bold ${isCapo && !sconfitto ? 'text-yellow-300' : ''}`}>
+                  {a.nome}
+                </h3>
+                {isCapo && !sconfitto && (
+                  <span className="arka-layout-content mt-0.5 text-[10px] uppercase tracking-wider text-yellow-300">
+                    Capopalestra
+                  </span>
+                )}
+                <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
+                  {sconfitto
+                    ? 'Già sconfitto'
+                    : primoPkmn
+                    ? `Squadra: ${a.squadra.length}× (lv ${a.squadra[0].livello})`
+                    : 'Allenatore'}
+                </p>
+                {!sconfitto && (
+                  <span
+                    className={`arka-layout-content mt-2 text-xs ${isCapo ? 'font-bold text-yellow-300' : 'text-yellow-400/80'}`}
+                  >
+                    +{ricompensa}₳ se vinci
+                  </span>
+                )}
+              </motion.button>
+            )
+          })}
+
+          {allenatoriOrdinati.length === 0 && (
+            <div className="arka-panel col-span-2 flex items-center justify-center p-6">
+              <p className="arka-layout-content italic text-arka-text-muted">
+                Nessun allenatore in questa città
+              </p>
+            </div>
+          )}
+        </div>
+  )
+
+  if (localMap && !layoutEditing) return <LocalMapScene key={luogo} map={localMap} activities={activities} />
 
   return (
     <div
@@ -132,80 +221,7 @@ export function CittaScene() {
         onChange={(rect) => updateLuogoLayout('contentGrid', rect)}
         zIndex={10}
       >
-        <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
-          {!haPokemonVivi && (
-            <p role="status" className="arka-panel col-span-3 p-3 text-center text-amber-200">
-              La squadra è esausta. Curala al Centro Pokémon per tornare a combattere.
-            </p>
-          )}
-          <motion.button
-            whileHover={!layoutEditing ? { scale: 1.05, y: -4 } : {}}
-            whileTap={!layoutEditing ? { scale: 0.95 } : {}}
-            disabled={layoutEditing}
-            onClick={() => curaSquadra(giocatoreAttivo)}
-            className="arka-panel col-span-1 flex cursor-pointer flex-col items-center justify-center p-6 hover:border-arka-accent"
-          >
-            <span className="arka-layout-content mb-2 text-6xl">🏥</span>
-            <h3 className="arka-layout-content text-xl font-bold">Centro Pokémon</h3>
-            <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
-              Cura tutta la squadra
-            </p>
-          </motion.button>
-
-          {allenatoriOrdinati.map((a) => {
-            const sconfitto = giocatore.allenatoriSconfitti.has(a.id)
-            const primoPkmn = getPokemon(a.squadra[0]?.pokemonId)
-            const isCapo = a.tipo === 'Capopalestra'
-            const ricompensa = RICOMPENSA[a.tipo]
-            return (
-              <motion.button
-                key={a.id}
-                whileHover={!layoutEditing && !sconfitto ? { scale: 1.05, y: -4 } : {}}
-                whileTap={!layoutEditing && !sconfitto ? { scale: 0.95 } : {}}
-                disabled={layoutEditing || sconfitto || !haPokemonVivi}
-                onClick={() => sfida(a.id)}
-                className={`arka-panel flex flex-col items-center justify-center p-6
-                  ${sconfitto ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:border-arka-accent'}
-                  ${isCapo && !sconfitto ? 'border-yellow-400 shadow-lg shadow-yellow-500/20' : ''}
-                `}
-              >
-                <span className="arka-layout-content mb-2 text-6xl">
-                  {sconfitto ? '✅' : isCapo ? '👑' : '🥋'}
-                </span>
-                <h3 className={`arka-layout-content text-xl font-bold ${isCapo && !sconfitto ? 'text-yellow-300' : ''}`}>
-                  {a.nome}
-                </h3>
-                {isCapo && !sconfitto && (
-                  <span className="arka-layout-content mt-0.5 text-[10px] uppercase tracking-wider text-yellow-300">
-                    Capopalestra
-                  </span>
-                )}
-                <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
-                  {sconfitto
-                    ? 'Già sconfitto'
-                    : primoPkmn
-                    ? `Squadra: ${a.squadra.length}× (lv ${a.squadra[0].livello})`
-                    : 'Allenatore'}
-                </p>
-                {!sconfitto && (
-                  <span
-                    className={`arka-layout-content mt-2 text-xs ${isCapo ? 'font-bold text-yellow-300' : 'text-yellow-400/80'}`}
-                  >
-                    +{ricompensa}₳ se vinci
-                  </span>
-                )}
-              </motion.button>
-            )
-          })}
-
-          {allenatoriOrdinati.length === 0 && (
-            <div className="arka-panel col-span-2 flex items-center justify-center p-6">
-              <p className="arka-layout-content italic text-arka-text-muted">
-                Nessun allenatore in questa città
-              </p>
-            </div>
-          )}
-        </div>
+        {activities}
       </AdminLayoutItem>
     </div>
   )

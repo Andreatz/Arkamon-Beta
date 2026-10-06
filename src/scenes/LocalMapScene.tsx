@@ -1,0 +1,112 @@
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { LocalMapBoard, type LocalMapPlayer } from '@/components/map/LocalMapBoard'
+import { getLocalMap, type LocalMapDefinition } from '@/data/localMaps'
+import { getAdjacentLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
+import { useGameStore } from '@/store/gameStore'
+import { useSceneInputBlocked } from '@/components/transitions/SceneNavigationContext'
+import { makeDialogBackgroundInert } from '@/components/battle/modalFocus'
+import './localMapScene.css'
+
+function ActivityDialog({ open, onClose, children }: { open: boolean; onClose: () => void; children: ReactNode }) {
+  const dialog = useRef<HTMLDivElement>(null)
+  const close = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (!open || !dialog.current) return
+    const element = dialog.current
+    const before = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const release = makeDialogBackgroundInert(element)
+    close.current?.focus()
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); onClose(); return }
+      if (event.key !== 'Tab') return
+      const controls = Array.from(element.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], [tabindex="0"]'))
+      const first = controls[0], last = controls[controls.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+    }
+    element.addEventListener('keydown', keyboard)
+    return () => { element.removeEventListener('keydown', keyboard); release(); before?.focus() }
+  }, [open, onClose])
+  return <div ref={dialog} hidden={!open} role="dialog" aria-modal="true" aria-label="Attività del luogo" className="local-map-activities">
+    <header><div><h2>Attività del luogo</h2><p>Un’interazione conclude il turno.</p></div><button ref={close} className="arka-button-secondary" onClick={onClose}>Chiudi attività</button></header>
+    <div className="local-map-activities-content">{children}</div>
+  </div>
+}
+
+/** Le azioni sono condivise con la mappa principale; cambiare vista non spende un'azione. */
+export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; activities: ReactNode }) {
+  const actor = useGameStore((s) => s.giocatoreAttivo)
+  const turn = useGameStore((s) => s.turnoOverworld)
+  const world1 = useGameStore((s) => s.posizione1)
+  const world2 = useGameStore((s) => s.posizione2)
+  const positions1 = useGameStore((s) => s.posizioniLocali1)
+  const positions2 = useGameStore((s) => s.posizioniLocali2)
+  const player1 = useGameStore((s) => s.giocatore1)
+  const player2 = useGameStore((s) => s.giocatore2)
+  const initialize = useGameStore((s) => s.inizializzaPosizioneLocale)
+  const move = useGameStore((s) => s.muoviAvatarMappaLocale)
+  const pass = useGameStore((s) => s.passaTurnoMappaLocale)
+  const navigate = useGameStore((s) => s.vaiAScena)
+  const blocked = useSceneInputBlocked()
+  const [activitiesOpen, setActivitiesOpen] = useState(false)
+  const closeActivities = useCallback(() => setActivitiesOpen(false), [])
+  const [selected, setSelected] = useState<string | null>(null)
+  const samePlace = (world: typeof world1) => world.mappaId === 'mappa-principale' && world.luogo === map.id
+
+  useEffect(() => {
+    if (samePlace(world1)) initialize(1, map.id)
+    if (samePlace(world2)) initialize(2, map.id)
+    setSelected(null)
+    setActivitiesOpen(false)
+  }, [map.id, world1.luogo, world1.mappaId, world2.luogo, world2.mappaId, initialize, actor])
+
+  const players: LocalMapPlayer[] = []
+  if (samePlace(world1)) players.push({ id: 1, name: player1.nome, nodeId: getLocalMapNode(map, positions1[map.id]).id })
+  if (samePlace(world2)) players.push({ id: 2, name: player2.nome, nodeId: getLocalMapNode(map, positions2[map.id]).id })
+  const current = players.find((p) => p.id === actor)
+  const remaining = turn.giocatoreAttivo === actor ? turn.azioniRimaste : 0
+  const canMove = !!current && remaining > 0 && !blocked
+  const adjacent = current ? getAdjacentLocalMapNodes(map, current.nodeId) : []
+  const currentNode = current ? getLocalMapNode(map, current.nodeId) : null
+  const nodeLabel = (id: string) => getLocalMapNode(map, id).label ?? id
+  const player = actor === 1 ? player1 : player2
+  const moveTo = (id: string) => {
+    if (!canMove) return false
+    const moved = move(actor, map.id, id)
+    if (moved) setSelected(null)
+    return moved
+  }
+  const passTurn = () => {
+    if (blocked || !pass()) return
+    const state = useGameStore.getState()
+    const world = state.giocatoreAttivo === 1 ? state.posizione1 : state.posizione2
+    const target = world.mappaId === 'mappa-principale' ? getLocalMap(world.luogo ?? '') : undefined
+    if (target && state.apriMappaLocale(state.giocatoreAttivo, target.id)) {
+      navigate(target.id.startsWith('Percorso_') ? 'percorso' : 'citta', { luogo: target.id })
+    } else navigate('mappa-principale')
+  }
+
+  return <section className="local-map-scene" aria-label={`Esplorazione ${map.id.replace(/_/g, ' ')}`}>
+    <header className="local-map-toolbar">
+      <button className="arka-button-secondary" disabled={blocked} onClick={() => navigate('mappa-principale')}>← Mappa principale</button>
+      <div className="local-map-heading"><h1>{map.id.replace(/_/g, ' ')}</h1><span>G{actor} · {player.nome}</span></div>
+      <span className="local-map-budget" role="status">{remaining} {remaining === 1 ? 'azione' : 'azioni'}</span>
+      <button className="arka-button-secondary" disabled={blocked} onClick={() => setActivitiesOpen(true)}>Attività</button>
+      <button className="arka-button" disabled={blocked} onClick={passTurn}>Passa turno</button>
+    </header>
+    <div className="local-map-play-area">
+      <LocalMapBoard map={map} players={players} activePlayerId={actor} remainingActions={remaining} canMove={canMove}
+        inputBlocked={blocked || activitiesOpen} onMove={moveTo} onSelectNode={setSelected} />
+    </div>
+    <footer className="local-map-footer">
+      <div className="local-map-point-info" role="status">
+        {currentNode ? <><strong>{nodeLabel(selected ?? currentNode.id)}</strong><span>Interazione da definire</span></> : <span>Questo giocatore si trova in un altro luogo.</span>}
+      </div>
+      <nav aria-label="Punti raggiungibili" className="local-map-neighbours">
+        {adjacent.map((id) => <button key={id} className="arka-button-secondary" disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)}</button>)}
+      </nav>
+      <p>{remaining > 0 ? 'Due movimenti, oppure un movimento e un’interazione.' : 'Turno concluso. Passa il controllo all’altro giocatore.'}</p>
+    </footer>
+    <ActivityDialog open={activitiesOpen} onClose={closeActivities}>{activities}</ActivityDialog>
+  </section>
+}
