@@ -64,11 +64,17 @@ function frontAnimationSet(
  * Other species and the back views retain their existing sprites.
  */
 export const ARKAMON_ANIMATION_MANIFEST: Partial<Record<number, ArkamonAnimationSet>> = {
+  1: frontAnimationSet(1, 704, { width: 384, height: 384, left: 196, top: 165 }, 45, 30),
+  2: frontAnimationSet(2, 576, { width: 384, height: 384, left: 112, top: 81 }, 53, 22),
+  3: frontAnimationSet(3, 576, { width: 384, height: 384, left: 112, top: 90 }, 45, 33),
+  4: frontAnimationSet(4, 576, { width: 384, height: 384, left: 153, top: 79 }, 47, 25),
   5: frontAnimationSet(5, 640, { width: 384, height: 384, left: 177, top: 140 }, 31, 28),
   6: frontAnimationSet(6, 704, { width: 320, height: 320, left: 208, top: 191 }, 47, 27),
   7: frontAnimationSet(7, 704, { width: 384, height: 384, left: 152, top: 156 }, 51, 26),
   8: frontAnimationSet(8, 768, { width: 384, height: 384, left: 234, top: 186 }, 26, 37),
+  9: frontAnimationSet(9, 512, { width: 384, height: 384, left: 66, top: 69 }, 50, 17),
   20: frontAnimationSet(20, 704, { width: 384, height: 384, left: 150, top: 153 }, 56, 29),
+  21: frontAnimationSet(21, 768, { width: 384, height: 384, left: 200, top: 207 }, 54, 25),
 }
 
 export function getArkamonAnimationAsset(
