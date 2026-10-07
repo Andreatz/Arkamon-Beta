@@ -52,7 +52,6 @@ import {
 import { prepareArkamonAnimationPlayback } from '@/components/arkamon/preloadArkamonAnimations'
 import {
   createBattleAnimationPlayback,
-  createBattleDamageReveal,
   createBattleVisualSequence,
   planBattleAnimationPlayback,
 } from '@/components/battle/battleVisualSequence'
@@ -532,6 +531,7 @@ export function BattagliaScene() {
     move: MossaDef,
     side: 'A' | 'B',
     targetSide: 'A' | 'B' | null,
+    targetAnimation: 'hit' | 'ko',
     onImpact: () => void,
     onComplete: () => void
   ) => {
@@ -541,9 +541,9 @@ export function BattagliaScene() {
     const attackerView = side === 'A' ? 'back' : 'front'
     const targetView = targetSide === 'A' ? 'back' : 'front'
     const attackAsset = getArkamonAnimationAsset(attacker.specieId, attackerView, 'attack')
-    const targetAsset = target ? getArkamonAnimationAsset(target.specieId, targetView, 'hit') : undefined
+    const targetAsset = target ? getArkamonAnimationAsset(target.specieId, targetView, targetAnimation) : undefined
     const dedicatedAttack = !!attackAsset
-    const dedicatedHit = !!targetAsset
+    const dedicatedHit = targetAnimation === 'hit' && !!targetAsset
     setHeldHitReactions(targetSide && dedicatedHit ? { [targetSide]: true } : {})
     const plan = planBattleAnimationPlayback(
       attackAsset ? (attackAsset.releaseFrame ?? 0) / attackAsset.fps * 1000 : 0,
@@ -601,10 +601,15 @@ export function BattagliaScene() {
     const active = { cancel: () => { playback.cancel(); sequence.cancel() } }
     activePlaybackRef.current?.cancel()
     activePlaybackRef.current = active
+    if (targetSide && targetAnimation === 'ko' && targetAsset) {
+      spriteCompletionWaitersRef.current[targetSide] = {
+        animation: 'ko', replayKey: 0, onComplete: () => sequence.targetComplete(),
+      }
+    }
     // All resources are ready before either clip's native clock can start.
     void Promise.all([
       prepareArkamonAnimationPlayback(attacker.specieId, attackerView, 'attack'),
-      target ? prepareArkamonAnimationPlayback(target.specieId, targetView, 'hit') : Promise.resolve(),
+      target ? prepareArkamonAnimationPlayback(target.specieId, targetView, targetAnimation) : Promise.resolve(),
       prepareMoveVfxPlayback(move, effectId),
     ]).then(() => {
       if (activePlaybackRef.current === active) playback.start()
@@ -615,7 +620,8 @@ export function BattagliaScene() {
     risultato: RisultatoMossa,
     side: 'A' | 'B',
     targetSide: 'A' | 'B',
-    onDamageReveal: () => void,
+    playHitSound: boolean,
+    onImpact: () => void,
     onComplete: () => void
   ) => {
     if (actionInProgressRef.current) return
@@ -623,13 +629,13 @@ export function BattagliaScene() {
     setAzioneInCorso(true)
     const feedback = getMoveVfxFeedback(risultato.mossa)
     const target = targetSide === 'A' ? pkmnA : pkmnB
-    // Keep all resolved damage private until the dice faces have been revealed.
+    // Keep the bar at its pre-attack HP while resolved HP can start a native KO.
     setPendingHealth(target ? { side: targetSide, instanceId: target.istanzaId, hp: target.hp } : null)
-    const targetWillKO = !!target && target.hp <= risultato.dannoFinale
+    const targetAnimation = target && target.hp <= risultato.dannoFinale ? 'ko' : 'hit'
     const targetHasHit = target && !!getArkamonAnimationAsset(target.specieId, targetSide === 'A' ? 'back' : 'front', 'hit')
-    // The same hit reaction plays for every attack; a fatal result must not reveal KO early.
-    playMoveVisuals(risultato.mossa, side, targetSide, () => {
-      playImpactFeedback(risultato.mossa, targetSide, true, !targetHasHit)
+    playMoveVisuals(risultato.mossa, side, targetSide, targetAnimation, () => {
+      onImpact()
+      playImpactFeedback(risultato.mossa, targetSide, playHitSound, targetAnimation === 'hit' && !targetHasHit)
 
       const pulseId = ++impactPulseIdRef.current
       setImpactPulse({
@@ -644,36 +650,17 @@ export function BattagliaScene() {
 
     }, () => {
       if (èMossaSoloStato(risultato.mossa)) {
-        onDamageReveal()
         setPendingHealth(null)
         onComplete()
         actionInProgressRef.current = false
         setAzioneInCorso(false)
         return
       }
-      const waitForTargetKO = targetWillKO && !!target && !!getArkamonAnimationAsset(
-        target.specieId, targetSide === 'A' ? 'back' : 'front', 'ko'
-      )
-      const reveal = createBattleDamageReveal({
-        waitForTargetKO,
-        onReveal: () => {
-          if (waitForTargetKO) {
-            spriteCompletionWaitersRef.current[targetSide] = {
-              animation: 'ko', replayKey: 0, onComplete: () => reveal.targetKOComplete(),
-            }
-          }
-          setPendingHealth(null)
-          onDamageReveal()
-        },
-        onComplete: () => {
-          if (activePlaybackRef.current === reveal) activePlaybackRef.current = null
-          onComplete()
-          actionInProgressRef.current = false
-          setAzioneInCorso(false)
-        },
+      mostraLancioDadi(risultato, side, () => setPendingHealth(null), () => {
+        onComplete()
+        actionInProgressRef.current = false
+        setAzioneInCorso(false)
       })
-      activePlaybackRef.current = reveal
-      mostraLancioDadi(risultato, side, reveal.diceVisible, reveal.diceComplete)
     })
   }
 
@@ -685,7 +672,7 @@ export function BattagliaScene() {
     if (actionInProgressRef.current) return
     actionInProgressRef.current = true
     setAzioneInCorso(true)
-    playMoveVisuals(move, side, null, () => {}, () => {
+    playMoveVisuals(move, side, null, 'hit', () => {}, () => {
       onComplete()
       actionInProgressRef.current = false
       setAzioneInCorso(false)
@@ -919,6 +906,7 @@ export function BattagliaScene() {
       ris,
       'A',
       'B',
+      nuovoB.hp > 0,
       () => {
         setPkmnB(nuovoB)
         setSquadraB(nuovaSquadraB)
@@ -1149,6 +1137,7 @@ export function BattagliaScene() {
       ris,
       'B',
       'A',
+      nuovoA.hp > 0,
       () => {
         setPkmnA(nuovoA)
         setSquadraA(nuovaSquadraA)
