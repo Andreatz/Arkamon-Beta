@@ -74,7 +74,7 @@ La preparazione attende anche la decodifica dei pixel. Una cache temporanea cons
 
 La scena di battaglia e la prova del laboratorio condividono il planner `planBattleAnimationPlayback` e i coordinatori `createBattleAnimationPlayback` e `createBattleVisualSequence`. Il turno attende il completamento del VFX e delle clip dedicate prima di proseguire. Caricamenti falliti e preferenza di movimento ridotto devono comunque completare la sequenza una sola volta, senza bloccare il turno. Un completamento obsoleto non deve alterare una nuova azione.
 
-Il numero animato dei danni subiti è rimosso dalla scena. La comparsa dei dadi e il calcolo del risultato restano nel flusso della battaglia.
+Il numero animato dei danni subiti è rimosso dalla scena. In battaglia ogni attacco mostra prima la reazione colpito, anche se il danno già calcolato sarà fatale. HP, segnalini della squadra e KO restano invariati finché il pannello e tutte le facce dei dadi sono stati mostrati e dipinti. Solo la rivelazione del risultato aggiorna gli HP e avvia l’eventuale KO; il coordinatore `createBattleDamageReveal` attende sia la presentazione dei dadi sia la clip KO completa prima di proseguire con esperienza, contraccolpo della Suprema, cambio o esito. Le mosse di solo stato mantengono il percorso senza dadi del danno.
 
 ## Laboratorio e ripieghi
 

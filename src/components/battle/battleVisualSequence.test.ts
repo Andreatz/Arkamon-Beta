@@ -1,5 +1,18 @@
-import { describe, expect, it, vi } from 'vitest'
-import { createBattleAnimationPlayback, createBattleVisualSequence, planBattleAnimationPlayback } from './battleVisualSequence'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  createBattleAnimationPlayback,
+  createBattleDamageReveal,
+  createBattleVisualSequence,
+  planBattleAnimationPlayback,
+} from './battleVisualSequence'
+import { createBattleDiceReveal } from './battleDiceReveal'
+import {
+  calcolaAzioneSuprema,
+  calcolaHPMax,
+  esitoSquadre,
+  risolviAttaccanteDopoMossa,
+} from '@engine/battleEngine'
+import type { PokemonIstanza } from '@/types'
 
 function sequence(waitForAttacker = true, waitForTarget = true) {
   const callbacks = { onRelease: vi.fn(), onImpact: vi.fn(), onComplete: vi.fn() }
@@ -101,7 +114,7 @@ describe('native attack and hit pose alignment', () => {
     expect(plan).toEqual({ attackerAtMs: 600, hitAtMs: 0, vfxAtMs: 850, impactAtMs: 1250 })
   })
 
-  it('starts a KO at impact without playing the separate hit film first', () => {
+  it('places feedback without a native reaction lead at impact', () => {
     expect(planBattleAnimationPlayback(2000, 0, 400)).toEqual({
       attackerAtMs: 0, hitAtMs: 2400, vfxAtMs: 2000, impactAtMs: 2400,
     })
@@ -175,5 +188,178 @@ describe('ready native clocks', () => {
     run.release()
     expect(run.startAttack).not.toHaveBeenCalled()
     expect(run.onRelease).not.toHaveBeenCalled()
+  })
+})
+
+describe('damage and KO after the visible dice result', () => {
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
+
+  function damageReveal(waitForTargetKO = true) {
+    const callbacks = { onReveal: vi.fn(), onComplete: vi.fn() }
+    return { ...callbacks, ...createBattleDamageReveal({ waitForTargetKO, ...callbacks }) }
+  }
+
+  it('keeps resolved lethal damage hidden until the last die and panel have painted, even after a slow load', () => {
+    const target = { hp: 1, animation: 'hit' }
+    const onComplete = vi.fn()
+    const damage = createBattleDamageReveal({
+      waitForTargetKO: true,
+      onReveal: () => { target.hp = 0; target.animation = 'ko' },
+      onComplete,
+    })
+    const dice = createBattleDiceReveal({
+      diceCount: 2,
+      scheduleAfterPaint: (callback) => {
+        const timer = setTimeout(callback, 16)
+        return () => clearTimeout(timer)
+      },
+      onReveal: damage.diceVisible,
+    })
+
+    dice.panelVisible()
+    dice.dieVisible(0)
+    vi.advanceTimersByTime(2500)
+    expect(target).toEqual({ hp: 1, animation: 'hit' })
+    expect(onComplete).not.toHaveBeenCalled()
+
+    dice.dieVisible(1)
+    vi.advanceTimersByTime(15)
+    expect(target).toEqual({ hp: 1, animation: 'hit' })
+    vi.advanceTimersByTime(1)
+    expect(target).toEqual({ hp: 0, animation: 'ko' })
+    expect(onComplete).not.toHaveBeenCalled()
+    damage.diceComplete()
+    expect(onComplete).not.toHaveBeenCalled()
+    damage.targetKOComplete()
+    expect(onComplete).toHaveBeenCalledTimes(1)
+  })
+
+  it.each(['dice first', 'KO first'] as const)('waits for both the full KO clip and dice presentation with %s', (order) => {
+    const run = damageReveal()
+    run.diceVisible()
+    expect(run.onReveal).toHaveBeenCalledTimes(1)
+    expect(run.onComplete).not.toHaveBeenCalled()
+    if (order === 'dice first') run.diceComplete()
+    else run.targetKOComplete()
+    expect(run.onComplete).not.toHaveBeenCalled()
+    if (order === 'dice first') run.targetKOComplete()
+    else run.diceComplete()
+    expect(run.onComplete).toHaveBeenCalledTimes(1)
+  })
+
+  it('releases a surviving target or static KO after the dice without waiting for an absent clip', () => {
+    const run = damageReveal(false)
+    run.diceVisible()
+    expect(run.onReveal).toHaveBeenCalledTimes(1)
+    expect(run.onComplete).not.toHaveBeenCalled()
+    run.diceComplete()
+    expect(run.onComplete).toHaveBeenCalledTimes(1)
+    run.targetKOComplete()
+    expect(run.onComplete).toHaveBeenCalledTimes(1)
+  })
+
+  it('reveals damage once and ignores duplicate completion signals after the turn settles', () => {
+    const run = damageReveal()
+    run.diceVisible()
+    run.diceVisible()
+    run.targetKOComplete()
+    run.targetKOComplete()
+    expect(run.onComplete).not.toHaveBeenCalled()
+    run.diceComplete()
+    run.diceComplete()
+    run.targetKOComplete()
+    run.diceVisible()
+    expect(run.onReveal).toHaveBeenCalledTimes(1)
+    expect(run.onComplete).toHaveBeenCalledTimes(1)
+  })
+
+  it('cannot reveal damage or settle the turn from completion callbacks received before the dice result', () => {
+    const run = damageReveal()
+    run.diceComplete()
+    run.targetKOComplete()
+    expect(run.onReveal).not.toHaveBeenCalled()
+    expect(run.onComplete).not.toHaveBeenCalled()
+    run.diceVisible()
+    expect(run.onReveal).toHaveBeenCalledTimes(1)
+  })
+
+  it('cancels an unrevealed attack without letting late dice or KO events leak the result', () => {
+    const run = damageReveal()
+    run.cancel()
+    run.cancel()
+    run.diceVisible()
+    run.targetKOComplete()
+    run.diceComplete()
+    expect(run.onReveal).not.toHaveBeenCalled()
+    expect(run.onComplete).not.toHaveBeenCalled()
+  })
+
+  it('ignores stale KO and dice completions after an interrupted revealed attack', () => {
+    const old = damageReveal()
+    old.diceVisible()
+    old.cancel()
+    const next = damageReveal()
+    old.diceComplete()
+    old.targetKOComplete()
+    expect(old.onReveal).toHaveBeenCalledTimes(1)
+    expect(old.onComplete).not.toHaveBeenCalled()
+    expect(next.onReveal).not.toHaveBeenCalled()
+    expect(next.onComplete).not.toHaveBeenCalled()
+    next.diceVisible()
+    next.diceComplete()
+    next.targetKOComplete()
+    expect(next.onComplete).toHaveBeenCalledTimes(1)
+  })
+
+  it.each(['A', 'B'] as const)('preserves target KO, XP and Suprema recoil ordering for attacker %s after its dice', (side) => {
+    const attacker: PokemonIstanza = {
+      istanzaId: `attacker-${side}`, specieId: 1, nome: 'Vyrath', livello: 14, hp: 13, xp: 0,
+    }
+    const defender: PokemonIstanza = {
+      istanzaId: `defender-${side}`, specieId: 13, nome: 'Bersaglio', livello: 5, hp: 1, xp: 0,
+    }
+    const attack = calcolaAzioneSuprema(attacker, defender, 0, () => 0)!
+    expect(attack.difensoreSvenuto).toBe(true)
+    const events: string[] = []
+    let visibleAttacker = attacker
+    let visibleDefender = defender
+    let outcome: 'vittoria' | 'sconfitta' | null = null
+    const damage = createBattleDamageReveal({
+      waitForTargetKO: true,
+      onReveal: () => {
+        visibleDefender = { ...defender, hp: Math.max(0, defender.hp - attack.dannoFinale) }
+        events.push('target KO')
+      },
+      onComplete: () => {
+        const resolved = risolviAttaccanteDopoMossa(attack)
+        expect(resolved.istanzaPrimaDelContraccolpo).toMatchObject({ livello: 15, hp: 13 })
+        expect(calcolaHPMax(resolved.istanzaPrimaDelContraccolpo)).toBe(27)
+        expect(resolved.autodanno).toBe(13)
+        visibleAttacker = resolved.istanza
+        events.push('XP then recoil')
+        outcome = esitoSquadre(
+          [side === 'A' ? visibleAttacker : visibleDefender],
+          [side === 'B' ? visibleAttacker : visibleDefender],
+          side,
+        )
+      },
+    })
+
+    expect(visibleDefender.hp).toBe(1)
+    expect(visibleAttacker).toMatchObject({ livello: 14, hp: 13 })
+    expect(outcome).toBeNull()
+    expect(events).toEqual([])
+    damage.diceVisible()
+    expect(visibleDefender.hp).toBe(0)
+    expect(visibleAttacker).toMatchObject({ livello: 14, hp: 13 })
+    expect(outcome).toBeNull()
+    damage.diceComplete()
+    expect(visibleAttacker.hp).toBe(13)
+    expect(outcome).toBeNull()
+    damage.targetKOComplete()
+    expect(visibleAttacker).toMatchObject({ livello: 15, hp: 0 })
+    expect(outcome).toBe(side === 'A' ? 'vittoria' : 'sconfitta')
+    expect(events).toEqual(['target KO', 'XP then recoil'])
   })
 })
