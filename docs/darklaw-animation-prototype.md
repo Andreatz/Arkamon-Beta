@@ -1,12 +1,12 @@
 # Animazioni frontali degli Arkamon
 
-Il gioco integra i filmati frontali di Darklaw (specie 5, 6, 7 e 8) e Handipus (specie 20). Ogni specie dispone di attesa, attacco, colpito, vittoria e KO: 25 animazioni complessive. Il nome Darklaw è condiviso dalle quattro specie nel database; il numero distingue i diversi stadi.
+Il gioco integra i filmati frontali di Vyrath (specie 1, 2, 3 e 4), Darklaw (5, 6, 7 e 8), Felyss (9), Handipus (20) e Shrody (21). Ogni specie dispone di attesa, attacco, colpito, vittoria e KO: 55 animazioni complessive. I nomi Vyrath e Darklaw sono condivisi dai rispettivi quattro stadi nel database; il numero distingue le forme.
 
 La pagina di sviluppo `#arkamon-lab` permette di scegliere la specie, confrontare il PNG originale con le cinque animazioni, cambiare sfondo e dimensione, e provare una mossa con il relativo VFX su un bersaglio animato. I comandi del laboratorio non modificano la partita. Il retro usa gli sprite esistenti.
 
 ## Filmati e riproduzione
 
-I filmati forniti in `public/sprites/animation/front/{speciesId} {action}.mp4` sono conservati anche nella cartella sorgente `animation-source/raw/{speciesId}/front/`. Ogni clip contiene 96 fotogrammi originali a 24 FPS, per una durata effettiva di 4 secondi. Tutte le 2.400 immagini del set sono conservate, in ordine, senza saltare fotogrammi, aggiungere interpolazioni, generare pose, invertire o mescolare i filmati.
+I filmati forniti in `public/sprites/animation/Front/{speciesId} {action}.mp4` sono conservati anche nella cartella sorgente `animation-source/raw/{speciesId}/front/`. Ogni clip contiene 96 fotogrammi originali a 24 FPS, per una durata effettiva di 4 secondi. Tutte le 5.280 immagini dei set sono conservate, in ordine, senza saltare fotogrammi, aggiungere interpolazioni, generare pose, invertire o mescolare i filmati.
 
 La durata è il rapporto fra numero di fotogrammi decodificati e FPS. Una durata del contenitore MP4 leggermente maggiore, per esempio 4,01 secondi, non aggiunge fotogrammi. L’ultimo fotogramma occupa l’intervallo da 95/24 secondi alla fine dei quattro secondi.
 
@@ -28,9 +28,11 @@ Per ogni specie e azione il gioco legge:
 - `{action}.metadata.json`: sorgente, impronta SHA-256, griglia, FPS, durata, indici e trasformazione;
 - `{action}-poster.webp`: anteprima statica.
 
-I metadati `animation-set.metadata.json` e `animation-set.normalization.json` descrivono l’intero set. Le dimensioni delle celle e i margini sono specifici della specie e coprono gli spostamenti dei cinque filmati. La finestra logica di visualizzazione misura 384 × 384 pixel per le specie 5, 7, 8 e 20, e 320 × 320 per la specie 6, come dichiarato nei metadati del set. L’atlas dispone di dieci colonne e dieci righe, con 96 celle usate e quattro celle vuote.
+I metadati `animation-set.metadata.json` e `animation-set.normalization.json` descrivono l’intero set. Le dimensioni delle celle e i margini sono specifici della specie e coprono gli spostamenti dei cinque filmati. La finestra logica di visualizzazione misura 384 × 384 pixel, tranne la specie 6 che usa 320 × 320, come dichiarato nei metadati del set. L’atlas dispone di dieci colonne e dieci righe, con 96 celle usate e quattro celle vuote.
 
 La conversione rimuove lo sfondo verde e corregge i residui cromatici. Le risoluzioni sorgente sono normalizzate nello stesso spazio per ogni specie. Una calibrazione della camera, costante per tutta la clip, allinea il corpo iniziale alla posa di attesa; la scala e il piano di appoggio sono comuni alle cinque azioni. Gli spostamenti e le deformazioni presenti nei filmati restano parte dell’animazione. Non viene ridimensionato separatamente ogni fotogramma, né riallineata la posa caduta del KO.
+
+I nuovi set 1, 2, 3, 4, 9 e 21 usano `--screen-dominance-cleanup` con geometria calcolata dalle rispettive sorgenti. Questa pulizia rimuove il fondale non uniforme e i residui periferici che possono falsare i limiti dell’attesa e ridurre troppo il corpo. Il profilo aggiuntivo per il contorno gialloverde resta disattivato: i ciano delle ali, delle fiamme e delle scie e i dettagli dorati di Shrody sono controllati rispetto ai video. Felyss è fornito a 1280 × 720 pixel; gli altri cinque nuovi set a 1920 × 1080. Frequenza, fotogrammi e durata coincidono.
 
 I video delle forme Darklaw 6, 7 e 8 includono un contorno gialloverde già mescolato al disegno. Il solo eccesso di verde non lo elimina: alcuni pixel hanno rosso uguale o maggiore del verde, e la desaturazione può renderli gialli. Questi tre set usano quindi il profilo esplicito `--screen-fringe-cleanup`, che lavora sul colore sorgente prima della desaturazione. Riduce gradualmente l’alfa fra 35° e 45° di tinta ed elimina il residuo verde fino a 170°, compresi gli spazi chiusi tra arti, corpo e fiamme. Protegge i nuclei luminosi caldi per conservare i bagliori del colpo e le fiamme arancioni. Il profilo resta disattivato per impostazione predefinita: non va applicato automaticamente a personaggi con parti verdi. Il set 5 conserva i suoi effetti dorati originali.
 
@@ -58,13 +60,21 @@ I marker sono indici dei fotogrammi nativi, contati da zero, selezionati dal mov
 
 | Specie | Nome | Rilascio dell’attacco | Reazione al colpo |
 | ---: | --- | ---: | ---: |
+| 1 | Vyrath | 45 | 30 |
+| 2 | Vyrath | 53 | 22 |
+| 3 | Vyrath | 45 | 33 |
+| 4 | Vyrath | 47 | 25 |
 | 5 | Darklaw | 31 | 28 |
 | 6 | Darklaw | 47 | 27 |
 | 7 | Darklaw | 51 | 26 |
 | 8 | Darklaw | 26 | 37 |
+| 9 | Felyss | 50 | 17 |
 | 20 | Handipus | 56 | 29 |
+| 21 | Shrody | 54 | 25 |
 
 `releaseFrame` appartiene alla clip di attacco; `reactionFrame` appartiene a quella colpito. I tempi corrispondono agli indici divisi per gli FPS originali. Il VFX viene rilasciato al marker dell’attaccante, e la posa di reazione del bersaglio viene allineata all’impatto dichiarato dall’effetto.
+
+I marker delle nuove forme sono verificati sui fotogrammi originali consecutivi. Quando il rinculo inizia prima del flash già contenuto nel filmato, il marker della reazione coincide con l’inizio del rinculo: vale per le specie 2, 3 e 21. Il gate non deve mostrare in anticipo una posa già colpita aspettando il flash successivo.
 
 Le clip vengono caricate prima di iniziare la sequenza. Il coordinatore usa il primo fotogramma effettivamente riprodotto come origine del tempo, e non la richiesta di caricamento. Quando la reazione richiede una preparazione più lunga, il filmato del bersaglio può iniziare prima dell’attacco, in modo che il suo marker raggiunga l’impatto del VFX. Tutti i fotogrammi sono conservati e le clip mantengono i 24 FPS.
 
@@ -74,7 +84,7 @@ La preparazione attende anche la decodifica dei pixel. Una cache temporanea cons
 
 La scena di battaglia e la prova del laboratorio condividono il planner `planBattleAnimationPlayback` e i coordinatori `createBattleAnimationPlayback` e `createBattleVisualSequence`. Il turno attende il completamento del VFX e delle clip dedicate prima di proseguire. Caricamenti falliti e preferenza di movimento ridotto devono comunque completare la sequenza una sola volta, senza bloccare il turno. Un completamento obsoleto non deve alterare una nuova azione.
 
-Il numero animato dei danni subiti è rimosso dalla scena. La comparsa dei dadi e il calcolo del risultato restano nel flusso della battaglia.
+Il numero animato dei danni subiti è rimosso dalla scena. In battaglia ogni attacco mostra prima la reazione colpito, anche se il danno già calcolato sarà fatale. HP, segnalini della squadra e KO restano invariati finché il pannello e tutte le facce dei dadi sono stati mostrati e dipinti. Solo la rivelazione del risultato aggiorna gli HP e avvia l’eventuale KO; il coordinatore `createBattleDamageReveal` attende sia la presentazione dei dadi sia la clip KO completa prima di proseguire con esperienza, contraccolpo della Suprema, cambio o esito. Le mosse di solo stato mantengono il percorso senza dadi del danno.
 
 ## Laboratorio e ripieghi
 
@@ -92,4 +102,4 @@ I test degli asset confrontano dimensioni reali, alfa, griglia e finestra logica
 
 `python scripts/test_arkamon_key.py` verifica la rimozione del contorno e degli spazi chiusi, la conservazione dei dettagli rossi, viola, scuri e dei bagliori caldi, il profilo disattivato per colori verdi legittimi, e il riuso della geometria soltanto quando la sorgente coincide. Il conteggio `remainingGreenDominantPixelsOver8` non basta per giudicare i bordi: la desaturazione può azzerarlo lasciando una corona gialla. I metadati riportano anche un conteggio diagnostico gialloverde, che può includere luci dorate legittime; la verifica comprende quindi il confronto dei fotogrammi su sfondo scuro e chiaro e la revisione degli effetti luminosi.
 
-I test del manifest verificano i cinque set completi, le clip dedicate, i marker e il ripiego idle. I test del coordinatore verificano l’ordine rilascio → impatto → completamento, l’allineamento dei tempi, le notifiche duplicate, l’annullamento e il completamento quando un asset fallisce. Caricamento, riproduzione, sincronizzazione e dimensioni responsive richiedono anche una verifica nel browser; il rendering sul server non esegue la temporizzazione dei filmati.
+I test del manifest verificano gli undici set completi, le clip dedicate, i marker e il ripiego idle. I test del coordinatore verificano l’ordine rilascio → impatto → completamento, l’allineamento dei tempi, le notifiche duplicate, l’annullamento e il completamento quando un asset fallisce. Caricamento, riproduzione, sincronizzazione e dimensioni responsive richiedono anche una verifica nel browser; il rendering sul server non esegue la temporizzazione dei filmati.
