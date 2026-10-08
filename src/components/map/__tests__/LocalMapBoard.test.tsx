@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import { getLocalMap, LOCAL_MAPS, type LocalMapDefinition } from '@data/localMaps'
 import { LocalMapBoard } from '../LocalMapBoard'
 import { VENEZIA_REFERENCE_NODES } from '@data/__tests__/fixtures/veneziaReference'
+import { CAGLIARI_REFERENCE_NODES } from '@data/__tests__/fixtures/cagliariReference'
+import { FOGGIA_REFERENCE_NODES } from '@data/__tests__/fixtures/foggiaReference'
 
 function renderMap(map: LocalMapDefinition, nodeId = map.startNode) {
   return renderToStaticMarkup(
@@ -46,6 +48,32 @@ describe('LocalMapBoard - numerazione interna senza testo sui pallini', () => {
     }
   })
 
+  it.each([
+    { city: 'Cagliari', nodes: CAGLIARI_REFERENCE_NODES },
+    { city: 'Foggia', nodes: FOGGIA_REFERENCE_NODES },
+  ])('$city: usa i numeri della foto nelle etichette mantenendo i pallini senza numeri visibili', ({ city, nodes }) => {
+    const markup = renderMap(getLocalMap(city)!)
+    expect(accessibleNumbers(markup)).toEqual(nodes.map(([number, id]) => ({ id, number })))
+    for (const button of nodeButtons(markup)) {
+      expect(button.body.replace(/<[^>]*>/g, '').trim(), button.id).toBe('')
+    }
+    expect(markup).toContain('aria-label="Punto 1, posizione attuale; mostra interazione"')
+  })
+
+  it.each([
+    { city: 'Cagliari', current: 'n16', point: 20, neighbors: ['n11', 'n22'] },
+    { city: 'Foggia', current: 'n1', point: 37, neighbors: ['n11'] },
+  ])('$city: il punto prima isolato offre solo le uscite disegnate nella foto', ({ city, current, point, neighbors }) => {
+    const buttons = nodeButtons(renderMap(getLocalMap(city)!, current))
+    const currentButton = buttons.find((button) => button.id === current)!
+    expect(currentButton.attributes).toContain(`aria-label="Punto ${point}, posizione attuale; mostra interazione"`)
+    expect(currentButton.attributes).toContain('aria-current="location"')
+    expect(currentButton.attributes).not.toContain('disabled=')
+    const adjacent = buttons.filter((button) => button.attributes.includes('data-reachable="true"'))
+    expect(adjacent.map((button) => button.id).sort()).toEqual([...neighbors].sort())
+    for (const button of adjacent) expect(button.attributes).not.toContain('disabled=')
+  })
+
   it('identifica il Punto 42 corrente e offre Vai a Punto 41, 43 e 57 usando i numeri della foto', () => {
     const buttons = nodeButtons(renderMap(getLocalMap('Venezia')!, 'n17'))
     const current = buttons.find((button) => button.id === 'n17')!
@@ -70,6 +98,18 @@ describe('LocalMapBoard - numerazione interna senza testo sui pallini', () => {
     expect(buttons).toHaveLength(map.nodes.length)
     for (const button of buttons) {
       expect(button.body.replace(/<[^>]*>/g, '').trim(), button.id).toBe('')
+    }
+  })
+
+  it('disegna soltanto il nuovo pallino di Cagliari, senza aggiungere numeri o marcatori ai PNG originali', () => {
+    for (const map of Object.values(LOCAL_MAPS)) {
+      const buttons = nodeButtons(renderMap(map))
+      const markers = buttons.filter((button) => button.body.includes('class="local-map-node-marker"'))
+      expect(markers.map((button) => button.id), map.id).toEqual(map.id === 'Cagliari' ? ['n41'] : [])
+      for (const marker of markers) {
+        expect(marker.body).toContain('class="local-map-node-marker" aria-hidden="true"')
+        expect(marker.body.replace(/<[^>]*>/g, '').trim()).toBe('')
+      }
     }
   })
 })

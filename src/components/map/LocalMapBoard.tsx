@@ -147,7 +147,7 @@ function LocalMapAvatar({
 }
 
 /**
- * The PNG remains intact. Buttons sit on its existing dots; the road graph is
+ * The PNG remains intact. Buttons sit on its dots, including explicit new markers; the road graph is
  * used for adjacency and for walking around bends rather than across buildings.
  * Only players present in this location are passed by the containing scene.
  */
@@ -256,6 +256,7 @@ export function LocalMapBoard({
                 else onMove(node.id)
               }}
             >
+              {node.drawMarker && <span className="local-map-node-marker" aria-hidden="true" />}
               <span className="local-map-node-ring" aria-hidden="true" />
             </button>
           )

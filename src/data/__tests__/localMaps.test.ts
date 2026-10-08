@@ -31,7 +31,7 @@ describe('mappe locali disegnate', () => {
 
   it('conserva tutti i pallini contati e verificati visivamente sulle sedici immagini', () => {
     expect(Object.fromEntries(mapDefinitions.map((map) => [map.id, map.nodes.length]))).toEqual({
-      Cagliari: 40, Foggia: 59, Milano: 55, Napoli: 40, Palermo: 55,
+      Cagliari: 41, Foggia: 59, Milano: 55, Napoli: 40, Palermo: 55,
       Percorso_1: 50, Percorso_13: 36, Percorso_14: 48, Percorso_15: 36,
       Percorso_2: 43, Percorso_4: 47, Piacenza: 56, ReggioCalabria: 44,
       Roma: 50, Torino: 49, Venezia: 57,
@@ -42,6 +42,12 @@ describe('mappe locali disegnate', () => {
     const { data, info } = await sharp(`${imageDirectory}/${map.image.replace('/maps/', '')}`)
       .removeAlpha().raw().toBuffer({ resolveWithObject: true })
     for (const node of map.nodes) {
+      // Il solo nuovo pallino della foto «Interazioni Cagliari» manca nel PNG originale.
+      // La sua posizione è congelata dal riferimento della foto; gli altri restano verificati sul rosso.
+      if (map.id === 'Cagliari' && node.id === 'n41') {
+        expect(node).toMatchObject({ x: 72.267, y: 62.719, label: 'Punto 32', drawMarker: true })
+        continue
+      }
       const x = Math.round(node.x / 100 * info.width)
       const y = Math.round(node.y / 100 * info.height)
       const offset = (y * info.width + x) * info.channels
@@ -82,11 +88,11 @@ describe('mappe locali disegnate', () => {
     }
   })
 
-  it('conserva i soli punti fisicamente isolati, senza inventare strade attraverso gli edifici', () => {
+  it('raggiunge tutti i pallini, compresi gli accessi precisati dalle foto di Cagliari e Foggia', () => {
     const isolated = mapDefinitions.flatMap((map) => map.nodes
       .filter((node) => !map.roads.some((road) => road.from === node.id || road.to === node.id))
       .map((node) => `${map.id}/${node.id}`))
-    expect(isolated.sort()).toEqual(['Cagliari/n16', 'Foggia/n1'])
+    expect(isolated).toEqual([])
     const inaccessible: string[] = []
     for (const map of mapDefinitions) {
       const reached = new Set([map.startNode])

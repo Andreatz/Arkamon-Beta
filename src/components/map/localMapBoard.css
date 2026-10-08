@@ -56,7 +56,19 @@
   cursor: default;
 }
 
+.local-map-node-marker {
+  position: absolute;
+  width: 1.8cqw;
+  height: 1.45cqw;
+  border: max(1px, 0.1cqw) solid #171717;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 35%, #ff5454, #e90000 70%);
+  box-shadow: 0 0 0 max(1px, 0.09cqw) white;
+  pointer-events: none;
+}
+
 .local-map-node-ring {
+  position: relative;
   display: block;
   width: 72%;
   height: 72%;
