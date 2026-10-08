@@ -3,6 +3,7 @@ import { readdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { LOCAL_MAPS, getLocalMap, type LocalMapPoint } from '../localMaps'
+import sixCityReferences from './fixtures/sixCityReferences.json'
 
 const imageDirectory = fileURLToPath(new URL('../../../public/maps/', import.meta.url))
 const mapDefinitions = Object.values(LOCAL_MAPS)
@@ -31,9 +32,9 @@ describe('mappe locali disegnate', () => {
 
   it('conserva tutti i pallini contati e verificati visivamente sulle sedici immagini', () => {
     expect(Object.fromEntries(mapDefinitions.map((map) => [map.id, map.nodes.length]))).toEqual({
-      Cagliari: 41, Foggia: 59, Milano: 55, Napoli: 40, Palermo: 55,
+      Cagliari: 41, Foggia: 59, Milano: 56, Napoli: 40, Palermo: 55,
       Percorso_1: 50, Percorso_13: 36, Percorso_14: 48, Percorso_15: 36,
-      Percorso_2: 43, Percorso_4: 47, Piacenza: 56, ReggioCalabria: 44,
+      Percorso_2: 43, Percorso_4: 47, Piacenza: 56, ReggioCalabria: 46,
       Roma: 50, Torino: 49, Venezia: 57,
     })
   })
@@ -42,10 +43,15 @@ describe('mappe locali disegnate', () => {
     const { data, info } = await sharp(`${imageDirectory}/${map.image.replace('/maps/', '')}`)
       .removeAlpha().raw().toBuffer({ resolveWithObject: true })
     for (const node of map.nodes) {
-      // Il solo nuovo pallino della foto «Interazioni Cagliari» manca nel PNG originale.
-      // La sua posizione è congelata dal riferimento della foto; gli altri restano verificati sul rosso.
+      // Le sole aggiunte delle foto sono congelate nei riferimenti indipendenti.
       if (map.id === 'Cagliari' && node.id === 'n41') {
         expect(node).toMatchObject({ x: 72.267, y: 62.719, label: 'Punto 32', drawMarker: true })
+        continue
+      }
+      const photoAdded = sixCityReferences.find((reference) => reference.city === map.id)?.nodes
+        .find((expected) => expected.id === node.id && expected.drawMarker)
+      if (photoAdded) {
+        expect(node).toEqual(photoAdded)
         continue
       }
       const x = Math.round(node.x / 100 * info.width)

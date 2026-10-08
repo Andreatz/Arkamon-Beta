@@ -38,6 +38,29 @@ I cespugli, gli allenatori e il Centro Pokémon già giocabili restano nel panne
 
 I pulsanti «Vai a Punto…» duplicano i collegamenti disponibili per rendere il movimento accessibile anche su schermi piccoli. I punti sono utilizzabili anche tramite Tab e Invio. Le animazioni seguono i vertici della strada in entrambe le direzioni; due movimenti rapidi vengono mostrati in sequenza. Le preferenze di movimento ridotto vengono rispettate.
 
+### Milano, Napoli, Palermo, Piacenza, Reggio Calabria e Roma
+
+Le altre sei foto fornite l'8 ottobre 2026 definiscono **303 punti e 358 collegamenti**:
+
+| Città | Punti | Collegamenti bidirezionali |
+| --- | ---: | ---: |
+| Milano | 56 | 69 |
+| Napoli | 40 | 44 |
+| Palermo | 55 | 62 |
+| Piacenza | 56 | 67 |
+| Reggio Calabria | 46 | 59 |
+| Roma | 50 | 57 |
+
+Tutti i 300 ID precedenti, le coordinate e gli ingressi fisici rimangono invariati. Le curve seguono le tracce delle foto in entrambi i sensi; i pallini restano senza numeri visibili. I numeri servono alle etichette e ai comandi accessibili.
+
+La foto di Napoli ripeteva il numero 11: su conferma dell'utente, il punto sul ramo alto fra 9 e 2 diventa **Punto 40** (`n8`), mentre quello davanti alla fontana resta **Punto 11** (`n15`). A Reggio Calabria il riferimento salta il 23: non viene creato un punto dove la foto non ne indica uno.
+
+Tre punti del riferimento mancano negli sfondi originali e ricevono un pallino nel componente: **Milano/Punto 28** (`n56`, fra 25, 27 e 29), **Reggio Calabria/Punto 21** (`n45`, fra 22 e 19) e **Reggio Calabria/Punto 26** (`n46`, fra 25 e 18). Gli sfondi a colori restano intatti e le strade che saltavano questi punti vengono sostituite dai rispettivi segmenti.
+
+I raccordi senza pallino **11/17/48 a Milano** e **4/6/8 a Reggio Calabria** collegano ciascuna coppia di terminali attraverso lo stesso vertice, senza introdurre una sosta. A Reggio Calabria il breve incontro delle linee vicino al 19 fa parte di quel pallino: andare da 20 a 21 richiede passare dal 19.
+
+La verifica conserva due movimenti oppure un movimento e un'interazione e le posizioni indipendenti dei personaggi, anche dopo ricaricamento. Le attività dei singoli pallini rimangono da definire.
+
 ## Dati e salvataggi
 
 `src/data/localMaps.ts` contiene immagini, centri dei pallini, ingresso e collegamenti. Le strade includono solo i vertici intermedi: gli estremi sono i nodi. `src/engine/localMapMovement.ts` calcola adiacenze e percorsi senza dipendere dalla UI.
