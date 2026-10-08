@@ -257,6 +257,11 @@ export function LocalMapBoard({
               }}
             >
               <span className="local-map-node-ring" aria-hidden="true" />
+              {map.showNodeNumbers && (
+                <span className="local-map-node-number" aria-hidden="true">
+                  {label.replace(/^Punto\s+/, '')}
+                </span>
+              )}
             </button>
           )
         })}

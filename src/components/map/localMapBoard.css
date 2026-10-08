@@ -64,6 +64,15 @@
   border-radius: 50%;
 }
 
+.local-map-node-number {
+  position: absolute;
+  color: #163cff;
+  font: 900 clamp(10px, 1.5cqw, 22px)/1 system-ui, sans-serif;
+  -webkit-text-stroke: clamp(1px, 0.18cqw, 2px) #05070c;
+  paint-order: stroke fill;
+  pointer-events: none;
+}
+
 .local-map-node--reachable .local-map-node-ring {
   border-color: #fff0a8;
   box-shadow: 0 0 0 1px rgba(66, 42, 0, 0.75), 0 0 9px rgba(255, 227, 132, 0.75);
