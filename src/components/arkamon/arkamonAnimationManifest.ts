@@ -35,20 +35,22 @@ function frontAnimationSet(
   viewport: NonNullable<ArkamonAnimationAsset['viewport']>,
   releaseFrame: number,
   reactionFrame: number,
+  frameCounts: Partial<Record<ArkamonBattleAnimation, number>> = {},
 ): ArkamonAnimationSet {
   const front: Partial<Record<ArkamonBattleAnimation, ArkamonAnimationAsset>> = {}
   for (const animation of FRONT_ANIMATIONS) {
+    const frameCount = frameCounts[animation] ?? 96
     front[animation] = {
       src: `/sprites/arkamon/${speciesId}/front/${animation}.webp`,
       frameWidth: cellSize,
       frameHeight: cellSize,
       columns: 10,
       rows: 10,
-      frameCount: 96,
+      frameCount,
       fps: 24,
       width: cellSize,
       height: cellSize,
-      durationMs: 96 / 24 * 1000,
+      durationMs: frameCount / 24 * 1000,
       loop: animation === 'idle',
       viewport,
       ...(animation === 'attack' ? { releaseFrame } : {}),
@@ -73,6 +75,11 @@ export const ARKAMON_ANIMATION_MANIFEST: Partial<Record<number, ArkamonAnimation
   7: frontAnimationSet(7, 704, { width: 384, height: 384, left: 152, top: 156 }, 51, 26),
   8: frontAnimationSet(8, 768, { width: 384, height: 384, left: 234, top: 186 }, 26, 37),
   9: frontAnimationSet(9, 512, { width: 384, height: 384, left: 66, top: 69 }, 50, 17),
+  10: frontAnimationSet(10, 576, { width: 384, height: 384, left: 122, top: 96 }, 58, 27),
+  11: frontAnimationSet(11, 768, { width: 384, height: 384, left: 200, top: 179 }, 58, 26),
+  12: frontAnimationSet(12, 704, { width: 384, height: 384, left: 193, top: 145 }, 47, 25),
+  13: frontAnimationSet(13, 576, { width: 384, height: 384, left: 95, top: 84 }, 48, 32),
+  14: frontAnimationSet(14, 640, { width: 384, height: 384, left: 122, top: 112 }, 48, 23, { ko: 95 }),
   20: frontAnimationSet(20, 704, { width: 384, height: 384, left: 150, top: 153 }, 56, 29),
   21: frontAnimationSet(21, 768, { width: 384, height: 384, left: 200, top: 207 }, 54, 25),
 }

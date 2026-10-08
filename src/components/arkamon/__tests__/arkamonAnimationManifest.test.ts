@@ -11,8 +11,8 @@ import {
 const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
-const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
-const ORIGINAL_SPECIES_IDS = [5, 6, 7, 8, 20]
+const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 20, 21]
+const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
 
 describe('Arkamon animation manifest', () => {
@@ -86,7 +86,7 @@ describe('Arkamon animation manifest', () => {
     }
   })
 
-  it('keeps the original five front sets at their existing native 96 frames and 24 FPS', () => {
+  it('keeps the original eleven front sets at their existing native 96 frames and 24 FPS', () => {
     for (const speciesId of ORIGINAL_SPECIES_IDS) for (const animation of ANIMATIONS) {
       const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
       expect(asset.frameCount).toBe(96)

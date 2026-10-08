@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
+const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 20, 21]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -25,12 +25,23 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     const image = await sharp(assetPath).metadata()
     const conversion = readConversion(speciesId, animation)
     const sheet = readFileSync(assetPath)
+    expect(sheet.byteLength).toBeGreaterThan(0)
     expect(createHash('sha256').update(sheet).digest('hex')).toBe(conversion.sheet.sha256)
     expect(sheet.byteLength).toBe(conversion.sheet.sizeBytes)
     expect(image.width).toBe(asset.frameWidth * asset.columns)
     expect(image.height).toBe(asset.frameHeight * asset.rows)
     expect(image.hasAlpha).toBe(true)
     expect(image.pages ?? 1).toBe(1)
+    const posterPath = resolve(`public/sprites/arkamon/${speciesId}/front/${conversion.poster.file}`)
+    const poster = readFileSync(posterPath)
+    const posterImage = await sharp(posterPath).metadata()
+    expect(conversion.poster.frameIndex).toBe(0)
+    expect(poster.byteLength).toBeGreaterThan(0)
+    expect(poster.byteLength).toBe(conversion.poster.sizeBytes)
+    expect(createHash('sha256').update(poster).digest('hex')).toBe(conversion.poster.sha256)
+    expect(posterImage.width).toBe(asset.frameWidth)
+    expect(posterImage.height).toBe(asset.frameHeight)
+    expect(posterImage.hasAlpha).toBe(true)
     expect(conversion.speciesId).toBe(speciesId)
     expect(conversion.view).toBe('front')
     expect(conversion.action).toBe(animation)
@@ -75,11 +86,16 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
 
   it('preserves every original source frame in order at its native rate and full duration', () => {
     const conversion = readConversion(speciesId, animation)
+    expect(conversion.source.file).toBe(`animation-source/raw/${speciesId}/front/${animation}.mp4`)
     const video = readFileSync(resolve(conversion.source.file))
     const suppliedVideo = readFileSync(resolve(`public/sprites/animation/Front/${speciesId} ${animation}.mp4`))
+    expect(video.byteLength).toBeGreaterThan(0)
+    expect(suppliedVideo.byteLength).toBeGreaterThan(0)
+    expect(video.equals(suppliedVideo)).toBe(true)
     expect(createHash('sha256').update(video).digest('hex')).toBe(conversion.source.sha256)
     expect(createHash('sha256').update(suppliedVideo).digest('hex')).toBe(conversion.source.sha256)
     expect(video.byteLength).toBe(conversion.source.sizeBytes)
+    expect(suppliedVideo.byteLength).toBe(conversion.source.sizeBytes)
     expect(conversion.source.decodedFrameCount).toBe(asset.frameCount)
     expect(conversion.source.fps).toBe(asset.fps)
     expect(conversion.sampling.allSourceFramesPreserved).toBe(true)

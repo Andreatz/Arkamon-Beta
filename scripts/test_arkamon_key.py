@@ -145,6 +145,39 @@ class FringeKeyTests(unittest.TestCase):
         self.assertFalse(victory[24,24])
 
 
+class ReferenceGeometryTests(unittest.TestCase):
+    def plan(self, size: tuple[int, int], rectangle: tuple[int, int, int, int]) -> dict:
+        with tempfile.TemporaryDirectory(prefix='arkamon-reference-fit-') as temporary:
+            reference = Path(temporary)/'reference.png'
+            image = Image.new('RGBA', size, (0, 0, 0, 0))
+            image.paste((120, 60, 160, 255), rectangle)
+            image.save(reference)
+            clip = {
+                'action': 'idle', 'firstCore': (10, 20, 90, 100),
+                'union': (10, 20, 90, 100), 'boxes': [(10, 20, 90, 100)],
+                'paths': [None]*96, 'info': {'width': 100, 'height': 100},
+            }
+            return converter.common_plan([clip], reference, 100, 1, .8, 16, 8192)
+
+    def test_rectangular_reference_matches_centered_contain_ground_and_body_height(self) -> None:
+        # Wide static art occupies y=25..75 in a square slot; its opaque body ends at70.
+        wide = self.plan((200, 100), (20, 10, 180, 90))
+        self.assertEqual(wide['groundPivot'][1]-wide['viewport']['top'], 70)
+        self.assertEqual(wide['idleBodyHeightOutputPixels'], 40)
+        self.assertEqual(wide['logicalUnionAlphaBounds'], [30, 30, 70, 70])
+        # Tall art already fills the slot height, with its body ending at90.
+        tall = self.plan((100, 200), (10, 20, 90, 180))
+        self.assertEqual(tall['groundPivot'][1]-tall['viewport']['top'], 90)
+        self.assertEqual(tall['idleBodyHeightOutputPixels'], 80)
+
+    def test_square_reference_keeps_its_existing_scale_and_ground(self) -> None:
+        square = self.plan((100, 100), (10, 20, 90, 100))
+        self.assertEqual(square['sharedScale'], 1)
+        self.assertEqual(square['groundPivot'][1]-square['viewport']['top'], 100)
+        self.assertEqual(square['idleBodyHeightOutputPixels'], 80)
+        self.assertEqual(square['logicalUnionAlphaBounds'], [10, 20, 90, 100])
+
+
 class ReuseGeometryTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory(prefix='arkamon-key-regression-')
