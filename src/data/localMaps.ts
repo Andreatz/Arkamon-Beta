@@ -9,8 +9,6 @@ export interface LocalMapDefinition {
   nodes: LocalMapNode[]
   roads: LocalMapRoad[]
   startNode: string
-  /** Numeri visibili sui pallini quando la mappa ha una numerazione concordata. */
-  showNodeNumbers?: boolean
 }
 
 // I pallini sono punti generici: le interazioni saranno definite separatamente.
@@ -1691,7 +1689,6 @@ export const LOCAL_MAPS: Readonly<Record<string, LocalMapDefinition>> = {
     // Gli ID restano stabili per conservare le posizioni dei salvataggi precedenti.
     // Numeri e collegamenti seguono la foto Interazioni Venezia fornita dall'utente.
     startNode: 'n56',
-    showNodeNumbers: true,
     nodes: [
       { id: 'n1', x: 28.561, y: 1.092, label: 'Punto 47' },
       { id: 'n2', x: 71.791, y: 1.432, label: 'Punto 1' },

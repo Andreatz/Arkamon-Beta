@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getLocalMap, LOCAL_MAPS } from '../localMaps'
+import { getLocalMap } from '../localMaps'
 import { canMoveOnLocalMap, getAdjacentLocalMapNodes, getLocalMapNode, getLocalRoadPath } from '@engine/localMapMovement'
 import { VENEZIA_REFERENCE_EDGES, VENEZIA_REFERENCE_NODES, VENEZIA_REMOVED_SHORTCUTS } from './fixtures/veneziaReference'
 
@@ -21,10 +21,6 @@ describe('Venezia - riferimento indipendente della foto dell’utente', () => {
     const actual = map.roads.map((road) => edgeKey(numberOf(road.from), numberOf(road.to))).sort()
     const expected = VENEZIA_REFERENCE_EDGES.map(([from, to]) => edgeKey(from, to)).sort()
     expect(actual).toEqual(expected)
-  })
-
-  it('mostra i numeri concordati solo sulla mappa di Venezia', () => {
-    expect(Object.values(LOCAL_MAPS).filter((item) => item.showNodeNumbers).map((item) => item.id)).toEqual(['Venezia'])
   })
 
   it('offre a ogni pallino le sole destinazioni adiacenti della foto, anche alle biforcazioni', () => {
