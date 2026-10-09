@@ -6,7 +6,10 @@ import {
   requestArkamonPlayback,
   type ArkamonPlaybackState,
 } from '../ArkamonBattleSprite'
-import type { ArkamonBattleAnimation } from '../arkamonAnimationManifest'
+import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
+
+const ANIMATED_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 20, 21]
+const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const motionPreference = vi.hoisted(() => ({ reduced: false }))
 
@@ -86,6 +89,23 @@ describe('Arkamon battle sprite visual selection', () => {
     expect(markup).toContain('data-sprite-paused="false"')
   })
 
+  it.each(ANIMATED_SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => ({ speciesId, animation }))))(
+    'renders species $speciesId $animation with its own native sheet timing and dimensions', ({ speciesId, animation }) => {
+      const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
+      const markup = renderToStaticMarkup(
+        <ArkamonBattleSprite speciesId={speciesId} name={`Arkamon ${speciesId}`} side="front" animation={animation} />
+      )
+      expect(markup).toContain('data-arkamon-renderer="sprite-sheet"')
+      expect(markup).toContain(`data-arkamon-asset-animation="${animation}"`)
+      expect(markup).toContain(`data-sprite-src="${asset.src}"`)
+      expect(markup).toContain(`data-sprite-frame-count="${asset.frameCount}"`)
+      expect(markup).toContain(`data-sprite-fps="${asset.fps}"`)
+      expect(markup).toContain(`width="${asset.frameWidth}" height="${asset.frameHeight}"`)
+      expect(markup).toContain('data-arkamon-motion="none"')
+      expect(markup).not.toContain(`/front_sprites/${speciesId}.png`)
+    }
+  )
+
   it('uses reduced motion when the preference is set at mount', () => {
     motionPreference.reduced = true
     expect(renderDarklaw()).toContain('data-sprite-paused="true"')
@@ -126,9 +146,19 @@ describe('Arkamon battle sprite visual selection', () => {
     expect(markup).not.toContain('/arkamon/5/front/idle.webp')
   })
 
+  it.each(ANIMATED_SPECIES_IDS)('allows animations to be disabled for animated species %s', (speciesId) => {
+    const markup = renderToStaticMarkup(
+      <ArkamonBattleSprite speciesId={speciesId} name="Arkamon" side="front" animation="attack" animationEnabled={false} />
+    )
+    expect(markup).toContain('data-arkamon-renderer="procedural"')
+    expect(markup).toContain('data-arkamon-playback="paused"')
+    expect(markup).toContain(`/front_sprites/${speciesId}.png`)
+    expect(markup).not.toContain(`/arkamon/${speciesId}/front/attack.webp`)
+  })
+
   it.each([
-    { speciesId: 5, side: 'back', src: '/back_sprites/5.png' },
-    { speciesId: 1, side: 'front', src: '/front_sprites/1.png' },
+    ...ANIMATED_SPECIES_IDS.map((speciesId) => ({ speciesId, side: 'back', src: `/back_sprites/${speciesId}.png` }) as const),
+    { speciesId: 110, side: 'front', src: '/front_sprites/110.png' },
     { speciesId: 110, side: 'back', src: '/back_sprites/110.png' },
   ] as const)('preserves existing art for species $speciesId, view $side', ({ speciesId, side, src }) => {
     const markup = renderToStaticMarkup(

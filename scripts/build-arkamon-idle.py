@@ -279,8 +279,12 @@ def common_plan(clips: list[dict], reference: Path | None, base_cell: int,
     if reference:
         image = Image.open(reference).convert('RGBA')
         box = bounds(image)
-        occupancy = (box[3]-box[1])/image.height
-        ground = box[3]/image.height
+        # The static PNG is contained and centered inside a square battle slot.
+        # A wide reference has transparent letterboxing above and below its image.
+        reference_edge = max(image.size)
+        reference_top = (reference_edge-image.height)/2
+        occupancy = (box[3]-box[1])/reference_edge
+        ground = (reference_top+box[3])/reference_edge
         reference_meta = {'size':list(image.size),'alphaBounds':list(box),
                           'bodyHeightFraction':occupancy,'groundFraction':ground}
     idle_crop = idle['union']
