@@ -10,6 +10,7 @@ import { useGameStore } from '@store/gameStore'
 import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTypes'
 import type { StatoBattaglia } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
+import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
 import { LocalMapScene } from './LocalMapScene'
 
 const CESPUGLI = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const
@@ -31,6 +32,7 @@ export function PercorsoScene() {
   const giocatore = useGameStore((s) =>
     giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
   )
+  const posizione = useGameStore((s) => giocatoreAttivo === 1 ? s.posizione1 : s.posizione2)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const luogoLayout = useAdminStore((s) => s.theme.layouts.luogo)
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
@@ -39,6 +41,9 @@ export function PercorsoScene() {
   const localMap = getLocalMap(luogo)
   const interazioneDisponibile = !localMap || (turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0)
   const allenatori = getAllenatoriInLuogo(luogo)
+  const secret = luogo === SECRET_LOCATION_ID
+  const secretAccess = !secret || canAccessSecretLocation(giocatore, posizione)
+  const hasDefinedActivities = allenatori.length > 0 || CESPUGLI.some((c) => getIncontri(luogo, c).length > 0)
   const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
 
   const sfidaAllenatore = (allenatoreId: number) => {
@@ -81,12 +86,13 @@ export function PercorsoScene() {
 
   const activities = (
     <div className="flex h-full w-full flex-col gap-4 overflow-y-auto p-1">
-          {!haPokemonVivi && (
+          {secret && !hasDefinedActivities && <p className="arka-panel p-4">Le interazioni di questo luogo saranno definite in seguito.</p>}
+          {!haPokemonVivi && (!secret || hasDefinedActivities) && (
             <p role="status" className="arka-panel shrink-0 p-3 text-center text-amber-200">
               La squadra è esausta. Visita un Centro Pokémon prima di affrontare un incontro.
             </p>
           )}
-          <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
+          {(!secret || hasDefinedActivities) && <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
           {CESPUGLI.map((c) => {
             const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
             const haIncontri = getIncontri(luogo, c).length > 0
@@ -111,7 +117,7 @@ export function PercorsoScene() {
               </motion.button>
             )
           })}
-          </div>
+          </div>}
           {allenatori.length > 0 && (
             <section className="shrink-0" aria-label="Allenatori del percorso">
               <h3 className="arka-readable-title mb-3 text-xl font-bold text-white">Allenatori del percorso</h3>
@@ -141,6 +147,11 @@ export function PercorsoScene() {
           )}
         </div>
   )
+
+  if (!secretAccess) return <section className="local-map-scene" aria-label="Luogo non disponibile">
+    <p>Questo luogo non è disponibile per il giocatore attivo.</p>
+    <button className="arka-button-secondary" onClick={() => vaiAScena('mappa-principale')}>Mappa principale</button>
+  </section>
 
   if (localMap && !layoutEditing) return <LocalMapScene key={luogo} map={localMap} activities={activities} />
 

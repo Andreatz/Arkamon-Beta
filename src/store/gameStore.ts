@@ -35,6 +35,14 @@ import {
 } from '@data/mainMapRoads'
 import { scambia, type SlotRef } from '@engine/deposito'
 import { getLocalMap } from '@data/localMaps'
+import {
+  SECRET_LOCATION_ID,
+  SECRET_LOCATION_ORIGIN,
+  canAccessSecretLocation,
+  hasUnlockedSecretLocation,
+  isSecretLocationConnection,
+  isSecretLocationPosition,
+} from '@data/secretLocation'
 import { canMoveOnLocalMap, getLocalMapNode } from '@engine/localMapMovement'
 import {
   chiaveCasellaConsumata,
@@ -171,6 +179,9 @@ interface GameState {
   /** Muove l'avatar sulla mappa principale lungo una strada collegata. */
   muoviAvatarMappaPrincipale: (giocatoreId: 1 | 2, luogoDestinazione: string) => boolean
 
+  /** Crosses the hidden Rome passage using one shared movement action. */
+  attraversaPassaggioSegreto: (giocatoreId: 1 | 2) => boolean
+
   /** Consuma l'interazione del turno sul nodo corrente della mappa principale. */
   interagisciLuogoMappaPrincipale: (
     giocatoreId: 1 | 2
@@ -237,6 +248,7 @@ function luogoMappaPrincipale(posizione: PosizioneAvatar): string {
 
 function normalizePosizioneAvatar(posizione: PosizioneAvatar | undefined): PosizioneAvatar {
   const normalized = posizione ?? posizioneIniziale()
+  if (normalized.mappaId === SECRET_LOCATION_ID) return posizioneMappaPrincipale(SECRET_LOCATION_ORIGIN)
   if (normalized.mappaId !== 'mappa-principale') return normalized
   return posizioneMappaPrincipale(normalized.luogo ?? MAIN_MAP_START_NODE)
 }
@@ -249,6 +261,18 @@ function normalizePosizioniLocali(saved: PosizioniMappeLocali | undefined): Posi
     if (map) positions[luogo] = getLocalMapNode(map, typeof nodeId === 'string' ? nodeId : undefined).id
   }
   return positions
+}
+
+function puoAccedereAlLuogoSegreto(state: GameState, giocatoreId: 1 | 2): boolean {
+  return canAccessSecretLocation(
+    state[giocatoreId === 1 ? 'giocatore1' : 'giocatore2'],
+    state[giocatoreId === 1 ? 'posizione1' : 'posizione2'],
+  )
+}
+
+function navigazioneSegretaConsentita(state: GameState, scena: NavigazioneScena): boolean {
+  return scena.payload?.luogo !== SECRET_LOCATION_ID
+    || (scena.scena === 'percorso' && puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo))
 }
 
 /**
@@ -287,7 +311,7 @@ export const useGameStore = create<GameState>()(
       audioMuted: false,
 
       vaiAScena: (scena, payload) =>
-        set((s) => ({
+        set((s) => !navigazioneSegretaConsentita(s, { scena, payload }) ? s : ({
           scenaPrecedente: s.scenaCorrente,
           scenaCorrente: { scena, payload },
         })),
@@ -295,6 +319,7 @@ export const useGameStore = create<GameState>()(
       scenaIndietro: () =>
         set((s) =>
           s.scenaPrecedente
+            && navigazioneSegretaConsentita(s, s.scenaPrecedente)
             ? { scenaCorrente: s.scenaPrecedente, scenaPrecedente: null }
             : s
         ),
@@ -398,6 +423,7 @@ export const useGameStore = create<GameState>()(
 
       segnaCespuglioVisitato: (giocatoreId, luogo, cespuglio) =>
         set((s) => {
+          if (luogo === SECRET_LOCATION_ID && (s.giocatoreAttivo !== giocatoreId || !puoAccedereAlLuogoSegreto(s, giocatoreId))) return s
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
           const g = s[chiaveG]
           const nuovo = new Set(g.cespugliVisitati)
@@ -453,6 +479,8 @@ export const useGameStore = create<GameState>()(
         if (!allenatore || allenatore.squadra.length === 0) return false
 
         const state = get()
+        if ((luogoRitorno === SECRET_LOCATION_ID || allenatore.luogo === SECRET_LOCATION_ID)
+          && (!puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo) || allenatore.luogo !== luogoRitorno)) return false
         const giocatore =
           state.giocatoreAttivo === 1 ? state.giocatore1 : state.giocatore2
         if (giocatore.squadra.length === 0) return false
@@ -568,7 +596,11 @@ export const useGameStore = create<GameState>()(
       // Porting di: AssegnaRivaleEVaiAllaMappa da old_files/Mod_Game_Events.txt
       assegnaRivaleStarter: (specieId) => set({ rivaleStarterId: specieId }),
 
-      iniziaBattaglia: (battaglia) => set({ battaglia }),
+      iniziaBattaglia: (battaglia) => {
+        const state = get()
+        if (battaglia.luogoRitorno === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo)) return
+        set({ battaglia })
+      },
 
       aggiornaBattaglia: (patch) =>
         set((s) => (s.battaglia ? { battaglia: { ...s.battaglia, ...patch } } : s)),
@@ -616,6 +648,7 @@ export const useGameStore = create<GameState>()(
         const state = get()
         const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
         const da = state[chiavePos]
+        if (mappa.id === SECRET_LOCATION_ID || nuovaPos.luogo === SECRET_LOCATION_ID || isSecretLocationPosition(da)) return false
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
         if (state.turnoOverworld.azioniRimaste <= 0) return false
         if (nuovaPos.mappaId !== mappa.id) return false
@@ -639,6 +672,7 @@ export const useGameStore = create<GameState>()(
         }
         if (state.turnoOverworld.azioniRimaste <= 0) return { tipo: 'no-op' }
         const posizione = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        if (mappa.id === SECRET_LOCATION_ID || isSecretLocationPosition(posizione)) return { tipo: 'no-op' }
         if (posizione.mappaId !== mappa.id || Math.abs(posizione.x - x) + Math.abs(posizione.y - y) !== 1) {
           return { tipo: 'no-op' }
         }
@@ -659,6 +693,7 @@ export const useGameStore = create<GameState>()(
           }
         )
         if (r.tipo === 'no-op') return r
+        if (r.tipo === 'transizione-mappa' && r.versoMappaId === SECRET_LOCATION_ID) return { tipo: 'no-op' }
 
         // Marca la casella come consumata se è un tipo "esauribile".
         // Edifici e uscite restano sempre interagibili.
@@ -707,7 +742,13 @@ export const useGameStore = create<GameState>()(
 
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
         if (state.turnoOverworld.azioniRimaste <= 0) return false
-        if (!areMainMapNodesConnected(luogoCorrente, luogoDestinazione)) return false
+        if (luogoCorrente === SECRET_LOCATION_ID || luogoDestinazione === SECRET_LOCATION_ID) {
+          const giocatore = state[giocatoreId === 1 ? 'giocatore1' : 'giocatore2']
+          if (state.battaglia || state.giocatoreAttivo !== giocatoreId
+            || posizione.mappaId !== 'mappa-principale'
+            || !hasUnlockedSecretLocation(giocatore)
+            || !isSecretLocationConnection(luogoCorrente, luogoDestinazione)) return false
+        } else if (!areMainMapNodesConnected(luogoCorrente, luogoDestinazione)) return false
 
         set({
           [chiavePos]: posizioneMappaPrincipale(luogoDestinazione),
@@ -720,6 +761,18 @@ export const useGameStore = create<GameState>()(
         return true
       },
 
+      attraversaPassaggioSegreto: (giocatoreId) => {
+        const state = get()
+        const posizione = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        if (posizione.mappaId !== 'mappa-principale'
+          || (posizione.luogo !== SECRET_LOCATION_ORIGIN && posizione.luogo !== SECRET_LOCATION_ID)) return false
+        const destinazione = posizione.luogo === SECRET_LOCATION_ORIGIN ? SECRET_LOCATION_ID : SECRET_LOCATION_ORIGIN
+        if (!state.muoviAvatarMappaPrincipale(giocatoreId, destinazione)) return false
+        get().inizializzaPosizioneLocale(giocatoreId, destinazione)
+        get().vaiAScena(destinazione === SECRET_LOCATION_ID ? 'percorso' : 'citta', { luogo: destinazione })
+        return true
+      },
+
       interagisciLuogoMappaPrincipale: (giocatoreId) => {
         const state = get()
         const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
@@ -729,6 +782,7 @@ export const useGameStore = create<GameState>()(
         if (posizione.mappaId !== 'mappa-principale') return { tipo: 'no-op' }
 
         const luogo = luogoMappaPrincipale(posizione)
+        if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return { tipo: 'no-op' }
         set({
           [chiavePos]: posizioneMappaPrincipale(luogo),
           giocatoreAttivo: giocatoreId,
@@ -742,6 +796,7 @@ export const useGameStore = create<GameState>()(
         const state = get()
         const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
         const map = getLocalMap(luogo)
+        if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return null
         if (!map || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
           return null
         }
@@ -756,6 +811,7 @@ export const useGameStore = create<GameState>()(
       apriMappaLocale: (giocatoreId, luogo) => {
         const state = get()
         if (state.battaglia || state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
+        if (luogo === SECRET_LOCATION_ID && state.giocatoreAttivo !== giocatoreId) return false
         if (state.inizializzaPosizioneLocale(giocatoreId, luogo) === null) return false
         set({ giocatoreAttivo: giocatoreId })
         return true
@@ -766,6 +822,7 @@ export const useGameStore = create<GameState>()(
         const map = getLocalMap(luogo)
         const positionKey = giocatoreId === 1 ? 'posizioniLocali1' : 'posizioniLocali2'
         const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return false
         if (!map || state.battaglia || state.giocatoreAttivo !== giocatoreId
           || state.turnoOverworld.giocatoreAttivo !== giocatoreId || state.turnoOverworld.azioniRimaste <= 0
           || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
@@ -783,6 +840,7 @@ export const useGameStore = create<GameState>()(
       consumaInterazioneMappaLocale: (giocatoreId, luogo) => {
         const state = get()
         const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
+        if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return false
         if (state.battaglia || !getLocalMap(luogo) || state.giocatoreAttivo !== giocatoreId
           || state.turnoOverworld.giocatoreAttivo !== giocatoreId || state.turnoOverworld.azioniRimaste <= 0
           || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
@@ -851,7 +909,7 @@ export const useGameStore = create<GameState>()(
             caselleConsumate: new Set(g.caselleConsumate ?? []),
           }
         }
-        return {
+        const restored: GameState = {
           ...current,
           ...p,
           giocatore1: ripristinaGiocatore(p.giocatore1, current.giocatore1),
@@ -863,6 +921,27 @@ export const useGameStore = create<GameState>()(
           posizioniLocali2: normalizePosizioniLocali(p.posizioniLocali2),
           audioMuted: p.audioMuted ?? current.audioMuted,
         }
+        // Old or invalid saves cannot reveal the hidden location before that
+        // individual player completes the real gym roster. Preserve all local
+        // point saves and the action budget; only reject unauthorized presence.
+        if (isSecretLocationPosition(restored.posizione1) && !hasUnlockedSecretLocation(restored.giocatore1)) {
+          restored.posizione1 = posizioneMappaPrincipale(SECRET_LOCATION_ORIGIN)
+        }
+        if (isSecretLocationPosition(restored.posizione2) && !hasUnlockedSecretLocation(restored.giocatore2)) {
+          restored.posizione2 = posizioneMappaPrincipale(SECRET_LOCATION_ORIGIN)
+        }
+        if (!navigazioneSegretaConsentita(restored, restored.scenaCorrente)) {
+          restored.scenaCorrente = { scena: 'mappa-principale' }
+        }
+        if (restored.scenaPrecedente && !navigazioneSegretaConsentita(restored, restored.scenaPrecedente)) {
+          restored.scenaPrecedente = null
+        }
+        if (restored.battaglia?.luogoRitorno === SECRET_LOCATION_ID
+          && !puoAccedereAlLuogoSegreto(restored, restored.giocatoreAttivo)) {
+          restored.battaglia = null
+          if (restored.scenaCorrente.scena === 'battaglia') restored.scenaCorrente = { scena: 'mappa-principale' }
+        }
+        return restored
       },
     }
   )

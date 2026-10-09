@@ -1,6 +1,6 @@
 # Mappe locali di città e percorsi
 
-Le immagini originali in `public/maps` restano gli sfondi delle mappe: strade e pallini non vengono ridisegnati. Una rete di punti e collegamenti sovrapposta al PNG permette ai personaggi di camminare lungo le strade, comprese curve e ponti. Le coordinate sono percentuali riferite all'immagine intera, che viene mostrata senza ritagli o deformazioni.
+Le immagini originali in `public/maps` restano gli sfondi delle mappe. Una rete di punti e collegamenti sovrapposta al PNG permette ai personaggi di camminare lungo le strade, comprese curve e ponti. Un pallino aggiunto nel riferimento viene disegnato dal componente solo quando manca nell'immagine originale, come il Punto 32 di Cagliari. Le coordinate sono percentuali riferite all'immagine intera, che viene mostrata senza ritagli o deformazioni.
 
 ## Movimento e turni
 
@@ -14,11 +14,78 @@ Il budget è unico fra mappa principale e locale: se un giocatore si sposta da V
 
 I pallini sono numerati per ciascuna mappa e hanno identificatori stabili come `n1`, `n2`. Gli effetti dei punti sono ancora da definire: raggiungere un pallino non avvia automaticamente battaglie, cure o ricompense. Ispezionare il punto corrente mostra «Interazione da definire» senza consumare azioni.
 
-Due pallini si trovano sopra strutture senza un accesso disegnato: il punto16 di Cagliari e il punto1 di Foggia. Restano registrati e potranno ricevere un'interazione, ma non hanno una strada di movimento: collegarli adesso richiederebbe attraversare gli edifici.
+### Venezia: riferimento dell'8 ottobre 2026
+
+La numerazione e la rete di Venezia seguono la foto «Interazioni Venezia.png» fornita dall'utente: **57 punti e 62 collegamenti bidirezionali**. I numeri della foto servono come riferimento per identificare i punti nei dati e nei comandi di movimento; non sono disegnati sopra i pallini, secondo la precisazione dell'utente. La città conserva la sua immagine originale a colori.
+
+Sono state eliminate le sei strade assenti nel riferimento: **19–23, 33–34, 34–54, 41–57, 42–51 e 44–46**. Ad esempio, dal punto 42 si raggiungono solo 41, 43 e 57; dal 44 solo 43 e 45. La numerazione di riferimento è indipendente dall'ID interno: tutti gli ID e i centri dei pallini originali restano stabili, quindi i vecchi salvataggi mantengono ciascun personaggio nello stesso punto fisico. L'ingresso resta `n56`, ora etichettato **Punto 29**.
+
+La visita conserva le due azioni condivise con la mappa principale: due movimenti, oppure un movimento e un'interazione. I punti restano generici in attesa delle attività da associare.
+
+Le curve dei percorsi 48–49, 46–48, 11–14, 30–32 e 16–21 sono state riallineate al tracciato della foto, eliminando i piccoli gomiti e tagli presenti nelle coordinate precedenti. Il movimento animato percorre questi vertici negli stessi due sensi.
+
+### Cagliari e Foggia: riferimenti dell'8 ottobre 2026
+
+Le foto «Interazioni Cagliari.png» e «Interazioni Foggia.png» definiscono numerazione e percorsi: **Cagliari ha 41 punti e 44 collegamenti**, **Foggia 59 punti e 77 collegamenti**. I numeri restano nei dati e nei comandi di movimento, senza comparire sui pallini. Tutti i 99 ID precedenti, le loro coordinate e i punti d'ingresso sono conservati per mantenere le posizioni salvate di entrambi i giocatori.
+
+Il nuovo **Punto 32 di Cagliari**, fra 31 e 33, usa l'ID `n41` e un pallino disegnato nel componente, poiché manca nel PNG originale. Le foto collegano anche i punti prima isolati: `Cagliari/n16`, ora Punto 20, tramite 19–20–21; `Foggia/n1`, ora Punto 37, tramite 36–37. Entrambe le reti sono interamente percorribili.
+
+A Cagliari vengono rimosse le strade 10–23 e 23–33 e aggiunte 8–9, 19–20, 20–21, 21–22, 31–32 e 32–33. A Foggia vengono rimosse 17–35 e 46–47 e aggiunte 4–24, 14–15, 16–35, 19–20, 26–28, 27–50, 36–37, 47–50, 48–49 e 51–52. Le curve di tutte le strade seguono le tracce delle foto in entrambi i sensi.
+
+I raccordi a T privi di pallino, fra **12/21/22 a Cagliari** e **25/26/28 a Foggia**, permettono di andare da ciascun pallino agli altri due seguendo il raccordo, senza aggiungere una sosta. Ogni collegamento costa un movimento; il budget rimane due movimenti oppure un movimento e un'interazione.
 
 I cespugli, gli allenatori e il Centro Pokémon già giocabili restano nel pannello «Attività». Avviare un'attività disponibile conclude il turno; il giocatore corrente resta in controllo per completare la battaglia o la cura, poi il passaggio attiva il prossimo giocatore già accodato. Queste attività non sono ancora associate a specifici pallini del disegno.
 
 I pulsanti «Vai a Punto…» duplicano i collegamenti disponibili per rendere il movimento accessibile anche su schermi piccoli. I punti sono utilizzabili anche tramite Tab e Invio. Le animazioni seguono i vertici della strada in entrambe le direzioni; due movimenti rapidi vengono mostrati in sequenza. Le preferenze di movimento ridotto vengono rispettate.
+
+### Milano, Napoli, Palermo, Piacenza, Reggio Calabria e Roma
+
+Le altre sei foto fornite l'8 ottobre 2026 definiscono **303 punti e 358 collegamenti**:
+
+| Città | Punti | Collegamenti bidirezionali |
+| --- | ---: | ---: |
+| Milano | 56 | 69 |
+| Napoli | 40 | 44 |
+| Palermo | 55 | 62 |
+| Piacenza | 56 | 67 |
+| Reggio Calabria | 46 | 59 |
+| Roma | 50 | 57 |
+
+Tutti i 300 ID precedenti, le coordinate e gli ingressi fisici rimangono invariati. Le curve seguono le tracce delle foto in entrambi i sensi; i pallini restano senza numeri visibili. I numeri servono alle etichette e ai comandi accessibili.
+
+La foto di Napoli ripeteva il numero 11: su conferma dell'utente, il punto sul ramo alto fra 9 e 2 diventa **Punto 40** (`n8`), mentre quello davanti alla fontana resta **Punto 11** (`n15`). A Reggio Calabria il riferimento salta il 23: non viene creato un punto dove la foto non ne indica uno.
+
+Tre punti del riferimento mancano negli sfondi originali e ricevono un pallino nel componente: **Milano/Punto 28** (`n56`, fra 25, 27 e 29), **Reggio Calabria/Punto 21** (`n45`, fra 22 e 19) e **Reggio Calabria/Punto 26** (`n46`, fra 25 e 18). Gli sfondi a colori restano intatti e le strade che saltavano questi punti vengono sostituite dai rispettivi segmenti.
+
+I raccordi senza pallino **11/17/48 a Milano** e **4/6/8 a Reggio Calabria** collegano ciascuna coppia di terminali attraverso lo stesso vertice, senza introdurre una sosta. A Reggio Calabria il breve incontro delle linee vicino al 19 fa parte di quel pallino: andare da 20 a 21 richiede passare dal 19.
+
+La verifica conserva due movimenti oppure un movimento e un'interazione e le posizioni indipendenti dei personaggi, anche dopo ricaricamento. Le attività dei singoli pallini rimangono da definire.
+
+### Torino e i percorsi: riferimenti del 9 ottobre 2026
+
+Le sette nuove foto definiscono **311 punti e 381 collegamenti**. Tutti i 309 ID precedenti, i centri e gli ingressi restano invariati. Torino aggiunge i soli nuovi pallini **13** (`n50`) e **47** (`n51`), disegnati dal componente senza cifre; tutti i PNG originali rimangono intatti.
+
+| Mappa | Punti | Collegamenti bidirezionali |
+| --- | ---: | ---: |
+| Torino | 51 | 61 |
+| Percorso 1 | 50 | 63 |
+| Percorso 2 | 43 | 58 |
+| Percorso 4 | 47 | 52 |
+| Percorso 13 | 36 | 48 |
+| Percorso 14 | 48 | 59 |
+| Percorso 15 | 36 | 40 |
+
+Le curve seguono la fucsia e non attraversano altri pallini. I raccordi senza punto di sosta collegano tutte le coppie incidenti attraverso lo stesso vertice: **Torino 19/28/48**, **Percorso 2 11/12/23**, e nel **Percorso 14 1/2/3, 15/16/17, 24/26/30, 30/31/33**. A Torino gli incontri delle strade presso 19, 32 e 45 appartengono ai pallini stessi: non si aggiungono scorciatoie 18–20, 33–45 o 44–47.
+
+Nel Percorso 15, su conferma dell'utente, il collegamento **35–36** percorre la strada grigia esistente anche se la foto non la evidenzia in fucsia. Questa sola eccezione conserva i vertici precedenti della passerella; tutte le altre 39 strade sono confrontate con la traccia fucsia.
+
+### Percorso 15: accesso segreto dopo i capipalestra
+
+Il Percorso 15 è un luogo segreto raggiungibile da **Roma** dopo aver sconfitto **tutti gli otto capipalestra**, incluso quello di Roma. Lo sblocco è personale: le vittorie di G1 non aprono il passaggio per G2. Prima dello sblocco il pulsante non compare e lo store rifiuta entrata, apertura diretta, movimento e attività nel luogo.
+
+«Passaggio segreto» da Roma e «Torna a Roma» dal Percorso 15 sono movimenti e consumano **un'azione** del budget condiviso. La visita conserva le posizioni locali dei due giocatori e non ripristina azioni cambiando vista o ricaricando. «Passaggio di ritorno» apre una schermata da cui riaprire la visita, passare il turno oppure tornare a Roma con un movimento, senza aggiungere un segnalino o coordinate nella mappa principale.
+
+Nel luogo segreto non vengono inventati incontri, NPC o ricompense: le sue interazioni saranno definite dall'utente in seguito. Il salvataggio conserva gli accessi legittimi; una posizione segreta non sbloccata viene riportata a Roma senza azioni aggiuntive.
 
 ## Dati e salvataggi
 
@@ -26,4 +93,4 @@ I pulsanti «Vai a Punto…» duplicano i collegamenti disponibili per rendere i
 
 Lo store conserva `posizioniLocali1` e `posizioniLocali2`, indicizzate per luogo. Queste posizioni non sostituiscono il nodo dei personaggi sulla mappa principale. I vecchi salvataggi vengono accettati senza posizioni locali; un riferimento non valido torna al punto d'ingresso della mappa.
 
-`Reggio-Calabria.png` corrisponde al luogo di gioco `ReggioCalabria`. `Percorso_15.png` è registrato come mappa locale, ma il mondo attuale non contiene ancora un nodo Percorso15 o una strada per raggiungerlo: occorre definire dove collegarlo prima che possa essere raggiunto nella partita normale. I luoghi senza una delle nuove immagini conservano la schermata preesistente.
+`Reggio-Calabria.png` corrisponde al luogo di gioco `ReggioCalabria`. `Percorso_15.png` usa il passaggio segreto da Roma descritto sopra, senza aggiungere un nodo visibile nella mappa principale. I luoghi senza una delle nuove immagini conservano la schermata preesistente.

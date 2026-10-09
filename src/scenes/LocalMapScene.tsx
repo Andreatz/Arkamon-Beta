@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LocalMapBoard, type LocalMapPlayer } from '@/components/map/LocalMapBoard'
 import { getLocalMap, type LocalMapDefinition } from '@/data/localMaps'
+import { SECRET_LOCATION_ID, SECRET_LOCATION_ORIGIN, canAccessSecretLocation, hasUnlockedSecretLocation } from '@/data/secretLocation'
 import { getAdjacentLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
 import { useGameStore } from '@/store/gameStore'
 import { useSceneInputBlocked } from '@/components/transitions/SceneNavigationContext'
@@ -47,22 +48,25 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const move = useGameStore((s) => s.muoviAvatarMappaLocale)
   const pass = useGameStore((s) => s.passaTurnoMappaLocale)
   const navigate = useGameStore((s) => s.vaiAScena)
+  const crossSecretPassage = useGameStore((s) => s.attraversaPassaggioSegreto)
   const blocked = useSceneInputBlocked()
   const [activitiesOpen, setActivitiesOpen] = useState(false)
   const closeActivities = useCallback(() => setActivitiesOpen(false), [])
   const [selected, setSelected] = useState<string | null>(null)
   const samePlace = (world: typeof world1) => world.mappaId === 'mappa-principale' && world.luogo === map.id
+  const allowedPlayer = (world: typeof world1, player: typeof player1) => samePlace(world)
+    && (map.id !== SECRET_LOCATION_ID || canAccessSecretLocation(player, world))
 
   useEffect(() => {
-    if (samePlace(world1)) initialize(1, map.id)
-    if (samePlace(world2)) initialize(2, map.id)
+    if (allowedPlayer(world1, player1)) initialize(1, map.id)
+    if (allowedPlayer(world2, player2)) initialize(2, map.id)
     setSelected(null)
     setActivitiesOpen(false)
   }, [map.id, world1.luogo, world1.mappaId, world2.luogo, world2.mappaId, initialize, actor])
 
   const players: LocalMapPlayer[] = []
-  if (samePlace(world1)) players.push({ id: 1, name: player1.nome, nodeId: getLocalMapNode(map, positions1[map.id]).id })
-  if (samePlace(world2)) players.push({ id: 2, name: player2.nome, nodeId: getLocalMapNode(map, positions2[map.id]).id })
+  if (allowedPlayer(world1, player1)) players.push({ id: 1, name: player1.nome, nodeId: getLocalMapNode(map, positions1[map.id]).id })
+  if (allowedPlayer(world2, player2)) players.push({ id: 2, name: player2.nome, nodeId: getLocalMapNode(map, positions2[map.id]).id })
   const current = players.find((p) => p.id === actor)
   const remaining = turn.giocatoreAttivo === actor ? turn.azioniRimaste : 0
   const canMove = !!current && remaining > 0 && !blocked
@@ -70,6 +74,10 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const currentNode = current ? getLocalMapNode(map, current.nodeId) : null
   const nodeLabel = (id: string) => getLocalMapNode(map, id).label ?? id
   const player = actor === 1 ? player1 : player2
+  const actorWorld = actor === 1 ? world1 : world2
+  const secret = map.id === SECRET_LOCATION_ID
+  const secretAccess = canAccessSecretLocation(player, actorWorld)
+  const secretPassageVisible = map.id === SECRET_LOCATION_ORIGIN && !!current && hasUnlockedSecretLocation(player)
   const moveTo = (id: string) => {
     if (!canMove) return false
     const moved = move(actor, map.id, id)
@@ -86,12 +94,21 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     } else navigate('mappa-principale')
   }
 
+  if (secret && !secretAccess) return <section className="local-map-scene" aria-label="Luogo non disponibile">
+    <p>Questo luogo non è disponibile per il giocatore attivo.</p>
+    <button className="arka-button-secondary" onClick={() => navigate('mappa-principale')}>Mappa principale</button>
+  </section>
+
   return <section className="local-map-scene" aria-label={`Esplorazione ${map.id.replace(/_/g, ' ')}`}>
     <header className="local-map-toolbar">
-      <button className="arka-button-secondary" disabled={blocked} onClick={() => navigate('mappa-principale')}>← Mappa principale</button>
+      <button className="arka-button-secondary" disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</button>
       <div className="local-map-heading"><h1>{map.id.replace(/_/g, ' ')}</h1><span>G{actor} · {player.nome}</span></div>
       <span className="local-map-budget" role="status">{remaining} {remaining === 1 ? 'azione' : 'azioni'}</span>
       <button className="arka-button-secondary" disabled={blocked} onClick={() => setActivitiesOpen(true)}>Attività</button>
+      {(secretPassageVisible || secret) && <button className="arka-button-secondary"
+        disabled={!canMove || activitiesOpen} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
+        {secret ? 'Torna a Roma' : 'Passaggio segreto'} · 1 movimento
+      </button>}
       <button className="arka-button" disabled={blocked} onClick={passTurn}>Passa turno</button>
     </header>
     <div className="local-map-play-area">
