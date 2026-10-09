@@ -61,10 +61,36 @@ I raccordi senza pallino **11/17/48 a Milano** e **4/6/8 a Reggio Calabria** col
 
 La verifica conserva due movimenti oppure un movimento e un'interazione e le posizioni indipendenti dei personaggi, anche dopo ricaricamento. Le attività dei singoli pallini rimangono da definire.
 
+### Torino e i percorsi: riferimenti del 9 ottobre 2026
+
+Le sette nuove foto definiscono **311 punti e 381 collegamenti**. Tutti i 309 ID precedenti, i centri e gli ingressi restano invariati. Torino aggiunge i soli nuovi pallini **13** (`n50`) e **47** (`n51`), disegnati dal componente senza cifre; tutti i PNG originali rimangono intatti.
+
+| Mappa | Punti | Collegamenti bidirezionali |
+| --- | ---: | ---: |
+| Torino | 51 | 61 |
+| Percorso 1 | 50 | 63 |
+| Percorso 2 | 43 | 58 |
+| Percorso 4 | 47 | 52 |
+| Percorso 13 | 36 | 48 |
+| Percorso 14 | 48 | 59 |
+| Percorso 15 | 36 | 40 |
+
+Le curve seguono la fucsia e non attraversano altri pallini. I raccordi senza punto di sosta collegano tutte le coppie incidenti attraverso lo stesso vertice: **Torino 19/28/48**, **Percorso 2 11/12/23**, e nel **Percorso 14 1/2/3, 15/16/17, 24/26/30, 30/31/33**. A Torino gli incontri delle strade presso 19, 32 e 45 appartengono ai pallini stessi: non si aggiungono scorciatoie 18–20, 33–45 o 44–47.
+
+Nel Percorso 15, su conferma dell'utente, il collegamento **35–36** percorre la strada grigia esistente anche se la foto non la evidenzia in fucsia. Questa sola eccezione conserva i vertici precedenti della passerella; tutte le altre 39 strade sono confrontate con la traccia fucsia.
+
+### Percorso 15: accesso segreto dopo i capipalestra
+
+Il Percorso 15 è un luogo segreto raggiungibile da **Roma** dopo aver sconfitto **tutti gli otto capipalestra**, incluso quello di Roma. Lo sblocco è personale: le vittorie di G1 non aprono il passaggio per G2. Prima dello sblocco il pulsante non compare e lo store rifiuta entrata, apertura diretta, movimento e attività nel luogo.
+
+«Passaggio segreto» da Roma e «Torna a Roma» dal Percorso 15 sono movimenti e consumano **un'azione** del budget condiviso. La visita conserva le posizioni locali dei due giocatori e non ripristina azioni cambiando vista o ricaricando. «Passaggio di ritorno» apre una schermata da cui riaprire la visita, passare il turno oppure tornare a Roma con un movimento, senza aggiungere un segnalino o coordinate nella mappa principale.
+
+Nel luogo segreto non vengono inventati incontri, NPC o ricompense: le sue interazioni saranno definite dall'utente in seguito. Il salvataggio conserva gli accessi legittimi; una posizione segreta non sbloccata viene riportata a Roma senza azioni aggiuntive.
+
 ## Dati e salvataggi
 
 `src/data/localMaps.ts` contiene immagini, centri dei pallini, ingresso e collegamenti. Le strade includono solo i vertici intermedi: gli estremi sono i nodi. `src/engine/localMapMovement.ts` calcola adiacenze e percorsi senza dipendere dalla UI.
 
 Lo store conserva `posizioniLocali1` e `posizioniLocali2`, indicizzate per luogo. Queste posizioni non sostituiscono il nodo dei personaggi sulla mappa principale. I vecchi salvataggi vengono accettati senza posizioni locali; un riferimento non valido torna al punto d'ingresso della mappa.
 
-`Reggio-Calabria.png` corrisponde al luogo di gioco `ReggioCalabria`. `Percorso_15.png` è registrato come mappa locale, ma il mondo attuale non contiene ancora un nodo Percorso15 o una strada per raggiungerlo: occorre definire dove collegarlo prima che possa essere raggiunto nella partita normale. I luoghi senza una delle nuove immagini conservano la schermata preesistente.
+`Reggio-Calabria.png` corrisponde al luogo di gioco `ReggioCalabria`. `Percorso_15.png` usa il passaggio segreto da Roma descritto sopra, senza aggiungere un nodo visibile nella mappa principale. I luoghi senza una delle nuove immagini conservano la schermata preesistente.

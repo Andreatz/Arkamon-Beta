@@ -101,11 +101,11 @@ describe('LocalMapBoard - numerazione interna senza testo sui pallini', () => {
     }
   })
 
-  it('disegna solo i quattro pallini aggiunti nelle foto, senza numeri o altri marcatori', () => {
+  it('disegna solo i sei pallini aggiunti nelle foto, senza numeri o altri marcatori', () => {
     for (const map of Object.values(LOCAL_MAPS)) {
       const buttons = nodeButtons(renderMap(map))
       const markers = buttons.filter((button) => button.body.includes('class="local-map-node-marker"'))
-      const expected: Record<string, string[]> = { Cagliari: ['n41'], Milano: ['n56'], ReggioCalabria: ['n45', 'n46'] }
+      const expected: Record<string, string[]> = { Cagliari: ['n41'], Milano: ['n56'], ReggioCalabria: ['n45', 'n46'], Torino: ['n50', 'n51'] }
       expect(markers.map((button) => button.id), map.id).toEqual(expected[map.id] ?? [])
       for (const marker of markers) {
         expect(marker.body).toContain('class="local-map-node-marker" aria-hidden="true"')

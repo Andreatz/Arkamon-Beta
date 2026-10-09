@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { LOCAL_MAPS, getLocalMap, type LocalMapPoint } from '../localMaps'
 import sixCityReferences from './fixtures/sixCityReferences.json'
+import routeTorinoReferences from './fixtures/routeTorinoReferences.json'
 
 const imageDirectory = fileURLToPath(new URL('../../../public/maps/', import.meta.url))
 const mapDefinitions = Object.values(LOCAL_MAPS)
@@ -35,7 +36,7 @@ describe('mappe locali disegnate', () => {
       Cagliari: 41, Foggia: 59, Milano: 56, Napoli: 40, Palermo: 55,
       Percorso_1: 50, Percorso_13: 36, Percorso_14: 48, Percorso_15: 36,
       Percorso_2: 43, Percorso_4: 47, Piacenza: 56, ReggioCalabria: 46,
-      Roma: 50, Torino: 49, Venezia: 57,
+      Roma: 50, Torino: 51, Venezia: 57,
     })
   })
 
@@ -48,8 +49,8 @@ describe('mappe locali disegnate', () => {
         expect(node).toMatchObject({ x: 72.267, y: 62.719, label: 'Punto 32', drawMarker: true })
         continue
       }
-      const photoAdded = sixCityReferences.find((reference) => reference.city === map.id)?.nodes
-        .find((expected) => expected.id === node.id && expected.drawMarker)
+      const photoAdded = [...sixCityReferences, ...routeTorinoReferences].find((reference) => reference.city === map.id)?.nodes
+        .find((expected) => expected.id === node.id && 'drawMarker' in expected && expected.drawMarker === true)
       if (photoAdded) {
         expect(node).toEqual(photoAdded)
         continue

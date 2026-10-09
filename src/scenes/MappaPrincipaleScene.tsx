@@ -2,6 +2,7 @@ import { useGameStore } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
 import { MAPPE } from '@data/index'
 import { getLocalMap } from '@/data/localMaps'
+import { SECRET_LOCATION_ID, canAccessSecretLocation, isSecretLocationPosition } from '@/data/secretLocation'
 import {
   MAIN_MAP_START_NODE,
   MAIN_MAP_ROAD_CONNECTIONS,
@@ -230,6 +231,7 @@ export function MappaPrincipaleScene() {
   const posizione2 = useGameStore((s) => s.posizione2)
   const passaTurnoOverworld = useGameStore((s) => s.passaTurnoOverworld)
   const muoviAvatarMappaPrincipale = useGameStore((s) => s.muoviAvatarMappaPrincipale)
+  const attraversaPassaggioSegreto = useGameStore((s) => s.attraversaPassaggioSegreto)
   const interagisciLuogoMappaPrincipale = useGameStore(
     (s) => s.interagisciLuogoMappaPrincipale
   )
@@ -248,6 +250,7 @@ export function MappaPrincipaleScene() {
 
   const giocatoreAttivo = turnoOverworld.giocatoreAttivo
   const activeNodeName = getMainMapNodeName(giocatoreAttivo === 1 ? posizione1 : posizione2)
+  const activePosition = giocatoreAttivo === 1 ? posizione1 : posizione2
   const player1NodeName = getMainMapNodeName(posizione1)
   const player2NodeName = getMainMapNodeName(posizione2)
   const reachableNodeNames = getAdjacentMainMapNodes(activeNodeName)
@@ -488,6 +491,21 @@ export function MappaPrincipaleScene() {
 
     return [{ key, points, controlPoints, d: roadPath(points) }]
   })
+
+  if (isSecretLocationPosition(activePosition)) return <section className="local-map-scene" aria-label="Passaggio di ritorno">
+    <header className="local-map-toolbar">
+      <div className="local-map-heading"><h1>{canAccessSecretLocation(giocatore, activePosition) ? 'Percorso 15' : 'Luogo non disponibile'}</h1><span>G{giocatoreAttivo} · {giocatore.nome}</span></div>
+      <span className="local-map-budget" role="status">{turnoOverworld.azioniRimaste} azioni</span>
+      {canAccessSecretLocation(giocatore, activePosition) && <>
+        <button className="arka-button-secondary" onClick={() => {
+          if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, SECRET_LOCATION_ID)) vaiAScena('percorso', { luogo: SECRET_LOCATION_ID })
+        }}>Riapri Percorso 15</button>
+        <button className="arka-button" disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>Torna a Roma · 1 movimento</button>
+      </>}
+      <button className="arka-button-secondary" onClick={passaTurnoOverworld}>Passa turno</button>
+    </header>
+    <p>Il passaggio conduce a Roma. Tornare alla città consuma un movimento.</p>
+  </section>
 
   return (
     <div
@@ -730,20 +748,20 @@ export function MappaPrincipaleScene() {
         </button>
       </AdminLayoutItem>
 
-      <MainMapAvatar
+      {player1NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
         playerId={1}
         nodeName={player1NodeName}
         sameNode={player1NodeName === player2NodeName}
         active={giocatoreAttivo === 1}
         getPosition={(name) => nodePositions[name] ?? COORDS[name]}
-      />
-      <MainMapAvatar
+      />}
+      {player2NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
         playerId={2}
         nodeName={player2NodeName}
         sameNode={player1NodeName === player2NodeName}
         active={giocatoreAttivo === 2}
         getPosition={(name) => nodePositions[name] ?? COORDS[name]}
-      />
+      />}
 
       {MAPPE.map((luogo) => {
         const coord = COORDS[luogo.nome]
