@@ -8,6 +8,10 @@
  */
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { emptyPlayer as giocatoreVuoto, mainMapPosition, normalizeGameSave, serializeGameState, GAME_SAVE_STORAGE_KEY, type GameSaveState } from '@/save/gamePersistence'
+import { emptyInteractionProgress } from '@/interactions/types'
+import { useInteractionStore } from '@/interactions/interactionStore'
+import { finalizeConfiguredBattle, resolveConfiguredInteraction } from '@/interactions/runtime'
 import type {
   StatoGiocatore,
   StatoBattaglia,
@@ -32,7 +36,6 @@ import { getPokemon, getAllenatore } from '@data/index'
 import {
   MAIN_MAP_START_NODE,
   areMainMapNodesConnected,
-  getAdjacentMainMapNodes,
 } from '@data/mainMapRoads'
 import { scambia, type SlotRef } from '@engine/deposito'
 import { getLocalMap } from '@data/localMaps'
@@ -54,7 +57,13 @@ import {
   type RisultatoInterazione,
 } from '@engine/movimento'
 
-interface GameState {
+export interface GameState extends GameSaveState {
+  /** Volatile scene generation. A restored/new campaign must release every old timer and local scene snapshot. */
+  campaignRevision: number
+  /** Recoveries from the last load; excluded from portable files. */
+  saveRecoveryWarnings: string[]
+  dismissSaveRecoveryWarnings: () => void
+  eseguiInterazioneConfigurata: (giocatoreId: 1 | 2, interactionId: string) => { ok: boolean; message: string }
   // === STATO GIOCATORI ===
   giocatore1: StatoGiocatore
   giocatore2: StatoGiocatore
@@ -207,163 +216,15 @@ interface GameState {
   reset: () => void
 }
 
-const giocatoreVuoto = (id: 1 | 2): StatoGiocatore => ({
-  id,
-  nome: `Giocatore ${id}`,
-  squadra: [],
-  deposito: {},
-  cespugliVisitati: new Set(),
-  allenatoriSconfitti: new Set(),
-  monete: 0,
-  // Inventario di partenza: 1 Masterball per la cattura garantita di un leggendario
-  inventario: { masterball: 1 },
-  caselleConsumate: new Set(),
-})
-
 export const STARTER_IDS = [1, 5, 9] as const
 
-/** Posizione overworld iniziale di default (Fase E). */
-const posizioneIniziale = (): PosizioneAvatar => ({
-  mappaId: 'mappa-principale',
-  x: 0,
-  y: 0,
-  direzione: 'S',
-  luogo: MAIN_MAP_START_NODE,
-})
-
-function posizioneMappaPrincipale(luogo: string): PosizioneAvatar {
-  return {
-    mappaId: 'mappa-principale',
-    x: 0,
-    y: 0,
-    direzione: 'S',
-    luogo,
-  }
-}
+const posizioneIniziale = () => mainMapPosition()
+const posizioneMappaPrincipale = mainMapPosition
 
 function luogoMappaPrincipale(posizione: PosizioneAvatar): string {
   return posizione.mappaId === 'mappa-principale'
     ? posizione.luogo ?? MAIN_MAP_START_NODE
     : MAIN_MAP_START_NODE
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return value !== null && typeof value === 'object' && !Array.isArray(value)
-}
-
-function isFiniteNumber(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value)
-}
-
-function normalizePosizioneAvatar(posizione: unknown): PosizioneAvatar {
-  if (!isRecord(posizione) || typeof posizione.mappaId !== 'string') return posizioneIniziale()
-  const normalized = posizione
-  if (normalized.mappaId === SECRET_LOCATION_ID) return posizioneMappaPrincipale(SECRET_LOCATION_ORIGIN)
-  if (normalized.mappaId !== 'mappa-principale') {
-    if (!Number.isInteger(normalized.x) || !Number.isInteger(normalized.y)
-      || !['N', 'S', 'E', 'O'].includes(normalized.direzione as string)) return posizioneIniziale()
-    return normalized as unknown as PosizioneAvatar
-  }
-  const luogo = typeof normalized.luogo === 'string' ? normalized.luogo : MAIN_MAP_START_NODE
-  return posizioneMappaPrincipale(luogo === SECRET_LOCATION_ID || getAdjacentMainMapNodes(luogo).length > 0
-    ? luogo : MAIN_MAP_START_NODE)
-}
-
-function restoreSet<T>(saved: unknown, fallback: Set<T>, valid: (value: unknown) => value is T): Set<T> {
-  if (saved === undefined) return new Set(fallback)
-  const values = saved instanceof Set ? Array.from(saved) : Array.isArray(saved) ? saved : []
-  return new Set(values.filter(valid))
-}
-
-type SavedPokemon = Omit<PokemonIstanza, 'nome' | 'xp'> & { nome?: unknown; xp?: unknown }
-
-function isSavedPokemon(value: unknown): value is SavedPokemon {
-  return isRecord(value) && typeof value.istanzaId === 'string' && value.istanzaId.length > 0
-    && isFiniteNumber(value.specieId) && !!getPokemon(value.specieId)
-    && Number.isInteger(value.livello)
-    && (value.livello as number) >= 5 && (value.livello as number) <= 100
-    && isFiniteNumber(value.hp) && value.hp >= 0
-}
-
-function restorePokemon(saved: SavedPokemon): PokemonIstanza {
-  const pokemon: PokemonIstanza = {
-    ...saved,
-    nome: typeof saved.nome === 'string' && saved.nome ? saved.nome : getPokemon(saved.specieId)!.nome,
-    xp: isFiniteNumber(saved.xp) && saved.xp >= 0 ? saved.xp : 0,
-  }
-  const stato = pokemon.stato
-  if (stato === undefined) return pokemon
-  if (isRecord(stato) && ['Paralizzato', 'Confuso', 'Addormentato', 'Avvelenato'].includes(stato.tipo as string)
-    && Number.isInteger(stato.turniRimanenti)
-    && (stato.turniTrascorsi === undefined || (Number.isInteger(stato.turniTrascorsi) && (stato.turniTrascorsi as number) >= 0))) return pokemon
-  const { stato: _stato, ...rest } = pokemon
-  return rest
-}
-
-function restorePlayer(saved: unknown, fallback: StatoGiocatore): StatoGiocatore {
-  const g = isRecord(saved) ? saved : {}
-  const squadra = Array.isArray(g.squadra) ? g.squadra.filter(isSavedPokemon).map(restorePokemon) : fallback.squadra
-  const deposito = isRecord(g.deposito)
-    ? Object.fromEntries(Object.entries(g.deposito).filter(([, pokemon]) => isSavedPokemon(pokemon))
-      .map(([slot, pokemon]) => [slot, restorePokemon(pokemon as SavedPokemon)]))
-    : fallback.deposito
-  const validString = (value: unknown): value is string => typeof value === 'string'
-  const validNumber = (value: unknown): value is number => isFiniteNumber(value) && Number.isInteger(value) && value > 0
-  return {
-    ...fallback,
-    nome: typeof g.nome === 'string' && g.nome.trim() ? g.nome : fallback.nome,
-    squadra, deposito,
-    monete: isFiniteNumber(g.monete) ? Math.max(0, g.monete) : fallback.monete,
-    cespugliVisitati: restoreSet(g.cespugliVisitati, fallback.cespugliVisitati, validString),
-    allenatoriSconfitti: restoreSet(g.allenatoriSconfitti, fallback.allenatoriSconfitti, validNumber),
-    caselleConsumate: restoreSet(g.caselleConsumate, fallback.caselleConsumate, validString),
-    inventario: isRecord(g.inventario) ? {
-      ...(isFiniteNumber(g.inventario.masterball) ? { masterball: Math.max(0, Math.floor(g.inventario.masterball)) } : {}),
-    } : fallback.inventario,
-  }
-}
-
-const SCENE_IDS: SceneId[] = ['titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso', 'citta',
-  'palestra', 'centro-pokemon', 'battaglia', 'deposito', 'squadra', 'evoluzione']
-
-function restoreNavigation(saved: unknown, fallback: NavigazioneScena | null): NavigazioneScena | null {
-  if (!isRecord(saved) || !SCENE_IDS.includes(saved.scena as SceneId)) return fallback
-  const payload = isRecord(saved.payload) ? { ...saved.payload } : undefined
-  if (payload) {
-    if (typeof payload.luogo !== 'string') delete payload.luogo
-    if (typeof payload.luogoRitorno !== 'string') delete payload.luogoRitorno
-    if (saved.scena === 'evoluzione') {
-      payload.evoluzioni = Array.isArray(payload.evoluzioni) ? payload.evoluzioni.filter((value) =>
-        isRecord(value) && typeof value.istanzaId === 'string' && isFiniteNumber(value.oldSpecieId)
-        && isFiniteNumber(value.newSpecieId) && getPokemon(value.oldSpecieId)?.evoluzioneId === value.newSpecieId) : []
-      if (payload.giocatoreId !== 1 && payload.giocatoreId !== 2) payload.giocatoreId = 1
-    }
-  }
-  return { scena: saved.scena as SceneId, ...(payload ? { payload } : {}) }
-}
-
-function restoreBattle(saved: unknown): StatoBattaglia | null {
-  if (!isRecord(saved) || !['Selvatico', 'NPC', 'PVP'].includes(saved.tipo as string)
-    || !isSavedPokemon(saved.pokemonA) || !isSavedPokemon(saved.pokemonB)
-    || !isFiniteNumber(saved.hpMaxA) || !isFiniteNumber(saved.hpMaxB)
-    || !['A', 'B'].includes(saved.turnoCorrente as string) || typeof saved.luogoRitorno !== 'string') return null
-  return {
-    ...(saved as unknown as StatoBattaglia),
-    pokemonA: restorePokemon(saved.pokemonA), pokemonB: restorePokemon(saved.pokemonB),
-    log: Array.isArray(saved.log) ? saved.log.filter((value): value is string => typeof value === 'string') : [],
-    squadraA: Array.isArray(saved.squadraA) ? saved.squadraA.filter(isSavedPokemon).map(restorePokemon) : undefined,
-    squadraB: Array.isArray(saved.squadraB) ? saved.squadraB.filter(isSavedPokemon).map(restorePokemon) : undefined,
-  }
-}
-
-function normalizePosizioniLocali(saved: PosizioniMappeLocali | undefined): PosizioniMappeLocali {
-  if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return {}
-  const positions: PosizioniMappeLocali = {}
-  for (const [luogo, nodeId] of Object.entries(saved)) {
-    const map = getLocalMap(luogo)
-    if (map) positions[luogo] = getLocalMapNode(map, typeof nodeId === 'string' ? nodeId : undefined).id
-  }
-  return positions
 }
 
 function puoAccedereAlLuogoSegreto(state: GameState, giocatoreId: 1 | 2): boolean {
@@ -412,6 +273,10 @@ export const useGameStore = create<GameState>()(
       scenaCorrente: { scena: 'titolo' },
       scenaPrecedente: null,
       audioMuted: false,
+      campaignRevision: 0,
+      interactionProgress: emptyInteractionProgress(),
+      saveRecoveryWarnings: [],
+      dismissSaveRecoveryWarnings: () => set({ saveRecoveryWarnings: [] }),
 
       vaiAScena: (scena, payload) =>
         set((s) => !navigazioneSegretaConsentita(s, { scena, payload }) ? s : ({
@@ -710,6 +575,9 @@ export const useGameStore = create<GameState>()(
 
       terminaBattaglia: (curaCompleta) =>
         set((s) => {
+          const final = finalizeConfiguredBattle(s)
+          const giocatore1 = final.giocatore1 ?? s.giocatore1
+          const giocatore2 = final.giocatore2 ?? s.giocatore2
           const pulisciSquadra = (squadra: PokemonIstanza[]) =>
             squadra.map((p) => {
               const specie = getPokemon(p.specieId)
@@ -729,19 +597,27 @@ export const useGameStore = create<GameState>()(
               })
             )
           return {
+            ...final,
             battaglia: null,
             giocatore1: {
-              ...s.giocatore1,
-              squadra: pulisciSquadra(s.giocatore1.squadra),
-              deposito: pulisciDeposito(s.giocatore1.deposito),
+              ...giocatore1,
+              squadra: pulisciSquadra(giocatore1.squadra),
+              deposito: pulisciDeposito(giocatore1.deposito),
             },
             giocatore2: {
-              ...s.giocatore2,
-              squadra: pulisciSquadra(s.giocatore2.squadra),
-              deposito: pulisciDeposito(s.giocatore2.deposito),
+              ...giocatore2,
+              squadra: pulisciSquadra(giocatore2.squadra),
+              deposito: pulisciDeposito(giocatore2.deposito),
             },
           }
         }),
+
+      eseguiInterazioneConfigurata: (giocatoreId, interactionId) => {
+        const definition = useInteractionStore.getState().interactions.find((entry) => entry.id === interactionId)
+        const result = resolveConfiguredInteraction(get(), definition, giocatoreId)
+        if (result.ok && result.patch) set(result.patch)
+        return { ok: result.ok, message: result.message }
+      },
 
       // ----------------------------------------------------------------
       // OVERWORLD (Fase E)
@@ -967,7 +843,8 @@ export const useGameStore = create<GameState>()(
       },
 
       reset: () =>
-        set({
+        set((s) => ({
+          campaignRevision: s.campaignRevision + 1,
           giocatore1: giocatoreVuoto(1),
           giocatore2: giocatoreVuoto(2),
           giocatoreAttivo: 1,
@@ -980,79 +857,32 @@ export const useGameStore = create<GameState>()(
           posizioniLocali2: {},
           scenaCorrente: { scena: 'titolo' },
           scenaPrecedente: null,
-        }),
+          saveRecoveryWarnings: [],
+          interactionProgress: emptyInteractionProgress(),
+        })),
     }),
     {
-      name: 'arkamon-save',
-      // Custom serializer perché Set non è serializzabile in JSON
-      partialize: (state) => ({
-        ...state,
-        giocatore1: {
-          ...state.giocatore1,
-          cespugliVisitati: Array.from(state.giocatore1.cespugliVisitati),
-          allenatoriSconfitti: Array.from(state.giocatore1.allenatoriSconfitti),
-          caselleConsumate: Array.from(state.giocatore1.caselleConsumate),
-        },
-        giocatore2: {
-          ...state.giocatore2,
-          cespugliVisitati: Array.from(state.giocatore2.cespugliVisitati),
-          allenatoriSconfitti: Array.from(state.giocatore2.allenatoriSconfitti),
-          caselleConsumate: Array.from(state.giocatore2.caselleConsumate),
-        },
-      }) as unknown as GameState,
+      name: GAME_SAVE_STORAGE_KEY,
+      partialize: (state) => serializeGameState(state) as unknown as GameState,
       merge: (persisted, current) => {
-        // Riconverti gli array in Set dopo il caricamento.
-        // Per save preesistenti: fallback a default per i campi nuovi
-        // (inventario, caselleConsumate, posizione, turnoOverworld).
-        const p = isRecord(persisted) ? persisted : {}
-        const savedTurn = isRecord(p.turnoOverworld) ? p.turnoOverworld : {}
-        const turnoOverworld: StatoTurnoOverworld = {
-          giocatoreAttivo: savedTurn.giocatoreAttivo === 2 ? 2 : 1,
-          azioniRimaste: isFiniteNumber(savedTurn.azioniRimaste) && Number.isInteger(savedTurn.azioniRimaste)
-            ? Math.min(2, Math.max(0, savedTurn.azioniRimaste)) : 2,
+        const recovered = normalizeGameSave(persisted, current)
+        return { ...current, ...recovered.state, saveRecoveryWarnings: recovered.warnings }
+      },
+      onRehydrateStorage: () => (state, error) => {
+        if (error) queueMicrotask(() => {
+          const storage = useGameStore.persist.getOptions().storage
+          if (storage) useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
+          try {
+            useGameStore.setState({ saveRecoveryWarnings: [
+              'Il salvataggio non è leggibile. Importa un backup per recuperare i progressi, oppure avvia una nuova partita.',
+            ] })
+          } finally {
+            if (storage) useGameStore.persist.setOptions({ storage })
+          }
+        })
+        else if (state?.saveRecoveryWarnings.length) {
+          // Recovery details stay in memory until the player acknowledges them.
         }
-        // Solo i campi di gioco possono arrivare da JSON: le azioni Zustand
-        // restano quelle correnti anche se il salvataggio contiene chiavi estranee.
-        const restored: GameState = {
-          ...current,
-          giocatore1: restorePlayer(p.giocatore1, current.giocatore1),
-          giocatore2: restorePlayer(p.giocatore2, current.giocatore2),
-          giocatoreAttivo: p.giocatoreAttivo === 2 ? 2 : 1,
-          rivaleStarterId: isFiniteNumber(p.rivaleStarterId) && !!getPokemon(p.rivaleStarterId) ? p.rivaleStarterId : null,
-          battaglia: restoreBattle(p.battaglia),
-          scenaCorrente: restoreNavigation(p.scenaCorrente, current.scenaCorrente)!,
-          scenaPrecedente: restoreNavigation(p.scenaPrecedente, null),
-          posizione1: normalizePosizioneAvatar(p.posizione1),
-          posizione2: normalizePosizioneAvatar(p.posizione2),
-          turnoOverworld,
-          posizioniLocali1: normalizePosizioniLocali(p.posizioniLocali1 as PosizioniMappeLocali | undefined),
-          posizioniLocali2: normalizePosizioniLocali(p.posizioniLocali2 as PosizioniMappeLocali | undefined),
-          audioMuted: typeof p.audioMuted === 'boolean' ? p.audioMuted : current.audioMuted,
-        }
-        if (restored.scenaCorrente.scena === 'battaglia' && !restored.battaglia) {
-          restored.scenaCorrente = { scena: 'mappa-principale' }
-        }
-        // Old or invalid saves cannot reveal the hidden location before that
-        // individual player completes the real gym roster. Preserve all local
-        // point saves and the action budget; only reject unauthorized presence.
-        if (isSecretLocationPosition(restored.posizione1) && !hasUnlockedSecretLocation(restored.giocatore1)) {
-          restored.posizione1 = posizioneMappaPrincipale(SECRET_LOCATION_ORIGIN)
-        }
-        if (isSecretLocationPosition(restored.posizione2) && !hasUnlockedSecretLocation(restored.giocatore2)) {
-          restored.posizione2 = posizioneMappaPrincipale(SECRET_LOCATION_ORIGIN)
-        }
-        if (!navigazioneSegretaConsentita(restored, restored.scenaCorrente)) {
-          restored.scenaCorrente = { scena: 'mappa-principale' }
-        }
-        if (restored.scenaPrecedente && !navigazioneSegretaConsentita(restored, restored.scenaPrecedente)) {
-          restored.scenaPrecedente = null
-        }
-        if (restored.battaglia?.luogoRitorno === SECRET_LOCATION_ID
-          && !puoAccedereAlLuogoSegreto(restored, restored.giocatoreAttivo)) {
-          restored.battaglia = null
-          if (restored.scenaCorrente.scena === 'battaglia') restored.scenaCorrente = { scena: 'mappa-principale' }
-        }
-        return restored
       },
     }
   )

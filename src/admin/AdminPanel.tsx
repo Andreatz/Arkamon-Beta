@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
 import { AdminAudiencePanel } from '@/audience/AdminAudiencePanel'
 import { AdminAssetEditor } from './AdminAssetEditor'
@@ -12,8 +12,9 @@ import { AdminVfxEditor } from './AdminVfxEditor'
 import './adminPanel.css'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
+const AdminInteractionEditor = lazy(() => import('@/interactions/AdminInteractionEditor').then((module) => ({ default: module.AdminInteractionEditor })))
 
-type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience'
+type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience' | 'interactions'
 
 const tabs: { id: AdminTab; label: string }[] = [
   { id: 'colors', label: 'Colori' },
@@ -25,6 +26,7 @@ const tabs: { id: AdminTab; label: string }[] = [
   { id: 'presets', label: 'Preset' },
   { id: 'json', label: 'Import/Export' },
   { id: 'audience', label: 'Pubblico' },
+  { id: 'interactions', label: 'Interazioni' },
 ]
 
 export function AdminPanel() {
@@ -65,11 +67,12 @@ export function AdminPanel() {
           ['battle-rules-lab', 'Moneta e status'], ['vfx-lab', 'VFX mosse'], ['audio-lab', 'Suoni'], ['arkamon-lab', 'Animazioni Arkamon'], ['dice-lab', 'Dadi'], ['transition-lab', 'Transizioni'], ['deposit-lab', 'Deposito'],
         ].map(([hash, label]) => <a key={hash} className="rounded border p-2 text-center" href={`#${hash}`} onClick={() => setPanelOpen(false)}>{label}</a>)}</div></details>
       </div>
-      <nav className="grid grid-cols-3 sm:grid-cols-9 border-b border-[var(--arka-border)] text-[10px] font-bold">
+      <nav aria-label="Sezioni Admin" className="grid grid-cols-3 sm:grid-cols-5 border-b border-[var(--arka-border)] text-[10px] font-bold">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
+            aria-pressed={activeTab === tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`min-h-10 px-1 py-2 leading-tight transition ${
               activeTab === tab.id
@@ -92,6 +95,7 @@ export function AdminPanel() {
         {activeTab === 'presets' ? <AdminPresetEditor /> : null}
         {activeTab === 'json' ? <AdminImportExport /> : null}
         {activeTab === 'audience' ? <AdminAudiencePanel /> : null}
+        {activeTab === 'interactions' ? <Suspense fallback={<p role="status">Caricamento interazioni…</p>}><AdminInteractionEditor /></Suspense> : null}
       </div>
     </section>
   )

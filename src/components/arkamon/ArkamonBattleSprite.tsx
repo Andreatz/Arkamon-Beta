@@ -2,10 +2,10 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from 're
 import {
   motion,
   useAnimation,
-  useReducedMotion,
   type TargetAndTransition,
   type Transition,
 } from 'framer-motion'
+import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '@/components/vfx/AnimatedSprite'
 import {
@@ -24,7 +24,7 @@ function getProceduralMotion(
   side: ArkamonSpriteSide,
   animation: ArkamonBattleAnimation,
   reduceMotion: boolean
-): { animate: TargetAndTransition; transition: Transition } {
+): { animate: TargetAndTransition; transition: Transition & { duration?: number } } {
   const profile = getArkamonMotionProfile(speciesId)
   const direction = side === 'back' ? 1 : -1
 
@@ -177,7 +177,7 @@ export function ArkamonBattleSprite({
   onAnimationStart?: (animation: ArkamonBattleAnimation, replayKey: number) => void
   onAnimationCue?: (animation: ArkamonBattleAnimation, replayKey: number, cue: ArkamonAnimationCue) => void
 }) {
-  const reduceMotion = useReducedMotion()
+  const { reducedMotion: reduceMotion, speed } = useGameMotionPreferences()
   const resolved = animationEnabled ? resolveArkamonAnimationAsset(speciesId, side, animation) : undefined
   const callbacksRef = useRef({ onAnimationStart, onAnimationCue, onAnimationReady })
   callbacksRef.current = { onAnimationStart, onAnimationCue, onAnimationReady }
@@ -240,7 +240,7 @@ export function ArkamonBattleSprite({
         alt={name}
         className="h-full w-full object-contain"
         animate={procedural.animate}
-        transition={procedural.transition}
+        transition={{ ...procedural.transition, duration: typeof procedural.transition.duration === 'number' ? procedural.transition.duration / speed : procedural.transition.duration }}
         onError={onError}
         draggable={false}
       />
@@ -280,6 +280,7 @@ function AnimatedArkamonVisual({
   onAnimationStart?: (animation: ArkamonBattleAnimation, replayKey: number) => void
   onAnimationCue?: (animation: ArkamonBattleAnimation, replayKey: number, cue: ArkamonAnimationCue) => void
 }) {
+  const { speed } = useGameMotionPreferences()
   const [run, setRun] = useState<ArkamonPlaybackState>(() => ({
     animation, replayKey, generation: 0,
     requestedAnimation: animation, requestedReplayKey: replayKey, completed: false,
@@ -374,9 +375,9 @@ function AnimatedArkamonVisual({
       onClipStart()
       if (run.animation === 'hit' && holdReactionUntilImpact) return
       const cueTimer = run.animation === 'attack'
-        ? window.setTimeout(onReleaseCue, (animated.releaseFrame ?? 0) / animated.fps * 1000)
+        ? window.setTimeout(onReleaseCue, getAnimationDuration((animated.releaseFrame ?? 0) / animated.fps * 1000))
         : undefined
-      const timer = window.setTimeout(onClipComplete, clipDurationMs)
+      const timer = window.setTimeout(onClipComplete, getAnimationDuration(clipDurationMs))
       return () => {
         window.clearTimeout(timer)
         window.clearTimeout(cueTimer)
@@ -398,13 +399,13 @@ function AnimatedArkamonVisual({
       void controls.start({
         ...neutral.animate,
         ...procedural.animate,
-        transition: procedural.transition,
+        transition: { ...procedural.transition, duration: typeof procedural.transition.duration === 'number' ? procedural.transition.duration / speed : procedural.transition.duration },
       })
     } else {
       controls.set(neutral.animate)
     }
     return () => controls.stop()
-  }, [controls, speciesId, side, run.animation, holdReactionUntilImpact, playbackPaused, reduceMotion, animationEnabled, useProcedural, run.replayKey])
+  }, [controls, speciesId, side, run.animation, holdReactionUntilImpact, playbackPaused, reduceMotion, animationEnabled, useProcedural, run.replayKey, speed])
 
   return (
     <motion.div

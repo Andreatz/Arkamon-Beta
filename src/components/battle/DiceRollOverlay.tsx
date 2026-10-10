@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '../vfx/AnimatedSprite'
 import { getBattleDiceSequence } from './battleDiceAssets'
@@ -29,7 +30,7 @@ export function DiceRollOverlay(props: DiceRollOverlayProps) {
 }
 
 function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRollOverlayProps) {
-  const reducedMotion = Boolean(useReducedMotion())
+  const { reducedMotion, speed } = useGameMotionPreferences()
   const [damageVisible, setDamageVisible] = useState(false)
   const revealRef = useRef<ReturnType<typeof createBattleDiceReveal> | null>(null)
   const onVisibleRef = useRef(onVisible)
@@ -80,7 +81,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRo
         initial={reducedMotion ? false : { opacity: 0, scale: 0.88, y: -18 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 12 }}
-        transition={{ duration: reducedMotion ? 0 : 0.22 }}
+        transition={{ duration: reducedMotion ? 0 : 0.22 / speed }}
         onAnimationComplete={() => revealRef.current?.panelVisible()}
         className="battle-dice-panel rounded-md border border-white/20 bg-slate-950/90 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
       >
@@ -120,7 +121,7 @@ export function BattleDie({ value, forceFallback, onVisible }: {
 }) {
   const [phase, setPhase] = useState<'intro' | 'result'>('intro')
   const [failed, setFailed] = useState(false)
-  const reducedMotion = Boolean(useReducedMotion())
+  const { reducedMotion } = useGameMotionPreferences()
   const revealResult = useCallback(() => setPhase('result'), [])
   const showFallback = useCallback(() => setFailed(true), [])
   const sequence = getBattleDiceSequence(value)

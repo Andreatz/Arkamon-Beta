@@ -1,8 +1,15 @@
+import { useSettledBattleCheckpoint } from '@/components/battle/useSettledBattleCheckpoint'
+import { BattleLayoutItem, ImpactPulseOverlay, InfoBox, ScambioModal, SquadIndicator, PokemonBattleSlot, HpBar, ActionButton, SupremeButton, MoveButton, type ImpactPulseDisplay } from '@/components/battle/BattlePresentation'
+import { BattleLogPanel } from '@/components/battle/BattleLogPanel'
+import { useBattleChronicle } from '@/components/battle/useBattleChronicle'
+import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
+import { logPokemon, revealedAttackEvents, settledAttackEvents, statusEvents, xpEvent } from '@/components/battle/battleChronicle'
+import { resolveBattleAttack, updateBattleSquad } from '@/engine/battleResolution'
+import { getAnimationDuration, useGameMotionPreferences } from '@/settings/gamePreferences'
 import { nextBattleSide } from '@/components/battle/battleRoundOrder'
 import { restoreBattleCheckpoint, settledBattleCheckpoint } from '@/components/battle/battleCheckpoint'
 import { BattleOpeningOverlay } from '@/components/battle/BattleOpeningOverlay'
 import { SupremeMoveDialog } from '@/components/battle/SupremeMoveDialog'
-import { StatusToken } from '@/components/battle/StatusToken'
 import { BattleAudienceOverlay } from '@/components/battle/BattleAudienceOverlay'
 import { audienceChannelForBattle, createAudienceBattleId, makeAudienceRoundRequest, validAudienceWinner } from '@/components/battle/audienceBattle'
 import { useAudienceStore } from '@/audience/useAudienceStore'
@@ -10,25 +17,21 @@ import { useAudienceTurn } from '@/audience/useAudienceTurn'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
-import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   calcolaDanno,
   calcolaAzioneSuprema,
-  risolviAttaccanteDopoMossa,
   costoSuprema,
   calcolaHPMax,
   scegliMossaIA,
   tentaCattura,
   applicaXP,
   applicaXPDopoKO,
-  applicaStato,
   risolviStatoInizioTurno,
   èMossaCura,
   èMossaSoloStato,
   applicaMossaCura,
-  getMossaAlLivello,
-  esitoSquadre,
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
@@ -36,19 +39,12 @@ import type {
   PokemonIstanza,
   MossaDef,
   RisultatoMossa,
-  Stato,
   TipoPokemon,
   BattleCheckpoint,
 } from '@/types'
-import type { AdminBattleLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
-import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
-import {
-  ArkamonBattleSprite,
-  type ArkamonAnimationCue,
-} from '@/components/arkamon/ArkamonBattleSprite'
 import {
   getArkamonAnimationAsset,
   getArkamonAnimationDurationMs,
@@ -82,10 +78,6 @@ import {
   getMoveVfxFeedback,
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
-import type { AdminBattleLayout } from '@/theme/adminThemeTypes'
-import {
-  getBattleSideCenter,
-} from '@/components/vfx/battleVfxPosition'
 
 const INFOBOX_VISIBLE_MS = 2000
 
@@ -115,8 +107,8 @@ type PendingSwitch = {
  * - XP per nemico sconfitto (1 KO = 1 livello, cap 100)
  * - Evoluzioni inline al raggiungimento della soglia
  *
- * Aggiornamenti del Pokémon attivo (HP, livello, evoluzione) vengono
- * persistiti nello store all'uscita dalla scena.
+ * HP, livello, status e cronaca vengono salvati insieme a ogni turno concluso.
+ * Durante i filmati il checkpoint precedente resta valido e il KO resta nascosto fino ai dadi.
  */
 export function BattagliaScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
@@ -144,6 +136,8 @@ export function BattagliaScene() {
   const audienceSession = useAudienceStore((s) => s.session)
   const audienceDuration = useAudienceStore((s) => s.durationSeconds)
   const audienceBattleId = useRef(initialCheckpoint?.audienceBattleId ?? createAudienceBattleId())
+  const { chronicle, current: chronicleRef, beginAction, append: appendChronicle } = useBattleChronicle(battaglia?.cronaca, audienceBattleId.current)
+  const { reducedMotion, speed: animationSpeed } = useGameMotionPreferences()
   const opponentTurnNumber = useRef(initialCheckpoint?.opponentTurnNumber ?? 0)
   type PendingAudience = NonNullable<BattleCheckpoint['audiencePending']> & { pokemon: PokemonIstanza; messages: string[] }
   const [audienceChoice, setAudienceChoice] = useState<PendingAudience | null>(null)
@@ -319,44 +313,34 @@ export function BattagliaScene() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Save only settled turns. Reloading during a cinematic retries that action from
-  // its previous checkpoint; it cannot restore an HP change without its dice.
-  useEffect(() => {
-    if (!battaglia || !pkmnA || !pkmnB || coinOpen || statusRoll || azioneInCorso
-      || actionInProgressRef.current || moveVfx || diceRoll || pendingHealth) return
-    const checkpoint = settledBattleCheckpoint({
-      initialPriority: initialCheckpoint?.initialPriority ?? 'A',
-      actedThisRound: actedThisRound.current,
-      turnA: turnoA,
-      pvp: battaglia.tipo === 'PVP',
-      chooseRivalMove: mostraMoseB,
+  // Native media and private damage stay outside persisted control points.
+  useSettledBattleCheckpoint({
+    available: Boolean(battaglia),
+    busy: coinOpen || Boolean(statusRoll) || azioneInCorso || actionInProgressRef.current || Boolean(moveVfx) || Boolean(diceRoll) || Boolean(pendingHealth),
+    pokemonA: pkmnA, pokemonB: pkmnB, squadA: squadraA, squadB: squadraB,
+    messages: infoBoxMessaggi, chronicle, onSettled: aggiornaBattaglia,
+    control: {
+      initialPriority: initialCheckpoint?.initialPriority ?? 'A', actedThisRound: actedThisRound.current,
+      turnA: turnoA, pvp: battaglia?.tipo === 'PVP', chooseRivalMove: mostraMoseB,
       passDirection: attesaPassaggio?.direzione,
       switchRequest: scambioRichiesto ? { motivo: scambioRichiesto.motivo, prossimoPasso: scambioRichiesto.prossimoPasso } : undefined,
-      outcome: terminata ? esito : null,
-      openingComplete: true,
-      evolutions: evoluzioniInAttesa,
-      rivalMessages: messaggiTurnoBRef.current,
-      audienceBattleId: audienceBattleId.current,
-      opponentTurnNumber: opponentTurnNumber.current,
+      outcome: terminata ? esito : null, openingComplete: true, evolutions: evoluzioniInAttesa,
+      rivalMessages: audienceChoice?.messages ?? messaggiTurnoBRef.current,
+      audienceBattleId: audienceBattleId.current, opponentTurnNumber: opponentTurnNumber.current,
       audiencePending: audienceChoice ? { sessionId: audienceChoice.sessionId, request: audienceChoice.request } : undefined,
-    })
-    if (audienceChoice) checkpoint.rivalMessages = audienceChoice.messages
-    aggiornaBattaglia({
-      pokemonA: pkmnA,
-      pokemonB: pkmnB,
-      squadraA,
-      squadraB,
-      hpMaxA: calcolaHPMax(pkmnA),
-      hpMaxB: calcolaHPMax(pkmnB),
-      turnoCorrente: turnoA ? 'A' : 'B',
-      ...(infoBoxMessaggi.length > 0 ? { log: infoBoxMessaggi } : {}),
-      checkpoint,
-    })
-    // The store patch changes battaglia but must not recursively save the same local state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pkmnA, pkmnB, squadraA, squadraB, coinOpen, statusRoll, azioneInCorso, moveVfx,
-    diceRoll, pendingHealth, turnoA, mostraMoseB, attesaPassaggio, scambioRichiesto,
-    terminata, esito, evoluzioniInAttesa, infoBoxMessaggi, aggiornaBattaglia, audienceChoice])
+    },
+  })
+
+  useEffect(() => {
+    if (!pkmnA || !pkmnB || coinOpen || initialCheckpoint?.openingComplete) return
+    appendChronicle([{ id: `${chronicleRef.current.battleId}:opening`, kind: 'opening', title: 'Inizio della battaglia', messages: [`Inizia ${battaglia?.turnoCorrente === 'B' ? pkmnB.nome : pkmnA.nome}.`, ...(battaglia?.log ?? [])] }])
+  }, [pkmnA, pkmnB, coinOpen, initialCheckpoint?.openingComplete, appendChronicle, battaglia?.turnoCorrente, battaglia?.log, chronicleRef])
+
+  useEffect(() => {
+    if (!terminata || !esito) return
+    appendChronicle([{ id: `${chronicleRef.current.battleId}:outcome`, kind: 'outcome', winnerSide: esito === 'vittoria' ? 'A' : 'B', title: esito === 'vittoria' ? 'Vittoria del giocatore' : 'Vittoria dell’avversario', messages: ['Battaglia conclusa. Gli HP residui restano nella squadra.'] }])
+    useBattleArchiveStore.getState().archiveBattle({ chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo, location: luogoRitornoRef.current, battleType: battaglia?.tipo ?? 'Selvatico', title: `${giocatore.nome} · ${battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico'}` })
+  }, [terminata, esito, appendChronicle, chronicleRef, giocatoreAttivo, giocatore.nome, battaglia?.tipo, battaglia?.allenatoreId])
 
   useEffect(() => {
     if (!audienceChoice || !pkmnB || !pkmnA || coinOpen || statusRoll || azioneInCorso || actionInProgressRef.current) return
@@ -450,8 +434,7 @@ export function BattagliaScene() {
   const isPvP = !!battaglia && battaglia.tipo === 'PVP'
   const isPercorso = !!luogoRitorno && /^Percorso_/.test(luogoRitorno)
 
-  const updateInSquadra = (squadra: PokemonIstanza[], updated: PokemonIstanza) =>
-    squadra.map((p) => (p.istanzaId === updated.istanzaId ? updated : p))
+  const updateInSquadra = updateBattleSquad
 
   const resetInfoBox = () => setInfoBoxMessaggi([])
 
@@ -493,7 +476,7 @@ export function BattagliaScene() {
       diceRollTimerRef.current = null
       diceRollCallbacksRef.current = null
       callbacks.onComplete()
-    }, BATTLE_DICE_ROLL_VISIBLE_MS)
+    }, getAnimationDuration(BATTLE_DICE_ROLL_VISIBLE_MS))
   }
 
   const mostraVfxMossa = (
@@ -526,7 +509,7 @@ export function BattagliaScene() {
     const timer = window.setTimeout(() => {
       feedbackTimersRef.current.delete(timer)
       callback()
-    }, delayMs)
+    }, getAnimationDuration(delayMs))
     feedbackTimersRef.current.add(timer)
   }
 
@@ -583,22 +566,22 @@ export function BattagliaScene() {
     const feedback = getMoveVfxFeedback(move)
 
     if (playHitAnimation) playSpriteAction(side, 'hit', Math.max(240, feedback.targetShakeMs))
-    if (feedback.targetShakeMs > 0 && feedback.targetShakePx > 0) {
+    if (!reducedMotion && feedback.targetShakeMs > 0 && feedback.targetShakePx > 0) {
       setShakeStrengthPx(feedback.targetShakePx)
-      setShakeDurationMs(feedback.targetShakeMs)
+      setShakeDurationMs(getAnimationDuration(feedback.targetShakeMs))
       setShaking(side)
       scheduleFeedbackTimer(() => setShaking(null), feedback.targetShakeMs)
     }
 
-    if (feedback.targetFlashMs > 0) {
+    if (!reducedMotion && feedback.targetFlashMs > 0) {
       setImpactFlash(side)
       scheduleFeedbackTimer(() => setImpactFlash(null), feedback.targetFlashMs)
     }
 
-    if (feedback.cameraShakeMs > 0 && feedback.cameraShakePx > 0) {
+    if (!reducedMotion && feedback.cameraShakeMs > 0 && feedback.cameraShakePx > 0) {
       setCameraShake({
         px: feedback.cameraShakePx,
-        ms: feedback.cameraShakeMs,
+        ms: getAnimationDuration(feedback.cameraShakeMs),
       })
       scheduleFeedbackTimer(() => setCameraShake(null), feedback.cameraShakeMs)
     }
@@ -694,11 +677,12 @@ export function BattagliaScene() {
     side: 'A' | 'B',
     targetSide: 'A' | 'B',
     onDamageReveal: () => void,
-    onComplete: () => void
+    onComplete: (actionId: string) => void
   ) => {
     if (actionInProgressRef.current) return
     actionInProgressRef.current = true
     setAzioneInCorso(true)
+    const actionId = beginAction()
     const feedback = getMoveVfxFeedback(risultato.mossa)
     const target = targetSide === 'A' ? pkmnA : pkmnB
     // Keep all resolved damage private until the dice faces have been revealed.
@@ -722,9 +706,10 @@ export function BattagliaScene() {
 
     }, () => {
       if (èMossaSoloStato(risultato.mossa)) {
+        appendChronicle(revealedAttackEvents(risultato, side, actionId))
         onDamageReveal()
         setPendingHealth(null)
-        onComplete()
+        onComplete(actionId)
         actionInProgressRef.current = false
         setAzioneInCorso(false)
         return
@@ -741,11 +726,12 @@ export function BattagliaScene() {
             }
           }
           setPendingHealth(null)
+          appendChronicle(revealedAttackEvents(risultato, side, actionId))
           onDamageReveal()
         },
         onComplete: () => {
           if (activePlaybackRef.current === reveal) activePlaybackRef.current = null
-          onComplete()
+          onComplete(actionId)
           actionInProgressRef.current = false
           setAzioneInCorso(false)
         },
@@ -772,6 +758,11 @@ export function BattagliaScene() {
 
   const tornaIndietro = () => {
     if (audienceChoice) void audienceVote.cancel().catch(() => {})
+    if (esito) useBattleArchiveStore.getState().archiveBattle({
+      chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo,
+      location: luogoRitorno, battleType: battaglia?.tipo ?? 'Selvatico',
+      title: `${giocatore.nome} · ${battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico'}`,
+    })
     if (isNPC && esito) risolviBattagliaNPC(esito)
     for (const p of squadraA) aggiornaPokemon(giocatoreAttivo, p)
     terminaBattaglia(false)
@@ -864,6 +855,7 @@ export function BattagliaScene() {
     setScambioRichiesto(null)
     resetInfoBox()
     mostraMessaggi([`${scelto.nome} entra in campo!`])
+    appendChronicle([{ id: `${beginAction()}:switch`, kind: 'switch', side: 'A', title: `${scelto.nome} entra in campo`, messages: [], actor: logPokemon(scelto) }])
 
     if (richiesta.prossimoPasso === 'passaAB') {
       passaTurnoAaB(richiesta.pendingB ?? pkmnB, 300)
@@ -912,6 +904,7 @@ export function BattagliaScene() {
     sconfittoDopo: PokemonIstanza
   ): PokemonIstanza => {
     const xpRes = applicaXPDopoKO(attivo, sconfittoPrima, sconfittoDopo)
+    appendChronicle(xpEvent(attivo, xpRes, 'A', `${beginAction()}:xp`))
     if (xpRes.xpAssegnata) presentaPremioXP(attivo, xpRes)
     return xpRes.istanza
   }
@@ -922,6 +915,7 @@ export function BattagliaScene() {
     sconfittoDopo: PokemonIstanza
   ): PokemonIstanza => {
     const xpRes = applicaXPDopoKO(rivale, sconfittoPrima, sconfittoDopo)
+    appendChronicle(xpEvent(rivale, xpRes, 'B', `${beginAction()}:xp`))
     if (xpRes.livelliGuadagnati > 0) {
       playSound('level-up')
       mostraMessaggi([`${rivale.nome} è salito al livello ${xpRes.istanza.livello}!`])
@@ -941,17 +935,20 @@ export function BattagliaScene() {
 
     const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA, Math.random, verificaAttacco)
     if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes, verificaAttacco)); return }
+    if (statoRes.messaggi.length) appendChronicle(statusEvents(pkmnA, statoRes, 'A', `${beginAction()}:status`))
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
     setSquadraA((sq) => updateInSquadra(sq, pkmnAEffettivo))
 
     if (pkmnAEffettivo.hp <= 0) {
+      appendChronicle([{ id: `${beginAction()}:ko`, kind: 'ko', side: 'A', title: `${pkmnAEffettivo.nome} è KO`, messages: [], actor: logPokemon(pkmnAEffettivo) }])
       const finishKO = () => {
         actionInProgressRef.current = false
         setAzioneInCorso(false)
         mostraMessaggi([...statoRes.messaggi, `${pkmnAEffettivo.nome} è caduto!`])
         playSound('ko')
         const aggiornatoB = premiaRivaleConXP(pkmnB, pkmnA, pkmnAEffettivo)
+        appendChronicle([{ id: `${beginAction()}:winner`, kind: 'winner', side: 'B', winnerSide: 'B', title: `${aggiornatoB.nome} vince lo scontro`, messages: [], actor: logPokemon(aggiornatoB) }])
         setPkmnB(aggiornatoB)
         setSquadraB((sq) => updateInSquadra(sq, aggiornatoB))
         const nextA = squadraA.find(
@@ -996,7 +993,9 @@ export function BattagliaScene() {
     if (mossaScelta && èMossaCura(mossaScelta)) {
       if (suprema) return
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
+      const actionId = beginAction()
       eseguiSequenzaCura(mossaScelta, 'A', () => {
+        appendChronicle([{ id: `${actionId}:heal`, kind: 'heal', side: 'A', title: `${pkmnAEffettivo.nome} usa ${mossaScelta.nome}`, messages: cura.messaggi, actor: logPokemon(cura.istanza), hpBefore: pkmnAEffettivo.hp, hpAfter: cura.istanza.hp }])
         setPkmnA(cura.istanza)
         setSquadraA((sq) => updateInSquadra(sq, cura.istanza))
         mostraMessaggi([...statusMessages, ...cura.messaggi])
@@ -1010,10 +1009,8 @@ export function BattagliaScene() {
       : calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa, Math.random, false)
     if (!ris) return
 
-    let nuovoB = { ...pkmnB, hp: Math.max(0, pkmnB.hp - ris.dannoFinale) }
-    if (ris.statoApplicato && nuovoB.hp > 0) {
-      nuovoB = applicaStato(nuovoB, ris.statoApplicato)
-    }
+    const settlement = resolveBattleAttack(ris, 'A', squadraA, squadraB)
+    let nuovoB = settlement.defenderAfterImpact
     let nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
     eseguiSequenzaOffensiva(
       ris,
@@ -1023,24 +1020,26 @@ export function BattagliaScene() {
         setPkmnB(nuovoB)
         setSquadraB(nuovaSquadraB)
       },
-      () => {
-      const risoluzione = risolviAttaccanteDopoMossa(ris)
-      const aggiornatoA = risoluzione.istanza
-      const nuovaSquadraA = updateInSquadra(squadraA, aggiornatoA)
+      (actionId) => {
+      const risoluzione = settlement.attackerProgression
+      const aggiornatoA = settlement.attacker
+      const nuovaSquadraA = settlement.squadA
+      appendChronicle(settledAttackEvents(ris, settlement, 'A', actionId))
       mostraMessaggi([...statusMessages, ...risoluzione.messaggi])
       if (risoluzione.xpAssegnata) presentaPremioXP(pkmnAEffettivo, risoluzione, false)
       setPkmnA(aggiornatoA)
       setSquadraA(nuovaSquadraA)
       if (nuovoB.hp <= 0 || aggiornatoA.hp <= 0) playSound('ko')
 
-      if (nuovoB.hp > 0 && aggiornatoA.hp <= 0) {
-        nuovoB = premiaRivaleConXP(nuovoB, pkmnAEffettivo, aggiornatoA)
-        nuovaSquadraB = updateInSquadra(nuovaSquadraB, nuovoB)
-        setPkmnB(nuovoB)
-        setSquadraB(nuovaSquadraB)
+      if (settlement.defenderProgression?.livelliGuadagnati) {
+        playSound('level-up')
+        mostraMessaggi([`${nuovoB.nome} è salito al livello ${settlement.defender.livello}!`])
       }
-
-      const esitoDopoMossa = esitoSquadre(nuovaSquadraA, nuovaSquadraB, nuovoB.hp <= 0 ? 'A' : undefined)
+      nuovoB = settlement.defender
+      nuovaSquadraB = settlement.squadB
+      setPkmnB(nuovoB)
+      setSquadraB(nuovaSquadraB)
+      const esitoDopoMossa = settlement.outcome
       if (esitoDopoMossa) {
         const vittoria = esitoDopoMossa === 'vittoria'
         mostraMessaggi([vittoria ? 'Hai vinto la battaglia!' : 'Hai perso la battaglia...'])
@@ -1055,6 +1054,7 @@ export function BattagliaScene() {
         : nuovoB
       if (nuovoB.hp <= 0) {
         mostraMessaggi([`L'avversario manda in campo ${prossimoB.nome}!`])
+        appendChronicle([{ id: `${actionId}:switch-b`, kind: 'switch', side: 'B', title: `${prossimoB.nome} entra in campo`, messages: [], actor: logPokemon(prossimoB) }])
         setPkmnB(prossimoB)
       }
       if (aggiornatoA.hp <= 0) {
@@ -1094,6 +1094,7 @@ export function BattagliaScene() {
       hpMaxB,
       turnoCorrente: 'A',
       checkpoint,
+      cronaca: chronicleRef.current,
     }, masterball)
   }
 
@@ -1104,6 +1105,7 @@ export function BattagliaScene() {
     }
     preparaTurnoGiocatore((_pokemon, statusMessages) => {
       const ris = tentaCattura(pkmnB)
+      appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: ris.riuscita ? `${pkmnB.nome} catturato` : `${pkmnB.nome} sfugge alla cattura`, messages: [`Somma reale dei 3d6: ${ris.roll}. Soglia: ${ris.soglia.toLocaleString('it-IT', { maximumFractionDigits: 2 })}.`], target: logPokemon(pkmnB), diceSum: ris.roll }])
       mostraMessaggi([...statusMessages, 'Lanci una pokeball...'])
       if (ris.riuscita) {
         if (!salvaCatturaConclusa()) return
@@ -1125,6 +1127,7 @@ export function BattagliaScene() {
     }
     if (masterballRimaste <= 0) return
     preparaTurnoGiocatore((_pokemon, statusMessages) => {
+      appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: `${pkmnB.nome}: Masterball`, messages: ['Cattura con Masterball: non vengono lanciati dadi.'], target: logPokemon(pkmnB) }])
       if (!salvaCatturaConclusa(true)) return
       mostraMessaggi([
         ...statusMessages,
@@ -1145,11 +1148,13 @@ export function BattagliaScene() {
     // B sceglie la mossa dopo gli altri status: il tiro PAR serve solo se attacca.
     const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente, Math.random, false)
     if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, statoBcorrente, () => turnoAvversario(statoBcorrente, statoRes)); return }
+    if (statoRes.messaggi.length) appendChronicle(statusEvents(statoBcorrente, statoRes, 'B', `${beginAction()}:status`))
     const bEffettivo = statoRes.istanza
     setPkmnB(bEffettivo)
     setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
 
     if (bEffettivo.hp <= 0) {
+      appendChronicle([{ id: `${beginAction()}:ko`, kind: 'ko', side: 'B', title: `${bEffettivo.nome} è KO`, messages: [], actor: logPokemon(bEffettivo) }])
       const finishKO = () => {
         actionInProgressRef.current = false
         setAzioneInCorso(false)
@@ -1157,6 +1162,7 @@ export function BattagliaScene() {
         mostraMessaggi([`${bEffettivo.nome} è caduto!`])
         playSound('ko')
         const aggiornatoA = premiaConXP(pkmnA, statoBcorrente, bEffettivo)
+        appendChronicle([{ id: `${beginAction()}:winner`, kind: 'winner', side: 'A', winnerSide: 'A', title: `${aggiornatoA.nome} vince lo scontro`, messages: [], actor: logPokemon(aggiornatoA) }])
         setPkmnA(aggiornatoA)
         setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
         const nextB = squadraB.find(
@@ -1164,6 +1170,7 @@ export function BattagliaScene() {
         )
         if (nextB && !isSelvatico) {
           mostraMessaggi([`L'avversario manda in campo ${nextB.nome}!`])
+          appendChronicle([{ id: `${beginAction()}:switch-b`, kind: 'switch', side: 'B', title: `${nextB.nome} entra in campo`, messages: [], actor: logPokemon(nextB) }])
           setPkmnB(nextB)
           passaTurnoBaA(aggiornatoA, nextB)
           return
@@ -1227,6 +1234,7 @@ export function BattagliaScene() {
         presentStatus(statoRes, bEffettivo, () => eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, messaggiIniziali, suprema, statoRes))
         return
       }
+      if (statoRes.messaggi.length) appendChronicle(statusEvents(bEffettivo, statoRes, 'B', `${beginAction()}:paralysis`))
       bEffettivo = statoRes.istanza
       setPkmnB(bEffettivo)
       setSquadraB((sq) => updateInSquadra(sq, bEffettivo))
@@ -1241,7 +1249,9 @@ export function BattagliaScene() {
     if (mossaDefB && èMossaCura(mossaDefB)) {
       if (suprema) return
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
+      const actionId = beginAction()
       eseguiSequenzaCura(mossaDefB, 'B', () => {
+        appendChronicle([{ id: `${actionId}:heal`, kind: 'heal', side: 'B', title: `${bEffettivo.nome} usa ${mossaDefB.nome}`, messages: cura.messaggi, actor: logPokemon(cura.istanza), hpBefore: bEffettivo.hp, hpAfter: cura.istanza.hp }])
         setPkmnB(cura.istanza)
         setSquadraB((sq) => updateInSquadra(sq, cura.istanza))
         mostraMessaggi([...messaggiIniziali, ...cura.messaggi])
@@ -1257,10 +1267,8 @@ export function BattagliaScene() {
       passaTurnoBaA()
       return
     }
-    let nuovoA = { ...pkmnA, hp: Math.max(0, pkmnA.hp - ris.dannoFinale) }
-    if (ris.statoApplicato && nuovoA.hp > 0) {
-      nuovoA = applicaStato(nuovoA, ris.statoApplicato)
-    }
+    const settlement = resolveBattleAttack(ris, 'B', squadraA, squadraB)
+    const nuovoA = settlement.defenderAfterImpact
     const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
     eseguiSequenzaOffensiva(
       ris,
@@ -1270,26 +1278,25 @@ export function BattagliaScene() {
         setPkmnA(nuovoA)
         setSquadraA(nuovaSquadraA)
       },
-      () => {
-      const risoluzione = risolviAttaccanteDopoMossa(ris)
-      const bDopoAutodanno = risoluzione.istanza
+      (actionId) => {
+      const risoluzione = settlement.attackerProgression
+      const bDopoAutodanno = settlement.attacker
+      appendChronicle(settledAttackEvents(ris, settlement, 'B', actionId))
       mostraMessaggi([...messaggiIniziali, ...risoluzione.messaggi])
       if (risoluzione.livelliGuadagnati > 0) playSound('level-up')
       // La squadra B resta nella battaglia; la coda evoluzioni appartiene ad A.
       setPkmnB(bDopoAutodanno)
-      const nuovaSquadraB = updateInSquadra(squadraB, bDopoAutodanno)
+      const nuovaSquadraB = settlement.squadB
       setSquadraB(nuovaSquadraB)
       if (nuovoA.hp <= 0 || bDopoAutodanno.hp <= 0) playSound('ko')
 
       // Se A sopravvive al colpo e B cade per il proprio contraccolpo, A vince.
       // Nel doppio KO il premio è già stato assegnato al solo attaccante B.
-      let aggiornatoA = nuovoA
-      if (nuovoA.hp > 0 && bDopoAutodanno.hp <= 0) {
-        aggiornatoA = premiaConXP(nuovoA, bEffettivo, bDopoAutodanno)
-        setPkmnA(aggiornatoA)
-        setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
-      }
-      const esitoDopoMossa = esitoSquadre(updateInSquadra(nuovaSquadraA, aggiornatoA), nuovaSquadraB, nuovoA.hp <= 0 ? 'B' : undefined)
+      const aggiornatoA = settlement.defender
+      if (settlement.defenderProgression?.xpAssegnata) presentaPremioXP(nuovoA, settlement.defenderProgression)
+      setPkmnA(aggiornatoA)
+      setSquadraA(settlement.squadA)
+      const esitoDopoMossa = settlement.outcome
       if (esitoDopoMossa) {
         const vittoria = esitoDopoMossa === 'vittoria'
         mostraMessaggi([vittoria ? 'Hai vinto la battaglia!' : 'Hai perso la battaglia...'])
@@ -1304,6 +1311,7 @@ export function BattagliaScene() {
         : bDopoAutodanno
       if (bDopoAutodanno.hp <= 0) {
         mostraMessaggi([`${bDopoAutodanno.nome} è esausto! L'avversario manda in campo ${prossimoB.nome}!`])
+        appendChronicle([{ id: `${actionId}:switch-b`, kind: 'switch', side: 'B', title: `${prossimoB.nome} entra in campo`, messages: [], actor: logPokemon(prossimoB) }])
         setPkmnB(prossimoB)
       }
       if (nuovoA.hp <= 0) {
@@ -1327,6 +1335,7 @@ export function BattagliaScene() {
     const option = pending.request.options.find((item) => item.index === index)
     if (!option || getPokemon(current.specieId)?.mosse[index] !== option.moveId) return
     completedAudienceTurns.current.add(pending.request.turnKey)
+    appendChronicle([{ id: `${pending.request.turnKey}:audience`, kind: 'audience', side: 'B', title: 'Scelta del pubblico', messages: [message] }])
     setAudienceChoice(null)
     setMostraMoseB(false)
     // A public choice is a normal human action, including legacy SUPREMA moves.
@@ -1383,10 +1392,11 @@ export function BattagliaScene() {
           : { x: 0, y: 0 }
       }
       transition={{
-        duration: cameraShake ? cameraShake.ms / 1000 : 0.08,
+        duration: cameraShake ? cameraShake.ms / 1000 : 0.08 / animationSpeed,
         ease: 'easeOut',
       }}
     >
+      <BattleLogPanel chronicle={chronicle} busy={azioneInCorso || coinOpen || !!statusRoll} />
       {audienceChoice && !terminata && <BattleAudienceOverlay
         request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}
         remainingMs={audienceVote.remainingMs} error={audienceVote.error}
@@ -1764,592 +1774,5 @@ export function BattagliaScene() {
         />
       )}
     </motion.div>
-  )
-}
-
-// =============================================================
-// SOTTOCOMPONENTI
-// =============================================================
-
-function BattleLayoutItem({
-  layoutKey,
-  label,
-  rect,
-  editing,
-  onChange,
-  children,
-}: {
-  layoutKey: AdminBattleLayoutKey
-  label: string
-  rect: AdminLayoutRect
-  editing: boolean
-  onChange: (key: AdminBattleLayoutKey, rect: AdminLayoutRect) => void
-  children: ReactNode
-}) {
-  return (
-    <AdminLayoutItem
-      rootSelector="[data-battle-layout-root]"
-      label={label}
-      rect={rect}
-      editing={editing}
-      onChange={(nextRect) => onChange(layoutKey, nextRect)}
-      zIndex={20}
-    >
-      {children}
-    </AdminLayoutItem>
-  )
-}
-
-type ImpactPulseDisplay = {
-  id: number
-  side: 'A' | 'B'
-  color: string
-  strength: number
-}
-
-function ImpactPulseOverlay({
-  pulse,
-  layout,
-}: {
-  pulse: ImpactPulseDisplay
-  layout: AdminBattleLayout
-}) {
-  const point = getBattleSideCenter(layout, pulse.side)
-
-  const position = {
-    left: `${point.x}%`,
-    top: `${point.y}%`,
-  }
-
-  return (
-    <div
-      className="pointer-events-none absolute z-[64] -translate-x-1/2 -translate-y-1/2"
-      style={position}
-      aria-hidden="true"
-    >
-      <motion.div
-        initial={{ opacity: 0.95, scale: 0.25 }}
-        animate={{
-          opacity: [0.95, 0.72, 0],
-          scale: [
-            0.25,
-            pulse.strength,
-            pulse.strength * 1.9,
-          ],
-        }}
-        exit={{ opacity: 0 }}
-        transition={{
-          duration: 0.5,
-          ease: 'easeOut',
-        }}
-        className="h-28 w-28 rounded-full border-[3px]"
-        style={{
-          borderColor: pulse.color,
-          background: `radial-gradient(circle, ${pulse.color}55 0%, ${pulse.color}22 42%, transparent 70%)`,
-          boxShadow: `0 0 18px ${pulse.color}, 0 0 42px ${pulse.color}88, inset 0 0 20px ${pulse.color}66`,
-          mixBlendMode: 'screen',
-        }}
-      />
-    </div>
-  )
-}
-
-function InfoBox({
-  messaggi,
-  showOpponentButton,
-  onOpponentTurn,
-}: {
-  messaggi: string[]
-  showOpponentButton: boolean
-  onOpponentTurn: () => void
-}) {
-  const righe = messaggi.slice(-4)
-  const frameSrc = assetUrl('/ui/infobox.png')
-
-  return (
-    <div
-      className="arka-battle-font relative h-full w-full text-slate-950 drop-shadow-2xl"
-      style={{
-        backgroundImage: `url(${frameSrc})`,
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      <div
-        className={`absolute left-[8%] top-[16%] space-y-0.5 text-3xl leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)] ${
-          showOpponentButton ? 'right-[28%]' : 'right-[8%]'
-        }`}
-      >
-        {righe.map((msg, idx) => (
-          <p
-            key={`${idx}-${msg}`}
-            data-admin-layout-text-key={`message-${idx}`}
-            className="arka-layout-content whitespace-normal break-words"
-          >
-            {msg}
-          </p>
-        ))}
-      </div>
-
-      {showOpponentButton && (
-        <button
-          className="absolute bottom-[13%] right-[10%] rounded-md bg-blue-400 px-4 py-2 text-m text-white text-slate-950 shadow-lg hover:bg-blue-300 active:scale-95 [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
-          onClick={onOpponentTurn}
-        >
-          AVVERSARIO
-        </button>
-      )}
-    </div>
-  )
-}
-
-function ScambioModal({
-  squadra,
-  attivoId,
-  motivo,
-  onSelect,
-}: {
-  squadra: PokemonIstanza[]
-  attivoId: string
-  motivo: string
-  onSelect: (pokemon: PokemonIstanza) => void
-}) {
-  return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/62 px-6 backdrop-blur-sm">
-      <div className="w-[min(760px,92vw)] rounded-lg border border-white/15 bg-slate-950/92 p-5 text-white shadow-2xl">
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-extrabold">Scegli un Pokemon</h2>
-            <p className="mt-1 text-sm font-semibold text-slate-300">{motivo}</p>
-          </div>
-          <span className="text-xs font-bold uppercase tracking-wide text-amber-300">
-            Cambio squadra
-          </span>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          {squadra.slice(0, 6).map((pokemon) => {
-            const specie = getPokemon(pokemon.specieId)
-            const hpMax = calcolaHPMax(pokemon)
-            const pct = Math.max(0, Math.min(100, (pokemon.hp / hpMax) * 100))
-            const disabled = pokemon.hp <= 0 || pokemon.istanzaId === attivoId
-
-            return (
-              <button
-                key={pokemon.istanzaId}
-                disabled={disabled}
-                onClick={() => onSelect(pokemon)}
-                className="flex min-h-[116px] items-center gap-3 rounded-md border border-white/10 bg-slate-900/86 p-3 text-left shadow-lg transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-45"
-              >
-                <img
-                  src={assetUrl(`/sprites/front_sprites/${pokemon.specieId}.png`)}
-                  alt=""
-                  className="h-20 w-20 shrink-0 object-contain"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-sm font-extrabold">
-                      {pokemon.nome}
-                    </span>
-                    <span className="text-xs font-bold text-slate-300">
-                      LV. {pokemon.livello}
-                    </span>
-                  </div>
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/60">
-                    <div
-                      className="h-full bg-emerald-400"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <div className="mt-1 flex justify-between text-xs font-bold text-slate-300">
-                    <span>{pokemon.hp}/{hpMax}</span>
-                    <span>{pokemon.hp <= 0 ? 'KO' : specie?.tipo}</span>
-                  </div>
-                </div>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function SquadIndicator({
-  squadra,
-}: {
-  squadra: PokemonIstanza[]
-}) {
-  return (
-    <div className="relative z-10 flex h-full w-full items-center gap-1">
-      {squadra.map((p) => (
-        <div
-          key={p.istanzaId}
-          className={`w-3 h-3 rounded-full border border-white/60 ${
-            p.hp > 0 ? 'bg-emerald-400' : 'bg-slate-600'
-          }`}
-          title={`${p.nome} lv${p.livello} (${p.hp} HP)`}
-        />
-      ))}
-    </div>
-  )
-}
-
-function PokemonBattleSlot({
-  istanza,
-  position,
-  shaking,
-  shakePx,
-  shakeDurationMs,
-  flashing,
-  lunging,
-  activeAnimation,
-  replayKey,
-  holdReactionUntilImpact,
-  onAnimationStart,
-  onAnimationCue,
-  onAnimationComplete,
-}: {
-  istanza: PokemonIstanza
-  position: 'top-right' | 'bottom-left'
-  shaking: boolean
-  shakePx: number
-  shakeDurationMs: number
-  flashing: boolean
-  lunging: boolean
-  activeAnimation?: ArkamonBattleAnimation
-  replayKey: number
-  holdReactionUntilImpact: boolean
-  onAnimationStart: (animation: ArkamonBattleAnimation, replayKey: number) => void
-  onAnimationCue: (animation: ArkamonBattleAnimation, replayKey: number, cue: ArkamonAnimationCue) => void
-  onAnimationComplete: (animation: ArkamonBattleAnimation, replayKey: number) => void
-}) {
-  const isPlayer = position === 'bottom-left'
-  const spriteScale = useAdminStore((state) => state.theme.spriteScales[String(istanza.specieId)] ?? 1)
-  const side = isPlayer ? 'back' : 'front'
-  const spriteIdentity = `${istanza.istanzaId}:${istanza.specieId}:${side}`
-  const [failedIdentity, setFailedIdentity] = useState<string | null>(null)
-  const spriteFailed = failedIdentity === spriteIdentity
-  const isKO = istanza.hp <= 0
-  const battleAnimation: ArkamonBattleAnimation = isKO
-    ? 'ko'
-    : activeAnimation ?? 'idle'
-  const animationReplayKey = battleAnimation === 'ko' ? 0 : replayKey
-  const usesDedicatedSprites = !!getArkamonAnimationAsset(istanza.specieId, side, 'idle')
-  const hasDedicatedKO = !!getArkamonAnimationAsset(istanza.specieId, side, 'ko')
-
-  const completionCallbackRef = useRef(onAnimationComplete)
-  completionCallbackRef.current = onAnimationComplete
-  const startCallbackRef = useRef(onAnimationStart)
-  startCallbackRef.current = onAnimationStart
-  const cueCallbackRef = useRef(onAnimationCue)
-  cueCallbackRef.current = onAnimationCue
-  const currentIdentityRef = useRef(spriteIdentity)
-  currentIdentityRef.current = spriteIdentity
-  const completedTokenRef = useRef<string | null>(null)
-  const startedTokenRef = useRef<string | null>(null)
-  const releasedTokenRef = useRef<string | null>(null)
-  const deferredFailedHitRef = useRef<{ identity: string; replayKey: number } | null>(null)
-  const notifyAnimationStart = useCallback((animation: ArkamonBattleAnimation, startedReplayKey: number) => {
-    if (currentIdentityRef.current !== spriteIdentity) return
-    const token = `${spriteIdentity}:${animation}:${startedReplayKey}`
-    if (startedTokenRef.current === token) return
-    startedTokenRef.current = token
-    startCallbackRef.current(animation, startedReplayKey)
-  }, [spriteIdentity])
-  const notifyAnimationCue = useCallback((animation: ArkamonBattleAnimation, releasedReplayKey: number, cue: ArkamonAnimationCue) => {
-    if (currentIdentityRef.current !== spriteIdentity) return
-    const token = `${spriteIdentity}:${animation}:${releasedReplayKey}:${cue}`
-    if (releasedTokenRef.current === token) return
-    releasedTokenRef.current = token
-    cueCallbackRef.current(animation, releasedReplayKey, cue)
-  }, [spriteIdentity])
-  const notifyAnimationComplete = useCallback((animation: ArkamonBattleAnimation, completedReplayKey: number) => {
-    if (currentIdentityRef.current !== spriteIdentity) return
-    const token = `${spriteIdentity}:${animation}:${completedReplayKey}`
-    if (completedTokenRef.current === token) return
-    completedTokenRef.current = token
-    completionCallbackRef.current(animation, completedReplayKey)
-  }, [spriteIdentity])
-
-  useEffect(() => {
-    const failedHit = deferredFailedHitRef.current
-    if (failedHit && failedHit.identity !== spriteIdentity) deferredFailedHitRef.current = null
-    else if (failedHit && !holdReactionUntilImpact) {
-      deferredFailedHitRef.current = null
-      notifyAnimationComplete('hit', failedHit.replayKey)
-    }
-    if (battleAnimation === 'idle') {
-      completedTokenRef.current = null
-      startedTokenRef.current = null
-      releasedTokenRef.current = null
-      return
-    }
-    // A missing PNG leaves the emoji visible, but future actions must still release their waiter.
-    if (spriteFailed) {
-      notifyAnimationStart(battleAnimation, animationReplayKey)
-      if (battleAnimation === 'attack') notifyAnimationCue(battleAnimation, animationReplayKey, 'release')
-      if (battleAnimation === 'hit' && holdReactionUntilImpact) {
-        deferredFailedHitRef.current = { identity: spriteIdentity, replayKey: animationReplayKey }
-      } else notifyAnimationComplete(battleAnimation, animationReplayKey)
-    }
-  }, [spriteFailed, spriteIdentity, holdReactionUntilImpact, battleAnimation, animationReplayKey, notifyAnimationStart, notifyAnimationCue, notifyAnimationComplete])
-
-  const horizontalMotion = usesDedicatedSprites
-    ? 0
-    : shaking
-    ? [0, -shakePx, shakePx, -shakePx, shakePx, 0]
-    : lunging
-    ? isPlayer
-      ? [0, 30, 0]
-      : [0, -30, 0]
-    : 0
-  const innerDuration = shaking
-    ? shakeDurationMs / 1000
-    : lunging
-    ? 0.4
-    : flashing
-    ? 0.16
-    : 0.2
-
-  return (
-    <motion.div
-      className="relative z-10 h-full w-full"
-      initial={{ x: isPlayer ? -400 : 400, opacity: 0 }}
-      animate={{
-        x: 0,
-        opacity: isKO && !hasDedicatedKO ? 0.45 : 1,
-        filter: isKO && !hasDedicatedKO ? 'grayscale(100%)' : 'grayscale(0%)',
-      }}
-      exit={{ y: 180, opacity: 0, rotate: isPlayer ? -15 : 15, filter: 'grayscale(100%)' }}
-      transition={{ type: 'spring', stiffness: 110, damping: 16 }}
-    >
-      <motion.div
-        animate={{
-          x: horizontalMotion,
-          filter: flashing && !usesDedicatedSprites
-            ? ['brightness(1)', 'brightness(2.5) saturate(0.35)', 'brightness(1)']
-            : 'brightness(1)',
-        }}
-        transition={{ duration: innerDuration, ease: 'easeOut' }}
-        className="flex h-full w-full items-center justify-center drop-shadow-2xl"
-      >
-        {!spriteFailed ? (
-          <ArkamonBattleSprite
-            speciesId={istanza.specieId}
-            name={istanza.nome}
-            side={side}
-            animation={battleAnimation}
-            replayKey={animationReplayKey}
-            holdReactionUntilImpact={holdReactionUntilImpact}
-            onAnimationStart={notifyAnimationStart}
-            onAnimationCue={notifyAnimationCue}
-            onAnimationComplete={notifyAnimationComplete}
-            scale={spriteScale}
-            className="w-full h-full object-contain"
-            onError={() => setFailedIdentity(spriteIdentity)}
-          />
-        ) : (
-          <span className="flex h-full w-full items-center justify-center rounded-full border-4 border-white bg-arka-surface text-5xl">
-            {isPlayer ? '🐺' : '🦈'}
-          </span>
-        )}
-      </motion.div>
-    </motion.div>
-  )
-}
-
-function HpBar({
-  nome,
-  livello,
-  hp,
-  hpMax,
-  stato,
-  side,
-  className = '',
-}: {
-  nome: string
-  livello: number
-  hp: number
-  hpMax: number
-  stato?: Stato
-  side: 'player' | 'enemy'
-  className?: string
-}) {
-  const hpColors = useAdminStore((state) => state.theme.colors)
-  const pct = Math.max(0, Math.min(100, (hp / hpMax) * 100))
-  const colore = pct > 60 ? hpColors.hpHigh : pct > 25 ? hpColors.hpMid : hpColors.hpLow
-  const frameSrc = assetUrl(`/ui/hp_bar_${side}.png`)
-  const barSrc = assetUrl('/ui/hp_bar.png')
-  const barClipId = `hp-bar-inner-${side}`
-  const fillWidth = pct === 0 ? 0 : 23 + pct * 5
-
-  return (
-    <div
-      className={`arka-battle-font relative z-20 h-full w-full text-white arka-letter-outline ${className}`}
-      data-battle-hp-side={side}
-      data-battle-hp={hp}
-      style={{
-        backgroundImage: `url(${frameSrc})`,
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      {stato && <span className="absolute bottom-full left-0 z-30 -translate-x-1/4 sm:mb-1"><StatusToken stato={stato} compact /></span>}
-      <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
-        <span
-          data-admin-layout-text-key="pokemon-name"
-          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.25vw,18px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
-        >
-          {nome}
-
-        </span>
-        <span
-          data-admin-layout-text-key="pokemon-level"
-          className="arka-layout-content shrink-0 text-[clamp(11px,1vw,15px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
-        >
-          LV. {livello}
-        </span>
-      </div>
-      <div className="absolute left-[10.25%] top-[66.5%] h-[33.5%] w-[59.7%]">
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="0 0 507 40"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <defs>
-            <clipPath id={barClipId}>
-              <path d="M 16 3 H 503 V 20 C 503 29 499 35 493 36 H 3 V 20 C 3 12 8 5 16 3 Z" />
-            </clipPath>
-          </defs>
-          <motion.rect
-            x="-20"
-            y="3"
-            height="33"
-            clipPath={`url(#${barClipId})`}
-            initial={false}
-            animate={{ width: fillWidth, rx: pct === 100 ? 0 : 16.5, fill: colore }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          />
-        </svg>
-        <img
-          src={barSrc}
-          alt=""
-          className="pointer-events-none absolute inset-0 h-full w-full mix-blend-multiply"
-        />
-      </div>
-      {side === 'player' && (
-        <div
-          data-admin-layout-text-key="pokemon-hp"
-          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,0.9vw,13px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
-        >
-          {hp}/{hpMax}
-        </div>
-      )}
-    </div>
-  )
-}
-
-function ActionButton({
-  children,
-  disabled,
-  onClick,
-}: {
-  children: ReactNode
-  disabled: boolean
-  onClick: () => void
-}) {
-  return (
-    <motion.button
-      whileHover={!disabled ? { y: -1, scale: 1.02 } : {}}
-      whileTap={!disabled ? { scale: 0.96 } : {}}
-      disabled={disabled}
-      onClick={onClick}
-      className="rounded-md bg-amber-400 px-5 py-2.5 text-sm font-extrabold text-slate-950 shadow-lg transition-colors hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-45"
-    >
-      {children}
-    </motion.button>
-  )
-}
-
-function SupremeButton({ disabled, recoil, onClick }: {
-  disabled: boolean
-  recoil: number
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      aria-label="Mossa Suprema"
-      title={`Scegli un attacco: danno doppio, contraccolpo ${recoil} HP al livello attuale; 50% degli HP massimi dopo eventuale salita di livello`}
-      disabled={disabled}
-      onClick={onClick}
-      className="flex h-full w-full min-h-0 min-w-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border-2 border-amber-200 bg-gradient-to-b from-amber-400 to-orange-600 px-0 text-center font-black text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:px-1"
-    >
-      <span className="max-w-full truncate text-[clamp(9px,1.4vw,20px)] leading-tight tracking-tight"><span className="hidden sm:inline">Mossa<br /></span>Suprema</span>
-      <span className="hidden text-[clamp(9px,1vw,14px)] leading-tight sm:block">×2 · −{recoil} HP</span>
-    </button>
-  )
-}
-
-function MoveButton({
-  mossa,
-  livello,
-  textKeyPrefix,
-  disabled,
-  onClick,
-}: {
-  mossa: MossaDef
-  livello: number
-  textKeyPrefix: string
-  disabled: boolean
-  onClick: () => void
-}) {
-  const { dadi, incremento } = getMossaAlLivello(mossa, livello)
-  const frameSrc = assetUrl('/ui/move_button.png')
-  const typeSrc = assetUrl(`/ui/${mossa.tipo.toLocaleLowerCase('it-IT')}.png`)
-
-  return (
-    <motion.button
-      whileHover={!disabled ? { y: -2, scale: 1.02 } : {}}
-      whileTap={!disabled ? { scale: 0.95 } : {}}
-      disabled={disabled}
-      onClick={onClick}
-      className="arka-battle-font relative h-full min-h-0 overflow-hidden px-[8%] py-[7%] text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
-      style={{
-        backgroundImage: `url(${frameSrc})`,
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      <div
-        data-admin-layout-text-key={`${textKeyPrefix}-name`}
-        className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
-      >
-        {mossa.nome}
-      </div>
-      <div className="absolute bottom-[14%] left-[8%] flex w-[48%] items-center justify-start">
-        <span
-          data-admin-layout-text-key={`${textKeyPrefix}-dice`}
-          className="arka-layout-content flex items-center gap-[0.14em] whitespace-nowrap text-[clamp(15px,1.65vw,26px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
-        >
-          {èMossaSoloStato(mossa) ? <span className="text-[0.65em]">Status</span> : <>
-            <span>{dadi}</span>
-            <span className="text-[0.78em]" aria-label="dadi D6">🎲</span>
-            {incremento !== 0 && <span>{incremento > 0 ? `+${incremento}` : incremento}</span>}
-          </>}
-        </span>
-      </div>
-      <div className="absolute bottom-[14%] right-[9%] flex h-[22%] w-[15%] items-center justify-center">
-        <img
-          data-admin-layout-text-key={`${textKeyPrefix}-type`}
-          src={typeSrc}
-          alt={mossa.tipo}
-          title={mossa.tipo}
-          className="arka-layout-content max-h-full max-w-full object-contain drop-shadow-md"
-        />
-      </div>
-    </motion.button>
   )
 }

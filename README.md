@@ -21,6 +21,7 @@ npm test
 ## Stato Attuale
 
 - Ultima verifica: **10 ottobre 2026**, [audit del progetto](./docs/project-audit-2026-10-10.md).
+- Nuovi strumenti: [diario, backup completo, editor delle interazioni, cronache e impostazioni](./docs/player-tools.md); [verifica dell'integrazione](./docs/improvements-audit-2026-10-10.md).
 - Build web: `npm run build` completato senza errori
 - Test: il rapporto corrente contiene il risultato della suite completa e delle prove nel browser; i rapporti precedenti restano storici.
 - Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md), [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) e [correzione paralisi/sonno](./docs/status-corrections-audit-2026-10-06.md) del 6 ottobre 2026.
@@ -44,6 +45,9 @@ npm test
 - Audio da file per mosse, eventi, dadi e transizioni; musica generativa Web Audio per scene, effetti generativi di riserva e toggle muto persistito.
 - Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
 - Votazioni del pubblico con QR separati per NPC e Capipalestra/PvP; [configurazione e utilizzo](./docs/audienceVoting.md).
+- Menu **Partita**: diario individuale e riepilogo del turno, backup versionato con anteprima/ripristino/copia precedente, archivio delle ultime 20 battaglie e preferenze separate per musica, effetti, velocità e movimento ridotto.
+- **Admin → Interazioni**: dialoghi, cure, incontri, requisiti e ricompense sui pallini; completamento individuale/condiviso, tappe collegate, import/export JSON e adattatore Tiled. Strade, ID e regole di accesso conservati.
+- Cronaca esplicativa e consultazione dei risultati già rivelati, esportabili senza nuovi dadi; test browser desktop/mobile e controlli di accessibilità in CI.
 - Workflow GitHub Pages presente: la disponibilità dell'hosting per il repository privato resta da risolvere. Una build locale riuscita non conferma un deploy online.
 
 ## Architettura
@@ -54,6 +58,10 @@ src/
     mappe-griglia/      Prototipo legacy dell'overworld a griglia
   engine/               Logica pura testabile
   store/                Stato globale Zustand + localStorage
+  save/                 Recupero, serializzazione e ripristino della campagna
+  interactions/         Catalogo, editor e risoluzione delle attività dei pallini
+  journal/              Diario individuale e riepilogo del turno
+  settings/             Menu partita, preferenze audio e animazioni
   scenes/               Schermate React
   types/                Tipi dominio condivisi
   utils/                Helper runtime asset
@@ -72,6 +80,7 @@ npm run dev       # server locale Vite
 npm run build     # type-check + build produzione
 npm run preview   # preview dist/
 npm test          # suite Vitest
+npm run test:e2e  # flussi desktop/mobile + accessibilità, richiede Chromium
 npm run tauri:dev # app desktop in sviluppo, richiede Rust/Cargo
 npm run tauri:build # build desktop/installer, richiede Rust/Cargo
 ```

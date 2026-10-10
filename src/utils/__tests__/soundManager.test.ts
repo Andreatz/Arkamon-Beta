@@ -94,7 +94,8 @@ describe('soundManager', () => {
         expect(oscillator.disconnect).toHaveBeenCalledOnce()
         expect(oscillator.onended).toBeNull()
       }
-      for (const gain of gains) expect(gain.disconnect).toHaveBeenCalledOnce()
+      // The channel bus is reused; per-tone envelope nodes are released.
+      for (const [index, gain] of gains.entries()) expect(gain.disconnect).toHaveBeenCalledTimes(index === 1 ? 0 : 1)
       audio.playMusic('battle')
       expect(oscillators).toHaveLength(3)
     } finally { vi.unstubAllGlobals() }
@@ -129,6 +130,26 @@ describe('soundManager', () => {
       for (const oscillator of oscillators.slice(1, 3)) expect(oscillator.stop).toHaveBeenCalledTimes(2)
       audio.stopMusic()
       for (const oscillator of oscillators.slice(3)) expect(oscillator.disconnect).toHaveBeenCalledOnce()
+    } finally { vi.unstubAllGlobals() }
+  })
+
+  it('updates independent music/effects channel gains while sounds are active', async () => {
+    vi.resetModules()
+    const gains: { gain: { setValueAtTime: ReturnType<typeof vi.fn>; exponentialRampToValueAtTime: ReturnType<typeof vi.fn> } }[] = []
+    class FakeContext {
+      state = 'running'; currentTime = 2; destination = {}
+      createOscillator() { return { frequency: { setValueAtTime: vi.fn() }, connect: vi.fn(), start: vi.fn(), stop: vi.fn(), disconnect: vi.fn(), onended: null } }
+      createGain() { const node = { gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }, connect: vi.fn(), disconnect: vi.fn() }; gains.push(node); return node }
+    }
+    vi.stubGlobal('window', { AudioContext: FakeContext, setInterval: vi.fn(), clearInterval: vi.fn() })
+    try {
+      const audio = await import('../soundManager')
+      audio.playMusic('title')
+      audio.setChannelVolumes(0.2, 0.7)
+      expect(gains[1].gain.setValueAtTime).toHaveBeenLastCalledWith(0.2, 2)
+      audio.setChannelVolumes(0, 0.9)
+      expect(gains[1].gain.setValueAtTime).toHaveBeenLastCalledWith(0, 2)
+      audio.stopMusic()
     } finally { vi.unstubAllGlobals() }
   })
 })

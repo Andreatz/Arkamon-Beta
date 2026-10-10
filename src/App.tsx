@@ -15,6 +15,9 @@ import { AudioController } from '@components/AudioController'
 import { AdminOverlay } from '@/admin/AdminOverlay'
 import { AdminRuntime } from '@/admin/AdminRuntime'
 import { getLocalMap } from '@/data/localMaps'
+import { PlayerTools } from '@/settings/PlayerTools'
+import { MotionConfig } from 'framer-motion'
+import { useGamePreferences } from '@/settings/gamePreferences'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
@@ -34,6 +37,7 @@ function App() {
   const [hash, setHash] = useState(window.location.hash)
   useEffect(() => { const sync = () => setHash(window.location.hash); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync) }, [])
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
+  const campaignRevision = useGameStore((s) => s.campaignRevision)
   const localMapOpen = (scenaCorrente.scena === 'citta' || scenaCorrente.scena === 'percorso')
     && !!getLocalMap(String(scenaCorrente.payload?.luogo ?? (scenaCorrente.scena === 'citta' ? 'Venezia' : 'Percorso_1')))
 
@@ -69,7 +73,8 @@ function App() {
     <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}`}>
       <AdminRuntime />
       <AdminOverlay />
-      <SceneTransition navigation={scenaCorrente} renderScene={renderPresentedScene}>
+      <PlayerTools />
+      <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene}>
         <AudioController />
       </SceneTransition>
     </div>
@@ -78,7 +83,7 @@ function App() {
 
 function LabShell({ children }: { children: React.ReactNode }) {
   return <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
-    <AdminRuntime /><AdminOverlay /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
+    <AdminRuntime /><AdminOverlay /><PlayerTools /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
   </div>
 }
 
@@ -115,4 +120,8 @@ function renderScena(scena: SceneId) {
   }
 }
 
-export default App
+function GameApp() {
+  const motion = useGamePreferences((state) => state.reducedMotion)
+  return <MotionConfig reducedMotion={motion === 'system' ? 'user' : motion === 'on' ? 'always' : 'never'}><App /></MotionConfig>
+}
+export default GameApp

@@ -491,7 +491,7 @@ export function MappaGrigliaScene() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (sceneInputBlocked || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return
-      if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable="true"], .arka-admin-panel')) return
+      if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable="true"], .arka-admin-panel, [role="dialog"]')) return
       const k = e.key.toLowerCase()
       if (k === 'w' || k === 'arrowup') {
         e.preventDefault()

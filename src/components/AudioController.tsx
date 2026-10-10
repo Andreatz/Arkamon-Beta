@@ -6,15 +6,21 @@ import {
   playMusic,
   playSound,
   setAudioMuted,
+  setChannelVolumes,
   stopMusic,
   unlockAudio,
 } from '@/utils/soundManager'
+import { useGamePreferences } from '@/settings/gamePreferences'
 
 export function AudioController() {
   const scena = useSceneNavigation().scena
   const compactControl = scena === 'deposito' || scena === 'battaglia'
   const audioMuted = useGameStore((s) => s.audioMuted)
   const setMutedStore = useGameStore((s) => s.setAudioMuted)
+  const musicVolume = useGamePreferences((s) => s.musicVolume)
+  const effectsVolume = useGamePreferences((s) => s.effectsVolume)
+
+  useEffect(() => { setChannelVolumes(musicVolume, effectsVolume) }, [musicVolume, effectsVolume])
 
   useEffect(() => {
     setAudioMuted(audioMuted)

@@ -9,6 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "vfx:runtime": "node scripts/build-vfx-runtime-assets.mjs",
     "deploy": "npm run build && gh-pages -d dist",
     "tauri:dev": "tauri dev",
@@ -24,6 +25,8 @@
     "zustand": "4.5.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.64.0",
     "@tauri-apps/cli": "2.11.2",
     "@types/node": "25.9.1",
     "@types/qrcode": "1.5.5",
