@@ -3,6 +3,10 @@ import { restoreBattleCheckpoint, settledBattleCheckpoint } from '@/components/b
 import { BattleOpeningOverlay } from '@/components/battle/BattleOpeningOverlay'
 import { SupremeMoveDialog } from '@/components/battle/SupremeMoveDialog'
 import { StatusToken } from '@/components/battle/StatusToken'
+import { BattleAudienceOverlay } from '@/components/battle/BattleAudienceOverlay'
+import { audienceChannelForBattle, createAudienceBattleId, makeAudienceRoundRequest, validAudienceWinner } from '@/components/battle/audienceBattle'
+import { useAudienceStore } from '@/audience/useAudienceStore'
+import { useAudienceTurn } from '@/audience/useAudienceTurn'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
@@ -34,6 +38,7 @@ import type {
   RisultatoMossa,
   Stato,
   TipoPokemon,
+  BattleCheckpoint,
 } from '@/types'
 import type { AdminBattleLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
@@ -135,6 +140,15 @@ export function BattagliaScene() {
       : s.giocatore2.inventario.masterball ?? 0
   )
   const [initialCheckpoint] = useState(() => battaglia ? restoreBattleCheckpoint(battaglia) : null)
+  const audienceEnabled = useAudienceStore((s) => s.enabled)
+  const audienceSession = useAudienceStore((s) => s.session)
+  const audienceDuration = useAudienceStore((s) => s.durationSeconds)
+  const audienceBattleId = useRef(initialCheckpoint?.audienceBattleId ?? createAudienceBattleId())
+  const opponentTurnNumber = useRef(initialCheckpoint?.opponentTurnNumber ?? 0)
+  type PendingAudience = NonNullable<BattleCheckpoint['audiencePending']> & { pokemon: PokemonIstanza; messages: string[] }
+  const [audienceChoice, setAudienceChoice] = useState<PendingAudience | null>(null)
+  const audienceVote = useAudienceTurn(audienceChoice?.request ?? null)
+  const completedAudienceTurns = useRef(new Set<string>())
   const [esito, setEsito] = useState<'vittoria' | 'sconfitta' | null>(initialCheckpoint?.outcome ?? null)
 
   const [pkmnA, updatePkmnA] = useState<PokemonIstanza | null>(null)
@@ -274,6 +288,9 @@ export function BattagliaScene() {
           ...initialCheckpoint.switchRequest,
           pendingB: initialCheckpoint.switchRequest.prossimoPasso === 'passaAB' ? battaglia.pokemonB : undefined,
         })
+      } else if (initialCheckpoint?.phase === 'audience' && initialCheckpoint.audiencePending) {
+        setTurnoA(false)
+        setAudienceChoice({ ...initialCheckpoint.audiencePending, pokemon: battaglia.pokemonB, messages: initialCheckpoint.rivalMessages })
       } else if (initialCheckpoint?.phase === 'rival-move') {
         setTurnoA(false)
         setMostraMoseB(true)
@@ -319,7 +336,11 @@ export function BattagliaScene() {
       openingComplete: true,
       evolutions: evoluzioniInAttesa,
       rivalMessages: messaggiTurnoBRef.current,
+      audienceBattleId: audienceBattleId.current,
+      opponentTurnNumber: opponentTurnNumber.current,
+      audiencePending: audienceChoice ? { sessionId: audienceChoice.sessionId, request: audienceChoice.request } : undefined,
     })
+    if (audienceChoice) checkpoint.rivalMessages = audienceChoice.messages
     aggiornaBattaglia({
       pokemonA: pkmnA,
       pokemonB: pkmnB,
@@ -335,7 +356,64 @@ export function BattagliaScene() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkmnA, pkmnB, squadraA, squadraB, coinOpen, statusRoll, azioneInCorso, moveVfx,
     diceRoll, pendingHealth, turnoA, mostraMoseB, attesaPassaggio, scambioRichiesto,
-    terminata, esito, evoluzioniInAttesa, infoBoxMessaggi, aggiornaBattaglia])
+    terminata, esito, evoluzioniInAttesa, infoBoxMessaggi, aggiornaBattaglia, audienceChoice])
+
+  useEffect(() => {
+    if (!audienceChoice || !pkmnB || !pkmnA || coinOpen || statusRoll || azioneInCorso || actionInProgressRef.current) return
+    if (terminata || turnoA || scambioRichiesto || audienceChoice.pokemon.istanzaId !== pkmnB.istanzaId) {
+      void audienceVote.cancel().catch(() => {})
+      setAudienceChoice(null)
+      return
+    }
+    if (!audienceEnabled || audienceSession?.sessionId !== audienceChoice.sessionId) {
+      void audienceVote.cancel().catch(() => {})
+      finishAudienceChoice(audienceChoice.request.fallbackIndex, 'Votazione disattivata: il rivale sceglie automaticamente.')
+      return
+    }
+    const result = audienceVote.round
+    if (!result || audienceVote.status !== 'closed') return
+    const currentKey = `${audienceBattleId.current}:B:${opponentTurnNumber.current}:${pkmnB.istanzaId}`
+    const index = validAudienceWinner(audienceChoice, result, pkmnB, currentKey)
+    if (index === null) return
+    const selected = audienceChoice.request.options.find((option) => option.index === index)!
+    const reason = result.resolution === 'no-votes' ? 'Nessun voto: il rivale sceglie automaticamente.'
+      : result.resolution === 'tie' ? `Parità: è stata estratta ${selected.name}.`
+      : `Il pubblico ha scelto ${selected.name} (${result.counts[index]} voti).`
+    finishAudienceChoice(index, reason)
+    // A response belongs to its durable B-turn identity. Refresh execution
+    // callbacks without restarting the server polling on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audienceChoice, audienceVote.round, audienceVote.status, audienceEnabled, audienceSession?.sessionId,
+    pkmnA, pkmnB, turnoA, terminata, scambioRichiesto, coinOpen, statusRoll, azioneInCorso])
+
+  useEffect(() => {
+    // The PvP move screen already completed B's mandatory status step. Starting
+    // audience mode here must not apply sleep or poison a second time.
+    if (!mostraMoseB || !audienceEnabled || !audienceSession || !battaglia || !pkmnA || !pkmnB
+      || audienceChoice || terminata || coinOpen || statusRoll || azioneInCorso || actionInProgressRef.current) return
+    const request = makeAudienceRoundRequest(battaglia, pkmnB, pkmnA,
+      audienceBattleId.current, opponentTurnNumber.current, audienceDuration)
+    if (request) {
+      setAudienceChoice({ sessionId: audienceSession.sessionId, request, pokemon: pkmnB, messages: messaggiTurnoBRef.current })
+      setMostraMoseB(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mostraMoseB, audienceEnabled, audienceSession?.sessionId, audienceChoice,
+    pkmnA, pkmnB, terminata, coinOpen, statusRoll, azioneInCorso, audienceDuration])
+
+  useEffect(() => {
+    // A corrupted/disabled saved ballot still contains a B whose mandatory
+    // status step was completed. NPC recovery chooses a move without re-ticking it.
+    if (!mostraMoseB || battaglia?.tipo === 'PVP' || audienceEnabled && audienceSession
+      || audienceChoice || !pkmnA || !pkmnB || terminata || coinOpen || statusRoll
+      || azioneInCorso || actionInProgressRef.current) return
+    setMostraMoseB(false)
+    const messages = messaggiTurnoBRef.current
+    messaggiTurnoBRef.current = []
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), scegliMossaIA(pkmnB, pkmnA), messages)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mostraMoseB, audienceEnabled, audienceSession?.sessionId, audienceChoice,
+    pkmnA, pkmnB, terminata, coinOpen, statusRoll, azioneInCorso])
 
   useEffect(() => {
     if (infoBoxMessaggi.length === 0) return
@@ -693,6 +771,7 @@ export function BattagliaScene() {
   }
 
   const tornaIndietro = () => {
+    if (audienceChoice) void audienceVote.cancel().catch(() => {})
     if (isNPC && esito) risolviBattagliaNPC(esito)
     for (const p of squadraA) aggiornaPokemon(giocatoreAttivo, p)
     terminaBattaglia(false)
@@ -740,6 +819,7 @@ export function BattagliaScene() {
   }
 
   const passaTurnoBaA = (updatedA = latestPokemon.current.A, updatedB = latestPokemon.current.B) => {
+    opponentTurnNumber.current += 1
     if (nextSide('B', updatedA, updatedB) === 'B' && updatedB) { setTurnoA(false); if (isPvP) setAttesaPassaggio({ direzione: 'A→B', pendingB: updatedB }); else setAttesaAvversario(updatedB); return }
     setAttesaAvversario(null)
     if (isPvP) {
@@ -769,6 +849,8 @@ export function BattagliaScene() {
   }
 
   const apriScambio = (richiesta: PendingSwitch) => {
+    if (audienceChoice) void audienceVote.cancel().catch(() => {})
+    setAudienceChoice(null)
     setMostraMoseB(false)
     setAttesaAvversario(null)
     mostraMessaggi(['Scegli un Pokemon dalla squadra.'])
@@ -1082,6 +1164,16 @@ export function BattagliaScene() {
       return
     }
 
+    if (audienceEnabled && audienceSession && battaglia && audienceChannelForBattle(battaglia)) {
+      const request = makeAudienceRoundRequest(battaglia, bEffettivo, pkmnA,
+        audienceBattleId.current, opponentTurnNumber.current, audienceDuration)
+      if (request) {
+        setMostraMoseB(false)
+        setAudienceChoice({ sessionId: audienceSession.sessionId, request, pokemon: bEffettivo, messages: statoRes.messaggi })
+        return
+      }
+    }
+
     if (isPvP) {
       messaggiTurnoBRef.current = statoRes.messaggi
       setMostraMoseB(true)
@@ -1201,6 +1293,26 @@ export function BattagliaScene() {
     })
   }
 
+  function finishAudienceChoice(index: 0 | 1 | 2, message: string) {
+    const pending = audienceChoice
+    if (!pending || completedAudienceTurns.current.has(pending.request.turnKey)
+      || actionInProgressRef.current || azioneInCorso || terminata || turnoA
+      || latestPokemon.current.B?.istanzaId !== pending.pokemon.istanzaId) return
+    const current = latestPokemon.current.B
+    const option = pending.request.options.find((item) => item.index === index)
+    if (!option || getPokemon(current.specieId)?.mosse[index] !== option.moveId) return
+    completedAudienceTurns.current.add(pending.request.turnKey)
+    setAudienceChoice(null)
+    setMostraMoseB(false)
+    eseguiMossaB(current, calcolaHPMax(current), index, [...pending.messages, message])
+  }
+
+  const continueWithoutAudience = () => {
+    if (!audienceChoice) return
+    void audienceVote.cancel().catch(() => {})
+    finishAudienceChoice(audienceChoice.request.fallbackIndex, 'La regia continua senza votazione: il rivale sceglie automaticamente.')
+  }
+
   const bgBattaglia = customBattleBackground
     ? assetUrl(customBattleBackground)
     : getBackground(luogoRitorno) ?? BATTLE_BG_DEFAULT
@@ -1248,6 +1360,12 @@ export function BattagliaScene() {
         ease: 'easeOut',
       }}
     >
+      {audienceChoice && !terminata && <BattleAudienceOverlay
+        request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}
+        remainingMs={audienceVote.remainingMs} error={audienceVote.error}
+        joinUrl={audienceSession?.joinUrls[audienceChoice.request.channel] ?? ''}
+        onRetry={audienceVote.retry} onCloseEarly={audienceVote.closeEarly} onFallback={continueWithoutAudience}
+      />}
       {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
       {statusRoll ? <BattleOpeningOverlay key={statusRoll.id} kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
       {supremaSide && !terminata && !azioneInCorso && !coinOpen && !statusRoll && (

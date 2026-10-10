@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
+import { AdminAudiencePanel } from '@/audience/AdminAudiencePanel'
 import { AdminAssetEditor } from './AdminAssetEditor'
 import { AdminColorEditor } from './AdminColorEditor'
 import { AdminImportExport } from './AdminImportExport'
@@ -12,7 +13,7 @@ import './adminPanel.css'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 
-type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json'
+type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience'
 
 const tabs: { id: AdminTab; label: string }[] = [
   { id: 'colors', label: 'Colori' },
@@ -23,6 +24,7 @@ const tabs: { id: AdminTab; label: string }[] = [
   { id: 'vfx', label: 'VFX' },
   { id: 'presets', label: 'Preset' },
   { id: 'json', label: 'Import/Export' },
+  { id: 'audience', label: 'Pubblico' },
 ]
 
 export function AdminPanel() {
@@ -61,7 +63,7 @@ export function AdminPanel() {
           ['battle-rules-lab', 'Moneta e status'], ['vfx-lab', 'VFX mosse'], ['audio-lab', 'Suoni'], ['arkamon-lab', 'Animazioni Arkamon'], ['dice-lab', 'Dadi'], ['transition-lab', 'Transizioni'], ['deposit-lab', 'Deposito'],
         ].map(([hash, label]) => <a key={hash} className="rounded border p-2 text-center" href={`#${hash}`} onClick={() => setPanelOpen(false)}>{label}</a>)}</div></details>
       </div>
-      <nav className="grid grid-cols-4 sm:grid-cols-8 border-b border-[var(--arka-border)] text-[10px] font-bold">
+      <nav className="grid grid-cols-3 sm:grid-cols-9 border-b border-[var(--arka-border)] text-[10px] font-bold">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -87,6 +89,7 @@ export function AdminPanel() {
         {activeTab === 'vfx' ? <AdminVfxEditor /> : null}
         {activeTab === 'presets' ? <AdminPresetEditor /> : null}
         {activeTab === 'json' ? <AdminImportExport /> : null}
+        {activeTab === 'audience' ? <AdminAudiencePanel /> : null}
       </div>
     </section>
   )
