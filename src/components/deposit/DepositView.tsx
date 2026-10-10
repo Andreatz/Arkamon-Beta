@@ -134,7 +134,7 @@ export function DepositView({
           <p className="deposit-hint arka-layout-content" role="status" data-admin-layout-text-key="deposit-hint">
             {selectedPokemon
               ? `${selectedPokemon.nome} selezionato: scegli dove spostarlo o scambiarlo.`
-              : 'Scegli un Arkamon, poi il posto in cui spostarlo o scambiarlo.'}
+              : 'Scegli un Arkamon, poi il posto in cui spostarlo o scambiarlo. La squadra consente al massimo 5 livelli di differenza.'}
           </p>
           <button type="button" className="deposit-back" aria-label="Torna indietro" title="Torna indietro" onClick={onBack}>
             <img src={assetUrl('/ui/freccia.png')} alt="" />

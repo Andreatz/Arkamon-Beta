@@ -22,6 +22,7 @@ npm test
 
 - Ultima verifica: **10 ottobre 2026**, [audit del progetto](./docs/project-audit-2026-10-10.md).
 - Nuovi strumenti: [diario, backup completo, editor delle interazioni, cronache e impostazioni](./docs/player-tools.md); [verifica dell'integrazione](./docs/improvements-audit-2026-10-10.md).
+- Nuove modalità: [Arkadex, Arkastore, registro del match, sfide a seed e Fanta-Team](./docs/arkadex-arkastore-challenges.md), con cap di cinque livelli in squadra; [verifica delle cinque funzioni](./docs/game-features-audit-2026-10-10.md).
 - Build web: `npm run build` completato senza errori
 - Test: il rapporto corrente contiene il risultato della suite completa e delle prove nel browser; i rapporti precedenti restano storici.
 - Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md), [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) e [correzione paralisi/sonno](./docs/status-corrections-audit-2026-10-06.md) del 6 ottobre 2026.
@@ -48,6 +49,10 @@ npm test
 - Menu **Partita**: diario individuale e riepilogo del turno, backup versionato con anteprima/ripristino/copia precedente, archivio delle ultime 20 battaglie e preferenze separate per musica, effetti, velocità e movimento ridotto.
 - **Admin → Interazioni**: dialoghi, cure, incontri, requisiti e ricompense sui pallini; completamento individuale/condiviso, tappe collegate, import/export JSON e adattatore Tiled. Strade, ID e regole di accesso conservati.
 - Cronaca esplicativa e consultazione dei risultati già rivelati, esportabili senza nuovi dadi; test browser desktop/mobile e controlli di accessibilità in CI.
+- Arkadex individuale con specie viste/ottenute, informazioni nascoste prima della scoperta e animazioni su richiesta; registro complessivo della campagna esportabile.
+- Arkastore nelle città, carrello atomico e Borsa fuori/dentro battaglia: Pozioni, Rianimatori, cure degli status e Masterball.
+- Squadre con differenza massima di cinque livelli: catture fuori fascia nel deposito e XP conservata al cap, senza cambiare HP o livelli dei vecchi salvataggi.
+- Sfide a seed e Fanta-Team Builder con sei specie al livello 20, budget 100, codici condivisibili, salvataggi separati e classifica locale della stessa configurazione.
 - Workflow GitHub Pages presente: la disponibilità dell'hosting per il repository privato resta da risolvere. Una build locale riuscita non conferma un deploy online.
 
 ## Architettura

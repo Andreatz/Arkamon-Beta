@@ -23,7 +23,7 @@ function ActivityDialog({ open, onClose, children, title = 'Attività del luogo'
     const keyboard = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { event.preventDefault(); onClose(); return }
       if (event.key !== 'Tab') return
-      const controls = Array.from(element.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], [tabindex="0"]'))
+      const controls = Array.from(element.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]')).filter((control) => control.getClientRects().length)
       const first = controls[0], last = controls[controls.length - 1]
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }

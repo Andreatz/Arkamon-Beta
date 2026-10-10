@@ -12,6 +12,7 @@ import type { StatoBattaglia } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
 import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
 import { LocalMapScene } from './LocalMapScene'
+import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 
 const CESPUGLI = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const
 
@@ -48,12 +49,14 @@ export function PercorsoScene() {
 
   const sfidaAllenatore = (allenatoreId: number) => {
     if (layoutEditing || !interazioneDisponibile || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
+    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.setState({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
     if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
     if (iniziaBattagliaNPC(allenatoreId, luogo)) vaiAScena('battaglia')
   }
 
   const apriCespuglio = (cespuglio: string) => {
     if (layoutEditing || !interazioneDisponibile) return
+    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.setState({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
     if (cespuglioVisitato(giocatoreAttivo, luogo, cespuglio)) return
     const incontri = getIncontri(luogo, cespuglio)
     const selvatico = generaIncontroDaCespuglio(incontri)

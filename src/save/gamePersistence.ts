@@ -9,9 +9,16 @@ import { restoreBattleCheckpoint } from '@/components/battle/battleCheckpoint'
 import { emptyInteractionProgress, type InteractionProgress } from '@/interactions/types'
 import { normalizeInteractionProgress } from '@/interactions/schema'
 import { normalizeBattleChronicle } from '@/components/battle/battleChronicle'
+import { deriveArkadexProgress, emptyArkadexProgress, normalizeArkadexProgress, type ArkadexProgress } from '@/arkadex/arkadexModel'
+import { emptyMatchLog, normalizeMatchLog, type MatchLog } from '@/match/matchLog'
+import { normalizeShopInventory } from '@/shop/catalog'
+import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
+import { createSeededRandomState } from '@/challenges/seededRandom'
 
 /** This whitelist is shared by browser persistence and portable campaign files. */
 export interface GameSaveState {
+  arkadex: ArkadexProgress
+  matchLog: MatchLog
   giocatore1: StatoGiocatore
   giocatore2: StatoGiocatore
   giocatoreAttivo: 1 | 2
@@ -45,6 +52,7 @@ export function initialGameSave(): GameSaveState {
     rivaleStarterId: null, posizione1: mainMapPosition(), posizione2: mainMapPosition(),
     turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {},
     scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, audioMuted: false, interactionProgress: emptyInteractionProgress(),
+    arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(),
   }
 }
 
@@ -143,7 +151,7 @@ function restorePlayer(value: unknown, fallback: StatoGiocatore, warn: Warn): St
     cespugliVisitati: restoreSet(g.cespugliVisitati, fallback.cespugliVisitati, (v): v is string => typeof v === 'string', warn, label),
     allenatoriSconfitti: restoreSet(g.allenatoriSconfitti, fallback.allenatoriSconfitti, (v): v is number => finite(v) && Number.isInteger(v) && v > 0, warn, label),
     caselleConsumate: restoreSet(g.caselleConsumate, fallback.caselleConsumate, (v): v is string => typeof v === 'string', warn, label),
-    inventario: isSaveRecord(g.inventario) ? { ...(finite(g.inventario.masterball) ? { masterball: Math.max(0, Math.floor(g.inventario.masterball)) } : {}) } : fallback.inventario,
+    inventario: g.inventario === undefined ? fallback.inventario : normalizeShopInventory(g.inventario, warn),
   }
   if (g.monete !== undefined && g.monete !== player.monete) warn(`${label}: monete non valide corrette.`)
   if (g.inventario !== undefined && JSON.stringify(g.inventario) !== JSON.stringify(player.inventario)) warn(`${label}: inventario non valido corretto.`)
@@ -200,6 +208,11 @@ function restoreBattle(value: unknown, warn: Warn): StatoBattaglia | null {
     if (value.checkpoint.version !== 1 || value.checkpoint.phase !== battle.checkpoint.phase
       || value.checkpoint.initialPriority !== battle.checkpoint.initialPriority) warn('Recuperato un checkpoint della battaglia non valido.')
   } else if (value.checkpoint !== undefined) warn('Rimosso un checkpoint della battaglia non valido.')
+  if (isSaveRecord(value.seeded) && value.seeded.algorithm === 'arkamon-counter-v1') {
+    try { battle.seeded = createSeededRandomState(value.seeded.seed as string, value.seeded.cursor as number) }
+    catch { warn('Rimosso uno stato dei dadi non valido.') }
+  }
+  if (Number.isSafeInteger(value.challengeActionCount) && (value.challengeActionCount as number) >= 0 && (value.challengeActionCount as number) <= 100_000) battle.challengeActionCount = value.challengeActionCount as number
   return battle
 }
 
@@ -238,6 +251,11 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
     posizioniLocali1: restoreLocalPositions(p.posizioniLocali1, warn), posizioniLocali2: restoreLocalPositions(p.posizioniLocali2, warn),
     audioMuted: typeof p.audioMuted === 'boolean' ? p.audioMuted : fallback.audioMuted,
     interactionProgress: normalizeInteractionProgress(p.interactionProgress),
+    arkadex: normalizeArkadexProgress(p.arkadex), matchLog: normalizeMatchLog(p.matchLog),
+  }
+  state.arkadex = deriveArkadexProgress(state.arkadex, state)
+  for (const player of [state.giocatore1, state.giocatore2]) {
+    if (!isTeamWithinLevelCap(player.squadra)) warn(`Giocatore ${player.id}: ${teamCapMessage(player.squadra)} Livelli e HP sono stati conservati.`)
   }
   if (state.scenaCorrente.scena === 'battaglia' && !state.battaglia) state.scenaCorrente = { scena: 'mappa-principale' }
   for (const id of [1, 2] as const) {
@@ -273,5 +291,6 @@ export function serializeGameState(state: GameSaveState): Record<string, unknown
     turnoOverworld: state.turnoOverworld, posizioniLocali1: state.posizioniLocali1, posizioniLocali2: state.posizioniLocali2,
     scenaCorrente: state.scenaCorrente, scenaPrecedente: state.scenaPrecedente, audioMuted: state.audioMuted,
     interactionProgress: state.interactionProgress,
+    arkadex: state.arkadex, matchLog: state.matchLog,
   }
 }

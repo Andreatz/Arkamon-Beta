@@ -3,7 +3,7 @@ import { BattleLayoutItem, ImpactPulseOverlay, InfoBox, ScambioModal, SquadIndic
 import { BattleLogPanel } from '@/components/battle/BattleLogPanel'
 import { useBattleChronicle } from '@/components/battle/useBattleChronicle'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
-import { logPokemon, revealedAttackEvents, settledAttackEvents, statusEvents, xpEvent } from '@/components/battle/battleChronicle'
+import { appendBattleEvents, logPokemon, revealedAttackEvents, settledAttackEvents, statusEvents, xpEvent } from '@/components/battle/battleChronicle'
 import { resolveBattleAttack, updateBattleSquad } from '@/engine/battleResolution'
 import { getAnimationDuration, useGameMotionPreferences } from '@/settings/gamePreferences'
 import { nextBattleSide } from '@/components/battle/battleRoundOrder'
@@ -17,7 +17,13 @@ import { useAudienceTurn } from '@/audience/useAudienceTurn'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { teamProgressionLimit } from '@/engine/teamLevelCap'
+import { nextSeededRandom } from '@/challenges/seededRandom'
+import { exitChallenge } from '@/challenges/challengeRuntime'
+import { BattleItemDialog } from '@/shop/BattleItemDialog'
+import { getShopItem, type ShopItemId } from '@/shop/catalog'
+import { resolveItemEffect } from '@/shop/itemEffects'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   calcolaDanno,
@@ -113,8 +119,19 @@ type PendingSwitch = {
 export function BattagliaScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const battaglia = useGameStore((s) => s.battaglia)
+  const challengeContext = useGameStore((s) => s.challengeContext)
+  const isChallenge = !!challengeContext
+  const randomState = useRef(battaglia?.seeded)
+  const challengeActions = useRef(battaglia?.challengeActionCount ?? 0)
+  const battleRng = useCallback(() => {
+    if (!randomState.current) return Math.random()
+    const sample = nextSeededRandom(randomState.current); randomState.current = sample.state; return sample.value
+  }, [])
   const terminaBattaglia = useGameStore((s) => s.terminaBattaglia)
   const aggiornaBattaglia = useGameStore((s) => s.aggiornaBattaglia)
+  const saveSettled = useCallback((patch: Partial<NonNullable<typeof battaglia>>) => {
+    aggiornaBattaglia({ ...patch, ...(randomState.current ? { seeded: { ...randomState.current }, challengeActionCount: challengeActions.current } : {}) })
+  }, [aggiornaBattaglia])
   const concludiCattura = useGameStore((s) => s.concludiCattura)
   const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
@@ -132,7 +149,7 @@ export function BattagliaScene() {
       : s.giocatore2.inventario.masterball ?? 0
   )
   const [initialCheckpoint] = useState(() => battaglia ? restoreBattleCheckpoint(battaglia) : null)
-  const audienceEnabled = useAudienceStore((s) => s.enabled)
+  const audienceEnabled = useAudienceStore((s) => s.enabled) && !isChallenge
   const audienceSession = useAudienceStore((s) => s.session)
   const audienceDuration = useAudienceStore((s) => s.durationSeconds)
   const audienceBattleId = useRef(initialCheckpoint?.audienceBattleId ?? createAudienceBattleId())
@@ -198,6 +215,7 @@ export function BattagliaScene() {
   const messaggiTurnoBRef = useRef<string[]>([])
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [supremaSide, setSupremaSide] = useState<'A' | 'B' | null>(null)
+  const [bagOpen, setBagOpen] = useState(false)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
   const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && !initialCheckpoint?.openingComplete && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
@@ -318,7 +336,7 @@ export function BattagliaScene() {
     available: Boolean(battaglia),
     busy: coinOpen || Boolean(statusRoll) || azioneInCorso || actionInProgressRef.current || Boolean(moveVfx) || Boolean(diceRoll) || Boolean(pendingHealth),
     pokemonA: pkmnA, pokemonB: pkmnB, squadA: squadraA, squadB: squadraB,
-    messages: infoBoxMessaggi, chronicle, onSettled: aggiornaBattaglia,
+    messages: infoBoxMessaggi, chronicle, onSettled: saveSettled,
     control: {
       initialPriority: initialCheckpoint?.initialPriority ?? 'A', actedThisRound: actedThisRound.current,
       turnA: turnoA, pvp: battaglia?.tipo === 'PVP', chooseRivalMove: mostraMoseB,
@@ -339,7 +357,7 @@ export function BattagliaScene() {
   useEffect(() => {
     if (!terminata || !esito) return
     appendChronicle([{ id: `${chronicleRef.current.battleId}:outcome`, kind: 'outcome', winnerSide: esito === 'vittoria' ? 'A' : 'B', title: esito === 'vittoria' ? 'Vittoria del giocatore' : 'Vittoria dell’avversario', messages: ['Battaglia conclusa. Gli HP residui restano nella squadra.'] }])
-    useBattleArchiveStore.getState().archiveBattle({ chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo, location: luogoRitornoRef.current, battleType: battaglia?.tipo ?? 'Selvatico', title: `${giocatore.nome} · ${battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico'}` })
+    if (!isChallenge) useBattleArchiveStore.getState().archiveBattle({ chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo, location: luogoRitornoRef.current, battleType: battaglia?.tipo ?? 'Selvatico', title: `${giocatore.nome} · ${battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico'}` })
   }, [terminata, esito, appendChronicle, chronicleRef, giocatoreAttivo, giocatore.nome, battaglia?.tipo, battaglia?.allenatoreId])
 
   useEffect(() => {
@@ -394,7 +412,7 @@ export function BattagliaScene() {
     setMostraMoseB(false)
     const messages = messaggiTurnoBRef.current
     messaggiTurnoBRef.current = []
-    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), scegliMossaIA(pkmnB, pkmnA), messages)
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), scegliMossaIA(pkmnB, pkmnA, battleRng), messages)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mostraMoseB, audienceEnabled, audienceSession?.sessionId, audienceChoice,
     pkmnA, pkmnB, terminata, coinOpen, statusRoll, azioneInCorso])
@@ -680,6 +698,7 @@ export function BattagliaScene() {
     onComplete: (actionId: string) => void
   ) => {
     if (actionInProgressRef.current) return
+    if (isChallenge) challengeActions.current += 1
     actionInProgressRef.current = true
     setAzioneInCorso(true)
     const actionId = beginAction()
@@ -747,6 +766,7 @@ export function BattagliaScene() {
     onComplete: () => void
   ) => {
     if (actionInProgressRef.current) return
+    if (isChallenge) challengeActions.current += 1
     actionInProgressRef.current = true
     setAzioneInCorso(true)
     playMoveVisuals(move, side, null, () => {}, () => {
@@ -757,6 +777,7 @@ export function BattagliaScene() {
   }
 
   const tornaIndietro = () => {
+    if (isChallenge) { const result = exitChallenge(true); if (!result.ok) mostraMessaggi([result.message]); return }
     if (audienceChoice) void audienceVote.cancel().catch(() => {})
     if (esito) useBattleArchiveStore.getState().archiveBattle({
       chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo,
@@ -903,7 +924,7 @@ export function BattagliaScene() {
     sconfittoPrima: PokemonIstanza,
     sconfittoDopo: PokemonIstanza
   ): PokemonIstanza => {
-    const xpRes = applicaXPDopoKO(attivo, sconfittoPrima, sconfittoDopo)
+    const xpRes = applicaXPDopoKO(attivo, sconfittoPrima, sconfittoDopo, teamProgressionLimit(squadraA, attivo.istanzaId))
     appendChronicle(xpEvent(attivo, xpRes, 'A', `${beginAction()}:xp`))
     if (xpRes.xpAssegnata) presentaPremioXP(attivo, xpRes)
     return xpRes.istanza
@@ -914,7 +935,8 @@ export function BattagliaScene() {
     sconfittoPrima: PokemonIstanza,
     sconfittoDopo: PokemonIstanza
   ): PokemonIstanza => {
-    const xpRes = applicaXPDopoKO(rivale, sconfittoPrima, sconfittoDopo)
+    const xpRes = applicaXPDopoKO(rivale, sconfittoPrima, sconfittoDopo,
+      isChallenge ? teamProgressionLimit(squadraB, rivale.istanzaId) : 100)
     appendChronicle(xpEvent(rivale, xpRes, 'B', `${beginAction()}:xp`))
     if (xpRes.livelliGuadagnati > 0) {
       playSound('level-up')
@@ -933,7 +955,7 @@ export function BattagliaScene() {
     if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current || scambioRichiesto || attesaPassaggio || attesaAvversario) return
     resetInfoBox()
 
-    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA, Math.random, verificaAttacco)
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA, battleRng, verificaAttacco)
     if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes, verificaAttacco)); return }
     if (statoRes.messaggi.length) appendChronicle(statusEvents(pkmnA, statoRes, 'A', `${beginAction()}:status`))
     const pkmnAEffettivo = statoRes.istanza
@@ -1005,11 +1027,11 @@ export function BattagliaScene() {
     }
 
     const ris = suprema
-      ? calcolaAzioneSuprema(pkmnAEffettivo, pkmnB, numeroMossa)
-      : calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa, Math.random, false)
+      ? calcolaAzioneSuprema(pkmnAEffettivo, pkmnB, numeroMossa, battleRng)
+      : calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa, battleRng, false)
     if (!ris) return
 
-    const settlement = resolveBattleAttack(ris, 'A', squadraA, squadraB)
+    const settlement = resolveBattleAttack(ris, 'A', squadraA, squadraB, teamProgressionLimit(squadraA, pkmnAEffettivo.istanzaId), isChallenge ? teamProgressionLimit(squadraB, pkmnB.istanzaId) : 100)
     let nuovoB = settlement.defenderAfterImpact
     let nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
     eseguiSequenzaOffensiva(
@@ -1104,7 +1126,7 @@ export function BattagliaScene() {
       return
     }
     preparaTurnoGiocatore((_pokemon, statusMessages) => {
-      const ris = tentaCattura(pkmnB)
+      const ris = tentaCattura(pkmnB, battleRng)
       appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: ris.riuscita ? `${pkmnB.nome} catturato` : `${pkmnB.nome} sfugge alla cattura`, messages: [`Somma reale dei 3d6: ${ris.roll}. Soglia: ${ris.soglia.toLocaleString('it-IT', { maximumFractionDigits: 2 })}.`], target: logPokemon(pkmnB), diceSum: ris.roll }])
       mostraMessaggi([...statusMessages, 'Lanci una pokeball...'])
       if (ris.riuscita) {
@@ -1140,13 +1162,44 @@ export function BattagliaScene() {
     }, undefined, false)
   }
 
+  const eseguiOggetto = (itemId: ShopItemId, instanceId: string): { ok: boolean; message: string } => {
+    if (!turnoA || terminata || azioneInCorso || actionInProgressRef.current || coinOpen || statusRoll || scambioRichiesto || attesaAvversario || attesaPassaggio) return { ok: false, message: 'Attendi il tuo turno.' }
+    const target = squadraA.find((pokemon) => pokemon.istanzaId === instanceId)
+    const preview = target && resolveItemEffect(target, itemId)
+    if (!preview?.ok) return { ok: false, message: preview?.message ?? 'Scegli un Arkamon della squadra.' }
+    if ((giocatore.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
+    preparaTurnoGiocatore((active, messages) => {
+      const currentSquad = updateInSquadra(squadraA, active)
+      const currentTarget = currentSquad.find((pokemon) => pokemon.istanzaId === instanceId)!
+      const effect = resolveItemEffect(currentTarget, itemId)
+      if (!effect.ok || !effect.pokemon) { mostraMessaggi([effect.message]); return }
+      const nextSquad = updateInSquadra(currentSquad, effect.pokemon)
+      const nextA = instanceId === active.istanzaId ? effect.pokemon : active
+      const acted = new Set(actedThisRound.current)
+      const side = nextBattleSide(acted, 'A', initialCheckpoint?.initialPriority ?? 'A', nextA.stato?.tipo, pkmnB.stato?.tipo)
+      const checkpoint = settledBattleCheckpoint({ initialPriority: initialCheckpoint?.initialPriority ?? 'A', actedThisRound: acted,
+        turnA: side === 'A', pvp: isPvP, chooseRivalMove: false, passDirection: side === 'B' && isPvP ? 'A→B' : undefined,
+        outcome: null, openingComplete: true, evolutions: evoluzioniInAttesa, rivalMessages: [], audienceBattleId: audienceBattleId.current, opponentTurnNumber: opponentTurnNumber.current })
+      const event = { id: `${chronicleRef.current.battleId}:${chronicleRef.current.nextSequence}:item`, kind: 'heal' as const, side: 'A' as const,
+        title: `${getShopItem(itemId)!.name} su ${effect.pokemon.nome}`, messages: [effect.message], actor: logPokemon(effect.pokemon), hpBefore: currentTarget.hp, hpAfter: effect.pokemon.hp }
+      const candidate = appendBattleEvents({ ...chronicleRef.current, nextSequence: chronicleRef.current.nextSequence + 1 }, [event])
+      const committed = useGameStore.getState().usaOggetto(giocatoreAttivo, itemId, { pokemonA: nextA, squadraA: nextSquad, pokemonB: pkmnB, squadraB,
+        turnoCorrente: side, checkpoint, cronaca: candidate, log: [...messages, effect.message], ...(randomState.current ? { seeded: { ...randomState.current }, challengeActionCount: challengeActions.current + 1 } : {}) })
+      if (!committed) { mostraMessaggi(['Oggetto non usato: il browser non può salvare la partita.']); return }
+      if (isChallenge) challengeActions.current += 1
+      beginAction(); appendChronicle([event])
+      setPkmnA(nextA); setSquadraA(nextSquad); mostraMessaggi([...messages, effect.message]); passaTurnoAaB(pkmnB, 0)
+    }, undefined, false)
+    return { ok: true, message: 'Uso dell’oggetto avviato.' }
+  }
+
   const turnoAvversario = (statoBcorrente: PokemonIstanza, resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>) => {
     if (coinOpen || statusPending.current) return
     if (terminata || actionInProgressRef.current || azioneInCorso || scambioRichiesto) return
     resetInfoBox()
     const hpMaxBcorrente = calcolaHPMax(statoBcorrente)
     // B sceglie la mossa dopo gli altri status: il tiro PAR serve solo se attacca.
-    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente, Math.random, false)
+    const statoRes = resolvedStatus ?? risolviStatoInizioTurno(statoBcorrente, hpMaxBcorrente, battleRng, false)
     if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, statoBcorrente, () => turnoAvversario(statoBcorrente, statoRes)); return }
     if (statoRes.messaggi.length) appendChronicle(statusEvents(statoBcorrente, statoRes, 'B', `${beginAction()}:status`))
     const bEffettivo = statoRes.istanza
@@ -1212,7 +1265,7 @@ export function BattagliaScene() {
       return
     }
 
-    const mossaIdx = scegliMossaIA(bEffettivo, pkmnA)
+    const mossaIdx = scegliMossaIA(bEffettivo, pkmnA, battleRng)
     eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, statoRes.messaggi)
   }
 
@@ -1229,7 +1282,7 @@ export function BattagliaScene() {
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
     if (bEffettivo.stato?.tipo === 'Paralizzato' && (!mossaDefB || !èMossaCura(mossaDefB))) {
-      const statoRes = resolvedParalysis ?? risolviStatoInizioTurno(bEffettivo, hpMaxBcorrente)
+      const statoRes = resolvedParalysis ?? risolviStatoInizioTurno(bEffettivo, hpMaxBcorrente, battleRng)
       if (!resolvedParalysis && statoRes.tiroStato !== undefined) {
         presentStatus(statoRes, bEffettivo, () => eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, messaggiIniziali, suprema, statoRes))
         return
@@ -1261,13 +1314,13 @@ export function BattagliaScene() {
     }
 
     const ris = suprema
-      ? calcolaAzioneSuprema(bEffettivo, pkmnA, mossaIdx)
-      : calcolaDanno(bEffettivo, pkmnA, mossaIdx, Math.random, suprema)
+      ? calcolaAzioneSuprema(bEffettivo, pkmnA, mossaIdx, battleRng)
+      : calcolaDanno(bEffettivo, pkmnA, mossaIdx, battleRng, suprema)
     if (!ris) {
       passaTurnoBaA()
       return
     }
-    const settlement = resolveBattleAttack(ris, 'B', squadraA, squadraB)
+    const settlement = resolveBattleAttack(ris, 'B', squadraA, squadraB, teamProgressionLimit(squadraA, pkmnA.istanzaId), isChallenge ? teamProgressionLimit(squadraB, bEffettivo.istanzaId) : 100)
     const nuovoA = settlement.defenderAfterImpact
     const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
     eseguiSequenzaOffensiva(
@@ -1397,6 +1450,8 @@ export function BattagliaScene() {
       }}
     >
       <BattleLogPanel chronicle={chronicle} busy={azioneInCorso || coinOpen || !!statusRoll} />
+      {!terminata && <button type="button" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
+      {bagOpen && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={eseguiOggetto} onClose={() => setBagOpen(false)} />}
       {audienceChoice && !terminata && <BattleAudienceOverlay
         request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}
         remainingMs={audienceVote.remainingMs} error={audienceVote.error}

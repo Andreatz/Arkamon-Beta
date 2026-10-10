@@ -5,16 +5,16 @@ export const updateBattleSquad = (squad: PokemonIstanza[], updated: PokemonIstan
   squad.map((pokemon) => pokemon.istanzaId === updated.istanzaId ? updated : pokemon)
 
 /** Shared A/B settlement, with target KO and progression strictly before recoil. No randomness. */
-export function resolveBattleAttack(result: RisultatoMossa, side: Lato, squadA: PokemonIstanza[], squadB: PokemonIstanza[]) {
+export function resolveBattleAttack(result: RisultatoMossa, side: Lato, squadA: PokemonIstanza[], squadB: PokemonIstanza[], maxLevelA = 100, maxLevelB = 100) {
   let defender = { ...result.difensore, hp: Math.max(0, result.difensore.hp - result.dannoFinale) }
   if (result.statoApplicato && defender.hp > 0) defender = applicaStato(defender, result.statoApplicato)
   const defenderAfterImpact = defender
-  const attackerProgression = risolviAttaccanteDopoMossa(result)
+  const attackerProgression = risolviAttaccanteDopoMossa(result, side === 'A' ? maxLevelA : maxLevelB)
   const attacker = attackerProgression.istanza
   // An attacker who takes down the target owns a double KO. Otherwise the
   // surviving target receives the recoil KO reward, once, at its residual HP.
   const defenderProgression = defender.hp > 0 && attacker.hp <= 0
-    ? applicaXPDopoKO(defender, result.attaccante, attacker) : undefined
+    ? applicaXPDopoKO(defender, result.attaccante, attacker, side === 'A' ? maxLevelB : maxLevelA) : undefined
   if (defenderProgression) defender = defenderProgression.istanza
   const nextA = updateBattleSquad(squadA, side === 'A' ? attacker : defender)
   const nextB = updateBattleSquad(squadB, side === 'B' ? attacker : defender)

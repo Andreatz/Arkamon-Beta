@@ -7,11 +7,19 @@
  * Persiste automaticamente su localStorage tra sessioni.
  */
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import { normalizeChallengeContext, scopedGameStorage, type ChallengeContext } from '@/challenges/challengePersistence'
 import { emptyPlayer as giocatoreVuoto, mainMapPosition, normalizeGameSave, serializeGameState, GAME_SAVE_STORAGE_KEY, type GameSaveState } from '@/save/gamePersistence'
 import { emptyInteractionProgress } from '@/interactions/types'
 import { useInteractionStore } from '@/interactions/interactionStore'
 import { finalizeConfiguredBattle, resolveConfiguredInteraction } from '@/interactions/runtime'
+import { emptyArkadexProgress } from '@/arkadex/arkadexModel'
+import { appendMatchEvent, emptyMatchLog } from '@/match/matchLog'
+import { trackGameChange } from '@/match/trackGameChange'
+import { canJoinTeam, isTeamWithinLevelCap, teamCapMessage, teamLevelRange } from '@/engine/teamLevelCap'
+import { resolveShopPurchase, type ShopPurchaseResult } from '@/shop/purchase'
+import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
+import { resolveItemEffect } from '@/shop/itemEffects'
 import type {
   StatoGiocatore,
   StatoBattaglia,
@@ -58,6 +66,11 @@ import {
 } from '@engine/movimento'
 
 export interface GameState extends GameSaveState {
+  challengeContext: ChallengeContext | null
+  teamRuleMessage: string | null
+  dismissTeamRuleMessage: () => void
+  acquistaOggetti: (playerId: 1 | 2, cart: ShopCart, location: string) => ShopPurchaseResult
+  applicaOggetto: (playerId: 1 | 2, itemId: OggettoId, instanceId: string) => { ok: boolean; message: string }
   /** Volatile scene generation. A restored/new campaign must release every old timer and local scene snapshot. */
   campaignRevision: number
   /** Recoveries from the last load; excluded from portable files. */
@@ -130,7 +143,7 @@ export interface GameState extends GameSaveState {
   aggiornaMonete: (giocatoreId: 1 | 2, delta: number) => void
 
   /** Decrementa di 1 la quantità dell'oggetto. Ritorna true se consumato. */
-  usaOggetto: (giocatoreId: 1 | 2, oggettoId: OggettoId) => boolean
+  usaOggetto: (giocatoreId: 1 | 2, oggettoId: OggettoId, battlePatch?: Partial<StatoBattaglia>) => boolean
 
   /** Aggiunge (o crea) `delta` unità di un oggetto. */
   aggiungiOggetto: (giocatoreId: 1 | 2, oggettoId: OggettoId, delta: number) => void
@@ -259,7 +272,28 @@ export function haSpazioPokemon(giocatore: StatoGiocatore): boolean {
 
 export const useGameStore = create<GameState>()(
   persist(
-    (set, get) => ({
+    (rawSet, get) => {
+      const set: typeof rawSet = (update, replace) => rawSet((previous) => {
+        const patch = typeof update === 'function' ? update(previous) : update
+        if (patch === previous) return previous
+        const next = { ...previous, ...patch }
+        return next.challengeContext ? next : { ...next, ...trackGameChange(previous, next) }
+      }, replace)
+      const commitDurable = (patch: Partial<GameState>): boolean => {
+        const previous = get(), next = { ...previous, ...patch }
+        const tracked = next.challengeContext ? next : { ...next, ...trackGameChange(previous, next) }
+        const options = useGameStore.persist.getOptions(), storage = options.storage
+        if (!storage) { if (typeof window !== 'undefined') return false; rawSet(tracked); return true }
+        try {
+          const saved = { ...serializeGameState(tracked), ...(tracked.challengeContext ? { challengeContext: tracked.challengeContext } : {}) }
+          const result = storage.setItem(options.name ?? GAME_SAVE_STORAGE_KEY, { state: saved as unknown as GameState, version: 0 })
+          if (result instanceof Promise) { void result.catch(() => {}); return false }
+          useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
+          try { rawSet(tracked) } finally { useGameStore.persist.setOptions({ storage }) }
+          return true
+        } catch { return false }
+      }
+      return ({
       giocatore1: giocatoreVuoto(1),
       giocatore2: giocatoreVuoto(2),
       giocatoreAttivo: 1,
@@ -274,7 +308,11 @@ export const useGameStore = create<GameState>()(
       scenaPrecedente: null,
       audioMuted: false,
       campaignRevision: 0,
+      challengeContext: null,
       interactionProgress: emptyInteractionProgress(),
+      arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(),
+      teamRuleMessage: null,
+      dismissTeamRuleMessage: () => set({ teamRuleMessage: null }),
       saveRecoveryWarnings: [],
       dismissSaveRecoveryWarnings: () => set({ saveRecoveryWarnings: [] }),
 
@@ -334,7 +372,8 @@ export const useGameStore = create<GameState>()(
         set((s) => {
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
           const g = s[chiaveG]
-          if (g.squadra.length < 6) {
+          if ([...g.squadra, ...Object.values(g.deposito)].some((pokemon) => pokemon.istanzaId === istanza.istanzaId)) return s
+          if (canJoinTeam(g.squadra, istanza)) {
             return { [chiaveG]: { ...g, squadra: [...g.squadra, istanza] } } as Partial<GameState>
           }
           // Squadra piena → deposito
@@ -354,7 +393,9 @@ export const useGameStore = create<GameState>()(
           || battle.pokemonB.istanzaId !== istanza.istanzaId || !haSpazioPokemon(player)
           || battle.pokemonB.hp <= 0 || patch.checkpoint?.phase !== 'ended' || patch.checkpoint.outcome !== 'vittoria'
           || (masterball && (player.inventario.masterball ?? 0) <= 0)) return false
-        const slot = player.squadra.length >= 6 ? trovaSlotDepositoLibero(player.deposito) : null
+        const eligible = canJoinTeam(player.squadra, istanza)
+        const slot = !eligible ? trovaSlotDepositoLibero(player.deposito) : null
+        if (!eligible && !slot) return false
         const nextPlayer = {
           ...player,
           squadra: slot ? player.squadra : [...player.squadra, istanza],
@@ -376,6 +417,7 @@ export const useGameStore = create<GameState>()(
           if (idxSquadra >= 0) {
             const nuovaSquadra = [...g.squadra]
             nuovaSquadra[idxSquadra] = istanza
+            if (teamLevelRange(nuovaSquadra).gap > Math.max(5, teamLevelRange(g.squadra).gap)) return { teamRuleMessage: teamCapMessage(nuovaSquadra) }
             return { [chiaveG]: { ...g, squadra: nuovaSquadra } } as Partial<GameState>
           }
           // Poi nel deposito
@@ -413,35 +455,61 @@ export const useGameStore = create<GameState>()(
           } as Partial<GameState>
         }),
 
-      usaOggetto: (giocatoreId, oggettoId) => {
+      usaOggetto: (giocatoreId, oggettoId, battlePatch) => {
+        if (!isShopItemId(oggettoId)) return false
         const state = get()
         const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
         const g = state[chiaveG]
         const q = g.inventario[oggettoId] ?? 0
+        if (battlePatch && (!state.battaglia || state.battaglia.checkpoint?.outcome || state.giocatoreAttivo !== giocatoreId)) return false
         if (q <= 0) return false
-        set({
+        const written = commitDurable({
+          ...(battlePatch ? { battaglia: { ...state.battaglia!, ...battlePatch } } : {}),
           [chiaveG]: {
             ...g,
             inventario: { ...g.inventario, [oggettoId]: q - 1 },
           },
         } as Partial<GameState>)
-        return true
+        return written
       },
 
       aggiungiOggetto: (giocatoreId, oggettoId, delta) =>
         set((s) => {
+          if (!isShopItemId(oggettoId) || !Number.isSafeInteger(delta)) return s
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
           const g = s[chiaveG]
           const q = g.inventario[oggettoId] ?? 0
           return {
             [chiaveG]: {
               ...g,
-              inventario: { ...g.inventario, [oggettoId]: Math.max(0, q + delta) },
+              inventario: { ...g.inventario, [oggettoId]: Math.min(MAX_ITEM_QUANTITY, Math.max(0, q + delta)) },
             },
           } as Partial<GameState>
         }),
 
       // Porting di: IniziaBattagliaAllenatore da old_files/Mod_Game_Events.txt
+      acquistaOggetti: (playerId, cart, location) => {
+        const result = resolveShopPurchase(get(), playerId, cart, location)
+        if (result.ok && result.patch && !commitDurable(result.patch)) return { ok: false, message: 'Acquisto non salvato: spazio del browser esaurito o bloccato. Monete e borsa restano intatte.' }
+        return result
+      },
+      applicaOggetto: (playerId, itemId, instanceId) => {
+        const state = get(), key = playerId === 1 ? 'giocatore1' : 'giocatore2', player = state[key]
+        if (state.battaglia || state.interactionProgress.pendingBattle) return { ok: false, message: 'Usa la Borsa della battaglia durante uno scontro.' }
+        if (['titolo', 'laboratorio', 'evoluzione'].includes(state.scenaCorrente.scena)) return { ok: false, message: 'Concludi questa schermata prima di usare un oggetto.' }
+        if (state.giocatoreAttivo !== playerId || state.turnoOverworld.giocatoreAttivo !== playerId || state.turnoOverworld.azioniRimaste < 1) return { ok: false, message: 'Il turno di questo giocatore è concluso.' }
+        if (!isShopItemId(itemId) || (player.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
+        const pokemon = player.squadra.find((entry) => entry.istanzaId === instanceId)
+        if (!pokemon) return { ok: false, message: 'Scegli un Arkamon della tua squadra.' }
+        const result = resolveItemEffect(pokemon, itemId)
+        if (!result.ok || !result.pokemon) return result
+        const written = commitDurable({ [key]: { ...player, squadra: player.squadra.map((entry) => entry.istanzaId === instanceId ? result.pokemon! : entry),
+          inventario: { ...player.inventario, [itemId]: player.inventario[itemId]! - 1 } }, turnoOverworld: nuovoTurno(playerId),
+          matchLog: appendMatchEvent(state.matchLog, { kind: 'interaction', playerId, title: `Usa ${getShopItem(itemId)!.name}`, message: result.message }),
+        })
+        if (!written) return { ok: false, message: 'Oggetto non usato: il browser non può salvare la partita. Borsa e HP restano intatti.' }
+        return { ok: true, message: `${result.message} Il turno è concluso.` }
+      },
       iniziaBattagliaNPC: (allenatoreId, luogoRitorno) => {
         const allenatore = getAllenatore(allenatoreId)
         if (!allenatore || allenatore.squadra.length === 0) return false
@@ -452,6 +520,7 @@ export const useGameStore = create<GameState>()(
         const giocatore =
           state.giocatoreAttivo === 1 ? state.giocatore1 : state.giocatore2
         if (giocatore.squadra.length === 0) return false
+        if (!isTeamWithinLevelCap(giocatore.squadra)) { set({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return false }
         if (giocatore.allenatoriSconfitti.has(allenatoreId)) return false
         const pokemonA = giocatore.squadra.find((p) => p.hp > 0)
         if (!pokemonA) return false
@@ -557,8 +626,10 @@ export const useGameStore = create<GameState>()(
           const g = s[chiaveG]
           const r = scambia(g.squadra, g.deposito, source, target)
           if (r.squadra === g.squadra && r.deposito === g.deposito) return s
+          if (!isTeamWithinLevelCap(r.squadra) && !(r.squadra.length < g.squadra.length)) return { teamRuleMessage: teamCapMessage(r.squadra) }
           return {
             [chiaveG]: { ...g, squadra: r.squadra, deposito: r.deposito },
+            teamRuleMessage: null,
           } as Partial<GameState>
         }),
       // Porting di: AssegnaRivaleEVaiAllaMappa da old_files/Mod_Game_Events.txt
@@ -567,6 +638,8 @@ export const useGameStore = create<GameState>()(
       iniziaBattaglia: (battaglia) => {
         const state = get()
         if (battaglia.luogoRitorno === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo)) return
+        const team = battaglia.squadraA ?? state[state.giocatoreAttivo === 1 ? 'giocatore1' : 'giocatore2'].squadra
+        if (!isTeamWithinLevelCap(team)) { set({ teamRuleMessage: teamCapMessage(team) }); return }
         set({ battaglia })
       },
 
@@ -615,6 +688,7 @@ export const useGameStore = create<GameState>()(
       eseguiInterazioneConfigurata: (giocatoreId, interactionId) => {
         const definition = useInteractionStore.getState().interactions.find((entry) => entry.id === interactionId)
         const result = resolveConfiguredInteraction(get(), definition, giocatoreId)
+        if (result.patch?.battaglia && !isTeamWithinLevelCap(result.patch.battaglia.squadraA ?? [])) return { ok: false, message: teamCapMessage(result.patch.battaglia.squadraA ?? []) }
         if (result.ok && result.patch) set(result.patch)
         return { ok: result.ok, message: result.message }
       },
@@ -859,14 +933,24 @@ export const useGameStore = create<GameState>()(
           scenaPrecedente: null,
           saveRecoveryWarnings: [],
           interactionProgress: emptyInteractionProgress(),
+          arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(), teamRuleMessage: null,
         })),
-    }),
+    })},
     {
       name: GAME_SAVE_STORAGE_KEY,
-      partialize: (state) => serializeGameState(state) as unknown as GameState,
+      storage: createJSONStorage(() => {
+        if (typeof localStorage === 'undefined') throw new Error('Storage non disponibile')
+        return scopedGameStorage
+      }),
+      partialize: (state) => ({ ...serializeGameState(state), ...(state.challengeContext ? { challengeContext: state.challengeContext } : {}) }) as unknown as GameState,
       merge: (persisted, current) => {
         const recovered = normalizeGameSave(persisted, current)
-        return { ...current, ...recovered.state, saveRecoveryWarnings: recovered.warnings }
+        const context = persisted && typeof persisted === 'object' && 'challengeContext' in persisted ? normalizeChallengeContext(persisted.challengeContext) : null
+        if (context && (!recovered.state.battaglia?.seeded || recovered.state.battaglia.seeded.seed !== context.session.seed)) {
+          return { ...current, ...normalizeGameSave(context.campaign).state, challengeContext: null,
+            saveRecoveryWarnings: ['La sfida non ha un punto dei dadi valido: è stata recuperata la campagna conservata.'] }
+        }
+        return { ...current, ...recovered.state, challengeContext: context, saveRecoveryWarnings: recovered.warnings }
       },
       onRehydrateStorage: () => (state, error) => {
         if (error) queueMicrotask(() => {

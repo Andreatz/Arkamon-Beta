@@ -9,6 +9,7 @@ export type GameBackupRestoreResult = { ok: true; previousBackup: string } | { o
 
 /** Write durable data first, then publish one in-memory state update. Failed writes leave the game untouched. */
 export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupStorage): GameBackupRestoreResult {
+  if (useGameStore.getState().challengeContext) return { ok: false, error: 'Torna alla campagna prima di ripristinare un backup.' }
   const restored = stateFromValidatedBackup(preview)
   if (!restored) return { ok: false, error: 'Il backup non è più valido. Riapri il file e controlla l’anteprima.' }
   const revalidated = validateGameBackup(preview.source)
