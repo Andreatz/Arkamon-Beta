@@ -50,6 +50,8 @@ I file tracciati esistenti di `public` sono **6.942**, per **3.067.626.367 byte 
 
 ## Miglioramenti consigliati in ordine
 
+Aggiornamento successivo all’audit: gli interventi della tabella, eccetto **release degli asset e atlanti a pagine**, sono stati sviluppati. Vedi [guida d’uso](./player-tools.md) e [verifica dell’integrazione](./improvements-audit-2026-10-10.md). Le idee del brainstorming sotto restano un backlog distinto; il registro/replay e le tappe configurabili sono compresi in questo incremento.
+
 | Priorità | Intervento | Risultato concreto |
 | --- | --- | --- |
 |1| Backup/esportazione partita con versione e ripristino guidato | Una pulizia del browser o un cambio computer non perde la campagna; recuperi segnalati invece che silenziosi. |

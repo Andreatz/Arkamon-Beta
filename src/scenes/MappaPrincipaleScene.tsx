@@ -1,4 +1,5 @@
 import { useGameStore } from '@store/gameStore'
+import { TurnSummary } from '@/journal/TurnSummary'
 import { useAdminStore } from '@store/adminStore'
 import { MAPPE } from '@data/index'
 import { getLocalMap } from '@/data/localMaps'
@@ -853,7 +854,7 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('footer', rect)}
         zIndex={35}
       >
-        <div className="h-full w-full" aria-hidden="true" />
+        <TurnSummary compact />
       </AdminLayoutItem>
     </div>
   )

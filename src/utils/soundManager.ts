@@ -1,17 +1,19 @@
 import selections from '@/data/audio-selections.json'
 import { assetUrl } from './assetUrl'
 
-const activeClips = new Set<HTMLAudioElement>()
+const activeClips = new Map<HTMLAudioElement, number>()
+let musicVolume = 1
+let effectsVolume = 1
 export function playSelectedAudio(key: string): () => void {
   const choice = (selections.choices as Record<string, { soundId: string; volume: number }>)[key]
   const clip = choice && (selections.sounds as Record<string, { src: string }>)[choice.soundId]
   if (muted || !clip || typeof Audio === 'undefined') return () => {}
   const player = new Audio(assetUrl(clip.src))
-  player.volume = choice.volume
+  player.volume = Math.max(0, Math.min(1, choice.volume * effectsVolume))
   const stop = () => { player.pause(); activeClips.delete(player) }
   // Bound overlapping effects during rapid UI input.
-  if (activeClips.size >= 8) { const oldest = activeClips.values().next().value; oldest?.pause(); if (oldest) activeClips.delete(oldest) }
-  activeClips.add(player)
+  if (activeClips.size >= 8) { const oldest = activeClips.keys().next().value; oldest?.pause(); if (oldest) activeClips.delete(oldest) }
+  activeClips.set(player, choice.volume)
   player.onended = stop
   player.onerror = stop
   void player.play().catch(stop)
@@ -108,7 +110,31 @@ let ctx: AudioContext | null = null
 let muted = false
 let currentMusic: MusicId | null = null
 let musicTimer: number | null = null
+let musicBus: GainNode | null = null
+let effectsBus: GainNode | null = null
 const activeTones = new Map<OscillatorNode, { gain: GainNode; music: boolean }>()
+
+export function setChannelVolumes(music: number, effects: number): void {
+  const valid = (value: number, fallback: number) => Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback
+  musicVolume = valid(music, musicVolume)
+  effectsVolume = valid(effects, effectsVolume)
+  if (ctx) {
+    musicBus?.gain.setValueAtTime(musicVolume, ctx.currentTime)
+    effectsBus?.gain.setValueAtTime(effectsVolume, ctx.currentTime)
+  }
+  for (const [clip, baseVolume] of activeClips) clip.volume = Math.max(0, Math.min(1, baseVolume * effectsVolume))
+}
+
+function channelBus(audio: AudioContext, music: boolean): GainNode {
+  const existing = music ? musicBus : effectsBus
+  if (existing) return existing
+  const bus = audio.createGain()
+  bus.gain.setValueAtTime(music ? musicVolume : effectsVolume, audio.currentTime)
+  bus.connect(audio.destination)
+  if (music) musicBus = bus
+  else effectsBus = bus
+  return bus
+}
 
 function releaseTone(oscillator: OscillatorNode): void {
   const tone = activeTones.get(oscillator)
@@ -160,7 +186,7 @@ function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1, music = false)
   gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
 
   oscillator.connect(gain)
-  gain.connect(audio.destination)
+  gain.connect(channelBus(audio, music))
   activeTones.set(oscillator, { gain, music })
   oscillator.onended = () => releaseTone(oscillator)
   oscillator.start(start)
@@ -169,7 +195,7 @@ function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1, music = false)
 
 export function setAudioMuted(nextMuted: boolean): void {
   muted = nextMuted
-  if (muted) { stopMusic(); stopTones(); for (const clip of activeClips) clip.pause(); activeClips.clear() }
+  if (muted) { stopMusic(); stopTones(); for (const clip of activeClips.keys()) clip.pause(); activeClips.clear() }
 }
 
 export function isAudioMuted(): boolean {

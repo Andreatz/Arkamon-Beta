@@ -25,6 +25,8 @@ La V1 modifica:
 - import/export JSON del tema.
 - selezione di asset gia presenti in `public/`.
 
+Il tab **Interazioni** configura le attività dei pallini delle mappe locali: dialoghi, cure, incontri, requisiti, costi, ricompense e tappe collegate. I numeri sono visibili solo nell’editor. Il catalogo si salva separatamente dal tema ed è incluso nel backup completo della partita. Vedi [guida agli strumenti della partita](./player-tools.md).
+
 ## Confronto VFX in sviluppo
 
 Nel tab `VFX`, usa **Confronta effetti nel VFX Lab** per aprire il laboratorio

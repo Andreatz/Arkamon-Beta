@@ -18,6 +18,7 @@ export interface LocalMapBoardProps {
   remainingActions: number
   canMove: boolean
   inputBlocked?: boolean
+  interactionLabels?: Record<string, string>
   onMove: (nodeId: string) => boolean | void
   onSelectNode: (nodeId: string) => void
 }
@@ -158,6 +159,7 @@ export function LocalMapBoard({
   remainingActions,
   canMove,
   inputBlocked = false,
+  interactionLabels = {},
   onMove,
   onSelectNode,
 }: LocalMapBoardProps) {
@@ -249,7 +251,7 @@ export function LocalMapBoard({
               disabled={!enabled}
               aria-current={isCurrent ? 'location' : undefined}
               aria-label={`${label}${isCurrent ? ', posizione attuale; mostra interazione' : isReachable ? ', muoviti qui' : ', non adiacente'}`}
-              title={isCurrent ? `${label} · interazione da definire` : isReachable ? `Vai a ${label}` : label}
+              title={isCurrent ? `${label} · ${interactionLabels[node.id] ?? 'interazione da definire'}` : isReachable ? `Vai a ${label}` : label}
               onClick={() => {
                 if (!enabled) return
                 if (isCurrent) onSelectNode(node.id)

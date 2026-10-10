@@ -1,5 +1,5 @@
 import { useLayoutEffect, useReducer, useRef, type ReactNode } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import type { NavigazioneScena } from '@/types'
 import { SceneInputContext, SceneNavigationContext } from './SceneNavigationContext'
 import { SceneTransitionOverlay } from './SceneTransitionOverlay'
@@ -15,7 +15,7 @@ interface SceneTransitionProps {
 }
 
 export function SceneTransition({ navigation, renderScene, children }: SceneTransitionProps) {
-  const reducedMotion = Boolean(useReducedMotion())
+  const { reducedMotion, speed } = useGameMotionPreferences()
   const [state, dispatch] = useReducer(sceneTransitionReducer, navigation, (initial) => {
     const initialState = createSceneTransitionState(initial)
     // A restored battle still gets its existing introduction, once per mount.
@@ -31,6 +31,9 @@ export function SceneTransition({ navigation, renderScene, children }: SceneTran
   const wasTransitioning = useRef(false)
   const previousTransition = useRef({ revision: state.revision, phase: state.phase })
   const transitioning = state.phase !== 'idle'
+  const baseProfile = getSceneTransitionProfile(state.target)
+  const profile = { ...baseProfile, coverMs: baseProfile.coverMs / speed, blendMs: baseProfile.blendMs / speed,
+    durationMs: baseProfile.durationMs / speed, playbackRate: baseProfile.playbackRate * speed }
   const startCovered = state.revision !== previousTransition.current.revision
     && previousTransition.current.phase !== 'idle'
 
@@ -87,12 +90,12 @@ export function SceneTransition({ navigation, renderScene, children }: SceneTran
       </div>
       {transitioning ? (
         <>
-          <p className="sr-only" role="status">{getSceneTransitionProfile(state.target).label}</p>
+          <p className="sr-only" role="status">{profile.label}</p>
           <SceneTransitionOverlay
             key={state.revision}
             startCovered={startCovered}
             phase={state.phase === 'cover' ? 'cover' : 'reveal'}
-            profile={getSceneTransitionProfile(state.target)}
+            profile={profile}
             onCovered={() => dispatch({ type: 'covered', revision: state.revision })}
             onRevealed={() => dispatch({ type: 'revealed', revision: state.revision })}
           />

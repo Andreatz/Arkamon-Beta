@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { getPreparedImageAsset } from '@/utils/prepareImageAsset'
+import { useGamePreferences } from '@/settings/gamePreferences'
 
 const useSpriteLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
@@ -155,12 +156,12 @@ export function AnimatedSprite({
   rows,
   frameCount,
   startFrame = 0,
-  fps,
+  fps: sourceFps,
   width,
   height,
   responsive = false,
   renderMode = 'css',
-  durationMs,
+  durationMs: sourceDurationMs,
   loop = false,
   paused = false,
   holdBeforeFrame,
@@ -175,6 +176,9 @@ export function AnimatedSprite({
   onCue,
   onError,
 }: AnimatedSpriteProps) {
+  const speed = useGamePreferences((state) => state.animationSpeed === 'fast' ? 2 : 1)
+  const fps = sourceFps * speed
+  const durationMs = sourceDurationMs === undefined ? undefined : sourceDurationMs / speed
   const playbackId = useId()
   const [frame, setFrame] = useState(0)
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null)

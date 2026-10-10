@@ -177,6 +177,8 @@ export interface StatoBattaglia {
   allenatoreId?: number
   /** Log degli eventi della battaglia (per UI) */
   log: string[]
+  /** Cronaca dei soli risultati già mostrati. Il tiro in preparazione non viene salvato. */
+  cronaca?: BattleChronicle
   /** Flag per evoluzione in attesa post-battaglia */
   evoluzioneInAttesa: { istanzaId: string; nuovaSpecieId: number } | null
   /** Settled UI turn checkpoint; media playback itself restarts from the last settled turn. */
@@ -223,6 +225,48 @@ export interface RisultatoMossa {
   autodanno?: number
   /** Suprema risolta per questa azione; true significa danno normale ×2 e costo 50% HP massimi. */
   suprema?: boolean
+}
+
+export type BattleLogKind = 'opening' | 'attack' | 'status' | 'heal' | 'ko' | 'xp' | 'recoil' | 'winner' | 'switch' | 'capture' | 'audience' | 'outcome'
+
+export interface BattleLogPokemon {
+  instanceId: string
+  speciesId: number
+  name: string
+  level: number
+  hp: number
+}
+
+/** Numerical values come from the resolved action; reading/replaying never rolls dice. */
+export interface BattleLogEvent {
+  id: string
+  kind: BattleLogKind
+  side?: Lato
+  title: string
+  messages: string[]
+  actor?: BattleLogPokemon
+  target?: BattleLogPokemon
+  dice?: number[]
+  diceSum?: number
+  increment?: number
+  baseDamage?: number
+  effectiveness?: number
+  supreme?: boolean
+  damage?: number
+  hpBefore?: number
+  hpAfter?: number
+  xp?: number
+  levelBefore?: number
+  levelAfter?: number
+  winnerSide?: Lato
+}
+
+export interface BattleChronicle {
+  version: 1
+  battleId: string
+  nextSequence: number
+  omittedEvents: number
+  events: BattleLogEvent[]
 }
 
 // =============================================================
