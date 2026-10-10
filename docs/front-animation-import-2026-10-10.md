@@ -37,3 +37,16 @@ Il controllo dei pixel reali delle 35 griglie ha verificato tutti i 3.358 fotogr
 I controlli automatici del repository coprono tutte le 115 animazioni, la corrispondenza manifest/asset, le copie dei video, il canale alfa e il comportamento del renderer. I test Python del convertitore verificano anche la correzione RGB con alfa invariata, il fit iniziale e l’applicazione coerente del profilo in analisi e conversione.
 
 La riproduzione e la sincronizzazione vengono verificate separatamente nel browser: controllare i metadati o renderizzare il componente sul server non dimostra la temporizzazione nella scena reale.
+
+## Risultati della verifica locale
+
+- 2.094 test del progetto passati in 103 file; compilazione TypeScript e build di produzione riuscite.
+- 21 test Python del convertitore passati.
+- Tutte le 35 nuove clip verificate in Chrome sulla build di produzione, con pixel effettivi del canvas, frequenza nativa e conteggi delle sorgenti. Attesa ripetuta; attacco, colpito e vittoria tornano all’attesa; KO mantiene il fotogramma finale.
+- Sette prove con una mossa reale e un bersaglio animato: asset pronti prima della partenza, rilascio dell’attaccante, impatto VFX, reazione del bersaglio e completamento verificati nell’ordine previsto.
+- Quattordici controlli visivi e geometrici: sette desktop a 1440 pixel e sette telefono a 390 pixel con dimensione dell’animazione al 150%, senza overflow orizzontale o canvas tagliato dal riquadro.
+- Nessun errore JavaScript, errore console o caricamento fallito nel rapporto Chrome conclusivo.
+
+La partita isolata della Mossa Suprema usa il nuovo Wormaren 15 come avversario a 1 HP e un attaccante a 1 HP. Prima della rivelazione dei dadi, HP e posa KO restano invariati. Il registro reale verifica l’ordine attacco → KO avversario → esperienza e passaggio dell’attaccante dal livello 14 al 15 → contraccolpo → KO attaccante → vincitore A → esito vittoria. L’esperienza conserva 1 HP prima del contraccolpo. Entrambi terminano a 0 HP e l’attaccante rimane vincitore dello scontro, senza eventi duplicati.
+
+Il rapporto Chrome, i campioni dei canvas e le schermate sono conservati negli artefatti locali della verifica del 10 ottobre. I campioni del browser possono saltare un fotogramma visualizzato quando il processo è occupato; la conservazione di tutti i fotogrammi sorgenti è verificata separatamente sugli asset. La prova usa un contesto browser e un salvataggio dedicati, senza modificare la partita dell’utente. Questi risultati riguardano la build locale, separatamente dall’esito CI della pull request e da qualsiasi deployment.
