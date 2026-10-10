@@ -543,7 +543,8 @@ export function xpGuadagnato(_nemico: PokemonIstanza): number {
 
 export function applicaXP(
   istanza: PokemonIstanza,
-  xp: number
+  xp: number,
+  levelLimit = LIVELLO_MAX
 ): {
   istanza: PokemonIstanza
   livelliGuadagnati: number
@@ -557,7 +558,8 @@ export function applicaXP(
   let livelliGuadagnati = 0
   let evoluzionePendente: { nuovaSpecieId: number } | null = null
 
-  while (nuova.xp >= xpRichiestoPerLivello(nuova.livello) && nuova.livello < LIVELLO_MAX) {
+  const maximum = Math.max(istanza.livello, Math.min(LIVELLO_MAX, Math.floor(levelLimit)))
+  while (nuova.xp >= xpRichiestoPerLivello(nuova.livello) && nuova.livello < maximum) {
     nuova.xp -= xpRichiestoPerLivello(nuova.livello)
     nuova.livello += 1
     livelliGuadagnati += 1
@@ -585,13 +587,14 @@ export function applicaXP(
 export function applicaXPDopoKO(
   vincitore: PokemonIstanza,
   sconfittoPrima: PokemonIstanza,
-  sconfittoDopo: PokemonIstanza
+  sconfittoDopo: PokemonIstanza,
+  levelLimit = LIVELLO_MAX
 ): ReturnType<typeof applicaXP> & { xpAssegnata: number } {
   const xpAssegnata = vincitore.hp > 0 && sconfittoPrima.hp > 0 && sconfittoDopo.hp <= 0
     && sconfittoPrima.istanzaId === sconfittoDopo.istanzaId
     ? xpGuadagnato(sconfittoPrima) : 0
   const progressione = xpAssegnata > 0
-    ? applicaXP(vincitore, xpAssegnata)
+    ? applicaXP(vincitore, xpAssegnata, levelLimit)
     : { istanza: { ...vincitore }, livelliGuadagnati: 0, evoluzionePendente: null }
   return { ...progressione, xpAssegnata }
 }
@@ -604,7 +607,7 @@ export function applicaXPDopoKO(
  * I messaggi sostituiscono il costo preventivo di calcolaDanno e rispettano
  * l'ordine danno/KO → livello → contraccolpo. La UI gestisce l'evoluzione.
  */
-export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa): {
+export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa, levelLimit = LIVELLO_MAX): {
   istanza: PokemonIstanza
   istanzaPrimaDelContraccolpo: PokemonIstanza
   xpAssegnata: number
@@ -617,7 +620,7 @@ export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa): {
   const progressione = applicaXPDopoKO(attaccante, risultato.difensore, {
     ...risultato.difensore,
     hp: risultato.difensoreSvenuto ? 0 : risultato.difensore.hp,
-  })
+  }, levelLimit)
   const { xpAssegnata } = progressione
   const istanzaPrimaDelContraccolpo = progressione.istanza
   const suprema = risultato.suprema ?? èMossaSuprema(risultato.mossa)
@@ -627,6 +630,9 @@ export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa): {
   const messaggi = risultato.messaggi.filter((messaggio) => messaggio !== messaggioAutodannoPreventivo)
   if (progressione.livelliGuadagnati > 0) {
     messaggi.push(`${attaccante.nome} è salito al livello ${istanzaPrimaDelContraccolpo.livello}!`)
+  }
+  if (xpAssegnata && progressione.istanza.livello < LIVELLO_MAX && progressione.istanza.xp >= xpRichiestoPerLivello(progressione.istanza.livello)) {
+    messaggi.push(`${attaccante.nome} conserva l’XP: ha raggiunto il cap di squadra. Allena gli Arkamon di livello più basso.`)
   }
   if (autodanno > 0) messaggi.push(`${attaccante.nome} si scarica e perde ${autodanno} HP!`)
 

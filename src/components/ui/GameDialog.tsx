@@ -11,7 +11,7 @@ export function GameDialog({ title, onClose, children }: { title: string; onClos
     if (!dialog) return
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const release = makeDialogBackgroundInert(dialog)
-    const focusables = () => Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href]')).filter((node) => !node.hidden && node.getClientRects().length)
+    const focusables = () => Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href],[tabindex="0"]')).filter((node) => !node.hidden && node.getClientRects().length)
     focusables()[0]?.focus()
     const keys = (event: KeyboardEvent) => {
       if (event.target instanceof Element && event.target.closest('[data-battle-log-dialog]')) return

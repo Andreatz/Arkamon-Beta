@@ -9,6 +9,10 @@ import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTyp
 import type { AllenatoreDef } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
 import { LocalMapScene } from './LocalMapScene'
+import { useEffect, useState } from 'react'
+import { ArkaStorePanel } from '@/shop/ArkaStorePanel'
+import { hasArkaStore } from '@/shop/catalog'
+import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 
 const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
   NPC: 200,
@@ -21,6 +25,7 @@ const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
  * Il layout admin è condiviso da tutte le città.
  */
 export function CittaScene() {
+  const [shopOpen, setShopOpen] = useState(false)
   const scenaCorrente = useSceneNavigation()
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const giocatore = useGameStore((s) =>
@@ -29,6 +34,7 @@ export function CittaScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const iniziaBattagliaNPC = useGameStore((s) => s.iniziaBattagliaNPC)
   const curaSquadra = useGameStore((s) => s.curaSquadra)
+  const purchase = useGameStore((s) => s.acquistaOggetti)
   const consumaInterazione = useGameStore((s) => s.consumaInterazioneMappaLocale)
   const turno = useGameStore((s) => s.turnoOverworld)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
@@ -36,6 +42,7 @@ export function CittaScene() {
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Venezia'
+  useEffect(() => setShopOpen(false), [luogo, giocatoreAttivo])
   const localMap = getLocalMap(luogo)
   const interazioneDisponibile = !localMap || (turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0)
   const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
@@ -47,6 +54,7 @@ export function CittaScene() {
 
   const sfida = (allenatoreId: number) => {
     if (layoutEditing || !interazioneDisponibile || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
+    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.setState({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
     if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
     const ok = iniziaBattagliaNPC(allenatoreId, luogo)
     if (ok) vaiAScena('battaglia')
@@ -58,6 +66,10 @@ export function CittaScene() {
 
   const activities = (
     <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
+          {hasArkaStore(luogo) && <button aria-label="Arkastore" className="arka-panel col-span-1 p-6" disabled={layoutEditing} onClick={() => setShopOpen((value) => !value)}>
+            <span aria-hidden="true">🛒</span><h3>Arkastore</h3><p>Oggetti per la tua squadra</p>
+          </button>}
+          {shopOpen && <div className="col-span-3"><ArkaStorePanel location={luogo} onPurchase={purchase} inputBlocked={layoutEditing} /></div>}
           {!haPokemonVivi && (
             <p role="status" className="arka-panel col-span-3 p-3 text-center text-amber-200">
               La squadra è esausta. Curala al Centro Pokémon per tornare a combattere.

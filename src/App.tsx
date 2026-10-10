@@ -18,6 +18,7 @@ import { getLocalMap } from '@/data/localMaps'
 import { PlayerTools } from '@/settings/PlayerTools'
 import { MotionConfig } from 'framer-motion'
 import { useGamePreferences } from '@/settings/gamePreferences'
+import { ChallengeBanner } from '@/challenges/ChallengeBanner'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
@@ -74,6 +75,7 @@ function App() {
       <AdminRuntime />
       <AdminOverlay />
       <PlayerTools />
+      <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
       <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene}>
         <AudioController />
       </SceneTransition>

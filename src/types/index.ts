@@ -1,4 +1,5 @@
 import type { AudienceRoundRequest } from '@/audience/types'
+import type { SeededRandomState } from '@/challenges/types'
 
 /**
  * Tipi del dominio Arkamon.
@@ -134,7 +135,7 @@ export interface PokemonIstanza {
 }
 
 /** Identificatori degli oggetti supportati. */
-export type OggettoId = 'masterball'
+export type OggettoId = 'masterball' | 'potion' | 'super-potion' | 'revive' | 'antidote' | 'paralysis-heal' | 'awakening'
 
 /** Stato di un singolo giocatore */
 export interface StatoGiocatore {
@@ -161,6 +162,9 @@ export interface StatoGiocatore {
 
 /** Stato della battaglia in corso (analogo del foglio Battaglia_Corrente VBA) */
 export interface StatoBattaglia {
+  /** Competitive battle randomness. Saved only with a settled checkpoint. */
+  seeded?: SeededRandomState
+  challengeActionCount?: number
   tipo: TipoBattaglia
   /** Lato A = giocatore principale, lato B = avversario */
   pokemonA: PokemonIstanza

@@ -7,6 +7,9 @@
 ## Regole correnti verificate il 10 ottobre 2026
 
 - Gli HP residui restano dopo la battaglia; la cura deve essere esplicita.
+- La squadra del giocatore consente al massimo cinque livelli fra massimo e minimo, inclusi KO. XP oltre la fascia conservata; catture fuori fascia in deposito. Vecchi salvataggi non vengono abbassati: avviso e riordino prima di un nuovo incontro.
+- Arkadex e registro sono individuali per la campagna e inclusi nei backup. Arkastore: acquisto multiplo è una interazione; uso oggetto in battaglia sostituisce la mossa. Nessuna cura all’acquisto.
+- Sfide seed/Fanta: contenitore separato dalla campagna, sei specie al livello 20, budget 100, RNG versionato/cursore salvato solo al checkpoint concluso. Nessun voto remoto; classifica locale solo della medesima configurazione.
 - Mossa Suprema: colpisce il bersaglio con danno doppio, assegna XP/livelli per il suo KO, poi applica all'attaccante metà degli HP massimi di contraccolpo. Nel doppio KO vince quello specifico scontro l'attaccante.
 - Paralisi: agisce per secondo; 1–2 sul d6 impedisce l'attacco, 3–6 lo permette. Il tiro non cura la paralisi: occorre una cura esplicita.
 - Sonno: fino a tre turni, primo obbligatorio senza dado, risveglio 4–6 dal secondo. Veleno: 10%, 20%, 30% e così via degli HP massimi.
