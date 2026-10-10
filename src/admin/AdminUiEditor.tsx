@@ -1,5 +1,6 @@
 import { useAdminStore } from '@store/adminStore'
 import type { AdminThemeUi } from '@/theme/adminThemeTypes'
+import { ADMIN_THEME_UI_BOUNDS } from '@/theme/adminThemeUiBounds'
 
 type UiKey = keyof AdminThemeUi
 
@@ -7,72 +8,54 @@ const uiFields: {
   key: UiKey
   label: string
   description: string
-  min: number
-  max: number
   step: number
 }[] = [
   {
     key: 'panelRadius',
     label: 'Raggio pannelli',
     description: 'Arrotonda o squadratura dei pannelli.',
-    min: 0,
-    max: 40,
     step: 1,
   },
   {
     key: 'buttonRadius',
     label: 'Raggio bottoni',
     description: 'Forma dei pulsanti principali e secondari.',
-    min: 0,
-    max: 40,
     step: 1,
   },
   {
     key: 'panelOpacity',
     label: 'Opacita pannelli',
     description: 'Trasparenza generale dei pannelli.',
-    min: 0.4,
-    max: 1,
     step: 0.01,
   },
   {
     key: 'shadowIntensity',
     label: 'Intensita ombra',
     description: 'Profondita visiva di pannelli e bottoni.',
-    min: 0,
-    max: 2,
     step: 0.05,
   },
   {
     key: 'buttonScale',
     label: 'Scala click bottoni',
     description: 'Quanto si comprimono i bottoni al click.',
-    min: 0.85,
-    max: 1,
     step: 0.01,
   },
   {
     key: 'stageScale',
     label: 'Scala stage',
     description: 'Ingrandimento dell area di gioco.',
-    min: 0.8,
-    max: 1.05,
     step: 0.01,
   },
   {
     key: 'fontScale',
     label: 'Scala font',
     description: 'Dimensione globale dei testi del gioco.',
-    min: 0.75,
-    max: 1.35,
     step: 0.01,
   },
   {
     key: 'mainMapRoadOpacity',
     label: 'Opacita strade mappa',
     description: 'Trasparenza del grigio interno delle strade.',
-    min: 0,
-    max: 1,
     step: 0.01,
   },
 ]
@@ -103,8 +86,8 @@ export function AdminUiEditor() {
             </span>
             <input
               type="range"
-              min={field.min}
-              max={field.max}
+              min={ADMIN_THEME_UI_BOUNDS[field.key].min}
+              max={ADMIN_THEME_UI_BOUNDS[field.key].max}
               step={field.step}
               value={value}
               onChange={(event) => updateUi(field.key, Number(event.target.value))}

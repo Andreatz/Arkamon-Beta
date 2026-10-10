@@ -36,6 +36,8 @@ export function AdminPanel() {
 
   return (
     <section
+      id="arkamon-admin-panel"
+      aria-label="Modalità Admin"
       data-admin-marker={ADMIN_MODE_MARKER}
       style={{ width: expanded ? 'calc(100% - 1.5rem)' : `min(${width}px, calc(100% - 1.5rem))`, height: expanded ? 'calc(100% - 4rem)' : undefined, fontSize: '14px' }}
       className="arka-admin-panel pointer-events-auto absolute right-3 top-12 flex max-h-[calc(100%-4rem)] w-[min(25rem,calc(100%-1.5rem))] flex-col overflow-hidden rounded-[var(--arka-panel-radius)] border border-[var(--arka-primary)] bg-[var(--arka-surface)] text-[var(--arka-text)] shadow-2xl"

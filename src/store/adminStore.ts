@@ -18,6 +18,7 @@ import type {
 } from '@/theme/adminThemeTypes'
 import { compactRoadPoints } from '@/utils/mainMapRoadGeometry'
 import { migrateDepositLayout } from '@/theme/depositLayoutMigration'
+import { isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
 import {
   cloneAdminTheme,
   defaultAdminTheme,
@@ -113,6 +114,11 @@ function pushLayoutUndo(state: AdminState): AdminTheme['layouts'][] {
 }
 
 function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
+  const ui = { ...defaultAdminTheme.ui }
+  for (const key of Object.keys(ui) as (keyof AdminThemeUi)[]) {
+    const value = theme?.ui?.[key]
+    if (isValidThemeUiValue(key, value)) ui[key] = value
+  }
   const spriteScales = Object.fromEntries(
     Object.entries(theme?.spriteScales ?? {}).flatMap(([speciesId, scale]) =>
       typeof scale === 'number' && Number.isFinite(scale) && scale > 0
@@ -137,10 +143,7 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
       ...defaultAdminTheme.colors,
       ...theme?.colors,
     },
-    ui: {
-      ...defaultAdminTheme.ui,
-      ...theme?.ui,
-    },
+    ui,
     assets: {
       ...defaultAdminTheme.assets,
       ...theme?.assets,
@@ -230,7 +233,7 @@ export const useAdminStore = create<AdminState>()(
         })),
 
       updateUi: (key, value) =>
-        set((state) => ({
+        set((state) => isValidThemeUiValue(key, value) ? ({
           theme: {
             ...state.theme,
             ui: {
@@ -238,7 +241,7 @@ export const useAdminStore = create<AdminState>()(
               [key]: value,
             },
           },
-        })),
+        }) : state),
 
       updateAsset: (key, value) =>
         set((state) => ({

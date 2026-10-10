@@ -98,6 +98,24 @@ describe('store - mappe locali e due azioni condivise', () => {
     expect(useGameStore.getState().turnoOverworld).toEqual({ giocatoreAttivo: 1, azioniRimaste: 2 })
   })
 
+  it('durante la battaglia non passa il controllo dalla mappa principale', () => {
+    const before = useGameStore.getState().turnoOverworld
+    useGameStore.setState({ battaglia: {} as NonNullable<ReturnType<typeof useGameStore.getState>['battaglia']> })
+    useGameStore.getState().passaTurnoOverworld()
+    expect(useGameStore.getState().turnoOverworld).toBe(before)
+    expect(useGameStore.getState().giocatoreAttivo).toBe(1)
+  })
+
+  it('durante la battaglia blocca anche movimento e interazione sulla mappa principale', () => {
+    const before = useGameStore.getState()
+    useGameStore.setState({ battaglia: {} as NonNullable<ReturnType<typeof useGameStore.getState>['battaglia']> })
+    const store = useGameStore.getState()
+    expect(store.muoviAvatarMappaPrincipale(1, 'Percorso_1')).toBe(false)
+    expect(store.interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'no-op' })
+    expect(useGameStore.getState().posizione1).toBe(before.posizione1)
+    expect(useGameStore.getState().turnoOverworld).toBe(before.turnoOverworld)
+  })
+
   it('mantiene la posizione di ciascun giocatore e di ciascun luogo durante i cambi di turno', () => {
     const store = useGameStore.getState()
     const { start, next } = firstStep('Venezia')

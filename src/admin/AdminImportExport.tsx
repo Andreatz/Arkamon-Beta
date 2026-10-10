@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
+import { ADMIN_THEME_UI_BOUNDS, isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
 import type {
   AdminTheme,
   AdminThemeAssets,
@@ -91,7 +92,9 @@ function parseLayoutRects(
       !Number.isFinite(x) ||
       !Number.isFinite(y) ||
       !Number.isFinite(w) ||
-      !Number.isFinite(h)
+      !Number.isFinite(h) ||
+      w <= 0 ||
+      h <= 0
     ) {
       return { layout: null, error: `Coordinate layout non valide: ${key}.` }
     }
@@ -138,10 +141,10 @@ function parseLayoutRects(
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { theme: null; error: string } {
+export function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { theme: null; error: string } {
   let parsed: unknown
 
   try {
@@ -178,8 +181,9 @@ function parseThemeJson(value: string): { theme: AdminTheme; error: null } | { t
       ui[key] = defaultAdminTheme.ui[key]
       continue
     }
-    if (typeof valueForKey !== 'number' || !Number.isFinite(valueForKey)) {
-      return { theme: null, error: `Valore UI non valido: ${key}.` }
+    if (!isValidThemeUiValue(key, valueForKey)) {
+      const { min, max } = ADMIN_THEME_UI_BOUNDS[key]
+      return { theme: null, error: `Valore UI non valido: ${key}. Deve essere compreso fra ${min} e ${max}.` }
     }
     ui[key] = valueForKey
   }
@@ -370,8 +374,12 @@ export function AdminImportExport() {
       return
     }
 
-    await navigator.clipboard.writeText(json)
-    setMessage('JSON copiato negli appunti.')
+    try {
+      await navigator.clipboard.writeText(json)
+      setMessage('JSON copiato negli appunti.')
+    } catch {
+      setMessage('Impossibile accedere agli appunti. Usa Scarica per esportare il tema.')
+    }
   }
 
   const downloadJson = () => {
@@ -419,6 +427,7 @@ export function AdminImportExport() {
           </div>
         </div>
         <textarea
+          aria-label="JSON del tema corrente"
           value={json}
           readOnly
           className="h-40 w-full resize-none rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] p-3 font-mono text-[11px] text-[var(--arka-text)] outline-none"
@@ -428,6 +437,7 @@ export function AdminImportExport() {
       <div>
         <h3 className="mb-2 text-sm font-black text-[var(--arka-text)]">Importa JSON</h3>
         <textarea
+          aria-label="JSON del tema da importare"
           value={importValue}
           onChange={(event) => setImportValue(event.target.value)}
           className="h-40 w-full resize-none rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] p-3 font-mono text-[11px] text-[var(--arka-text)] outline-none focus:border-[var(--arka-primary)]"
@@ -443,7 +453,7 @@ export function AdminImportExport() {
       </div>
 
       {message ? (
-        <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
+        <p role="status" className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
           {message}
         </p>
       ) : null}

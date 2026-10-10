@@ -113,6 +113,20 @@ describe('preferenze e collegamento del pubblico', () => {
     expect(api.getState()).toMatchObject({ session: null, enabled: false })
     expect(storage.get(key)).not.toContain(hostToken)
   })
+  it('un’origine non autorizzata conserva il collegamento e permette di riprovare la chiusura', async () => {
+    const fetcher = vi.fn().mockResolvedValue(response({ error: 'Origine non autorizzata.', code: 'INVALID_ORIGIN' }, 403))
+    vi.stubGlobal('fetch', fetcher)
+    const api = await store()
+    api.setState({ session, snapshot, serviceUrl, enabled: true })
+    await api.getState().refreshSnapshot()
+    expect(api.getState()).toMatchObject({ session, connectionStatus: 'error' })
+    expect(storage.get(key)).toContain(hostToken)
+    await api.getState().disconnect()
+    expect(api.getState()).toMatchObject({ session, enabled: false, disconnectFailed: true })
+    fetcher.mockResolvedValue(response({ ...snapshot, round: null }))
+    await api.getState().disconnect()
+    expect(api.getState()).toMatchObject({ session: null, disconnectFailed: false })
+  })
   it('ignora snapshot di sessioni precedenti o risposte più vecchie del risultato già ricevuto', async () => {
     const api = await store()
     const latest = { ...snapshot, serverNow: 220_000, round: { ...snapshot.round!, status: 'closed' as const, winnerIndex: 1 as const, closedAt: 215_000, resolution: 'majority' as const } }

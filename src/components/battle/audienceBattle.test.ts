@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { audienceChannelForBattle, createAudienceBattleId, makeAudienceRoundRequest, validAudienceWinner } from './audienceBattle'
 import { restoreBattleCheckpoint, settledBattleCheckpoint } from './battleCheckpoint'
+import { nextBattleSide } from './battleRoundOrder'
 import { ALLENATORI, getPokemon } from '@/data'
 import { applicaStato, risolviStatoInizioTurno } from '@/engine/battleEngine'
 import { creaIstanza } from '@/store/gameStore'
@@ -83,7 +84,7 @@ describe('audience checkpoint preserves the mandatory status step on reload', ()
     expect(restored.rivalMessages).toEqual(resolved.messaggi)
   })
   it('drops malformed or cross-channel ballots while keeping the already-prepared move stage', () => {
-    const checkpoint = settledBattleCheckpoint({ ...options, audiencePending: pending })
+    const checkpoint = settledBattleCheckpoint({ ...options, audienceBattleId: 'stable-battle', opponentTurnNumber: 3, audiencePending: pending })
     for (const audiencePending of [
       { ...pending, request: { ...request, pokemon: { ...request.pokemon, instanceId: 'wrong' } } },
       { ...pending, request: { ...request, channel: 'boss', trainer: { ...request.trainer, kind: 'PVP' } } },
@@ -94,6 +95,27 @@ describe('audience checkpoint preserves the mandatory status step on reload', ()
       expect(restored.phase).toBe('rival-move')
       expect(restored.openingComplete).toBe(true)
       expect(restored.audiencePending).toBeUndefined()
+    }
+  })
+  it('drops a stale or missing turn identity without losing initiative, acted sides or earned evolutions', () => {
+    const checkpoint = settledBattleCheckpoint({ ...options, initialPriority: 'B',
+      audienceBattleId: 'stable-battle', opponentTurnNumber: 3, audiencePending: pending,
+      evolutions: [{ istanzaId: target.istanzaId, oldSpecieId: 1, newSpecieId: 2 }],
+      rivalMessages: ['Veleno già risolto'],
+    })
+    for (const change of [
+      { audiencePending: { ...pending, request: { ...request, turnKey: 'old-battle:B:3:old' } } },
+      { audienceBattleId: undefined },
+      { opponentTurnNumber: undefined },
+    ]) {
+      const restored = restoreBattleCheckpoint(JSON.parse(JSON.stringify({ ...battle,
+        checkpoint: { ...checkpoint, ...change } })))
+      expect(restored).toMatchObject({ phase: 'rival-move', openingComplete: true,
+        initialPriority: 'B', actedThisRound: ['A'],
+        evolutions: checkpoint.evolutions, rivalMessages: checkpoint.rivalMessages })
+      expect(restored.audiencePending).toBeUndefined()
+      // B still finishes this round before the remembered B-first next round.
+      expect(nextBattleSide(new Set(restored.actedThisRound), 'B', restored.initialPriority)).toBe('B')
     }
   })
   it('finishing or switching wins over an obsolete pending ballot', () => {

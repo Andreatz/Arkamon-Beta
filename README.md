@@ -20,10 +20,9 @@ npm test
 
 ## Stato Attuale
 
-- Branch di lavoro: `feature/vfx-recipe-engine`
-- Ultima verifica: **6 ottobre 2026**
+- Ultima verifica: **10 ottobre 2026**, [audit del progetto](./docs/project-audit-2026-10-10.md).
 - Build web: `npm run build` completato senza errori
-- Test: **850/850 verdi in 63 file**
+- Test: il rapporto corrente contiene il risultato della suite completa e delle prove nel browser; i rapporti precedenti restano storici.
 - Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md), [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) e [correzione paralisi/sonno](./docs/status-corrections-audit-2026-10-06.md) del 6 ottobre 2026.
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
 - Verifica mappe locali: [movimento dei due giocatori e budget condiviso](./docs/local-maps-audit-2026-10-06.md).
@@ -44,7 +43,8 @@ npm test
 - Bilanciamento codificato: progressione mappe, range livelli, economia, incontri e soglie stati/cure/Supreme.
 - Audio da file per mosse, eventi, dadi e transizioni; musica generativa Web Audio per scene, effetti generativi di riserva e toggle muto persistito.
 - Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
-- Deploy GitHub Pages configurato.
+- Votazioni del pubblico con QR separati per NPC e Capipalestra/PvP; [configurazione e utilizzo](./docs/audienceVoting.md).
+- Workflow GitHub Pages presente: la disponibilità dell'hosting per il repository privato resta da risolvere. Una build locale riuscita non conferma un deploy online.
 
 ## Architettura
 
@@ -96,13 +96,15 @@ Vedi: [docs/ADMIN_MODE.md](./docs/ADMIN_MODE.md)
 - [x] Priorita 3: bilanciamento
 - [x] Fase C audio: sound effects e musica
 - [x] Fase D desktop: scaffold Tauri
-- [x] Fase D desktop: installer Windows verificato
+- [ ] Verifica di un nuovo installer Windows con le correzioni correnti (le verifiche precedenti sono storiche).
 
 Per il piano completo vedi [ROADMAP.md](./ROADMAP.md).
 
 ## Deploy
 
 Il workflow GitHub Pages e' in `.github/workflows/deploy.yml`.
+
+Con il repository privato e il piano rilevato nelle verifiche precedenti, Pages non risultava disponibile. Il repository resta privato per scelta dell'utente. Verificare l'hosting scelto prima di considerare pubblicata una release.
 
 Per buildare con base GitHub Pages:
 
