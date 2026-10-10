@@ -9,7 +9,10 @@ export function trackGameChange(previous: GameSaveState, next: GameSaveState): P
     && (previous.giocatore1.squadra.length > 0 || previous.giocatore2.squadra.length > 0)
   let log = reset ? emptyMatchLog() : next.matchLog
   const add = (event: MatchEventInput) => { log = appendMatchEvent(log, event) }
-  if (reset) add({ kind: 'start', title: 'Nuova partita', message: 'La campagna riparte: progressi individuali e registro azzerati.' })
+  if (reset) {
+    add({ kind: 'start', title: 'Nuova partita', message: 'La campagna riparte: progressi individuali e registro azzerati.' })
+    return { arkadex: deriveArkadexProgress(next.arkadex, next), matchLog: log }
+  }
   if (!log.events.length && previous.scenaCorrente.scena === 'titolo' && next.scenaCorrente.scena === 'laboratorio') {
     add({ kind: 'start', title: 'Nuova partita', message: 'Inizio della campagna di due giocatori.' })
   }

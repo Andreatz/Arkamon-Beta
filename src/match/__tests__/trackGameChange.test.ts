@@ -21,6 +21,20 @@ const battle = (attacker: PokemonIstanza, includeSquad = true): StatoBattaglia =
 const commit = (previous: GameSaveState, next: GameSaveState): GameSaveState => ({ ...next, ...trackGameChange(previous, next) })
 
 describe('Committed campaign tracking', () => {
+  it('starts a new campaign without carrying reset movements or the previous battle into its register', () => {
+    const before = campaign()
+    before.posizione1 = { ...before.posizione1, luogo: 'Roma' }
+    before.posizione2 = { ...before.posizione2, luogo: 'Venezia' }
+    before.battaglia = battle(before.giocatore1.squadra[0])
+    const next = initialGameSave()
+    const committed = commit(before, next)
+    expect(committed.matchLog.events.map((event) => event.kind)).toEqual(['start'])
+    expect(committed.matchLog.events[0].sequence).toBe(1)
+    expect(committed.arkadex).toEqual(next.arkadex)
+    const lab = commit(committed, { ...committed, scenaCorrente: { scena: 'laboratorio' } })
+    expect(lab.matchLog.events.map((event) => event.kind)).toEqual(['start'])
+  })
+
   it('records real starter selection and keeps the other player undiscovered', () => {
     const before = initialGameSave()
     const next = { ...before, giocatore1: { ...before.giocatore1, squadra: [pokemon(1)] } }

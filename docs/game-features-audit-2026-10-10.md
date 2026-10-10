@@ -20,10 +20,11 @@ La consegna comprende le cinque funzioni richieste: Arkadex, negozi, registro co
 5. Il registro/Arkadex sono protetti da riferimenti legacy incompleti. I controlli con testo dinamico hanno nomi accessibili stabili.
 6. La Borsa aveva un salto nella gerarchia dei titoli; il catalogo Fanta pieno aveva solo pulsanti disabilitati in un’area scorrevole. Ora i titoli sono consecutivi e il catalogo riceve il focus anche a squadra completa.
 7. Il premio del rivale per un KO da status ignorava la fascia di squadra nelle sfide. Ora segue il cap anche in quel percorso; la prova browser verifica veleno, XP conservata al livello 25 con compagni al 20 e HP residui senza cura.
+8. Il reset della campagna poteva aggiungere al nuovo registro i ritorni alle posizioni iniziali e la conclusione della vecchia battaglia. Il nuovo registro ora parte dal solo evento di avvio; una regressione riproduce il reset da Roma/Venezia durante uno scontro.
 
 ## Evidenza automatica
 
-- **1.897 test Vitest passati in 103 file**, inclusi i casi economici, di cap, recupero, isolamento della campagna, generazione di squadre per 120 seed, duplicati e retry.
+- **1.897 test Vitest passati in 103 file** nella suite locale iniziale. La regressione aggiunta sul reset porta a **1.898 test** nella suite conclusiva della CI; inclusi i casi economici, di cap, recupero, isolamento della campagna, generazione di squadre per 120 seed, duplicati e retry.
 - **TypeScript e build di produzione passati.** Il modulo principale resta grande, come documentato negli audit precedenti; l’ottimizzazione degli asset è rinviata per richiesta dell’utente.
 - **40 prove browser passate**: suite completa iniziale di 36, due prove aggiuntive sul cap e due sul KO da veleno del rivale, tutte desktop/mobile. I contesti isolati non leggono i salvataggi del browser abituale. La CI riesegue insieme tutte le 40 prove sul commit della pull request.
 
