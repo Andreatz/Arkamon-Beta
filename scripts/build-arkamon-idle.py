@@ -28,6 +28,7 @@ from PIL import Image, ImageDraw, ImageOps
 
 SCREEN_DOMINANCE_CLEANUP = False
 SCREEN_FRINGE_CLEANUP = False
+WARM_DUST_DESPILL = False
 
 
 def action_key_options(action: str) -> dict:
@@ -157,6 +158,17 @@ def remove_green(image: Image.Image, cutoff: float = 0.08, preserve_effects: boo
     neutral_green = np.maximum(recovered[:, :, 0], recovered[:, :, 2])
     recovered[:, :, 1] = np.where(edge, np.minimum(recovered[:, :, 1], neutral_green),
                                  recovered[:, :, 1])
+    if WARM_DUST_DESPILL:
+        # A sand plume may already contain olive contamination before keying.
+        # Correct its colour without deleting opacity or motion. Preserve native
+        # bright gold, neutral smoke and cyan; this is an opt-in sand-only profile.
+        warm_dust = ((rgb[:, :, 1] >= .90 * rgb[:, :, 0])
+                     & (rgb[:, :, 0] > rgb[:, :, 2] + 20)
+                     & ~((rgb[:, :, 0] >= 230) & (rgb[:, :, 1] <= rgb[:, :, 0] + 6))
+                     & (alpha > 0))
+        recovered[:, :, 1] = np.where(warm_dust,
+                                     np.minimum(recovered[:, :, 1], .85 * recovered[:, :, 0]),
+                                     recovered[:, :, 1])
     recovered[alpha == 0] = 0
     rgba = np.concatenate([np.rint(recovered).astype(np.uint8),
                            np.rint(alpha[:, :, None] * 255).astype(np.uint8)], axis=2)
@@ -270,7 +282,8 @@ def inspect_clip(ffmpeg: str, source: Path, action: str, decoded: Path,
 
 
 def common_plan(clips: list[dict], reference: Path | None, base_cell: int,
-                ground: float, occupancy: float, padding: int, max_texture: int) -> dict:
+                ground: float, occupancy: float, padding: int, max_texture: int,
+                fit_initial_body: bool = False) -> dict:
     idle = next(c for c in clips if c['action'] == 'idle')
     first = idle['firstCore']
     anchor = ((first[0]+first[2])/2, first[3])
@@ -287,7 +300,10 @@ def common_plan(clips: list[dict], reference: Path | None, base_cell: int,
         ground = (reference_top+box[3])/reference_edge
         reference_meta = {'size':list(image.size),'alphaBounds':list(box),
                           'bodyHeightFraction':occupancy,'groundFraction':ground}
-    idle_crop = idle['union']
+    # Flying rocks and sparks may span the screen during an idle. Fitting that
+    # union makes the character tiny; the opt-in fits its initial opaque body
+    # while the common padded canvas still includes every frame's full artwork.
+    idle_crop = first if fit_initial_body else idle['union']
     scale = min(base_cell*occupancy/(idle_crop[3]-idle_crop[1]),
                 (base_cell-2)/(idle_crop[2]-idle_crop[0]))
     origin = (base_cell/2-anchor[0]*scale, round(base_cell*ground)-anchor[1]*scale)
@@ -334,6 +350,8 @@ def common_plan(clips: list[dict], reference: Path | None, base_cell: int,
               'groundPivot':[base_cell/2+left,round(base_cell*ground)+top],
               'paddingPixels':padding,'maxTextureDimension':max_texture,
               'notes':'Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.'}
+    if fit_initial_body:
+        result['scaleReference'] = 'Initial opaque body; all native motion and effects retained in canvas padding.'
     return result
 
 
@@ -505,6 +523,12 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
                       'originalFinalFramePreserved':True,
                       'sourceFramesTouchingEdges':[i for i,b in enumerate(clip['boxes']) if b and (b[0]==0 or b[1]==0 or b[2]==info['width'] or b[3]==info['height'])],
                       'notes':'Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.'}}
+    if WARM_DUST_DESPILL:
+        metadata['key']['warmDustDespill'] = {
+            'originalMask':'G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.',
+            'greenCeilingFractionOfRecoveredRed':.85,
+            'alphaUnchanged':True,
+        }
     if green_count:
         raise RuntimeError(f'{action} retains {green_count} green-dominant pixels.')
     if 'timing' in clip.get('previousMetadata', {}):
@@ -525,7 +549,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
 
 
 def main() -> None:
-    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP
+    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, WARM_DUST_DESPILL
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--species-id',type=int,default=5)
     parser.add_argument('--source-dir',type=Path)
@@ -547,12 +571,21 @@ def main() -> None:
                         help='Remove nonuniform green screen haze; use only when the character has no intrinsic green features.')
     parser.add_argument('--screen-fringe-cleanup',action='store_true',
                         help='Remove baked yellow/green fringe and enclosed screen pockets while protecting warm light; opt-in only for characters without green features.')
+    parser.add_argument('--base-key-actions',nargs='+',choices=['idle','attack','hit','victory','ko'],default=[],
+                        help='Use the base key for these actions to preserve native dust, bloom and fading smoke, even when additional cleanup is enabled for the set.')
+    parser.add_argument('--fit-initial-body',action='store_true',
+                        help='Fit the first idle body rather than distant idle particles; retain full motion and effects in the padded canvas.')
+    parser.add_argument('--warm-dust-despill',action='store_true',
+                        help='Correct olive screen contamination in warm sand RGB without changing alpha; opt-in only for characters without intrinsic olive/green details.')
     parser.add_argument('--reuse-normalization',type=Path,
                         help='Reuse source-verified geometry, crops, camera calibration and timing markers from an existing asset directory.')
     parser.add_argument('--analyze-only',action='store_true')
     args = parser.parse_args()
-    SCREEN_DOMINANCE_CLEANUP = args.screen_dominance_cleanup
-    SCREEN_FRINGE_CLEANUP = args.screen_fringe_cleanup
+    WARM_DUST_DESPILL = args.warm_dust_despill
+    def select_key_profile(action: str) -> None:
+        global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP
+        SCREEN_DOMINANCE_CLEANUP = args.screen_dominance_cleanup and action not in args.base_key_actions
+        SCREEN_FRINGE_CLEANUP = args.screen_fringe_cleanup and action not in args.base_key_actions
     if args.species_id <= 0:
         parser.error('Species ID must be positive.')
     args.source_dir = args.source_dir or Path(f'animation-source/raw/{args.species_id}/front')
@@ -574,11 +607,14 @@ def main() -> None:
         qa.mkdir(parents=True,exist_ok=True)
     decoded = args.decoded_dir.resolve() if args.decoded_dir else Path('__no_decode_cache__')
     with tempfile.TemporaryDirectory(prefix='arkamon-all-original-frames-') as folder:
-        clips = [inspect_clip(ffmpeg,(args.source_dir/f'{action}.mp4').resolve(),action,decoded,Path(folder),args.alpha_cutoff) for action in actions]
+        clips = []
+        for action in actions:
+            select_key_profile(action)
+            clips.append(inspect_clip(ffmpeg,(args.source_dir/f'{action}.mp4').resolve(),action,decoded,Path(folder),args.alpha_cutoff))
         if args.reuse_normalization:
             common = reuse_normalization(clips,args.reuse_normalization.resolve(),args.species_id)
         else:
-            common = common_plan(clips,args.reference,args.base_cell,args.ground,args.occupancy,args.padding,args.max_texture)
+            common = common_plan(clips,args.reference,args.base_cell,args.ground,args.occupancy,args.padding,args.max_texture,args.fit_initial_body)
             common['cameraCalibrations'] = {c['action']:c['camera'] for c in clips}
         common_path = output/'animation-set.normalization.json'
         common_path.write_text(json.dumps(common,indent=2)+'\n',encoding='utf-8')
@@ -589,6 +625,7 @@ def main() -> None:
             return
         all_metadata,idle_first = {},None
         for clip in clips:
+            select_key_profile(clip['action'])
             metadata,first = convert_clip(clip,common,output,qa,ffmpeg,args.battle_background,args.alpha_cutoff,args.columns,idle_first,args.species_id)
             all_metadata[clip['action']] = metadata
             if clip['action']=='idle':

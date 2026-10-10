@@ -1,0 +1,1934 @@
+{
+  "schemaVersion": 1,
+  "importDate": "2026-10-10",
+  "speciesCount": 7,
+  "clipCount": 35,
+  "nativeFrameCount": 3358,
+  "runtimeImageBytes": 409406670,
+  "allProvenanceChecksPassed": true,
+  "inspectionMethod": "Native source frames, independent before/contact/after review and dark/light output contacts. Browser verification is recorded separately.",
+  "species": [
+    {
+      "speciesId": 15,
+      "name": "Wormaren",
+      "releaseFrame": 35,
+      "reactionFrame": 29,
+      "releaseEvidence": "Frame35 reaches the first clear downward head strike; frame34 is still descending.",
+      "reactionEvidence": "Frame29 first shows the torso contact flash and contraction.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 384,
+        "height": 384,
+        "left": 180,
+        "top": 212
+      },
+      "nativeFrames": 480,
+      "runtimeImageBytes": 75590978,
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "profiles": {
+        "idle": "base",
+        "attack": "base",
+        "hit": "base",
+        "victory": "base",
+        "ko": "base"
+      },
+      "warmDustDespillActions": [
+        "idle",
+        "attack",
+        "hit",
+        "victory",
+        "ko"
+      ]
+    },
+    {
+      "speciesId": 16,
+      "name": "Clastoom",
+      "releaseFrame": 46,
+      "reactionFrame": 18,
+      "releaseEvidence": "Frame46 first releases the orange ring from the fist.",
+      "reactionEvidence": "Frame18 first closes the eyes and contracts the body, before the flash at19.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 352,
+        "height": 352,
+        "left": 202,
+        "top": 219
+      },
+      "nativeFrames": 480,
+      "runtimeImageBytes": 58322464,
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "profiles": {
+        "idle": "dominance",
+        "attack": "base",
+        "hit": "base",
+        "victory": "base",
+        "ko": "base"
+      },
+      "warmDustDespillActions": []
+    },
+    {
+      "speciesId": 17,
+      "name": "Clastoom",
+      "releaseFrame": 43,
+      "reactionFrame": 38,
+      "releaseEvidence": "Frame43 first places the hand on the ground with the initial impact splash.",
+      "reactionEvidence": "Frame38 first closes the eyes and recoils; the later flash is at42.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 320,
+        "height": 320,
+        "left": 221,
+        "top": 240
+      },
+      "nativeFrames": 479,
+      "runtimeImageBytes": 57336580,
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "profiles": {
+        "idle": "dominance",
+        "attack": "base",
+        "hit": "base",
+        "victory": "base",
+        "ko": "base"
+      },
+      "warmDustDespillActions": []
+    },
+    {
+      "speciesId": 18,
+      "name": "Clastoom",
+      "releaseFrame": 55,
+      "reactionFrame": 16,
+      "releaseEvidence": "Native frame54 holds the raised charged palm. Frame55 begins the decisive forward/downward arm swing and orange flame sweep, growing across56-58 before the ground impact59.",
+      "reactionEvidence": "Native frame15 retains the normal open-eye face. Frame16 first narrows the eyes in the initial wince; the head compresses further17-22 before the larger backward body recoil23. Use this early cue to avoid pre-impact recoil while waiting.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 384,
+        "height": 384,
+        "left": 203,
+        "top": 193
+      },
+      "nativeFrames": 480,
+      "runtimeImageBytes": 64525136,
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "profiles": {
+        "idle": "dominance",
+        "attack": "dominance",
+        "hit": "dominance",
+        "victory": "dominance",
+        "ko": "base"
+      },
+      "warmDustDespillActions": [
+        "victory"
+      ]
+    },
+    {
+      "speciesId": 19,
+      "name": "Colussand",
+      "releaseFrame": 36,
+      "reactionFrame": 13,
+      "releaseEvidence": "Native frame35 retains the raised hands at the end of the windup. Frame36 first drives the hands downward with visible golden sand speed trails; the ground splash follows40-41.",
+      "reactionEvidence": "Native frame12 is neutral. Frame13 first shows the white/golden contact star on the chest, growing14-18 before the head/body recoil19.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 352,
+        "height": 352,
+        "left": 204,
+        "top": 217
+      },
+      "nativeFrames": 480,
+      "runtimeImageBytes": 70335086,
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "profiles": {
+        "idle": "dominance",
+        "attack": "base",
+        "hit": "base",
+        "victory": "base",
+        "ko": "base"
+      },
+      "warmDustDespillActions": [
+        "idle",
+        "attack",
+        "hit",
+        "victory",
+        "ko"
+      ]
+    },
+    {
+      "speciesId": 23,
+      "name": "Sparkly",
+      "releaseFrame": 50,
+      "reactionFrame": 30,
+      "releaseEvidence": "Native frame49 retains the held chest charge. Frame50 first expands the chest burst past the arms; the emitted white/cyan sphere appears51 and expands52-55.",
+      "reactionEvidence": "Native frame29 retains only the intrinsic round chest light. Frame30 first expands it into a distinct white contact star; the sharper flash and physical recoil follow31-34.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 288,
+        "height": 288,
+        "left": 239,
+        "top": 199
+      },
+      "nativeFrames": 479,
+      "runtimeImageBytes": 32510026,
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "profiles": {
+        "idle": "base",
+        "attack": "base",
+        "hit": "base",
+        "victory": "base",
+        "ko": "base"
+      },
+      "warmDustDespillActions": []
+    },
+    {
+      "speciesId": 24,
+      "name": "Grimbolt",
+      "releaseFrame": 52,
+      "reactionFrame": 27,
+      "releaseEvidence": "Native frame51 holds the forward paws with no emitted slash. Frame52 first emits the cyan paw slash, growing53 and joined by golden lightning54.",
+      "reactionEvidence": "Native frame26 has normal open blue eyes and no contact star. Frame27 first closes the eyes and shows the yellow/white chest impact; the flash grows28-30.",
+      "cellWidth": 704,
+      "viewport": {
+        "width": 320,
+        "height": 320,
+        "left": 197,
+        "top": 213
+      },
+      "nativeFrames": 480,
+      "runtimeImageBytes": 50786400,
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "profiles": {
+        "idle": "dominance",
+        "attack": "base",
+        "hit": "base",
+        "victory": "base",
+        "ko": "base"
+      },
+      "warmDustDespillActions": []
+    }
+  ],
+  "clips": [
+    {
+      "speciesId": 15,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/15/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "d60c23851beef33328aaacf97a8cac57b44b44907efe518ec1ac08aed2ed0b38",
+        "sizeBytes": 1975444,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 14877906,
+        "sha256": "3122114b229b6e9af660c20a9b169416e301f601a79d3057c7d09d0659996b8f",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 180,
+          "top": 212
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 105134,
+        "sha256": "6e1ebd20a8116149b935f530b6f13550329f230c6f127ad1f0db10b52b6b23a5"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 15,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/15/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "09e63fb9f59daf943947891dc981d6c69e9989336336a545ebafe4e4b9203ee5",
+        "sizeBytes": 3785107,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 17329454,
+        "sha256": "63b9961af030469fc1e7ddf5032e7d681402a5a2099061037d1525528aa65fb7",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 180,
+          "top": 212
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 148814,
+        "sha256": "c00933eff0d3ed84fad1fe4c427846826c8e96b952771874f2d50fde45c6e89b"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 15,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/15/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "57a9a6322dabab61af96e5337354f38f070111492e5d7bbc81e2d1e24af6e4cd",
+        "sizeBytes": 2553841,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 14605998,
+        "sha256": "780c93f0ebe06824a4ee60848d4cf6f3462ce8839e4911a79b8a1235290059b5",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 180,
+          "top": 212
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 116556,
+        "sha256": "4b6dea6e1d5ec374eda55ad8cfd61ba1903d4fc31009c700e77c5da68c121e1f"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 15,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/15/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "d4134591be01b006f79ce813d6c322afe7643079291aa67356b09c533da365b0",
+        "sizeBytes": 2454137,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 14627162,
+        "sha256": "6600087722b1a0089c1818cee28a9e72f5ea4f478f40a6c9011b84fe2ce01762",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 180,
+          "top": 212
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 112928,
+        "sha256": "006350b9b194c28f6dc4717d7b58a53acb9ac3995a737f5e56cd7695cfa5dfd9"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 15,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/15/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "2646adb74a603272997bde7a453719397eaf874ebd84a04f793a545a709f9067",
+        "sizeBytes": 2657538,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 13551540,
+        "sha256": "19e892aed2052a58e9bba5c041aeb950bcbe4edc5e70cede373f6b66a4e2e67d",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 180,
+          "top": 212
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 115486,
+        "sha256": "42dbbca5df52aac96077a037dc05f84ada306ea5d74fecf2c23825da0840456c"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 16,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/16/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "8f2a764713b7c432db524ae523c168804238c8dec17016e2dd937fbf10d76bbc",
+        "sizeBytes": 1929453,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 10023068,
+        "sha256": "d632a7a96aba3a5976f71278ff048aaee8fdd7db2945712573e2442207b624c3",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 202,
+          "top": 219
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 94898,
+        "sha256": "b2a38456d314fad91c65e0296fcd567a918337dccd01454f7eb8b97e1d344971"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 16,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/16/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "bec6306f7038b62a3861555bfe18a9e7091d5b810066d75db244d862e9100972",
+        "sizeBytes": 2685141,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12546218,
+        "sha256": "ed9244bf32ffdc39afdde21a5666407a12e88b013d8c00d7de69119df3501117",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 202,
+          "top": 219
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 108442,
+        "sha256": "7814232fde0e368cc1ed7e6c0ebad7d9ea3cf401dd58babe51fc08fa554770f3"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 16,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/16/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "284b78c8a9ec119662b578f4d215b9ea0bf4e0133483f0296c5b39104329c147",
+        "sizeBytes": 3124860,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12597716,
+        "sha256": "5ee364f0574dac821751d619fcc1721cc98aecc14b53842ef1f534870dbf62f2",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 202,
+          "top": 219
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 100582,
+        "sha256": "6bb065990322cc0cce0bf03239bb873fc0829e27d3525023eedd96db1758741a"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 16,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/16/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "b71a7b189eb9e358de5fc0324e12763ed3ccb613234ad1357706839b64b0553a",
+        "sizeBytes": 2980048,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12429206,
+        "sha256": "f5ae88f6d443a75c12e5bd41283c01a566ce1b5d0615868f7fe769e98d001a46",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 202,
+          "top": 219
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 103446,
+        "sha256": "5a0c6b4dc9e4f6da25d28261d3dde9b886986a2f70dbc53299e13b3e00bd5ada"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 16,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/16/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "e536de57639edc12a86fb3287fc1f8f54856ac2b507c9a11ab565ee1757ad533",
+        "sizeBytes": 2084162,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 10218646,
+        "sha256": "dad5c4b5f34c7a23e3321f5b58e5f9146b843b22831c09de504247be9db31b4a",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 202,
+          "top": 219
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 100242,
+        "sha256": "b231206d0ea509fe27e08c8599c0660e8a03e880fcaaa57e62141b480aeb14e9"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 17,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/17/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "585141ee3d51e235c96be5d0199dc5c9c17b8dd76b9db690cf9aca0e2adb818e",
+        "sizeBytes": 1795139,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 9132584,
+        "sha256": "a1e623dfff186b48f62190b12721ff72ec248c84bc0186a63a23276ab0b3308e",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 221,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 87920,
+        "sha256": "5cc9038a3f02a0363ee693a22de10bc6131a82f37be2c3432a642b92800d3eba"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 17,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/17/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.97,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "53090da40a79d2c8a995703215797049b78b0830da4e1f6681a145ccc26f587a",
+        "sizeBytes": 2842632,
+        "decodedFrameCount": 95,
+        "durationFromFramesSeconds": 3.9583333333333335
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 95,
+        "fps": 24.0,
+        "durationSeconds": 3.9583333333333335,
+        "durationMs": 3958,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12515728,
+        "sha256": "be29ad13f9c93e4aa1e9a1f62172ddf99a4d83d043f41ab36e8d0a9f99cdab37",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 221,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 100482,
+        "sha256": "694baf39f45b17a592fd5eefa3d2182b748ae2097ba682d77ac9756fd5053d94"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 17,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/17/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "b304ccf2f13834d961722ca6653f98837d1006ac2a9a50c807962432debbee8f",
+        "sizeBytes": 2630781,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 9790648,
+        "sha256": "dc203ba8c336ce4b8ff6c3d6c3fd3896424499a0c803b14569119de413a7736b",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 221,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 90876,
+        "sha256": "56739b912bff6319d5e06809b193ab60af20ca454e52cc485d6cd7891b27755f"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 17,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/17/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "83dd775c3485fc017c4022eb5ae95b18c68127428a0a9f36befa4d757f57f2a0",
+        "sizeBytes": 2831112,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 11160512,
+        "sha256": "b229b1c432ce18d164c26a067c7b75a7bf57853506a89f663e6543208a11c1f8",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 221,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 95468,
+        "sha256": "bf2e80cfc3f5e7186e21fe27889d1b4160d590a6bc068b086018c788d75d3b3f"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 17,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/17/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "a3ec7c40caa6fb1df533e085ab0c1ec5557af8a3385b8a30825b1db3ac13dd90",
+        "sizeBytes": 2678668,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 14260188,
+        "sha256": "695af72ecd9fda9d1dd5771c276f6d5e2904b5146981a3e2ce29607be1f2b2dd",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 221,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 102174,
+        "sha256": "72b939d6de0f581a4e66ade492b1ef7e6ef17fcce97165c68f04ecf331c1c39e"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 18,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/18/front/idle.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "5e45b46c8477376ea2c34e5f63eb7db0d0cc99d197819307ce76df1da77832fb",
+        "sizeBytes": 1341816,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12717008,
+        "sha256": "67e88688ec7def7019db6d8e12119525becbb53d3e2fe4d1279e5ef5c28d44cd",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 203,
+          "top": 193
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 124746,
+        "sha256": "48fcb9f79081f9f45e9dc9c656cb1d37873fda5480ed51788b26e3f287a93a62"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 18,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/18/front/attack.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "4646ee333a978af8f1408ea85b5735378ac8d7ccce4893ef67853dac63480613",
+        "sizeBytes": 1479866,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 11411176,
+        "sha256": "2b667cfd53ef45b401313fd2f62dcdc863ed64d2a64826abb82865fcd7faf86e",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 203,
+          "top": 193
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 114564,
+        "sha256": "d77512efba40220f1b6ba82509469d7f0d2132b0348a4112705372875bd89b33"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 18,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/18/front/hit.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "429b9bca7050b81fe9599daf684aae9c944915d23c19ee5a122548dca45cd689",
+        "sizeBytes": 1917806,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12624672,
+        "sha256": "58bab468ca925ca9583c04ec1c68ce0f4ee5ceca244b9cd6cf39868fa555a5b0",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 203,
+          "top": 193
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 124752,
+        "sha256": "7f101006b1255b7c84b010e198665095bd929882e3dc02c359ee411257889bdc"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 18,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/18/front/victory.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "79d7202a0fd8ae842678b09d5605dabf1e3f7f56ea83e95d1fdc096066da2920",
+        "sizeBytes": 2011073,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 13289290,
+        "sha256": "8307b84445ff1017da2e63d0870e19544d8c81533e1a1e9b5ce59771126fb445",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 203,
+          "top": 193
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 124808,
+        "sha256": "3434aaaeeaf38d96c975e13c95047741c4083358428b07810d59b4815c8a48d3"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 18,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/18/front/ko.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "0026fba536ef666ff9a472e04da104e7a6b347fe972a166568cb5eed8973188e",
+        "sizeBytes": 1711573,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 13865950,
+        "sha256": "5b2f0184455a7ce434da7d1e4f862ae9d0dad50d22b79f5cc18327392b46606b",
+        "viewport": {
+          "width": 384,
+          "height": 384,
+          "left": 203,
+          "top": 193
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 128170,
+        "sha256": "cc851d3d70d87e723bf6cfffa077fe62a733ecdf7c1a2e2218fa70c27118c452"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 19,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/19/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "e07e63b79de88cda818490b453fd9c1a8ce99e6288f5f70f45a78ad331f1e850",
+        "sizeBytes": 2911535,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12630398,
+        "sha256": "274f92f909baa37da1f4e86f768eeb7436f9b83c82dbc662466688854042e2f5",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 204,
+          "top": 217
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 121244,
+        "sha256": "aaf703f10f57593505b76d42296eb40f3ead03298068b8f7a21319fad70a1045"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 19,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/19/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "c9dc6ebc46ea2679ae527a86797a47499778678f153e7333e6a295a28c3941ec",
+        "sizeBytes": 3340737,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 14230908,
+        "sha256": "c037dec08315febf498282056750cfcdda5e973b2e42fcf69fa507b2e03a50db",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 204,
+          "top": 217
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 134774,
+        "sha256": "121908e7ce7809dd7b300d335b1409e466feba8c1451c629d804161045fe4a21"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 19,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/19/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "c9fe4d070d0db21bd52c0aa18befe6f4acdf00130f96ec59ee1e7609e4627ea6",
+        "sizeBytes": 3181919,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 14381890,
+        "sha256": "93a9cefebfed6cc737b9f6248613c588c97beb76d800879d9340aa26201595f9",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 204,
+          "top": 217
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 135618,
+        "sha256": "3c87289120a6a33340be9b31d5395a5c024a6dbf51006c92504b271137b43a32"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 19,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/19/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "48a6233c5989481fce9a22b145217a3abdf4c39b5a3ba0d2cda32321deb479a6",
+        "sizeBytes": 3237406,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 14983528,
+        "sha256": "d7de40b9cb8d3e9339b3f72b3568ce1c16691a18d814a20b679a02c02224ea32",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 204,
+          "top": 217
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 122750,
+        "sha256": "897c70e17c8c9f078e77592fe6f2357852642eb37695538e7ea52c98cbd3f203"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 19,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/19/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "d33228c06315e2156cff77696372f60634a5c591045c0a0a484a1cd2b6443e06",
+        "sizeBytes": 3455520,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 13459850,
+        "sha256": "88127bca60aa19c4dbe251c376944afe079075aeff06c993d6fdcf7e66f7f2f9",
+        "viewport": {
+          "width": 352,
+          "height": 352,
+          "left": 204,
+          "top": 217
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 134126,
+        "sha256": "ecafb466a314ce3cb9784d7085e51c3f07f45e7132fea65351301147a74d74b8"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": {
+        "originalMask": "G >= .90 R; R > B+20; preserve R >= 230 with G <= R+6.",
+        "greenCeilingFractionOfRecoveredRed": 0.85,
+        "alphaUnchanged": true
+      },
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 23,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/23/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.97,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "defbd1603d500cc174308a900151d507802244a14d4efbfe2ffec0e02b7eec63",
+        "sizeBytes": 1884775,
+        "decodedFrameCount": 95,
+        "durationFromFramesSeconds": 3.9583333333333335
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 95,
+        "fps": 24.0,
+        "durationSeconds": 3.9583333333333335,
+        "durationMs": 3958,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 5964802,
+        "sha256": "38e3591162e23af6ca078beb4eb73e76971663dc2f3160e5ff790c222d4a4ade",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 239,
+          "top": 199
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 58306,
+        "sha256": "695af349c711bd1f895b6694d3e28ced92f8acea5c60f4b267a691ee90b9218d"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 23,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/23/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "cd45138d518ae1ea1d45867e6ccc19d40b96c8d79c3f3d63c3792af091f9e3a5",
+        "sizeBytes": 2013727,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7199780,
+        "sha256": "181133c2af9bf3a23d731efca4e6e066ba57037a85e11c0af6e936dd04bc6c1d",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 239,
+          "top": 199
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 34012,
+        "sha256": "4516cfb059665ca6c6db1ebeeec7a08582e2a53ca55e5dc412effe07b58a9268"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 23,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/23/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "dc03a7f32339d299bc4b85756c0edd61eb1cb1d481737ede7b4d4cdd481b1db9",
+        "sizeBytes": 1752974,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6036224,
+        "sha256": "da3a6b4cd89d9abf136ae9c606d900f85cc9a425db154b506572c934cc58b793",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 239,
+          "top": 199
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 49208,
+        "sha256": "93da4f48906dfef84612de7db49dfd3dd3524373327433248fdf8ca31c395eb7"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 23,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/23/front/victory.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "54a37c1cda7c4fa4569456974c19fc02520fa8a07fb2b79b2e40697ebb25b993",
+        "sizeBytes": 1797941,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6671630,
+        "sha256": "daf3e6dde1c77d8d032685103ca461383d06561a6ed67ade372bddbb558b48c7",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 239,
+          "top": 199
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 42306,
+        "sha256": "aa7dabb09cecb0e0777cc29ad8c2c3e854011c293db33cffc17293a893ab6641"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 23,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/23/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "d3cdfeedfb060805838cffe2aed77d3754289fffb54b19c159c8417618ee7148",
+        "sizeBytes": 1763815,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6395546,
+        "sha256": "531720e4811436663fdd5d5f2187a7ec9e157db1a9cdb8c098c17c5e130e6ca9",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 239,
+          "top": 199
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 58212,
+        "sha256": "d8f050097c1ad87186dde3cd745bf5c95762ba907100e72bd162381e9553084a"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 24,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/24/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "e08e779de04cd4bb10db778c326dfa555079ff0c1377076a33b372831e0a1f71",
+        "sizeBytes": 2549981,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 9090450,
+        "sha256": "4998af29b231799995d4f84d84d36728476b756c2a190fe49e0d511642753256",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 197,
+          "top": 213
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 89248,
+        "sha256": "061cadba1861080e91bc9aaa367d65619c4cd134095c60454a7956a97ea2f613"
+      },
+      "keyProfile": "dominance",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 24,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/24/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "54c490ac61b4f10567a211bc7c6c38bd45b0101ae42567fe67abe5b361b69f96",
+        "sizeBytes": 3332941,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 11828792,
+        "sha256": "459ca17b48a83ea2c6d64d3f0a14a5eed1c278d4de21d20bec3f73944226baba",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 197,
+          "top": 213
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 98234,
+        "sha256": "1de7d8433eba69690a7bd5995d989ce5e70d72c3bcaed3cc3e67d84b527ce1df"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 24,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/24/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "0dcd7e4a214bdf2fa24698e7ed52799478919efffaea2e8d1c31339e8fdb2aae",
+        "sizeBytes": 2491772,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 10064914,
+        "sha256": "17c03776de16f08e678075af3a1898bebcc5a2baab676bc5fe7324de16aaa752",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 197,
+          "top": 213
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 91138,
+        "sha256": "33efee147e976102d6596224f79dcff1a300263d989a53849b97d42ff33b2359"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 24,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/24/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "cefe2185e196e0bb0268feb3d12594457286d5e91eeeb50a446ec8ad7ad6111c",
+        "sizeBytes": 2516784,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 10366664,
+        "sha256": "96bd5e854f0c665754821dc55b247ef6a5e46aca87c4604a878d5c93b93281b1",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 197,
+          "top": 213
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 99016,
+        "sha256": "9441bebef929d5f525277477c12c67e62d7fefae1bb77f811ab52cf975c0e7c6"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    },
+    {
+      "speciesId": 24,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/24/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "77e7afc245fe63508713a045263b1fd1c1e17e75b93109282e5fef169054d033",
+        "sizeBytes": 2182756,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 8972730,
+        "sha256": "0ef01aec414d6f2322020993ee714feda3f691dd4df2623529f18854e6c879b1",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 197,
+          "top": 213
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 85214,
+        "sha256": "4ea75cfc8153b30dba27166c10c5fcd0146fb79ae47bad0e8bee2d7087fb1084"
+      },
+      "keyProfile": "base",
+      "warmDustDespill": null,
+      "transparentFinalFrame": false
+    }
+  ]
+}

@@ -1,14 +1,14 @@
 # Animazioni frontali degli Arkamon
 
-Il gioco integra i filmati frontali di Vyrath (specie 1, 2, 3 e 4), Darklaw (5, 6, 7 e 8), Felyss (9, 10, 11 e 12), Wormaren (13 e 14), Handipus (20) e Shrody (21). Ogni specie dispone di attesa, attacco, colpito, vittoria e KO: 80 animazioni complessive per 16 specie. I nomi sono condivisi dai rispettivi stadi nel database; il numero distingue le forme.
+Il gioco integra i filmati frontali di Vyrath (specie 1, 2, 3 e 4), Darklaw (5, 6, 7 e 8), Felyss (9, 10, 11 e 12), Wormaren (13, 14 e 15), Clastoom (16, 17 e 18), Colussand (19), Handipus (20), Shrody (21), Sparkly (23) e Grimbolt (24). Ogni specie dispone di attesa, attacco, colpito, vittoria e KO: 115 animazioni complessive per 23 specie. I nomi sono condivisi dai rispettivi stadi nel database; il numero distingue le forme.
 
 La pagina di sviluppo `#arkamon-lab` permette di scegliere la specie, confrontare il PNG originale con le cinque animazioni, cambiare sfondo e dimensione, e provare una mossa con il relativo VFX su un bersaglio animato. I comandi del laboratorio non modificano la partita. Il retro usa gli sprite esistenti.
 
 ## Filmati e riproduzione
 
-I filmati forniti in `public/sprites/animation/Front/{speciesId} {action}.mp4` sono conservati anche nella cartella sorgente `animation-source/raw/{speciesId}/front/`. Tutte le clip mantengono i 24 FPS originali: 79 contengono 96 fotogrammi, per quattro secondi; il KO di Wormaren 14 ne contiene 95, per 95/24 secondi (circa 3,958). Tutte le 7.679 immagini dei set sono conservate, in ordine, senza saltare fotogrammi, aggiungere interpolazioni, generare pose, invertire o mescolare i filmati. Il manifest conserva il conteggio specifico dell’azione, compreso il KO più breve.
+I filmati forniti in `public/sprites/animation/Front/{speciesId} {action}.mp4` sono conservati anche nella cartella sorgente `animation-source/raw/{speciesId}/front/`. Tutte le clip mantengono i 24 FPS originali: 112 contengono 96 fotogrammi, per quattro secondi; il KO di Wormaren 14, l’attacco di Clastoom 17 e l’attesa di Sparkly 23 ne contengono 95, per 95/24 secondi (circa 3,958). Tutte le 11.037 immagini dei set sono conservate, in ordine, senza saltare fotogrammi, aggiungere interpolazioni, generare pose, invertire o mescolare i filmati. Il manifest conserva il conteggio specifico di ciascuna azione.
 
-La durata è il rapporto fra numero di fotogrammi decodificati e FPS. Una durata del contenitore MP4 leggermente maggiore, per esempio 4,01 secondi, non aggiunge fotogrammi. Gli indici sono contati da zero: l’ultimo è 95 nelle clip da 96 fotogrammi, 94 nel KO di Wormaren 14.
+La durata è il rapporto fra numero di fotogrammi decodificati e FPS. Una durata del contenitore MP4 leggermente maggiore, per esempio 4,01 secondi, non aggiunge fotogrammi. Gli indici sono contati da zero: l’ultimo è 95 nelle clip da 96 fotogrammi, 94 nelle tre clip da 95.
 
 | Animazione | Dopo il filmato |
 | --- | --- |
@@ -28,7 +28,7 @@ Per ogni specie e azione il gioco legge:
 - `{action}.metadata.json`: sorgente, impronta SHA-256, griglia, FPS, durata, indici e trasformazione;
 - `{action}-poster.webp`: anteprima statica.
 
-I metadati `animation-set.metadata.json` e `animation-set.normalization.json` descrivono l’intero set. Le dimensioni delle celle e i margini sono specifici della specie e coprono gli spostamenti dei cinque filmati. La finestra logica di visualizzazione misura 384 × 384 pixel, tranne la specie 6 che usa 320 × 320, come dichiarato nei metadati del set. L’atlas dispone di dieci colonne e dieci righe, con 96 celle usate e quattro celle vuote; il KO della specie 14 usa 95 celle e ne lascia cinque vuote.
+I metadati `animation-set.metadata.json` e `animation-set.normalization.json` descrivono l’intero set. Le dimensioni delle celle, la finestra logica e i margini sono specifici della specie e coprono gli spostamenti dei cinque filmati. La finestra logica predefinita misura 384 × 384 pixel; i set con effetti molto ampi possono usare una finestra più piccola, mantenendo le proporzioni nella visualizzazione e il limite di 8192 pixel per la texture completa. L’atlas dispone di dieci colonne e dieci righe, con 96 celle usate e quattro celle vuote; le tre clip da 95 fotogrammi lasciano cinque celle vuote.
 
 La conversione rimuove lo sfondo verde e corregge i residui cromatici. Le risoluzioni sorgente sono normalizzate nello stesso spazio per ogni specie. Una calibrazione della camera, costante per tutta la clip, allinea il corpo iniziale alla posa di attesa; la scala e il piano di appoggio sono comuni alle cinque azioni. Gli spostamenti e le deformazioni presenti nei filmati restano parte dell’animazione. Non viene ridimensionato separatamente ogni fotogramma, né riallineata la posa caduta del KO.
 
@@ -54,6 +54,21 @@ python scripts/build-arkamon-idle.py --species-id 6 --screen-dominance-cleanup -
 
 `--ffmpeg` seleziona un eseguibile specifico, `--actions` limita le azioni da convertire includendo sempre l’attesa come riferimento, e `--decoded-dir` riusa una cache verificata mediante l’impronta della sorgente. `--species-id` deve corrispondere al percorso sorgente e alla specie nel manifest. La specie 6 usa una finestra logica da 320 pixel e la pulizia aggiuntiva del fondale non uniforme con `--screen-dominance-cleanup`; le specie 7, 8 e 20 usano la finestra predefinita da 384 pixel.
 
+I set aggiunti il 10 ottobre usano `--fit-initial-body`: la scala deriva dal corpo opaco nella prima posa di attesa, mentre tutte le particelle di ogni fotogramma restano nel canvas esterno. I sassi dell’attesa di Wormaren 15 raggiungono realmente il bordo del video: adattare la scala all’intera loro unione avrebbe dimezzato la dimensione del corpo. L’opzione è esplicita, così la geometria dei sedici set precedenti resta invariata. `--base-key-actions` consente di usare il profilo base per le azioni con polvere, fumo o bagliori, anche quando l’attesa usa la pulizia aggiuntiva. Il profilo scelto viene applicato sia all’analisi geometrica sia alla conversione. Le impostazioni e le impronte dei 35 nuovi filmati sono registrate in [front-2026-10-10.json](../animation-source/audits/front-2026-10-10.json).
+
+`--warm-dust-despill` corregge soltanto il colore della sabbia contaminata dal fondale: limita il verde recuperato all’85% del rosso nei pixel caldi selezionati dal colore sorgente. Non modifica l’alfa, la geometria o il numero di fotogrammi. La maschera protegge oro brillante, fumo grigio, ciano e marrone naturale. L’opzione è applicata alle cinque azioni di Wormaren 15 e Colussand 19 e alla sola vittoria di Clastoom 18; resta disattivata per gli altri set. Il test confronta anche l’alfa e i limiti del fotogramma prima e dopo la correzione.
+
+| Set del 10 ottobre | Pulizia per dominanza | Profilo base | Correzione colore sabbia |
+| --- | --- | --- | --- |
+| Wormaren 15 | Nessuna | Tutte le azioni | Tutte le azioni |
+| Clastoom 16 e 17 | Attesa | Attacco, colpito, vittoria, KO | Nessuna |
+| Clastoom 18 | Attesa, attacco, colpito, vittoria | KO | Vittoria |
+| Colussand 19 | Attesa | Attacco, colpito, vittoria, KO | Tutte le azioni |
+| Sparkly 23 | Nessuna | Tutte le azioni | Nessuna |
+| Grimbolt 24 | Attesa | Attacco, colpito, vittoria, KO | Nessuna |
+
+Il profilo fringe resta disattivato per tutte le sette nuove forme. Per riprodurre un set, usare la finestra logica indicata nei metadati; il profilo per azione va mantenuto anche quando si riutilizza la normalizzazione. Convertire una selezione in una cartella di staging e aggiornare soltanto quelle azioni nel metadato combinato: l’output completo del comando descrive le azioni della conversione corrente.
+
 `--reuse-normalization` riutilizza scala, ritaglio, calibrazione della camera, margini, punto di appoggio e marker dei metadati esistenti. Verifica prima l’impronta, le dimensioni, il conteggio dei fotogrammi e gli FPS del video: una sorgente differente interrompe la conversione. È il percorso da usare per correggere la trasparenza di asset già integrati, evitando che un contorno più piccolo cambi anche la dimensione del personaggio. Per creare un set nuovo senza metadati, omettere questa opzione e fornire il riferimento PNG e la finestra logica appropriata.
 
 ## Attacco, rilascio e impatto
@@ -76,8 +91,15 @@ I marker sono indici dei fotogrammi nativi, contati da zero, selezionati dal mov
 | 12 | Felyss | 47 | 25 |
 | 13 | Wormaren | 48 | 32 |
 | 14 | Wormaren | 48 | 23 |
+| 15 | Wormaren | 35 | 29 |
+| 16 | Clastoom | 46 | 18 |
+| 17 | Clastoom | 43 | 38 |
+| 18 | Clastoom | 55 | 16 |
+| 19 | Colussand | 36 | 13 |
 | 20 | Handipus | 56 | 29 |
 | 21 | Shrody | 54 | 25 |
+| 23 | Sparkly | 50 | 30 |
+| 24 | Grimbolt | 52 | 27 |
 
 `releaseFrame` appartiene alla clip di attacco; `reactionFrame` appartiene a quella colpito. I tempi corrispondono agli indici divisi per gli FPS originali. Il VFX viene rilasciato al marker dell’attaccante, e la posa di reazione del bersaglio viene allineata all’impatto dichiarato dall’effetto.
 
@@ -105,8 +127,8 @@ Un atlas non disponibile ripristina il PNG della stessa specie e vista e comunic
 
 ## Verifiche
 
-I test degli asset confrontano dimensioni reali, alfa, griglia e finestra logica con il manifest; verificano le copie originali e canoniche dei video, le impronte degli atlas e dei poster, tutti gli indici consecutivi, i 24 FPS nativi e la trasformazione fissa condivisa per specie. I conteggi seguono la sorgente: 95 nel KO di Wormaren 14 e 96 nelle altre clip. Il KO finale non è obbligato a contenere una sagoma opaca, perché la dissoluzione appartiene al filmato originale.
+I test degli asset confrontano dimensioni reali, alfa, griglia e finestra logica con il manifest; verificano le copie originali e canoniche dei video, le impronte degli atlas e dei poster, tutti gli indici consecutivi, i 24 FPS nativi e la trasformazione fissa condivisa per specie. I conteggi seguono la sorgente: 95 nel KO di Wormaren 14, nell’attacco di Clastoom 17 e nell’attesa di Sparkly 23, e 96 nelle altre clip. Il KO finale non è obbligato a contenere una sagoma opaca, perché la dissoluzione appartiene al filmato originale.
 
 `python scripts/test_arkamon_key.py` verifica la rimozione del contorno e degli spazi chiusi, la conservazione dei dettagli rossi, viola, scuri e dei bagliori caldi, il profilo disattivato per colori verdi legittimi, e il riuso della geometria soltanto quando la sorgente coincide. Il conteggio `remainingGreenDominantPixelsOver8` non basta per giudicare i bordi: la desaturazione può azzerarlo lasciando una corona gialla. I metadati riportano anche un conteggio diagnostico gialloverde, che può includere luci dorate legittime; la verifica comprende quindi il confronto dei fotogrammi su sfondo scuro e chiaro e la revisione degli effetti luminosi.
 
-I test del manifest verificano i sedici set completi, le ottanta clip dedicate, i marker e il ripiego idle, oltre a mantenere i conteggi e le frequenze delle undici specie già integrate. I test del coordinatore verificano l’ordine rilascio → impatto → completamento, l’allineamento dei tempi, le notifiche duplicate, l’annullamento e il completamento quando un asset fallisce. Caricamento, riproduzione, sincronizzazione e dimensioni responsive richiedono anche una verifica nel browser; il rendering sul server non esegue la temporizzazione dei filmati.
+I test del manifest verificano i ventitré set completi, le 115 clip dedicate, i marker e il ripiego idle, oltre a mantenere i conteggi e le frequenze delle undici specie già integrate. I test del coordinatore verificano l’ordine rilascio → impatto → completamento, l’allineamento dei tempi, le notifiche duplicate, l’annullamento e il completamento quando un asset fallisce. Caricamento, riproduzione, sincronizzazione e dimensioni responsive richiedono anche una verifica nel browser; il rendering sul server non esegue la temporizzazione dei filmati.

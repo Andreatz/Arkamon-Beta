@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 from PIL import Image
@@ -266,6 +267,98 @@ class ReuseGeometryTests(unittest.TestCase):
                 self.assertEqual(cell.getpixel((32,32)), (60+i,45,60,255))
             for i in range(96,100):
                 self.assertIsNone(atlas.crop((i%10*64,i//10*64,i%10*64+64,i//10*64+64)).getchannel('A').getbbox())
+
+
+class InitialBodyScaleTests(unittest.TestCase):
+    def test_warm_dust_despill_removes_olive_without_erasing_particles_or_gold(self) -> None:
+        old = converter.WARM_DUST_DESPILL
+        try:
+            converter.WARM_DUST_DESPILL = False
+            before, _ = converter.remove_green(source_patch((185,179,113)))
+            converter.WARM_DUST_DESPILL = True
+            after, _ = converter.remove_green(source_patch((185,179,113)))
+            self.assertEqual(before.getchannel('A').tobytes(), after.getchannel('A').tobytes())
+            self.assertEqual(before.getchannel('A').getbbox(), after.getchannel('A').getbbox())
+            self.assertEqual(before.getpixel((60,60)), (185,179,113,255))
+            self.assertEqual(after.getpixel((60,60)), (185,157,113,255))
+            for colour in [(240,234,130),(150,148,144),(40,140,230),(120,90,50)]:
+                converter.WARM_DUST_DESPILL = False
+                unchanged, _ = converter.remove_green(source_patch(colour))
+                converter.WARM_DUST_DESPILL = True
+                protected, _ = converter.remove_green(source_patch(colour))
+                self.assertEqual(unchanged.tobytes(), protected.tobytes(), colour)
+        finally:
+            converter.WARM_DUST_DESPILL = old
+
+    def test_action_profile_override_applies_during_analysis_and_conversion(self) -> None:
+        observed = []
+        def record(stage, action):
+            _, alpha, _ = converter.key_alpha(source_patch((110,160,130)))
+            observed.append((stage, action, float(alpha[60,60])))
+        def inspect(_ffmpeg, _source, action, *_rest):
+            record('analysis', action)
+            return {'action':action, 'camera':{}}
+        def convert(clip, *_rest):
+            record('conversion', clip['action'])
+            return {'action':clip['action']}, Image.new('RGBA',(64,64))
+        old = converter.SCREEN_DOMINANCE_CLEANUP, converter.SCREEN_FRINGE_CLEANUP
+        try:
+            with tempfile.TemporaryDirectory() as tmp, contextlib.ExitStack() as stack:
+                stack.enter_context(patch('sys.argv',['converter','--output',tmp,'--actions','idle','ko',
+                                                      '--screen-dominance-cleanup','--base-key-actions','ko']))
+                stack.enter_context(patch.object(converter,'ffmpeg_path',return_value='unused'))
+                stack.enter_context(patch.object(converter,'inspect_clip',side_effect=inspect))
+                stack.enter_context(patch.object(converter,'common_plan',return_value={'cellWidth':64}))
+                stack.enter_context(patch.object(converter,'convert_clip',side_effect=convert))
+                stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+                converter.main()
+            self.assertEqual([(stage, action) for stage,action,_ in observed],
+                             [('analysis','idle'),('analysis','ko'),('conversion','idle'),('conversion','ko')])
+            self.assertEqual(observed[0][2], 0)
+            self.assertEqual(observed[2][2], 0)
+            self.assertGreater(observed[1][2], .5)
+            self.assertEqual(observed[1][2], observed[3][2])
+        finally:
+            converter.SCREEN_DOMINANCE_CLEANUP, converter.SCREEN_FRINGE_CLEANUP = old
+
+    def test_distant_idle_particles_keep_their_padding_without_shrinking_the_body(self) -> None:
+        # The native idle has rocks far from the initial body, as in Wormaren15.
+        clips = [{'action':'idle', 'firstCore':(450,100,950,1000),
+                  'union':(0,20,1900,1080), 'boxes':[(450,100,950,1000),(0,20,1900,1080)],
+                  'paths':['frame0','frame1'], 'info':{'width':1920,'height':1080}},
+                 {'action':'attack', 'firstCore':(300,50,800,950),
+                  'union':(0,0,1920,1080), 'boxes':[(300,50,800,950),(0,0,1920,1080)],
+                  'paths':['frame0','frame1'], 'info':{'width':1920,'height':1080}}]
+        legacy = converter.common_plan(copy.deepcopy(clips), None, 384, .94, .9, 16, 8192)
+        fitted = converter.common_plan(clips, None, 384, .94, .9, 16, 8192, True)
+        self.assertLess(legacy['idleBodyHeightOutputPixels'], 200)
+        self.assertAlmostEqual(fitted['idleBodyHeightOutputPixels'], 384*.9)
+        self.assertEqual(fitted['viewport']['width'], 384)
+        self.assertGreater(fitted['cellWidth'], 384)
+        for clip in clips:
+            camera = clip['camera']
+            self.assertTrue(camera['constantForEntireClip'])
+            self.assertEqual(camera['initialBodyHeightInIdleCoordinates'], 900)
+            for box in clip['boxes']:
+                scale = camera['nativeToIdleCoordinateScale']
+                dx, dy = camera['nativeToIdleCoordinateOffset']
+                ox, oy = fitted['logicalCanvasOrigin']
+                vp = fitted['viewport']
+                left = (box[0]*scale+dx)*fitted['sharedScale']+ox+vp['left']
+                top = (box[1]*scale+dy)*fitted['sharedScale']+oy+vp['top']
+                right = (box[2]*scale+dx)*fitted['sharedScale']+ox+vp['left']
+                bottom = (box[3]*scale+dy)*fitted['sharedScale']+oy+vp['top']
+                self.assertGreaterEqual(left, 15)
+                self.assertGreaterEqual(top, 15)
+                self.assertLessEqual(right, fitted['cellWidth']-15)
+                self.assertLessEqual(bottom, fitted['cellHeight']-15)
+
+    def test_body_fitting_still_refuses_a_grid_over_the_texture_limit(self) -> None:
+        clips = [{'action':'idle', 'firstCore':(450,100,950,1000),
+                  'union':(0,0,1920,1080), 'boxes':[(0,0,1920,1080)],
+                  'paths':list(range(96)), 'info':{'width':1920,'height':1080}}]
+        with self.assertRaisesRegex(ValueError, 'padded frame grid'):
+            converter.common_plan(clips, None, 384, .94, .9, 16, 4096, True)
 
 
 if __name__ == '__main__':
