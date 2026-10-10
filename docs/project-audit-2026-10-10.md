@@ -92,5 +92,3 @@ Le caratteristiche sono state controllate sulle fonti ufficiali il 10 ottobre 20
 | axe-core | Affiancare ai test di flusso controlli automatici su nomi accessibili, contrasto e struttura; resta necessaria verifica manuale. | [Motore open source](https://github.com/dequelabs/axe-core) |
 
 Per il maggior beneficio immediato sceglierei Squoosh/FFmpeg per gli asset e Playwright per le regressioni. Tiled è utile se preferisci preparare i contenuti delle mappe in un editor esterno; un editor Admin interno può invece riusare direttamente la numerazione attuale.
-
-
