@@ -21,7 +21,7 @@ import {
   scegliMossaIA,
   tentaCattura,
   applicaXP,
-  xpGuadagnato,
+  applicaXPDopoKO,
   applicaStato,
   risolviStatoInizioTurno,
   èMossaCura,
@@ -367,7 +367,7 @@ export function BattagliaScene() {
     }
     if (!audienceEnabled || audienceSession?.sessionId !== audienceChoice.sessionId) {
       void audienceVote.cancel().catch(() => {})
-      finishAudienceChoice(audienceChoice.request.fallbackIndex, 'Votazione disattivata: il rivale sceglie automaticamente.')
+      finishAudienceChoice(audienceChoice.request.fallbackIndex, 'Votazione disattivata: il rivale sceglie automaticamente.', true)
       return
     }
     const result = audienceVote.round
@@ -379,7 +379,7 @@ export function BattagliaScene() {
     const reason = result.resolution === 'no-votes' ? 'Nessun voto: il rivale sceglie automaticamente.'
       : result.resolution === 'tie' ? `Parità: è stata estratta ${selected.name}.`
       : `Il pubblico ha scelto ${selected.name} (${result.counts[index]} voti).`
-    finishAudienceChoice(index, reason)
+    finishAudienceChoice(index, reason, result.resolution === 'no-votes')
     // A response belongs to its durable B-turn identity. Refresh execution
     // callbacks without restarting the server polling on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -908,10 +908,25 @@ export function BattagliaScene() {
 
   const premiaConXP = (
     attivo: PokemonIstanza,
-    sconfitto: PokemonIstanza
+    sconfittoPrima: PokemonIstanza,
+    sconfittoDopo: PokemonIstanza
   ): PokemonIstanza => {
-    const xpRes = applicaXP(attivo, xpGuadagnato(sconfitto))
-    presentaPremioXP(attivo, xpRes)
+    const xpRes = applicaXPDopoKO(attivo, sconfittoPrima, sconfittoDopo)
+    if (xpRes.xpAssegnata) presentaPremioXP(attivo, xpRes)
+    return xpRes.istanza
+  }
+
+  const premiaRivaleConXP = (
+    rivale: PokemonIstanza,
+    sconfittoPrima: PokemonIstanza,
+    sconfittoDopo: PokemonIstanza
+  ): PokemonIstanza => {
+    const xpRes = applicaXPDopoKO(rivale, sconfittoPrima, sconfittoDopo)
+    if (xpRes.livelliGuadagnati > 0) {
+      playSound('level-up')
+      mostraMessaggi([`${rivale.nome} è salito al livello ${xpRes.istanza.livello}!`])
+    }
+    // B è una squadra temporanea: le sue evoluzioni non appartengono al giocatore A.
     return xpRes.istanza
   }
 
@@ -936,6 +951,9 @@ export function BattagliaScene() {
         setAzioneInCorso(false)
         mostraMessaggi([...statoRes.messaggi, `${pkmnAEffettivo.nome} è caduto!`])
         playSound('ko')
+        const aggiornatoB = premiaRivaleConXP(pkmnB, pkmnA, pkmnAEffettivo)
+        setPkmnB(aggiornatoB)
+        setSquadraB((sq) => updateInSquadra(sq, aggiornatoB))
         const nextA = squadraA.find(
           (p) => p.istanzaId !== pkmnAEffettivo.istanzaId && p.hp > 0
         )
@@ -943,7 +961,7 @@ export function BattagliaScene() {
           apriScambio({
             motivo: `${pkmnAEffettivo.nome} non può continuare.`,
             prossimoPasso: 'passaAB',
-            pendingB: pkmnB,
+            pendingB: aggiornatoB,
           })
           return
         }
@@ -996,7 +1014,7 @@ export function BattagliaScene() {
     if (ris.statoApplicato && nuovoB.hp > 0) {
       nuovoB = applicaStato(nuovoB, ris.statoApplicato)
     }
-    const nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
+    let nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
     eseguiSequenzaOffensiva(
       ris,
       'A',
@@ -1014,6 +1032,13 @@ export function BattagliaScene() {
       setPkmnA(aggiornatoA)
       setSquadraA(nuovaSquadraA)
       if (nuovoB.hp <= 0 || aggiornatoA.hp <= 0) playSound('ko')
+
+      if (nuovoB.hp > 0 && aggiornatoA.hp <= 0) {
+        nuovoB = premiaRivaleConXP(nuovoB, pkmnAEffettivo, aggiornatoA)
+        nuovaSquadraB = updateInSquadra(nuovaSquadraB, nuovoB)
+        setPkmnB(nuovoB)
+        setSquadraB(nuovaSquadraB)
+      }
 
       const esitoDopoMossa = esitoSquadre(nuovaSquadraA, nuovaSquadraB, nuovoB.hp <= 0 ? 'A' : undefined)
       if (esitoDopoMossa) {
@@ -1131,7 +1156,7 @@ export function BattagliaScene() {
         mostraMessaggi(statoRes.messaggi)
         mostraMessaggi([`${bEffettivo.nome} è caduto!`])
         playSound('ko')
-        const aggiornatoA = premiaConXP(pkmnA, bEffettivo)
+        const aggiornatoA = premiaConXP(pkmnA, statoBcorrente, bEffettivo)
         setPkmnA(aggiornatoA)
         setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
         const nextB = squadraB.find(
@@ -1260,7 +1285,7 @@ export function BattagliaScene() {
       // Nel doppio KO il premio è già stato assegnato al solo attaccante B.
       let aggiornatoA = nuovoA
       if (nuovoA.hp > 0 && bDopoAutodanno.hp <= 0) {
-        aggiornatoA = premiaConXP(nuovoA, bDopoAutodanno)
+        aggiornatoA = premiaConXP(nuovoA, bEffettivo, bDopoAutodanno)
         setPkmnA(aggiornatoA)
         setSquadraA((sq) => updateInSquadra(sq, aggiornatoA))
       }
@@ -1293,7 +1318,7 @@ export function BattagliaScene() {
     })
   }
 
-  function finishAudienceChoice(index: 0 | 1 | 2, message: string) {
+  function finishAudienceChoice(index: 0 | 1 | 2, message: string, automaticFallback = false) {
     const pending = audienceChoice
     if (!pending || completedAudienceTurns.current.has(pending.request.turnKey)
       || actionInProgressRef.current || azioneInCorso || terminata || turnoA
@@ -1304,13 +1329,15 @@ export function BattagliaScene() {
     completedAudienceTurns.current.add(pending.request.turnKey)
     setAudienceChoice(null)
     setMostraMoseB(false)
-    eseguiMossaB(current, calcolaHPMax(current), index, [...pending.messages, message])
+    // A public choice is a normal human action, including legacy SUPREMA moves.
+    // Only the automatic fallback retains the AI's legacy classification.
+    eseguiMossaB(current, calcolaHPMax(current), index, [...pending.messages, message], automaticFallback ? undefined : false)
   }
 
   const continueWithoutAudience = () => {
     if (!audienceChoice) return
     void audienceVote.cancel().catch(() => {})
-    finishAudienceChoice(audienceChoice.request.fallbackIndex, 'La regia continua senza votazione: il rivale sceglie automaticamente.')
+    finishAudienceChoice(audienceChoice.request.fallbackIndex, 'La regia continua senza votazione: il rivale sceglie automaticamente.', true)
   }
 
   const bgBattaglia = customBattleBackground

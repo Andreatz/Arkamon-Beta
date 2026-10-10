@@ -1,10 +1,8 @@
-import { BattleRulesLab } from '@/components/battle/BattleRulesLab'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
 import { LaboratorioScene } from '@scenes/LaboratorioScene'
 import { MappaPrincipaleScene } from '@scenes/MappaPrincipaleScene'
-import { MappaGrigliaScene } from '@scenes/MappaGrigliaScene'
 import { BattagliaScene } from '@scenes/BattagliaScene'
 import { PercorsoScene } from '@scenes/PercorsoScene'
 import { CittaScene } from '@scenes/CittaScene'
@@ -12,18 +10,20 @@ import { DepositoScene } from '@scenes/DepositoScene'
 import { EvoluzioneScene } from '@scenes/EvoluzioneScene'
 import { SceneTransition } from '@/components/transitions/SceneTransition'
 import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
-import { SceneTransitionLab } from '@/components/transitions/SceneTransitionLab'
 import type { NavigazioneScena, SceneId } from '@/types'
 import { AudioController } from '@components/AudioController'
 import { AdminOverlay } from '@/admin/AdminOverlay'
 import { AdminRuntime } from '@/admin/AdminRuntime'
-import { VfxGallery } from '@/components/vfx/VfxGallery'
-import { BattleDiceLab } from '@/components/battle/BattleDiceLab'
-import { DepositLab } from '@/components/deposit/DepositLab'
-import { DarklawAnimationLab } from '@/components/arkamon/DarklawAnimationLab'
 import { getLocalMap } from '@/data/localMaps'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
+const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
+const SceneTransitionLab = lazy(() => import('@/components/transitions/SceneTransitionLab').then((module) => ({ default: module.SceneTransitionLab })))
+const VfxGallery = lazy(() => import('@/components/vfx/VfxGallery').then((module) => ({ default: module.VfxGallery })))
+const BattleDiceLab = lazy(() => import('@/components/battle/BattleDiceLab').then((module) => ({ default: module.BattleDiceLab })))
+const DepositLab = lazy(() => import('@/components/deposit/DepositLab').then((module) => ({ default: module.DepositLab })))
+const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then((module) => ({ default: module.DarklawAnimationLab })))
+const MappaGrigliaScene = lazy(() => import('@scenes/MappaGrigliaScene').then((module) => ({ default: module.MappaGrigliaScene })))
 
 /**
  * Router delle scene.
@@ -78,7 +78,7 @@ function App() {
 
 function LabShell({ children }: { children: React.ReactNode }) {
   return <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
-    <AdminRuntime /><AdminOverlay />{children}
+    <AdminRuntime /><AdminOverlay /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
   </div>
 }
 
@@ -95,7 +95,7 @@ function renderScena(scena: SceneId) {
     case 'mappa-principale':
       return <MappaPrincipaleScene />
     case 'mappa-griglia':
-      return <MappaGrigliaScene />
+      return <Suspense fallback={<div role="status">Caricamento mappa…</div>}><MappaGrigliaScene /></Suspense>
     case 'battaglia':
       return <BattagliaScene />
     case 'percorso':

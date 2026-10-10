@@ -27,11 +27,6 @@ const assetFields: {
       { label: 'Venezia', value: '/backgrounds/venezia.png' },
       { label: 'Laboratorio', value: '/backgrounds/laboratory.png' },
       { label: 'Foresta battaglia', value: '/backgrounds/battle_forest.jpg' },
-      {
-        label: 'Isola cartoon',
-        value:
-          '/assets/s220308-cartoon-palm-tree-e03-mainpreview-beaece814012dcedf276eb90c00a71ed0e83e25e12b2801c4c825ab8f330bc4e.jpg',
-      },
     ],
   },
   {

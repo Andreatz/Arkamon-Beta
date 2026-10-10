@@ -38,6 +38,27 @@ describe('adminStore', () => {
     expect(theme.ui.buttonRadius).toBe(defaultAdminTheme.ui.buttonRadius)
   })
 
+  it('non applica scale UI fuori intervallo che renderebbero il gioco invisibile', () => {
+    useAdminStore.getState().updateUi('stageScale', 0)
+    useAdminStore.getState().updateUi('fontScale', Number.NaN)
+    expect(useAdminStore.getState().theme.ui).toEqual(defaultAdminTheme.ui)
+  })
+
+  it('recupera impostazioni UI corrotte salvate senza perdere i valori e layout validi', () => {
+    const theme = cloneAdminTheme(defaultAdminTheme)
+    theme.ui.stageScale = 0
+    theme.ui.fontScale = Number.NaN
+    theme.ui.panelRadius = 24
+    theme.layouts.battle.playerSprite = { x: 10, y: 20, w: 30, h: 40 }
+    const restored = useAdminStore.persist.getOptions().merge!({
+      defaultThemeRevision: 'notte-viola-2026-10-05', theme,
+    }, useAdminStore.getState()).theme
+    expect(restored.ui.stageScale).toBe(defaultAdminTheme.ui.stageScale)
+    expect(restored.ui.fontScale).toBe(defaultAdminTheme.ui.fontScale)
+    expect(restored.ui.panelRadius).toBe(24)
+    expect(restored.layouts.battle.playerSprite).toEqual({ x: 10, y: 20, w: 30, h: 40 })
+  })
+
   it('updateAsset aggiorna il path richiesto', () => {
     useAdminStore.getState().updateAsset('titleLogo', '/ui/logo_arkamon.png')
 

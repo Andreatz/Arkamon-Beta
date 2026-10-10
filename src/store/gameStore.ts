@@ -32,6 +32,7 @@ import { getPokemon, getAllenatore } from '@data/index'
 import {
   MAIN_MAP_START_NODE,
   areMainMapNodesConnected,
+  getAdjacentMainMapNodes,
 } from '@data/mainMapRoads'
 import { scambia, type SlotRef } from '@engine/deposito'
 import { getLocalMap } from '@data/localMaps'
@@ -246,11 +247,113 @@ function luogoMappaPrincipale(posizione: PosizioneAvatar): string {
     : MAIN_MAP_START_NODE
 }
 
-function normalizePosizioneAvatar(posizione: PosizioneAvatar | undefined): PosizioneAvatar {
-  const normalized = posizione ?? posizioneIniziale()
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value)
+}
+
+function normalizePosizioneAvatar(posizione: unknown): PosizioneAvatar {
+  if (!isRecord(posizione) || typeof posizione.mappaId !== 'string') return posizioneIniziale()
+  const normalized = posizione
   if (normalized.mappaId === SECRET_LOCATION_ID) return posizioneMappaPrincipale(SECRET_LOCATION_ORIGIN)
-  if (normalized.mappaId !== 'mappa-principale') return normalized
-  return posizioneMappaPrincipale(normalized.luogo ?? MAIN_MAP_START_NODE)
+  if (normalized.mappaId !== 'mappa-principale') {
+    if (!Number.isInteger(normalized.x) || !Number.isInteger(normalized.y)
+      || !['N', 'S', 'E', 'O'].includes(normalized.direzione as string)) return posizioneIniziale()
+    return normalized as unknown as PosizioneAvatar
+  }
+  const luogo = typeof normalized.luogo === 'string' ? normalized.luogo : MAIN_MAP_START_NODE
+  return posizioneMappaPrincipale(luogo === SECRET_LOCATION_ID || getAdjacentMainMapNodes(luogo).length > 0
+    ? luogo : MAIN_MAP_START_NODE)
+}
+
+function restoreSet<T>(saved: unknown, fallback: Set<T>, valid: (value: unknown) => value is T): Set<T> {
+  if (saved === undefined) return new Set(fallback)
+  const values = saved instanceof Set ? Array.from(saved) : Array.isArray(saved) ? saved : []
+  return new Set(values.filter(valid))
+}
+
+type SavedPokemon = Omit<PokemonIstanza, 'nome' | 'xp'> & { nome?: unknown; xp?: unknown }
+
+function isSavedPokemon(value: unknown): value is SavedPokemon {
+  return isRecord(value) && typeof value.istanzaId === 'string' && value.istanzaId.length > 0
+    && isFiniteNumber(value.specieId) && !!getPokemon(value.specieId)
+    && Number.isInteger(value.livello)
+    && (value.livello as number) >= 5 && (value.livello as number) <= 100
+    && isFiniteNumber(value.hp) && value.hp >= 0
+}
+
+function restorePokemon(saved: SavedPokemon): PokemonIstanza {
+  const pokemon: PokemonIstanza = {
+    ...saved,
+    nome: typeof saved.nome === 'string' && saved.nome ? saved.nome : getPokemon(saved.specieId)!.nome,
+    xp: isFiniteNumber(saved.xp) && saved.xp >= 0 ? saved.xp : 0,
+  }
+  const stato = pokemon.stato
+  if (stato === undefined) return pokemon
+  if (isRecord(stato) && ['Paralizzato', 'Confuso', 'Addormentato', 'Avvelenato'].includes(stato.tipo as string)
+    && Number.isInteger(stato.turniRimanenti)
+    && (stato.turniTrascorsi === undefined || (Number.isInteger(stato.turniTrascorsi) && (stato.turniTrascorsi as number) >= 0))) return pokemon
+  const { stato: _stato, ...rest } = pokemon
+  return rest
+}
+
+function restorePlayer(saved: unknown, fallback: StatoGiocatore): StatoGiocatore {
+  const g = isRecord(saved) ? saved : {}
+  const squadra = Array.isArray(g.squadra) ? g.squadra.filter(isSavedPokemon).map(restorePokemon) : fallback.squadra
+  const deposito = isRecord(g.deposito)
+    ? Object.fromEntries(Object.entries(g.deposito).filter(([, pokemon]) => isSavedPokemon(pokemon))
+      .map(([slot, pokemon]) => [slot, restorePokemon(pokemon as SavedPokemon)]))
+    : fallback.deposito
+  const validString = (value: unknown): value is string => typeof value === 'string'
+  const validNumber = (value: unknown): value is number => isFiniteNumber(value) && Number.isInteger(value) && value > 0
+  return {
+    ...fallback,
+    nome: typeof g.nome === 'string' && g.nome.trim() ? g.nome : fallback.nome,
+    squadra, deposito,
+    monete: isFiniteNumber(g.monete) ? Math.max(0, g.monete) : fallback.monete,
+    cespugliVisitati: restoreSet(g.cespugliVisitati, fallback.cespugliVisitati, validString),
+    allenatoriSconfitti: restoreSet(g.allenatoriSconfitti, fallback.allenatoriSconfitti, validNumber),
+    caselleConsumate: restoreSet(g.caselleConsumate, fallback.caselleConsumate, validString),
+    inventario: isRecord(g.inventario) ? {
+      ...(isFiniteNumber(g.inventario.masterball) ? { masterball: Math.max(0, Math.floor(g.inventario.masterball)) } : {}),
+    } : fallback.inventario,
+  }
+}
+
+const SCENE_IDS: SceneId[] = ['titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso', 'citta',
+  'palestra', 'centro-pokemon', 'battaglia', 'deposito', 'squadra', 'evoluzione']
+
+function restoreNavigation(saved: unknown, fallback: NavigazioneScena | null): NavigazioneScena | null {
+  if (!isRecord(saved) || !SCENE_IDS.includes(saved.scena as SceneId)) return fallback
+  const payload = isRecord(saved.payload) ? { ...saved.payload } : undefined
+  if (payload) {
+    if (typeof payload.luogo !== 'string') delete payload.luogo
+    if (typeof payload.luogoRitorno !== 'string') delete payload.luogoRitorno
+    if (saved.scena === 'evoluzione') {
+      payload.evoluzioni = Array.isArray(payload.evoluzioni) ? payload.evoluzioni.filter((value) =>
+        isRecord(value) && typeof value.istanzaId === 'string' && isFiniteNumber(value.oldSpecieId)
+        && isFiniteNumber(value.newSpecieId) && getPokemon(value.oldSpecieId)?.evoluzioneId === value.newSpecieId) : []
+      if (payload.giocatoreId !== 1 && payload.giocatoreId !== 2) payload.giocatoreId = 1
+    }
+  }
+  return { scena: saved.scena as SceneId, ...(payload ? { payload } : {}) }
+}
+
+function restoreBattle(saved: unknown): StatoBattaglia | null {
+  if (!isRecord(saved) || !['Selvatico', 'NPC', 'PVP'].includes(saved.tipo as string)
+    || !isSavedPokemon(saved.pokemonA) || !isSavedPokemon(saved.pokemonB)
+    || !isFiniteNumber(saved.hpMaxA) || !isFiniteNumber(saved.hpMaxB)
+    || !['A', 'B'].includes(saved.turnoCorrente as string) || typeof saved.luogoRitorno !== 'string') return null
+  return {
+    ...(saved as unknown as StatoBattaglia),
+    pokemonA: restorePokemon(saved.pokemonA), pokemonB: restorePokemon(saved.pokemonB),
+    log: Array.isArray(saved.log) ? saved.log.filter((value): value is string => typeof value === 'string') : [],
+    squadraA: Array.isArray(saved.squadraA) ? saved.squadraA.filter(isSavedPokemon).map(restorePokemon) : undefined,
+    squadraB: Array.isArray(saved.squadraB) ? saved.squadraB.filter(isSavedPokemon).map(restorePokemon) : undefined,
+  }
 }
 
 function normalizePosizioniLocali(saved: PosizioniMappeLocali | undefined): PosizioniMappeLocali {
@@ -727,6 +830,7 @@ export const useGameStore = create<GameState>()(
 
       passaTurnoOverworld: () =>
         set((s) => {
+          if (s.battaglia) return s
           const turnoOverworld = nuovoTurno(s.turnoOverworld.giocatoreAttivo)
           return {
             turnoOverworld,
@@ -736,6 +840,7 @@ export const useGameStore = create<GameState>()(
 
       muoviAvatarMappaPrincipale: (giocatoreId, luogoDestinazione) => {
         const state = get()
+        if (state.battaglia) return false
         const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
         const posizione = state[chiavePos]
         const luogoCorrente = luogoMappaPrincipale(posizione)
@@ -775,6 +880,7 @@ export const useGameStore = create<GameState>()(
 
       interagisciLuogoMappaPrincipale: (giocatoreId) => {
         const state = get()
+        if (state.battaglia) return { tipo: 'no-op' }
         const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
         const posizione = state[chiavePos]
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return { tipo: 'no-op' }
@@ -898,28 +1004,33 @@ export const useGameStore = create<GameState>()(
         // Riconverti gli array in Set dopo il caricamento.
         // Per save preesistenti: fallback a default per i campi nuovi
         // (inventario, caselleConsumate, posizione, turnoOverworld).
-        const p = (persisted && typeof persisted === 'object' ? persisted : {}) as Partial<GameState>
-        const ripristinaGiocatore = (saved: StatoGiocatore | undefined, fallback: StatoGiocatore): StatoGiocatore => {
-          const g = { ...fallback, ...saved }
-          return {
-            ...g,
-            cespugliVisitati: new Set(g.cespugliVisitati ?? []),
-            allenatoriSconfitti: new Set(g.allenatoriSconfitti ?? []),
-            inventario: g.inventario ?? { masterball: 1 },
-            caselleConsumate: new Set(g.caselleConsumate ?? []),
-          }
+        const p = isRecord(persisted) ? persisted : {}
+        const savedTurn = isRecord(p.turnoOverworld) ? p.turnoOverworld : {}
+        const turnoOverworld: StatoTurnoOverworld = {
+          giocatoreAttivo: savedTurn.giocatoreAttivo === 2 ? 2 : 1,
+          azioniRimaste: isFiniteNumber(savedTurn.azioniRimaste) && Number.isInteger(savedTurn.azioniRimaste)
+            ? Math.min(2, Math.max(0, savedTurn.azioniRimaste)) : 2,
         }
+        // Solo i campi di gioco possono arrivare da JSON: le azioni Zustand
+        // restano quelle correnti anche se il salvataggio contiene chiavi estranee.
         const restored: GameState = {
           ...current,
-          ...p,
-          giocatore1: ripristinaGiocatore(p.giocatore1, current.giocatore1),
-          giocatore2: ripristinaGiocatore(p.giocatore2, current.giocatore2),
+          giocatore1: restorePlayer(p.giocatore1, current.giocatore1),
+          giocatore2: restorePlayer(p.giocatore2, current.giocatore2),
+          giocatoreAttivo: p.giocatoreAttivo === 2 ? 2 : 1,
+          rivaleStarterId: isFiniteNumber(p.rivaleStarterId) && !!getPokemon(p.rivaleStarterId) ? p.rivaleStarterId : null,
+          battaglia: restoreBattle(p.battaglia),
+          scenaCorrente: restoreNavigation(p.scenaCorrente, current.scenaCorrente)!,
+          scenaPrecedente: restoreNavigation(p.scenaPrecedente, null),
           posizione1: normalizePosizioneAvatar(p.posizione1),
           posizione2: normalizePosizioneAvatar(p.posizione2),
-          turnoOverworld: p.turnoOverworld ?? { giocatoreAttivo: 1, azioniRimaste: 2 },
-          posizioniLocali1: normalizePosizioniLocali(p.posizioniLocali1),
-          posizioniLocali2: normalizePosizioniLocali(p.posizioniLocali2),
-          audioMuted: p.audioMuted ?? current.audioMuted,
+          turnoOverworld,
+          posizioniLocali1: normalizePosizioniLocali(p.posizioniLocali1 as PosizioniMappeLocali | undefined),
+          posizioniLocali2: normalizePosizioniLocali(p.posizioniLocali2 as PosizioniMappeLocali | undefined),
+          audioMuted: typeof p.audioMuted === 'boolean' ? p.audioMuted : current.audioMuted,
+        }
+        if (restored.scenaCorrente.scena === 'battaglia' && !restored.battaglia) {
+          restored.scenaCorrente = { scena: 'mappa-principale' }
         }
         // Old or invalid saves cannot reveal the hidden location before that
         // individual player completes the real gym roster. Preserve all local

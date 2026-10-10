@@ -59,4 +59,76 @@ describe('soundManager', () => {
       await Promise.resolve()
     } finally { vi.unstubAllGlobals() }
   })
+
+  it('interrompe subito anche i toni musicali già programmati quando viene disattivato l’audio', async () => {
+    vi.resetModules()
+    const oscillators: { stop: ReturnType<typeof vi.fn>; disconnect: ReturnType<typeof vi.fn>; onended: (() => void) | null }[] = []
+    const gains: { disconnect: ReturnType<typeof vi.fn> }[] = []
+    const clearInterval = vi.fn()
+    class FakeContext {
+      state = 'running'
+      currentTime = 10
+      destination = {}
+      createOscillator() {
+        const oscillator = { type: 'sine', frequency: { setValueAtTime: vi.fn() },
+          connect: vi.fn(), start: vi.fn(), stop: vi.fn(), disconnect: vi.fn(), onended: null as (() => void) | null }
+        oscillators.push(oscillator)
+        return oscillator
+      }
+      createGain() {
+        const gain = { gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }, connect: vi.fn(), disconnect: vi.fn() }
+        gains.push(gain)
+        return gain
+      }
+    }
+    vi.stubGlobal('window', { AudioContext: FakeContext, setInterval: vi.fn().mockReturnValue(7), clearInterval })
+    try {
+      const audio = await import('../soundManager')
+      audio.playMusic('title')
+      expect(oscillators).toHaveLength(3)
+      audio.setAudioMuted(true)
+      expect(clearInterval).toHaveBeenCalledWith(7)
+      for (const oscillator of oscillators) {
+        // The first stop schedules the normal end; the second cancels it now.
+        expect(oscillator.stop.mock.calls).toEqual([[expect.any(Number)], []])
+        expect(oscillator.disconnect).toHaveBeenCalledOnce()
+        expect(oscillator.onended).toBeNull()
+      }
+      for (const gain of gains) expect(gain.disconnect).toHaveBeenCalledOnce()
+      audio.playMusic('battle')
+      expect(oscillators).toHaveLength(3)
+    } finally { vi.unstubAllGlobals() }
+  })
+
+  it('rilascia un tono finito e cancella solo la melodia attiva quando cambia scena', async () => {
+    vi.resetModules()
+    const oscillators: { stop: ReturnType<typeof vi.fn>; disconnect: ReturnType<typeof vi.fn>; onended: (() => void) | null }[] = []
+    class FakeContext {
+      state = 'running'
+      currentTime = 0
+      destination = {}
+      createOscillator() {
+        const oscillator = { type: 'sine', frequency: { setValueAtTime: vi.fn() }, connect: vi.fn(),
+          start: vi.fn(), stop: vi.fn(), disconnect: vi.fn(), onended: null as (() => void) | null }
+        oscillators.push(oscillator)
+        return oscillator
+      }
+      createGain() {
+        return { gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }, connect: vi.fn(), disconnect: vi.fn() }
+      }
+    }
+    vi.stubGlobal('window', { AudioContext: FakeContext, setInterval: vi.fn(), clearInterval: vi.fn() })
+    try {
+      const audio = await import('../soundManager')
+      audio.playMusic('title')
+      oscillators[0].onended?.()
+      audio.playMusic('battle')
+      expect(oscillators).toHaveLength(7)
+      expect(oscillators[0].stop).toHaveBeenCalledOnce()
+      expect(oscillators[0].disconnect).toHaveBeenCalledOnce()
+      for (const oscillator of oscillators.slice(1, 3)) expect(oscillator.stop).toHaveBeenCalledTimes(2)
+      audio.stopMusic()
+      for (const oscillator of oscillators.slice(3)) expect(oscillator.disconnect).toHaveBeenCalledOnce()
+    } finally { vi.unstubAllGlobals() }
+  })
 })

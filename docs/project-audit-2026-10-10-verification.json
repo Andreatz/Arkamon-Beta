@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-10",
+  "project": "Arkamon",
+  "baseline": {
+    "total": 1643,
+    "passed": 1643,
+    "files": 80
+  },
+  "final": {
+    "total": 1683,
+    "passed": 1683,
+    "files": 85
+  },
+  "browser": {
+    "realBrowsers": true,
+    "javascriptErrors": 0,
+    "scenarios": 10,
+    "mainFlow": "new game, names, distinct starters, main map, turn G2, reload, cancelled reset",
+    "isolatedStorage": true,
+    "headless": true,
+    "battleFlow": "synthetic poison and Suprema recoil KO with XP and residual HP, reload and replacement",
+    "adminFlow": "invalid UI rejected, blocked clipboard handled, missing custom background fallback, portrait controls reachable",
+    "limitations": [
+      "No full campaign playthrough",
+      "No physical phone verification",
+      "Battle fixture uses reduced motion",
+      "No production deployment validation",
+      "No new Tauri installer build"
+    ]
+  },
+  "assets": {
+    "referencesChecked": 6393,
+    "trackedPresentFiles": 6942,
+    "untrackedRawFrontVideos": 25,
+    "caseMismatches": 0,
+    "trackedPresentBytes": 3067626367,
+    "runtimeReferencesMissing": 0
+  },
+  "dependencies": {
+    "development": {
+      "low": 1,
+      "high": 8,
+      "critical": 0,
+      "moderate": 2
+    },
+    "runtimeVulnerabilities": 0
+  }
+}

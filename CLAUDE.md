@@ -2,7 +2,21 @@
 
 > Questo file viene letto automaticamente da Claude Code ad ogni sessione.
 > Contiene tutto ciò che serve per lavorare su Arkamon senza dover ricostruire il contesto ogni volta.
-> **Tutti i numeri/formule qui sono estratti dal codice VBA originale in `old_files/`** — sono autoritativi.
+> Le sezioni sul VBA documentano il prototipo in `old_files/`. Le regole concordate con l'utente e la sezione corrente qui sotto hanno precedenza sulle differenze storiche.
+
+## Regole correnti verificate il 10 ottobre 2026
+
+- Gli HP residui restano dopo la battaglia; la cura deve essere esplicita.
+- Mossa Suprema: colpisce il bersaglio con danno doppio, assegna XP/livelli per il suo KO, poi applica all'attaccante metà degli HP massimi di contraccolpo. Nel doppio KO vince quello specifico scontro l'attaccante.
+- Paralisi: agisce per secondo; 1–2 sul d6 impedisce l'attacco, 3–6 lo permette. Il tiro non cura la paralisi: occorre una cura esplicita.
+- Sonno: fino a tre turni, primo obbligatorio senza dado, risveglio 4–6 dal secondo. Veleno: 10%, 20%, 30% e così via degli HP massimi.
+- Ogni turno sulla mappa consente due movimenti oppure un movimento e una interazione, condivisi fra mappa principale e mappa locale. Le posizioni dei due giocatori sono separate. I numeri dei pallini restano interni.
+- Percorso 15 si sblocca per ciascun giocatore dopo tutte le otto palestre e Roma; non aggiungere interazioni, incontri o premi senza definizione dell'utente.
+- Il pubblico ha due canali QR: NPC e Capipalestra/PvP. La scelta votata è normale; il fallback automatico conserva la classificazione legacy dell'IA. Non introdurre una Suprema votabile.
+- La griglia è un prototipo legacy. Conservare lo stack attuale; eventuali migrazioni principali richiedono un piano e verifiche dedicate.
+- Specifica STAB/valutazione IA ancora da consolidare: non cambiare bilanciamento per risolvere una discrepanza fra nomi nel codice e descrizione VBA.
+
+Vedi [audit corrente](docs/project-audit-2026-10-10.md) per prove, limiti e priorità.
 
 ## 🎮 Cos'è Arkamon
 
@@ -22,8 +36,8 @@ Originariamente prototipato in PowerPoint+VBA, ora React/TypeScript.
 
 ## 🏗️ Stack & comandi
 
-- **Stack**: React 18 + TypeScript + Vite 5 + Tailwind 3 + Zustand
-- **Node**: 18+
+- **Stack**: React 18 + TypeScript + Vite 7 + Tailwind 3 + Zustand 4
+- **Node**: 20.19+
 - **Pacchetto**: `npm` (NON usare yarn/pnpm in questa repo)
 
 ```bash
@@ -164,7 +178,7 @@ Tutti a turni, basati su D6.
 | **Allenatore_NPC** | 3 mosse              | AI con `ScegliMossaIA`    | ❌ no                 |
 | **PvP**         | 3 mosse                  | Terzo giocatore (3 mosse PvP) | ❌ no             |
 
-Fine battaglia → HP di tutti i Pokémon ripristinati al massimo, ritorno alla scena precedente (`Fonte_Ritorno`).
+Il prototipo VBA ripristinava gli HP alla fine. La regola web corrente conserva invece gli HP residui, con ritorno alla scena precedente (`Fonte_Ritorno`) e cura soltanto esplicita.
 
 ### Sistema XP & Level Up (già presente nel VBA)
 - 1 punto EXP per nemico sconfitto
@@ -282,7 +296,7 @@ Contiene il **prototipo VBA originale** (codice `.bas`/`.cls`/`.frm`, le slide P
 ## 🚫 Cose da NON fare
 
 - ❌ NON lanciare `npm audit fix --force`
-- ❌ NON aggiornare Vite oltre la 5.x senza un piano di migrazione
+- ❌ NON cambiare la versione principale di Vite o altre dipendenze senza un piano di migrazione
 - ❌ NON aggiungere dipendenze pesanti senza chiedere (il bundle deve restare leggero per Tauri)
 - ❌ NON spostare logica dell'engine dentro i componenti React
 - ❌ NON usare `localStorage` direttamente nei componenti: passa sempre dallo store (che lo persiste)
@@ -316,14 +330,11 @@ Il VBA è **molto più completo** di quanto suggerito dalla roadmap del README. 
 - ✅ Cespugli 1-time per giocatore con incontri pesati
 - ✅ Mappa principale con 28 nodi cliccabili (Italia stilizzata)
 
-**Da implementare ex-novo (mai fatti, neanche in VBA)**:
-- ⏭️ Stati: Confusione, Sonno, Avvelenamento
-- ⏭️ Mosse di cura HP a percentuale
-- ⏭️ Mossa Suprema (2× danno + autodanno)
-- ⏭️ Oggetti (Masterball)
-- ⏭️ Pulsante esplicito di switch turno A↔B
-- ⏭️ Sound effects e musiche
-- ⏭️ Build Tauri per desktop
+**Estensioni già presenti nella versione web**:
+- Stati, cure percentuali, Mossa Suprema e Masterball.
+- Turni A/B e scelta delle mosse dei due lati, anche con voto pubblico.
+- Sound effects, musica e animazioni; mappe locali basate sulle foto di riferimento.
+- Scaffold Tauri desktop. L'installer aggiornato deve essere verificato separatamente dalla build web.
 
 **Roadmap operativa consigliata** (riformulata):
 1. **Fase A — Parità con VBA**: portare in TS tutto ciò che funziona già nel prototipo (priorità ordinata: scena Percorso → Città → Battaglie complete → Deposito → Evoluzione → XP/monete)

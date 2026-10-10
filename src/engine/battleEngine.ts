@@ -578,6 +578,25 @@ export function applicaXP(
 }
 
 /**
+ * Premia un KO appena avvenuto, anche quando è causato da status o contraccolpo.
+ * Il lato sopravvissuto conserva gli HP residui. Un Pokémon già KO non può
+ * essere premiato né generare un secondo premio quando si riprende il turno.
+ */
+export function applicaXPDopoKO(
+  vincitore: PokemonIstanza,
+  sconfittoPrima: PokemonIstanza,
+  sconfittoDopo: PokemonIstanza
+): ReturnType<typeof applicaXP> & { xpAssegnata: number } {
+  const xpAssegnata = vincitore.hp > 0 && sconfittoPrima.hp > 0 && sconfittoDopo.hp <= 0
+    && sconfittoPrima.istanzaId === sconfittoDopo.istanzaId
+    ? xpGuadagnato(sconfittoPrima) : 0
+  const progressione = xpAssegnata > 0
+    ? applicaXP(vincitore, xpAssegnata)
+    : { istanza: { ...vincitore }, livelliGuadagnati: 0, evoluzionePendente: null }
+  return { ...progressione, xpAssegnata }
+}
+
+/**
  * Risolve la progressione dell'attaccante dopo il danno al bersaglio, prima
  * del contraccolpo. Il KO diretto assegna XP anche se la Suprema esaurirà poi
  * l'attaccante; il livello aumenta senza curarlo. Il costo della Suprema usa
@@ -595,11 +614,11 @@ export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa): {
   messaggi: string[]
 } {
   const attaccante = risultato.attaccante
-  const xpAssegnata = risultato.difensoreSvenuto && risultato.difensore.hp > 0 && attaccante.hp > 0
-    ? xpGuadagnato(risultato.difensore) : 0
-  const progressione = xpAssegnata > 0
-    ? applicaXP(attaccante, xpAssegnata)
-    : { istanza: { ...attaccante }, livelliGuadagnati: 0, evoluzionePendente: null }
+  const progressione = applicaXPDopoKO(attaccante, risultato.difensore, {
+    ...risultato.difensore,
+    hp: risultato.difensoreSvenuto ? 0 : risultato.difensore.hp,
+  })
+  const { xpAssegnata } = progressione
   const istanzaPrimaDelContraccolpo = progressione.istanza
   const suprema = risultato.suprema ?? èMossaSuprema(risultato.mossa)
   const autodanno = suprema

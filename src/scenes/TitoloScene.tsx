@@ -20,41 +20,43 @@ export function TitoloScene() {
   const titleLogo = useAdminStore((s) => s.theme.assets.titleLogo)
   const titleBackground = useAdminStore((s) => s.theme.assets.titleBackground)
   const [logoFailed, setLogoFailed] = useState(false)
-  const [backgroundFailed, setBackgroundFailed] = useState(false)
+  const [failedBackgroundPath, setFailedBackgroundPath] = useState<string | null>(null)
 
   useEffect(() => {
     setLogoFailed(false)
   }, [titleLogo])
 
   useEffect(() => {
-    setBackgroundFailed(false)
+    setFailedBackgroundPath(null)
   }, [titleBackground])
 
   const logoPath = titleLogo && !logoFailed ? titleLogo : DEFAULT_TITLE_LOGO
   const backgroundPath =
-    titleBackground && !backgroundFailed ? titleBackground : DEFAULT_TITLE_BACKGROUND_VIDEO
-  const hasBackground = Boolean(backgroundPath && !backgroundFailed)
+    titleBackground && failedBackgroundPath !== titleBackground ? titleBackground : DEFAULT_TITLE_BACKGROUND_VIDEO
+  const hasBackground = Boolean(backgroundPath && failedBackgroundPath !== backgroundPath)
   const hasVideoBackground = /\.(mp4|webm|ogg)$/i.test(backgroundPath)
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950">
       {hasBackground && hasVideoBackground ? (
         <video
+          key={backgroundPath}
           className="absolute inset-0 h-full w-full object-cover"
           src={assetUrl(backgroundPath)}
           autoPlay
           muted
           loop
           playsInline
-          onError={() => setBackgroundFailed(true)}
+          onError={() => setFailedBackgroundPath(backgroundPath)}
         />
       ) : null}
       {hasBackground && !hasVideoBackground ? (
         <img
+          key={backgroundPath}
           src={assetUrl(backgroundPath)}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
-          onError={() => setBackgroundFailed(true)}
+          onError={() => setFailedBackgroundPath(backgroundPath)}
         />
       ) : null}
       {hasBackground ? (
@@ -62,6 +64,7 @@ export function TitoloScene() {
       ) : null}
 
       <motion.img
+        key={logoPath}
         src={assetUrl(logoPath)}
         alt="Arkamon"
         className="relative -top-40 z-10 w-[500px] max-w-[90%] mb-4 drop-shadow-2xl"
@@ -88,6 +91,7 @@ export function TitoloScene() {
         <button
           className="arka-button text-xl"
           onClick={() => {
+            if (haGiocatori && !window.confirm('Vuoi iniziare una nuova partita? La partita salvata verrà sostituita.')) return
             reset()
             vaiAScena('laboratorio')
           }}

@@ -14,8 +14,8 @@ import {
 export const adminThemePresets: AdminTheme[] = [
   defaultAdminTheme,
   {
-    id: 'arkamon-purple-night',
-    name: 'Notte Viola',
+    id: 'arkamon-purple-night-rounded',
+    name: 'Notte Viola morbida',
     colors: {
       primary: '#c084fc',
       primaryHover: '#e9d5ff',
@@ -79,7 +79,7 @@ export const adminThemePresets: AdminTheme[] = [
       mainMapRoadOpacity: 0.42,
     },
     assets: {
-      titleBackground: '/assets/s220308-cartoon-palm-tree-e03-mainpreview-beaece814012dcedf276eb90c00a71ed0e83e25e12b2801c4c825ab8f330bc4e.jpg',
+      titleBackground: '/backgrounds/venezia.png',
     },
     spriteScales: {},
     layouts: {

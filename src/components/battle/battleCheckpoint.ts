@@ -30,24 +30,34 @@ export function restoreBattleCheckpoint(battle: StatoBattaglia): BattleCheckpoin
     || (saved.phase === 'switch' && (!saved.switchRequest
       || !['passaAdA', 'passaAB'].includes(saved.switchRequest.prossimoPasso)))) return fallback
   let pending: BattleCheckpoint['audiencePending']
+  const audienceBattleId = typeof saved.audienceBattleId === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(saved.audienceBattleId)
+    ? saved.audienceBattleId : undefined
+  const opponentTurnNumber = Number.isSafeInteger(saved.opponentTurnNumber) && saved.opponentTurnNumber! >= 0
+    ? saved.opponentTurnNumber : undefined
   try {
     const value = saved.audiencePending
     if (value && typeof value.sessionId === 'string' && /^[a-f0-9-]{32,36}$/i.test(value.sessionId)) {
       const request = validateAudienceRoundRequest(value.request)
+      const currentTurnKey = audienceBattleId && opponentTurnNumber !== undefined
+        ? `${audienceBattleId}:B:${opponentTurnNumber}:${battle.pokemonB.istanzaId}` : undefined
       if (request.channel === audienceChannelForBattle(battle) && request.pokemon.instanceId === battle.pokemonB.istanzaId
-        && request.pokemon.speciesId === battle.pokemonB.specieId) pending = { sessionId: value.sessionId, request }
+        && request.pokemon.speciesId === battle.pokemonB.specieId && request.turnKey === currentTurnKey) {
+        pending = { sessionId: value.sessionId, request }
+      }
     }
   } catch { /* A malformed old ballot falls back to its already-prepared move stage. */ }
   const validPending = pending !== undefined
-  if (saved.phase === 'audience' && (battle.pokemonB.hp <= 0 || battle.pokemonB.stato?.tipo === 'Addormentato')) {
-    return { ...fallback, openingComplete: true, phase: 'opponent' }
-  }
-  if (saved.phase === 'audience' && !validPending) return { ...fallback, openingComplete: true, phase: 'rival-move' }
+  // Recover only the unavailable ballot, keeping initiative, acted sides and
+  // earned evolutions from this settled turn. An old key can never execute a
+  // newer turn; returning to the prepared move stage avoids a second status tick.
+  const phase = saved.phase !== 'audience' ? saved.phase
+    : battle.pokemonB.hp <= 0 || battle.pokemonB.stato?.tipo === 'Addormentato' ? 'opponent'
+    : validPending ? 'audience' : 'rival-move'
   return {
     ...fallback,
     initialPriority: saved.initialPriority,
-    phase: saved.phase,
-    openingComplete: saved.phase === 'ended' || saved.openingComplete === true,
+    phase,
+    openingComplete: saved.phase === 'ended' || saved.phase === 'audience' || saved.openingComplete === true,
     outcome: saved.phase === 'ended' ? saved.outcome : null,
     actedThisRound: [...new Set((Array.isArray(saved.actedThisRound) ? saved.actedThisRound : [])
       .filter((side): side is Lato => side === 'A' || side === 'B'))],
@@ -56,11 +66,9 @@ export function restoreBattleCheckpoint(battle: StatoBattaglia): BattleCheckpoin
       evolution && typeof evolution.istanzaId === 'string'
       && Number.isInteger(evolution.oldSpecieId) && Number.isInteger(evolution.newSpecieId)),
     rivalMessages: (Array.isArray(saved.rivalMessages) ? saved.rivalMessages : []).filter((message) => typeof message === 'string'),
-    ...(typeof saved.audienceBattleId === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(saved.audienceBattleId)
-      ? { audienceBattleId: saved.audienceBattleId } : {}),
-    ...(Number.isSafeInteger(saved.opponentTurnNumber) && saved.opponentTurnNumber! >= 0
-      ? { opponentTurnNumber: saved.opponentTurnNumber } : {}),
-    ...(saved.phase === 'audience' && validPending ? { audiencePending: pending } : {}),
+    ...(audienceBattleId ? { audienceBattleId } : {}),
+    ...(opponentTurnNumber !== undefined ? { opponentTurnNumber } : {}),
+    ...(phase === 'audience' && validPending ? { audiencePending: pending } : {}),
   }
 }
 

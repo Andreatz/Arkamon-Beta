@@ -1,5 +1,6 @@
 import {
   useLayoutEffect,
+  useEffect,
   useRef,
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -8,6 +9,7 @@ import {
 } from 'react'
 import { useAdminStore } from '@store/adminStore'
 import type { AdminLayoutRect } from '@/theme/adminThemeTypes'
+import { trackAdminPointerDrag } from './adminPointerDrag'
 
 const LAYOUT_SNAP_DISTANCE = 0.85
 const CONTENT_OFFSET_LIMIT = 80
@@ -112,6 +114,8 @@ export function AdminLayoutItem({
 }) {
   const beginLayoutChange = useAdminStore((state) => state.beginLayoutChange)
   const itemRef = useRef<HTMLDivElement>(null)
+  const dragCleanup = useRef<(() => void) | null>(null)
+  useEffect(() => () => dragCleanup.current?.(), [editing])
 
   useLayoutEffect(() => {
     const item = itemRef.current
@@ -137,6 +141,7 @@ export function AdminLayoutItem({
 
     event.preventDefault()
     event.stopPropagation()
+    dragCleanup.current?.()
     beginLayoutChange()
 
     const bounds = target.getBoundingClientRect()
@@ -160,13 +165,7 @@ export function AdminLayoutItem({
       })
     }
 
-    const onPointerUp = () => {
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerup', onPointerUp)
-    }
-
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
+    dragCleanup.current = trackAdminPointerDrag(event.pointerId, onPointerMove)
   }
 
   const blockTextClickWhileEditing = (event: ReactMouseEvent<HTMLDivElement>) => {
@@ -189,6 +188,7 @@ export function AdminLayoutItem({
 
     event.preventDefault()
     event.stopPropagation()
+    dragCleanup.current?.()
     event.currentTarget.setPointerCapture(event.pointerId)
     beginLayoutChange()
 
@@ -231,13 +231,7 @@ export function AdminLayoutItem({
       }, 'resize', guides))
     }
 
-    const onPointerUp = () => {
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerup', onPointerUp)
-    }
-
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
+    dragCleanup.current = trackAdminPointerDrag(event.pointerId, onPointerMove)
   }
 
   return (

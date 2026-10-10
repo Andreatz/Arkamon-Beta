@@ -48,7 +48,7 @@ export function audienceErrorMessage(error: unknown): string {
 }
 
 export function audienceSessionEnded(error: unknown): boolean {
-  return error instanceof AudienceApiError && [401, 403, 404, 410].includes(error.status)
+  return error instanceof AudienceApiError && [401, 404, 410].includes(error.status)
 }
 
 let connectionRevision = 0

@@ -108,6 +108,25 @@ let ctx: AudioContext | null = null
 let muted = false
 let currentMusic: MusicId | null = null
 let musicTimer: number | null = null
+const activeTones = new Map<OscillatorNode, { gain: GainNode; music: boolean }>()
+
+function releaseTone(oscillator: OscillatorNode): void {
+  const tone = activeTones.get(oscillator)
+  if (!tone) return
+  activeTones.delete(oscillator)
+  oscillator.onended = null
+  oscillator.disconnect()
+  tone.gain.disconnect()
+}
+
+function stopTones(musicOnly = false): void {
+  for (const [oscillator, tone] of activeTones) {
+    if (musicOnly && !tone.music) continue
+    // Stop also cancels tones scheduled for a future point in the melody.
+    try { oscillator.stop() } catch { /* A tone may have just ended. */ }
+    releaseTone(oscillator)
+  }
+}
 
 function hasAudio(): boolean {
   return typeof window !== 'undefined' && typeof window.AudioContext !== 'undefined'
@@ -125,7 +144,7 @@ export function unlockAudio(): void {
   if (!muted) audioContext()
 }
 
-function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1): void {
+function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1, music = false): void {
   const audio = audioContext()
   if (!audio || muted) return
 
@@ -142,13 +161,15 @@ function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1): void {
 
   oscillator.connect(gain)
   gain.connect(audio.destination)
+  activeTones.set(oscillator, { gain, music })
+  oscillator.onended = () => releaseTone(oscillator)
   oscillator.start(start)
   oscillator.stop(start + duration + 0.02)
 }
 
 export function setAudioMuted(nextMuted: boolean): void {
   muted = nextMuted
-  if (muted) { stopMusic(); for (const clip of activeClips) clip.pause(); activeClips.clear() }
+  if (muted) { stopMusic(); stopTones(); for (const clip of activeClips) clip.pause(); activeClips.clear() }
 }
 
 export function isAudioMuted(): boolean {
@@ -168,7 +189,7 @@ export function playMusic(music: MusicId): void {
 
   const playLoop = () => {
     if (!currentMusic || muted) return
-    for (const step of MUSIC_BANK[currentMusic]) playTone(step, 0, 0.45)
+    for (const step of MUSIC_BANK[currentMusic]) playTone(step, 0, 0.45, true)
   }
 
   playLoop()
@@ -181,6 +202,7 @@ export function stopMusic(): void {
   }
   musicTimer = null
   currentMusic = null
+  stopTones(true)
 }
 
 export function musicForScene(scene: string): MusicId {
