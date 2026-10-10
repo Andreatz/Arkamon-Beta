@@ -119,4 +119,26 @@ describe('votazione del turno avversario', () => {
     expect(test.state()?.status).toBe('idle')
     test.controller.dispose()
   })
+  it('annulla il turno remoto anche se il ripiego smonta la votazione durante il recupero dell’apertura', async () => {
+    const opening = deferred<AudienceHostSnapshot>()
+    const recovering = deferred<AudienceHostSnapshot>()
+    const test = setup({
+      open: vi.fn().mockReturnValue(opening.promise),
+      get: vi.fn().mockImplementation((_session, signal?: AbortSignal) => {
+        signal?.addEventListener('abort', () => recovering.reject(new AudienceApiError('Interrotto', 'ABORTED')), { once: true })
+        return recovering.promise
+      }),
+      control: vi.fn().mockResolvedValue({ ...snapshot, round: { ...round, status: 'cancelled', closedAt: 201_000 } }),
+    })
+    const starting = test.controller.start()
+    const cancelling = test.controller.cancel()
+    test.controller.dispose()
+    // The server may have accepted the opening even though its response was lost.
+    recovering.resolve(snapshot)
+    opening.resolve(snapshot)
+    await Promise.all([starting, cancelling])
+    expect(test.dependencies.control).toHaveBeenCalledWith(session, 'cancel', round.id, expect.any(AbortSignal))
+    expect(test.accept).not.toHaveBeenCalled()
+    expect(test.state()?.status).toBe('opening')
+  })
 })

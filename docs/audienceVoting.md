@@ -43,6 +43,8 @@ Il sito delle votazioni e quello del gioco possono avere domini diversi. Il back
 
 Il frontend Arkamon viene configurato dalla scheda **Pubblico** e non richiede nuove variabili `VITE_*`. Il backend e la pagina del telefono sono nel repository Arkanight, con API sotto `/api/arkamon-votes` e pagina `/giochi/arkamon/vota/<sessionId>`.
 
+Il 10 ottobre 2026 l’archivio è stato creato nel progetto Supabase **Sito Comicon Arkanight**, tramite la migrazione `add_arkamon_vote_sessions`. Sono stati verificati colonne, RLS e privilegi: `anon` e `authenticated` non hanno accesso, mentre `service_role` ha i permessi richiesti dal server. Questa verifica riguarda il database; pubblicazione del servizio, origini autorizzate e prova con un telefono fisico restano da completare. Le istruzioni seguenti valgono anche per nuove installazioni.
+
 Prima dell’utilizzo online:
 
 1. Applicare nel progetto Supabase di Arkanight il file **`docs/arkamon-votes-setup.sql` del repository Arkanight**. Crea l’archivio privato `arkamon_vote_sessions`, abilita RLS e nega l’accesso ai ruoli del browser. Il servizio usa esclusivamente il client server con ruolo di servizio.

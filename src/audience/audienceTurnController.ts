@@ -133,21 +133,23 @@ export class AudienceTurnController {
     const roundId = this.state.round?.id
     const revision = ++this.revision
     this.abort?.abort()
-    this.abort = new AbortController()
+    this.abort = null
     this.clearTimers()
+    // Fallback immediately unmounts this client. The remote cancellation must
+    // outlive that cleanup, while its response can no longer update a disposed UI.
+    // API calls still have their own bounded network timeout.
+    const cancellation = new AbortController()
     try {
       // Find an opening round before cancelling: never cancel another battle's ballot.
-      const snapshot = roundId ? null : await this.dependencies.get(this.session, this.abort.signal)
-      if (!this.current(revision)) return
+      const snapshot = roundId ? null : await this.dependencies.get(this.session, cancellation.signal)
       let round = snapshot?.round
       if (!roundId && (!round || (round.status !== 'open' && !audienceRoundMatchesRequest(round, this.request)))) {
-        const recovered = await this.dependencies.open(this.session, this.request, this.abort.signal)
-        if (!this.current(revision)) return
+        const recovered = await this.dependencies.open(this.session, this.request, cancellation.signal)
         round = recovered.round
       }
       const id = roundId ?? (round && audienceRoundMatchesRequest(round, this.request) ? round.id : undefined)
       if (id) {
-        const result = await this.dependencies.control(this.session, 'cancel', id, this.abort.signal)
+        const result = await this.dependencies.control(this.session, 'cancel', id, cancellation.signal)
         if (this.current(revision)) this.acceptSnapshot(result)
       }
       if (this.current(revision)) this.publish({ ...idleAudienceTurn, turnKey: this.request.turnKey })

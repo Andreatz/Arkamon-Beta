@@ -7,7 +7,7 @@ export function AudienceQrCode({ url, label = 'Codice QR per votare' }: { url: s
   useEffect(() => {
     let active = true
     setImage(null)
-    void QRCode.toDataURL(url, { width: 360, margin: 3, errorCorrectionLevel: 'M', color: { dark: '#111827', light: '#ffffff' } })
+    void QRCode.toDataURL(url, { width: 360, margin: 6, errorCorrectionLevel: 'M', color: { dark: '#111827', light: '#ffffff' } })
       .then((value) => { if (active) setImage(value) })
       .catch(() => { if (active) setImage(null) })
     return () => { active = false }
