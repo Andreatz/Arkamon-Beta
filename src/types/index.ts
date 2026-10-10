@@ -1,3 +1,5 @@
+import type { AudienceRoundRequest } from '@/audience/types'
+
 /**
  * Tipi del dominio Arkamon.
  * Questi tipi rappresentano l'intero modello di gioco e sono condivisi
@@ -187,12 +189,17 @@ export interface BattleCheckpoint {
   version: 1
   initialPriority: Lato
   actedThisRound: Lato[]
-  phase: 'player' | 'opponent' | 'rival-move' | 'pass-player' | 'pass-rival' | 'switch' | 'ended'
+  phase: 'player' | 'opponent' | 'rival-move' | 'audience' | 'pass-player' | 'pass-rival' | 'switch' | 'ended'
   openingComplete: boolean
   outcome: 'vittoria' | 'sconfitta' | null
   switchRequest?: { motivo: string; prossimoPasso: 'passaAdA' | 'passaAB' }
   evolutions: { istanzaId: string; oldSpecieId: number; newSpecieId: number }[]
   rivalMessages: string[]
+  /** Distinguishes separate battles and B turns when a phone ballot is resumed. */
+  audienceBattleId?: string
+  opponentTurnNumber?: number
+  /** Only public turn metadata; the host capability stays in its separate store. */
+  audiencePending?: { sessionId: string; request: AudienceRoundRequest }
 }
 
 /** Risultato del calcolo di danno (per UI: HP barre, animazioni) */
