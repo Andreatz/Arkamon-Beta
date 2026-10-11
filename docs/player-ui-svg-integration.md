@@ -2,7 +2,7 @@
 
 L’interfaccia degli strumenti dell’allenatore è integrata nell’applicazione React e legge la partita reale: squadra, deposito, HP, status, esperienza, scoperte, inventario, monete e progressi dei due giocatori. I pannelli usano il kit di 47 SVG fornito nell’archivio dell’utente, insieme al logo, agli sfondi e alle immagini delle creature già presenti nel gioco.
 
-Questa guida descrive l’integrazione corrente nel ramo `feature/player-ui-svg-integration`. Le [anteprime grafiche autonome](ui-previews/README.md) restano consultabili come riferimento della proposta: usano dati dimostrativi, hanno catture e verifiche proprie e non sono il salvataggio di una campagna. Per utilizzare le nuove viste con i propri Arkamon occorre aprire il gioco di questo ramo, anziché il prototipo in `docs/ui-previews/`.
+Questa guida descrive le sette viste integrate nell’applicazione React e il loro layout compatto. Le [anteprime grafiche autonome](ui-previews/README.md) restano consultabili come riferimento della proposta: usano dati dimostrativi, hanno catture e verifiche proprie e non sono il salvataggio di una campagna. Per utilizzare le nuove viste con i propri Arkamon occorre aprire il gioco, anziché il prototipo in `docs/ui-previews/`.
 
 ## Dove aprire le schermate
 
@@ -23,6 +23,20 @@ In città, **Attività → Arkastore** apre direttamente la vista Negozio della 
 Il selettore **G1 / G2** cambia il giocatore consultato in tutte le viste. Non cambia il giocatore attivo, la sua posizione o le azioni rimaste. L’interfaccia indica separatamente il giocatore selezionato e il turno attuale. La consultazione è disponibile anche quando una modifica è bloccata; i comandi mostrano il motivo.
 
 Diario, Backup, Impostazioni, Cronache, Registro del match e Sfide restano disponibili nella navigazione degli strumenti. Il backup e il registro continuano a usare i formati e le funzioni già descritti in [strumenti del giocatore](player-tools.md) e [Arkadex, Arkastore e sfide](arkadex-arkastore-challenges.md).
+
+## Una schermata completa a 1920×1080
+
+Le sette viste utilizzano un layout compatto a **1920×1080**: intestazione, navigazione, contenuto, strumenti aggiuntivi e comandi finali sono visibili insieme, senza scorrimento della pagina o delle liste interne. Il layout ridistribuisce pannelli e spazi; non applica uno zoom globale e non nasconde contenuti per farli rientrare.
+
+- **Squadra:** tutti e sei i membri, con HP numerici, status e livelli, restano visibili accanto alla scheda e ai comandi dell’Arkamon selezionato.
+- **Deposito:** ogni box mostra insieme i **35 posti**, i sei membri della squadra, la destinazione di spostamento e la scheda selezionata. Si cambia box con i comandi già presenti.
+- **Arkadex:** le 110 specie sono suddivise in **19 pagine da sei voci**, con due voci nell’ultima pagina. Ricerca, filtri e cambio giocatore riportano alla prima pagina. Informazioni, Mosse ed Evoluzioni hanno schede separate; cambiare pagina non perde l’esemplare selezionato.
+- **Analisi:** Scheda, Mosse e Status e cure suddividono i dati; la scheda degli status contiene anche le affinità. Le informazioni duplicate vengono riunite nella scheda pertinente.
+- **Borsa:** la griglia conserva tutti gli oggetti della categoria. Il pannello laterale mostra effetto, bersaglio e un solo comando di uso per l’oggetto selezionato. Cambiare oggetto conserva il bersaglio; quando una scorta finisce, la selezione passa a un oggetto ancora posseduto.
+- **Negozio:** i sette articoli, le quantità, il dettaglio selezionato e un carrello con tutti e sette gli articoli entrano contemporaneamente nello schermo, compresi totale, saldo, motivi di blocco e comandi di acquisto.
+- **Menù Partita:** i sei accessi principali e il riepilogo della campagna restano affiancati, con registro, backup e ripresa visibili.
+
+La disposizione compatta si attiva con almeno **1100 pixel di larghezza e 1000 di altezza disponibili**. A risoluzioni più piccole o su telefono, i pannelli tornano a un flusso adattabile con scorrimento, per mantenere leggibili testi e pulsanti. Il riferimento verificato senza scorrimento è il viewport del gioco di 1920×1080; l’area disponibile può essere inferiore se il browser mostra barre o strumenti laterali.
 
 ## Squadra, deposito e condizioni reali
 
@@ -61,14 +75,16 @@ La finestra e le sette viste sono in [`src/player-ui/`](../src/player-ui/). I co
 Verifiche completate l’**11 ottobre 2026** per questa integrazione:
 
 - Controllo TypeScript completato senza errori.
-- Suite completa: **2.105 test superati in 105 file**, eseguiti con isolamento e al massimo due worker.
-- Build di produzione con base GitHub Pages `/Arkamon-Beta/` completata senza errori, dopo la correzione della gestione di Esc. La preview della build apre l’applicazione e gli strumenti; tutti i 47 SVG rispondono correttamente dal percorso di produzione, senza errori di pagina o richieste fallite nella verifica.
+- Suite completa: **2.112 test superati in 106 file**, eseguiti con isolamento e al massimo due worker.
+- Build di produzione con base GitHub Pages `/Arkamon-Beta/` completata senza errori, con la gestione di Esc e il layout compatto. La preview della build apre l’applicazione e gli strumenti; tutti i 47 SVG rispondono correttamente dal percorso di produzione, senza errori di pagina o richieste fallite nella verifica.
 - **47 SVG identici byte per byte** ai file dell’archivio fornito.
-- Suite completa di **60 prove nel browser superate**, tra desktop e telefono, comprese battaglie, sfide, salvataggi e strumenti. Le nuove viste coprono apertura e focus, consultazione di G2 senza mutazioni della campagna, caricamento degli SVG, layout, scambi persistenti, rifiuto degli scambi fuori fascia, cura della paralisi e acquisto dalla città. È verificato anche il blocco dell’acquisto fuori città.
+- Suite completa di **66 prove nel browser superate**, tra desktop e telefono, comprese battaglie, sfide, salvataggi e strumenti. Le quattro prove dedicate al formato 1920×1080 vengono escluse dal profilo telefono: **quattro esclusioni previste, nessun errore**. Le nuove viste coprono apertura e focus, consultazione di G2 senza mutazioni della campagna, caricamento degli SVG, layout, scambi persistenti, rifiuto degli scambi fuori fascia, cura della paralisi e acquisto dalla città. È verificato anche il blocco dell’acquisto fuori città.
 - Controllo Axe: **zero violazioni rilevate nelle sette schermate**, sia su desktop sia su telefono.
 
 Le regressioni verificano che Esc chiuda soltanto la finestra in primo piano: dal deposito diretto, chiudere gli strumenti o una cronaca archiviata lascia visibile la scena e conserva il focus e i dati. Un secondo Esc torna alla città. È verificato anche lo spostamento di una riserva verso un posto vuoto della squadra: il selettore segue la destinazione effettiva assegnata dal motore, con identità, HP, status e XP invariati.
 
 I flussi sono documentati dai test [`player-ui.spec.ts`](../e2e/player-ui.spec.ts) e [`player-ui-integration.spec.ts`](../e2e/player-ui-integration.spec.ts); i controlli delle schede e della separazione dei dati sono in [`src/player-ui/__tests__/`](../src/player-ui/__tests__/) e [`TeamAnalysisDeposit.test.tsx`](../src/player-ui/TeamAnalysisDeposit.test.tsx).
+
+La regressione [`player-ui-1080.spec.ts`](../e2e/player-ui-1080.spec.ts) misura anche le dimensioni effettive dei contenitori e dei comandi nel browser. Usa una campagna di prova con nomi lunghi, sei membri, 35 riserve, 110 specie scoperte, tutti gli oggetti e un carrello completo. Controlla le pagine e le schede dell’Arkadex, i dettagli più lunghi, la consultazione di G2, le specie sconosciute e l’ingresso diretto nel deposito; verifica che la consultazione non modifichi il salvataggio. Le catture delle sette viste sono state prodotte anche dalla build di produzione a 1920×1080.
 
 Questi risultati riguardano l’esecuzione locale dell’integrazione e della build; non attestano un esito CI o la disponibilità online. La pubblicazione sul sito richiede il merge della PR in `main`, seguito dal workflow di build e deploy e dalla verifica della versione pubblicata. La [configurazione Pages](github-pages-deployment.md) resta il riferimento per quel passaggio.
