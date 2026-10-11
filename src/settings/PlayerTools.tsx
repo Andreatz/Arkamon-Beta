@@ -1,38 +1,41 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { GameDialog } from '@/components/ui/GameDialog'
-import { GameSettingsPanel } from './GameSettingsPanel'
 import { SaveRecoveryNotice } from '@/save/SaveRecoveryNotice'
 import { useGameStore } from '@/store/gameStore'
-import { launchChallenge } from '@/challenges/challengeRuntime'
 import { TeamRuleNotice } from './TeamRuleNotice'
+import { isPlayerUiScreen, PLAYER_UI_OPEN_EVENT, type PlayerUiAuxiliary, type PlayerUiOpenRequest } from '@/player-ui/navigation'
 
-const BackupPanel = lazy(() => import('@/save/BackupPanel').then((module) => ({ default: module.BackupPanel })))
-const PlayerJournalPanel = lazy(() => import('@/journal/PlayerJournalPanel').then((module) => ({ default: module.PlayerJournalPanel })))
-const BattleArchivePanel = lazy(() => import('@/components/battle/BattleArchivePanel').then((module) => ({ default: module.BattleArchivePanel })))
-const ArkadexPanel = lazy(() => import('@/arkadex/ArkadexPanel').then((module) => ({ default: module.ArkadexPanel })))
-const MatchRegisterPanel = lazy(() => import('@/match/MatchRegisterPanel').then((module) => ({ default: module.MatchRegisterPanel })))
-const ItemBagPanel = lazy(() => import('@/shop/ItemBagPanel').then((module) => ({ default: module.ItemBagPanel })))
-const ChallengePanel = lazy(() => import('@/challenges/ChallengePanel').then((module) => ({ default: module.ChallengePanel })))
+const PlayerUi = lazy(() => import('@/player-ui/PlayerUi').then(module => ({ default: module.PlayerUi })))
 export function PlayerTools() {
   const [open, setOpen] = useState(false)
-  const [tab, setTab] = useState<'journal' | 'backup' | 'settings' | 'chronicles' | 'arkadex' | 'match' | 'bag' | 'challenges'>('journal')
-  const context = useGameStore((state) => state.challengeContext)
-  const useItem = useGameStore((state) => state.applicaOggetto)
+  const [request, setRequest] = useState<PlayerUiOpenRequest & { auxiliary?: PlayerUiAuxiliary; revision: number }>({ screen: 'partita', revision: 0 })
+  useEffect(() => {
+    const handleOpen = (event: Event) => {
+      const detail = (event as CustomEvent<unknown>).detail
+      if (!detail || typeof detail !== 'object') return
+      const raw = detail as Partial<PlayerUiOpenRequest>
+      if (!isPlayerUiScreen(raw.screen)) return
+      setRequest(previous => ({ screen: raw.screen!, playerId: raw.playerId === 1 || raw.playerId === 2 ? raw.playerId : undefined,
+        instanceId: typeof raw.instanceId === 'string' ? raw.instanceId : undefined, revision: previous.revision + 1 }))
+      setOpen(true)
+    }
+    window.addEventListener(PLAYER_UI_OPEN_EVENT, handleOpen)
+    return () => window.removeEventListener(PLAYER_UI_OPEN_EVENT, handleOpen)
+  }, [])
+  function openDefault(auxiliary?: PlayerUiAuxiliary) {
+    setRequest(previous => ({ screen: 'partita', playerId: useGameStore.getState().giocatoreAttivo, auxiliary, revision: previous.revision + 1 }))
+    setOpen(true)
+  }
   return <>
-    {createPortal(<SaveRecoveryNotice onOpenBackup={() => { setTab('backup'); setOpen(true) }} />, document.body)}
-    {createPortal(<TeamRuleNotice />, document.body)}
-    {createPortal(<button type="button" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)} className="fixed bottom-3 left-3 z-[950] rounded-lg border border-violet-300 bg-slate-950/95 px-4 py-2 text-sm font-bold text-white shadow-lg">Partita</button>, document.body)}
-    {open ? <GameDialog title="La tua partita" onClose={() => setOpen(false)}>
-      <nav aria-label="Strumenti della partita" className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">{([
-        ['journal', 'Diario'], ['backup', 'Backup'], ['settings', 'Impostazioni'], ['chronicles', 'Cronache'],
-        ['arkadex', 'Arkadex'], ['bag', 'Borsa'], ['match', 'Registro del match'], ['challenges', 'Sfide'],
-      ] as const).map(([id, label]) => <button key={id} type="button" disabled={!!context && id !== 'settings' && id !== 'challenges'} aria-pressed={tab === id} onClick={() => setTab(id)} className={`rounded border px-3 py-3 disabled:opacity-40 ${tab === id ? 'border-violet-300 bg-violet-800' : 'border-slate-500 bg-slate-800'}`}>{label}</button>)}</nav>
+    {createPortal(<SaveRecoveryNotice onOpenBackup={() => openDefault('backup')} />, document.body)}
+    {!open && createPortal(<TeamRuleNotice />, document.body)}
+    {createPortal(<button type="button" aria-haspopup="dialog" aria-expanded={open} onClick={() => openDefault()} className="fixed bottom-3 left-3 z-[950] rounded-lg border border-violet-300 bg-slate-950/95 px-4 py-2 text-sm font-bold text-white shadow-lg">Partita</button>, document.body)}
+    {open ? <GameDialog title="La tua partita" className="player-ui-dialog" onClose={() => setOpen(false)}>
+      <TeamRuleNotice />
       <Suspense fallback={<p role="status">Caricamento…</p>}>
-        {tab === 'challenges' || context && tab !== 'settings' ? <ChallengePanel activeSession={context?.session} onResume={() => setOpen(false)} onLaunch={(session) => {
-          const result = launchChallenge(session); if (result.ok) setOpen(false); return result
-        }} /> : tab === 'arkadex' ? <ArkadexPanel /> : tab === 'match' ? <MatchRegisterPanel /> : tab === 'bag' ? <ItemBagPanel onUse={useItem} />
-          : tab === 'journal' ? <PlayerJournalPanel /> : tab === 'backup' ? <BackupPanel /> : tab === 'chronicles' ? <BattleArchivePanel /> : <GameSettingsPanel />}
+        <PlayerUi key={request.revision} initialScreen={request.screen} initialPlayerId={request.playerId} initialInstanceId={request.instanceId}
+          initialAuxiliary={request.auxiliary} onClose={() => setOpen(false)} />
       </Suspense>
     </GameDialog> : null}
   </>

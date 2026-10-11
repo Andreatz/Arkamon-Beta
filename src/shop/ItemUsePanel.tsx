@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { calcolaHPMax } from '@/engine/battleEngine'
 import type { PokemonIstanza } from '@/types'
 import { SHOP_ITEMS, type ShopInventory, type ShopItemId } from './catalog'
@@ -12,10 +12,11 @@ export interface ItemUsePanelProps {
   disabled?: boolean
   unavailableMessage?: string | null
   actionNote: string
+  renderItemIcon?: (itemId: ShopItemId) => ReactNode
 }
 
 /** La stessa selezione di oggetto e bersaglio serve per la borsa e per il turno di battaglia. */
-export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavailableMessage, actionNote }: ItemUsePanelProps) {
+export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavailableMessage, actionNote, renderItemIcon }: ItemUsePanelProps) {
   const [selectedId, setSelectedId] = useState(squad[0]?.istanzaId ?? '')
   const [message, setMessage] = useState('')
   useEffect(() => {
@@ -38,7 +39,7 @@ export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavai
         const preview = target ? resolveItemEffect(target, item.id) : null
         const disabledReason = item.effect.kind === 'capture' ? 'Usa il pulsante Masterball durante una battaglia selvatica.' : preview && !preview.ok ? preview.message : null
         return <article key={item.id} className="arka-store-item">
-          <div className="arka-store-item-title"><span aria-hidden="true">{item.icon}</span><h4>{item.name}</h4><strong>×{inventory[item.id]}</strong></div>
+          <div className="arka-store-item-title">{renderItemIcon ? renderItemIcon(item.id) : <span aria-hidden="true">{item.icon}</span>}<h4>{item.name}</h4><strong>×{inventory[item.id]}</strong></div>
           <p>{item.description}</p>
           {disabledReason && <small>{disabledReason}</small>}
           <button type="button" className="arka-button" disabled={disabled || !!unavailableMessage || !target || !!disabledReason} onClick={() => {

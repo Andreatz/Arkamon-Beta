@@ -34,6 +34,7 @@ test('team level cap banks KO experience and rejects a real deposit swap without
   await expect(page.locator('[data-presented-scene="deposito"]')).toHaveAttribute('aria-busy', 'false')
   const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore1)
   await page.getByRole('button', { name: 'Box 1, posto 1: Felyss fuori fascia, livello 20', exact: true }).click()
+  await page.getByRole('button', { name: 'Sposta o scambia', exact: true }).click()
   await page.getByRole('button', { name: 'Squadra, posto 2: Darklaw compagno, livello 5', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('al massimo 5 livelli')
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore1)).toEqual(before)

@@ -9,3 +9,4 @@ scripts/vfx-generated/*.py text eol=lf
 
 # Keep the delivered UI files and source SVG hashes byte-identical across clones.
 docs/ui-previews/archive-kit/** -text whitespace=cr-at-eol
+public/ui/player-kit/** -text whitespace=cr-at-eol

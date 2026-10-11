@@ -20,11 +20,13 @@ npm test
 
 ## Stato Attuale
 
-- Ultima verifica: **10 ottobre 2026**, [audit del progetto](./docs/project-audit-2026-10-10.md).
+- Ultima verifica dell’interfaccia: **11 ottobre 2026**, [sette viste SVG integrate nel gioco](./docs/player-ui-svg-integration.md); [audit generale del progetto del 10 ottobre](./docs/project-audit-2026-10-10.md).
 - Nuovi strumenti: [diario, backup completo, editor delle interazioni, cronache e impostazioni](./docs/player-tools.md); [verifica dell'integrazione](./docs/improvements-audit-2026-10-10.md).
 - Nuove modalità: [Arkadex, Arkastore, registro del match, sfide a seed e Fanta-Team](./docs/arkadex-arkastore-challenges.md), con cap di cinque livelli in squadra; [verifica delle cinque funzioni](./docs/game-features-audit-2026-10-10.md).
 - Anteprime grafiche: [sette schermate e kit SVG fornito](./docs/ui-previews/README.md), con confronto della versione precedente, catture desktop/telefono e pacchetti scaricabili.
-- Build web: `npm run build` completato senza errori
+- Interfaccia nel gioco: **Partita → Menù Partita, Squadra, Deposito, Arkadex, Analisi, Borsa e Negozio** usa i dati reali della campagna e il kit SVG fornito. Anche **Città → Attività → Arkastore** e la scena **Deposito** usano le nuove viste; [accessi, regole e verifiche locali](./docs/player-ui-svg-integration.md). Le anteprime grafiche precedenti conservano dati dimostrativi.
+- Verifica locale dell’integrazione UI: TypeScript senza errori, **2.105 test in 105 file**, **60 prove browser desktop/telefono** e controllo Axe delle sette viste senza violazioni rilevate. I 47 SVG sono identici all’archivio fornito.
+- Build web dell’integrazione completata con base GitHub Pages `/Arkamon-Beta/`; verificati nel browser l’apertura dell’applicazione, le nuove viste e il caricamento dei 47 SVG. CI e pubblicazione online sono passaggi distinti: il sito si aggiorna dopo il merge della PR e il deploy.
 - Test: il rapporto corrente contiene il risultato della suite completa e delle prove nel browser; i rapporti precedenti restano storici.
 - Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md), [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) e [correzione paralisi/sonno](./docs/status-corrections-audit-2026-10-06.md) del 6 ottobre 2026.
 - Loop giocabile: titolo -> laboratorio -> mappa -> percorso/citta -> battaglia -> evoluzione/deposito -> ritorno
@@ -40,6 +42,7 @@ npm test
 - Battaglie selvatiche, NPC, Capopalestra e PvP locale.
 - Rivale e Capipalestra con squadre complete da 6 Pokemon.
 - Deposito con box, squadra, selezione e scambio slot.
+- Sette viste degli strumenti dell’allenatore con kit SVG, navigazione comune G1/G2, layout desktop/telefono e condizioni reali degli Arkamon. Consultare l’altro giocatore non cambia il turno attivo; scambi, cure e acquisti rispettano i controlli della campagna.
 - Evoluzione post-battaglia con animazione.
 - Mappa principale con movimento a turni, percorsi e citta interattivi.
 - [Mappe locali di città e percorsi](./docs/local-maps.md): 16 immagini con pallini e strade percorribili, posizioni separate per G1/G2, curve e ponti, salvataggi e comandi accessibili. Budget condiviso con la mappa principale: due movimenti oppure un movimento e un'interazione. I nuovi punti attendono l'assegnazione delle loro interazioni; le attività esistenti restano in un pannello dedicato.
@@ -68,6 +71,7 @@ src/
   interactions/         Catalogo, editor e risoluzione delle attività dei pallini
   journal/              Diario individuale e riepilogo del turno
   settings/             Menu partita, preferenze audio e animazioni
+  player-ui/            Sette viste SVG collegate alla campagna reale
   scenes/               Schermate React
   types/                Tipi dominio condivisi
   utils/                Helper runtime asset

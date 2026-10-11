@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { makeDialogBackgroundInert } from '@/components/battle/modalFocus'
 
-export function GameDialog({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+export function GameDialog({ title, onClose, children, className = '' }: { title: string; onClose: () => void; children: ReactNode; className?: string }) {
   const root = useRef<HTMLElement>(null)
   const close = useRef(onClose)
   close.current = onClose
@@ -30,7 +30,7 @@ export function GameDialog({ title, onClose, children }: { title: string; onClos
     return () => { document.removeEventListener('keydown', keys, true); document.removeEventListener('focusin', refocus); release(); if (previous?.isConnected) previous.focus() }
   }, [])
   return createPortal(<div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/75 p-3" data-game-dialog>
-    <section ref={root} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl flex-col rounded-xl border border-violet-400 bg-slate-950 text-white shadow-2xl">
+    <section ref={root} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} className={`flex max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl flex-col rounded-xl border border-violet-400 bg-slate-950 text-white shadow-2xl ${className}`}>
       <header className="flex shrink-0 items-center justify-between gap-4 border-b border-slate-600 p-4"><h2 className="text-xl font-bold">{title}</h2><button type="button" onClick={onClose} className="rounded border border-slate-400 px-3 py-2">Chiudi</button></header>
       <div className="min-h-0 overflow-y-auto p-4">{children}</div>
     </section>
