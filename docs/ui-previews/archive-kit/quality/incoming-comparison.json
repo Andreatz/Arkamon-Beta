@@ -1,0 +1,2041 @@
+{
+  "passed": true,
+  "sourceFolder": "incoming/Arkamon-Assets-SVG",
+  "sourceFilesModified": false,
+  "SVGExecutedDuringAudit": false,
+  "SVGCount": 47,
+  "catalogAssets": 47,
+  "sourceFileCount": 48,
+  "safetyAuditPassed": true,
+  "safetyErrors": [],
+  "intrinsicDimensionsMissing": 0,
+  "sameAsPreviousCount": 8,
+  "changedFromPreviousCount": 39,
+  "viewBoxChanges": 1,
+  "intrinsicSizeChanges": 1,
+  "totalSVGBytes": 114073,
+  "staleCatalogEntries": 39,
+  "unresolvedAccessibilityEntries": 39,
+  "catalogSHA256": "bdb42ee0917d7d6e2024d26fb251bd3ea058315f0e0690c330b9fa6c37c6d071",
+  "previousCatalogSHA256": "bdb42ee0917d7d6e2024d26fb251bd3ea058315f0e0690c330b9fa6c37c6d071",
+  "issues": [],
+  "warnings": [
+    {
+      "file": "button-default.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "button-primary.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "card-default.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "card-portrait.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "card-selected-cyan.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "card-selected-violet.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "circle-cyan.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "circle-default.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "circle-selected.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "command-cancel.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "command-close.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "command-confirm.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "command-left.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "command-pass.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "command-right.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "command-settings.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-activity.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-analysis.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-bag.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-book.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-box.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-home.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-map.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-options.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-shop.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "icon-team.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title",
+        "desc"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "item-antidote.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "item-antidote-title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "item-coin.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "item-coin-title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "item-potion.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "item-potion-title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "item-revive.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "item-revive-title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "item-sphere.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "item-sphere-title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "item-superpotion.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "item-superpotion-title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "map-pin.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "panel-medium.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "panel-wide.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "row-blank.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "slot-cyan.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "slot-default.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    },
+    {
+      "file": "slot-selected.svg",
+      "type": "Accessibility metadata",
+      "unresolvedLabelledby": [
+        "title"
+      ],
+      "note": "Source graphic is safe to render; use accessible labels at the HTML img/container level."
+    }
+  ],
+  "recommendations": [
+    "Copy every SVG byte-for-byte; all source intrinsic sizes are valid.",
+    "Rebuild copied catalog hashes, byte sizes and element counts from the incoming files instead of trusting archived metadata.",
+    "The archive changes the UI palette to blue/night-blue. One file, item-potion.svg, also has a tighter viewBox (6 10 177 251.472) and matching intrinsic dimensions; derive its rendered size from the new SVG.",
+    "Apply accessible names in the HTML layer because optimized source SVG labels reference removed title/desc IDs."
+  ],
+  "files": [
+    {
+      "file": "button-default.svg",
+      "sha256": "da82d68e077203f02f82ff95072a9b038a6db818b16e0a10dc819d89c5697868",
+      "bytes": 2463,
+      "dimensions": {
+        "viewBox": "0 0 657 213",
+        "width": "657",
+        "height": "213"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "d1cffb72d55f03ce658dbdfd00628c223e99fb3022568bb64e04cfbce0492a64",
+      "previousBytes": 4093,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 15,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "rect": 2,
+        "path": 3,
+        "g": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "button-primary.svg",
+      "sha256": "51449a00901f5d7982ea3f1783765ea27ad1b8b6f8d9e6d658e75bafab29574f",
+      "bytes": 2098,
+      "dimensions": {
+        "viewBox": "0 0 646 192",
+        "width": "646",
+        "height": "192"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "957ca1e3593813b9fa2d10b8299c111f9a20cee458e856636aa0b46c699108ce",
+      "previousBytes": 3824,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 12,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "rect": 2,
+        "path": 3,
+        "g": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "card-default.svg",
+      "sha256": "917ff2a2903f104759f93fa49ffc7518a0919c3b1407f60c6db61c152fa377b8",
+      "bytes": 3116,
+      "dimensions": {
+        "viewBox": "0 0 813 266",
+        "width": "813",
+        "height": "266"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "507bef4b9eb735cc509c5336747dede7f78aa9fb3de08e7ee2ee918d6bf50f6c",
+      "previousBytes": 5865,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 17,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 7,
+        "g": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "card-portrait.svg",
+      "sha256": "46038676ed260d968a95e01bb775db9fdf0cabbf47adcd4ae6e8817f38bd9b8d",
+      "bytes": 4222,
+      "dimensions": {
+        "viewBox": "0 0 433 458",
+        "width": "433",
+        "height": "458"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "bbe89f50df9609499daea1a9e2113ffb30bf58b45fd76c7414eb371bb3a6380a",
+      "previousBytes": 6558,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 6,
+        "stop": 24,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 17,
+        "g": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "card-selected-cyan.svg",
+      "sha256": "db1f17a9795e426cd75ea2dfcbc9ebf806832f1a4cf5886b9ef35a44d0bf8eb0",
+      "bytes": 3902,
+      "dimensions": {
+        "viewBox": "0 0 554 247",
+        "width": "554",
+        "height": "247"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "da010e74058826a02ee9522827006d5f0c808e73dae5ad8d492a61cf524210de",
+      "previousBytes": 7591,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 17,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 8,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "g": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "card-selected-violet.svg",
+      "sha256": "5e967dc6274b28d2a4268df62b6603e2437cea487739b5d917d0ef8a32d4e57f",
+      "bytes": 3980,
+      "dimensions": {
+        "viewBox": "0 0 565 254",
+        "width": "565",
+        "height": "254"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "e4c52659e0a6d75647caf7340b6dd2e66c5b9075d4c45e0cac82c115e00496e0",
+      "previousBytes": 7646,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 17,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 8,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "g": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "circle-cyan.svg",
+      "sha256": "67b84bf6128954ee1f66b32cbee3e9c1d34f6808d0b606f2ced1f236b2f8bcb8",
+      "bytes": 1287,
+      "dimensions": {
+        "viewBox": "0 0 282 276",
+        "width": "282",
+        "height": "276"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "1dc1db8c7d0d56241fa1b3667e81709e9ef8b7b3ed85bd130c841d682d03baf5",
+      "previousBytes": 1260,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 2,
+        "stop": 16,
+        "circle": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "circle-default.svg",
+      "sha256": "f7f2fbf1e6a57d9a0d231422e4283c1ae7255ef65a0a66f662e3d7b8ed232098",
+      "bytes": 1232,
+      "dimensions": {
+        "viewBox": "0 0 272 272",
+        "width": "272",
+        "height": "272"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "3f89ceec0a8df9c93ad500a528751f6ea34b9953631678c5bd8a85230d7a0751",
+      "previousBytes": 1121,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 1,
+        "stop": 12,
+        "linearGradient": 1,
+        "circle": 4
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "circle-selected.svg",
+      "sha256": "bff8ad64973e5ff9dc7c62a4e9c8abc31b353cf2d3ac11fbdd38badc03007e51",
+      "bytes": 1318,
+      "dimensions": {
+        "viewBox": "0 0 275 276",
+        "width": "275",
+        "height": "276"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "8b62286f3e0691e94c1fc128a51e77ae11fe41eca7a334b44b5016d3087e9642",
+      "previousBytes": 1316,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 2,
+        "stop": 16,
+        "circle": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "command-cancel.svg",
+      "sha256": "115cdb7a4a48ca1fccfc9e6479ff347d5022bf806a6089dbf61e2e727665019b",
+      "bytes": 1662,
+      "dimensions": {
+        "viewBox": "0 0 450 155",
+        "width": "450",
+        "height": "155"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "96bde14b69a87cbe11936eb9b2631df2ec13c25f168d9caf2f23d6622ed8bcaf",
+      "previousBytes": 3077,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 9,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "path": 4,
+        "g": 1
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "command-close.svg",
+      "sha256": "171f7a60452748434e59b2edd788cbf399b6e0b9fb36fe324898bc9f518498a7",
+      "bytes": 1780,
+      "dimensions": {
+        "viewBox": "0 0 163 146",
+        "width": "163",
+        "height": "146"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "53f3ba63fb4cf1dfd4fe543aab0b5cb642b9b2a541716f45a2c6920838d19c07",
+      "previousBytes": 2033,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 9,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "path": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "command-confirm.svg",
+      "sha256": "e50e2b32d237df664a61a48269238f4a4fcbd5c9156701c0b43d911e2dfdddab",
+      "bytes": 1713,
+      "dimensions": {
+        "viewBox": "0 0 505 155",
+        "width": "505",
+        "height": "155"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "b79bbba9bcb444010bddc4e09b77902260198400afc84fbccaf2d7e6019b71cd",
+      "previousBytes": 3930,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 9,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "path": 4
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "command-left.svg",
+      "sha256": "6cbbd8fbac9527e237a072fce256f1cc506fe7036b67c6f2b0874154b6b71dd0",
+      "bytes": 2208,
+      "dimensions": {
+        "viewBox": "0 0 148 146",
+        "width": "148",
+        "height": "146"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "79d9bce889ca2ae4ce8588d26e89073bca024c629c94cafd6b2cd9e07d06a1cc",
+      "previousBytes": 2094,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 9,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "path": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "command-pass.svg",
+      "sha256": "34ce546776e8abd0404d7a325c79d41deabc92df2901b8fd3def4f52b6cdf603",
+      "bytes": 1685,
+      "dimensions": {
+        "viewBox": "0 0 580 156",
+        "width": "580",
+        "height": "156"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "5af33334b89633a5bb944632e94fcc469fdcc38d9bcae2fcbe2d74505fefd297",
+      "previousBytes": 5388,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 9,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "path": 4
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "command-right.svg",
+      "sha256": "c094a7a3589265153fcdddcd8d131f3ad4f87bfba60f785b464b1662d75bf956",
+      "bytes": 1790,
+      "dimensions": {
+        "viewBox": "0 0 149 145",
+        "width": "149",
+        "height": "145"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "f6d6d814f5f9ca3e288200306fe031dc9f4e82bc08926a9b65f1df676ca6bccd",
+      "previousBytes": 2091,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 9,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "path": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "command-settings.svg",
+      "sha256": "7d4a2e3496ed531a71fe7c26552eb8bc60f3a488e2c07043bd8aecd9723aa70d",
+      "bytes": 2377,
+      "dimensions": {
+        "viewBox": "0 0 168 147",
+        "width": "168",
+        "height": "147"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "295cb1d01611a50e29e1234bdd7f11bc9c9e1b4f3f45e110575f3ba7aad4d9c2",
+      "previousBytes": 2788,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 9,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "path": 5,
+        "circle": 1
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "icon-activity.svg",
+      "sha256": "da7696aad74d5e283fbbe6855ce31b094db215640bfbb0788c7b4b34c03da4f0",
+      "bytes": 1344,
+      "dimensions": {
+        "viewBox": "0 0 175 200",
+        "width": "175",
+        "height": "200"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "481e47973ecbe614defaffaacbe8fac6f55554702cc41e03a00a5423a326ced3",
+      "previousBytes": 1756,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 8,
+        "g": 1,
+        "rect": 3,
+        "path": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-analysis.svg",
+      "sha256": "7feeb9852507d124a256f0ad37823262c6d4f93c2323f08552fa6e68ae35f9b9",
+      "bytes": 1717,
+      "dimensions": {
+        "viewBox": "0 0 242 241",
+        "width": "242",
+        "height": "241"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "a3260cf66f38f6a2e6ab26fd8f8fc7c32f66404a8934fe858529e04f33967f49",
+      "previousBytes": 2237,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 10,
+        "g": 1,
+        "rect": 3,
+        "path": 2,
+        "ellipse": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-bag.svg",
+      "sha256": "769a91c6af63e900301aebb505f8c65f302324afe7e8fc32e9ab9934361fedcc",
+      "bytes": 1754,
+      "dimensions": {
+        "viewBox": "0 0 194 206",
+        "width": "194",
+        "height": "206"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "6a5408c49a079902a6f2a725b13b5db8fd156f56482ee2f9fc9fb2cd2a331a61",
+      "previousBytes": 2350,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 8,
+        "g": 1,
+        "path": 6,
+        "rect": 1
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-book.svg",
+      "sha256": "b2dd793a9a96da1499f11f09e6b406613297835627f0790aff1a773974926402",
+      "bytes": 1679,
+      "dimensions": {
+        "viewBox": "0 0 239 241",
+        "width": "239",
+        "height": "241"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "17c318248a92378a613c5e1ff744261bc378148c62f2d44d36dd61e5bbe6eef7",
+      "previousBytes": 2120,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 10,
+        "g": 1,
+        "rect": 2,
+        "path": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-box.svg",
+      "sha256": "5735c1d1127fcbc54094e0bac4d3efa312a483881331956bd96c0bea9a040d0f",
+      "bytes": 1258,
+      "dimensions": {
+        "viewBox": "0 0 202 211",
+        "width": "202",
+        "height": "211"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "986f6a303390747cd978616b9b5aaf7d41b8115bd4a8359feb5df2cbc1e7f39c",
+      "previousBytes": 1977,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 2,
+        "stop": 5,
+        "g": 1,
+        "path": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-home.svg",
+      "sha256": "abd3cd73fb5da72f5606ee20111239a76fc19a7782c79809caa388634d4cbf0a",
+      "bytes": 1053,
+      "dimensions": {
+        "viewBox": "0 0 199 202",
+        "width": "199",
+        "height": "202"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "3bfc55665f30a73b563a97e22067bc25775cbf279e8c0f3b3f9d077bb53170a1",
+      "previousBytes": 1817,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 2,
+        "stop": 5,
+        "g": 1,
+        "path": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-map.svg",
+      "sha256": "419516f95099dcfd573532b00de7114c6e824207b43105e5b36ef4676c1a8180",
+      "bytes": 1557,
+      "dimensions": {
+        "viewBox": "0 0 197 198",
+        "width": "197",
+        "height": "198"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "afa2afb32cd3dc58fcac980336370cfee28e3067e8221d8ae32e7a32e51709ad",
+      "previousBytes": 2182,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 2,
+        "stop": 5,
+        "path": 6
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-options.svg",
+      "sha256": "cf2eeccc18b07e51cd15565499ef7622b97585d8a45d332085167260ae84582b",
+      "bytes": 3817,
+      "dimensions": {
+        "viewBox": "0 0 197 201",
+        "width": "197",
+        "height": "201"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "3f8074ec5d68a071cf4a3f4235e137a9c2a2942b23d60cb362c76953446fa157",
+      "previousBytes": 5067,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 8,
+        "g": 1,
+        "path": 2,
+        "circle": 3
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-shop.svg",
+      "sha256": "5271f4bb8832492499388ff12c1d24fbc9e113b16db7e4453abaf6256a2d2e03",
+      "bytes": 1604,
+      "dimensions": {
+        "viewBox": "0 0 235 241",
+        "width": "235",
+        "height": "241"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "49e54d83a3b30b0a55cae893ca73bcfa1455ee4916c466d70e9cc96299f4ab73",
+      "previousBytes": 2263,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 10,
+        "g": 1,
+        "rect": 2,
+        "path": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "icon-team.svg",
+      "sha256": "60df53099faa00c2b4a03718ac60751e6f85a246072c66e51b20ce36e8ab8500",
+      "bytes": 1313,
+      "dimensions": {
+        "viewBox": "0 0 205 210",
+        "width": "205",
+        "height": "210"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "899ea293a1106061e36cc8dea2bb50863ef24676d33d1e86347fb6d8b5e9fc36",
+      "previousBytes": 2066,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 2,
+        "linearGradient": 3,
+        "stop": 7,
+        "g": 2,
+        "clipPath": 1,
+        "circle": 5,
+        "path": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title",
+        "desc"
+      ]
+    },
+    {
+      "file": "item-antidote.svg",
+      "sha256": "596be5f571e41db407467f6681d76a132f04b73a224b72c80e5946cf61cb07e1",
+      "bytes": 2523,
+      "dimensions": {
+        "viewBox": "0 0 192 258",
+        "width": "192",
+        "height": "258"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "c1f6f082aaa2310af4b8d33c4ba72a0196f6f79f7eb40e33336a28802db08adf",
+      "previousBytes": 3978,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 12,
+        "clipPath": 1,
+        "use": 4,
+        "path": 11,
+        "g": 1
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "item-antidote-title"
+      ]
+    },
+    {
+      "file": "item-coin.svg",
+      "sha256": "a4a3cbfa8e97736532a37c06c90be951bc6d78c7d90ba9cad8de817aec564e19",
+      "bytes": 2659,
+      "dimensions": {
+        "viewBox": "0 0 181 184",
+        "width": "181",
+        "height": "184"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "2b1e97f28b4a58bfad7355d5bd0a7aab1514d24790453fc8c28a18d6d3e6397f",
+      "previousBytes": 2177,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 29,
+        "radialGradient": 2,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "circle": 6,
+        "ellipse": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "item-coin-title"
+      ]
+    },
+    {
+      "file": "item-potion.svg",
+      "sha256": "a3a9e1e39bf3614405d192afda6419fcdb727b406c72a8c1bd1916b9dee857e4",
+      "bytes": 3415,
+      "dimensions": {
+        "viewBox": "6 10 177 251.472",
+        "width": "177",
+        "height": "251.472"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "738ff9efb1781c83dd2f46c218621844fde2ca958b857c3d629b118f7c7507e4",
+      "previousBytes": 4909,
+      "sameViewBoxAsPrevious": false,
+      "sameIntrinsicSizeAsPrevious": false,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 3,
+        "stop": 24,
+        "linearGradient": 3,
+        "g": 1,
+        "path": 8,
+        "circle": 3,
+        "ellipse": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "item-potion-title"
+      ],
+      "previousDimensions": {
+        "width": "189",
+        "height": "264",
+        "viewBox": "0 0 189 264"
+      },
+      "integrationNote": "Preserve the new viewBox origin and intrinsic dimensions; archived catalog still lists the previous source dimensions."
+    },
+    {
+      "file": "item-revive.svg",
+      "sha256": "485dedb0318babea1a7464476e0c01a81bcd601f44d1707448b535f306fc0168",
+      "bytes": 4371,
+      "dimensions": {
+        "viewBox": "0 0 214 219",
+        "width": "214",
+        "height": "219"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "f1c4928ddfb972f4a849a4b8739feee2b2adbff65f933dcf805f0e7326cea762",
+      "previousBytes": 5525,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 11,
+        "stop": 23,
+        "clipPath": 1,
+        "path": 14,
+        "g": 1
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "item-revive-title"
+      ]
+    },
+    {
+      "file": "item-sphere.svg",
+      "sha256": "ab0bbaacc17aa4a236d5a0c6706a36a9eb68218df98af486115212e3e82f0f94",
+      "bytes": 2590,
+      "dimensions": {
+        "viewBox": "0 0 249 251",
+        "width": "249",
+        "height": "251"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "e7e3abc27d0ab33876ad26d4a84a373b4397842607b6baafea94c0e3b4733f07",
+      "previousBytes": 3309,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 3,
+        "stop": 15,
+        "linearGradient": 1,
+        "clipPath": 1,
+        "circle": 6,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "g": 1,
+        "path": 5,
+        "ellipse": 3
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "item-sphere-title"
+      ]
+    },
+    {
+      "file": "item-superpotion.svg",
+      "sha256": "c11b03ffc7f719aaaac548a39cc01d54c7bee2b08edd64f782c03b17f009925d",
+      "bytes": 3549,
+      "dimensions": {
+        "viewBox": "0 0 185 258",
+        "width": "185",
+        "height": "258"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "7b9d5155fd718fb3bb226c0ebd8debf9e02aeab9fde708eb6339564103bb453c",
+      "previousBytes": 4997,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 3,
+        "stop": 24,
+        "linearGradient": 3,
+        "g": 1,
+        "path": 10,
+        "circle": 3,
+        "ellipse": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "item-superpotion-title"
+      ]
+    },
+    {
+      "file": "map-pin.svg",
+      "sha256": "c2683833a8fb3f56532fafbdde2aaf410cf801bbc97e04b11b931efc06351013",
+      "bytes": 1078,
+      "dimensions": {
+        "viewBox": "0 0 142 187",
+        "width": "142",
+        "height": "187"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "b6e881e4c4600037c9290162d7fe8433d5b1ef19673120cb00fbb8503bcfd097",
+      "previousBytes": 1267,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 2,
+        "stop": 5,
+        "path": 2,
+        "circle": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "panel-medium.svg",
+      "sha256": "abbd651b836bda687dea6b8366f4874e48d3fd60fcb5d4ba10b0b026b96bd0ad",
+      "bytes": 3213,
+      "dimensions": {
+        "viewBox": "0 0 1161 423",
+        "width": "1161",
+        "height": "423"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "7096917906d0432e3c9b0f1d92559c18a69cb917f4fe239f3724b20bc44bfd4b",
+      "previousBytes": 6231,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 18,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 7,
+        "g": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "panel-wide.svg",
+      "sha256": "6c849364a33b0d002fff757275fe0b2b6a3b9cb33464c1c869fee1e5fd1e13c1",
+      "bytes": 7991,
+      "dimensions": {
+        "viewBox": "0 0 2026 709",
+        "width": "2026",
+        "height": "709"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "12c0ac030e37c5fc4aadbe92161f1dd7be8cd6d5450ee53a7e0d7fcfb8a6b1ba",
+      "previousBytes": 11176,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 5,
+        "stop": 21,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 32,
+        "g": 3
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "row-blank.svg",
+      "sha256": "5d18ab737351d7291abb683ec25bb5a5f73781f29d6959a7646d5a289d78db86",
+      "bytes": 1560,
+      "dimensions": {
+        "viewBox": "0 0 1661 169",
+        "width": "1661",
+        "height": "169"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "f6cdda9f1dc374a0bf747ce28cc87d0cb0211d6a8533d5f1a7594de3c8c089e3",
+      "previousBytes": 3673,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 10,
+        "path": 2,
+        "g": 2
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "slot-cyan.svg",
+      "sha256": "a255c2f27d64982fa3c0e16c9fc4d2f1b88740e494f5ef5e0b935e4033483c49",
+      "bytes": 5811,
+      "dimensions": {
+        "viewBox": "0 0 272 273",
+        "width": "272",
+        "height": "273"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "f59eb70de5be23fa5a5f958e533f4a1d297d1e757d68164c98cd72ef0da19811",
+      "previousBytes": 7687,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 5,
+        "stop": 20,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 20,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "g": 1
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "slot-default.svg",
+      "sha256": "4fba41360b606e8f7fde0ac0f46a028549bafcfb7e7000366b59be4e329a3428",
+      "bytes": 2317,
+      "dimensions": {
+        "viewBox": "0 0 272 270",
+        "width": "272",
+        "height": "270"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "6e9c22c0f2aecee8cf7e3a37c4bcf24b084bc5e4a513d6a16273bd1c66ce3f5b",
+      "previousBytes": 4825,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 4,
+        "stop": 17,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 7,
+        "g": 5
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "slot-selected.svg",
+      "sha256": "cc765ef4fe97032e396fa10a6d33c2ed7e35d81fea126fa4142816485a98dde3",
+      "bytes": 5744,
+      "dimensions": {
+        "viewBox": "0 0 263 273",
+        "width": "263",
+        "height": "273"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": false,
+      "previousSHA256": "698a74f3a06862893127d7d6288e7e2738a2513eb73b17ff0a9a033c871155ed",
+      "previousBytes": 7649,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 5,
+        "stop": 20,
+        "radialGradient": 1,
+        "clipPath": 1,
+        "path": 20,
+        "filter": 1,
+        "feGaussianBlur": 1,
+        "g": 1
+      },
+      "staleCatalogMetadata": [
+        "sha256",
+        "bytes",
+        "paths"
+      ],
+      "unresolvedAccessibilityIDs": [
+        "title"
+      ]
+    },
+    {
+      "file": "type-dark.svg",
+      "sha256": "a1b4534a10e9651daf8607ff4f09651e6ae9d954b653ec28378d400122ae8b8e",
+      "bytes": 1590,
+      "dimensions": {
+        "viewBox": "0 0 237 244",
+        "width": "237",
+        "height": "244"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "a1b4534a10e9651daf8607ff4f09651e6ae9d954b653ec28378d400122ae8b8e",
+      "previousBytes": 1590,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 1,
+        "circle": 5,
+        "path": 2
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    },
+    {
+      "file": "type-earth.svg",
+      "sha256": "488438a85b3a6d65d557dcd464d2a29cde28777310d27994da9f9d5581bc6db4",
+      "bytes": 1813,
+      "dimensions": {
+        "viewBox": "0 0 238 245",
+        "width": "238",
+        "height": "245"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "488438a85b3a6d65d557dcd464d2a29cde28777310d27994da9f9d5581bc6db4",
+      "previousBytes": 1813,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 1,
+        "circle": 5,
+        "path": 5
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    },
+    {
+      "file": "type-electric.svg",
+      "sha256": "7121ca2e07a22cd0eec505623ba0ad0f134aaf9432c1f4cefa856de93bc3fe83",
+      "bytes": 1571,
+      "dimensions": {
+        "viewBox": "0 0 247 250",
+        "width": "247",
+        "height": "250"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "7121ca2e07a22cd0eec505623ba0ad0f134aaf9432c1f4cefa856de93bc3fe83",
+      "previousBytes": 1571,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 1,
+        "circle": 5,
+        "path": 2
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    },
+    {
+      "file": "type-fire.svg",
+      "sha256": "76dc0155368bc35f76b3c655e31fff066c5eeff0f99913746fed22b36a24fb6d",
+      "bytes": 1742,
+      "dimensions": {
+        "viewBox": "0 0 242 247",
+        "width": "242",
+        "height": "247"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "76dc0155368bc35f76b3c655e31fff066c5eeff0f99913746fed22b36a24fb6d",
+      "previousBytes": 1742,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 1,
+        "circle": 5,
+        "path": 3
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    },
+    {
+      "file": "type-grass.svg",
+      "sha256": "5f05ce03a80282e3c8c62727895d380de8d35e33a5a3e3559f95b5224735336c",
+      "bytes": 1725,
+      "dimensions": {
+        "viewBox": "0 0 252 252",
+        "width": "252",
+        "height": "252"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "5f05ce03a80282e3c8c62727895d380de8d35e33a5a3e3559f95b5224735336c",
+      "previousBytes": 1725,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 1,
+        "circle": 5,
+        "path": 3
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    },
+    {
+      "file": "type-normal.svg",
+      "sha256": "5c28255c937f0d2592bfaf241d412391768b0cb97e04bcd7d26a29f5900fba0d",
+      "bytes": 1536,
+      "dimensions": {
+        "viewBox": "0 0 241 246",
+        "width": "241",
+        "height": "246"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "5c28255c937f0d2592bfaf241d412391768b0cb97e04bcd7d26a29f5900fba0d",
+      "previousBytes": 1536,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 1,
+        "circle": 6,
+        "path": 1
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    },
+    {
+      "file": "type-psychic.svg",
+      "sha256": "6e61ec8dec200635f12419796abdc568bc53bedc8b93189d62fa8742759aaeac",
+      "bytes": 1646,
+      "dimensions": {
+        "viewBox": "0 0 241 247",
+        "width": "241",
+        "height": "247"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "6e61ec8dec200635f12419796abdc568bc53bedc8b93189d62fa8742759aaeac",
+      "previousBytes": 1646,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 2,
+        "circle": 8,
+        "path": 1
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    },
+    {
+      "file": "type-water.svg",
+      "sha256": "a1aadb9ac196102c4b1e74e917980a4615ef05da6ba943a00ca73354c168c485",
+      "bytes": 1700,
+      "dimensions": {
+        "viewBox": "0 0 249 252",
+        "width": "249",
+        "height": "252"
+      },
+      "missingIntrinsicDimensions": [],
+      "intrinsicMatchesViewBox": true,
+      "sameAsPreviousBytes": true,
+      "previousSHA256": "a1aadb9ac196102c4b1e74e917980a4615ef05da6ba943a00ca73354c168c485",
+      "previousBytes": 1700,
+      "sameViewBoxAsPrevious": true,
+      "sameIntrinsicSizeAsPrevious": true,
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 3,
+        "stop": 11,
+        "radialGradient": 1,
+        "g": 1,
+        "circle": 5,
+        "path": 3
+      },
+      "staleCatalogMetadata": [],
+      "unresolvedAccessibilityIDs": []
+    }
+  ],
+  "sourceHashesRecheckedUnchanged": true
+}

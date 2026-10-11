@@ -37,3 +37,7 @@ lerna-debug.log*
 .cache
 test-results/
 playwright-report/
+
+# Cache Python generata dagli strumenti locali
+__pycache__/
+*.py[cod]
