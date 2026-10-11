@@ -57,7 +57,7 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
               <div className="pu-stat"><span>Crescita</span><strong>{species?.categoria ?? 'Non disponibile'}</strong></div>
             </div>
             <HealthBar pokemon={pokemon} />
-            <dl className="pu-data-list">
+            <dl className="pu-data-list pu-analysis-facts">
               <div><dt>Specie</dt><dd>{species?.nome ?? pokemon.nome}</dd></div>
               <div><dt>Esperienza conservata</dt><dd>{pokemon.xp} XP</dd></div>
               <div><dt>Prossimo livello</dt><dd>{pokemon.livello >= LIVELLO_MAX ? 'Livello massimo' : `${Math.max(0, xpThreshold - pokemon.xp)} XP necessari`}</dd></div>
@@ -65,12 +65,10 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
               <div><dt>Condizione</dt><dd>{pokemon.hp <= 0 ? 'KO' : status?.tipo ?? 'In salute'}</dd></div>
             </dl>
             {bankedXP && <p className="pu-note">L’XP è conservata: il prossimo livello attende che la squadra rientri nella fascia consentita di cinque livelli.</p>}
-            <h3>Mosse e dadi</h3><PokemonMoves pokemon={pokemon} />
           </>}
           {tab === 'mosse' && <>
             <h3>Mosse disponibili al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} />
-            {species && <><h3>Affinità difensive</h3><div className="pu-affinity-grid">{TABELLA_TIPI.tipi.map((type) => <div key={type}><TypeBadge type={type} /><strong>×{TABELLA_TIPI.efficacia[type]?.[species.tipo] ?? 1}</strong></div>)}</div><p className="pu-note">Moltiplicatori di danno ricevuto per tipo di attacco.</p></>}
-            <KitPanel className="pu-note"><KitIcon id="icon-activity" /><div><strong>Mossa Suprema · potenza doppia</strong><p>Colpisce il bersaglio e assegna l’XP per il suo KO; poi applica il contraccolpo di metà degli HP massimi. Nel doppio KO vince questo scontro l’attaccante.</p></div></KitPanel>
+            <KitPanel className="pu-note pu-supreme-note"><KitIcon id="icon-activity" /><div><strong>Mossa Suprema · potenza doppia</strong><p>Danno e XP del bersaglio prima del contraccolpo: metà degli HP massimi. Nel doppio KO vince l’attaccante.</p></div></KitPanel>
           </>}
           {tab === 'status' && <>
             <h3>{pokemon.hp <= 0 ? 'Arkamon esausto' : status?.tipo ?? 'In salute'}</h3><HealthBar pokemon={pokemon} />
@@ -80,6 +78,7 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
             {status?.tipo === 'Confuso' && <p className="pu-note">La confusione influenza l’azione durante la battaglia.</p>}
             {!status && pokemon.hp > 0 && <p className="pu-note">Nessuno stato alterato attivo.</p>}
             <p className="pu-note">Gli HP residui vengono conservati. Consulta la borsa per usare una cura, oppure raggiungi un Centro Arkamon.</p>
+            {species && <div className="pu-status-affinities"><h3>Affinità difensive</h3><div className="pu-affinity-grid pu-affinity-compact">{TABELLA_TIPI.tipi.map((type) => <div key={type}><TypeBadge type={type} /><strong>×{TABELLA_TIPI.efficacia[type]?.[species.tipo] ?? 1}</strong></div>)}</div><p className="pu-note">Danno ricevuto per tipo di attacco.</p></div>}
           </>}
         </KitPanel>
       </div> : <KitPanel className="pu-empty-state"><KitIcon id="icon-analysis" /><h2>Nessun Arkamon da analizzare</h2><p>La scheda sarà disponibile dopo la scelta del tuo starter o una cattura.</p></KitPanel>}

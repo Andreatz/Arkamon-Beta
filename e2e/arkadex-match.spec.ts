@@ -140,6 +140,7 @@ test('Masterball capture records one event, persists discovered species and leav
   await expect(dex.getByRole('article', { name: 'Scheda di Wormaren', exact: true })).toContainText('livello 5')
   await dex.getByLabel('Giocatore dell’Arkadex').selectOption('2')
   await expect(dex).toContainText('1 / 110 viste · 1 / 110 ottenute')
+  await dex.getByLabel('Cerca specie scoperta o numero').fill('#13')
   await expect(dex.getByRole('button', { name: 'Numero 13: specie da scoprire · Da scoprire', exact: true })).toBeVisible()
   await dialog.getByRole('button', { name: 'Registro del match', exact: true }).click()
   const register = dialog.getByRole('region', { name: 'Registro del match', exact: true })
@@ -175,4 +176,52 @@ test('a real battle evolution retains both obtained stages and logs the change o
   await expect(dex.getByRole('button', { name: 'Numero 2: Vyrath · Ottenuto', exact: true })).toBeVisible()
   await dex.getByRole('button', { name: 'Numero 2: Vyrath · Ottenuto', exact: true }).click()
   await expect(dex.getByRole('article', { name: 'Scheda di Vyrath', exact: true })).toContainText('livello 15')
+  await dex.getByRole('navigation', { name: 'Sezioni della scheda Arkadex', exact: true }).getByRole('button', { name: 'Evoluzioni', exact: true }).click()
+  const steps = dex.locator('.pu-evolution-step')
+  await expect(steps).toHaveCount(4)
+  await expect(steps.nth(0).locator('strong')).toHaveText('Vyrath')
+  await expect(steps.nth(1).locator('strong')).toHaveText('Vyrath')
+  await expect(steps.nth(2).locator('strong')).toHaveText('Da scoprire')
+  await expect(steps.nth(3).locator('strong')).toHaveText('Da scoprire')
+  await expect(steps.nth(3).locator('small')).toHaveText('Da scoprire')
+  await expect(steps.nth(2).locator('img')).toHaveCount(0)
+  await expect(steps.nth(3).locator('img')).toHaveCount(0)
+  expect((await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state))).toEqual(resumed)
+})
+
+test('the evolution tab conceals all thresholds and artwork of undiscovered ancestors', async ({ page }) => {
+  await battleFixture(page)
+  // Restore a valid final-stage-only collection; discoveries must not invent its ancestry.
+  await page.evaluate(() => {
+    const save = JSON.parse(localStorage.getItem('arkamon-save')!)
+    save.state.giocatore1.squadra = [{ istanzaId: 'final-only', specieId: 4, nome: 'Vyrath finale', livello: 100, hp: 1, xp: 0 }]
+    save.state.arkadex = { seen1: [4], seen2: [5], caught1: [4], caught2: [5] }
+    save.state.battaglia = null
+    save.state.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
+    save.state.scenaPrecedente = { scena: 'mappa-principale' }
+    localStorage.setItem('arkamon-save', JSON.stringify(save))
+  })
+  await page.reload()
+  await expect(page.locator('[data-presented-scene="citta:Venezia"]')).toHaveAttribute('aria-busy', 'false')
+  const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
+  const dialog = await openTools(page, 'Arkadex')
+  const dex = dialog.getByRole('region', { name: 'Arkadex', exact: true })
+  await dex.getByRole('button', { name: 'Numero 4: Vyrath · Ottenuto', exact: true }).click()
+  await dex.getByRole('navigation', { name: 'Sezioni della scheda Arkadex', exact: true }).getByRole('button', { name: 'Evoluzioni', exact: true }).click()
+  await expect(dex.getByRole('heading', { name: 'Linea evolutiva', exact: true })).toBeVisible()
+  const steps = dex.locator('.pu-evolution-step')
+  await expect(steps).toHaveCount(4)
+  for (let index = 0; index < 3; index++) {
+    await expect(steps.nth(index).locator('strong')).toHaveText('Da scoprire')
+    await expect(steps.nth(index).locator('img')).toHaveCount(0)
+  }
+  await expect(steps.nth(3).locator('strong')).toHaveText('Vyrath')
+  for (let index = 1; index < 4; index++) await expect(steps.nth(index).locator('small')).toHaveText('Da scoprire')
+  await expect(dex.locator('.pu-evolution')).not.toContainText('Lv.')
+  await expect(dex.locator('.pu-evolution-step.is-current')).toHaveCount(1)
+  await dex.getByLabel('Giocatore dell’Arkadex').selectOption('2')
+  await dex.getByRole('button', { name: 'Numero 4: specie da scoprire · Da scoprire', exact: true }).click()
+  await expect(dex.getByRole('article', { name: 'Scheda da scoprire', exact: true })).toBeVisible()
+  await expect(dex.locator('.pu-evolution')).toHaveCount(0)
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)).toEqual(before)
 })

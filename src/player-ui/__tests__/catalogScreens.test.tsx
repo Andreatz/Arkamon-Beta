@@ -30,6 +30,46 @@ function campaign(): GameState {
 beforeEach(() => { runtime.state = campaign() })
 
 describe('real catalog screen visibility and action boundaries', () => {
+  it('limits the initial index to six species while retaining the complete catalog count and page boundaries', () => {
+    const state = runtime.state as GameState
+    const before = JSON.stringify(state)
+    const markup = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
+    const listedIds = [...markup.matchAll(/aria-label="Numero (\d+):/g)].map((match) => Number(match[1]))
+    expect(listedIds).toEqual([1, 2, 3, 4, 5, 6])
+    expect(markup).toContain('110 schede corrispondenti.')
+    expect(markup).toContain('Pagina 1 / 19')
+    expect(markup).toContain('1–6 di 110')
+    expect(markup).toMatch(/<button(?=[^>]*aria-label="Pagina precedente dell’Arkadex")(?=[^>]*disabled="")[^>]*>/)
+    expect(markup).not.toMatch(/<button(?=[^>]*aria-label="Pagina successiva dell’Arkadex")(?=[^>]*disabled="")[^>]*>/)
+    expect(JSON.stringify(state)).toBe(before)
+  })
+
+  it('opens only the information content so moves and evolution details are not stacked beneath the facts', () => {
+    const markup = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
+    expect(markup).toContain('data-arkadex-detail="information"')
+    expect(markup).toMatch(/<button(?=[^>]*aria-pressed="true")[^>]*>(?:(?!<\/button>).)*Informazioni<\/button>/)
+    expect(markup).toContain('<dt>HP attuali</dt><dd>3</dd>')
+    expect(markup).not.toContain('Mosse al livello')
+    expect(markup).not.toContain('Linea evolutiva')
+    expect(markup).not.toContain('class="pu-moves"')
+  })
+
+  it('keeps an empty campaign locked without creating a reference specimen or changing the active player', () => {
+    const initial = initialGameSave()
+    const state = { ...initial, campaignRevision: 0 } as unknown as GameState
+    runtime.state = state
+    const before = JSON.stringify(state)
+    const markup = renderToStaticMarkup(<ArkadexScreen playerId={2} />)
+    expect(markup).toContain('0 / 110 viste · 0 / 110 ottenute')
+    expect(markup).toContain('aria-label="Scheda da scoprire"')
+    expect(markup.match(/aria-label="Numero \d+: specie da scoprire · Da scoprire"/g)).toHaveLength(6)
+    expect(markup).not.toContain('data-arkadex-detail=')
+    expect(markup).not.toContain('Dati di riferimento al livello 5')
+    expect(markup).not.toContain('class="pu-creature-art"')
+    expect(state.giocatoreAttivo).toBe(1)
+    expect(JSON.stringify(state)).toBe(before)
+  })
+
   it('shows the settled battle HP and status of an owned specimen without changing the saved team', () => {
     const state = runtime.state as GameState
     const saved = state.giocatore1.squadra[0]
@@ -71,15 +111,16 @@ describe('real catalog screen visibility and action boundaries', () => {
     expect(state.giocatore2.inventario).toEqual({ masterball: 2 })
   })
 
-  it('does not reveal evolution thresholds belonging to undiscovered ancestors', () => {
+  it('starts a discovered final stage on information without requesting artwork for its unknown ancestors', () => {
     const state = runtime.state as GameState
     state.giocatore1.squadra = [{ istanzaId: 'final', specieId: 4, nome: 'Vyrath finale', livello: 100, hp: 1, xp: 0 }]
     const markup = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
     expect(markup).toContain('Numero 4: Vyrath · Ottenuto')
-    expect(markup).not.toContain('Lv. 19')
-    expect(markup).not.toContain('Lv. 40')
-    expect(markup).not.toContain('Lv. 70')
-    expect(markup).not.toContain('/sprites/arkamon/1/')
+    expect(markup).toContain('data-arkadex-detail="information"')
+    expect(markup).not.toContain('Linea evolutiva')
+    expect(markup).not.toContain('/sprites/front_sprites/1.png')
+    expect(markup).not.toContain('/sprites/front_sprites/2.png')
+    expect(markup).not.toContain('/sprites/front_sprites/3.png')
   })
 
   it('does not turn viewing another city or player into permission to shop', () => {

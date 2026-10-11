@@ -13,6 +13,8 @@ import { liveOwnedPokemon } from './TeamScreen'
 
 const AnimatedArkamon = lazy(async () => ({ default: (await import('@/components/arkamon/ArkamonBattleSprite')).ArkamonBattleSprite }))
 const statusLabels = { unknown: 'Da scoprire', seen: 'Visto', caught: 'Ottenuto' } as const
+const SPECIES_PER_PAGE = 6
+type ArkadexDetailTab = 'information' | 'moves' | 'evolution'
 
 export interface ArkadexScreenProps {
   playerId: 1 | 2
@@ -48,10 +50,13 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null)
   const [animatedSpeciesId, setAnimatedSpeciesId] = useState<number | null>(null)
+  const [page, setPage] = useState(0)
+  const [detailTab, setDetailTab] = useState<ArkadexDetailTab>('information')
   useEffect(() => {
     setViewPlayerId(playerId)
     setSearch(''); setStatus('all'); setType('all')
     setSelectedId(null); setSelectedInstanceId(null); setAnimatedSpeciesId(null)
+    setPage(0); setDetailTab('information')
   }, [playerId, state.campaignRevision])
   const snapshot: ArkadexSnapshot = useMemo(() => ({
     giocatore1: state.giocatore1, giocatore2: state.giocatore2,
@@ -59,6 +64,11 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
   }), [state.giocatore1, state.giocatore2, state.giocatoreAttivo, state.battaglia])
   const progress = useMemo(() => deriveArkadexProgress(state.arkadex, snapshot), [state.arkadex, snapshot])
   const entries = getArkadexEntries(progress, viewPlayerId, { search, status, type })
+  const pageCount = Math.max(1, Math.ceil(entries.length / SPECIES_PER_PAGE))
+  const currentPage = Math.min(page, pageCount - 1)
+  const firstEntry = currentPage * SPECIES_PER_PAGE
+  const pageEntries = entries.slice(firstEntry, firstEntry + SPECIES_PER_PAGE)
+  // Paging changes only the index window; the selected detail remains the same specimen.
   const selected = entries.find((entry) => entry.id === selectedId)
     ?? entries.find((entry) => entry.status !== 'unknown') ?? entries[0]
   const species = selected?.species
@@ -77,6 +87,11 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
   const canAnimate = !!species && !!getArkamonAnimationAsset(species.id, 'front', 'idle')
   const animated = canAnimate && animatedSpeciesId === species?.id
 
+  function resetFilters() {
+    setSearch(''); setStatus('all'); setType('all')
+    setPage(0); setDetailTab('information')
+  }
+
   return <section className="pu-dex-screen" aria-label="Arkadex">
     <div className="pu-screen-toolbar">
       <label className="pu-player-picker">Giocatore dell’Arkadex
@@ -84,6 +99,7 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
           const id = Number(event.target.value) as 1 | 2
           setViewPlayerId(id); onPlayerChange?.(id)
           setSelectedId(null); setSelectedInstanceId(null); setAnimatedSpeciesId(null)
+          resetFilters()
         }}><option value={1}>G1 · {state.giocatore1.nome || 'Giocatore 1'}</option><option value={2}>G2 · {state.giocatore2.nome || 'Giocatore 2'}</option></select>
       </label>
       <p className="pu-discovery-count"><strong>{player.nome || `Giocatore ${viewPlayerId}`}</strong><span>{seenIds.length} / {POKEMON_BASE.length} viste · {caughtIds.length} / {POKEMON_BASE.length} ottenute</span></p>
@@ -91,26 +107,32 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
     <div className="pu-dex-layout">
       <KitPanel className="pu-dex-index">
         <div className="pu-filter-grid">
-          <label>Cerca specie scoperta o numero<input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Nome o numero" /></label>
-          <label>Scoperta<select value={status} onChange={(event) => setStatus(event.target.value as ArkadexFilter)}>
+          <label>Cerca specie scoperta o numero<input type="search" value={search} onChange={(event) => { setSearch(event.target.value); setPage(0); setDetailTab('information') }} placeholder="Nome o numero" /></label>
+          <label>Scoperta<select value={status} onChange={(event) => { setStatus(event.target.value as ArkadexFilter); setPage(0); setDetailTab('information') }}>
             <option value="all">Tutte</option><option value="unknown">Da scoprire</option><option value="seen">Viste, ancora da ottenere</option><option value="caught">Ottenute</option>
           </select></label>
-          <label>Tipo conosciuto<select value={type} onChange={(event) => setType(event.target.value as TipoPokemon | 'all')}>
+          <label>Tipo conosciuto<select value={type} onChange={(event) => { setType(event.target.value as TipoPokemon | 'all'); setPage(0); setDetailTab('information') }}>
             <option value="all">Tutti i tipi</option>{TABELLA_TIPI.tipi.map((name) => <option key={name} value={name}>{name}</option>)}
           </select></label>
+          <KitButton className="pu-filter-reset" disabled={!search && status === 'all' && type === 'all'} onClick={resetFilters}>Azzera filtri</KitButton>
         </div>
         <p role="status" className="pu-result-count">{entries.length} schede corrispondenti. Nome e tipo sono ricercabili soltanto dopo la scoperta.</p>
         <div className="pu-dex-list" aria-label="Specie dell’Arkadex">
-          {entries.map((entry) => <KitButton key={entry.id} active={selected?.id === entry.id} className="pu-dex-row"
+          {pageEntries.map((entry) => <KitButton key={entry.id} active={selected?.id === entry.id} className="pu-dex-row"
             aria-pressed={selected?.id === entry.id}
             aria-label={`Numero ${entry.id}: ${entry.species?.nome ?? 'specie da scoprire'} · ${statusLabels[entry.status]}`}
-            onClick={() => { setSelectedId(entry.id); setSelectedInstanceId(null); setAnimatedSpeciesId(null) }}>
+            onClick={() => { setSelectedId(entry.id); setSelectedInstanceId(null); setAnimatedSpeciesId(null); setDetailTab('information') }}>
             {entry.species ? <SpeciesPortrait speciesId={entry.id} /> : <span className="pu-unknown-portrait" aria-hidden="true">?</span>}
-            <span><small>Nº {String(entry.id).padStart(3, '0')}</small><strong>{entry.species?.nome ?? '???'}</strong><small>{statusLabels[entry.status]}</small></span>
+            <span className="pu-dex-row-copy"><span className="pu-dex-row-title"><small>Nº {String(entry.id).padStart(3, '0')}</small><strong>{entry.species?.nome ?? '???'}</strong></span><small>{statusLabels[entry.status]}</small></span>
             <span className="pu-discovery-mark" aria-hidden="true">{entry.status === 'caught' ? '◉' : entry.status === 'seen' ? '◇' : '?'}</span>
           </KitButton>)}
           {!entries.length && <p className="pu-empty">Nessuna specie corrisponde ai filtri scelti.</p>}
         </div>
+        <nav className="pu-pagination pu-dex-pagination" aria-label="Pagine dell’Arkadex">
+          <KitButton aria-label="Pagina precedente dell’Arkadex" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>←</KitButton>
+          <span aria-live="polite">Pagina {currentPage + 1} / {pageCount}<small>{entries.length ? `${firstEntry + 1}–${firstEntry + pageEntries.length} di ${entries.length}` : '0 specie'}</small></span>
+          <KitButton aria-label="Pagina successiva dell’Arkadex" disabled={!entries.length || currentPage + 1 >= pageCount} onClick={() => setPage(currentPage + 1)}>→</KitButton>
+        </nav>
       </KitPanel>
 
       <div className="pu-dex-hero pu-hero">
@@ -133,16 +155,23 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
             {specimens.map((entry) => <option key={`${entry.source}-${entry.pokemon.istanzaId}`} value={entry.pokemon.istanzaId}>{entry.pokemon.nome} · Lv. {entry.pokemon.livello} · {entry.source}</option>)}
           </select></label>}
           <p>{specimen ? `Esemplare in ${specimen.source}: ${pokemon.nome}, livello ${pokemon.livello}.` : 'Dati di riferimento al livello 5: nessun esemplare di questa specie disponibile.'}</p>
-          <dl className="pu-facts"><div><dt>Tipo</dt><dd><TypeBadge type={species.tipo} /></dd></div><div><dt>Categoria</dt><dd>{species.categoria}</dd></div><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura} / 5</dd></div><div><dt>Livello</dt><dd>{pokemon.livello}</dd></div></dl>
-          {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}. XP: {pokemon.xp}.</p>}
-          <h3>Mosse al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} />
-          <h3>Linea evolutiva</h3><div className="pu-evolution">{chain.map((entry, index) => {
+          <nav className="pu-tabs pu-dex-detail-tabs" aria-label="Sezioni della scheda Arkadex">
+            {([['information', 'Informazioni'], ['moves', 'Mosse'], ['evolution', 'Evoluzioni']] as const).map(([id, label]) => <KitButton key={id} active={detailTab === id} aria-pressed={detailTab === id} onClick={() => setDetailTab(id)}>{label}</KitButton>)}
+          </nav>
+          <div className="pu-dex-tab-content" data-arkadex-detail={detailTab}>
+          {detailTab === 'information' && <>
+            <dl className="pu-facts"><div><dt>Tipo</dt><dd><TypeBadge type={species.tipo} /></dd></div><div><dt>Categoria</dt><dd>{species.categoria}</dd></div><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura} / 5</dd></div><div><dt>Livello</dt><dd>{pokemon.livello}</dd></div></dl>
+            {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}. XP: {pokemon.xp}.</p>}
+          </>}
+          {detailTab === 'moves' && <><h3>Mosse al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} /></>}
+          {detailTab === 'evolution' && <><h3>Linea evolutiva</h3><div className="pu-evolution">{chain.map((entry, index) => {
             const known = seen.has(entry.id)
             return <div className={`pu-evolution-step ${entry.id === species.id ? 'is-current' : ''}`} key={entry.id}>
               {known ? <SpeciesPortrait speciesId={entry.id} /> : <span className="pu-unknown-portrait" aria-hidden="true">?</span>}
               <strong>{known ? entry.nome : 'Da scoprire'}</strong><small>{index === 0 ? 'Base' : seen.has(chain[index - 1].id) ? `Lv. ${chain[index - 1].livelloEvoluzione ?? '—'}` : 'Da scoprire'}</small>
             </div>
-          })}</div><p className="pu-note">{arkadexEvolutionLabel(species, progress, viewPlayerId)}</p>
+          })}</div><p className="pu-note">{arkadexEvolutionLabel(species, progress, viewPlayerId)}</p></>}
+          </div>
         </article>}
       </KitPanel>
     </div>

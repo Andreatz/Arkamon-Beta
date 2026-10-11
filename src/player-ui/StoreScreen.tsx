@@ -32,31 +32,31 @@ export function StoreScreen({ playerId, inputBlocked = false }: StoreScreenProps
 
   return <section className="pu-store-screen arka-store" aria-label={`Arkastore di ${location}`}>
     <header className="pu-screen-toolbar"><div><h2>Arkastore · {location}</h2><p>Oggetti per {player.nome || `Giocatore ${playerId}`}</p></div><strong className="pu-store-balance" aria-label={`Saldo: ${player.monete} monete`}>{player.monete.toLocaleString('it-IT')} ₳</strong></header>
-    <p className="pu-note">Puoi consultare il negozio senza spendere azioni. Un acquisto del carrello completo conta come un’interazione e conclude il turno. Gli oggetti restano nella borsa di questo giocatore.</p>
+    <p className="pu-note pu-store-note">La consultazione è libera. Un acquisto conclude il turno e aggiunge gli oggetti a questa borsa.</p>
     {unavailable && <p className="pu-warning" role="status">{unavailable}</p>}
     <div className="pu-store-layout">
-      <KitPanel className="pu-store-catalog"><h3>Catalogo del negozio</h3><div className="pu-shop-list">
-        {SHOP_ITEMS.map((item) => <article className={`pu-shop-row ${selected.id === item.id ? 'is-selected' : ''}`} key={item.id}>
+      <KitPanel className="pu-store-catalog"><h3>Catalogo · {SHOP_ITEMS.length} articoli</h3><div className="pu-shop-list">
+        {SHOP_ITEMS.map((item) => <article className={`pu-shop-row pu-shop-row-compact ${selected.id === item.id ? 'is-selected' : ''}`} key={item.id}>
           <KitButton className="pu-shop-row-main" active={selected.id === item.id} aria-pressed={selected.id === item.id} aria-label={`Seleziona ${item.name}`} onClick={() => setSelectedId(item.id)}>
             <KitIcon id={ITEM_ICONS[item.id]} /><span><strong>{item.name}</strong><small>{item.price} ₳ · In borsa: {player.inventario[item.id] ?? 0}</small></span>
           </KitButton>
-          <label className="pu-shop-quantity">Quantità di {item.name}<input type="number" min={0} max={MAX_SHOP_QUANTITY} step={1} inputMode="numeric" value={cart[item.id] ?? 0}
+          <label className="pu-shop-quantity"><span className="sr-only">Quantità di {item.name}</span><input type="number" min={0} max={MAX_SHOP_QUANTITY} step={1} inputMode="numeric" value={cart[item.id] ?? 0}
             disabled={editBlocked} onFocus={() => setSelectedId(item.id)} onChange={(event) => setQuantity(item.id, Number(event.target.value))} /></label>
         </article>)}
       </div></KitPanel>
 
       <KitPanel className="pu-store-detail"><span className="pu-kicker">Articolo selezionato</span><div className="pu-item-hero"><KitIcon id={ITEM_ICONS[selected.id]} /></div><h2>{selected.name}</h2>
-        <p className="pu-description">{selected.description}</p><dl className="pu-facts"><div><dt>Prezzo unitario</dt><dd>{selected.price} ₳</dd></div><div><dt>In borsa</dt><dd>{player.inventario[selected.id] ?? 0}</dd></div></dl>
+        <p className="pu-description">{selected.description}</p><p className="pu-item-held">{selected.price} ₳ ciascuno · In borsa: <strong>{player.inventario[selected.id] ?? 0}</strong></p>
         <div className="pu-quantity-control" aria-label={`Quantità nel carrello di ${selected.name}`}>
           <KitButton aria-label={`Diminuisci ${selected.name}`} disabled={editBlocked || !(cart[selected.id] ?? 0)} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) - 1)}>−</KitButton>
           <output aria-label={`${selected.name} nel carrello`}>{cart[selected.id] ?? 0}</output>
           <KitButton aria-label={`Aumenta ${selected.name}`} disabled={editBlocked || (cart[selected.id] ?? 0) >= MAX_SHOP_QUANTITY} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) + 1)}>+</KitButton>
-        </div><p className="pu-note">Ogni articolo può essere acquistato in quantità da 0 a {MAX_SHOP_QUANTITY}.</p>
+        </div>
       </KitPanel>
 
-      <KitPanel className="pu-store-cart"><span className="pu-kicker">Le tue scorte per il viaggio</span><h2>Carrello</h2>
-        <div className="pu-cart-lines">{SHOP_ITEMS.filter((item) => (cart[item.id] ?? 0) > 0).map((item) => <div className="pu-cart-line" key={item.id}>
-          <KitIcon id={ITEM_ICONS[item.id]} /><span><strong>{item.name}</strong><small>{cart[item.id]} × {item.price} ₳</small></span><strong>{(cart[item.id] ?? 0) * item.price} ₳</strong>
+      <KitPanel className="pu-store-cart"><h2>Carrello</h2>
+        <div className="pu-cart-lines pu-cart-lines-compact">{SHOP_ITEMS.filter((item) => (cart[item.id] ?? 0) > 0).map((item) => <div className="pu-cart-line" key={item.id}>
+          <KitIcon id={ITEM_ICONS[item.id]} /><span className="pu-cart-item-name"><strong>{item.name} ×{cart[item.id]}</strong></span><strong>{(cart[item.id] ?? 0) * item.price} ₳</strong>
           <button type="button" className="pu-cart-remove" aria-label={`Rimuovi ${item.name} dal carrello`} onClick={() => setQuantity(item.id, 0)}>×</button>
         </div>)}{!quantity && <p className="pu-empty">Il carrello è vuoto. Scegli le quantità nel catalogo.</p>}</div>
         <div className="pu-store-totals"><strong>Carrello: {quantity} oggetti · {total} ₳</strong><span>Saldo dopo l’acquisto: {Math.max(0, player.monete - total)} ₳</span></div>
@@ -68,7 +68,7 @@ export function StoreScreen({ playerId, inputBlocked = false }: StoreScreenProps
             setMessage(result.message)
             if (result.ok) setCart({})
           }}>Acquista carrello</KitButton></div>
-        <p role="status" aria-live="polite" className="pu-store-result">{message}</p>
+        {message && <p role="status" aria-live="polite" className="pu-store-result">{message}</p>}
       </KitPanel>
     </div>
   </section>

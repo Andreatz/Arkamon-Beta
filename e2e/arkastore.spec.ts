@@ -101,7 +101,9 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
 
   let bag = await openBag(page)
   await expect(bag.getByLabel('Arkamon da curare')).toHaveValue('shop-player-one')
+  await bag.getByRole('button', { name: 'Masterball: 1 disponibili', exact: true }).click()
   await expect(bag.getByRole('button', { name: 'Usa Masterball', exact: true })).toBeDisabled()
+  await bag.getByRole('button', { name: 'Antiparalisi: 1 disponibili', exact: true }).click()
   const bagA11y = await new AxeBuilder({ page }).include('.arka-item-bag').analyze()
   expect(bagA11y.violations).toEqual([])
   await test.info().attach('Borsa e cura esplicita della paralisi', { body: await page.screenshot(), contentType: 'image/png' })
@@ -122,6 +124,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   expect((await readCampaign(page)).giocatore1.squadra[0].stato).toBeUndefined()
   await returnControlToPlayerOne(page)
   bag = await openBag(page)
+  await bag.getByRole('button', { name: 'Pozione: 1 disponibili', exact: true }).click()
   await bag.getByRole('button', { name: 'Usa Pozione', exact: true }).click()
   await expect.poll(async () => (await readCampaign(page)).giocatore1.squadra[0].hp).toBe(6)
   saved = await readCampaign(page)
