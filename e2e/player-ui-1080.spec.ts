@@ -4,6 +4,8 @@ import type { PokemonIstanza } from '../src/types'
 
 const SAVE_KEY = 'arkamon-save'
 const pokemonCatalog: { id: number; nome: string }[] = JSON.parse(readFileSync(new URL('../src/data/pokemon.json', import.meta.url), 'utf8'))
+type PortraitMetadata = { width: number; height: number; alphaBounds: [number, number, number, number] }
+const portraitMetadata: Record<string, PortraitMetadata> = JSON.parse(readFileSync(new URL('../src/player-ui/portraitMetadata.json', import.meta.url), 'utf8'))
 const SCREENS = [
   ['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'],
   ['Borsa', 'borsa'], ['Negozio', 'negozio'], ['Menù Partita', 'partita'],
@@ -50,6 +52,7 @@ async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directD
     scenaCorrente: directDeposit ? { scena: 'deposito' } : { scena: 'citta', payload: { luogo: 'Venezia' } },
     scenaPrecedente: directDeposit ? { scena: 'citta', payload: { luogo: 'Venezia' } } : { scena: 'mappa-principale' }, audioMuted: true,
     arkadex: { seen1: allIds, caught1: allIds, seen2: g2Discoveries, caught2: g2Discoveries },
+    matchLog: { version: 1, nextSequence: 1, events: [] },
     interactionProgress: { completed1: [], completed2: [], completedShared: [], log1: [], log2: [], pendingBattle: null },
   }
   await page.addInitScript(({ key, state }) => {
@@ -78,6 +81,60 @@ async function selectScreen(dialog: Locator, name: string, id: string) {
   await dialog.getByRole('button', { name, exact: true }).click()
   await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
   await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+}
+
+/** Projects source pixels through the rendered SVG, so CSS zooming/cropping cannot pass as a centered portrait. */
+async function assertVisiblePortraits(dialog: Locator, context: string) {
+  const portraits = dialog.locator('svg.pu-creature-art')
+  await expect(portraits.first(), `${context}: portraits use SVG framing`).toBeVisible()
+  await expect.poll(async () => portraits.evaluateAll(elements => elements.filter(element =>
+    element.getAttribute('data-creature-loaded') !== 'true').length), {
+    message: `${context}: every visible portrait must finish loading`,
+  }).toBe(0)
+  const report = await portraits.evaluateAll((elements, metadata) => elements.map(element => {
+    const svg = element as SVGSVGElement
+    const source = svg.getAttribute('data-creature-source')!
+    const entry = metadata[source]
+    if (!entry) return { source, issues: ['Unrecognized source metadata'] }
+    const issues: string[] = []
+    const image = svg.querySelector('image')!, matrix = svg.getScreenCTM()!
+    const [left, top, right, bottom] = entry.alphaBounds
+    const alphaPoints = [[left, top], [right, bottom]].map(([x, y]) => {
+      const point = svg.createSVGPoint(); point.x = x; point.y = y
+      return point.matrixTransform(matrix)
+    })
+    const alpha = { left: alphaPoints[0].x, top: alphaPoints[0].y, right: alphaPoints[1].x, bottom: alphaPoints[1].y }
+    const rect = svg.getBoundingClientRect()
+    const circle = svg.parentElement!.querySelector('.pu-creature-circle')!.getBoundingClientRect()
+    // object-fit:contain renders the circle as a square even when its large portrait host is a wide rectangle.
+    const diameter = Math.min(circle.width, circle.height), cx = (circle.left + circle.right) / 2, cy = (circle.top + circle.bottom) / 2
+    const circleSquare = { left: cx - diameter / 2, top: cy - diameter / 2, right: cx + diameter / 2, bottom: cy + diameter / 2 }
+    const epsilon = 2, viewBox = svg.viewBox.baseVal
+    if (Math.abs(viewBox.width - viewBox.height) > 0.01) issues.push('Non-square source viewBox')
+    if (Math.abs(viewBox.x + viewBox.width / 2 - (left + right) / 2) > 0.01
+      || Math.abs(viewBox.y + viewBox.height / 2 - (top + bottom) / 2) > 0.01) issues.push('Source alpha is not centered in viewBox')
+    if (Number(image.getAttribute('width')) !== entry.width || Number(image.getAttribute('height')) !== entry.height) issues.push('Source dimensions changed')
+    if (Number(image.getAttribute('x') ?? 0) !== 0 || Number(image.getAttribute('y') ?? 0) !== 0 || image.hasAttribute('transform')) issues.push('Source image translated or transformed separately')
+    if (!(image.getAttribute('href') ?? image.getAttributeNS('http://www.w3.org/1999/xlink', 'href'))?.endsWith(source)) issues.push('Image does not use the immutable source')
+    // The SVG viewport can be wide; xMidYMid meet must still render its square viewBox at the contained circle size.
+    if (Math.min(rect.width, rect.height) > diameter + epsilon) issues.push('Artwork enlarged beyond contained circle')
+    if (Math.abs((alpha.left + alpha.right) / 2 - cx) > epsilon || Math.abs((alpha.top + alpha.bottom) / 2 - cy) > epsilon) issues.push('Visible alpha is off center')
+    if (alpha.left < circleSquare.left - epsilon || alpha.right > circleSquare.right + epsilon
+      || alpha.top < circleSquare.top - epsilon || alpha.bottom > circleSquare.bottom + epsilon) issues.push('Visible alpha exceeds circle square')
+    if (alpha.left < -epsilon || alpha.right > innerWidth + epsilon || alpha.top < -epsilon || alpha.bottom > innerHeight + epsilon) issues.push('Visible alpha exceeds viewport')
+    for (let ancestor = svg.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
+      const style = getComputedStyle(ancestor), bound = ancestor.getBoundingClientRect()
+      const clippedX = ['hidden', 'clip', 'auto', 'scroll'].includes(style.overflowX)
+      const clippedY = ['hidden', 'clip', 'auto', 'scroll'].includes(style.overflowY)
+      if ((clippedX && (alpha.left < bound.left + ancestor.clientLeft - epsilon || alpha.right > bound.left + ancestor.clientLeft + ancestor.clientWidth + epsilon))
+        || (clippedY && (alpha.top < bound.top + ancestor.clientTop - epsilon || alpha.bottom > bound.top + ancestor.clientTop + ancestor.clientHeight + epsilon))) {
+        issues.push(`Visible alpha clipped by ${ancestor.className}`); break
+      }
+    }
+    return { source, speciesId: svg.getAttribute('data-species-id'), issues }
+  }), portraitMetadata)
+  expect(report.filter(portrait => portrait.issues.length), `${context}: complete centered portrait pixels`).toEqual([])
+  return report
 }
 
 /** Checks actual content geometry even when CSS hides overflowing content. */
@@ -150,9 +207,11 @@ async function assertFitsWithoutScroll(dialog: Locator, context: string) {
     const brokenKit = kit.filter(image => !image.complete || !image.naturalWidth).map(image => image.src)
     return { viewport: { width: innerWidth, height: innerHeight }, issueCount: issues.length, issues: issues.slice(0, 40), metrics, brokenKit }
   })
-  expect(report.viewport).toEqual({ width: 1920, height: 1080 })
+  expect(report.viewport).toEqual(dialog.page().viewportSize())
   expect(report.brokenKit, `${context}: SVG artwork must load`).toEqual([])
   expect(report.issues, `${context}: ${report.issueCount} geometry issues; ${JSON.stringify(report.metrics)}`).toEqual([])
+  const portraits = await dialog.locator('svg.pu-creature-art').count() ? await assertVisiblePortraits(dialog, context) : []
+  return { portraits }
 }
 
 test.describe('Seven real player tools at 1920×1080 with maximum content', () => {
@@ -193,6 +252,7 @@ test.describe('Seven real player tools at 1920×1080 with maximum content', () =
         const selectedName = await dialog.locator('.pu-dex-detail article').getAttribute('aria-label')
         await expect(previous).toBeDisabled()
         const visitedSpecies: number[] = []
+        const portraitSources = new Set<string>()
         for (let pageNumber = 1; pageNumber <= 19; pageNumber++) {
           await expect(pagination).toContainText(`Pagina ${pageNumber} / 19`)
           const numbers = await dialog.locator('.pu-dex-list .pu-dex-row').evaluateAll(rows => rows.map(row =>
@@ -200,10 +260,13 @@ test.describe('Seven real player tools at 1920×1080 with maximum content', () =
           expect(numbers).toHaveLength(pageNumber === 19 ? 2 : 6)
           visitedSpecies.push(...numbers)
           await expect(dialog.locator('.pu-dex-detail article')).toHaveAttribute('aria-label', selectedName!)
-          await assertFitsWithoutScroll(dialog, `Arkadex: page ${pageNumber} / 19 and stable selected specimen`)
+          const framing = await assertFitsWithoutScroll(dialog, `Arkadex: page ${pageNumber} / 19 and stable selected specimen`)
+          framing.portraits.forEach(portrait => portraitSources.add(portrait.source))
           if (pageNumber < 19) await next.click()
         }
         expect(visitedSpecies).toEqual(pokemonCatalog.map(species => species.id))
+        expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(23)
+        expect([...portraitSources].filter(source => source.endsWith('.png'))).toHaveLength(87)
         await expect(next).toBeDisabled()
         await previous.click()
         await expect(pagination).toContainText('Pagina 18 / 19')
@@ -299,6 +362,106 @@ test.describe('Seven real player tools at 1920×1080 with maximum content', () =
       await selectScreen(scene, name, id)
       await assertFitsWithoutScroll(scene, `Direct deposit: ${name} with full campaign`)
     }
+    expect(await savedCampaign(page)).toEqual(before)
+  })
+})
+
+for (const height of [900, 945]) {
+  test.describe(`Seven player tools in a normal desktop browser, 1920×${height} content viewport`, () => {
+    test.use({ viewport: { width: 1920, height } })
+    test.skip(({ isMobile }) => isMobile, 'Desktop browser chrome reduces usable height; phone layouts have separate coverage.')
+
+    test('the match dialog fits dense G1 contents and every G2 readonly view', async ({ page }) => {
+      test.setTimeout(120_000)
+      await seedFullCampaign(page)
+      const before = await savedCampaign(page)
+      const dialog = await openTools(page)
+      for (const [name, id] of SCREENS) {
+        await selectScreen(dialog, name, id)
+        if (id === 'deposito') await dialog.getByRole('button', { name: /^Box 1, posto 35:/ }).click()
+        if (id === 'arkadex') {
+          const tabs = dialog.getByRole('navigation', { name: 'Sezioni della scheda Arkadex', exact: true })
+          for (const tab of ['Mosse', 'Evoluzioni', 'Informazioni']) {
+            await tabs.getByRole('button', { name: tab, exact: true }).click()
+            await assertFitsWithoutScroll(dialog, `${height}px dialog, G1 Arkadex ${tab}`)
+          }
+        }
+        if (id === 'analisi') {
+          for (const tab of ['Mosse', 'Status e cure', 'Scheda']) {
+            await dialog.getByRole('button', { name: tab, exact: true }).click()
+            await assertFitsWithoutScroll(dialog, `${height}px dialog, G1 analysis ${tab}`)
+          }
+        }
+        if (id === 'negozio') for (const [, itemName] of ITEMS) await dialog.getByLabel(`Quantità di ${itemName}`, { exact: true }).fill('99')
+        await assertFitsWithoutScroll(dialog, `${height}px dialog, G1 ${name}, full team, reserves and cart`)
+      }
+      await dialog.getByRole('button', { name: 'G2 · Bruno delle Costellazioni', exact: true }).click()
+      for (const [name, id] of SCREENS) {
+        await selectScreen(dialog, name, id)
+        await assertFitsWithoutScroll(dialog, `${height}px dialog, inactive G2 ${name} and readonly notices`)
+      }
+      expect(await savedCampaign(page)).toEqual(before)
+    })
+
+    test('the direct deposit scene fits all seven tools, then the returned city fits a complete shopping cart', async ({ page }) => {
+      test.setTimeout(90_000)
+      await seedFullCampaign(page, false, true)
+      const before = await savedCampaign(page)
+      const scene = page.locator('.pu-scene-host')
+      await expect(scene.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'deposito')
+      for (const [name, id] of SCREENS) {
+        await selectScreen(scene, name, id)
+        if (id === 'negozio') {
+          // The deposit is a consultation scene, so the purchase guard must remain in force until returning to the city.
+          await expect(scene.getByRole('status').filter({ hasText: 'Raggiungi questa città per acquistare nel suo Arkastore.' })).toBeVisible()
+          for (const [, itemName] of ITEMS) await expect(scene.getByLabel(`Quantità di ${itemName}`, { exact: true })).toBeDisabled()
+        }
+        await assertFitsWithoutScroll(scene, `${height}px direct scene, G1 ${name} and full selected contents`)
+      }
+      expect(await savedCampaign(page)).toEqual(before)
+      await scene.getByRole('button', { name: 'Riprendi la partita', exact: true }).click()
+      await expect(page.locator('[data-presented-scene="citta:Venezia"]')).toHaveAttribute('aria-busy', 'false')
+      const returnedCampaign = await savedCampaign(page)
+      expect(returnedCampaign).toEqual({ ...before, scenaCorrente: before.scenaPrecedente, scenaPrecedente: null })
+      const dialog = await openTools(page)
+      await selectScreen(dialog, 'Negozio', 'negozio')
+      for (const [, itemName] of ITEMS) {
+        const quantity = dialog.getByLabel(`Quantità di ${itemName}`, { exact: true })
+        await expect(quantity).toBeEnabled()
+        await quantity.fill('99')
+      }
+      await expect(dialog.locator('.pu-cart-line')).toHaveCount(7)
+      await assertFitsWithoutScroll(dialog, `${height}px returned city, complete seven-item cart and checkout warnings`)
+      expect(await savedCampaign(page)).toEqual(returnedCampaign)
+    })
+  })
+}
+
+test.describe('Portrait framing preserves complete static sprites after a missing animation poster', () => {
+  test.use({ viewport: { width: 1920, height: 900 } })
+  test.skip(({ isMobile }) => isMobile, 'The shared portrait source projection is checked in the dense desktop layouts.')
+
+  test('an unavailable poster falls back to the unchanged PNG and uses its own alpha bounds', async ({ page }) => {
+    const failedPosterRequests: string[] = []
+    await page.route('**/sprites/arkamon/13/front/idle-poster.webp', async route => {
+      failedPosterRequests.push(route.request().url())
+      await route.abort('failed')
+    })
+    await seedFullCampaign(page)
+    const before = await savedCampaign(page)
+    const dialog = await openTools(page)
+    await selectScreen(dialog, 'Deposito', 'deposito')
+    await dialog.getByRole('button', { name: /^Box 1, posto 1:/ }).click()
+    const fallback = dialog.locator('svg.pu-creature-art[data-species-id="13"]')
+    await expect(fallback).toHaveCount(2)
+    await expect.poll(async () => fallback.evaluateAll(elements => elements.every(element =>
+      element.getAttribute('data-creature-source') === '/sprites/front_sprites/13.png'
+      && element.getAttribute('data-creature-loaded') === 'true'))).toBe(true)
+    expect(failedPosterRequests.length).toBeGreaterThan(0)
+    const portraits = await assertVisiblePortraits(dialog, 'Deposito: missing ID 13 poster uses the whole original PNG')
+    expect(portraits.some(portrait => portrait.source.endsWith('idle-poster.webp'))).toBe(true)
+    expect(portraits.some(portrait => portrait.source === '/sprites/front_sprites/22.png')).toBe(true)
+    await assertFitsWithoutScroll(dialog, 'Deposito at 1920×900 with static, poster and recovered PNG portraits')
     expect(await savedCampaign(page)).toEqual(before)
   })
 })

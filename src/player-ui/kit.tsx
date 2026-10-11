@@ -1,9 +1,10 @@
-import { useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
+import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { getMossa, getPokemon } from '@/data'
 import { calcolaHPMax, getMossaAlLivello } from '@/engine/battleEngine'
 import { getArkamonAnimationAsset } from '@/components/arkamon/arkamonAnimationManifest'
 import { assetUrl } from '@/utils/assetUrl'
+import { getPortraitFraming } from './portraitFraming'
 import './player-ui.css'
 
 export const TYPE_ICONS: Record<TipoPokemon, string> = {
@@ -38,8 +39,27 @@ function CreatureImage({ speciesId }: { speciesId: number }) {
   const idle = getArkamonAnimationAsset(speciesId, 'front', 'idle')
   const poster = idle ? idle.src.replace(/idle\.webp$/, 'idle-poster.webp') : `/sprites/front_sprites/${speciesId}.png`
   const [fallback, setFallback] = useState(false)
-  return <img className="pu-creature-art" src={assetUrl(fallback ? `/sprites/front_sprites/${speciesId}.png` : poster)}
-    alt="" draggable={false} onError={() => { if (!fallback) setFallback(true) }} />
+  const [loadedSource, setLoadedSource] = useState<string | null>(null)
+  const source = fallback ? `/sprites/front_sprites/${speciesId}.png` : poster
+  const framing = getPortraitFraming(source)
+  useEffect(() => {
+    // Native SVG image load events are not consistently delivered by React.
+    // Decode the same resource explicitly, including a cached poster or fallback.
+    let current = true
+    const resource = new Image()
+    resource.src = assetUrl(source)
+    resource.decode().then(() => {
+      if (current) setLoadedSource(source)
+    }).catch(() => {
+      if (current && !fallback) setFallback(true)
+    })
+    return () => { current = false }
+  }, [source, fallback])
+  return <svg className="pu-creature-art" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet"
+    aria-hidden="true" focusable="false" data-species-id={speciesId} data-creature-source={source}
+    data-creature-loaded={loadedSource === source ? 'true' : undefined}>
+    <image key={source} href={assetUrl(source)} width={framing.width} height={framing.height} preserveAspectRatio="none" />
+  </svg>
 }
 export function SpeciesPortrait({ speciesId, className = '', large = false, selected = false }: { speciesId: number; className?: string; large?: boolean; selected?: boolean }) {
   return <span className={`pu-creature-portrait ${large ? 'is-large' : ''} ${className}`} aria-hidden="true">

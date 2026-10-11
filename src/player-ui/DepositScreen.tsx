@@ -126,10 +126,9 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
           <p className="pu-note">{isTeamWithinLevelCap(player.squadra) ? 'Squadra in equilibrio' : 'Squadra fuori fascia'} · Lv. {range.min}–{range.max} · differenza {range.gap} / 5.</p>
         </KitPanel>
         <KitPanel className="pu-detail-panel pu-deposit-detail">
-          <p className="pu-kicker">Compagno selezionato</p>
           {pokemon ? <><PokemonHero pokemon={pokemon} /><HealthBar pokemon={pokemon} /><div className="pu-stat-grid"><div className="pu-stat"><span>Livello</span><strong>{pokemon.livello}</strong></div><div className="pu-stat"><span>Crescita</span><strong>{species?.categoria ?? '—'}</strong></div><div className="pu-stat"><span>Esperienza</span><strong>{pokemon.xp} XP</strong></div></div></>
             : <div className="pu-empty-state"><KitIcon id="icon-box" /><h2>Scegli un Arkamon</h2><p>Seleziona un compagno nella squadra o nel box per consultare la sua scheda.</p></div>}
-          <p className="pu-note">{moving && mayManage ? 'Scegli un posto del box o della squadra. Un posto occupato scambia i due Arkamon.' : 'Per spostare un Arkamon, selezionalo e premi «Sposta o scambia».'}</p>
+          {mayManage && <p className="pu-note">{moving ? 'Scegli un posto del box o della squadra. Un posto occupato scambia i due Arkamon.' : 'Per spostare un Arkamon, selezionalo e premi «Sposta o scambia».'}</p>}
           {!mayManage && <p className="pu-readonly" role="status">Consultazione: nessuno scambio durante una battaglia, un’interazione in corso o il turno dell’altro giocatore.</p>}
           {message && <p className="pu-note" role="status">{message}</p>}
           <div className="pu-actions">
