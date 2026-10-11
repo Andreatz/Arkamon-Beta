@@ -29,6 +29,10 @@ from PIL import Image, ImageDraw, ImageOps
 SCREEN_DOMINANCE_CLEANUP = False
 SCREEN_FRINGE_CLEANUP = False
 WARM_DUST_DESPILL = False
+SCREEN_COLOUR = 'green'
+SCREEN_BACKGROUND_FALLBACK = None
+PRESERVE_GREEN_BODY = False
+SOFT_BLUE_SCREEN_REJECTION = False
 
 
 def action_key_options(action: str) -> dict:
@@ -89,6 +93,17 @@ def ffmpeg_path(explicit: str | None) -> str:
         raise SystemExit("FFmpeg is required: use --ffmpeg PATH or install imageio-ffmpeg.") from exc
 
 
+def conversion_actions(requested: list[str], reuse: bool) -> list[str]:
+    actions = list(dict.fromkeys(requested))
+    if 'idle' not in actions:
+        if not reuse:
+            raise ValueError('Include idle to establish the common reference scale and ground plane.')
+        return actions
+    actions.remove('idle')
+    actions.insert(0, 'idle')
+    return actions
+
+
 def probe(ffmpeg: str, source: Path) -> dict:
     result = subprocess.run([ffmpeg, "-hide_banner", "-i", str(source)],
                             capture_output=True, text=True, check=False)
@@ -107,6 +122,14 @@ def probe(ffmpeg: str, source: Path) -> dict:
             "ffmpegVersion": version}
 
 
+def sample_screen_background(rgb: np.ndarray) -> np.ndarray:
+    h, w = rgb.shape[:2]
+    s = max(8, min(h, w) // 18)
+    corners = np.concatenate([rgb[:s, :s].reshape(-1, 3), rgb[:s, -s:].reshape(-1, 3),
+                              rgb[-s:, :s].reshape(-1, 3), rgb[-s:, -s:].reshape(-1, 3)])
+    return np.median(corners, axis=0)
+
+
 def key_alpha(image: Image.Image, cutoff: float = 0.08, preserve_effects: bool = False,
               neutral_tolerance: float = 10, preserve_bloom: bool = True) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Estimate soft coverage from green excess, then unmix and remove edge spill.
@@ -116,23 +139,41 @@ def key_alpha(image: Image.Image, cutoff: float = 0.08, preserve_effects: bool =
     have no positive green excess and retain full opacity.
     """
     rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
-    h, w = rgb.shape[:2]
-    s = max(8, min(h, w) // 18)
-    corners = np.concatenate([rgb[:s, :s].reshape(-1, 3), rgb[:s, -s:].reshape(-1, 3),
-                              rgb[-s:, :s].reshape(-1, 3), rgb[-s:, -s:].reshape(-1, 3)])
-    bg = np.median(corners, axis=0)
-    bg_excess = float(bg[1] - max(bg[0], bg[2]))
+    bg = sample_screen_background(rgb)
+    channel = 2 if SCREEN_COLOUR == 'blue' else 1
+    others = [index for index in range(3) if index != channel]
+    bg_excess = float(bg[channel] - max(bg[index] for index in others))
+    if bg_excess < 25 and SCREEN_BACKGROUND_FALLBACK is not None:
+        # A native full-screen flash can cover the corners. Use the explicitly
+        # audited screen from this clip, rather than treating the flash as key.
+        bg = np.asarray(SCREEN_BACKGROUND_FALLBACK, dtype=np.float32)
+        bg_excess = float(bg[channel] - max(bg[index] for index in others))
     if bg_excess < 25:
-        raise ValueError("Source corners are not sufficiently green for this converter.")
-    excess = rgb[:, :, 1] - np.maximum(rgb[:, :, 0], rgb[:, :, 2])
+        raise ValueError(f"Source corners are not sufficiently {SCREEN_COLOUR} for this converter.")
+    excess = rgb[:, :, channel] - np.maximum(rgb[:, :, others[0]], rgb[:, :, others[1]])
     alpha = np.clip(1.0 - np.maximum(excess, 0.0) / bg_excess, 0.0, 1.0)
     # Darker screen patches and source shadows retain the screen chromaticity.
     # Match colour ratios, rather than brightness, to prevent a tinted floor line.
-    denominator = np.maximum(rgb[:, :, 1], 1.0)
-    screen_colour = ((np.abs(rgb[:, :, 0] / denominator - bg[0] / bg[1]) < .12)
-                     & (np.abs(rgb[:, :, 2] / denominator - bg[2] / bg[1]) < .12)
+    denominator = np.maximum(rgb[:, :, channel], 1.0)
+    screen_deviation = np.maximum(np.abs(rgb[:, :, others[0]] / denominator - bg[others[0]] / bg[channel]),
+                                  np.abs(rgb[:, :, others[1]] / denominator - bg[others[1]] / bg[channel]))
+    screen_colour = ((screen_deviation < .12)
                      & (excess > 12))
-    alpha[screen_colour] = 0.0
+    if SCREEN_COLOUR == 'blue' and SOFT_BLUE_SCREEN_REJECTION:
+        # Native weak green aura over blue needs a gradual matte at the screen
+        # colour boundary. Hard ratio rejection otherwise creates a cut edge.
+        weight = np.clip((screen_deviation - .02) / .10, 0, 1)
+        alpha *= np.where(excess > 12, weight, 1)
+    else:
+        alpha[screen_colour] = 0.0
+    if PRESERVE_GREEN_BODY:
+        # Audited green-grey scales are far from the saturated screen chroma.
+        # Restore opaque body colour only in this explicit species profile;
+        # screen pockets stay transparent, while mixed edges/fades keep keying.
+        foreground_max = np.maximum(rgb[:, :, 0], rgb[:, :, 2])
+        body_weight = np.clip((.35 - np.maximum(excess, 0) / bg_excess) / .10, 0, 1)
+        body_weight *= (~screen_colour) & (foreground_max >= 24)
+        alpha += body_weight * (1 - alpha)
     if SCREEN_DOMINANCE_CLEANUP:
         # Some source screens include a nonuniform green haze. Remove its
         # dominant screen chroma as well as the corner colour. This optional
@@ -155,9 +196,11 @@ def remove_green(image: Image.Image, cutoff: float = 0.08, preserve_effects: boo
     safe_alpha = np.maximum(alpha, 1.0 / 255.0)
     recovered = np.clip((rgb - (1.0 - alpha[:, :, None]) * bg) / safe_alpha[:, :, None], 0, 255)
     edge = alpha < 0.999
-    neutral_green = np.maximum(recovered[:, :, 0], recovered[:, :, 2])
-    recovered[:, :, 1] = np.where(edge, np.minimum(recovered[:, :, 1], neutral_green),
-                                 recovered[:, :, 1])
+    channel = 2 if SCREEN_COLOUR == 'blue' else 1
+    others = [index for index in range(3) if index != channel]
+    neutral_screen = np.maximum(recovered[:, :, others[0]], recovered[:, :, others[1]])
+    recovered[:, :, channel] = np.where(edge, np.minimum(recovered[:, :, channel], neutral_screen),
+                                       recovered[:, :, channel])
     if WARM_DUST_DESPILL:
         # A sand plume may already contain olive contamination before keying.
         # Correct its colour without deleting opacity or motion. Preserve native
@@ -259,12 +302,19 @@ def inspect_clip(ffmpeg: str, source: Path, action: str, decoded: Path,
     if not paths:
         raise ValueError(f'No original frames decoded for {action}.')
     boxes = []
+    fallback_frames = []
     first_core = None
     for i, path in enumerate(paths):
         with Image.open(path) as image:
             if image.size != (info['width'], info['height']):
                 raise ValueError('Decoded source frame dimensions do not match the video.')
-            rgb, alpha, _ = key_alpha(image, cutoff, **action_key_options(action))
+            rgb, alpha, background = key_alpha(image, cutoff, **action_key_options(action))
+            if SCREEN_BACKGROUND_FALLBACK is not None:
+                native_background = sample_screen_background(rgb)
+                screen_channel = 2 if SCREEN_COLOUR == 'blue' else 1
+                native_excess = native_background[screen_channel] - max(native_background[index] for index in range(3) if index != screen_channel)
+                if native_excess < 25:
+                    fallback_frames.append(i)
         boxes.append(alpha_bounds(alpha))
         if i == 0:
             # Ignore bright glints/rings when calibrating the initial body pose.
@@ -275,7 +325,8 @@ def inspect_clip(ffmpeg: str, source: Path, action: str, decoded: Path,
     info.update({'sha256': source_hash, 'sizeBytes': source.stat().st_size,
                  'decodedFrameCount': len(paths), 'durationFromFramesSeconds':len(paths)/info['fps']})
     result = {'action': action, 'source': source, 'info': info, 'paths': paths,
-              'boxes': boxes, 'union': union_bounds(boxes), 'firstCore': first_core}
+              'boxes': boxes, 'union': union_bounds(boxes), 'firstCore': first_core,
+              'screenBackgroundFallbackFrames': fallback_frames}
     print(json.dumps({'inspectedAction':action, 'frames':len(paths), 'fps':info['fps'],
                       'firstCoreBodyBounds':first_core,'unionAlphaBounds':result['union']}),flush=True)
     return result
@@ -394,12 +445,16 @@ def normalize_frame(image: Image.Image, clip: dict, common: dict, cutoff: float)
     resized = keyed.crop(crop).resize(size,Image.Resampling.LANCZOS)
     pixels = np.asarray(resized).copy()
     edge = pixels[:,:,3] < 255
-    pixels[:,:,1] = np.where(edge,np.minimum(pixels[:,:,1],np.maximum(pixels[:,:,0],pixels[:,:,2])),pixels[:,:,1])
+    channel = 2 if SCREEN_COLOUR == 'blue' else 1
+    others = [index for index in range(3) if index != channel]
+    pixels[:,:,channel] = np.where(edge,np.minimum(pixels[:,:,channel],np.maximum(pixels[:,:,others[0]],pixels[:,:,others[1]])),pixels[:,:,channel])
     # Lossless output can still contain a few chroma pixels from resampling an
     # opaque source edge. Remove only dominant green spill left over there.
-    channel_max = np.maximum(pixels[:,:,0],pixels[:,:,2]).astype(np.int16)
-    spill = pixels[:,:,1].astype(np.int16) > channel_max + 8
-    pixels[:,:,1] = np.where(spill,channel_max,pixels[:,:,1])
+    channel_max = np.maximum(pixels[:,:,others[0]],pixels[:,:,others[1]]).astype(np.int16)
+    spill = pixels[:,:,channel].astype(np.int16) > channel_max + 8
+    if PRESERVE_GREEN_BODY:
+        spill &= edge
+    pixels[:,:,channel] = np.where(spill,channel_max,pixels[:,:,channel])
     pixels[pixels[:,:,3] == 0,:3] = 0
     tile = Image.new('RGBA',(common['cellWidth'],common['cellHeight']),(0,0,0,0))
     tile.paste(Image.fromarray(pixels),position)
@@ -466,12 +521,13 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
     seam.update({'adjacentMedianBodyRgbDifference':round(median,6),
                  'adjacentMaxBodyRgbDifference':max(differences,default=0),
                  'seamToAdjacentMedianRatio':round(seam['bodyPremultipliedRgbMeanAbsoluteDifference']/max(median,1e-9),3)})
-    green_count,occupied,red_count,yellow_green_count = 0,0,0,0
+    green_count,blue_count,occupied,red_count,yellow_green_count = 0,0,0,0,0
     frame_boxes,blank_frames = [],[]
     for index,frame in enumerate(frames):
         pixels = np.asarray(frame).astype(np.int16)
         visible = pixels[:,:,3] > 16
         green_count += int(((pixels[:,:,1] > np.maximum(pixels[:,:,0],pixels[:,:,2])+8)&visible).sum())
+        blue_count += int(((pixels[:,:,2] > np.maximum(pixels[:,:,0],pixels[:,:,1])+8)&visible).sum())
         occupied += int(visible.sum())
         red_count += int(((pixels[:,:,0]>pixels[:,:,1]+35)&(pixels[:,:,0]>pixels[:,:,2]+20)&visible).sum())
         # Independent diagnostic on saved output colours, including olive/yellow
@@ -529,10 +585,31 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
             'greenCeilingFractionOfRecoveredRed':.85,
             'alphaUnchanged':True,
         }
-    if green_count:
-        raise RuntimeError(f'{action} retains {green_count} green-dominant pixels.')
+    if SCREEN_COLOUR == 'blue':
+        metadata['key']['screenColour'] = 'blue'
+        metadata['key']['method'] = 'Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.'
+        metadata['qa']['remainingBlueDominantPixelsOver8'] = blue_count
+        metadata['qa']['nativeGreenPixelsAllowed'] = True
+        if SOFT_BLUE_SCREEN_REJECTION:
+            metadata['key']['softBlueScreenRejection'] = {'screenRatioDeviationStart':.02,'screenRatioDeviationEnd':.12,'nativeGreenUnchanged':True}
+    if SCREEN_BACKGROUND_FALLBACK is not None:
+        metadata['key']['screenBackgroundFallback'] = list(SCREEN_BACKGROUND_FALLBACK)
+        metadata['key']['screenBackgroundFallbackFrames'] = clip.get('screenBackgroundFallbackFrames', [])
+    if PRESERVE_GREEN_BODY:
+        metadata['key']['preserveGreenBody'] = {
+            'opaqueBelowScreenExcessFraction': .25,
+            'fadeToBaseKeyByScreenExcessFraction': .35,
+            'screenPocketsExcluded': True,
+            'minimumOtherChannel': 24,
+        }
+        metadata['qa']['nativeGreenPixelsAllowed'] = True
+    screen_count = blue_count if SCREEN_COLOUR == 'blue' else green_count
+    if screen_count and not PRESERVE_GREEN_BODY:
+        raise RuntimeError(f'{action} retains {screen_count} {SCREEN_COLOUR}-dominant pixels.')
     if 'timing' in clip.get('previousMetadata', {}):
         metadata['timing'] = clip['previousMetadata']['timing']
+    if 'calibrationInspection' in clip.get('previousMetadata', {}):
+        metadata['calibrationInspection'] = clip['previousMetadata']['calibrationInspection']
     if idle_first is not None:
         metadata['qa']['returnToIdleFirst'] = frame_difference(frames[-1],idle_first)
     if qa:
@@ -549,7 +626,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
 
 
 def main() -> None:
-    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, WARM_DUST_DESPILL
+    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, WARM_DUST_DESPILL, SCREEN_COLOUR, SCREEN_BACKGROUND_FALLBACK, PRESERVE_GREEN_BODY, SOFT_BLUE_SCREEN_REJECTION
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--species-id',type=int,default=5)
     parser.add_argument('--source-dir',type=Path)
@@ -567,6 +644,14 @@ def main() -> None:
     parser.add_argument('--occupancy',type=float,default=1874/2048)
     parser.add_argument('--ground',type=float,default=1956/2048)
     parser.add_argument('--alpha-cutoff',type=float,default=.08)
+    parser.add_argument('--screen-colour',choices=['green','blue'],default='green',
+                        help='Chroma screen channel; blue retains native green foliage. Default preserves existing green conversions.')
+    parser.add_argument('--screen-background-fallback',nargs=3,type=int,metavar=('R','G','B'),
+                        help='Audited RGB screen for frames whose native flash covers the corners; used only when corner chroma is unavailable.')
+    parser.add_argument('--preserve-green-body',action='store_true',
+                        help='Keep audited green-grey body colours distinct from saturated green screen; screen pockets and mixed edges remain keyed.')
+    parser.add_argument('--soft-blue-screen-rejection',action='store_true',
+                        help='Fade the blue screen colour-ratio matte to retain an audited weak green aura; only for blue screen clips.')
     parser.add_argument('--screen-dominance-cleanup',action='store_true',
                         help='Remove nonuniform green screen haze; use only when the character has no intrinsic green features.')
     parser.add_argument('--screen-fringe-cleanup',action='store_true',
@@ -581,6 +666,18 @@ def main() -> None:
                         help='Reuse source-verified geometry, crops, camera calibration and timing markers from an existing asset directory.')
     parser.add_argument('--analyze-only',action='store_true')
     args = parser.parse_args()
+    SCREEN_COLOUR = args.screen_colour
+    SCREEN_BACKGROUND_FALLBACK = args.screen_background_fallback
+    PRESERVE_GREEN_BODY = args.preserve_green_body
+    SOFT_BLUE_SCREEN_REJECTION = args.soft_blue_screen_rejection
+    if SOFT_BLUE_SCREEN_REJECTION and SCREEN_COLOUR != 'blue':
+        parser.error('Soft blue screen rejection requires --screen-colour blue.')
+    if PRESERVE_GREEN_BODY and (SCREEN_COLOUR != 'green' or args.screen_dominance_cleanup or args.screen_fringe_cleanup or args.warm_dust_despill):
+        parser.error('Green body preservation requires the base green key without aggressive cleanup/despill flags.')
+    if SCREEN_BACKGROUND_FALLBACK is not None and any(value < 0 or value > 255 for value in SCREEN_BACKGROUND_FALLBACK):
+        parser.error('Screen background fallback RGB values must be in 0..255.')
+    if SCREEN_COLOUR == 'blue' and (args.screen_dominance_cleanup or args.screen_fringe_cleanup or args.warm_dust_despill):
+        parser.error('Green-specific cleanup/despill flags cannot be used with a blue screen.')
     WARM_DUST_DESPILL = args.warm_dust_despill
     def select_key_profile(action: str) -> None:
         global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP
@@ -594,11 +691,10 @@ def main() -> None:
         parser.error('Base cell must be at least64, texture must fit it, and columns/padding must be nonnegative.')
     if not 0 < args.occupancy <= 1 or not 0 < args.ground <= 1 or not 0 <= args.alpha_cutoff < 1:
         parser.error('Occupancy/ground must be in(0,1], alpha cutoff in[0,1).')
-    actions = list(dict.fromkeys(args.actions))
-    if 'idle' not in actions:
-        parser.error('Include idle to establish the common reference scale and ground plane.')
-    actions.remove('idle')
-    actions.insert(0,'idle')
+    try:
+        actions = conversion_actions(args.actions, bool(args.reuse_normalization))
+    except ValueError as error:
+        parser.error(str(error))
     ffmpeg = ffmpeg_path(args.ffmpeg)
     output = args.output.resolve()
     output.mkdir(parents=True,exist_ok=True)
@@ -624,6 +720,9 @@ def main() -> None:
         if args.analyze_only:
             return
         all_metadata,idle_first = {},None
+        if args.reuse_normalization and 'idle' not in actions:
+            with Image.open(args.reuse_normalization/'idle-poster.webp') as poster:
+                idle_first = poster.convert('RGBA')
         for clip in clips:
             select_key_profile(clip['action'])
             metadata,first = convert_clip(clip,common,output,qa,ffmpeg,args.battle_background,args.alpha_cutoff,args.columns,idle_first,args.species_id)

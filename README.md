@@ -20,6 +20,8 @@ npm test
 
 ## Stato Attuale
 
+- Nuove animazioni frontali verificate il **12 ottobre 2026**: **45 video per nove forme (25–33)**, con attesa, attacco, colpito, vittoria e KO. Il totale passa a **32 forme e 160 animazioni**, con tutti i fotogrammi nativi a 24 FPS. [Importazione, profili di trasparenza e verifiche](./docs/front-animation-import-2026-10-11.md).
+- Verifica dell’importazione: **2.374 test in 107 file**, **34 prove del convertitore**, build di produzione, riproduzione delle 45 clip nel browser, nove attacchi sincronizzati e KO dopo i dadi. Le nove regressioni delle sette viste passano anche con i **32 poster** aggiornati; dettagli e ripetizioni sono documentati nel rapporto dell’importazione.
 - Ultima verifica dell’interfaccia: **11 ottobre 2026**, [sette viste SVG integrate nel gioco](./docs/player-ui-svg-integration.md); [audit generale del progetto del 10 ottobre](./docs/project-audit-2026-10-10.md).
 - Nuovi strumenti: [diario, backup completo, editor delle interazioni, cronache e impostazioni](./docs/player-tools.md); [verifica dell'integrazione](./docs/improvements-audit-2026-10-10.md).
 - Nuove modalità: [Arkadex, Arkastore, registro del match, sfide a seed e Fanta-Team](./docs/arkadex-arkastore-challenges.md), con cap di cinque livelli in squadra; [verifica delle cinque funzioni](./docs/game-features-audit-2026-10-10.md).
