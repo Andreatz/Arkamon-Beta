@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "url": "https://andreatz.github.io/Arkamon-Beta/?pages-verification=20261011",
+  "status": 200,
+  "title": "Arkamon",
+  "text": "Audio ON\nARKAMON\nNuova Partita\nPartita",
+  "scripts": [
+    "https://andreatz.github.io/Arkamon-Beta/assets/index-CKkddQLr.js"
+  ],
+  "brokenImages": [],
+  "errors": [],
+  "failed": [
+    {
+      "url": "https://andreatz.github.io/Arkamon-Beta/assets/Sfondo%20Titolo.mp4",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "bad": [],
+  "date": "2026-10-11",
+  "pagesBuildTypeBefore": "legacy",
+  "pagesBuildTypeAfter": "workflow",
+  "pagesStatus": "built",
+  "deploymentRun": "https://github.com/Andreatz/Arkamon-Beta/actions/runs/38142851121",
+  "deploymentConclusion": "success",
+  "ciRun": "https://github.com/Andreatz/Arkamon-Beta/actions/runs/38142702475",
+  "ciConclusion": "success"
+}

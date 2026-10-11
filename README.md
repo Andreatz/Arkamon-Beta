@@ -54,7 +54,7 @@ npm test
 - Arkastore nelle città, carrello atomico e Borsa fuori/dentro battaglia: Pozioni, Rianimatori, cure degli status e Masterball.
 - Squadre con differenza massima di cinque livelli: catture fuori fascia nel deposito e XP conservata al cap, senza cambiare HP o livelli dei vecchi salvataggi.
 - Sfide a seed e Fanta-Team Builder con sei specie al livello 20, budget 100, codici condivisibili, salvataggi separati e classifica locale della stessa configurazione.
-- Workflow GitHub Pages presente: la disponibilità dell'hosting per il repository privato resta da risolvere. Una build locale riuscita non conferma un deploy online.
+- Pubblicazione GitHub Pages tramite il workflow Vite: [configurazione e verifica della sorgente GitHub Actions](./docs/github-pages-deployment.md). Il workflow pubblica `dist/`; una build locale riuscita non conferma un deploy online.
 
 ## Architettura
 
