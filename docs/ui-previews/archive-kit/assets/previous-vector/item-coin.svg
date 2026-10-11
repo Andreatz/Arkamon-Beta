@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="181" height="184" viewBox="0 0 181 184" role="img" aria-labelledby="item-coin-title">
+<title id="item-coin-title">Moneta d’oro — Arkamon</title>
+<desc>Hand-authored geometric illustration. Native circles, ellipses, regular facets, smooth Bezier curves and gradients; no tracing, raster images or alpha masks.</desc>
+<defs>
+  <linearGradient id="coin-outer" x1="17%" y1="4%" x2="80%" y2="90%"><stop stop-color="#fff0ad"/><stop offset=".2" stop-color="#e9ac39"/><stop offset=".55" stop-color="#ad6220"/><stop offset=".75" stop-color="#f9c64b"/><stop offset="1" stop-color="#d0922e"/></linearGradient>
+  <linearGradient id="coin-bevel" x1="12%" y1="0%" x2="84%" y2="100%"><stop stop-color="#ffea8d"/><stop offset=".35" stop-color="#ffcb50"/><stop offset=".75" stop-color="#ab5213"/><stop offset="1" stop-color="#ffd24e"/></linearGradient>
+  <radialGradient id="coin-face" cx="29%" cy="26%" r="85%"><stop stop-color="#fffbae"/><stop offset=".25" stop-color="#ffe34a"/><stop offset=".57" stop-color="#ffc426"/><stop offset=".8" stop-color="#de8d19"/><stop offset="1" stop-color="#a54c14"/></radialGradient>
+  <filter id="coin-gloss" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="1.6"/></filter>
+</defs>
+<circle cx="90.5" cy="92" r="84" fill="#2c1720" stroke="#a99a95" stroke-width="1.6"/>
+<circle cx="90.5" cy="92" r="76.5" fill="url(#coin-outer)" stroke="#663318" stroke-width="3.6"/>
+<circle cx="90.5" cy="92" r="69" fill="url(#coin-bevel)"/>
+<circle cx="90.5" cy="92" r="61.5" fill="#552512"/>
+<circle cx="90.5" cy="92" r="55.7" fill="url(#coin-face)" stroke="#d7841c" stroke-width="1.2"/>
+<path d="M35 40 A76.5 76.5 0 0 1 119 21" fill="none" stroke="#fff2b6" stroke-width="4" stroke-linecap="round" opacity=".83"/>
+<path d="M54 148 A61.5 61.5 0 0 0 145 105" fill="none" stroke="#e2992b" stroke-width="3" stroke-linecap="round" opacity=".57"/>
+<ellipse cx="66" cy="64" rx="12" ry="16" transform="rotate(29 66 64)" fill="#ffffdc" opacity=".95" filter="url(#coin-gloss)"/>
+<ellipse cx="67" cy="64" rx="7.5" ry="10" transform="rotate(29 67 64)" fill="#ffffe5" opacity=".74"/>
+
+</svg>

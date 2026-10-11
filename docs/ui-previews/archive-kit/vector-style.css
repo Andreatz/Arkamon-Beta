@@ -1,0 +1,16 @@
+/* Vector-only adaptation of the same artwork and nine-slice geometry. */
+.kit-sprite>img,.kit-sprite.icon>img{display:block;width:100%!important;height:100%!important;object-fit:contain;filter:none;position:static!important;inset:auto!important;transform:none!important;margin:0!important;padding:0!important}
+.kit-frame{display:block;border:29px solid transparent;border-image-repeat:stretch;box-sizing:border-box}
+.kit-frame.button-frame{border-width:12px 19px}
+.kit-frame.row-frame{border-width:14px 20px}
+.kit-frame.small-frame{border-width:14px 17px}
+.kit-frame.slot-frame{border-width:22px}
+.preview-card .hero-art .kit-bg{top:16%}
+@media(max-width:900px){
+  .team-layout>.hero-creature .hero-art,.dex-hero .hero-art,.analysis-hero .hero-art{transform:translateY(-40px)}
+  .topbar .kit-frame{border-width:20px}
+  .paper .kit-frame{border-width:25px}
+  .paper .kit-frame.button-frame{border-width:12px 18px}
+  .paper .kit-frame.row-frame{border-width:13px 18px}
+  .item-slot>.kit-frame{border-width:17px}
+}

@@ -1,0 +1,1444 @@
+{
+  "name": "Arkamon — Anteprime con gli SVG dell’archivio",
+  "date": "2026-10-11",
+  "scope": "Standalone UI preview; not integrated in the live game",
+  "previewURL": "./index.html#overview",
+  "assetCatalogURL": "./assets.html",
+  "archiveSource": "C:/Users/andre/Desktop/Arkamon-Assets-SVG.rar",
+  "archiveSHA256": "d898fa8dc3fae4de5957507b457f130604224779ed3db2c1d607641c884dd6ce",
+  "kit": {
+    "nativeSVG": 47,
+    "sourceFilesModified": false,
+    "allSVGHashesMatchIncoming": true,
+    "gameAssetsUnchangedVerified": 49
+  },
+  "screens": {
+    "desktop": 7,
+    "desktopSize": [
+      1920,
+      1080
+    ],
+    "mobile": 7,
+    "mobileWidth": 390
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 657,
+      "sha256": "555f6948f788f6b9bd099ca4a43fca79a90d99eee4b8b725f482518b0611d8b9"
+    },
+    {
+      "path": "app.js",
+      "bytes": 32855,
+      "sha256": "44dff061e5cec2d5a670eb5a8356d22d4bd627e98db68ffb2c77224ab378baa8"
+    },
+    {
+      "path": "kit.js",
+      "bytes": 2555,
+      "sha256": "76c2dc8aaedd3bd67feaacc7dc90525687a849c7d3e1e4fb6d1863cca012ebd9"
+    },
+    {
+      "path": "style.css",
+      "bytes": 36266,
+      "sha256": "6dff27cc9574035d94b622314cf1bf350c818e6ed131ee9fcea191cef6e4c9a3"
+    },
+    {
+      "path": "current-style.css",
+      "bytes": 23716,
+      "sha256": "94da299d7e79c5d3cfdad5cefaf9375f3bd70befe5589c329cb2f02f7ffa5460"
+    },
+    {
+      "path": "purple-style.css",
+      "bytes": 19648,
+      "sha256": "3f71210de6a9dacefc938503aa18954eb39e8416fc30a113ecf0ee1ef493cae7"
+    },
+    {
+      "path": "vector-style.css",
+      "bytes": 1013,
+      "sha256": "82cf3bac4e63f2af316597cb77e1f74c3a5cb1535f7aa16b75af07f317037114"
+    },
+    {
+      "path": "archive-style.css",
+      "bytes": 5193,
+      "sha256": "d32a2637e8c6668c7821fbe61b99bd4c9bd059784b062d53ccfa85e476abb198"
+    },
+    {
+      "path": "assets.html",
+      "bytes": 75398,
+      "sha256": "bff3a2ae6b7da14ff5f7ca69da859fe99aaa2741e5a3bea3184443ed5597b644"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4319,
+      "sha256": "7001da5c20e588ed590d4b06bd79d4d67a39a5c500b208f1cc83db014d713572"
+    },
+    {
+      "path": "design-guide.html",
+      "bytes": 7443,
+      "sha256": "cd29d0af0532dca4e299f3ca5bd4a91b217aab2bbb52079ff70e13915cbb439a"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 4721,
+      "sha256": "864069a506475f4a93ba534cda0978bb8910a3ff1f48a5692f08a550a0461d82"
+    },
+    {
+      "path": "desktop-verification.json",
+      "bytes": 915,
+      "sha256": "52a3ea58780acad17d97eecd68d0db92a6e832f179880c1e4a1c2152aa740b0c"
+    },
+    {
+      "path": "delivery-check.json",
+      "bytes": 13974,
+      "sha256": "2851af426a374b54158d165aec6b18366713578fc7adcc7cf2c04b35e94a8bc0"
+    },
+    {
+      "path": "Arkamon-Assets-Archivio-SVG.zip",
+      "bytes": 53604,
+      "sha256": "0027cdb00bee859c5d46004090f2d0991870a94e201ec691a8103ab199849757"
+    },
+    {
+      "path": "assets/art/battle_forest.jpg",
+      "bytes": 224064,
+      "sha256": "c6aeab4e1ab64f0f22711a94b5a8805355b49d446d0ce2cdb74d1eea5e097037",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/art/deposito.png",
+      "bytes": 1984717,
+      "sha256": "507ef3b36bad50144f69e7b270613b3ea3d3bfc25b1e37184018686412713375",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/art/laboratory.png",
+      "bytes": 5031914,
+      "sha256": "fa49ced4bd6967ea95cd5f8bf523ad33549216e334e2cc76346b484783705b4f",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/art/logo-original.png",
+      "bytes": 36266,
+      "sha256": "64bfbcffbbd03daeb4334f64423d439d5682171b949721d24977023340934474",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/art/venezia.png",
+      "bytes": 6222097,
+      "sha256": "b8b5492b3f3c47b7bc1923dce6a70f6bae436e1a5cb1e78d8fc75c2f0c9ec32a",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/components/capsule-panel.svg",
+      "bytes": 535,
+      "sha256": "05b72e42fb8e68edc1f02834957d8e322b8156bcacbe0705258b310e0f418d96"
+    },
+    {
+      "path": "assets/components/portrait-ring.svg",
+      "bytes": 485,
+      "sha256": "b89f67b99e2d12e0ce7eb18c37cb34ffaee134f7986147a24f0abb5e460013f8"
+    },
+    {
+      "path": "assets/components/selection-arrow.svg",
+      "bytes": 357,
+      "sha256": "e1cff36198929e6c00a4d82928cf4e824e3f4b2358c39030bb53dc8df4f60b73"
+    },
+    {
+      "path": "assets/components/tab-bar.svg",
+      "bytes": 473,
+      "sha256": "3cd0c8bfbafd372a99e5e0e4ad59a4bd2bd0bdc7e2acd393079d8fb6fdd5ede4"
+    },
+    {
+      "path": "assets/creatures/1.webp",
+      "bytes": 58266,
+      "sha256": "c7d588aa48780d1d6de2e1a4e9731ea1908ceabd56d58c9bada829f06725dada",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/10.webp",
+      "bytes": 92394,
+      "sha256": "4c56fc14060236f75fa2c6ce4b38c624d4bb763202e82703b7844197b2d3f170",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/11.webp",
+      "bytes": 104158,
+      "sha256": "462b66454cf675508c54937f1cc5960c1bbf23dd614e6d6678ba0bb2b6222440",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/12.webp",
+      "bytes": 69272,
+      "sha256": "724e6ddd84664801d7d2adf316fc0ffe54859eea1bedf02e3e83acd9e54b383a",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/13.webp",
+      "bytes": 77542,
+      "sha256": "39aaa92cd2eeb25c7a7ce3b700c906caa7d72aada8f5519a3a9d7750e775ec8c",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/14.webp",
+      "bytes": 108926,
+      "sha256": "748e492eb7514d8a2a3b63c303106925d14f57912b9130e8ca183a73daa92e2f",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/15.webp",
+      "bytes": 105134,
+      "sha256": "6e1ebd20a8116149b935f530b6f13550329f230c6f127ad1f0db10b52b6b23a5",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/16.webp",
+      "bytes": 94898,
+      "sha256": "b2a38456d314fad91c65e0296fcd567a918337dccd01454f7eb8b97e1d344971",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/17.webp",
+      "bytes": 87920,
+      "sha256": "5cc9038a3f02a0363ee693a22de10bc6131a82f37be2c3432a642b92800d3eba",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/18.webp",
+      "bytes": 124746,
+      "sha256": "48fcb9f79081f9f45e9dc9c656cb1d37873fda5480ed51788b26e3f287a93a62",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/19.webp",
+      "bytes": 121244,
+      "sha256": "aaf703f10f57593505b76d42296eb40f3ead03298068b8f7a21319fad70a1045",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/2.webp",
+      "bytes": 58224,
+      "sha256": "b51e2a393c866ec9d2b1c4a83bf9cfe8147fe43b6936fe7de99b9c98c55df06b",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/20.webp",
+      "bytes": 73156,
+      "sha256": "1ee8f40d5a6902fbcfab206446b4f6053e04978519fa1dc73b89e86f9a359049",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/21.webp",
+      "bytes": 78352,
+      "sha256": "d9fecfd7954b572a1704d8a776ce6210ecc57865b9fd4bb3c3c5b0727b0bd40b",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/23.webp",
+      "bytes": 58306,
+      "sha256": "695af349c711bd1f895b6694d3e28ced92f8acea5c60f4b267a691ee90b9218d",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/24.webp",
+      "bytes": 89248,
+      "sha256": "061cadba1861080e91bc9aaa367d65619c4cd134095c60454a7956a97ea2f613",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/3.webp",
+      "bytes": 58844,
+      "sha256": "0b78f27d03a44f93d385e31e8a1b94c32266f514648d0be5ef5a6593d418e771",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/4.webp",
+      "bytes": 89420,
+      "sha256": "849e9f802d2d7f15ed8aff2b1d1babf144dd15738de228aaf023dd20307242e0",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/5.webp",
+      "bytes": 74776,
+      "sha256": "eadcb05ccd18e4e93bbdbbc504569aa672902c348f465b9e93dcf76a44bda384",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/6.webp",
+      "bytes": 77276,
+      "sha256": "7fd0874936dadb74a890e070f772e271ec71fdf9e9feb30167aefc3f71dea324",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/7.webp",
+      "bytes": 103130,
+      "sha256": "cccf0e858f1d96f7d9a35dcd8b269ae6c0857afde994bfdbfcc6806d278860ac",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/8.webp",
+      "bytes": 61856,
+      "sha256": "b8ce390bb5ad4daeb2ede407d650c04ac01fbd1b89a78515bb4ef3f6a9a2419f",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/creatures/9.webp",
+      "bytes": 55964,
+      "sha256": "b9d45f0914148ad39b4d2a8158b79cc6f546acd9692d7622e70692c957dcc8c4",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/fixtures.json",
+      "bytes": 1084137,
+      "sha256": "211141ac49c445c14e3018e300959cd89108057bfc9e85a7c41dbf675a938de4"
+    },
+    {
+      "path": "assets/fonts/ChelaOne-Regular.ttf",
+      "bytes": 33944,
+      "sha256": "db40383ca20d1c0e5c52279aef9048a4996277149c90d2423ef6d171865f799f",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/icons/analisi.svg",
+      "bytes": 318,
+      "sha256": "4b249ed51d2390dc062f96cba630643cc0caeb5a82dd545296dee648af845aa8"
+    },
+    {
+      "path": "assets/icons/arkadex.svg",
+      "bytes": 309,
+      "sha256": "3d68dbbdb1b79231f3ee39066aad7aa9d5ea2a355e3b1d69c06fe4945bbad7eb"
+    },
+    {
+      "path": "assets/icons/borsa.svg",
+      "bytes": 309,
+      "sha256": "80e1c7ab381c65f955bbf11ad86eb2031defc07805ca4fb0b7d57ccd81b767ed"
+    },
+    {
+      "path": "assets/icons/deposito.svg",
+      "bytes": 317,
+      "sha256": "7b7a4113b5a378658cf9c13b0d330a260522d98527b8ba128c04d854374fb9d8"
+    },
+    {
+      "path": "assets/icons/menu.svg",
+      "bytes": 372,
+      "sha256": "b71aa49d3bd0c4af85892916e45feb31967746fe5c3b99f6ad625d0ab2fe186f"
+    },
+    {
+      "path": "assets/icons/moneta.svg",
+      "bytes": 335,
+      "sha256": "870dc378ce966cbee1dfe17d73e23536f12216ee8c6a7a65e3138dcadd282425"
+    },
+    {
+      "path": "assets/icons/negozio.svg",
+      "bytes": 364,
+      "sha256": "6bc3321fe8ba4c9cfb3fb3c64e5c8c6beac7766ee91e641fa4cc4d9708729cd7"
+    },
+    {
+      "path": "assets/icons/sigillo-d6.svg",
+      "bytes": 512,
+      "sha256": "d07ec78acf80daa148edeccbe4daab79b590024e2c428534560c8f4f93b331ec"
+    },
+    {
+      "path": "assets/icons/squadra.svg",
+      "bytes": 375,
+      "sha256": "7026dcfa9b3065c1021c5f0a344c476d2115047ae81bc9d93b03fc8b11f63908"
+    },
+    {
+      "path": "assets/icons/status-paralisi.svg",
+      "bytes": 284,
+      "sha256": "e14101562e7bd96e6fe6a0358c83fa2a08cdfb7e18105c94e7c510b7f26d5bd4"
+    },
+    {
+      "path": "assets/icons/status-sonno.svg",
+      "bytes": 315,
+      "sha256": "9782c8e62d65f081b82f0f4511b4803e4393024989cd2132cc8f3969471622da"
+    },
+    {
+      "path": "assets/icons/status-veleno.svg",
+      "bytes": 399,
+      "sha256": "b17de039d1ccdbf90a5fe94e60f0ebb60e9b36aad2b34f0546c2d5b0754d3afd"
+    },
+    {
+      "path": "assets/items/antidote.svg",
+      "bytes": 738,
+      "sha256": "6586af04f30bd0c37e7bd73bddfca3dc7b9c3fcb913ca9091be99262213a41ac"
+    },
+    {
+      "path": "assets/items/awakening.svg",
+      "bytes": 781,
+      "sha256": "5da26edb59fff5a55dbbe9ba6e344945e4dafe70a87bc798dfa2ba46680ef741"
+    },
+    {
+      "path": "assets/items/masterball.svg",
+      "bytes": 910,
+      "sha256": "523c708c5fe223dbc541147423eb6c92327a3e05a185e699f29886db97f2befb"
+    },
+    {
+      "path": "assets/items/paralysis-heal.svg",
+      "bytes": 731,
+      "sha256": "436a922c99cf7c66fa34b50970ff9f3d0a1cf127e37847b736ba41418ad07b8f"
+    },
+    {
+      "path": "assets/items/potion.svg",
+      "bytes": 839,
+      "sha256": "477b2c3b0fed81eeaaa11f40b7b888ffefdd37b6580381b9d5df3e087f0d1553"
+    },
+    {
+      "path": "assets/items/revive.svg",
+      "bytes": 777,
+      "sha256": "3200c5e59a7a3b5c69e91134839d94f0eb0b93696c1fc7f7dd1aeb38b36c4aca"
+    },
+    {
+      "path": "assets/items/super-potion.svg",
+      "bytes": 843,
+      "sha256": "3a6b6e5b631da4d966ffeefabd15cbf6d449147735714dd0850a0bfed626abfa"
+    },
+    {
+      "path": "assets/original-ui/acqua.png",
+      "bytes": 121509,
+      "sha256": "efaab285c61aaa5f80893034c74b8f334089e9dced1508ed006ecfe7e640eeb8",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/box_deposit.png",
+      "bytes": 6117,
+      "sha256": "9dad67d45010c47fa12ca2807deb3a0026e34db98214f9433fb16f467a9e4ce3",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/elettro.png",
+      "bytes": 120891,
+      "sha256": "808d5d23011600f501a707f08febeacaf0d839198e0f94281a3990f7d5cea53a",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/erba.png",
+      "bytes": 100608,
+      "sha256": "f1b48bfa9179143101f5cc58a28651eb42b421761dea27434c6583a24360c3a7",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/freccia.png",
+      "bytes": 37332,
+      "sha256": "0caf37d077253c36d7c599f83f9a2e8c6cd735ac891edb561fb206da668290b0",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/fuoco.png",
+      "bytes": 110047,
+      "sha256": "11765d92da1d3601f5bf24a8b26e823310c2bee75b75db38619e58af3cf23fd2",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/general_button.png",
+      "bytes": 14388,
+      "sha256": "ca3833d3eb6ea23dccba64bb6c20948b47734fb47cbdec457b90a08f99208314",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/grey_pokeball.png",
+      "bytes": 625461,
+      "sha256": "6cf088486d325ebd8d0d268314ab3c072a3e7b6fa481838265a5bfbc1ebad7d5",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/hp_bar.png",
+      "bytes": 865,
+      "sha256": "e34ede363a5b3e9068842e321878f84bbee8b8e3ca74f4974bffb60ad9de641a",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/infobox.png",
+      "bytes": 2532942,
+      "sha256": "d88694803a86b2ea0cd2d5e84650d34b84dcde2015f36fa04403e59cc2af7b47",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/moves_box.png",
+      "bytes": 303926,
+      "sha256": "a58dde2fc43d4caa25b74ea9c45509d43767585fc192a2b99f2212c26b66e920",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/name_box.png",
+      "bytes": 80987,
+      "sha256": "ab5366b68dadb18e83052c3be00b67997814a03cf4beefe9ddcaad73e59587ea",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/normale.png",
+      "bytes": 94354,
+      "sha256": "58f2db0d923a65c99d1f71cfabdcbe86d01a33589d7cc208175d3d545dd160c2",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/oscurità.png",
+      "bytes": 109498,
+      "sha256": "f39b7151a83bbd190deb96bfe2d7f7cd15d47ac5198007d0af5836c0862e4c23",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/player1_avatar.png",
+      "bytes": 410829,
+      "sha256": "ecb4583cfc9e35ae0e9bee194fbf5d94a54b3917483d208d6354e2ce69f1d987",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/player2_avatar.png",
+      "bytes": 25975,
+      "sha256": "58896b312d19929be9095c4930fb3715c9e23f0929b5f31e97c102237239cb43",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/pokemon_avatar_deposit.png",
+      "bytes": 1886,
+      "sha256": "d6becdfba6f5fc355f1bfa43db5f28dffebf2aeb6130227d0c166b46e1a60ad5",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/psico.png",
+      "bytes": 148373,
+      "sha256": "07ff214fcb6720cb754ae4dc600bfc05d93cedba7ebaaf86f4ea8eaa80485981",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/team_box.png",
+      "bytes": 16188,
+      "sha256": "609e0ee9e9888055bb7266c69b327fef2ffe97ce0697cfa422c0ef878c64c841",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/original-ui/terra.png",
+      "bytes": 277425,
+      "sha256": "37d99271f32a03a9e220292489c3386b2a7aef97d70b25c63721def79317522c",
+      "origin": "Original game asset, unchanged copy",
+      "sourceHashMatched": true
+    },
+    {
+      "path": "assets/previous-vector/button-default.svg",
+      "bytes": 4093,
+      "sha256": "d1cffb72d55f03ce658dbdfd00628c223e99fb3022568bb64e04cfbce0492a64",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/button-primary.svg",
+      "bytes": 3824,
+      "sha256": "957ca1e3593813b9fa2d10b8299c111f9a20cee458e856636aa0b46c699108ce",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/card-default.svg",
+      "bytes": 5865,
+      "sha256": "507bef4b9eb735cc509c5336747dede7f78aa9fb3de08e7ee2ee918d6bf50f6c",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/card-portrait.svg",
+      "bytes": 6558,
+      "sha256": "bbe89f50df9609499daea1a9e2113ffb30bf58b45fd76c7414eb371bb3a6380a",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/card-selected-cyan.svg",
+      "bytes": 7591,
+      "sha256": "da010e74058826a02ee9522827006d5f0c808e73dae5ad8d492a61cf524210de",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/card-selected-violet.svg",
+      "bytes": 7646,
+      "sha256": "e4c52659e0a6d75647caf7340b6dd2e66c5b9075d4c45e0cac82c115e00496e0",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/circle-cyan.svg",
+      "bytes": 1260,
+      "sha256": "1dc1db8c7d0d56241fa1b3667e81709e9ef8b7b3ed85bd130c841d682d03baf5",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/circle-default.svg",
+      "bytes": 1121,
+      "sha256": "3f89ceec0a8df9c93ad500a528751f6ea34b9953631678c5bd8a85230d7a0751",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/circle-selected.svg",
+      "bytes": 1316,
+      "sha256": "8b62286f3e0691e94c1fc128a51e77ae11fe41eca7a334b44b5016d3087e9642",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/command-cancel.svg",
+      "bytes": 3077,
+      "sha256": "96bde14b69a87cbe11936eb9b2631df2ec13c25f168d9caf2f23d6622ed8bcaf",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/command-close.svg",
+      "bytes": 2033,
+      "sha256": "53f3ba63fb4cf1dfd4fe543aab0b5cb642b9b2a541716f45a2c6920838d19c07",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/command-confirm.svg",
+      "bytes": 3930,
+      "sha256": "b79bbba9bcb444010bddc4e09b77902260198400afc84fbccaf2d7e6019b71cd",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/command-left.svg",
+      "bytes": 2094,
+      "sha256": "79d9bce889ca2ae4ce8588d26e89073bca024c629c94cafd6b2cd9e07d06a1cc",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/command-pass.svg",
+      "bytes": 5388,
+      "sha256": "5af33334b89633a5bb944632e94fcc469fdcc38d9bcae2fcbe2d74505fefd297",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/command-right.svg",
+      "bytes": 2091,
+      "sha256": "f6d6d814f5f9ca3e288200306fe031dc9f4e82bc08926a9b65f1df676ca6bccd",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/command-settings.svg",
+      "bytes": 2788,
+      "sha256": "295cb1d01611a50e29e1234bdd7f11bc9c9e1b4f3f45e110575f3ba7aad4d9c2",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-activity.svg",
+      "bytes": 1756,
+      "sha256": "481e47973ecbe614defaffaacbe8fac6f55554702cc41e03a00a5423a326ced3",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-analysis.svg",
+      "bytes": 2237,
+      "sha256": "a3260cf66f38f6a2e6ab26fd8f8fc7c32f66404a8934fe858529e04f33967f49",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-bag.svg",
+      "bytes": 2350,
+      "sha256": "6a5408c49a079902a6f2a725b13b5db8fd156f56482ee2f9fc9fb2cd2a331a61",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-book.svg",
+      "bytes": 2120,
+      "sha256": "17c318248a92378a613c5e1ff744261bc378148c62f2d44d36dd61e5bbe6eef7",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-box.svg",
+      "bytes": 1977,
+      "sha256": "986f6a303390747cd978616b9b5aaf7d41b8115bd4a8359feb5df2cbc1e7f39c",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-home.svg",
+      "bytes": 1817,
+      "sha256": "3bfc55665f30a73b563a97e22067bc25775cbf279e8c0f3b3f9d077bb53170a1",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-map.svg",
+      "bytes": 2182,
+      "sha256": "afa2afb32cd3dc58fcac980336370cfee28e3067e8221d8ae32e7a32e51709ad",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-options.svg",
+      "bytes": 5067,
+      "sha256": "3f8074ec5d68a071cf4a3f4235e137a9c2a2942b23d60cb362c76953446fa157",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-shop.svg",
+      "bytes": 2263,
+      "sha256": "49e54d83a3b30b0a55cae893ca73bcfa1455ee4916c466d70e9cc96299f4ab73",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/icon-team.svg",
+      "bytes": 2066,
+      "sha256": "899ea293a1106061e36cc8dea2bb50863ef24676d33d1e86347fb6d8b5e9fc36",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/item-antidote.svg",
+      "bytes": 3978,
+      "sha256": "c1f6f082aaa2310af4b8d33c4ba72a0196f6f79f7eb40e33336a28802db08adf",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/item-coin.svg",
+      "bytes": 2177,
+      "sha256": "2b1e97f28b4a58bfad7355d5bd0a7aab1514d24790453fc8c28a18d6d3e6397f",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/item-potion.svg",
+      "bytes": 4909,
+      "sha256": "738ff9efb1781c83dd2f46c218621844fde2ca958b857c3d629b118f7c7507e4",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/item-revive.svg",
+      "bytes": 5525,
+      "sha256": "f1c4928ddfb972f4a849a4b8739feee2b2adbff65f933dcf805f0e7326cea762",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/item-sphere.svg",
+      "bytes": 3309,
+      "sha256": "e7e3abc27d0ab33876ad26d4a84a373b4397842607b6baafea94c0e3b4733f07",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/item-superpotion.svg",
+      "bytes": 4997,
+      "sha256": "7b9d5155fd718fb3bb226c0ebd8debf9e02aeab9fde708eb6339564103bb453c",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/map-pin.svg",
+      "bytes": 1267,
+      "sha256": "b6e881e4c4600037c9290162d7fe8433d5b1ef19673120cb00fbb8503bcfd097",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/panel-medium.svg",
+      "bytes": 6231,
+      "sha256": "7096917906d0432e3c9b0f1d92559c18a69cb917f4fe239f3724b20bc44bfd4b",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/panel-wide.svg",
+      "bytes": 11176,
+      "sha256": "12c0ac030e37c5fc4aadbe92161f1dd7be8cd6d5450ee53a7e0d7fcfb8a6b1ba",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/row-blank.svg",
+      "bytes": 3673,
+      "sha256": "f6cdda9f1dc374a0bf747ce28cc87d0cb0211d6a8533d5f1a7594de3c8c089e3",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/slot-cyan.svg",
+      "bytes": 7687,
+      "sha256": "f59eb70de5be23fa5a5f958e533f4a1d297d1e757d68164c98cd72ef0da19811",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/slot-default.svg",
+      "bytes": 4825,
+      "sha256": "6e9c22c0f2aecee8cf7e3a37c4bcf24b084bc5e4a513d6a16273bd1c66ce3f5b",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/slot-selected.svg",
+      "bytes": 7649,
+      "sha256": "698a74f3a06862893127d7d6288e7e2738a2513eb73b17ff0a9a033c871155ed",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-dark.svg",
+      "bytes": 1590,
+      "sha256": "a1b4534a10e9651daf8607ff4f09651e6ae9d954b653ec28378d400122ae8b8e",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-earth.svg",
+      "bytes": 1813,
+      "sha256": "488438a85b3a6d65d557dcd464d2a29cde28777310d27994da9f9d5581bc6db4",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-electric.svg",
+      "bytes": 1571,
+      "sha256": "7121ca2e07a22cd0eec505623ba0ad0f134aaf9432c1f4cefa856de93bc3fe83",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-fire.svg",
+      "bytes": 1742,
+      "sha256": "76dc0155368bc35f76b3c655e31fff066c5eeff0f99913746fed22b36a24fb6d",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-grass.svg",
+      "bytes": 1725,
+      "sha256": "5f05ce03a80282e3c8c62727895d380de8d35e33a5a3e3559f95b5224735336c",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-normal.svg",
+      "bytes": 1536,
+      "sha256": "5c28255c937f0d2592bfaf241d412391768b0cb97e04bcd7d26a29f5900fba0d",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-psychic.svg",
+      "bytes": 1646,
+      "sha256": "6e61ec8dec200635f12419796abdc568bc53bedc8b93189d62fa8742759aaeac",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/previous-vector/type-water.svg",
+      "bytes": 1700,
+      "sha256": "a1aadb9ac196102c4b1e74e917980a4615ef05da6ba943a00ca73354c168c485",
+      "origin": "Previous SVG version, comparison gallery only"
+    },
+    {
+      "path": "assets/README.md",
+      "bytes": 665,
+      "sha256": "0844059e25b477f67d733d966926c2157a9cee5812d0e77478e356aad3777022"
+    },
+    {
+      "path": "assets/tokens.css",
+      "bytes": 1196,
+      "sha256": "301ba456c60903935a82c286ab03f65d2072c56b1f72d30906a6be2c14095a01"
+    },
+    {
+      "path": "assets/vector/button-default.svg",
+      "bytes": 2463,
+      "sha256": "da82d68e077203f02f82ff95072a9b038a6db818b16e0a10dc819d89c5697868",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 657 213",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/button-primary.svg",
+      "bytes": 2098,
+      "sha256": "51449a00901f5d7982ea3f1783765ea27ad1b8b6f8d9e6d658e75bafab29574f",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 646 192",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/card-default.svg",
+      "bytes": 3116,
+      "sha256": "917ff2a2903f104759f93fa49ffc7518a0919c3b1407f60c6db61c152fa377b8",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 813 266",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/card-portrait.svg",
+      "bytes": 4222,
+      "sha256": "46038676ed260d968a95e01bb775db9fdf0cabbf47adcd4ae6e8817f38bd9b8d",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 433 458",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/card-selected-cyan.svg",
+      "bytes": 3902,
+      "sha256": "db1f17a9795e426cd75ea2dfcbc9ebf806832f1a4cf5886b9ef35a44d0bf8eb0",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 554 247",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/card-selected-violet.svg",
+      "bytes": 3980,
+      "sha256": "5e967dc6274b28d2a4268df62b6603e2437cea487739b5d917d0ef8a32d4e57f",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 565 254",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/catalog.json",
+      "bytes": 52922,
+      "sha256": "7ae7fac7fc253c0dc063cdb35f2f3cbaf6c80a2e5cbda98246b61a49727a6ce0"
+    },
+    {
+      "path": "assets/vector/circle-cyan.svg",
+      "bytes": 1287,
+      "sha256": "67b84bf6128954ee1f66b32cbee3e9c1d34f6808d0b606f2ced1f236b2f8bcb8",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 282 276",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/circle-default.svg",
+      "bytes": 1232,
+      "sha256": "f7f2fbf1e6a57d9a0d231422e4283c1ae7255ef65a0a66f662e3d7b8ed232098",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 272 272",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/circle-selected.svg",
+      "bytes": 1318,
+      "sha256": "bff8ad64973e5ff9dc7c62a4e9c8abc31b353cf2d3ac11fbdd38badc03007e51",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 275 276",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/command-cancel.svg",
+      "bytes": 1662,
+      "sha256": "115cdb7a4a48ca1fccfc9e6479ff347d5022bf806a6089dbf61e2e727665019b",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 450 155",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/command-close.svg",
+      "bytes": 1780,
+      "sha256": "171f7a60452748434e59b2edd788cbf399b6e0b9fb36fe324898bc9f518498a7",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 163 146",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/command-confirm.svg",
+      "bytes": 1713,
+      "sha256": "e50e2b32d237df664a61a48269238f4a4fcbd5c9156701c0b43d911e2dfdddab",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 505 155",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/command-left.svg",
+      "bytes": 2208,
+      "sha256": "6cbbd8fbac9527e237a072fce256f1cc506fe7036b67c6f2b0874154b6b71dd0",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 148 146",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/command-pass.svg",
+      "bytes": 1685,
+      "sha256": "34ce546776e8abd0404d7a325c79d41deabc92df2901b8fd3def4f52b6cdf603",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 580 156",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/command-right.svg",
+      "bytes": 1790,
+      "sha256": "c094a7a3589265153fcdddcd8d131f3ad4f87bfba60f785b464b1662d75bf956",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 149 145",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/command-settings.svg",
+      "bytes": 2377,
+      "sha256": "7d4a2e3496ed531a71fe7c26552eb8bc60f3a488e2c07043bd8aecd9723aa70d",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 168 147",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-activity.svg",
+      "bytes": 1344,
+      "sha256": "da7696aad74d5e283fbbe6855ce31b094db215640bfbb0788c7b4b34c03da4f0",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 175 200",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-analysis.svg",
+      "bytes": 1717,
+      "sha256": "7feeb9852507d124a256f0ad37823262c6d4f93c2323f08552fa6e68ae35f9b9",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 242 241",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-bag.svg",
+      "bytes": 1754,
+      "sha256": "769a91c6af63e900301aebb505f8c65f302324afe7e8fc32e9ab9934361fedcc",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 194 206",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-book.svg",
+      "bytes": 1679,
+      "sha256": "b2dd793a9a96da1499f11f09e6b406613297835627f0790aff1a773974926402",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 239 241",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-box.svg",
+      "bytes": 1258,
+      "sha256": "5735c1d1127fcbc54094e0bac4d3efa312a483881331956bd96c0bea9a040d0f",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 202 211",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-home.svg",
+      "bytes": 1053,
+      "sha256": "abd3cd73fb5da72f5606ee20111239a76fc19a7782c79809caa388634d4cbf0a",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 199 202",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-map.svg",
+      "bytes": 1557,
+      "sha256": "419516f95099dcfd573532b00de7114c6e824207b43105e5b36ef4676c1a8180",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 197 198",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-options.svg",
+      "bytes": 3817,
+      "sha256": "cf2eeccc18b07e51cd15565499ef7622b97585d8a45d332085167260ae84582b",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 197 201",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-shop.svg",
+      "bytes": 1604,
+      "sha256": "5271f4bb8832492499388ff12c1d24fbc9e113b16db7e4453abaf6256a2d2e03",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 235 241",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/icon-team.svg",
+      "bytes": 1313,
+      "sha256": "60df53099faa00c2b4a03718ac60751e6f85a246072c66e51b20ce36e8ab8500",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 205 210",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/item-antidote.svg",
+      "bytes": 2523,
+      "sha256": "596be5f571e41db407467f6681d76a132f04b73a224b72c80e5946cf61cb07e1",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 192 258",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/item-coin.svg",
+      "bytes": 2659,
+      "sha256": "a4a3cbfa8e97736532a37c06c90be951bc6d78c7d90ba9cad8de817aec564e19",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 181 184",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/item-potion.svg",
+      "bytes": 3415,
+      "sha256": "a3a9e1e39bf3614405d192afda6419fcdb727b406c72a8c1bd1916b9dee857e4",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "6 10 177 251.472",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/item-revive.svg",
+      "bytes": 4371,
+      "sha256": "485dedb0318babea1a7464476e0c01a81bcd601f44d1707448b535f306fc0168",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 214 219",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/item-sphere.svg",
+      "bytes": 2590,
+      "sha256": "ab0bbaacc17aa4a236d5a0c6706a36a9eb68218df98af486115212e3e82f0f94",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 249 251",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/item-superpotion.svg",
+      "bytes": 3549,
+      "sha256": "c11b03ffc7f719aaaac548a39cc01d54c7bee2b08edd64f782c03b17f009925d",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 185 258",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/map-pin.svg",
+      "bytes": 1078,
+      "sha256": "c2683833a8fb3f56532fafbdde2aaf410cf801bbc97e04b11b931efc06351013",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 142 187",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/panel-medium.svg",
+      "bytes": 3213,
+      "sha256": "abbd651b836bda687dea6b8366f4874e48d3fd60fcb5d4ba10b0b026b96bd0ad",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 1161 423",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/panel-wide.svg",
+      "bytes": 7991,
+      "sha256": "6c849364a33b0d002fff757275fe0b2b6a3b9cb33464c1c869fee1e5fd1e13c1",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 2026 709",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/row-blank.svg",
+      "bytes": 1560,
+      "sha256": "5d18ab737351d7291abb683ec25bb5a5f73781f29d6959a7646d5a289d78db86",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 1661 169",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/slot-cyan.svg",
+      "bytes": 5811,
+      "sha256": "a255c2f27d64982fa3c0e16c9fc4d2f1b88740e494f5ef5e0b935e4033483c49",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 272 273",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/slot-default.svg",
+      "bytes": 2317,
+      "sha256": "4fba41360b606e8f7fde0ac0f46a028549bafcfb7e7000366b59be4e329a3428",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 272 270",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/slot-selected.svg",
+      "bytes": 5744,
+      "sha256": "cc765ef4fe97032e396fa10a6d33c2ed7e35d81fea126fa4142816485a98dde3",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 263 273",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-dark.svg",
+      "bytes": 1590,
+      "sha256": "a1b4534a10e9651daf8607ff4f09651e6ae9d954b653ec28378d400122ae8b8e",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 237 244",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-earth.svg",
+      "bytes": 1813,
+      "sha256": "488438a85b3a6d65d557dcd464d2a29cde28777310d27994da9f9d5581bc6db4",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 238 245",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-electric.svg",
+      "bytes": 1571,
+      "sha256": "7121ca2e07a22cd0eec505623ba0ad0f134aaf9432c1f4cefa856de93bc3fe83",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 247 250",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-fire.svg",
+      "bytes": 1742,
+      "sha256": "76dc0155368bc35f76b3c655e31fff066c5eeff0f99913746fed22b36a24fb6d",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 242 247",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-grass.svg",
+      "bytes": 1725,
+      "sha256": "5f05ce03a80282e3c8c62727895d380de8d35e33a5a3e3559f95b5224735336c",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 252 252",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-normal.svg",
+      "bytes": 1536,
+      "sha256": "5c28255c937f0d2592bfaf241d412391768b0cb97e04bcd7d26a29f5900fba0d",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 241 246",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-psychic.svg",
+      "bytes": 1646,
+      "sha256": "6e61ec8dec200635f12419796abdc568bc53bedc8b93189d62fa8742759aaeac",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 241 247",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "assets/vector/type-water.svg",
+      "bytes": 1700,
+      "sha256": "a1aadb9ac196102c4b1e74e917980a4615ef05da6ba943a00ca73354c168c485",
+      "origin": "Exact user-provided SVG from Arkamon-Assets-SVG.rar",
+      "sourceHashMatched": true,
+      "viewBox": "0 0 249 252",
+      "rasterEmbeds": false
+    },
+    {
+      "path": "screens/1-squadra.png",
+      "bytes": 1211302,
+      "sha256": "6bf2d162fee2344e87ac3d614a2987c7537ce2f1bbfea9962e7a33507e4299b5"
+    },
+    {
+      "path": "screens/2-deposito.png",
+      "bytes": 1115265,
+      "sha256": "66d3d224f44e7455ddced6daa8e69e4db6cb450d94599a7be2ab007c3c59f01f"
+    },
+    {
+      "path": "screens/3-arkadex.png",
+      "bytes": 1210812,
+      "sha256": "77a00fe830923473507f633aa52dcc15f3316d1c91a5d6cb4641f35a3eef7844"
+    },
+    {
+      "path": "screens/4-analisi.png",
+      "bytes": 1082194,
+      "sha256": "3e63679dd86012cc32de060ab4ffc9ade953235df2ede430c1dcf38bb72db037"
+    },
+    {
+      "path": "screens/5-menu.png",
+      "bytes": 1174473,
+      "sha256": "b3fa042cedc7cf880fb0b44140d7b720b1f6392c2287560db2bf83bcfd9ca8e7"
+    },
+    {
+      "path": "screens/6-borsa.png",
+      "bytes": 1001375,
+      "sha256": "7eddcdea0559973bfe67518d56f47c6c277eecb113538443e27472ab068dcfb1"
+    },
+    {
+      "path": "screens/7-negozio.png",
+      "bytes": 965947,
+      "sha256": "abeb74f585811cffd485390cb305f4fe303ecb3d52509326da7e6a338ad8be50"
+    },
+    {
+      "path": "screens/asset-catalog.png",
+      "bytes": 1576849,
+      "sha256": "cda1ba7bbba2d643d3df91afb255b005d8548182936982dedf5300693bc6dfe2"
+    },
+    {
+      "path": "screens/overview.png",
+      "bytes": 1338224,
+      "sha256": "265702e57ba189d87ee79bd70ea70850ab026e09eccdb1b347bbf77994b7e8b4"
+    },
+    {
+      "path": "mobile/1-squadra.png",
+      "bytes": 586323,
+      "sha256": "5c108fca746396b65dfd6ac47d82420dea18283fffebc00741aa4d8f02dedf1d"
+    },
+    {
+      "path": "mobile/2-deposito.png",
+      "bytes": 479568,
+      "sha256": "4e6bea135f512d01c01a57dffd11af5cf03a7df9a939d714db4186137c477a4d"
+    },
+    {
+      "path": "mobile/3-arkadex.png",
+      "bytes": 558820,
+      "sha256": "daa262b694519c5c0e81f47dc119d885e4497d8ed2d3506edf51b956efc51485"
+    },
+    {
+      "path": "mobile/4-analisi.png",
+      "bytes": 498062,
+      "sha256": "fcc3841810b9cb6544a09ed988a7e46ee24bcc9cff9410424bf836f6b6725089"
+    },
+    {
+      "path": "mobile/5-menu.png",
+      "bytes": 618845,
+      "sha256": "fcf0230cfc44eac4f4d2587a4b5301b79df3ddc8cc06a0151c12c0dbd9645ad9"
+    },
+    {
+      "path": "mobile/6-borsa.png",
+      "bytes": 546698,
+      "sha256": "14eebef846dfef9481d481ff09218cc86e3eb97b8bc3471e8e2dda3899e46027"
+    },
+    {
+      "path": "mobile/7-negozio.png",
+      "bytes": 631085,
+      "sha256": "7fed05ff7ad0f83bf5c7cebd22f4a3dbc801847c5b73fa87dd27becbddfc70f0"
+    },
+    {
+      "path": "quality/archive-browser-check.json",
+      "bytes": 1211,
+      "sha256": "ebe77c6cb6bcc664fc48b7340fce2a5a1674879fbdeba6bc0eb3e4cae01a5aa0"
+    },
+    {
+      "path": "quality/archive-copy-check.json",
+      "bytes": 25834,
+      "sha256": "52f76c1a525b783a93ea56e0e300a3db940ef1ffb69e345e39e8df6e137ad8a6"
+    },
+    {
+      "path": "quality/archive-gallery-1440.png",
+      "bytes": 485818,
+      "sha256": "9e7b1e2db636fdc55d924599d08bb6b11fd0ab9535569ae297fbe69964cf0bdd"
+    },
+    {
+      "path": "quality/archive-gallery-390.png",
+      "bytes": 111123,
+      "sha256": "5ff61fba086626e20fc6683d54041b19514fc61c20902192c6fb065da598c7be"
+    },
+    {
+      "path": "quality/archive-gallery-check.json",
+      "bytes": 13676,
+      "sha256": "9fa5387d650515c6090d5c8154277692b51247e9900bbc045324f6abd120eb90"
+    },
+    {
+      "path": "quality/archive-import.json",
+      "bytes": 9053,
+      "sha256": "91175becb6d0f1ed4cef347580990a07809bc390c8953639642e75e6f9f18977"
+    },
+    {
+      "path": "quality/circle-rendering-check.json",
+      "bytes": 2219,
+      "sha256": "8e3884535b414e7d89a759a228e6a4e2e0e2dffc233c222e179cda5b0b523459"
+    },
+    {
+      "path": "quality/incoming-audit.json",
+      "bytes": 27343,
+      "sha256": "2ac33e694abc7f286a0aaf2cb3676c5b69ce298d4b86e78b3a262a5458fb8dc5"
+    },
+    {
+      "path": "quality/incoming-comparison.json",
+      "bytes": 58497,
+      "sha256": "792b24adbe631f2f4140a72817b5353d3551e9fc5445456f7036a234c0fe5d74"
+    },
+    {
+      "path": "quality/native-svg-audit.json",
+      "bytes": 26671,
+      "sha256": "74d0531bd5c4ba4de53f94e6a8ca399a4e5704073350a8f710a7132c3e2c5a83"
+    },
+    {
+      "path": "capture.cjs",
+      "bytes": 2829,
+      "sha256": "0dfb941b1aa86c91b598fa5c3deae1e4fd05b467f560d5340d5787dfc40d7fa6"
+    },
+    {
+      "path": "delivery-check.cjs",
+      "bytes": 11344,
+      "sha256": "23795ac4486e84b8c191aa85fb8b1422ce295fc9298519f05870eeb28a3c8b7a"
+    },
+    {
+      "path": "source-package-verification.json",
+      "bytes": 615,
+      "sha256": "a87199f9ddfcd612a27e870b3e47aaf3178d787254a2b04e9327f21cd63db2ba"
+    },
+    {
+      "path": "verify.cjs",
+      "bytes": 6095,
+      "sha256": "3f699a5239716cd85a49298a83b012ae497552d1f769428e8ff7cba55df5b7b4"
+    }
+  ],
+  "repositoryPath": "docs/ui-previews/archive-kit",
+  "sourceArchivePreserved": true,
+  "publicationValidation": {
+    "buildPassed": true,
+    "browserInteractions": 8,
+    "responsiveLayouts": 21,
+    "exactUserSVGHashes": 47,
+    "nativeCircleImagesChecked": 114,
+    "previewPortable": true
+  }
+}

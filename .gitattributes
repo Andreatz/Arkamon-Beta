@@ -6,3 +6,6 @@ vfx-source/ai-generated/provenance/*.json text eol=lf
 vfx-source/ai-generated/README.md text eol=lf
 docs/vfx-generated-moves/** text eol=lf
 scripts/vfx-generated/*.py text eol=lf
+
+# Keep the delivered UI files and source SVG hashes byte-identical across clones.
+docs/ui-previews/archive-kit/** -text whitespace=cr-at-eol

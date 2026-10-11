@@ -1,0 +1,38 @@
+/* Colori e geometrie ricavati dagli asset Arkamon e dal tema Notte Viola. */
+:root {
+  --arka-bg: #111827;
+  --arka-surface: #39383a;
+  --arka-surface-light: #62676b;
+  --arka-frame: #f8fafc;
+  --arka-blue: #2a6fab;
+  --arka-cyan: #66b9d8;
+  --arka-primary: #c084fc;
+  --arka-selection: #ffda66;
+  --arka-red: #e20b16;
+  --arka-text: #f8fafc;
+  --arka-muted: #cbd5e1;
+  --arka-hp-high: #22c55e;
+  --arka-hp-mid: #facc15;
+  --arka-hp-low: #ff3856;
+  --arka-title-font: 'Chela One', system-ui, sans-serif;
+  --arka-body-font: 'Segoe UI', system-ui, sans-serif;
+  --arka-radius: 26px;
+  --arka-transition: 150ms ease;
+  /* Compatibilità con i componenti del prototipo; i valori sono quelli nuovi. */
+  --atlas-ink: #f8fafc;
+  --atlas-deep: #111827;
+  --atlas-teal: #2a6fab;
+  --atlas-paper: #f8fafc;
+  --atlas-paper-dim: #e2e8f0;
+  --atlas-gold: #ffda66;
+  --atlas-gold-dark: #e5ae36;
+  --atlas-coral: #ff3856;
+  --atlas-muted: #cbd5e1;
+  --atlas-hp: #22c55e;
+  --atlas-danger: #ff3856;
+  --atlas-radius: 26px;
+  --atlas-shadow: 0 8px 20px #0007;
+  --atlas-title-font: 'Chela One', system-ui, sans-serif;
+  --atlas-body-font: 'Segoe UI', system-ui, sans-serif;
+  --atlas-transition: 150ms ease;
+}

@@ -1,0 +1,114 @@
+/* Palette of the user-provided SVG archive.
+   Color-only overrides: layout, source SVG files and original game artwork stay intact. */
+:root{
+  --arka-bg:#0b1427;
+  --arka-surface:#14213d;
+  --arka-selection:#aee5ff;
+  --arka-text:#f5faff;
+  --arka-muted:#bdcde2;
+  --archive-blue:#168cf8;
+  --archive-cyan:#21c7ee;
+  --archive-line:#527db8;
+  --archive-white:#f5fdff;
+  --atlas-ink:#152743;
+  --atlas-paper:#f5faff;
+  --atlas-gold:#aee5ff;
+  --atlas-muted:#bdcde2;
+}
+body{background:#0b1427;color:#f5faff}
+button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#57d5ff}
+.stage,.stage.shop{
+  background-color:#0b1427;
+  background-image:linear-gradient(110deg,#0b172dc9,#132b469f),url('assets/art/deposito.png');
+}
+.stage[data-screen=menu]{
+  background-image:linear-gradient(110deg,#0b172dcc,#132b46b3),url('assets/art/battle_forest.jpg');
+}
+.brand>span{color:#c6dbf4}
+.location,.location b{color:#edf6ff}
+.currency strong{color:#ffce5b}
+.currency span{color:#bdcde2}
+.player-switch button,.button,.button.light,.nav-button,.deposit-toolbar .tab{color:#edf6ff}
+.player-switch button.active,.button.primary,.nav-button.active,.tab.active,.paper-tabs button.active{color:#fff}
+.nav-button.active{filter:drop-shadow(0 0 7px #078cff66)}
+.page-head h1,.hero-caption h2,.paper h2,.menu-tile h2,.move-name{color:#f5faff}
+.page-head p,.head-badge small{color:#bdcde2}
+.eyebrow,.paper .eyebrow,.hero-caption .eyebrow{color:#aee5ff}
+.head-badge b{color:#e4f4ff}
+.panel,.paper{color:#f5faff}
+.paper .muted,.muted,.description,.item-detail .description,.dex-detail .description,
+.small-note,.rule-card p,.paper .small-note,.modal p{color:#bdcde2}
+.paper .label,.label{color:#b1c9e4}
+.divider{background:linear-gradient(90deg,#527db844,#aee5ff88,#527db800)}
+.party-card,.party-card.selected{color:#fff}
+.party-card.selected{filter:drop-shadow(0 0 5px #078cff66)}
+.party-card .lv{color:#cceaff}
+.party-card .hp-value{color:#d9e9f8}
+.party-rule{color:#d0e4f6}
+.party-rule b{color:#aee5ff}
+.hp-track{background:#08162c;border-color:#6686a0}
+.party-card .hp-track span{background:linear-gradient(#57d5ff,#168cf8)}
+.party-card .hp-track.mid span{background:linear-gradient(#ffd860,#efa722)}
+.party-card .hp-track.low span{background:linear-gradient(#ff6275,#e33158)}
+.hero-caption .type{background:#112947dd;border-color:#75bde9}
+.species-code{color:#c6e3fb!important}
+.type,.type.normale,.type.elettro,.type.acqua,.type.fuoco,.type.erba,
+.type.oscurita,.type.terra,.type.psico{background:#101f3bc7;border-color:#527db8;color:#f5faff}
+.health-head b{color:#cceaff}
+.move,.preview-meta,.paper-tabs,.analysis-info .paper-tabs,.cart-row{border-color:#527db855}
+.move-dice{color:#aee5ff;background:#0b1b32c9;border-color:#527db8}
+.tabs{background:#0d1c3577}
+.tab,.paper-tabs button{color:#d9e9f8}
+.toolbar>.label{background:#101f3baf;border-color:#527db8}
+.box-slot .slot-lv{background:#0b1b32;color:#d9efff;border-color:#527db8}
+.box-top span,.box-bottom,.item-count{color:#b8cee6}
+.search{border-color:#527db8;background:#0b1b32a8;color:#f5faff}
+.search::placeholder{color:#a7bdd7}
+.dex-scroll{scrollbar-color:#527db888 transparent}
+.dex-row,.dex-row strong{color:#fff}
+.dex-row .thumb{background:#182e4b;border-color:#6686a0}
+.dex-row small{color:#bdcde2}
+.dex-row .caught{color:#aee5ff}
+.evo-step b,.evo-step small{color:#d9e9f8}
+.evo-step.active{background:#168cf824;border-color:#78aee8}
+.evo-arrow{color:#aee5ff}
+.capture-label{color:#9eebdc}
+.stat b,.rule-card b{color:#e4f4ff}
+.supreme-box{color:#c6e3fb}
+.menu-tile,.menu-tile.featured{color:#f5faff}
+.menu-tile p{color:#bdcde2}
+.menu-tile .tile-number{color:#78aee8}
+.journey-card .journey-map{border-color:#527db8}
+.gym-badges span{border-color:#527db8;background:#0b1b32;color:#6686a0}
+.gym-badges .earned{background:linear-gradient(#249fff,#0877ed);border-color:#aee5ff;color:#ffe69a}
+.item-slot,.item-slot strong{color:#edf6ff}
+.item-slot small{border-color:#78aee8;color:#fff;background:#101f3bdb}
+.item-count{border-color:#527db855}
+.effect-banner{color:#e4f4ff}
+.effect-banner strong{color:#57d5ff}
+.effect-banner span{color:#d0e4f6}
+.quantity button{background:#18385b;border-color:#78aee8;color:#fff}
+.quantity output{color:#fff}
+.shop-row,.shop-row.selected{color:#f5faff}
+.shop-row small{color:#bdcde2!important}
+.shop-row .price,.shop-row.selected .price,.cart-row b,.cart-summary .total{color:#f4d567!important}
+.cart-summary .label{color:#b1c9e4}
+.footer{border-color:#527db855;background:#0c1b32bd;color:#bdcde2}
+.footer a{color:#d9efff}
+.footer em{color:#9ab6d4}
+.key{border-color:#527db8;color:#cceaff}
+.toast{border-color:#8bcaff;background:#17467b;color:#fff}
+.modal-backdrop{background:#08162ccc}
+.overview{
+  background-color:#0b1427;
+  background-image:linear-gradient(#0b172ddd,#0b172dee),url('assets/art/deposito.png');
+}
+.overview p,.original-proof span{color:#bdcde2}
+.screen-link{background:#14213d;border-color:#527db8;box-shadow:0 5px 0 #050d1b}
+.screen-link:hover{border-color:#aee5ff}
+.screen-link span{color:#b1c9e4}
+.swatch{border-color:#78aee8}
+.overview footer{border-color:#527db855;color:#b1c9e4}
+@media(max-width:900px){
+  .sidebar{border-color:#36548f!important;background:#101f3ba6!important}
+}

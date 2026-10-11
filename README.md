@@ -23,6 +23,7 @@ npm test
 - Ultima verifica: **10 ottobre 2026**, [audit del progetto](./docs/project-audit-2026-10-10.md).
 - Nuovi strumenti: [diario, backup completo, editor delle interazioni, cronache e impostazioni](./docs/player-tools.md); [verifica dell'integrazione](./docs/improvements-audit-2026-10-10.md).
 - Nuove modalità: [Arkadex, Arkastore, registro del match, sfide a seed e Fanta-Team](./docs/arkadex-arkastore-challenges.md), con cap di cinque livelli in squadra; [verifica delle cinque funzioni](./docs/game-features-audit-2026-10-10.md).
+- Anteprime grafiche: [sette schermate e kit SVG fornito](./docs/ui-previews/README.md), con confronto della versione precedente, catture desktop/telefono e pacchetti scaricabili.
 - Build web: `npm run build` completato senza errori
 - Test: il rapporto corrente contiene il risultato della suite completa e delle prove nel browser; i rapporti precedenti restano storici.
 - Verifica interattiva del gameplay: **completata per i passaggi documentati**; [verifica generale](./docs/gameplay-audit-2026-10-06.md), [verifica status/doppio KO](./docs/status-and-double-ko-audit-2026-10-06.md) e [correzione paralisi/sonno](./docs/status-corrections-audit-2026-10-06.md) del 6 ottobre 2026.
