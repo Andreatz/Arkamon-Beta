@@ -28,12 +28,14 @@ test('deposit swaps and cross-box moves survive reload with residual HP, status 
 
   // Swap two occupied slots through the same controls used by the player.
   await scene.getByRole('button', { name: 'Squadra, posto 1: Vyrath deposito, livello 5', exact: true }).click()
+  await scene.getByRole('button', { name: 'Sposta o scambia', exact: true }).click()
   await scene.getByRole('button', { name: 'Box 1, posto 1: Felyss deposito, livello 5', exact: true }).click()
   await expect(scene.getByRole('button', { name: 'Squadra, posto 1: Felyss deposito, livello 5', exact: true })).toBeVisible()
   await expect(scene.getByRole('button', { name: 'Box 1, posto 1: Vyrath deposito, livello 5', exact: true })).toBeVisible()
 
   // A selection remains usable when moving to another box; the squad compacts.
   await scene.getByRole('button', { name: 'Squadra, posto 2: Darklaw deposito, livello 5', exact: true }).click()
+  await scene.getByRole('button', { name: 'Sposta o scambia', exact: true }).click()
   await scene.getByRole('button', { name: 'Vai al box 2', exact: true }).click()
   await scene.getByRole('button', { name: 'Box 2, posto 35: vuoto', exact: true }).click()
   await expect(scene.getByRole('button', { name: 'Squadra, posto 2: vuoto', exact: true })).toBeVisible()

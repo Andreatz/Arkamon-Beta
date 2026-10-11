@@ -1,0 +1,290 @@
+import { expect, test, type Locator, type Page } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+import type { BattleChronicle, PokemonIstanza } from '../src/types'
+
+const SAVE_KEY = 'arkamon-save'
+interface SavedPlayer {
+  id: 1 | 2
+  nome: string
+  squadra: PokemonIstanza[]
+  deposito: Record<string, PokemonIstanza>
+  monete: number
+  inventario: Record<string, number>
+}
+interface CampaignSnapshot {
+  giocatore1: SavedPlayer
+  giocatore2: SavedPlayer
+  giocatoreAttivo: 1 | 2
+  turnoOverworld: { giocatoreAttivo: 1 | 2; azioniRimaste: number }
+  posizione1: { luogo: string }
+  posizione2: { luogo: string }
+}
+
+/** A valid portable campaign starts the test; every mutation then uses the production UI. */
+async function seedCampaign(page: Page, location: 'map' | 'city' | 'route' | 'deposit' = 'map') {
+  await page.addInitScript(({ key, location }) => {
+    // Reloads must read the result of the real persisted action, rather than reseeding it.
+    if (localStorage.getItem(key)) return
+    const first = { istanzaId: 'integration-g1-first', specieId: 1, nome: 'Vyrath di Arianna', livello: 10, hp: 3, xp: 2, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }
+    const teammate = { istanzaId: 'integration-g1-second', specieId: 5, nome: 'Darklaw compagno', livello: 5, hp: 6, xp: 0 }
+    const reserve = { istanzaId: 'integration-g1-reserve', specieId: 9, nome: 'Felyss in riserva', livello: 7, hp: 2, xp: 1, stato: { tipo: 'Avvelenato', turniRimanenti: -1, turniTrascorsi: 2 } }
+    const outsideCap = { istanzaId: 'integration-g1-outside-cap', specieId: 13, nome: 'Wormaren fuori fascia', livello: 20, hp: 4, xp: 2 }
+    const foreign = { istanzaId: 'integration-g2-first', specieId: 5, nome: 'Darklaw di Bruno', livello: 6, hp: 9, xp: 0 }
+    const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Arianna' : 'Bruno', squadra: id === 1 ? [first, teammate] : [foreign],
+      deposito: id === 1 ? { '1:1': reserve, '1:2': outsideCap } : {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [],
+      monete: id === 1 ? 700 : 125, inventario: id === 1 ? { potion: 2, 'paralysis-heal': 1 } : { potion: 1 },
+    })
+    const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
+    const place = location === 'city' || location === 'deposit' ? 'Venezia' : location === 'route' ? 'Percorso_1' : 'Milano'
+    localStorage.setItem(key, JSON.stringify({ version: 0, state: {
+      giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null,
+      posizione1: position(place), posizione2: position('Torino'), turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
+      posizioniLocali1: location === 'city' ? { Venezia: 'n56' } : {}, posizioniLocali2: {},
+      scenaCorrente: location === 'deposit' ? { scena: 'deposito' } : location === 'city' ? { scena: 'citta', payload: { luogo: 'Venezia' } } : { scena: 'mappa-principale' },
+      scenaPrecedente: location === 'deposit' ? { scena: 'citta', payload: { luogo: 'Venezia' } } : location === 'city' ? { scena: 'mappa-principale' } : null, audioMuted: true,
+      arkadex: { seen1: [1, 5, 9, 13], caught1: [1, 5, 9, 13], seen2: [5], caught2: [5] },
+      interactionProgress: { completed1: [], completed2: [], completedShared: [], log1: [], log2: [], pendingBattle: null },
+    } }))
+    localStorage.setItem('arkamon-preferences-v1', JSON.stringify({ version: 1, state: {
+      musicVolume: 0, effectsVolume: 0, animationSpeed: 'fast', reducedMotion: 'on',
+    } }))
+  }, { key: SAVE_KEY, location })
+  await page.goto('/')
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+}
+
+async function campaign(page: Page): Promise<CampaignSnapshot> {
+  return page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state, SAVE_KEY)
+}
+
+async function openTools(page: Page, screen: string): Promise<Locator> {
+  await page.getByRole('button', { name: 'Partita', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
+  await dialog.getByRole('button', { name: screen, exact: true }).click()
+  await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+  return dialog
+}
+
+test.beforeEach(async ({ page, isMobile }) => {
+  if (!isMobile) await page.setViewportSize({ width: 1440, height: 1000 })
+})
+
+test('all seven integrated screens fit the desktop and phone viewport with loaded SVG artwork', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  await seedCampaign(page)
+  const dialog = await openTools(page, 'Squadra')
+  for (const [name, id] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Negozio', 'negozio'], ['Menù Partita', 'partita']] as const) {
+    await dialog.getByRole('button', { name, exact: true }).click()
+    await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
+    await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+    await dialog.evaluate(async (element) => Promise.all(Array.from(element.querySelectorAll('img')).map(image => image.decode().catch(() => null))))
+    const geometry = await dialog.evaluate((element) => {
+      const shell = element.querySelector('.pu-shell') as HTMLElement
+      const content = element.querySelector('.pu-content') as HTMLElement
+      return { viewport: innerWidth, document: document.documentElement.scrollWidth, shell: shell.scrollWidth,
+        shellWidth: shell.clientWidth, content: content.scrollWidth, contentWidth: content.clientWidth,
+        brokenKit: Array.from(element.querySelectorAll<HTMLImageElement>('img[src*="/ui/player-kit/"]')).filter(image => !image.complete || !image.naturalWidth || !image.src.endsWith('.svg')).map(image => image.src) }
+    })
+    expect(geometry.document, `${name}: document horizontal overflow`).toBeLessThanOrEqual(geometry.viewport + 2)
+    expect(geometry.shell, `${name}: tools horizontal overflow`).toBeLessThanOrEqual(geometry.shellWidth + 2)
+    expect(geometry.content, `${name}: screen horizontal overflow`).toBeLessThanOrEqual(geometry.contentWidth + 2)
+    expect(geometry.brokenKit, `${name}: missing SVG artwork`).toEqual([])
+    const accessibility = await new AxeBuilder({ page }).include('.player-ui-dialog').analyze()
+    expect(accessibility.violations, `${name}: accessibility violations`).toEqual([])
+    await test.info().attach(`Integrated ${id} at ${geometry.viewport}px`, { body: await page.screenshot(), contentType: 'image/png' })
+  }
+  expect(errors).toEqual([])
+})
+
+test('the city shop opens the integrated window and the direct deposit respects Escape without changing the campaign', async ({ page }) => {
+  await seedCampaign(page, 'deposit')
+  const before = await campaign(page)
+  await expect(page.locator('.pu-scene-host .pu-shell')).toHaveAttribute('data-player-ui-screen', 'deposito')
+  await page.getByRole('button', { name: 'Partita', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: 'La tua partita' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog', { name: 'La tua partita' })).toHaveCount(0)
+  await expect(page.locator('.pu-scene-host')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('data-presented-scene', 'citta:Venezia')
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+  await page.getByRole('button', { name: 'Attività', exact: true }).click()
+  await page.getByRole('button', { name: 'Arkastore', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'La tua partita' })
+  await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'negozio')
+  await expect(dialog.getByRole('region', { name: 'Arkastore di Venezia' })).toBeVisible()
+  const after = await campaign(page)
+  expect(after.giocatore1).toEqual(before.giocatore1)
+  expect(after.giocatore2).toEqual(before.giocatore2)
+  expect(after.turnoOverworld).toEqual(before.turnoOverworld)
+})
+
+test('Escape closes an archived replay above the direct deposit without closing the scene or altering saved data', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  // The same valid replay shape used by the battle-chronicle restore scenario enters through persistence.
+  const chronicle: BattleChronicle = {
+    version: 1, battleId: 'deposit-replay', nextSequence: 3, omittedEvents: 0,
+    events: [
+      { id: 'deposit-replay:opening', kind: 'opening', title: 'Cronaca conservata', messages: ['Questa cronaca appartiene a una battaglia conclusa.'] },
+      { id: 'deposit-replay:2:status', kind: 'status', side: 'A', title: 'Risultato già rivelato', messages: ['Gli HP residui registrati sono 7.'], dice: [6], diceSum: 6, hpBefore: 7, hpAfter: 7 },
+    ],
+  }
+  await page.addInitScript((savedChronicle) => {
+    if (localStorage.getItem('arkamon-battle-archive-v1')) return
+    localStorage.setItem('arkamon-battle-archive-v1', JSON.stringify({ version: 1, state: { version: 1, matches: [{
+      id: savedChronicle.battleId, title: 'Battaglia conservata a Venezia', completedAt: '2026-10-11T10:00:00.000Z',
+      playerId: 1, outcome: 'vittoria', location: 'Venezia', battleType: 'Selvatico', chronicle: savedChronicle,
+    }] } }))
+  }, chronicle)
+  await seedCampaign(page, 'deposit')
+  const before = await campaign(page)
+  const beforeArchive = await page.evaluate(() => localStorage.getItem('arkamon-battle-archive-v1'))
+  const scene = page.locator('.pu-scene-host')
+  await scene.getByRole('button', { name: 'Cronache', exact: true }).click()
+  const review = scene.getByRole('button', { name: 'Rivedi cronaca e dadi', exact: true })
+  await review.click()
+  const replay = page.getByRole('dialog', { name: 'Cronaca della battaglia', exact: true })
+  await expect(replay).toBeVisible()
+  await expect(replay).toContainText('Dadi reali: 6 = 6')
+
+  await page.keyboard.press('Escape')
+  await expect(replay).toHaveCount(0)
+  await expect(scene).toBeVisible()
+  await expect(review).toBeFocused()
+  expect(await campaign(page)).toEqual(before)
+  expect(await page.evaluate(() => localStorage.getItem('arkamon-battle-archive-v1'))).toBe(beforeArchive)
+
+  await page.keyboard.press('Escape')
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('data-presented-scene', 'citta:Venezia')
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+  const after = await campaign(page)
+  expect(after.giocatore1).toEqual(before.giocatore1)
+  expect(after.giocatore2).toEqual(before.giocatore2)
+  expect(after.turnoOverworld).toEqual(before.turnoOverworld)
+  expect(errors).toEqual([])
+})
+
+test('deposit swaps persist exact owned instances and reject a team-cap violation without healing', async ({ page }) => {
+  await seedCampaign(page)
+  const initial = await campaign(page)
+  const dialog = await openTools(page, 'Deposito')
+  await expect(dialog.getByRole('button', { name: /^Box 1, posto \d+:/ })).toHaveCount(35)
+  await expect(dialog.getByRole('button', { name: /^Squadra, posto \d+:/ })).toHaveCount(6)
+  await dialog.getByRole('button', { name: 'Box 1, posto 1: Felyss in riserva, livello 7', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Sposta o scambia', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Squadra, posto 2: Darklaw compagno, livello 5', exact: true }).click()
+  await expect.poll(async () => (await campaign(page)).giocatore1.squadra[1]?.istanzaId).toBe('integration-g1-reserve')
+  const swapped = await campaign(page)
+  expect(swapped.giocatore1.squadra[1]).toEqual(initial.giocatore1.deposito['1:1'])
+  expect(swapped.giocatore1.deposito['1:1']).toEqual(initial.giocatore1.squadra[1])
+  expect(swapped.giocatore2).toEqual(initial.giocatore2)
+  expect(swapped.turnoOverworld).toEqual(initial.turnoOverworld)
+
+  await dialog.getByRole('button', { name: 'Analizza Arkamon', exact: true }).click()
+  await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'analisi')
+  await expect(dialog.getByLabel('Arkamon da analizzare')).toHaveValue('integration-g1-reserve')
+  await expect(dialog.getByRole('region', { name: 'Arkamon selezionato: Felyss in riserva' })).toBeVisible()
+  await expect(dialog.locator('.pu-content')).toContainText('Avvelenato')
+
+  await dialog.getByRole('button', { name: 'Deposito', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Box 1, posto 2: Wormaren fuori fascia, livello 20', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Sposta o scambia', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Squadra, posto 2: Felyss in riserva, livello 7', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('al massimo 5 livelli')
+  expect((await campaign(page)).giocatore1).toEqual(swapped.giocatore1)
+  await page.getByRole('button', { name: 'Ho capito', exact: true }).click()
+  await page.reload()
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+  expect((await campaign(page)).giocatore1).toEqual(swapped.giocatore1)
+  expect((await campaign(page)).giocatore2).toEqual(initial.giocatore2)
+  const resumed = await openTools(page, 'Deposito')
+  await resumed.getByRole('button', { name: 'G2 · Bruno', exact: true }).click()
+  await expect(resumed.getByRole('button', { name: 'Sposta o scambia', exact: true })).toBeDisabled()
+})
+
+test('moving a reserve to team slot six selects its compact destination and preserves the exact specimen', async ({ page }) => {
+  await seedCampaign(page)
+  const initial = await campaign(page)
+  const dialog = await openTools(page, 'Deposito')
+  await dialog.getByRole('button', { name: 'Box 1, posto 1: Felyss in riserva, livello 7', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Sposta o scambia', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Squadra, posto 6: vuoto', exact: true }).click()
+
+  await expect.poll(async () => (await campaign(page)).giocatore1.squadra[2]?.istanzaId).toBe('integration-g1-reserve')
+  const moved = await campaign(page)
+  expect(moved.giocatore1.squadra).toHaveLength(3)
+  expect(moved.giocatore1.squadra[2]).toEqual(initial.giocatore1.deposito['1:1'])
+  expect(moved.giocatore1.deposito['1:1']).toBeUndefined()
+  expect(moved.giocatore2).toEqual(initial.giocatore2)
+  expect(moved.turnoOverworld).toEqual(initial.turnoOverworld)
+  await expect(dialog.getByRole('button', { name: 'Squadra, posto 3: Felyss in riserva, livello 7', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  await expect(dialog.getByRole('button', { name: 'Squadra, posto 6: vuoto', exact: true })).toHaveAttribute('aria-pressed', 'false')
+  await expect(dialog.locator('.pu-deposit-detail')).toContainText('Arkamon spostato. HP, esperienza e status sono conservati.')
+  await expect(dialog.getByRole('region', { name: 'Arkamon selezionato: Felyss in riserva', exact: true })).toBeVisible()
+  await dialog.getByRole('button', { name: 'Analizza Arkamon', exact: true }).click()
+  await expect(dialog.getByLabel('Arkamon da analizzare')).toHaveValue('integration-g1-reserve')
+  await expect(dialog.locator('.pu-content')).toContainText('Avvelenato')
+
+  await page.reload()
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+  expect((await campaign(page)).giocatore1).toEqual(moved.giocatore1)
+  expect((await campaign(page)).giocatore2).toEqual(initial.giocatore2)
+})
+
+test('the integrated bag cures paralysis once, preserves HP and persists the spent item and turn', async ({ page }) => {
+  await seedCampaign(page)
+  const before = await campaign(page)
+  const dialog = await openTools(page, 'Borsa')
+  const bag = dialog.getByRole('region', { name: 'Borsa degli oggetti', exact: true })
+  await expect(bag.getByLabel('Arkamon da curare')).toHaveValue('integration-g1-first')
+  await bag.getByRole('button', { name: 'Usa Antiparalisi', exact: true }).click()
+  await expect.poll(async () => (await campaign(page)).giocatore1.inventario['paralysis-heal']).toBe(0)
+  const after = await campaign(page)
+  expect(after.giocatore1.squadra[0]).toMatchObject({ istanzaId: 'integration-g1-first', hp: 3, livello: 10, xp: 2 })
+  expect(after.giocatore1.squadra[0].stato).toBeUndefined()
+  expect(after.giocatore1.inventario.potion).toBe(2)
+  expect(after.giocatore1.monete).toBe(before.giocatore1.monete)
+  expect(after.giocatore2).toEqual(before.giocatore2)
+  expect(after.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
+  await expect(bag.getByRole('button', { name: 'Usa Pozione', exact: true })).toBeDisabled()
+  await page.reload()
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+  expect((await campaign(page)).giocatore1).toEqual(after.giocatore1)
+  const resumed = await openTools(page, 'Borsa')
+  await expect(resumed.getByRole('button', { name: 'Usa Pozione', exact: true })).toBeDisabled()
+})
+
+test('the integrated city checkout charges the real cart once without healing or changing G2', async ({ page }) => {
+  await seedCampaign(page, 'city')
+  const before = await campaign(page)
+  const dialog = await openTools(page, 'Negozio')
+  const shop = dialog.getByRole('region', { name: 'Arkastore di Venezia', exact: true })
+  await shop.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
+  await shop.getByLabel('Quantità di Antiparalisi', { exact: true }).fill('1')
+  await expect(shop).toContainText('Carrello: 2 oggetti · 180 ₳')
+  await shop.getByRole('button', { name: 'Acquista carrello', exact: true }).click()
+  await expect.poll(async () => (await campaign(page)).giocatore1.monete).toBe(520)
+  const after = await campaign(page)
+  expect(after.giocatore1.inventario).toMatchObject({ potion: 3, 'paralysis-heal': 2 })
+  expect(after.giocatore1.squadra).toEqual(before.giocatore1.squadra)
+  expect(after.giocatore2).toEqual(before.giocatore2)
+  expect(after.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
+  await expect(shop.getByLabel('Quantità di Pozione', { exact: true })).toBeDisabled()
+  await expect(shop.getByRole('button', { name: 'Acquista carrello', exact: true })).toBeDisabled()
+  await page.reload()
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+  expect((await campaign(page)).giocatore1).toEqual(after.giocatore1)
+})
+
+test('consulting the integrated shop on a route never creates an available purchase or consumes resources', async ({ page }) => {
+  await seedCampaign(page, 'route')
+  const before = await campaign(page)
+  const dialog = await openTools(page, 'Negozio')
+  const shop = dialog.getByRole('region', { name: 'Arkastore di Percorso_1', exact: true })
+  await expect(shop).toContainText('In questo luogo non è presente un Arkastore.')
+  await expect(shop.getByLabel('Quantità di Pozione', { exact: true })).toBeDisabled()
+  await expect(shop.getByRole('button', { name: 'Acquista carrello', exact: true })).toBeDisabled()
+  expect(await campaign(page)).toEqual(before)
+})

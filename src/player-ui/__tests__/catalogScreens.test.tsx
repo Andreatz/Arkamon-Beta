@@ -1,0 +1,98 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { initialGameSave } from '@/save/gamePersistence'
+import type { GameState } from '@/store/gameStore'
+import type { StatoBattaglia } from '@/types'
+import { ArkadexScreen } from '../ArkadexScreen'
+import { BagScreen } from '../BagScreen'
+import { StoreScreen } from '../StoreScreen'
+
+const runtime = vi.hoisted(() => ({ state: undefined as unknown }))
+vi.mock('@/store/gameStore', () => ({
+  useGameStore: (selector?: (state: GameState) => unknown) => selector ? selector(runtime.state as GameState) : runtime.state,
+}))
+
+function campaign(): GameState {
+  const initial = initialGameSave()
+  initial.giocatore1.nome = 'Giocatore Uno'
+  initial.giocatore2.nome = 'Giocatore Due'
+  initial.giocatore1.squadra = [{ istanzaId: 'one', specieId: 1, nome: 'Vyrath Uno', livello: 5, hp: 3, xp: 0, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }]
+  initial.giocatore2.squadra = [{ istanzaId: 'two', specieId: 5, nome: 'Darklaw Due', livello: 5, hp: 8, xp: 0 }]
+  initial.giocatore1.inventario = { 'paralysis-heal': 1 }
+  initial.giocatore2.inventario = { masterball: 2 }
+  initial.giocatore1.monete = 300
+  initial.giocatore2.monete = 40
+  initial.posizione1.luogo = initial.posizione2.luogo = 'Venezia'
+  initial.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
+  return { ...initial, campaignRevision: 0, applicaOggetto: vi.fn(), acquistaOggetti: vi.fn() } as unknown as GameState
+}
+
+beforeEach(() => { runtime.state = campaign() })
+
+describe('real catalog screen visibility and action boundaries', () => {
+  it('shows the settled battle HP and status of an owned specimen without changing the saved team', () => {
+    const state = runtime.state as GameState
+    const saved = state.giocatore1.squadra[0]
+    const latest = { ...saved, hp: 1, stato: { tipo: 'Avvelenato' as const, turniRimanenti: -1 } }
+    state.battaglia = { pokemonA: latest, pokemonB: state.giocatore2.squadra[0] } as StatoBattaglia
+    const markup = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
+    expect(markup).toContain('<dt>HP attuali</dt><dd>1</dd>')
+    expect(markup).toContain('Status: Avvelenato. XP: 0.')
+    expect(state.giocatore1.squadra[0]).toBe(saved)
+    expect(saved.hp).toBe(3)
+    expect(saved.stato?.tipo).toBe('Paralizzato')
+  })
+
+  it('keeps each player’s discoveries private and never renders unknown species artwork or names', () => {
+    const one = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
+    expect(one).toContain('Numero 1: Vyrath · Ottenuto')
+    expect(one).toContain('Numero 5: specie da scoprire · Da scoprire')
+    expect(one).not.toContain('Darklaw')
+    expect(one).not.toContain('Voider')
+    expect(one).not.toContain('/sprites/arkamon/2/')
+    expect(one).not.toContain('/sprites/front_sprites/110.png')
+    const two = renderToStaticMarkup(<ArkadexScreen playerId={2} />)
+    expect(two).toContain('Numero 5: Darklaw · Ottenuto')
+    expect(two).toContain('Numero 1: specie da scoprire · Da scoprire')
+    expect(two).not.toContain('Vyrath')
+  })
+
+  it('shows only the selected player’s real items and keeps Masterball unavailable outside battle', () => {
+    const state = runtime.state as GameState
+    const one = renderToStaticMarkup(<BagScreen playerId={1} />)
+    expect(one).toContain('Usa Antiparalisi')
+    expect(one).not.toContain('Usa Masterball')
+    const two = renderToStaticMarkup(<BagScreen playerId={2} />)
+    expect(two).toMatch(/<button[^>]*disabled=""[^>]*>Usa Masterball<\/button>/)
+    expect(two).not.toContain('Usa Antiparalisi')
+    expect(two).toContain('Puoi usare gli oggetti soltanto durante il turno di questo giocatore.')
+    expect(state.applicaOggetto).not.toHaveBeenCalled()
+    expect(state.giocatore1.inventario).toEqual({ 'paralysis-heal': 1 })
+    expect(state.giocatore2.inventario).toEqual({ masterball: 2 })
+  })
+
+  it('does not reveal evolution thresholds belonging to undiscovered ancestors', () => {
+    const state = runtime.state as GameState
+    state.giocatore1.squadra = [{ istanzaId: 'final', specieId: 4, nome: 'Vyrath finale', livello: 100, hp: 1, xp: 0 }]
+    const markup = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
+    expect(markup).toContain('Numero 4: Vyrath · Ottenuto')
+    expect(markup).not.toContain('Lv. 19')
+    expect(markup).not.toContain('Lv. 40')
+    expect(markup).not.toContain('Lv. 70')
+    expect(markup).not.toContain('/sprites/arkamon/1/')
+  })
+
+  it('does not turn viewing another city or player into permission to shop', () => {
+    const state = runtime.state as GameState
+    state.posizione1.luogo = 'Foggia'
+    const one = renderToStaticMarkup(<StoreScreen playerId={1} />)
+    expect(one).toContain('Raggiungi questa città per acquistare nel suo Arkastore.')
+    expect(one).toMatch(/<input[^>]*disabled=""/)
+    const two = renderToStaticMarkup(<StoreScreen playerId={2} />)
+    expect(two).toContain('Saldo: 40 monete')
+    expect(two).toContain('Il turno di questo giocatore è concluso.')
+    expect(state.acquistaOggetti).not.toHaveBeenCalled()
+    expect(state.giocatore1.monete).toBe(300)
+    expect(state.giocatore2.monete).toBe(40)
+  })
+})
