@@ -1,8 +1,19 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ALLENATORI } from '@/data'
 import { useGameStore } from '../gameStore'
 import { settledBattleCheckpoint, restoreBattleCheckpoint } from '@/components/battle/battleCheckpoint'
+import { GAME_SAVE_STORAGE_KEY, serializeGameState } from '@/save/gamePersistence'
 import type { PokemonIstanza, StatoBattaglia } from '@/types'
+
+const storageValues = vi.hoisted(() => {
+  const values = new Map<string, string>()
+  vi.stubGlobal('localStorage', {
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => { values.set(key, value) },
+    removeItem: (key: string) => { values.delete(key) },
+  })
+  return values
+})
 
 const a: PokemonIstanza = { istanzaId: 'player', specieId: 1, nome: 'A', livello: 5, hp: 7, xp: 0 }
 const b: PokemonIstanza = { istanzaId: 'wild', specieId: 13, nome: 'B', livello: 5, hp: 3, xp: 0 }
@@ -22,7 +33,7 @@ function setup() {
   }))
 }
 describe('atomic capture and reward settlement', () => {
-  beforeEach(() => { useGameStore.getState().reset(); setup() })
+  beforeEach(() => { storageValues.clear(); useGameStore.getState().reset(); setup() })
   it('stores Masterball consumption, captured Pokémon and ended battle in one state update', () => {
     let updates = 0
     const unsubscribe = useGameStore.subscribe(() => { updates += 1 })
@@ -41,6 +52,47 @@ describe('atomic capture and reward settlement', () => {
     const original = useGameStore.getState()
     expect(original.concludiCattura(1, b, { checkpoint }, true)).toBe(false)
     expect(useGameStore.getState()).toBe(original)
+  })
+  it.each([
+    { masterball: false, fullTeam: false }, { masterball: true, fullTeam: false },
+    { masterball: false, fullTeam: true }, { masterball: true, fullTeam: true },
+  ])('a failed durable capture preserves every state and retries once: %j', ({ masterball, fullTeam }) => {
+    const captured = { ...b, stato: { tipo: 'Paralizzato' as const, turniRimanenti: -1 } }
+    useGameStore.setState((state) => ({
+      giocatore1: { ...state.giocatore1, squadra: fullTeam
+        ? [a, ...Array.from({ length: 5 }, (_, i) => ({ ...a, istanzaId: `reserve-${i}` }))]
+        : [a] },
+      battaglia: { ...state.battaglia!, pokemonB: captured,
+        seeded: { algorithm: 'arkamon-counter-v1', seed: 'capture-retry', cursor: 12 } },
+    }))
+    const original = useGameStore.getState()
+    const diskBefore = localStorage.getItem(GAME_SAVE_STORAGE_KEY)
+    const options = useGameStore.persist.getOptions(), storage = options.storage!
+    let updates = 0
+    const unsubscribe = useGameStore.subscribe(() => { updates += 1 })
+    useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => { throw new Error('QuotaExceededError') } } })
+    try {
+      expect(original.concludiCattura(1, captured, { checkpoint }, masterball)).toBe(false)
+      expect(useGameStore.getState()).toBe(original)
+      expect(useGameStore.getState().arkadex).toBe(original.arkadex)
+      expect(useGameStore.getState().matchLog).toBe(original.matchLog)
+      expect(localStorage.getItem(GAME_SAVE_STORAGE_KEY)).toBe(diskBefore)
+      expect(updates).toBe(0)
+    } finally { useGameStore.persist.setOptions({ storage }) }
+
+    expect(original.concludiCattura(1, captured, { checkpoint }, masterball)).toBe(true)
+    const current = useGameStore.getState()
+    const owned = [...current.giocatore1.squadra, ...Object.values(current.giocatore1.deposito)]
+    expect(owned.filter((pokemon) => pokemon.istanzaId === captured.istanzaId)).toEqual([captured])
+    expect(current.giocatore1.inventario.masterball).toBe(masterball ? 0 : 1)
+    expect(fullTeam ? current.giocatore1.deposito['1:1'] : current.giocatore1.squadra[1]).toEqual(captured)
+    expect(current.battaglia?.checkpoint).toEqual(checkpoint)
+    expect(current.battaglia?.seeded).toEqual(original.battaglia?.seeded)
+    expect(JSON.parse(localStorage.getItem(GAME_SAVE_STORAGE_KEY)!).state).toEqual(serializeGameState(current))
+    expect(updates).toBe(1)
+    expect(current.concludiCattura(1, captured, { checkpoint }, masterball)).toBe(false)
+    expect(updates).toBe(1)
+    unsubscribe()
   })
   it.each([false, true])('preserva PAR dopo la cattura e la chiusura, anche se la squadra è piena: %s', (squadraPiena) => {
     const par = { tipo: 'Paralizzato' as const, turniRimanenti: -1 }

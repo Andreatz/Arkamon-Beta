@@ -8,12 +8,14 @@ import {
   resolveMoveVfxRecipe,
 } from './resolveMoveVfxAsset'
 import { prepareMoveVfxPlayback } from './preloadVfxAssets'
+import { useVfxPlaybackPreferences } from './useVfxPlaybackPreferences'
 
 export function SpriteMoveVfx({ effect, onStart, onImpact, onComplete }: { effect: MoveVfxEvent } & MoveVfxPlaybackCallbacks) {
+  const { speed } = useVfxPlaybackPreferences(effect.id)
   const asset = resolveMoveVfxAsset(effect.move)
   const recipe = resolveMoveVfxRecipe(effect.move)
-  const durationMs = recipe?.durationMs ?? asset.durationMs
-  const impactMs = getMoveVfxImpactDelayMs(effect.move)
+  const durationMs = (recipe?.durationMs ?? asset.durationMs) / speed
+  const impactMs = getMoveVfxImpactDelayMs(effect.move) / speed
   const [readyId, setReadyId] = useState<number | null>(null)
   const [completedId, setCompletedId] = useState<number | null>(null)
   const callbacksRef = useRef({ onStart, onImpact, onComplete })
@@ -77,6 +79,7 @@ export function SpriteMoveVfx({ effect, onStart, onImpact, onComplete }: { effec
         effectId={effect.id}
         side={effect.side}
         target={effect.target}
+        playbackSpeed={speed}
       />
     </div>
   )

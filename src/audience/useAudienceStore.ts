@@ -127,13 +127,16 @@ export const useAudienceStore = create<AudienceStoreState>((set, get) => ({
       error: 'Collegamento rimosso solo da questo computer. Il sito non è raggiungibile: i vecchi codici QR smetteranno di funzionare alla scadenza della sessione.' })
   },
   async refreshSnapshot() {
-    const session = get().session
-    if (!session) return
+    const { session, connectionStatus } = get()
+    if (!session || connectionStatus === 'connecting') return
+    // A poll from before renewal/closure cannot update or expire that operation.
+    const revision = connectionRevision
     try {
       const snapshot = await getAudienceHost(session)
+      if (revision !== connectionRevision) return
       get().acceptSnapshot(session.sessionId, snapshot)
     } catch (error) {
-      if (get().session?.sessionId !== session.sessionId) return
+      if (revision !== connectionRevision || get().session?.sessionId !== session.sessionId) return
       if (audienceSessionEnded(error)) get().expireSession(session.sessionId)
       else set({ connectionStatus: 'error', error: audienceErrorMessage(error) })
     }

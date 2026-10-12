@@ -61,7 +61,7 @@ export function SceneTransition({ navigation, renderScene, children }: SceneTran
     // Grid movement listens on window; inert alone cannot suppress those keys.
     const blockKeyboard = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey || event.altKey) return
-      if (event.target instanceof Element && event.target.closest('.arka-admin-panel')) return
+      if (event.target instanceof Element && event.target.closest('.arka-admin-panel, [data-game-dialog], [data-battle-log-dialog]')) return
       event.preventDefault()
       event.stopImmediatePropagation()
     }

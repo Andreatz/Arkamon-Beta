@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useVfxPlaybackPreferences } from './useVfxPlaybackPreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from './AnimatedSprite'
 import { FallbackVfx } from './FallbackVfx'
@@ -61,6 +62,7 @@ export function MoveVfxLayer({
   side,
   target,
   durationMs,
+  playbackSpeed,
   anchor: anchorOverride,
   layer: layerOverride,
   motion: motionOverride,
@@ -75,6 +77,7 @@ export function MoveVfxLayer({
   side: 'A' | 'B'
   target?: 'opponent' | 'self'
   durationMs?: number
+  playbackSpeed?: number
   anchor?: VfxAnchor
   layer?: VfxLayer
   motion?: VfxMotion
@@ -84,7 +87,8 @@ export function MoveVfxLayer({
   opacity?: number
   blendMode?: VfxBlendMode
 }) {
-  const reduceMotion = useReducedMotion()
+  const { reducedMotion: reduceMotion, speed: preferenceSpeed } = useVfxPlaybackPreferences(`${effectId}:${asset.id}`)
+  const speed = playbackSpeed ?? preferenceSpeed
   const battleLayout = useAdminStore(
     (state) => state.theme.layouts.battle
   )
@@ -152,6 +156,7 @@ export function MoveVfxLayer({
       width={asset.width}
       height={asset.height}
       durationMs={duration}
+      playbackSpeed={speed}
       loop={asset.loop}
       style={visualStyle}
       onError={onAssetError}
@@ -180,7 +185,7 @@ export function MoveVfxLayer({
           opacity: [0, 1, 1, 0],
           scale: projectile ? [0.7, 1.1, 1] : [0.9, 1.04, 1],
         }}
-        transition={{ duration: reduceMotion ? 0 : duration / 1000, ease: 'easeInOut' }}
+        transition={{ duration: reduceMotion ? 0 : duration / speed / 1000, ease: 'easeInOut' }}
         style={{
           width: isScreen ? '100%' : asset.width,
           height: isScreen ? '100%' : asset.height,

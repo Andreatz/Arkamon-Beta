@@ -84,7 +84,8 @@ describe('Arkamon battle sprite visual selection', () => {
     expect(markup).toContain(`data-arkamon-asset-animation="${animation}"`)
     expect(markup).toContain('data-arkamon-motion="none"')
     expect(markup).toContain(`/sprites/arkamon/5/front/${animation}.webp`)
-    expect(markup).not.toContain('/front_sprites/5.png')
+    expect(markup).toContain('data-arkamon-first-frame-fallback="true"')
+    expect(markup).toContain('/front_sprites/5.png')
     expect(markup).not.toContain('/front/idle.webp')
     expect(markup).toContain('data-sprite-paused="false"')
   })
@@ -102,7 +103,8 @@ describe('Arkamon battle sprite visual selection', () => {
       expect(markup).toContain(`data-sprite-fps="${asset.fps}"`)
       expect(markup).toContain(`width="${asset.frameWidth}" height="${asset.frameHeight}"`)
       expect(markup).toContain('data-arkamon-motion="none"')
-      expect(markup).not.toContain(`/front_sprites/${speciesId}.png`)
+      expect(markup).toContain('data-arkamon-first-frame-fallback="true"')
+      expect(markup).toContain(`/front_sprites/${speciesId}.png`)
     }
   )
 
@@ -120,7 +122,7 @@ describe('Arkamon battle sprite visual selection', () => {
     expect(markup).toContain('data-sprite-frame="0"')
     expect(markup).toContain('data-sprite-paused="true"')
     expect(markup).toContain('data-arkamon-playback="paused"')
-    expect(markup).not.toContain('/front_sprites/5.png')
+    expect(markup).toContain('data-arkamon-first-frame-fallback="true"')
   })
 
   it('gates the native hit at its reaction marker while retaining the full source frames', () => {

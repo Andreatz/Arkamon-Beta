@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import type { MoveVfxAsset } from './types'
 
@@ -23,7 +23,7 @@ export function GifVfx({
   blendMode?: CSSProperties['mixBlendMode']
   onError?: () => void
 }) {
-  const reduceMotion = useReducedMotion()
+  const { reducedMotion: reduceMotion } = useGameMotionPreferences()
   const runtimeSrc = getGifRuntimeSrc(assetUrl(asset.src), effectId)
 
   if (reduceMotion) {

@@ -8,7 +8,7 @@ import { emptyMatchLog, appendMatchEvent } from '@/match/matchLog'
 import { initialGameSave, normalizeGameSave, serializeGameState } from '@/save/gamePersistence'
 import { serializeGameBackup, stateFromValidatedBackup, validateGameBackup } from '@/save/gameBackup'
 import { restoreGameBackup } from '@/save/restoreGameBackup'
-import { useGameStore } from '@/store/gameStore'
+import { haSpazioPokemon, useGameStore } from '@/store/gameStore'
 import type { PokemonIstanza, StatoBattaglia } from '@/types'
 
 const savedValues = vi.hoisted(() => {
@@ -166,10 +166,26 @@ describe('cap di squadra applicato alle azioni della campagna', () => {
     const target = pokemon('too-high', 11, 1, 13), battle = wildBattle(target)
     useGameStore.getState().iniziaBattaglia(battle)
     const before = useGameStore.getState()
+    expect(haSpazioPokemon(before.giocatore1)).toBe(true)
+    expect(haSpazioPokemon(before.giocatore1, target)).toBe(false)
+    expect(haSpazioPokemon(before.giocatore1, { ...target, livello: 10 })).toBe(true)
     expect(before.concludiCattura(1, target, finishCapture(battle), true)).toBe(false)
     expect(useGameStore.getState().giocatore1).toBe(before.giocatore1)
     expect(useGameStore.getState().battaglia).toBe(before.battaglia)
     expect(useGameStore.getState().giocatore1.inventario.masterball).toBe(1)
+  })
+
+  it('includes fainted low-level teammates when checking whether the captured target fits a full deposit', () => {
+    preparedCity()
+    const deposit = Object.fromEntries(Array.from({ length: 1050 }, (_, index) => [`${Math.floor(index / 35) + 1}:${index % 35 + 1}`, pokemon(`deposit-${index}`)]))
+    useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1,
+      squadra: [pokemon('low-ko', 5, 0), pokemon('high', 10)], deposito: deposit } }))
+    const player = useGameStore.getState().giocatore1
+    expect(haSpazioPokemon(player, pokemon('compatible', 10))).toBe(true)
+    expect(haSpazioPokemon(player, pokemon('too-high', 11))).toBe(false)
+    const availableDeposit = { ...deposit }
+    delete availableDeposit['30:35']
+    expect(haSpazioPokemon({ ...player, deposito: availableDeposit }, pokemon('too-high', 11))).toBe(true)
   })
 })
 

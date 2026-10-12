@@ -43,4 +43,26 @@ describe('laboratorio al rientro', () => {
     useGameStore.getState().scegliStarter(1)
     expect(renderToStaticMarkup(<TitoloScene />)).toContain('Continua')
   })
+
+  it.each([{ players: [1] }, { players: [2] }, { players: [1, 2] }] as const)('mantiene Continua e blocca ogni nuova scelta con gli starter di $players in deposito', ({ players }) => {
+    useGameStore.getState().scegliStarter(1)
+    useGameStore.getState().scegliStarter(5)
+    for (const playerId of players) useGameStore.getState().scambiaSlot(playerId, { tipo: 'squadra', indice: 0 }, { tipo: 'deposito', chiave: '1:1' })
+    expect(renderToStaticMarkup(<TitoloScene />)).toContain('Continua')
+    const buttons = starterButtons(renderToStaticMarkup(<LaboratorioScene />))
+    expect(buttons).toHaveLength(3)
+    expect(buttons.every((button) => button.includes('disabled=""'))).toBe(true)
+  })
+
+  it('riconosce una scelta parziale in deposito e conserva il giocatore che deve scegliere', () => {
+    useGameStore.getState().scegliStarter(1)
+    useGameStore.getState().scambiaSlot(1, { tipo: 'squadra', indice: 0 }, { tipo: 'deposito', chiave: '1:1' })
+    const markup = renderToStaticMarkup(<LaboratorioScene />)
+    const buttons = starterButtons(markup)
+    expect(buttons[0]).toContain('disabled=""')
+    expect(buttons[1]).not.toContain('disabled=""')
+    expect(buttons[2]).not.toContain('disabled=""')
+    expect(markup).toContain('Giocatore 2')
+    expect(renderToStaticMarkup(<TitoloScene />)).toContain('Continua')
+  })
 })

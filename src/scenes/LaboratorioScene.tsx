@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { LABORATORY_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
+import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
 
 /**
  * Scena del Laboratorio: scelta dello starter.
@@ -18,15 +19,15 @@ export function LaboratorioScene() {
   const impostaNomeGiocatore = useGameStore((s) => s.impostaNomeGiocatore)
   const giocatore1 = useGameStore((s) => s.giocatore1)
   const giocatore2 = useGameStore((s) => s.giocatore2)
-  const g1HaStarter = useGameStore((s) => s.giocatore1.squadra.length > 0)
-  const g2HaStarter = useGameStore((s) => s.giocatore2.squadra.length > 0)
+  const g1HaStarter = useGameStore((s) => hasOwnedPokemon(s.giocatore1))
+  const g2HaStarter = useGameStore((s) => hasOwnedPokemon(s.giocatore2))
   const [nomiConfermati, setNomiConfermati] = useState(g1HaStarter || g2HaStarter)
   const [nomeGiocatore1, setNomeGiocatore1] = useState(giocatore1.nome)
   const [nomeGiocatore2, setNomeGiocatore2] = useState(giocatore2.nome)
 
   const tuttiHannoStarter = g1HaStarter && g2HaStarter
   const giocatoreAttivo = g1HaStarter ? 2 : 1
-  const starterScelti = [...giocatore1.squadra, ...giocatore2.squadra].map((pokemon) => pokemon.specieId)
+  const starterScelti = [...getOwnedPokemon(giocatore1), ...getOwnedPokemon(giocatore2)].map((pokemon) => pokemon.specieId)
   const nomeGiocatoreAttivo = giocatoreAttivo === 1 ? giocatore1.nome : giocatore2.nome
 
   useEffect(() => {
