@@ -2,14 +2,16 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { resolve } from 'node:path'
 import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
+import { POKEMON_BASE } from '@/data'
 import { SpeciesPortrait } from '../kit'
 import { getPortraitFraming } from '../portraitFraming'
 
 const samples = [
   '/sprites/front_sprites/13.png', '/sprites/front_sprites/25.png',
   '/sprites/front_sprites/56.png', '/sprites/front_sprites/76.png', '/sprites/front_sprites/110.png',
-  '/sprites/arkamon/13/front/idle-poster.webp', '/sprites/arkamon/19/front/idle-poster.webp',
-  '/sprites/arkamon/24/front/idle-poster.webp',
+  '/sprites/front_sprites/19.png', '/sprites/front_sprites/24.png',
+  '/sprites/front_sprites/34.png', '/sprites/front_sprites/35.png',
+  '/sprites/front_sprites/36.png', '/sprites/front_sprites/37.png', '/sprites/front_sprites/38.png',
 ]
 
 describe('Whole-creature portrait framing', () => {
@@ -37,21 +39,18 @@ describe('Whole-creature portrait framing', () => {
     expect(y + height / 2).toBeCloseTo((top + bottom) / 2)
   })
 
-  it('uses each source’s own geometry for a poster and its static fallback', () => {
-    const poster = getPortraitFraming('/sprites/arkamon/13/front/idle-poster.webp')
-    const fallback = getPortraitFraming('/sprites/front_sprites/13.png')
-    expect(poster.width).not.toBe(fallback.width)
-    expect(poster.viewBox).not.toBe(fallback.viewBox)
-    const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={13} />)
-    expect(markup).toContain('preserveAspectRatio="xMidYMid meet"')
-    expect(markup).toContain('data-creature-source="/sprites/arkamon/13/front/idle-poster.webp"')
-    expect(markup).toContain(`viewBox="${poster.viewBox}"`)
-  })
-
-  it('renders a species without animation using its complete original sprite', () => {
-    const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={110} large />)
-    expect(markup).toContain('data-creature-source="/sprites/front_sprites/110.png"')
-    expect(markup).toContain(`viewBox="${getPortraitFraming('/sprites/front_sprites/110.png').viewBox}"`)
-    expect(markup).not.toContain('idle-poster.webp')
+  it('uses the official front sprite and its own geometry for every species, with or without animation', () => {
+    expect(POKEMON_BASE).toHaveLength(110)
+    for (const species of POKEMON_BASE) {
+      const source = `/sprites/front_sprites/${species.id}.png`
+      for (const large of [false, true]) {
+        const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} large={large} selected />)
+        expect(markup).toContain(`data-creature-source="${source}"`)
+        expect(markup).toContain(`viewBox="${getPortraitFraming(source).viewBox}"`)
+        expect(markup).toContain('preserveAspectRatio="xMidYMid meet"')
+        expect(markup).not.toContain('/sprites/arkamon/')
+        expect(markup).not.toContain('idle-poster.webp')
+      }
+    }
   })
 })

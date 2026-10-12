@@ -96,9 +96,11 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
   const report = await portraits.evaluateAll((elements, metadata) => elements.map(element => {
     const svg = element as SVGSVGElement
     const source = svg.getAttribute('data-creature-source')!
+    const speciesId = svg.getAttribute('data-species-id')
     const entry = metadata[source]
     if (!entry) return { source, issues: ['Unrecognized source metadata'] }
     const issues: string[] = []
+    if (source !== `/sprites/front_sprites/${speciesId}.png`) issues.push('Portrait does not use the official front sprite')
     const image = svg.querySelector('image')!, matrix = svg.getScreenCTM()!
     const [left, top, right, bottom] = entry.alphaBounds
     const alphaPoints = [[left, top], [right, bottom]].map(([x, y]) => {
@@ -133,7 +135,7 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
         issues.push(`Visible alpha clipped by ${ancestor.className}`); break
       }
     }
-    return { source, speciesId: svg.getAttribute('data-species-id'), issues }
+    return { source, speciesId, issues }
   }), portraitMetadata)
   expect(report.filter(portrait => portrait.issues.length), `${context}: complete centered portrait pixels`).toEqual([])
   return report
@@ -267,8 +269,9 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
           if (pageNumber < 19) await next.click()
         }
         expect(visitedSpecies).toEqual(pokemonCatalog.map(species => species.id))
-        expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(37)
-        expect([...portraitSources].filter(source => source.endsWith('.png'))).toHaveLength(73)
+        expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(0)
+        expect([...portraitSources].filter(source => source.endsWith('.png'))).toHaveLength(110)
+        expect([...portraitSources].sort()).toEqual(pokemonCatalog.map(species => `/sprites/front_sprites/${species.id}.png`).sort())
         await expect(next).toBeDisabled()
         await previous.click()
         await expect(pagination).toContainText('Pagina 18 / 19')
@@ -424,31 +427,31 @@ for (const height of [900, 945, 1080]) {
   })
 }
 
-test.describe('Portrait framing preserves complete static sprites after a missing animation poster', () => {
-  test.use({ viewport: { width: 1920, height: 900 } })
+test.describe('Official front sprites in all four creature consultation screens', () => {
+  test.use({ viewport: { width: 1920, height: 1080 } })
   test.skip(({ isMobile }) => isMobile, 'The shared portrait source projection is checked in the dense desktop layouts.')
 
-  test('an unavailable poster falls back to the unchanged PNG and uses its own alpha bounds', async ({ page }) => {
-    const failedPosterRequests: string[] = []
-    await page.route('**/sprites/arkamon/13/front/idle-poster.webp', async route => {
-      failedPosterRequests.push(route.request().url())
-      await route.abort('failed')
-    })
+  test('team, deposit, Arkadex and analysis need no animation poster or atlas and preserve the saved campaign', async ({ page }) => {
+    test.setTimeout(90_000)
     await seedFullCampaign(page)
     const before = await savedCampaign(page)
+    const animationRequests: string[] = []
+    await page.route('**/sprites/arkamon/**', async route => {
+      animationRequests.push(route.request().url())
+      await route.abort('failed')
+    })
     const dialog = await openTools(page)
-    await selectScreen(dialog, 'Deposito', 'deposito')
-    await dialog.getByRole('button', { name: /^Box 1, posto 1:/ }).click()
-    const fallback = dialog.locator('svg.pu-creature-art[data-species-id="13"]')
-    await expect(fallback).toHaveCount(2)
-    await expect.poll(async () => fallback.evaluateAll(elements => elements.every(element =>
-      element.getAttribute('data-creature-source') === '/sprites/front_sprites/13.png'
-      && element.getAttribute('data-creature-loaded') === 'true'))).toBe(true)
-    expect(failedPosterRequests.length).toBeGreaterThan(0)
-    const portraits = await assertVisiblePortraits(dialog, 'Deposito: missing ID 13 poster uses the whole original PNG')
-    expect(portraits.some(portrait => portrait.source.endsWith('idle-poster.webp'))).toBe(true)
-    expect(portraits.some(portrait => portrait.source === '/sprites/front_sprites/22.png')).toBe(true)
-    await assertFitsWithoutScroll(dialog, 'Deposito at 1920×900 with static, poster and recovered PNG portraits')
-    expect(await savedCampaign(page)).toEqual(before)
+    for (const [name, id] of SCREENS.slice(0, 4)) {
+      await selectScreen(dialog, name, id)
+      if (id === 'deposito') await dialog.getByRole('button', { name: /^Box 1, posto 1:/ }).click()
+      if (id === 'arkadex') await dialog.getByRole('button', { name: /^Numero 1:/ }).click()
+      const { portraits } = await assertFitsWithoutScroll(dialog, `${name}: complete official front sprites at 1920×1080`)
+      expect(portraits.length, `${name}: official front sprites are visible`).toBeGreaterThan(0)
+      expect(animationRequests, `${name}: static consultation must not request native animation media`).toEqual([])
+      expect(await savedCampaign(page), `${name}: sprite consultation does not change saved campaign data`).toEqual(before)
+      await test.info().attach(`${id}-official-front-sprites-1920x1080`, {
+        body: await page.screenshot(), contentType: 'image/png',
+      })
+    }
   })
 })
