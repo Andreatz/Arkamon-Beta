@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { getPokemon } from '@/data'
-import { validateFantaTeam } from './challengeRules'
+import { CHALLENGE_RULES_VERSION, isChallengeRulesVersion, validateFantaTeam } from './challengeRules'
 import { validateChallengeSeed } from './seededRandom'
 import type { ChallengeDraft, ChallengeResult, ChallengeSession } from './types'
 
 export const CHALLENGE_STORAGE_KEY = 'arkamon-challenges-v1'
 export const MAX_CHALLENGE_RESULTS = 30
-const defaultDraft = (): ChallengeDraft => ({ version: 1, seed: 'ARKAMON-2026', mode: 'seed', speciesIds: [] })
+const defaultDraft = (): ChallengeDraft => ({ version: CHALLENGE_RULES_VERSION, seed: 'ARKAMON-2026', mode: 'seed', speciesIds: [] })
 const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === 'object' && !Array.isArray(value))
 
 export interface ChallengeCollection { version: 1; draft: ChallengeDraft; results: ChallengeResult[] }
@@ -21,12 +21,12 @@ interface ChallengeStore extends ChallengeCollection {
 }
 
 export function normalizeChallengeDraft(value: unknown): ChallengeDraft {
-  if (!isRecord(value) || value.version !== 1 || (value.mode !== 'seed' && value.mode !== 'fanta')) return defaultDraft()
+  if (!isRecord(value) || !isChallengeRulesVersion(value.version) || (value.mode !== 'seed' && value.mode !== 'fanta')) return defaultDraft()
   try {
     const seed = validateChallengeSeed(value.seed)
-    const checked = validateFantaTeam(value.speciesIds, false)
+    const checked = validateFantaTeam(value.speciesIds, false, value.version)
     if (!checked.ok) return defaultDraft()
-    return { version: 1, seed, mode: value.mode, speciesIds: [...value.speciesIds as number[]] }
+    return { version: value.version, seed, mode: value.mode, speciesIds: [...value.speciesIds as number[]] }
   } catch { return defaultDraft() }
 }
 
@@ -39,9 +39,12 @@ export function normalizeChallengeResult(value: unknown): ChallengeResult | null
     || typeof value.completedAt !== 'string' || value.completedAt.length > 40 || !Number.isFinite(Date.parse(value.completedAt))
     || !Array.isArray(value.team) || value.team.length !== 6 || new Set(value.team).size !== 6
     || value.team.some((id) => !Number.isSafeInteger(id) || !getPokemon(id))) return null
-  if (!validateFantaTeam(value.team).ok) return null
+  const rulesVersion = value.rulesVersion === undefined ? 1 : value.rulesVersion
+  if (!isChallengeRulesVersion(rulesVersion) || !validateFantaTeam(value.team, true, rulesVersion).ok) return null
+  const idVersion = /^challenge-v(\d+)-/.exec(value.sessionId)
+  if (idVersion && Number(idVersion[1]) !== rulesVersion) return null
   try {
-    return { id: value.id, sessionId: value.sessionId, mode: value.mode, seed: validateChallengeSeed(value.seed),
+    return { id: value.id, sessionId: value.sessionId, rulesVersion, mode: value.mode, seed: validateChallengeSeed(value.seed),
       outcome: value.outcome, turns: value.turns as number, remainingHp: value.remainingHp as number,
       completedAt: value.completedAt, team: [...value.team] as number[] }
   } catch { return null }
@@ -63,8 +66,12 @@ export function normalizeChallengeCollection(value: unknown): ChallengeCollectio
 }
 
 /** Scores are comparable only within the same configuration and rules version. */
-export function challengeLeaderboard(results: readonly ChallengeResult[], sessionId: string): ChallengeResult[] {
-  return results.filter((result) => result.sessionId === sessionId).sort((a, b) => {
+export function challengeLeaderboard(results: readonly ChallengeResult[], configuration: ChallengeSession | string): ChallengeResult[] {
+  const sessionId = typeof configuration === 'string' ? configuration : configuration.id
+  const rulesVersion = typeof configuration === 'string' ? (/^challenge-v2-/.test(configuration) ? 2 : 1) : configuration.rulesVersion
+  return results.filter((result) => result.sessionId === sessionId && (result.rulesVersion ?? 1) === rulesVersion
+    && (typeof configuration === 'string' || result.seed === configuration.seed && result.mode === configuration.mode
+      && result.team.length === configuration.team.length && result.team.every((id, index) => id === configuration.team[index].specieId))).sort((a, b) => {
     const outcome = Number(b.outcome === 'vittoria') - Number(a.outcome === 'vittoria')
     return outcome || a.turns - b.turns || b.remainingHp - a.remainingHp || a.completedAt.localeCompare(b.completedAt)
   })
@@ -98,13 +105,13 @@ function write(collection: ChallengeCollection, keepResultInMemory = false): Wri
 export const useChallengeStore = create<ChallengeStore>()(persist((_set, get) => ({
   version: 1, draft: defaultDraft(), results: [], storageWarning: null,
   saveDraft: (draft) => {
+    if (!isChallengeRulesVersion(draft.version) || (draft.mode !== 'seed' && draft.mode !== 'fanta')) return { ok: false, error: 'Versione o modalità della sfida non valida.' }
     try { validateChallengeSeed(draft.seed) } catch (error) { return { ok: false, error: (error as Error).message } }
-    const validation = validateFantaTeam(draft.speciesIds, false)
+    const validation = validateFantaTeam(draft.speciesIds, false, draft.version)
     if (!validation.ok) return validation
-    if (draft.version !== 1 || (draft.mode !== 'seed' && draft.mode !== 'fanta')) return { ok: false, error: 'Modalità della sfida non valida.' }
     return write({ version: 1, draft: normalizeChallengeDraft(draft), results: get().results })
   },
-  rememberSession: (session) => get().saveDraft({ version: 1, mode: session.mode, seed: session.seed, speciesIds: session.mode === 'fanta' ? session.team.map((pokemon) => pokemon.specieId) : [] }),
+  rememberSession: (session) => get().saveDraft({ version: session.rulesVersion, mode: session.mode, seed: session.seed, speciesIds: session.mode === 'fanta' ? session.team.map((pokemon) => pokemon.specieId) : [] }),
   addResult: (candidate) => {
     const result = normalizeChallengeResult(candidate)
     if (!result) return { ok: false, error: 'Il risultato della sfida non è valido.' }

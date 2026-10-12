@@ -103,8 +103,7 @@ export function TitoloScene() {
           tone="primary" className="text-xl"
           onClick={() => {
             if (haGiocatori && !window.confirm('Vuoi iniziare una nuova partita? La partita salvata verrà sostituita.')) return
-            reset()
-            vaiAScena('laboratorio')
+            useGameStore.getState().eseguiTransazione(() => { reset(); vaiAScena('laboratorio') })
           }}
         >
           Nuova Partita

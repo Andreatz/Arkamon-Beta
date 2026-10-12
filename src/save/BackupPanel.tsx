@@ -4,6 +4,7 @@ import { gameBackupFilename, MAX_GAME_BACKUP_BYTES, serializeGameBackup, validat
 import { downloadGameBackup, readPreviousGameBackup, restoreGameBackup } from './restoreGameBackup'
 import { useInteractionStore } from '@/interactions/interactionStore'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
+import { readRecoveryCopies, useSaveWriteStatus } from './durableWrites'
 
 /** Render inside the common game tools menu; no scene navigation or Admin privileges required. */
 export function BackupPanel() {
@@ -15,6 +16,8 @@ export function BackupPanel() {
   const recoveryWarnings = useGameStore((s) => s.saveRecoveryWarnings)
   const dismissRecovery = useGameStore((s) => s.dismissSaveRecoveryWarnings)
   const [previousAvailable, setPreviousAvailable] = useState(() => readPreviousGameBackup() !== null)
+  const backupWarning = useSaveWriteStatus(s => s.backupWarning)
+  const copies = readRecoveryCopies()
   const exportCurrent = () => {
     try {
       downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState()), gameBackupFilename())
@@ -45,6 +48,16 @@ export function BackupPanel() {
   return <section aria-label="Backup della partita" className="space-y-4">
     <h2 className="text-lg font-bold">Backup della partita</h2>
     <p className="text-sm">Salva i progressi di entrambi i giocatori, squadre, deposito, mappe e battaglia. Il ripristino conserva HP e status; i codici QR e le impostazioni del pubblico restano separati.</p>
+    {backupWarning && <p role="status" className="text-sm">{backupWarning}</p>}
+    {copies.length > 0 && <div className="rounded border border-current p-3 text-sm">
+      <p className="font-bold">Copie automatiche dei progressi precedenti</p>
+      <p>Ogni copia conserva un punto già valido della campagna. Controlla l’anteprima prima del ripristino.</p>
+      <div className="mt-2 flex flex-wrap gap-2">{copies.map((copy, index) => <button key={copy.createdAt + index} type="button" className="rounded border border-current px-3 py-2" onClick={() => {
+        const result = validateGameBackup(copy.backup)
+        setAccepted(false); setError(null); setMessage(null)
+        if (result.ok) setPreview(result.preview); else setError(result.error)
+      }}>Controlla copia automatica {index + 1}</button>)}</div>
+    </div>}
     {recoveryWarnings.length > 0 && <div role="status" className="rounded border border-current p-3 text-sm">
       <p className="font-bold">Recupero del salvataggio</p>
       <ul className="ml-4 list-disc">{recoveryWarnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>

@@ -10,7 +10,19 @@
  * manualmente con `BASE_URL`.
  */
 export function assetUrl(path: string): string {
-  const base = import.meta.env.BASE_URL
-  const clean = path.startsWith('/') ? path.slice(1) : path
-  return base.endsWith('/') ? `${base}${clean}` : `${base}/${clean}`
+  return resolveAssetUrl(path, import.meta.env.BASE_URL, import.meta.env.VITE_SPLIT_MEDIA ? import.meta.env.VITE_MEDIA_REVISION : undefined, import.meta.env.VITE_MEDIA_BASE_URL)
+}
+
+export function resolveAssetUrl(value: string, base: string, mediaRevision?: string, mediaBase?: string, encodeLocal = false): string {
+  if (/^(https?:|data:|blob:)/i.test(value)) return value
+  const clean = value.replace(/^\//, '')
+  const heavy = /^(sprites\/arkamon-paged\/|sounds\/|vfx\/)/.test(clean)
+  const encoded = clean.split('/').map(part => encodeURIComponent(part)).join('/')
+  if (heavy && (mediaBase || mediaRevision)) {
+    const origin = mediaBase || `https://raw.githubusercontent.com/Andreatz/Arkamon-Beta/${mediaRevision}/public/`
+    const url = new URL(origin)
+    if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error('Invalid media origin')
+    return `${url.href.endsWith('/') ? url.href : url.href + '/'}${encoded}`
+  }
+  return `${base.endsWith('/') ? base : base + '/'}${encodeLocal ? encoded : clean}`
 }

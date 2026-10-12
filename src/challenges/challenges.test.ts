@@ -6,7 +6,7 @@ import { CHALLENGE_STORAGE_KEY, challengeLeaderboard, normalizeChallengeCollecti
 import { MAX_RANDOM_CURSOR, createSeededRandomState, nextSeededRandom, validateChallengeSeed } from './seededRandom'
 import type { ChallengeResult } from './types'
 
-const result = (patch: Partial<ChallengeResult> = {}): ChallengeResult => ({ id: 'attempt-1', sessionId: 'challenge-1', mode: 'seed', seed: 'Italia', outcome: 'vittoria', turns: 12, remainingHp: 30, completedAt: '2026-10-10T10:00:00.000Z', team: generateSeedTeam('Italia', 'player'), ...patch })
+const result = (patch: Partial<ChallengeResult> = {}): ChallengeResult => ({ id: 'attempt-1', sessionId: 'challenge-1', rulesVersion: 1, mode: 'seed', seed: 'Italia', outcome: 'vittoria', turns: 12, remainingHp: 30, completedAt: '2026-10-10T10:00:00.000Z', team: generateSeedTeam('Italia', 'player', 1), ...patch })
 
 describe('versioned seeded random', () => {
   it('resumes the exact following roll from a JSON cursor', () => {
@@ -99,15 +99,15 @@ describe('seed challenges and Fanta rules', () => {
     expect(() => createChallengeSession({ version: 1, seed: 'Roma', mode: 'fanta', speciesIds: expensive })).toThrow(/budget/)
   })
   it('makes Fanta opponents depend on the seed, with equal levels and fresh HP', () => {
-    const team = generateSeedTeam('Uno', 'player')
+    const team = generateSeedTeam('Uno', 'player', 1)
     const one = createChallengeSession({ version: 1, mode: 'fanta', seed: 'Roma', speciesIds: team })
-    const two = createChallengeSession({ version: 1, mode: 'fanta', seed: 'Roma', speciesIds: generateSeedTeam('Due', 'player') })
+    const two = createChallengeSession({ version: 1, mode: 'fanta', seed: 'Roma', speciesIds: generateSeedTeam('Due', 'player', 1) })
     expect(one.enemyTeam.map((pokemon) => pokemon.specieId)).toEqual(two.enemyTeam.map((pokemon) => pokemon.specieId))
     expect(one.id).not.toBe(two.id)
     expect(Math.max(...one.team.map((pokemon) => pokemon.livello)) - Math.min(...one.team.map((pokemon) => pokemon.livello))).toBeLessThanOrEqual(5)
   })
   it('round-trips configuration without trusting HP, state or cursor', () => {
-    const session = createChallengeSession({ version: 1, mode: 'fanta', seed: 'Italia', speciesIds: generateSeedTeam('Italia', 'player') })
+    const session = createChallengeSession({ version: 1, mode: 'fanta', seed: 'Italia', speciesIds: generateSeedTeam('Italia', 'player', 1) })
     const code = exportChallengeCode(session)
     expect(importChallengeCode(code)).toEqual(session)
     const tampered = JSON.parse(code)

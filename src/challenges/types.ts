@@ -1,6 +1,7 @@
 import type { PokemonIstanza } from '@/types'
 
 export type ChallengeMode = 'seed' | 'fanta'
+export type ChallengeRulesVersion = 1 | 2
 
 export interface SeededRandomState {
   algorithm: 'arkamon-counter-v1'
@@ -10,8 +11,8 @@ export interface SeededRandomState {
 
 /** Initial battle configuration. Progress and campaign snapshots belong to the game store. */
 export interface ChallengeSession {
-  version: 1
-  rulesVersion: 1
+  version: ChallengeRulesVersion
+  rulesVersion: ChallengeRulesVersion
   id: string
   mode: ChallengeMode
   seed: string
@@ -23,13 +24,15 @@ export interface ChallengeSession {
 }
 
 export interface ChallengeDraft {
-  version: 1
+  version: ChallengeRulesVersion
   seed: string
   mode: ChallengeMode
   speciesIds: number[]
 }
 
 export interface ChallengeResult {
+  /** Missing only in saved legacy results, which belong to classic rules v1. */
+  rulesVersion?: ChallengeRulesVersion
   id: string
   sessionId: string
   mode: ChallengeMode

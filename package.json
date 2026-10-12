@@ -5,6 +5,8 @@
   "type": "module",
   "description": "Arkamon - gioco ibrido tra Pokémon e boardgame con dadi D6",
   "scripts": {
+    "postinstall": "node scripts/harden-build-dependencies.mjs",
+    "test:security": "node --test tests/security-braces.cjs",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -14,7 +16,11 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "vfx:sheets": "node scripts/build-vfx-spritesheets.mjs --input ./vfx-source/raw --output ./public/vfx/generated --fps 24 --maxColumns 8 --maxCellWidth 640 --maxCellHeight 640 --overwrite",
-    "vfx:build": "npm run vfx:sheets && npm run vfx:runtime"
+    "vfx:build": "npm run vfx:sheets && npm run vfx:runtime",
+    "animations:pages": "node scripts/build-arkamon-pages.mjs --resume --effort 1",
+    "media:catalog": "node scripts/build-vfx-curation-catalog.mjs --check",
+    "media:pin": "node scripts/pin-media-release.mjs",
+    "media:release": "node scripts/package-media-release.mjs"
   },
   "dependencies": {
     "framer-motion": "11.18.2",
@@ -43,7 +49,9 @@
   "overrides": {
     "vite": "7.3.5",
     "@vitejs/plugin-react": "5.2.0",
-    "tailwindcss": "3.4.17"
+    "tailwindcss": "3.4.17",
+    "postcss-selector-parser": "7.1.6",
+    "esbuild": "0.28.2"
   },
   "engines": {
     "node": ">=20.19.0"

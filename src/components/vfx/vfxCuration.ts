@@ -1,5 +1,5 @@
 import type { MoveVfxAsset, VfxAnchor, VfxArchetype, VfxIntensity } from './types'
-import movesetCatalog from '../../../public/vfx/moves/ai-generated/catalog.json'
+import movesetCatalog from '@/data/vfx-curation-runtime.json'
 
 export const VFX_CURATION_CATEGORIES = [
   'physical',
@@ -281,7 +281,7 @@ const MOVESET_VFX_CURATION: Record<string, VfxCurationEntry> = Object.fromEntrie
     recommendation: 'proposed' as const,
     intensity: entry.intensity as VfxIntensity,
     preview: { anchor: entry.anchor as VfxAnchor, scaleMultiplier: 1 },
-    notes: entry.notes,
+    notes: movesetCatalog.notes[entry.noteIndex],
   }])
 )
 

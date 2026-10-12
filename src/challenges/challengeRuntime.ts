@@ -45,7 +45,7 @@ export function exitChallenge(completed = false): { ok: boolean; message: string
   const campaign = normalizeGameSave(context.campaign).state
   campaign.audioMuted = previous.audioMuted
   if (completed && battle?.checkpoint?.outcome) {
-    const result = useChallengeStore.getState().addResult({ id: context.attemptId, sessionId: context.session.id, mode: context.session.mode,
+    const result = useChallengeStore.getState().addResult({ id: context.attemptId, sessionId: context.session.id, rulesVersion: context.session.rulesVersion, mode: context.session.mode,
       seed: context.session.seed, outcome: battle.checkpoint.outcome,
       turns: battle.challengeActionCount ?? battle.cronaca?.events.filter((event) => event.kind === 'attack' || event.kind === 'heal' || event.kind === 'capture').length ?? 0,
       remainingHp: (battle.squadraA ?? [battle.pokemonA]).reduce((sum, pokemon) => sum + pokemon.hp, 0),

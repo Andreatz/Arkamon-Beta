@@ -52,7 +52,7 @@ Un vecchio salvataggio fuori fascia mantiene tutti gli Arkamon, livelli e HP. Un
 
 ## Sfide a seed
 
-Apri **Partita → Sfide**, inserisci un seed e premi **Genera sfida**. Le regole v1 producono due squadre da **sei specie diverse al livello 20**, con HP pieni, entro **100 crediti** per lato. Il seed può contenere da 1 a 64 caratteri; spazi ai bordi sono rimossi, maiuscole/minuscole restano significative.
+Apri **Partita → Sfide**, inserisci un seed e premi **Genera sfida**. Le regole aggiornate v2 sono la scelta iniziale; puoi selezionare le regole classiche v1 per riprodurre le configurazioni precedenti. Entrambe producono due squadre da **sei specie diverse al livello 20**, con HP pieni, entro **100 crediti** per lato. Il seed può contenere da 1 a 64 caratteri; spazi ai bordi sono rimossi, maiuscole/minuscole restano significative.
 
 **Avvia sfida** usa il motore reale della battaglia. Il seed controlla iniziativa, dadi, status e scelte casuali dell’IA. Anteprime, consultazione dei pannelli e animazioni non consumano questa sequenza. A parità di configurazione e scelte, i tiri sono riproducibili. Scelte diverse possono consumare la sequenza in modo diverso e produrre risultati differenti.
 
@@ -66,7 +66,7 @@ Il risultato viene scritto prima di ritirare lo scontro concluso. Se manca spazi
 
 Nella stessa scheda scegli **Fanta-Team Builder**. Costruisci una squadra di **sei specie diverse**, tutte al livello 20, con **100 crediti**. Ricerca e filtro per tipo aiutano a scegliere; ogni aggiunta mostra il costo e il budget residuo. Non puoi aggiungere un settimo membro, duplicare una specie o superare il budget. Puoi rimuovere un membro e sostituirlo oppure usare una squadra suggerita dal seed.
 
-Il prezzo v1 combina base 8, categoria HP, stadio evolutivo e danno medio della migliore mossa offensiva al livello 20. La formula è spiegata nel pannello. **Prepara Fanta-Team** mostra squadra e avversari prima dell’avvio. Il catalogo competitivo comprende tutte le specie; non sblocca quelle sconosciute nell’Arkadex della campagna.
+Il prezzo combina base 8, categoria HP, stadio evolutivo e danno medio della migliore mossa offensiva al livello 20. La v2 esclude dal calcolo CURA, CURA_PCT e mosse di puro status: Leafrex costa 19 anziché 21 crediti e Beestrix 12 anziché 15. La v1 conserva il catalogo congelato, inclusi i vecchi prezzi. La formula è spiegata nel pannello. **Prepara Fanta-Team** mostra squadra e avversari prima dell’avvio. Il catalogo competitivo comprende tutte le specie; non sblocca quelle sconosciute nell’Arkadex della campagna. Risultati e classifiche confrontano anche la versione delle regole; importazione e retry mantengono quella originale.
 
 **Crea codice da condividere** esporta seed, modalità, versione delle regole e specie scelte. Il codice si può copiare/importare su un altro dispositivo. L’importazione controlla versione, specie, duplicati e budget, poi ricostruisce squadre e HP dalle regole; non accetta HP o dadi impostati nel file.
 

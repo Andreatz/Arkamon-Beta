@@ -108,6 +108,15 @@ export function EvoluzioneScene() {
     ? giocatore.squadra.find((p) => p.istanzaId === corrente.istanzaId)
     : null
 
+  // A failed write keeps the old species. A successful retry publishes the
+  // same evolution and only then reveals the confirmation screen.
+  useEffect(() => {
+    if (fase === 'morphing' && istanza?.specieId === corrente?.newSpecieId) {
+      playSound('level-up')
+      setFase('post')
+    }
+  }, [fase, istanza?.specieId, corrente?.newSpecieId])
+
   useEffect(() => {
     if (!corrente) {
       tornaIndietro()
@@ -142,8 +151,6 @@ export function EvoluzioneScene() {
       }
       evoluto.hp = Math.min(istanza.hp, calcolaHPMax(evoluto))
       aggiornaPokemon(giocatoreId, evoluto)
-      playSound('level-up')
-      setFase('post')
       evolutionTimerRef.current = null
     }, 1800)
   }

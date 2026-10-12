@@ -35,7 +35,7 @@ describe('AdminOverlay', () => {
     expect(markup).toContain('class="fixed inset-0')
     expect(markup).toContain('aria-expanded="true"')
     expect(markup).toContain('aria-controls="arkamon-admin-panel"')
-    expect(markup).toContain('Controlli Admin')
+    expect(markup).toContain('Caricamento Admin')
   })
 
   it('lascia il pannello chiuso e non crea UI quando Admin è disabilitato', () => {

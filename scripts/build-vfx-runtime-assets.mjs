@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import sharp from 'sharp'
+import { syncVfxCurationCatalog } from './build-vfx-curation-catalog.mjs'
 
 const GENERATED_MANIFEST_PATH = 'public/vfx/generated/sprite-manifest.json'
 const GIF_DIR = 'public/vfx/gif'
@@ -234,6 +235,7 @@ async function main() {
 
   await fs.mkdir(path.dirname(OUTPUT_PATH), { recursive: true })
   await fs.writeFile(OUTPUT_PATH, toTypeScript(assets), 'utf8')
+  await syncVfxCurationCatalog(process.cwd())
 
   console.log(`Wrote ${OUTPUT_PATH}`)
   console.log(`Catalogued ${assets.length} VFX asset(s).`)

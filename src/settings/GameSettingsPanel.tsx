@@ -6,6 +6,7 @@ export function GameSettingsPanel() {
   const effectsVolume = useGamePreferences((state) => state.effectsVolume)
   const animationSpeed = useGamePreferences((state) => state.animationSpeed)
   const reducedMotion = useGamePreferences((state) => state.reducedMotion)
+  const graphicsMemory = useGamePreferences((state) => state.graphicsMemory)
   const setPreferences = useGamePreferences((state) => state.setPreferences)
   const muted = useGameStore((state) => state.audioMuted)
   const setMuted = useGameStore((state) => state.setAudioMuted)
@@ -28,6 +29,13 @@ export function GameSettingsPanel() {
         <option value="system">Segui il dispositivo</option><option value="on">Sempre attivo</option><option value="off">Disattivato</option>
       </select>
     </label>
+    <label className="block">Memoria delle animazioni
+      <select className="mt-2 block w-full rounded border border-slate-500 bg-slate-800 p-3 text-white" value={graphicsMemory}
+        onChange={(event) => setPreferences({ graphicsMemory: event.target.value as 'auto' | 'full' | 'low' })}>
+        <option value="auto">Automatica</option><option value="full">Standard</option><option value="low">Memoria ridotta</option>
+      </select>
+    </label>
+    <p className="text-sm text-slate-300">La memoria ridotta prepara meno pagine contemporaneamente. Dettagli, trasparenza, frame e velocità restano identici.</p>
     <p className="text-sm text-slate-300">Le preferenze vengono ricordate su questo dispositivo. Dadi, turni e regole restano identici; il risultato del colpo viene mostrato prima del KO.</p>
   </section>
 }

@@ -24,6 +24,12 @@ export function LaboratorioScene() {
   const [nomiConfermati, setNomiConfermati] = useState(g1HaStarter || g2HaStarter)
   const [nomeGiocatore1, setNomeGiocatore1] = useState(giocatore1.nome)
   const [nomeGiocatore2, setNomeGiocatore2] = useState(giocatore2.nome)
+  const [confermaRichiesta, setConfermaRichiesta] = useState(false)
+
+  useEffect(() => {
+    if (confermaRichiesta && giocatore1.nome === (nomeGiocatore1.trim() || 'Giocatore 1')
+      && giocatore2.nome === (nomeGiocatore2.trim() || 'Giocatore 2')) setNomiConfermati(true)
+  }, [confermaRichiesta, giocatore1.nome, giocatore2.nome, nomeGiocatore1, nomeGiocatore2])
 
   const tuttiHannoStarter = g1HaStarter && g2HaStarter
   const giocatoreAttivo = g1HaStarter ? 2 : 1
@@ -39,9 +45,11 @@ export function LaboratorioScene() {
   }, [tuttiHannoStarter, vaiAScena])
 
   const confermaNomi = () => {
-    impostaNomeGiocatore(1, nomeGiocatore1)
-    impostaNomeGiocatore(2, nomeGiocatore2)
-    setNomiConfermati(true)
+    setConfermaRichiesta(true)
+    useGameStore.getState().eseguiTransazione(() => {
+      impostaNomeGiocatore(1, nomeGiocatore1)
+      impostaNomeGiocatore(2, nomeGiocatore2)
+    })
   }
 
   return (

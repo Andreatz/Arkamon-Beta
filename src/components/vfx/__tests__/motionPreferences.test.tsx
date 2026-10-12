@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ReactElement } from 'react'
-import { AnimatedSprite } from '../AnimatedSprite'
+import { AtlasAnimatedSprite as AnimatedSprite } from '../AnimatedSprite'
 import { GifVfx } from '../GifVfx'
 import { MoveVfxLayer } from '../MoveVfxLayer'
 import { SpriteMoveVfx } from '../SpriteMoveVfx'

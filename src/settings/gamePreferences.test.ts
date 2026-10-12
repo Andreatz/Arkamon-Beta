@@ -12,4 +12,12 @@ describe('game preferences', () => {
     expect(getAnimationDuration(1200)).toBe(1200)
     expect(getAnimationDuration(-5)).toBe(0)
   })
+  it('recovers automatic graphics memory for old saves and accepts explicit device budgets', () => {
+    expect(normalizeGamePreferences({ graphicsMemory: 'invalid' }).graphicsMemory).toBe('auto')
+    expect(normalizeGamePreferences({ graphicsMemory: 'low' }).graphicsMemory).toBe('low')
+    useGamePreferences.getState().setPreferences({ graphicsMemory: 'full' })
+    expect(useGamePreferences.getState().graphicsMemory).toBe('full')
+    useGamePreferences.getState().resetPreferences()
+    expect(useGamePreferences.getState().graphicsMemory).toBe('auto')
+  })
 })

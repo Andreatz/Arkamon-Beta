@@ -290,6 +290,7 @@ export function serializeGameState(state: GameSaveState): Record<string, unknown
     deposito: Object.fromEntries(Object.entries(g.deposito).map(([slot, pokemon]) => [slot, clearStoredExperience(pokemon)])),
     cespugliVisitati: [...g.cespugliVisitati], allenatoriSconfitti: [...g.allenatoriSconfitti], caselleConsumate: [...g.caselleConsumate] })
   const battaglia = state.battaglia ? { ...state.battaglia,
+    ...(state.battaglia.cronaca ? { cronaca: normalizeBattleChronicle(state.battaglia.cronaca) } : {}),
     pokemonA: clearStoredExperience(state.battaglia.pokemonA), pokemonB: clearStoredExperience(state.battaglia.pokemonB),
     ...(state.battaglia.squadraA ? { squadraA: state.battaglia.squadraA.map(clearStoredExperience) } : {}),
     ...(state.battaglia.squadraB ? { squadraB: state.battaglia.squadraB.map(clearStoredExperience) } : {}),

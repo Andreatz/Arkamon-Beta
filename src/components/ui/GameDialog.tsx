@@ -14,6 +14,7 @@ export function GameDialog({ title, onClose, children, className = '', showClose
     const focusables = () => Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href],[tabindex="0"]')).filter((node) => !node.hidden && node.getClientRects().length)
     ;(focusables()[0] ?? dialog).focus()
     const keys = (event: KeyboardEvent) => {
+      if (dialog.closest('[inert]')) return
       if (event.target instanceof Element && event.target.closest('[data-battle-log-dialog]')) return
       if (event.key === 'Escape') { event.preventDefault(); close.current(); return }
       if (event.key !== 'Tab') return
@@ -22,6 +23,7 @@ export function GameDialog({ title, onClose, children, className = '', showClose
       event.preventDefault(); (items[next] ?? dialog).focus()
     }
     const refocus = (event: FocusEvent) => {
+      if (dialog.closest('[inert]')) return
       if (event.target instanceof Element && event.target.closest('[data-battle-log-dialog]')) return
       if (event.target instanceof Node && !dialog.contains(event.target)) (focusables()[0] ?? dialog).focus()
     }

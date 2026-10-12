@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { getPreparedImageAsset } from '@/utils/prepareImageAsset'
 import { useVfxPlaybackPreferences } from './useVfxPlaybackPreferences'
+import { PagedAnimatedSprite } from './PagedAnimatedSprite'
+import type { SpritePage } from './spritePages'
 
 const useSpriteLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
@@ -95,6 +97,7 @@ export function releaseSpriteReactionGate(
 
 export interface AnimatedSpriteProps {
   src: string
+  pages?: readonly SpritePage[]
   frameWidth: number
   frameHeight: number
   columns: number
@@ -152,7 +155,11 @@ export function getSpriteFramePosition(
   }
 }
 
-export function AnimatedSprite({
+export function AnimatedSprite(props: AnimatedSpriteProps) {
+  return props.pages ? <PagedAnimatedSprite {...props} pages={props.pages} /> : <AtlasAnimatedSprite {...props} />
+}
+
+export function AtlasAnimatedSprite({
   src,
   frameWidth,
   frameHeight,

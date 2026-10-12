@@ -154,4 +154,31 @@ describe('Challenge campaign preservation and durable recovery', () => {
     expect(useGameStore.getState().challengeContext).toBeNull()
     expect(useGameStore.getState().giocatore1.monete).toBe(777)
   })
+
+  it.each([1, 2] as const)('resumes a rules v%s checkpoint at its saved RNG cursor and records its own version', async (version) => {
+    const campaignBefore = serializeGameState(useGameStore.getState())
+    const configured = createChallengeSession({ version, mode: 'seed', seed: 'Versioned-runtime', speciesIds: [] })
+    expect(launchChallenge(configured).ok).toBe(true)
+    useGameStore.getState().aggiornaBattaglia({ seeded: { algorithm: 'arkamon-counter-v1', seed: configured.seed, cursor: 27 } })
+    await useGameStore.persist.rehydrate()
+    expect(useGameStore.getState().challengeContext?.session).toEqual(configured)
+    expect(useGameStore.getState().battaglia?.seeded?.cursor).toBe(27)
+    saveCompletedBattle()
+    expect(exitChallenge(true).ok).toBe(true)
+    expect(useChallengeStore.getState().results[0]).toMatchObject({ rulesVersion: version, sessionId: configured.id })
+    expect(serializeGameState(useGameStore.getState())).toEqual(campaignBefore)
+  })
+
+  it.each([1, 2] as const)('recovers the campaign rather than trusting an invalid rules v%s replay cursor', async (version) => {
+    const configured = createChallengeSession({ version, mode: 'seed', seed: 'Versioned-invalid-cursor', speciesIds: [] })
+    expect(launchChallenge(configured).ok).toBe(true)
+    const envelope = JSON.parse(localStorage.getItem(ACTIVE_CHALLENGE_STORAGE_KEY)!)
+    envelope.state.battaglia.seeded.cursor = -1
+    localStorage.setItem(ACTIVE_CHALLENGE_STORAGE_KEY, JSON.stringify(envelope))
+    await useGameStore.persist.rehydrate()
+    expect(useGameStore.getState().challengeContext).toBeNull()
+    expect(useGameStore.getState().giocatore1.nome).toBe('Campagna uno')
+    expect(localStorage.getItem(ACTIVE_CHALLENGE_STORAGE_KEY)).toBeNull()
+    expect(useChallengeStore.getState().results).toEqual([])
+  })
 })

@@ -24,10 +24,14 @@ async function startCampaign(page: Page) {
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')
 }
 
-async function battleFixture(page: Page, evolution = false) {
-  await page.addInitScript(({ evolution }) => {
+async function battleFixture(page: Page, fixture: 'battle' | 'evolution' | 'final-stage' = 'battle') {
+  await page.addInitScript(({ fixture }) => {
     if (localStorage.getItem('e2e-arkadex-fixture')) return
-    const attacker = { istanzaId: 'arkadex-a', specieId: 1, nome: 'Vyrath Dex', livello: evolution ? 14 : 10, hp: evolution ? 1 : 10, xp: 0 }
+    const evolution = fixture === 'evolution'
+    const finalStageOnly = fixture === 'final-stage'
+    const attacker = finalStageOnly
+      ? { istanzaId: 'final-only', specieId: 4, nome: 'Vyrath finale', livello: 100, hp: 1, xp: 0 }
+      : { istanzaId: 'arkadex-a', specieId: 1, nome: 'Vyrath Dex', livello: evolution ? 14 : 10, hp: evolution ? 1 : 10, xp: 0 }
     const defender = { istanzaId: 'arkadex-b', specieId: 13, nome: 'Wormaren Dex', livello: 5, hp: evolution ? 1 : 4, xp: 0 }
     const secondStarter = { istanzaId: 'arkadex-player2', specieId: 5, nome: 'Darklaw Dex', livello: 5, hp: 12, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Dex ${id}`, squadra: id === 1 ? [attacker] : [secondStarter], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { masterball: 1 }, caselleConsumate: [] })
@@ -36,19 +40,20 @@ async function battleFixture(page: Page, evolution = false) {
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,
-      scenaCorrente: { scena: 'battaglia' }, scenaPrecedente: { scena: 'mappa-principale' },
-      arkadex: { seen1: [1], seen2: [5], caught1: [1], caught2: [5] },
+      scenaCorrente: finalStageOnly ? { scena: 'citta', payload: { luogo: 'Venezia' } } : { scena: 'battaglia' }, scenaPrecedente: { scena: 'mappa-principale' },
+      arkadex: { seen1: [attacker.specieId], seen2: [5], caught1: [attacker.specieId], caught2: [5] },
       matchLog: { version: 1, nextSequence: 1, events: [] },
       interactionProgress: { completed1: [], completed2: [], completedShared: [], log1: [], log2: [], pendingBattle: null },
-      battaglia: { tipo: 'Selvatico', pokemonA: attacker, pokemonB: defender, squadraA: [attacker], squadraB: [defender], hpMaxA: evolution ? 25 : 19, hpMaxB: 12, turnoCorrente: 'A', luogoRitorno: 'mappa-principale', log: ['Incontro per verifica Arkadex.'], evoluzioneInAttesa: null,
+      battaglia: finalStageOnly ? null : { tipo: 'Selvatico', pokemonA: attacker, pokemonB: defender, squadraA: [attacker], squadraB: [defender], hpMaxA: evolution ? 25 : 19, hpMaxB: 12, turnoCorrente: 'A', luogoRitorno: 'mappa-principale', log: ['Incontro per verifica Arkadex.'], evoluzioneInAttesa: null,
         checkpoint: { version: 1, initialPriority: 'A', actedThisRound: [], phase: 'player', openingComplete: true, outcome: null, evolutions: [], rivalMessages: [] },
       },
     } }))
     localStorage.setItem('arkamon-preferences-v1', JSON.stringify({ version: 1, state: { musicVolume: 0, effectsVolume: 0, animationSpeed: 'fast', reducedMotion: 'on' } }))
     localStorage.setItem('e2e-arkadex-fixture', 'seeded')
-  }, { evolution })
+  }, { fixture })
   await page.goto('/')
-  await expect(page.locator('[data-presented-scene="battaglia"]')).toHaveAttribute('aria-busy', 'false')
+  const scene = fixture === 'final-stage' ? 'citta:Venezia' : 'battaglia'
+  await expect(page.locator(`[data-presented-scene="${scene}"]`)).toHaveAttribute('aria-busy', 'false')
 }
 
 test('Arkadex keeps starter discoveries personal, locks unknown search and is accessible', async ({ page }) => {
@@ -155,7 +160,7 @@ test('Masterball capture records one event, persists discovered species and leav
 })
 
 test('a real battle evolution retains both obtained stages and logs the change once', async ({ page }) => {
-  await battleFixture(page, true)
+  await battleFixture(page, 'evolution')
   await page.getByRole('button', { name: /Soffio/ }).click()
   await expect(page.getByRole('button', { name: 'Prosegui', exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Prosegui', exact: true }).click()
@@ -191,19 +196,15 @@ test('a real battle evolution retains both obtained stages and logs the change o
 })
 
 test('the evolution tab conceals all thresholds and artwork of undiscovered ancestors', async ({ page }) => {
-  await battleFixture(page)
-  // Restore a valid final-stage-only collection; discoveries must not invent its ancestry.
-  await page.evaluate(() => {
-    const save = JSON.parse(localStorage.getItem('arkamon-save')!)
-    save.state.giocatore1.squadra = [{ istanzaId: 'final-only', specieId: 4, nome: 'Vyrath finale', livello: 100, hp: 1, xp: 0 }]
-    save.state.arkadex = { seen1: [4], seen2: [5], caught1: [4], caught2: [5] }
-    save.state.battaglia = null
-    save.state.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
-    save.state.scenaPrecedente = { scena: 'mappa-principale' }
-    localStorage.setItem('arkamon-save', JSON.stringify(save))
-  })
+  // Seed before mounting: a live battle's delayed checkpoint must not race the
+  // test's final-stage-only collection. Reload still verifies persistence.
+  await battleFixture(page, 'final-stage')
   await page.reload()
   await expect(page.locator('[data-presented-scene="citta:Venezia"]')).toHaveAttribute('aria-busy', 'false')
+  // The scene module loads on demand; wait for its initialization, then verify
+  // that browsing the encyclopedia introduces no additional campaign writes.
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.posizioniLocali1.Venezia)).toBe('n56')
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.posizioniLocali2.Venezia)).toBe('n56')
   const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   const dialog = await openTools(page, 'Arkadex')
   const dex = dialog.getByRole('region', { name: 'Arkadex', exact: true })
