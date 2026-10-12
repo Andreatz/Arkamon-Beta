@@ -173,13 +173,18 @@ test('evolution confirmation appears only after its new species is durably saved
 test('corrupt primary data offers an automatic copy preview and waits for explicit confirmation', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message))
   await fixture(page, 'city')
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.posizioniLocali2.Venezia)).toBe('n56')
   const previous = await snapshot(page)
-  await page.evaluate((campaign) => {
+  // Install corruption before the next game's hydration. A mounted city's
+  // delayed position checkpoint must not overwrite this test-only fixture.
+  await page.addInitScript((campaign) => {
+    if (localStorage.getItem('durable-corrupt-primary-fixture')) return
     const backup = JSON.stringify({ format: 'arkamon-campaign-backup', version: 1, saveSchemaVersion: 1,
       createdAt: '2026-10-12T12:00:00Z', campaign })
     localStorage.setItem('arkamon-automatic-backups-v1', JSON.stringify({ version: 1,
       copies: [{ createdAt: '2026-10-12T12:00:00Z', backup }] }))
     localStorage.setItem('arkamon-save', '{corrupt-primary')
+    localStorage.setItem('durable-corrupt-primary-fixture', 'ready')
   }, previous)
   await page.reload()
   await expect(page.getByText('Alcuni dati del salvataggio sono stati recuperati. Controlla gli avvisi prima di continuare.', { exact: true })).toBeVisible()
