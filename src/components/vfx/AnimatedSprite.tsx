@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { getPreparedImageAsset } from '@/utils/prepareImageAsset'
-import { useGamePreferences } from '@/settings/gamePreferences'
+import { useVfxPlaybackPreferences } from './useVfxPlaybackPreferences'
 
 const useSpriteLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
@@ -108,6 +108,8 @@ export interface AnimatedSpriteProps {
   /** Crop large native sheets on a CPU canvas instead of uploading the entire atlas. */
   renderMode?: 'css' | 'canvas'
   durationMs?: number
+  /** Use the owning event's speed when a delayed layer joins an existing playback. */
+  playbackSpeed?: number
   loop?: boolean
   /** Hold the current frame without scheduling playback. */
   paused?: boolean
@@ -117,10 +119,12 @@ export interface AnimatedSpriteProps {
   replayKey?: number
   /** Begin the clock only after the sheet is ready to display. */
   waitForLoad?: boolean
+  /** Native creature clips keep their last painted pixels during a source handover. */
+  preserveFrameWhileLoading?: boolean
   className?: string
   style?: CSSProperties
   onComplete?: () => void
-  /** Pixels are decoded, or an error has released the static fallback. */
+  /** A canvas frame was painted; CSS images also release their fallback on error. */
   onReady?: () => void
   /** Called from the first displayed frame, after loading when requested. */
   onStart?: () => void
@@ -162,11 +166,13 @@ export function AnimatedSprite({
   responsive = false,
   renderMode = 'css',
   durationMs: sourceDurationMs,
+  playbackSpeed,
   loop = false,
   paused = false,
   holdBeforeFrame,
   replayKey = 0,
   waitForLoad = false,
+  preserveFrameWhileLoading = false,
   className,
   style,
   onComplete,
@@ -176,7 +182,8 @@ export function AnimatedSprite({
   onCue,
   onError,
 }: AnimatedSpriteProps) {
-  const speed = useGamePreferences((state) => state.animationSpeed === 'fast' ? 2 : 1)
+  const { reducedMotion, speed: preferenceSpeed } = useVfxPlaybackPreferences(`${src}:${replayKey}`, loop)
+  const speed = playbackSpeed ?? preferenceSpeed
   const fps = sourceFps * speed
   const durationMs = sourceDurationMs === undefined ? undefined : sourceDurationMs / speed
   const playbackId = useId()
@@ -240,7 +247,7 @@ export function AnimatedSprite({
     if (renderMode === 'canvas') setLoadedSrc(null)
     const loadTimeout = waitForLoad ? window.setTimeout(() => {
       if (active) {
-        notifyReady()
+        if (renderMode !== 'canvas') notifyReady()
         onErrorRef.current?.()
       }
     }, 15000) : undefined
@@ -264,7 +271,7 @@ export function AnimatedSprite({
       if (typeof image.decode === 'function') void image.decode().then(decoded, () => {
         window.clearTimeout(loadTimeout)
         if (active) {
-          notifyReady()
+          if (renderMode !== 'canvas') notifyReady()
           onErrorRef.current?.()
         }
       })
@@ -276,7 +283,7 @@ export function AnimatedSprite({
       image.onerror = () => {
         window.clearTimeout(loadTimeout)
         if (active) {
-          notifyReady()
+          if (renderMode !== 'canvas') notifyReady()
           onErrorRef.current?.()
         }
       }
@@ -315,7 +322,6 @@ export function AnimatedSprite({
 
   useEffect(() => {
     if (paused || !ready) return
-    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const totalFrames = Math.max(1, columns * rows)
     const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
     const safeFrameCount = Math.max(
@@ -407,7 +413,7 @@ export function AnimatedSprite({
       if (playbackClockRef.current?.clock === clock) playbackClockRef.current = null
       if (notifyFrameCueRef.current?.notify === notifyCue) notifyFrameCueRef.current = null
     }
-  }, [columns, cueFrame, durationMs, fps, frameCount, loop, paused, ready, replayKey, rows, src, startFrame])
+  }, [columns, cueFrame, durationMs, fps, frameCount, loop, paused, ready, reducedMotion, replayKey, rows, src, startFrame])
 
   const totalFrames = Math.max(1, columns * rows)
   const safeStartFrame = Math.max(0, Math.min(startFrame, totalFrames - 1))
@@ -435,10 +441,13 @@ export function AnimatedSprite({
       const context = canvas.getContext('2d', { willReadFrequently: true })
       if (!context) throw new Error('Sprite canvas is unavailable')
       const drawStartedAt = performance.now()
-      // Transparent frames must replace the previous drawing, including a final KO.
-      context.clearRect(0, 0, frameWidth, frameHeight)
       const decodedImage = canvasImageRef.current
-      if (loadedSrc !== src || decodedImage?.src !== src) return
+      if (loadedSrc !== src || decodedImage?.src !== src) {
+        if (!preserveFrameWhileLoading) context.clearRect(0, 0, frameWidth, frameHeight)
+        return
+      }
+      // Transparent frames still replace the previous drawing, including a final KO.
+      context.clearRect(0, 0, frameWidth, frameHeight)
       context.drawImage(
         decodedImage.image,
         col * frameWidth, row * frameHeight, frameWidth, frameHeight,
@@ -453,11 +462,10 @@ export function AnimatedSprite({
       notifyReady()
     } catch {
       canvasErrorIdentityRef.current = { src, replayKey }
-      // Release a warm-up barrier even when canvas creation or its first draw fails.
-      notifyReady()
+      // The owning renderer releases its fallback on error; no frame was painted.
       onErrorRef.current?.()
     }
-  }, [col, frameHeight, frameWidth, loadedSrc, notifyReady, renderMode, replayKey, row, src])
+  }, [col, frameHeight, frameWidth, loadedSrc, notifyReady, preserveFrameWhileLoading, renderMode, replayKey, row, src])
 
   return (
     <div

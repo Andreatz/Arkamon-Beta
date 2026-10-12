@@ -294,9 +294,14 @@ function AnimatedArkamonVisual({
   const resolved = resolveArkamonAnimationAsset(speciesId, side, run.animation)!
   const animated = resolved.asset
   const [failedSource, setFailedSource] = useState<string | null>(null)
+  const [nativeFramePainted, setNativeFramePainted] = useState(false)
   const sheetFailed = failedSource === animated.src
   const controls = useAnimation()
-  const onSheetError = useCallback(() => setFailedSource(animated.src), [animated.src])
+  const onSheetError = useCallback(() => {
+    setFailedSource(animated.src)
+    // The failed canvas unmounts; the next native clip needs its initial PNG again.
+    setNativeFramePainted(false)
+  }, [animated.src])
   const runRef = useRef(run)
   runRef.current = run
   const mountedRef = useRef(true)
@@ -305,12 +310,16 @@ function AnimatedArkamonVisual({
   const readyCallbackRef = useRef(onAnimationReady)
   readyCallbackRef.current = onAnimationReady
   const readyGenerationRef = useRef(-1)
-  const onClipReady = useCallback(() => {
+  const notifyClipReady = useCallback(() => {
     const current = runRef.current
     if (!mountedRef.current || current.generation !== run.generation || current.animation === 'idle' || readyGenerationRef.current === run.generation) return
     readyGenerationRef.current = run.generation
     readyCallbackRef.current?.(current.animation, current.replayKey)
   }, [run.generation])
+  const onClipReady = useCallback(() => {
+    setNativeFramePainted(true)
+    notifyClipReady()
+  }, [notifyClipReady])
   const startCallbackRef = useRef(onAnimationStart)
   startCallbackRef.current = onAnimationStart
   const cueCallbackRef = useRef(onAnimationCue)
@@ -345,14 +354,14 @@ function AnimatedArkamonVisual({
     completionCallbackRef.current?.(current.animation, current.replayKey)
   }, [run.generation])
   const onFallbackError = useCallback(() => {
-    onClipReady()
+    notifyClipReady()
     if (!playbackPaused) {
       onClipStart()
       onReleaseCue()
       if (dedicatedOneShot && !(run.animation === 'hit' && holdReactionUntilImpact)) onClipComplete()
     }
     onError?.()
-  }, [dedicatedOneShot, run.animation, holdReactionUntilImpact, playbackPaused, onClipComplete, onClipReady, onClipStart, onReleaseCue, onError])
+  }, [dedicatedOneShot, run.animation, holdReactionUntilImpact, playbackPaused, onClipComplete, notifyClipReady, onClipStart, onReleaseCue, onError])
 
   useEffect(() => {
     mountedRef.current = true
@@ -433,11 +442,20 @@ function AnimatedArkamonVisual({
           alt=""
           aria-hidden="true"
           className="h-full w-full object-contain"
-          onLoad={onClipReady}
+          onLoad={notifyClipReady}
           onError={onFallbackError}
           draggable={false}
         />
       ) : (
+        <>
+        {!nativeFramePainted && <img
+          src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
+          alt=""
+          aria-hidden="true"
+          data-arkamon-first-frame-fallback
+          className="pointer-events-none absolute inset-0 h-full w-full object-contain"
+          draggable={false}
+        />}
         <AnimatedSprite
           src={assetUrl(animated.src)}
           renderMode="canvas"
@@ -459,6 +477,7 @@ function AnimatedArkamonVisual({
           holdBeforeFrame={run.animation === 'hit' && holdReactionUntilImpact ? animated.reactionFrame : undefined}
           replayKey={run.generation}
           waitForLoad
+          preserveFrameWhileLoading
           onComplete={dedicatedOneShot ? onClipComplete : undefined}
           onReady={onClipReady}
           onStart={onClipStart}
@@ -473,6 +492,7 @@ function AnimatedArkamonVisual({
             top: `${-viewport.top / viewport.height * 100}%`,
           } : undefined}
         />
+        </>
       )}
     </motion.div>
   )

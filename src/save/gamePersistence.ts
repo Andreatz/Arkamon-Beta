@@ -148,13 +148,13 @@ function restorePlayer(value: unknown, fallback: StatoGiocatore, warn: Warn): St
   }
   const player = {
     ...fallback, nome: typeof g.nome === 'string' && g.nome.trim() ? g.nome : fallback.nome, squadra, deposito,
-    monete: finite(g.monete) ? Math.max(0, g.monete) : fallback.monete,
+    monete: finite(g.monete) ? Math.min(Number.MAX_SAFE_INTEGER, Math.max(0, Math.floor(g.monete))) : fallback.monete,
     cespugliVisitati: restoreSet(g.cespugliVisitati, fallback.cespugliVisitati, (v): v is string => typeof v === 'string', warn, label),
     allenatoriSconfitti: restoreSet(g.allenatoriSconfitti, fallback.allenatoriSconfitti, (v): v is number => finite(v) && Number.isInteger(v) && v > 0, warn, label),
     caselleConsumate: restoreSet(g.caselleConsumate, fallback.caselleConsumate, (v): v is string => typeof v === 'string', warn, label),
     inventario: g.inventario === undefined ? fallback.inventario : normalizeShopInventory(g.inventario, warn),
   }
-  if (g.monete !== undefined && g.monete !== player.monete) warn(`${label}: monete non valide corrette.`)
+  if (g.monete !== undefined && g.monete !== player.monete) warn(`${label}: saldo monete corretto a un numero intero valido.`)
   if (g.inventario !== undefined && JSON.stringify(g.inventario) !== JSON.stringify(player.inventario)) warn(`${label}: inventario non valido corretto.`)
   return player
 }

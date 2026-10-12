@@ -17,6 +17,7 @@ import { emptyArkadexProgress } from '@/arkadex/arkadexModel'
 import { appendMatchEvent, emptyMatchLog } from '@/match/matchLog'
 import { trackGameChange } from '@/match/trackGameChange'
 import { canJoinTeam, isTeamWithinLevelCap, teamCapMessage, teamLevelRange } from '@/engine/teamLevelCap'
+import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
 import { resolveShopPurchase, type ShopPurchaseResult } from '@/shop/purchase'
 import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
 import { resolveItemEffect } from '@/shop/itemEffects'
@@ -274,8 +275,9 @@ function trovaSlotDepositoLibero(deposito: Record<string, PokemonIstanza>): stri
   return null
 }
 
-export function haSpazioPokemon(giocatore: StatoGiocatore): boolean {
-  return giocatore.squadra.length < 6 || trovaSlotDepositoLibero(giocatore.deposito) !== null
+export function haSpazioPokemon(giocatore: StatoGiocatore, target?: PokemonIstanza): boolean {
+  const canUseTeam = target ? canJoinTeam(giocatore.squadra, target) : giocatore.squadra.length < 6
+  return canUseTeam || trovaSlotDepositoLibero(giocatore.deposito) !== null
 }
 
 export const useGameStore = create<GameState>()(
@@ -356,10 +358,10 @@ export const useGameStore = create<GameState>()(
 
       scegliStarter: (specieId) => {
         const state = get()
-        const giocatoreId = state.giocatore1.squadra.length === 0
+        const giocatoreId = !hasOwnedPokemon(state.giocatore1)
           ? 1
-          : state.giocatore2.squadra.length === 0 ? 2 : null
-        const scelti = [...state.giocatore1.squadra, ...state.giocatore2.squadra]
+          : !hasOwnedPokemon(state.giocatore2) ? 2 : null
+        const scelti = [...getOwnedPokemon(state.giocatore1), ...getOwnedPokemon(state.giocatore2)]
           .map((pokemon) => pokemon.specieId)
         if (!giocatoreId || !STARTER_IDS.some((id) => id === specieId) || scelti.includes(specieId)) {
           return false
@@ -400,7 +402,7 @@ export const useGameStore = create<GameState>()(
         const key = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
         const player = state[key]
         if (!battle || battle.tipo !== 'Selvatico' || battle.checkpoint?.phase === 'ended'
-          || battle.pokemonB.istanzaId !== istanza.istanzaId || !haSpazioPokemon(player)
+          || battle.pokemonB.istanzaId !== istanza.istanzaId || !haSpazioPokemon(player, istanza)
           || battle.pokemonB.hp <= 0 || patch.checkpoint?.phase !== 'ended' || patch.checkpoint.outcome !== 'vittoria'
           || (masterball && (player.inventario.masterball ?? 0) <= 0)) return false
         const eligible = canJoinTeam(player.squadra, istanza)
@@ -414,8 +416,7 @@ export const useGameStore = create<GameState>()(
             ? { ...player.inventario, masterball: (player.inventario.masterball ?? 0) - 1 }
             : player.inventario,
         }
-        set({ [key]: nextPlayer, battaglia: clearBattleExperience({ ...battle, ...patch }) } as Partial<GameState>)
-        return true
+        return commitDurable({ [key]: nextPlayer, battaglia: clearBattleExperience({ ...battle, ...patch }) } as Partial<GameState>)
       },
 
       aggiornaPokemon: (giocatoreId, creature) =>

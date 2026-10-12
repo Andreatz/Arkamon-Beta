@@ -44,6 +44,31 @@ describe('scelta starter persistente', () => {
     expect(useGameStore.getState().giocatore2.squadra[0].specieId).toBe(9)
     expect(useGameStore.getState().rivaleStarterId).toBe(1)
   })
+
+  it.each([{ players: [1] }, { players: [2] }, { players: [1, 2] }] as const)('depositare gli starter di $players non riapre la scelta, anche dopo la ricarica', async ({ players }) => {
+    useGameStore.getState().scegliStarter(1)
+    useGameStore.getState().scegliStarter(5)
+    for (const playerId of players) useGameStore.getState().scambiaSlot(playerId, { tipo: 'squadra', indice: 0 }, { tipo: 'deposito', chiave: '1:1' })
+    await useGameStore.persist.rehydrate()
+    const original = useGameStore.getState()
+    for (const specieId of [1, 5, 9]) expect(original.scegliStarter(specieId)).toBe(false)
+    expect(useGameStore.getState()).toBe(original)
+    expect(original.rivaleStarterId).toBe(9)
+    expect([...original.giocatore1.squadra, ...Object.values(original.giocatore1.deposito)].map((pokemon) => pokemon.specieId)).toEqual([1])
+    expect([...original.giocatore2.squadra, ...Object.values(original.giocatore2.deposito)].map((pokemon) => pokemon.specieId)).toEqual([5])
+  })
+
+  it('la prima scelta in deposito resta esclusa mentre il secondo giocatore deve ancora scegliere', () => {
+    useGameStore.getState().scegliStarter(1)
+    useGameStore.getState().scambiaSlot(1, { tipo: 'squadra', indice: 0 }, { tipo: 'deposito', chiave: '1:1' })
+    expect(useGameStore.getState().scegliStarter(1)).toBe(false)
+    expect(useGameStore.getState().scegliStarter(5)).toBe(true)
+    const current = useGameStore.getState()
+    expect(current.giocatore1.squadra).toEqual([])
+    expect(current.giocatore1.deposito['1:1'].specieId).toBe(1)
+    expect(current.giocatore2.squadra[0].specieId).toBe(5)
+    expect(current.rivaleStarterId).toBe(9)
+  })
 })
 
 describe('caricamento salvataggi parziali', () => {

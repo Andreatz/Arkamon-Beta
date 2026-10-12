@@ -5,6 +5,7 @@ import { useAdminStore } from '@store/adminStore'
 import { motion } from 'framer-motion'
 import { assetUrl } from '@/utils/assetUrl'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
+import { hasOwnedPokemon } from '@/engine/pokemonOwnership'
 
 const DEFAULT_TITLE_LOGO = '/ui/logo_arkamon.png'
 const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
@@ -19,8 +20,8 @@ export function TitoloScene() {
   const video = useRef<HTMLVideoElement>(null)
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const reset = useGameStore((s) => s.reset)
-  const haGiocatori = useGameStore((s) => s.giocatore1.squadra.length > 0 || s.giocatore2.squadra.length > 0)
-  const starterCompletati = useGameStore((s) => s.giocatore1.squadra.length > 0 && s.giocatore2.squadra.length > 0)
+  const haGiocatori = useGameStore((s) => hasOwnedPokemon(s.giocatore1) || hasOwnedPokemon(s.giocatore2))
+  const starterCompletati = useGameStore((s) => hasOwnedPokemon(s.giocatore1) && hasOwnedPokemon(s.giocatore2))
   const titleLogo = useAdminStore((s) => s.theme.assets.titleLogo)
   const titleBackground = useAdminStore((s) => s.theme.assets.titleBackground)
   const [logoFailed, setLogoFailed] = useState(false)

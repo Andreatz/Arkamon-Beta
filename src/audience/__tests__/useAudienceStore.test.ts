@@ -59,6 +59,47 @@ describe('preferenze e collegamento del pubblico', () => {
     expect(api.getState().session?.sessionId).toBe(nextId)
     expect(storage.get(key)).not.toContain('first-password')
   })
+  it.each([
+    { label: 'successo', body: { ...snapshot, round: null }, status: 200 },
+    { label: 'scadenza', body: { error: 'Sessione terminata', code: 'SESSION_EXPIRED' }, status: 410 },
+    { label: 'errore temporaneo', body: { error: 'Servizio non disponibile', code: 'SERVICE_ERROR' }, status: 503 },
+  ])('il polling precedente con $label non interrompe il rinnovo del collegamento', async ({ body, status }) => {
+    const oldRefresh = deferred<Response>()
+    const ending = deferred<Response>()
+    const nextId = 'session-renewed-123'
+    const next = { ...snapshot, round: null, sessionId: nextId,
+      joinUrls: { npc: invitation('npc', nextId), boss: invitation('boss', nextId) }, hostToken: 'd'.repeat(64) }
+    const fetcher = vi.fn().mockReturnValueOnce(oldRefresh.promise).mockReturnValueOnce(ending.promise)
+      .mockResolvedValueOnce(response(next))
+    vi.stubGlobal('fetch', fetcher)
+    const api = await store()
+    api.setState({ session, snapshot: { ...snapshot, round: null }, serviceUrl, connectionStatus: 'connected' })
+    const refreshing = api.getState().refreshSnapshot()
+    const renewing = api.getState().connect('new-password')
+    oldRefresh.resolve(response(body, status))
+    await refreshing
+    expect(api.getState()).toMatchObject({ session, connectionStatus: 'connecting', error: null })
+    expect(fetcher.mock.calls[1][1].signal.aborted).toBe(false)
+    await api.getState().refreshSnapshot()
+    expect(fetcher).toHaveBeenCalledTimes(2)
+    ending.resolve(response({ ...snapshot, round: null }))
+    await renewing
+    expect(fetcher.mock.calls[2][0]).toBe(`${serviceUrl}/api/arkamon-votes`)
+    expect(api.getState()).toMatchObject({ session: { sessionId: nextId }, connectionStatus: 'connected', error: null })
+    expect(JSON.parse(storage.get(key)!).session.sessionId).toBe(nextId)
+  })
+  it('il polling precedente non nasconde un errore del rinnovo già concluso', async () => {
+    const oldRefresh = deferred<Response>()
+    vi.stubGlobal('fetch', vi.fn().mockReturnValueOnce(oldRefresh.promise)
+      .mockResolvedValueOnce(response({ error: 'Revoca non disponibile', code: 'SERVICE_ERROR' }, 503)))
+    const api = await store()
+    api.setState({ session, snapshot: { ...snapshot, round: null }, serviceUrl, connectionStatus: 'connected' })
+    const refreshing = api.getState().refreshSnapshot()
+    await api.getState().connect('new-password')
+    oldRefresh.resolve(response({ ...snapshot, round: null }))
+    await refreshing
+    expect(api.getState()).toMatchObject({ session, connectionStatus: 'error', error: 'Revoca non disponibile' })
+  })
   it('non sostituisce una sessione mentre il pubblico sta votando', async () => {
     const api = await store()
     api.setState({ session, snapshot, serviceUrl, enabled: true })

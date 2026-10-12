@@ -217,6 +217,7 @@ export function BattagliaScene() {
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [supremaSide, setSupremaSide] = useState<'A' | 'B' | null>(null)
   const [bagOpen, setBagOpen] = useState(false)
+  const [pendingCaptureSave, setPendingCaptureSave] = useState<{ masterball: boolean } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
   const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && !initialCheckpoint?.openingComplete && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
@@ -1124,9 +1125,25 @@ export function BattagliaScene() {
     }, masterball)
   }
 
+  const completaCatturaSalvata = (masterball = false) => {
+    if (!salvaCatturaConclusa(masterball)) {
+      // Keep this resolved action pending: retry persistence without another status tick or RNG draw.
+      setPendingCaptureSave({ masterball })
+      setAzioneInCorso(true)
+      mostraMessaggi(['Cattura non salvata. Squadra, deposito e Masterball restano intatti. Libera spazio per i salvataggi del browser e riprova.'])
+      return false
+    }
+    setPendingCaptureSave(null)
+    setAzioneInCorso(false)
+    playSound('capture')
+    setEsito('vittoria')
+    setTerminata(true)
+    return true
+  }
+
   const eseguiCattura = () => {
-    if (!haSpazioPokemon(giocatore)) {
-      mostraMessaggi(['Squadra e deposito sono pieni: libera uno slot prima di catturare.'])
+    if (!haSpazioPokemon(giocatore, pkmnB)) {
+      mostraMessaggi(['Nessun posto disponibile per questo Arkamon: libera uno slot nel deposito o una posizione compatibile in squadra.'])
       return
     }
     preparaTurnoGiocatore((_pokemon, statusMessages) => {
@@ -1134,11 +1151,8 @@ export function BattagliaScene() {
       appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: ris.riuscita ? `${pkmnB.nome} catturato` : `${pkmnB.nome} sfugge alla cattura`, messages: [`Somma reale dei 3d6: ${ris.roll}. Soglia: ${ris.soglia.toLocaleString('it-IT', { maximumFractionDigits: 2 })}.`], target: logPokemon(pkmnB), diceSum: ris.roll }])
       mostraMessaggi([...statusMessages, 'Lanci una pokeball...'])
       if (ris.riuscita) {
-        if (!salvaCatturaConclusa()) return
+        if (!completaCatturaSalvata()) return
         mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
-        playSound('capture')
-        setEsito('vittoria')
-        setTerminata(true)
         return
       }
       mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
@@ -1147,22 +1161,19 @@ export function BattagliaScene() {
   }
 
   const eseguiMasterball = () => {
-    if (!haSpazioPokemon(giocatore)) {
-      mostraMessaggi(['Squadra e deposito sono pieni: libera uno slot prima di catturare.'])
+    if (!haSpazioPokemon(giocatore, pkmnB)) {
+      mostraMessaggi(['Nessun posto disponibile per questo Arkamon: libera uno slot nel deposito o una posizione compatibile in squadra.'])
       return
     }
     if (masterballRimaste <= 0) return
     preparaTurnoGiocatore((_pokemon, statusMessages) => {
       appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: `${pkmnB.nome}: Masterball`, messages: ['Cattura con Masterball: non vengono lanciati dadi.'], target: logPokemon(pkmnB) }])
-      if (!salvaCatturaConclusa(true)) return
+      if (!completaCatturaSalvata(true)) return
       mostraMessaggi([
         ...statusMessages,
         'Lanci una Masterball...',
         `${pkmnB.nome} è stato catturato!`,
       ])
-      playSound('capture')
-      setEsito('vittoria')
-      setTerminata(true)
     }, undefined, false)
   }
 
@@ -1656,14 +1667,21 @@ export function BattagliaScene() {
 
             {isSelvatico && battaglia && (
               <div className="mt-3 flex justify-end gap-2">
-                <ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiCattura}>
+                {pendingCaptureSave && (
+                  <ActionButton disabled={false} onClick={() => {
+                    if (completaCatturaSalvata(pendingCaptureSave.masterball)) mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
+                  }}>
+                    Riprova salvataggio cattura
+                  </ActionButton>
+                )}
+                {!pendingCaptureSave && <><ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiCattura}>
                   Cattura
                 </ActionButton>
                 {masterballRimaste > 0 && (
                   <ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiMasterball}>
                     Masterball x{masterballRimaste}
                   </ActionButton>
-                )}
+                )}</>}
               </div>
             )}
           </div>
@@ -1806,6 +1824,8 @@ export function BattagliaScene() {
         <span className="arka-layout-content text-sm text-center">
           {terminata
             ? 'Battaglia finita'
+            : pendingCaptureSave
+            ? 'Cattura in attesa di salvataggio'
             : moveVfx
             ? 'Animazione mossa...'
             : diceRoll

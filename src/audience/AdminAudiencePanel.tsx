@@ -102,7 +102,7 @@ export function AdminAudiencePanel() {
           ] as const).map(({ channel, title, label }) => (
             <section className="audience-invitation" key={channel}>
               <h4>{title}</h4>
-              <p>{snapshot?.participants[channel] ?? 0} persone collegate</p>
+              <p>{snapshot?.participants[channel] ?? 0} partecipanti iscritti al gruppo</p>
               <AudienceQrCode url={session.joinUrls[channel]} label={`Codice QR ${title}`} />
               <div className="audience-actions">
                 <button type="button" onClick={() => { void copy(session.joinUrls[channel], label) }}>Copia link</button>

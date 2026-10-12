@@ -2,6 +2,10 @@
 
 Arkamon viene compilato con Vite e pubblicato dal workflow `.github/workflows/deploy.yml`.
 
+Il vecchio comando locale `npm run deploy` e la dipendenza `gh-pages` sono stati rimossi: compilavano con base `/` e pubblicavano su un branch separato, mentre questo progetto usa la base `/Arkamon-Beta/` e la sorgente GitHub Actions. La pubblicazione continua ad avvenire con un push su `main` o avviando il workflow **Deploy to GitHub Pages**. Una build locale o una PR aperta non pubblica automaticamente il gioco.
+
+L'audit del 12 ottobre 2026 misura circa 3,733 GiB nella cartella pubblica, copiata integralmente in `dist`. Questo supera il limite documentato di 1 GB del sito Pages: il successo della compilazione non certifica che il pacchetto rientri nella quota. La riduzione del pacchetto e la distribuzione separata degli asset restano un lavoro dedicato; vedere [audit del progetto](project-audit-2026-10-12.md).
+
 In **Settings → Pages → Build and deployment → Source**, selezionare **GitHub Actions**. L’API del repository deve riportare `build_type: workflow`.
 
 Il workflow imposta `GITHUB_PAGES=true`, genera il sito in `dist/` con base `/Arkamon-Beta/` e carica esclusivamente quella cartella. Il file `public/.nojekyll`, copiato da Vite in `dist/.nojekyll`, conserva il risultato come sito statico.

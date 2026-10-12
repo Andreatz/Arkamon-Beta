@@ -8,6 +8,7 @@ import { newInteractionDefinition } from '@/interactions/types'
 import { getLocalMap } from '@/data/localMaps'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { createBattleChronicle } from '@/components/battle/battleChronicle'
+import { shopAvailabilityMessage } from '@/shop/purchase'
 
 const storageValues = vi.hoisted(() => {
   const values = new Map<string, string>()
@@ -175,6 +176,49 @@ describe('backup portabile e ripristino guidato della campagna', () => {
 
   it('una nuova installazione non riceve avvisi di corruzione', () => {
     expect(normalizeGameSave(undefined).warnings).toEqual([])
+  })
+
+  it.each([
+    [1200.5, 1200], [Number.MAX_SAFE_INTEGER + 100, Number.MAX_SAFE_INTEGER],
+    [-3.2, 0], [Number.NaN, 0], [Number.POSITIVE_INFINITY, 0],
+  ])('recupera il saldo %s come intero sicuro %s e avvisa senza regalare monete', (coins, expected) => {
+    const saved = serializeGameState(campaign())
+    const recovered = normalizeGameSave({ ...saved, giocatore1: { ...saved.giocatore1 as object, monete: coins } })
+    expect(recovered.state.giocatore1.monete).toBe(expected)
+    expect(Number.isSafeInteger(recovered.state.giocatore1.monete)).toBe(true)
+    expect(recovered.warnings.join(' ')).toContain('saldo monete corretto')
+  })
+
+  it.each([0, 1200])('conserva un saldo valido di %s senza avvisi', (coins) => {
+    const saved = campaign()
+    saved.giocatore1.monete = coins
+    const restored = stateFromValidatedBackup(checked(serializeGameBackup(saved, date)))!
+    expect(restored.giocatore1.monete).toBe(coins)
+    expect(normalizeGameSave(serializeGameState(saved)).warnings).toEqual([])
+  })
+
+  it.each([
+    [1200.5, 1200], [Number.MAX_SAFE_INTEGER + 100, Number.MAX_SAFE_INTEGER],
+  ])('un backup con saldo %s avvisa e ripristina gli acquisti con saldo %s', (coins, expected) => {
+    const saved = campaign()
+    saved.giocatoreAttivo = 1
+    saved.turnoOverworld = { giocatoreAttivo: 1, azioniRimaste: 2 }
+    saved.posizione1 = { ...saved.posizione1, luogo: 'Venezia' }
+    saved.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
+    const shop = { ...definition('wallet-shop'), title: 'Arkastore', repeatable: true, action: { kind: 'shop' as const } }
+    const data = JSON.parse(serializeGameBackup(saved, date, [shop]))
+    data.campaign.giocatore1.monete = coins
+    const preview = checked(JSON.stringify(data))
+    expect(preview.warnings.join(' ')).toContain('saldo monete corretto')
+    expect(preview.players[0].coins).toBe(expected)
+    expect(restoreGameBackup(preview).ok).toBe(true)
+    const restored = useGameStore.getState()
+    expect(restored.saveRecoveryWarnings.join(' ')).toContain('saldo monete corretto')
+    expect(restored.giocatore1.monete).toBe(expected)
+    expect(shopAvailabilityMessage(restored, 1, 'Venezia', { interactionId: shop.id, interactions: [shop] })).toBeNull()
+    expect(restored.acquistaOggetti(1, { potion: 1 }, 'Venezia', shop.id).ok).toBe(true)
+    expect(useGameStore.getState().giocatore1.monete).toBe(expected - 100)
+    expect(JSON.parse(localStorage.getItem(GAME_SAVE_STORAGE_KEY)!).state.giocatore1.monete).toBe(expected - 100)
   })
 
   it('un ripristino anche nella stessa scena crea una nuova generazione senza importarla dal file', () => {

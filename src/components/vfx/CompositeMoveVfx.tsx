@@ -3,6 +3,7 @@ import type { MoveVfxEvent } from '@/components/MoveVfx'
 import { MOVE_VFX_ASSETS } from './vfxManifest'
 import type { MoveVfxRecipe, VfxRecipeStep } from './types'
 import { MoveVfxLayer } from './MoveVfxLayer'
+import { useVfxPlaybackPreferences } from './useVfxPlaybackPreferences'
 
 function RecipeStep({
   step,
@@ -15,15 +16,16 @@ function RecipeStep({
   effect: MoveVfxEvent
   index: number
 }) {
+  const { speed } = useVfxPlaybackPreferences(effect.id)
   const [started, setStarted] = useState(step.startAtMs <= 0)
 
   useEffect(() => {
     setStarted(step.startAtMs <= 0)
     if (step.startAtMs <= 0) return
 
-    const timer = window.setTimeout(() => setStarted(true), step.startAtMs)
+    const timer = window.setTimeout(() => setStarted(true), step.startAtMs / speed)
     return () => window.clearTimeout(timer)
-  }, [effect.id, step.startAtMs])
+  }, [effect.id, step.startAtMs, speed])
 
   if (!started) return null
   const asset = MOVE_VFX_ASSETS[step.assetId as keyof typeof MOVE_VFX_ASSETS]
@@ -40,6 +42,7 @@ function RecipeStep({
       side={effect.side}
       target={effect.target}
       durationMs={durationMs}
+      playbackSpeed={speed}
       anchor={step.anchor}
       layer={step.layer}
       motion={step.motion}
