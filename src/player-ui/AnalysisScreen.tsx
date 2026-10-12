@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { getPokemon, TABELLA_TIPI } from '@data/index'
-import { calcolaHPMax, LIVELLO_MAX, xpRichiestoPerLivello } from '@engine/battleEngine'
-import { teamProgressionLimit } from '@/engine/teamLevelCap'
+import { calcolaHPMax } from '@engine/battleEngine'
 import { useGameStore } from '@store/gameStore'
 import { HealthBar, KitButton, KitIcon, KitPanel, PokemonHero, PokemonMoves, TypeBadge } from './kit'
 import { liveOwnedPokemon } from './TeamScreen'
@@ -24,9 +23,6 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
   const species = pokemon ? getPokemon(pokemon.specieId) : undefined
   const teamIndex = pokemon ? player.squadra.findIndex((entry) => entry.istanzaId === pokemon.istanzaId) : -1
   const depositEntry = pokemon ? Object.entries(player.deposito).find(([, entry]) => entry.istanzaId === pokemon.istanzaId) : undefined
-  const xpThreshold = pokemon ? xpRichiestoPerLivello(pokemon.livello) : 1
-  const levelLimit = pokemon && teamIndex >= 0 ? teamProgressionLimit(player.squadra, pokemon.istanzaId) : LIVELLO_MAX
-  const bankedXP = !!pokemon && pokemon.livello < LIVELLO_MAX && pokemon.xp >= xpThreshold && pokemon.livello >= levelLimit
   const evolution = species?.evoluzioneId ? getPokemon(species.evoluzioneId) : undefined
   const status = pokemon?.stato
 
@@ -59,16 +55,13 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
             <HealthBar pokemon={pokemon} />
             <dl className="pu-data-list pu-analysis-facts">
               <div><dt>Specie</dt><dd>{species?.nome ?? pokemon.nome}</dd></div>
-              <div><dt>Esperienza conservata</dt><dd>{pokemon.xp} XP</dd></div>
-              <div><dt>Prossimo livello</dt><dd>{pokemon.livello >= LIVELLO_MAX ? 'Livello massimo' : `${Math.max(0, xpThreshold - pokemon.xp)} XP necessari`}</dd></div>
               <div><dt>Prossima evoluzione</dt><dd>{evolution && species?.livelloEvoluzione ? `${evolution.nome} · Lv. ${species.livelloEvoluzione}` : 'Forma finale'}</dd></div>
               <div><dt>Condizione</dt><dd>{pokemon.hp <= 0 ? 'KO' : status?.tipo ?? 'In salute'}</dd></div>
             </dl>
-            {bankedXP && <p className="pu-note">L’XP è conservata: il prossimo livello attende che la squadra rientri nella fascia consentita di cinque livelli.</p>}
           </>}
           {tab === 'mosse' && <>
             <h3>Mosse disponibili al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} />
-            <KitPanel className="pu-note pu-supreme-note"><KitIcon id="icon-activity" /><div><strong>Mossa Suprema · potenza doppia</strong><p>Danno e XP del bersaglio prima del contraccolpo: metà degli HP massimi. Nel doppio KO vince l’attaccante.</p></div></KitPanel>
+            <KitPanel className="pu-note pu-supreme-note"><KitIcon id="icon-activity" /><div><strong>Mossa Suprema · potenza doppia</strong><p>Danno al bersaglio e salita di livello prima del contraccolpo: metà degli HP massimi. Nel doppio KO vince l’attaccante.</p></div></KitPanel>
           </>}
           {tab === 'status' && <>
             <h3>{pokemon.hp <= 0 ? 'Arkamon esausto' : status?.tipo ?? 'In salute'}</h3><HealthBar pokemon={pokemon} />

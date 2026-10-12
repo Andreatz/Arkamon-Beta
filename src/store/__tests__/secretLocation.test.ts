@@ -3,6 +3,7 @@ import { getLocalMap } from '@data/localMaps'
 import { ALLENATORI } from '@data/index'
 import { SECRET_LOCATION_GYM_IDS } from '@data/secretLocation'
 import { getAdjacentLocalMapNodes } from '@engine/localMapMovement'
+import { calcolaHPMax } from '@engine/battleEngine'
 import { creaIstanza, useGameStore } from '@store/gameStore'
 import type { MappaGriglia, PosizioneAvatar, StatoBattaglia } from '@/types'
 
@@ -26,6 +27,17 @@ const restoredSave = () => {
   const options = useGameStore.persist.getOptions()
   const saved = JSON.parse(JSON.stringify(options.partialize!(useGameStore.getState())))
   return options.merge!(saved, useGameStore.getState())
+}
+
+function ongoingBattle(luogoRitorno = 'Roma'): StatoBattaglia {
+  const pokemonA = useGameStore.getState().giocatore1.squadra[0]
+  const pokemonB = { ...creaIstanza(13, 60)!, hp: 3 }
+  return { tipo: 'NPC', pokemonA, pokemonB, squadraA: [pokemonA], squadraB: [pokemonB],
+    hpMaxA: calcolaHPMax(pokemonA), hpMaxB: calcolaHPMax(pokemonB), turnoCorrente: 'A',
+    luogoRitorno, log: [], evoluzioneInAttesa: null,
+    checkpoint: { version: 1, phase: 'player', initialPriority: 'A', actedThisRound: [],
+      openingComplete: true, outcome: null, evolutions: [], rivalMessages: [] },
+  }
 }
 
 describe('store - passaggio segreto individuale di Roma', () => {
@@ -114,7 +126,7 @@ describe('store - passaggio segreto individuale di Roma', () => {
     expect(s.muoviAvatarMappaPrincipale(1, 'Percorso_15')).toBe(false)
     useGameStore.setState({ posizione1: world('Roma'), turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 0 } })
     expect(s.attraversaPassaggioSegreto(1)).toBe(false)
-    useGameStore.setState({ turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, battaglia: {} as StatoBattaglia })
+    useGameStore.setState({ turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, battaglia: ongoingBattle() })
     expect(s.attraversaPassaggioSegreto(1)).toBe(false)
   })
 
@@ -140,7 +152,7 @@ describe('store - passaggio segreto individuale di Roma', () => {
     expect(s.interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'no-op' })
     s.segnaCespuglioVisitato(1, 'Percorso_15', 'A')
     expect(s.cespuglioVisitato(1, 'Percorso_15', 'A')).toBe(false)
-    s.iniziaBattaglia({ luogoRitorno: 'Percorso_15' } as StatoBattaglia)
+    s.iniziaBattaglia(ongoingBattle('Percorso_15'))
     expect(useGameStore.getState().battaglia).toBeNull()
     expect(s.iniziaBattagliaNPC(201, 'Percorso_15')).toBe(false)
     expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)

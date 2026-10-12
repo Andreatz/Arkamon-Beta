@@ -101,17 +101,13 @@ describe('Committed campaign tracking', () => {
     expect(trackGameChange(committed, { ...committed, battaglia: { ...committed.battaglia! } }).matchLog.events).toHaveLength(1)
   })
 
-  it('records banked XP when the level cap prevents a level-up', () => {
+  it('does not turn legacy stored XP into a level event', () => {
     const before = campaign(); before.battaglia = battle(pokemon(1, 'actor', 10))
     const progressed = { ...before.battaglia.pokemonA, xp: 1 }
     const next = { ...before, battaglia: { ...before.battaglia, pokemonA: progressed, squadraA: [progressed] } }
     const committed = commit(before, next)
-    expect(committed.matchLog.events).toHaveLength(1)
-    expect(committed.matchLog.events[0]).toMatchObject({ kind: 'level', playerId: 1 })
-    expect(committed.matchLog.events[0].title).toContain('guadagna esperienza')
-    expect(committed.matchLog.events[0].message).toContain('XP 0 → 1')
-    expect(committed.matchLog.events[0].message).not.toContain('10 → 11')
-    expect(trackGameChange(committed, { ...committed }).matchLog.events).toHaveLength(1)
+    expect(committed.matchLog.events).toEqual([])
+    expect(trackGameChange(committed, { ...committed }).matchLog.events).toEqual([])
   })
 
   it('logs a concluded battle once without granting rewards or healing from tracking', () => {

@@ -1,12 +1,12 @@
 /** Lightweight entry points shared by scenes without loading the tools interface. */
-export const PLAYER_UI_SCREENS = ['partita', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa', 'negozio'] as const
-export type PlayerUiScreen = typeof PLAYER_UI_SCREENS[number]
+export const PLAYER_UI_SCREENS = ['partita', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa'] as const
+export type PlayerUiScreen = typeof PLAYER_UI_SCREENS[number] | 'negozio'
 export type PlayerUiAuxiliary = 'journal' | 'backup' | 'settings' | 'chronicles' | 'match' | 'challenges'
-export interface PlayerUiOpenRequest { screen: PlayerUiScreen; playerId?: 1 | 2; instanceId?: string }
+export interface PlayerUiOpenRequest { screen: PlayerUiScreen; playerId?: 1 | 2; instanceId?: string; shopInteractionId?: string }
 export const PLAYER_UI_OPEN_EVENT = 'arkamon:open-player-ui'
 
 export function isPlayerUiScreen(value: unknown): value is PlayerUiScreen {
-  return typeof value === 'string' && PLAYER_UI_SCREENS.includes(value as PlayerUiScreen)
+  return value === 'negozio' || (typeof value === 'string' && PLAYER_UI_SCREENS.some(screen => screen === value))
 }
 
 /** Opening the window does not navigate or change the active game player. */

@@ -49,7 +49,7 @@ async function openCampaignFixture(page: Page) {
   // so the exact pre-launch snapshot includes the newly added campaign fields.
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const settings = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  await settings.getByRole('button', { name: 'Impostazioni', exact: true }).click()
+  await settings.getByRole('button', { name: 'Apri Impostazioni', exact: true }).click()
   await settings.getByRole('checkbox', { name: 'Audio attivo', exact: true }).check()
   await settings.getByRole('checkbox', { name: 'Audio attivo', exact: true }).uncheck()
   await page.keyboard.press('Escape')
@@ -59,7 +59,9 @@ async function openCampaignFixture(page: Page) {
 async function tools(page: Page): Promise<Locator> {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  await dialog.getByRole('button', { name: 'Sfide', exact: true }).click()
+  if (!await dialog.getByRole('region', { name: 'Sfide a seed e Fanta-Team Builder', exact: true }).isVisible()) {
+    await dialog.getByRole('button', { name: 'Apri Sfide', exact: true }).click()
+  }
   await expect(dialog.getByRole('region', { name: 'Sfide a seed e Fanta-Team Builder', exact: true })).toBeVisible()
   return dialog
 }
@@ -149,12 +151,12 @@ test('a poison KO rewards the challenge rival without exceeding its team level c
   await expect(page.getByRole('button', { name: 'Prosegui', exact: true })).toBeVisible()
   const ended = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.battaglia, ACTIVE_CHALLENGE_KEY)
   expect(ended.pokemonA.hp).toBe(0)
-  expect(ended.pokemonB).toMatchObject({ livello: 25, hp: 3, xp: 1 })
+  expect(ended.pokemonB).toMatchObject({ livello: 25, hp: 3, xp: 0 })
   expect(ended.squadraB.slice(1).every((entry: { livello: number }) => entry.livello === 20)).toBe(true)
   expect(ended.checkpoint.outcome).toBe('sconfitta')
   expect(await page.evaluate((key) => localStorage.getItem(key), CAMPAIGN_KEY)).toBe(campaign)
   await page.reload()
-  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.battaglia.pokemonB, ACTIVE_CHALLENGE_KEY)).toMatchObject({ livello: 25, hp: 3, xp: 1 })
+  expect(await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).state.battaglia.pokemonB, ACTIVE_CHALLENGE_KEY)).toMatchObject({ livello: 25, hp: 3, xp: 0 })
   expect(errors).toEqual([])
 })
 

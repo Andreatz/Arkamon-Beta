@@ -35,6 +35,7 @@ import type {
 } from '@/types'
 import {
   calcolaHPMax,
+  clearStoredExperience,
   calcolaVariazioneMonete,
   determinaIniziativa,
   type EsitoBattaglia,
@@ -69,7 +70,7 @@ export interface GameState extends GameSaveState {
   challengeContext: ChallengeContext | null
   teamRuleMessage: string | null
   dismissTeamRuleMessage: () => void
-  acquistaOggetti: (playerId: 1 | 2, cart: ShopCart, location: string) => ShopPurchaseResult
+  acquistaOggetti: (playerId: 1 | 2, cart: ShopCart, location: string, shopInteractionId?: string) => ShopPurchaseResult
   applicaOggetto: (playerId: 1 | 2, itemId: OggettoId, instanceId: string) => { ok: boolean; message: string }
   /** Volatile scene generation. A restored/new campaign must release every old timer and local scene snapshot. */
   campaignRevision: number
@@ -234,6 +235,13 @@ export const STARTER_IDS = [1, 5, 9] as const
 const posizioneIniziale = () => mainMapPosition()
 const posizioneMappaPrincipale = mainMapPosition
 
+function clearBattleExperience(battle: StatoBattaglia): StatoBattaglia {
+  return { ...battle, pokemonA: clearStoredExperience(battle.pokemonA), pokemonB: clearStoredExperience(battle.pokemonB),
+    ...(battle.squadraA ? { squadraA: battle.squadraA.map(clearStoredExperience) } : {}),
+    ...(battle.squadraB ? { squadraB: battle.squadraB.map(clearStoredExperience) } : {}),
+  }
+}
+
 function luogoMappaPrincipale(posizione: PosizioneAvatar): string {
   return posizione.mappaId === 'mappa-principale'
     ? posizione.luogo ?? MAIN_MAP_START_NODE
@@ -368,8 +376,9 @@ export const useGameStore = create<GameState>()(
         return true
       },
 
-      aggiungiPokemon: (giocatoreId, istanza) =>
+      aggiungiPokemon: (giocatoreId, creature) =>
         set((s) => {
+          const istanza = clearStoredExperience(creature)
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
           const g = s[chiaveG]
           if ([...g.squadra, ...Object.values(g.deposito)].some((pokemon) => pokemon.istanzaId === istanza.istanzaId)) return s
@@ -384,7 +393,8 @@ export const useGameStore = create<GameState>()(
           } as Partial<GameState>
         }),
 
-      concludiCattura: (giocatoreId, istanza, patch, masterball = false) => {
+      concludiCattura: (giocatoreId, creature, patch, masterball = false) => {
+        const istanza = clearStoredExperience(creature)
         const state = get()
         const battle = state.battaglia
         const key = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
@@ -404,12 +414,13 @@ export const useGameStore = create<GameState>()(
             ? { ...player.inventario, masterball: (player.inventario.masterball ?? 0) - 1 }
             : player.inventario,
         }
-        set({ [key]: nextPlayer, battaglia: { ...battle, ...patch } } as Partial<GameState>)
+        set({ [key]: nextPlayer, battaglia: clearBattleExperience({ ...battle, ...patch }) } as Partial<GameState>)
         return true
       },
 
-      aggiornaPokemon: (giocatoreId, istanza) =>
+      aggiornaPokemon: (giocatoreId, creature) =>
         set((s) => {
+          const istanza = clearStoredExperience(creature)
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
           const g = s[chiaveG]
           // Cerca prima nella squadra
@@ -488,8 +499,8 @@ export const useGameStore = create<GameState>()(
         }),
 
       // Porting di: IniziaBattagliaAllenatore da old_files/Mod_Game_Events.txt
-      acquistaOggetti: (playerId, cart, location) => {
-        const result = resolveShopPurchase(get(), playerId, cart, location)
+      acquistaOggetti: (playerId, cart, location, shopInteractionId) => {
+        const result = resolveShopPurchase(get(), playerId, cart, location, { interactionId: shopInteractionId, interactions: useInteractionStore.getState().interactions })
         if (result.ok && result.patch && !commitDurable(result.patch)) return { ok: false, message: 'Acquisto non salvato: spazio del browser esaurito o bloccato. Monete e borsa restano intatte.' }
         return result
       },
@@ -640,11 +651,11 @@ export const useGameStore = create<GameState>()(
         if (battaglia.luogoRitorno === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo)) return
         const team = battaglia.squadraA ?? state[state.giocatoreAttivo === 1 ? 'giocatore1' : 'giocatore2'].squadra
         if (!isTeamWithinLevelCap(team)) { set({ teamRuleMessage: teamCapMessage(team) }); return }
-        set({ battaglia })
+        set({ battaglia: clearBattleExperience(battaglia) })
       },
 
       aggiornaBattaglia: (patch) =>
-        set((s) => (s.battaglia ? { battaglia: { ...s.battaglia, ...patch } } : s)),
+        set((s) => (s.battaglia ? { battaglia: clearBattleExperience({ ...s.battaglia, ...patch }) } : s)),
 
       terminaBattaglia: (curaCompleta) =>
         set((s) => {

@@ -78,8 +78,11 @@ export function revealedAttackEvents(result: RisultatoMossa, side: Lato, actionI
 
 export function xpEvent(before: PokemonIstanza, progression: ReturnType<typeof applicaXP> & { xpAssegnata: number }, side: Lato, id: string): BattleLogEvent[] {
   if (!progression.xpAssegnata) return []
-  return [{ id, kind: 'xp', side, title: `${before.nome} guadagna ${progression.xpAssegnata} XP`, actor: logPokemon(progression.istanza), xp: progression.xpAssegnata, levelBefore: before.livello, levelAfter: progression.istanza.livello,
-    messages: [progression.livelliGuadagnati ? `Livello ${before.livello} → ${progression.istanza.livello}. Gli HP residui sono conservati.` : 'Gli HP residui sono conservati.'] }]
+  const blocked = progression.xpScartata > 0
+  const reason = progression.istanza.livello >= 100 ? 'Livello massimo raggiunto.' : 'Cap di squadra raggiunto.'
+  return [{ id, kind: 'xp', side, title: blocked ? `${before.nome}: EXP non accumulata` : `${before.nome} guadagna ${progression.xpAssegnata} XP`, actor: logPokemon(progression.istanza), xp: progression.xpAssegnata, levelBefore: before.livello, levelAfter: progression.istanza.livello,
+    messages: [progression.livelliGuadagnati ? `Livello ${before.livello} → ${progression.istanza.livello}. Gli HP residui sono conservati.` : 'Gli HP residui sono conservati.',
+      ...(blocked ? [`${reason} L’EXP di questo KO non si accumula e non darà livelli successivamente.`] : [])] }]
 }
 
 /** The order is target KO (already revealed), attacker XP, recoil, survivor XP, winner. */

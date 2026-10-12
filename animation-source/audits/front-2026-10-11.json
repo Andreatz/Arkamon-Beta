@@ -1,0 +1,4038 @@
+{
+  "schemaVersion": 1,
+  "importDate": "2026-10-11",
+  "speciesCount": 9,
+  "clipCount": 45,
+  "allProvenanceChecksPassed": true,
+  "species": [
+    {
+      "speciesId": 25,
+      "name": "Grimbolt",
+      "releaseFrame": 53,
+      "reactionFrame": 12,
+      "releaseEvidence": "Original attack frame 53 first projects a clear electric streak through the extended forepaws. Frame 52 retains the surrounding charge and preparatory paw extension.",
+      "reactionEvidence": "Original hit frame 12 first shows the chest contact flash. Frame 11 is still the neutral pose before impact.",
+      "cellWidth": 704,
+      "viewport": {
+        "width": 256,
+        "height": 256,
+        "left": 224,
+        "top": 227
+      },
+      "nativeFrames": 480,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "runtimeImageBytes": 45373654,
+      "profiles": {
+        "idle": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": true,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": [
+            16,
+            243,
+            69
+          ],
+          "screenBackgroundFallbackFrames": [
+            17,
+            18,
+            19,
+            20,
+            21,
+            22
+          ]
+        },
+        "victory": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": [
+            15,
+            243,
+            71
+          ],
+          "screenBackgroundFallbackFrames": [
+            62,
+            63,
+            64,
+            65,
+            71,
+            72
+          ]
+        },
+        "ko": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 26,
+      "name": "Ampereel",
+      "releaseFrame": 32,
+      "reactionFrame": 14,
+      "releaseEvidence": "Original attack frame 32 starts the committed open-mouth leftward lunge after the rotation and wind-up in frames 28 through 31.",
+      "reactionEvidence": "Original hit frame 14 first changes the eye to the struck expression and starts recoil with the contact flash. Frame 13 has preparatory speed lines but retains the neutral eye.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 320,
+        "height": 320,
+        "left": 218,
+        "top": 228
+      },
+      "nativeFrames": 479,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 95,
+        "ko": 96
+      },
+      "runtimeImageBytes": 34274806,
+      "profiles": {
+        "idle": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 27,
+      "name": "Ampereel",
+      "releaseFrame": 29,
+      "reactionFrame": 13,
+      "releaseEvidence": "Original attack frame 29 first opens the jaw widely in the forward roar after the partial preparatory mouth opening in frame 28.",
+      "reactionEvidence": "Original hit frame 13 first shows the head contact flash and contraction. Frame 12 retains the neutral body and eye.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 256,
+        "height": 256,
+        "left": 256,
+        "top": 256
+      },
+      "nativeFrames": 480,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "runtimeImageBytes": 41218298,
+      "profiles": {
+        "idle": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": {
+            "opaqueBelowScreenExcessFraction": 0.25,
+            "fadeToBaseKeyByScreenExcessFraction": 0.35,
+            "screenPocketsExcluded": true,
+            "minimumOtherChannel": 24
+          },
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 28,
+      "name": "Silvard",
+      "releaseFrame": 46,
+      "reactionFrame": 21,
+      "releaseEvidence": "Frame46 first releases the native outward leaf burst; frame45 still contains the circling leaf ring.",
+      "reactionEvidence": "Frame21 first closes the eyes and contracts the body before the contact flash at22.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 256,
+        "height": 256,
+        "left": 256,
+        "top": 255
+      },
+      "nativeFrames": 480,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "runtimeImageBytes": 39024234,
+      "profiles": {
+        "idle": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 29,
+      "name": "Silvard",
+      "releaseFrame": 45,
+      "reactionFrame": 14,
+      "releaseEvidence": "Frame45 first projects the native leaf slash in front of the muzzle; at44 it is still circling the raised tail.",
+      "reactionEvidence": "Frame14 first shows the native contact flash on the chest and muzzle.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 320,
+        "height": 320,
+        "left": 233,
+        "top": 224
+      },
+      "nativeFrames": 480,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "runtimeImageBytes": 49231878,
+      "profiles": {
+        "idle": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "blue",
+          "alphaCutoff": 0.02,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": {
+            "screenRatioDeviationStart": 0.02,
+            "screenRatioDeviationEnd": 0.12,
+            "nativeGreenUnchanged": true
+          },
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 30,
+      "name": "Eclyps",
+      "releaseFrame": 34,
+      "reactionFrame": 15,
+      "releaseEvidence": "Frame34 first releases the native black-and-gold crescent from the extended paws; frame33 has no crescent.",
+      "reactionEvidence": "Frame15 first starts the body lean and narrowed-eye recoil, before the contact flash at21.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 288,
+        "top": 288
+      },
+      "nativeFrames": 478,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 95,
+        "ko": 95
+      },
+      "runtimeImageBytes": 19348208,
+      "profiles": {
+        "idle": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": true,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 31,
+      "name": "Eclyps",
+      "releaseFrame": 32,
+      "reactionFrame": 11,
+      "releaseEvidence": "Original consecutive frames31-32: frame31 has no slash; frame32 first shows the bright curved slash as the foreleg extends.",
+      "reactionEvidence": "Original consecutive frames10-11: frame10 is the stationary stance; frame11 first lifts the front leg and contracts the stance before the contact flash at15.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 288,
+        "height": 288,
+        "left": 264,
+        "top": 240
+      },
+      "nativeFrames": 480,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "runtimeImageBytes": 25724708,
+      "profiles": {
+        "idle": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": true,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 32,
+      "name": "Blazion",
+      "releaseFrame": 30,
+      "reactionFrame": 25,
+      "releaseEvidence": "Original consecutive frames29-30: frame29 has no mouth flame; frame30 first releases a small flame from the mouth, which expands through31-32.",
+      "reactionEvidence": "Original consecutive frames24-25: frame24 has no impact core; frame25 first shows the white contact core on the face, before the expanding ring at26.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 256,
+        "height": 256,
+        "left": 256,
+        "top": 258
+      },
+      "nativeFrames": 480,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "runtimeImageBytes": 36512704,
+      "profiles": {
+        "idle": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": true,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": true,
+          "screenFringeCleanup": true,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    },
+    {
+      "speciesId": 33,
+      "name": "Blazion",
+      "releaseFrame": 45,
+      "reactionFrame": 14,
+      "releaseEvidence": "Original consecutive frames44-45: frame44 is the lifted attack pose without the fire arc; frame45 first releases the large fire crescent above the head.",
+      "reactionEvidence": "Original consecutive frames13-14: frame13 has the incoming arc but no contact flash; frame14 first shows the bright front-body impact flash.",
+      "cellWidth": 768,
+      "viewport": {
+        "width": 320,
+        "height": 320,
+        "left": 226,
+        "top": 227
+      },
+      "nativeFrames": 480,
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "runtimeImageBytes": 53121122,
+      "profiles": {
+        "idle": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": true,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "attack": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "hit": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "victory": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        },
+        "ko": {
+          "screenColour": "green",
+          "alphaCutoff": 0.08,
+          "screenDominanceCleanup": false,
+          "screenFringeCleanup": false,
+          "preserveGreenBody": null,
+          "softBlueScreenRejection": null,
+          "screenBackgroundFallback": null,
+          "screenBackgroundFallbackFrames": []
+        }
+      },
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+    }
+  ],
+  "clips": [
+    {
+      "speciesId": 25,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/25/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "3ebb100cf0941022fe23394dc92c474cb295d994004737101485e8d2da03dde2",
+        "sizeBytes": 1721656,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 5799706,
+        "sha256": "d60f17d3c9cf06e67faef35da0c0550e756fd87494e66f6c8401eb7f1fb88aa6",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 224,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 65088,
+        "sha256": "58208cc21bb8c6bd1dc507809b1472a7a0cb67071bae1854e47d406b0a0f5f09"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": true,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 25,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/25/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "c5e2542594adc026fcbd57ebd5289d5a73e76ab0b26de972cc6133aecc152677",
+        "sizeBytes": 3676027,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 14054404,
+        "sha256": "905d7f137bce485cb9722c9d89de816f8fbb0cfa3626c3dc511e5a754e797de6",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 224,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 71936,
+        "sha256": "3d6fa5ca9db9f7a5145682864b1cdd93f3c50293d6a55a9a7439816d6fb90fcd"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 53,
+        "releaseMs": 2208.3333333333335,
+        "evidence": "Original attack frame 53 first projects a clear electric streak through the extended forepaws. Frame 52 retains the surrounding charge and preparatory paw extension.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        54,
+        55,
+        56,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 25,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/25/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "e738742222defe0df447f190d3df60788a3e398e6baf4b6b419e7e090791262e",
+        "sizeBytes": 2428806,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 7904022,
+        "sha256": "3fac62cf14531f371871d9167ec81052ba67a553d0a260b7d29137946b3ec0a9",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 224,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 74786,
+        "sha256": "142e845fef7e93141e544d6dc161e764257b10ef748850a53c4490b61ee85118"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": [
+          16,
+          243,
+          69
+        ],
+        "screenBackgroundFallbackFrames": [
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ]
+      },
+      "timing": {
+        "reactionFrame": 12,
+        "reactionMs": 500.0,
+        "evidence": "Original hit frame 12 first shows the chest contact flash. Frame 11 is still the neutral pose before impact.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": {
+        "bodyRegion": [
+          580,
+          0,
+          1400,
+          1080
+        ],
+        "bodyBounds": [
+          622,
+          212,
+          1296,
+          871
+        ],
+        "evidence": "The first original hit frame includes a separate lightning bolt left of the body. Initial body calibration excludes that isolated bolt; the complete native alpha union, every effect and all frames remain in the atlas."
+      },
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 25,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/25/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "03881473373a1608270b87c17b1f9bba33d59a1b3b15bea091f2c498eb443dbc",
+        "sizeBytes": 2843438,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 11381114,
+        "sha256": "fe5d26f8c40d502168998b831314af0a0c42953f70878b9517d39e71a6d48d2b",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 224,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 72670,
+        "sha256": "b3f8d776a607a4cdc339d8d4d9f4af88cc6f45d0932f2bb51f9697dcbe470e81"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": [
+          15,
+          243,
+          71
+        ],
+        "screenBackgroundFallbackFrames": [
+          62,
+          63,
+          64,
+          65,
+          71,
+          72
+        ]
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 25,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/25/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "c36b9cfbb0f85b2155037b960c375d747049b3bb698bac4383e592885c489ef2",
+        "sizeBytes": 1821035,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 704,
+        "cellHeight": 704,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7040,
+        "height": 7040,
+        "sizeBytes": 5876822,
+        "sha256": "20738ac3dd79c8d68b5ef218cbb45f685cc869542758835122f92394aa710bd2",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 224,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 73106,
+        "sha256": "8c2c12131b1acf3f68bd7fb39be634d7e24411fb4ee8857d0ba948ed63dc6cfb"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 26,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/26/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "bff710ec58dff868a57a41729508d1d2a1154810988e75e58f7a267c80e31e72",
+        "sizeBytes": 1610615,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6931246,
+        "sha256": "86a0c4302138a8c4519f43d43631b9248e69bced11dce94e2766da44cadf16b1",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 218,
+          "top": 228
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 68748,
+        "sha256": "b114a3b4a3afb32ab360d1336e6c22f960065e4be3f98016da74f2115f86f16b"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 26,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/26/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "b219f2daf571a4e8dc8803a633463eb370db55a19b46b5125d5e9d807ae87b1a",
+        "sizeBytes": 2210309,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6965200,
+        "sha256": "feee28b1d6c480763b3d5ba510b790b9a1f4be4bc4bf1ac6df43093eaee39e29",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 218,
+          "top": 228
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 66564,
+        "sha256": "d28556a7e3d30f607c1486e4a6b1a99b758b71f3c76c70e892d3f7dc53c042ee"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 32,
+        "releaseMs": 1333.3333333333333,
+        "evidence": "Original attack frame 32 starts the committed open-mouth leftward lunge after the rotation and wind-up in frames 28 through 31.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 26,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/26/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "8171e07ea2ce48cf04f7395de277d8f07e0e89a21c08db31ba6f58b3cb8b1191",
+        "sizeBytes": 1959851,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6329508,
+        "sha256": "bb6879bc9ad89c952797bbb53ecc948027b26f154a6a607d656b414f9de4c13e",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 218,
+          "top": 228
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 66906,
+        "sha256": "f8add8e54ce4ad0c31a1a95d1f809714d7a4ae98b7110118dc735d513eb7e408"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 14,
+        "reactionMs": 583.3333333333334,
+        "evidence": "Original hit frame 14 first changes the eye to the struck expression and starts recoil with the contact flash. Frame 13 has preparatory speed lines but retains the neutral eye.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        46,
+        47,
+        48,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 26,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/26/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.97,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "09b088be1d00327f9291dafa120aa1528d3fbcf2039080029f47efe6eee3ce30",
+        "sizeBytes": 2317121,
+        "decodedFrameCount": 95,
+        "durationFromFramesSeconds": 3.9583333333333335
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 95,
+        "fps": 24.0,
+        "durationSeconds": 3.9583333333333335,
+        "durationMs": 3958,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7050740,
+        "sha256": "7ffc8281584b6789e73abc787d788562b67954e156b16b38779d5d3ca3ac7143",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 218,
+          "top": 228
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 67058,
+        "sha256": "114643b3d93e4a0ebd221d6f79c2ee959b1b4d5c2266715c3b9bd468510db17a"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 26,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/26/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "1a94133f19c38331cdd36fafc4fdeb09c002828a513577916512561643d6c647",
+        "sizeBytes": 2271370,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6659846,
+        "sha256": "c4c4735b04a81d314b5c8ae8eb4842cecbcf41ca03fd5f3ab386d7d8b6e90fa3",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 218,
+          "top": 228
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 68990,
+        "sha256": "15a2d64d3a7209e195aadaecf595430390f2a9be785a85a34123f8bbc60f21a9"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 27,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/27/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "e5d7a428584de7034c85ce7c7e8371e6be6893952bd5d2e0bac7a0bca4218f8a",
+        "sizeBytes": 2429106,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8606720,
+        "sha256": "7c656020055908fc1864fb06605cfafe41d0311e69f251e2b3d753caa8e652ab",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 256
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 80764,
+        "sha256": "182b1c7a18b342e2016c85327748a75c20ec6072a041abf9413faaef177d4ed1"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        91,
+        92
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 27,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/27/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "2ae26f840c006622d904b35d7aae05403d26dde8a9167c266a5301fd415cf552",
+        "sizeBytes": 3194494,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7774274,
+        "sha256": "3228f0fc86b14e8575718512de79348f7a5438f688c6eff0a5719ca8dd961c7d",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 256
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 81048,
+        "sha256": "3a3eccf36bfcf9aafa9518c53e69eff48299002d93f6da268397e4cc18c53283"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 29,
+        "releaseMs": 1208.3333333333333,
+        "evidence": "Original attack frame 29 first opens the jaw widely in the forward roar after the partial preparatory mouth opening in frame 28.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        77,
+        82,
+        83,
+        85
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 27,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/27/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "8f03bd3a39f8ed786029e1d6fc2ef72d2e6302fa0841198808dc4473af7fe283",
+        "sizeBytes": 2788501,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8053640,
+        "sha256": "7820567c69b315331b0d0cf89839249a5792a4ee6a6bc27b2e6c0a3a1c4cd248",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 256
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 79850,
+        "sha256": "ff6bad372f88642fea114816dd97b1e348778c53fabec9ebf54baa9b23e3cba1"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 13,
+        "reactionMs": 541.6666666666666,
+        "evidence": "Original hit frame 13 first shows the head contact flash and contraction. Frame 12 retains the neutral body and eye.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 27,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/27/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "45a870c34536ec6889baf1e264cbbb7b9fadc2c353a402dcd505b71627cf2468",
+        "sizeBytes": 2741761,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7882300,
+        "sha256": "6b834ba27534616a080c5a96087e61c3409d03dc7d5c0870de52f5ece91dbaa2",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 256
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 80482,
+        "sha256": "3d30461276f3e157cbdec39c04c2e392eb72b8404aaa7b8b34990281a2a202ab"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 27,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/27/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "a04ad81b77560404552daf9d1526945c338939187c190dcaa0e3c260d697e886",
+        "sizeBytes": 3476170,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8497300,
+        "sha256": "20ba19706699feba6427b67ad7b754897c5fb4918070cd179ca08a2860fbea54",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 256
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 81920,
+        "sha256": "d5f4f2929e8ea5738550b05394505ffc3fc1c11fbf94e18d35782799af0a5e77"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": {
+          "opaqueBelowScreenExcessFraction": 0.25,
+          "fadeToBaseKeyByScreenExcessFraction": 0.35,
+          "screenPocketsExcluded": true,
+          "minimumOtherChannel": 24
+        },
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 28,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/28/front/idle.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "305de80b26f86072dbcca5c2d332622b14ac14074c49d952e48aecaebc4a9f78",
+        "sizeBytes": 1363403,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6963274,
+        "sha256": "d48e610bd2bd020e08ba200eb989239272cfeda070f0527bbbe0bdab790e0d63",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 255
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 68728,
+        "sha256": "8d11e1aa917b647d9e412f18d8b64669b39ae0b2cc8cdaca70b86d49d61b5eea"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        22,
+        23,
+        37,
+        38,
+        39,
+        40,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        78,
+        79,
+        80,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 28,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/28/front/attack.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "6f35cf8a3f5eb30c14e8af8ae831285d23509391aeb37b575762d71985f468d7",
+        "sizeBytes": 2203676,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 11243174,
+        "sha256": "5df0742a048bfd16bbbed641a255d82778cf01a285c98f5f251accc8b724934a",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 255
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 68074,
+        "sha256": "1321539bf1a4041c3b7b06f80d458fff685f4f33a0681a75b6c3232c0e8833bc"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 46,
+        "releaseMs": 1916.6666666666667,
+        "evidence": "Frame46 first releases the native outward leaf burst; frame45 still contains the circling leaf ring.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 28,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/28/front/hit.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "3b3da5fb4d3da645fbdd8b9820417678e5560e5b5f1d8eef7a8037a6a8a64aac",
+        "sizeBytes": 1358069,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6478202,
+        "sha256": "b56a644dd567839c342ec5a8c5dc0d6e65de2de5ff97d8de3a5f35a3c390b3bf",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 255
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 68696,
+        "sha256": "9888230589ce45743e666c3e161b0c94948592e554778282f1b6919169fdd9d8"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 21,
+        "reactionMs": 875.0,
+        "evidence": "Frame21 first closes the eyes and contracts the body before the contact flash at22.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 28,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/28/front/victory.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "eb795463670bbb43f4097111caf845d136c9b7888dc4e65f559cb54c48cc1675",
+        "sizeBytes": 1570902,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6964916,
+        "sha256": "c9168f789adbddac183dbeac732ea2edf671fb3bf9c7763f6f70a0ebc811d8eb",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 255
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 68184,
+        "sha256": "b12020a1713af0f38d81580a5a0355b2ca6a404af98c3d1b17259b4e572801e0"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 28,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/28/front/ko.mp4",
+        "width": 1280,
+        "height": 720,
+        "fps": 24.0,
+        "durationSeconds": 4.01,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "6491bcc1172e9a57181084f9ae3ee9545403a2e68af9571c0d6f5bb0968bcd90",
+        "sizeBytes": 1324679,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7031336,
+        "sha256": "70041efc15dddf1905129420bbd661b08101dbebb56e61566cde2c2f5e03ec9f",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 255
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 69650,
+        "sha256": "52cc5516f6305b1c076de1f6d4a353ef9b4ce38132742b62c9e85bc444d17404"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        90,
+        91,
+        94,
+        95
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 29,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/29/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "df85308f91d7b65c8331631da69388a9595e270393be125f522281ef55f0bacc",
+        "sizeBytes": 1929392,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8881700,
+        "sha256": "5b673aace5c3521ba7bab3d953812854456c9bce0a0e7f108c460ea6faa6e219",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 233,
+          "top": 224
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 94070,
+        "sha256": "695e453c81b84614da808b66af310cf30517595bfa242573f2136796bac8a06f"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 29,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/29/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "2633af8c96d1935863b3e0f047e334cbe9673eb2d5df54467f09cbb716c4c880",
+        "sizeBytes": 3856840,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12014942,
+        "sha256": "7bd220c52a15fc545d1bd4de456d78f8e7b792b18aa70f3e116fed86efe922ce",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 233,
+          "top": 224
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 92986,
+        "sha256": "5aa48cff6d08161d28ef2ffed738afea595786b7a492993383dd9233392364ef"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 45,
+        "releaseMs": 1875.0,
+        "evidence": "Frame45 first projects the native leaf slash in front of the muzzle; at44 it is still circling the raised tail.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        75,
+        76,
+        77,
+        78
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 29,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/29/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "ad260dff02a86e73f890b63e51267eaa8717e519299879fb8e3a10b6183233b7",
+        "sizeBytes": 2848043,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8903892,
+        "sha256": "be414c2caeb9dc58f99f75389613f2a0b92a8804cd4a46c0975b7976ca9a6ba9",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 233,
+          "top": 224
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 94460,
+        "sha256": "4466d112ea09cba6c828584ee2c58d61fce5c92e0fdca307b7d5f5b4b8fe507a"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 14,
+        "reactionMs": 583.3333333333334,
+        "evidence": "Frame14 first shows the native contact flash on the chest and muzzle.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        10,
+        11,
+        24,
+        25,
+        27,
+        28
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 29,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/29/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "ab3bc1105f46a52002f71eb7ec8a790545275780e3230f53b1812e6eebda6cfd",
+        "sizeBytes": 2995590,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8598364,
+        "sha256": "09c3d12e05ac9533e31f04d9685710e2b9d58f1ed8372d69ce3be23e6bc6e741",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 233,
+          "top": 224
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 94010,
+        "sha256": "4bca52cbfc726ca6df872a7dc08f516ad81f835897d2912b0aff1a81fdf0b97c"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 29,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/29/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "1ee736a13f53eb388387cd230b7e38a3778aa3318bb0576082bb0f5a307ec63c",
+        "sizeBytes": 2907839,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 10360352,
+        "sha256": "6323da44619a33beb0e06914bbfedd5fb589c1b300e60bb2d8404514b1a46855",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 233,
+          "top": 224
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 97102,
+        "sha256": "99705a8039968d8b8dc506bd8a7fd75e1ee116ddff405c0cab3e7c6d288dc952"
+      },
+      "key": {
+        "screenColour": "blue",
+        "alphaCutoff": 0.02,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": {
+          "screenRatioDeviationStart": 0.02,
+          "screenRatioDeviationEnd": 0.12,
+          "nativeGreenUnchanged": true
+        },
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": {
+        "scaleCameraViewportGroundUnchanged": true,
+        "previousSourceCrop": [
+          0,
+          48,
+          1812,
+          1080
+        ],
+        "expandedSourceCrop": [
+          0,
+          33,
+          1818,
+          1080
+        ],
+        "fitsExistingCanvasVerified": true,
+        "all96FramesPassedNormalizeFrameBoundsCheck": true,
+        "sameSourceShaDimensionsNativeFramesAndFpsVerified": true,
+        "firstFrameNativeGreenRgbAndAlphaPreserved": true
+      },
+      "sourceFramesTouchingEdges": [
+        6,
+        14,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        49,
+        50,
+        51,
+        52,
+        55,
+        56,
+        57,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 30,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/30/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "62e805e518a6b87fdf2f4824ee797c6647938d8f38a52da25c79f9f5c9f59710",
+        "sizeBytes": 861395,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 2953104,
+        "sha256": "b88b4dbf2a44542bc61a8f9ca578264784f1e7e1169b9c094a61b0f31aaff072",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 288,
+          "top": 288
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 29398,
+        "sha256": "fb53942d392331dae397a62ca7e203a86470cd042bb545d17f9cf97a5772ddac"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": true,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 30,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/30/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "aaa17d6f7c04ce2101c3f022aa88c40b5d2b0ff9877e40f9bcf6dc513f5f22d0",
+        "sizeBytes": 1374636,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 3502432,
+        "sha256": "3c31b2879eb8d2230b4a0a2e65b71caae9b3695e501c2f3780bc6f9ead7a79b9",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 288,
+          "top": 288
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 31706,
+        "sha256": "d460fe92f9479b5fe2ab7159a6ebd0c42b03b1b522903971c4a9009e204dd5d6"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 34,
+        "releaseMs": 1416.6666666666667,
+        "evidence": "Frame34 first releases the native black-and-gold crescent from the extended paws; frame33 has no crescent.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 30,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/30/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "dab235fb931e39313ce875ad2947b3b22f3753816c0f6c211aa06db4da05c332",
+        "sizeBytes": 1508160,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 4166628,
+        "sha256": "1345e7d4a55e0c6c01360cd76c32f089a6a995502db66c146a91e102bb89563b",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 288,
+          "top": 288
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 31882,
+        "sha256": "45a38aee6464bac5d25c51305d806fb876592e87e83e1c12c333e15ccff271cf"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 15,
+        "reactionMs": 625.0,
+        "evidence": "Frame15 first starts the body lean and narrowed-eye recoil, before the contact flash at21.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 30,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/30/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.97,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "632d22402d7f1a634794aca8e036047e588a69826db9257dc93e7eab56badbb7",
+        "sizeBytes": 1625888,
+        "decodedFrameCount": 95,
+        "durationFromFramesSeconds": 3.9583333333333335
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 95,
+        "fps": 24.0,
+        "durationSeconds": 3.9583333333333335,
+        "durationMs": 3958,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 3041864,
+        "sha256": "d39e9285f7ff199a9a107a831364bd2ac910b39b2cf4fe281cfbc12b3cf7ded0",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 288,
+          "top": 288
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 31528,
+        "sha256": "5fefc1a62cceacdc2b86b73723bc6f4b7f0f6cb536c8a219ed1356ca6c13737e"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 30,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/30/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.97,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "f87c9c861c870397c002b765951fb294b29c45035b7c5821a3f23267d6627b72",
+        "sizeBytes": 1887122,
+        "decodedFrameCount": 95,
+        "durationFromFramesSeconds": 3.9583333333333335
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 95,
+        "fps": 24.0,
+        "durationSeconds": 3.9583333333333335,
+        "durationMs": 3958,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 5527444,
+        "sha256": "2416f06292bdd9e6cf1f0af06fb5dd6bdf88b15401cdb72c5ad4210d386a3970",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 288,
+          "top": 288
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 32222,
+        "sha256": "572cd36e8b1e67f1fbb39cdead8fdb6284f11995135b95586b3a914b958cfd1d"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        72,
+        74,
+        75,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 31,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/31/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "9636d09970e540a720103610127ba322ec325d00b21827667ae151a28fd8f4bb",
+        "sizeBytes": 942934,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 4224788,
+        "sha256": "2954e539c6bb429e97e97caff5f3144365f5f9ef67c2f4f18513b1cc7e617aaf",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 264,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 44890,
+        "sha256": "6fa67ef5100267cc37808ffd463a909128784066d860d47ebd8e29fca7dc2327"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": true,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 31,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/31/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "f808b296bbe996df4f16298a600b844050f5b467da184eb345ffb96c47b87267",
+        "sizeBytes": 2323192,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 6049148,
+        "sha256": "330f6c923c5c4851a56e83faa72f8825858e8709c7dd723fab90eae382389058",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 264,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 49952,
+        "sha256": "60dda7b7bbcced4520785c219d0d2df2d1d868ef6797070aab9ce97d4a48f159"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 32,
+        "releaseMs": 1333.3333333333333,
+        "evidence": "Original consecutive frames31-32: frame31 has no slash; frame32 first shows the bright curved slash as the foreleg extends.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 31,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/31/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "b9d29ef84002c26b4b59f396cd6d8539c81709c80b179cb964587cc6bd088ccc",
+        "sizeBytes": 1711132,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 5054368,
+        "sha256": "bc54683403bbee1a1745bb18f21e259e70ff16496555a5023e96c513afe19c17",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 264,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 50608,
+        "sha256": "e0220fa1730f06fe828ce04aa84b8ad84b1e2c10901741e078ce82e77038380c"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 11,
+        "reactionMs": 458.3333333333333,
+        "evidence": "Original consecutive frames10-11: frame10 is the stationary stance; frame11 first lifts the front leg and contracts the stance before the contact flash at15.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 31,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/31/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "78ea97f08a61f5d7bd0054c71ea8b3f0c6070e4d584f3736ca9d230a43618be2",
+        "sizeBytes": 1931069,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 5044292,
+        "sha256": "a6231961f6a7f596185f537249db6cd6dfb8d6675931e726caf655fb7479ce6e",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 264,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 49860,
+        "sha256": "132acd91d9a5ff25135c3420498908c80cca3503467d64786154f786b4a61394"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 31,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/31/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "0d559fe87ce3748bd737b199a6a629dbc4d3cad4923e9933a4faa6f00793411a",
+        "sizeBytes": 1444267,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 5106364,
+        "sha256": "c45631115f9b59e1ce75a4efbceb2e473c4acd7b78dfd73411e3534382c665e5",
+        "viewport": {
+          "width": 288,
+          "height": 288,
+          "left": 264,
+          "top": 240
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 50438,
+        "sha256": "884f2ab4ed4627b705be37e31364f09d3ba2d2832a9572d7ef2161b867c086f7"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 32,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/32/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "61870b4db9fd5004204888a7ee06371c2cf6e15b7421150733c761fd5396fde9",
+        "sizeBytes": 1506883,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 5904826,
+        "sha256": "92ae99be743bc4b9f865a9b20c91a3875fd3a7544f789a4390434c7cf4c912d2",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 258
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 60942,
+        "sha256": "392c9986bf49dcacabe36d7a5280c1e2218f118a39da2e9f3b5e0cc775d0e955"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": true,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 32,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/32/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "52e96b9ca028420dd4980ab7727bf7332780203d74381c07a7aac5bd02a328c9",
+        "sizeBytes": 2063738,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7650896,
+        "sha256": "2775ebd9918f86dbd4ddea41cc589e99cb71d40f45ddef7c881751b38bc6b933",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 258
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 61222,
+        "sha256": "ef71d1aa632bf3b00b1438bc55db49d562036545d08e037fec13c32a591da13f"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": true,
+        "screenFringeCleanup": true,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 30,
+        "releaseMs": 1250.0,
+        "evidence": "Original consecutive frames29-30: frame29 has no mouth flame; frame30 first releases a small flame from the mouth, which expands through31-32.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 32,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/32/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "f9a9f67d959f2f042b0828887478a5e132ffbb256e01c0569550f2c191507a09",
+        "sizeBytes": 2207421,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8198124,
+        "sha256": "868863279979388758b7147dbefb075f24fa60271b506d701be656fc0a3dd9be",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 258
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 65296,
+        "sha256": "b1029c9a0f8f2770b79f2e16b7a9993232134e0ec9779800b2902380cdf1ecf7"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 25,
+        "reactionMs": 1041.6666666666667,
+        "evidence": "Original consecutive frames24-25: frame24 has no impact core; frame25 first shows the white contact core on the face, before the expanding ring at26.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        50
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 32,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/32/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "1fb1e0b9ef95e5c81540640c49f75089a4172c20a8d1f18f2efa900a18a6b36e",
+        "sizeBytes": 2425699,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7168258,
+        "sha256": "c02f207b8a3e819fe89ff6d3f8040e3d71ba3155b39c7a60f58ece0b38123daa",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 258
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 65358,
+        "sha256": "9b7fe803262ac453c92920246c8f2d44fcfe65de1907516f7e6675ca7246c997"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 32,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/32/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "dd97c946b8d1f76a4d18b1ba4a574c6b717731b5f2b07726f9330bb3fb0734d6",
+        "sizeBytes": 1986039,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 7273218,
+        "sha256": "85d67aa690ede7368a89b609eeedbc10856f41a79dd5e5d16c64a25e0353701e",
+        "viewport": {
+          "width": 256,
+          "height": 256,
+          "left": 256,
+          "top": 258
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 64564,
+        "sha256": "1ad346d7124183318faca2bbbbeecfb11f82f0e1e62c6f106c960add60eb0961"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 33,
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/33/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "6e2f14a7b38cab18772d65180f35d0979588554329c551e5b3c22bd58fa3266a",
+        "sizeBytes": 1603682,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8827384,
+        "sha256": "e3cab656ce15cfba3f545442535e4cfd43941c681ceabceb18850f59d2a9c808",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 226,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 92164,
+        "sha256": "c0d0a81a100a33978c2bd62198de93455d15de79624ab9a09ccc87b973062d90"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": true,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 33,
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/33/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "0ecd3054cfcfc656cd504668787e8ce25a8b94887d654e9e7335938b894712a2",
+        "sizeBytes": 3344783,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 12179214,
+        "sha256": "3e8b7e0432e966891a10921aa615c32eb53dfff7b9b840efb4eb8a3674d6e922",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 226,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 99796,
+        "sha256": "c896cff8deac5cbd5ce098d961072c6ff2083c9f216b161bacaedbf79cb5ad43"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "releaseFrame": 45,
+        "releaseMs": 1875.0,
+        "evidence": "Original consecutive frames44-45: frame44 is the lifted attack pose without the fire arc; frame45 first releases the large fire crescent above the head.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        54,
+        55
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 33,
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/33/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "0ef1a61970f9936e9d6d8ed9b6c46289f47bd4d5118eaad693f89ef295c218f2",
+        "sizeBytes": 2764090,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 10754740,
+        "sha256": "e388bfd9f0aec1ba84c955d5483ff6d0d04af936ddf1be27536cf16850f70382",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 226,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 99134,
+        "sha256": "8fee8de17b31cce591a0ef0aa9efc2a6b42049a738d5aa67960388c4b2170ff4"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": {
+        "reactionFrame": 14,
+        "reactionMs": 583.3333333333334,
+        "evidence": "Original consecutive frames13-14: frame13 has the incoming arc but no contact flash; frame14 first shows the bright front-body impact flash.",
+        "inspection": "Consecutive original frames; zero-based indexing"
+      },
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        32,
+        33,
+        35,
+        36,
+        43,
+        73
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 33,
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/33/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "e49730f7b9df0fadd5968d0259e64b95649ffaedb5d68b1e8a89c4f94bcfc89c",
+        "sizeBytes": 3221990,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 11982590,
+        "sha256": "3f390953bc20aaad4275157fe59fc732f6bdff8dec91107589fab68d8183bfa5",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 226,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 100022,
+        "sha256": "c561e8e30b1da6c49522e75802e5c12df81d506d0ccb1f5ab2c8b9b2c756df24"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 33,
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/33/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "108cc3f2e9fab6e2a8ca0dd28d84972085c164fa1fa472cf34bb04966f047342",
+        "sizeBytes": 2243068,
+        "decodedFrameCount": 96,
+        "durationFromFramesSeconds": 4.0
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "cellWidth": 768,
+        "cellHeight": 768,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 96,
+        "fps": 24.0,
+        "durationSeconds": 4.0,
+        "durationMs": 4000,
+        "width": 7680,
+        "height": 7680,
+        "sizeBytes": 8885920,
+        "sha256": "23dbe6b4a324b81322a9c0959776f3d8c2045e5514232d3347c11e1f86b59f9c",
+        "viewport": {
+          "width": 320,
+          "height": 320,
+          "left": 226,
+          "top": 227
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 100158,
+        "sha256": "bfbeb3d2e6c8761799a882d2b15458b83f221cb9a11a6b1c81ef2d7727e26f56"
+      },
+      "key": {
+        "screenColour": "green",
+        "alphaCutoff": 0.08,
+        "screenDominanceCleanup": false,
+        "screenFringeCleanup": false,
+        "preserveGreenBody": null,
+        "softBlueScreenRejection": null,
+        "screenBackgroundFallback": null,
+        "screenBackgroundFallbackFrames": []
+      },
+      "timing": null,
+      "calibrationInspection": null,
+      "expandedAlphaInExistingPadding": null,
+      "sourceFramesTouchingEdges": [],
+      "transparentFrameIndices": []
+    }
+  ],
+  "nativeFrameCount": 4317,
+  "runtimeImageBytes": 343829612,
+  "sourceBytes": 98825881,
+  "previousRuntimeFilesVerifiedUnchanged": 391,
+  "inspectionMethod": "Native original frame cue review and dark/light contact inspection; source SHA and full frame alpha checks; browser playback is verified separately."
+}

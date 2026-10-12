@@ -1,5 +1,5 @@
+import { GameButton } from '@/components/ui/GameButton'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
-import { motion } from 'framer-motion'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
 import { getAllenatoriInLuogo, getPokemon } from '@data/index'
@@ -9,8 +9,6 @@ import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTyp
 import type { AllenatoreDef } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
 import { LocalMapScene } from './LocalMapScene'
-import { openPlayerUi } from '@/player-ui/navigation'
-import { hasArkaStore } from '@/shop/catalog'
 import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 
 const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
@@ -62,30 +60,25 @@ export function CittaScene() {
 
   const activities = (
     <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
-          {hasArkaStore(luogo) && <button aria-label="Arkastore" className="arka-panel col-span-1 p-6" disabled={layoutEditing} onClick={() => openPlayerUi('negozio', { playerId: giocatoreAttivo })}>
-            <span aria-hidden="true">🛒</span><h3>Arkastore</h3><p>Oggetti per la tua squadra</p>
-          </button>}
           {!haPokemonVivi && (
             <p role="status" className="arka-panel col-span-3 p-3 text-center text-amber-200">
               La squadra è esausta. Curala al Centro Pokémon per tornare a combattere.
             </p>
           )}
-          <motion.button
-            whileHover={!layoutEditing ? { scale: 1.05, y: -4 } : {}}
-            whileTap={!layoutEditing ? { scale: 0.95 } : {}}
+          <GameButton
             disabled={layoutEditing || !interazioneDisponibile}
             onClick={() => {
               if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
               curaSquadra(giocatoreAttivo)
             }}
-            className="arka-panel col-span-1 flex cursor-pointer flex-col items-center justify-center p-6 hover:border-arka-accent"
+            className="col-span-1 flex cursor-pointer flex-col items-center justify-center p-6 hover:border-arka-accent"
           >
             <span className="arka-layout-content mb-2 text-6xl">🏥</span>
             <h3 className="arka-layout-content text-xl font-bold">Centro Pokémon</h3>
             <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
               Cura tutta la squadra
             </p>
-          </motion.button>
+          </GameButton>
 
           {allenatoriOrdinati.map((a) => {
             const sconfitto = giocatore.allenatoriSconfitti.has(a.id)
@@ -93,13 +86,11 @@ export function CittaScene() {
             const isCapo = a.tipo === 'Capopalestra'
             const ricompensa = RICOMPENSA[a.tipo]
             return (
-              <motion.button
+              <GameButton
                 key={a.id}
-                whileHover={!layoutEditing && !sconfitto ? { scale: 1.05, y: -4 } : {}}
-                whileTap={!layoutEditing && !sconfitto ? { scale: 0.95 } : {}}
                 disabled={layoutEditing || !interazioneDisponibile || sconfitto || !haPokemonVivi}
                 onClick={() => sfida(a.id)}
-                className={`arka-panel flex flex-col items-center justify-center p-6
+                className={`flex flex-col items-center justify-center p-6
                   ${sconfitto ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:border-arka-accent'}
                   ${isCapo && !sconfitto ? 'border-yellow-400 shadow-lg shadow-yellow-500/20' : ''}
                 `}
@@ -129,7 +120,7 @@ export function CittaScene() {
                     +{ricompensa}₳ se vinci
                   </span>
                 )}
-              </motion.button>
+              </GameButton>
             )
           })}
 
@@ -158,12 +149,12 @@ export function CittaScene() {
         editing={layoutEditing}
         onChange={(rect) => updateLuogoLayout('backButton', rect)}
       >
-        <button
-          className="arka-layout-content arka-button-secondary h-full w-full px-3 py-2 text-sm"
+        <GameButton
+          className="arka-layout-content h-full w-full px-3 py-2 text-sm"
           onClick={() => vaiAScena('mappa-principale')}
         >
           ← Torna alla mappa
-        </button>
+        </GameButton>
       </AdminLayoutItem>
 
       <AdminLayoutItem

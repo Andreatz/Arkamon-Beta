@@ -65,7 +65,7 @@ describe('backup portabile e ripristino guidato della campagna', () => {
     const preview = checked(text)
     expect(preview.warnings).toEqual([])
     const restored = stateFromValidatedBackup(preview)!
-    expect(restored.giocatore1).toEqual(state.giocatore1)
+    expect(restored.giocatore1).toEqual({ ...state.giocatore1, squadra: state.giocatore1.squadra.map((pokemon) => ({ ...pokemon, xp: 0 })) })
     expect(restored.giocatore2).toEqual(state.giocatore2)
     expect(restored.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 1 })
     expect(restored.posizioniLocali1).toEqual(state.posizioniLocali1)

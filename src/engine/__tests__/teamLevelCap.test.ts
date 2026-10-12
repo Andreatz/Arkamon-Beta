@@ -39,31 +39,36 @@ describe('cap di cinque livelli fra tutti gli Arkamon in squadra', () => {
     expect(teamProgressionLimit([pokemon('attacker', 98), pokemon('other', 99)], 'attacker')).toBe(100)
   })
 
-  it('banks XP at the cap and later uses banked XP without healing', () => {
+  it('discards capped rewards and legacy XP; raising the cap never grants old levels', () => {
     const attacker = pokemon('attacker', 10, 3, 3)
     const capped = applicaXP(attacker, 1, 10)
-    expect(capped).toMatchObject({ livelliGuadagnati: 0, evoluzionePendente: null, istanza: { livello: 10, hp: 3, xp: 4 } })
+    expect(capped).toMatchObject({ livelliGuadagnati: 0, xpScartata: 1, evoluzionePendente: null, istanza: { livello: 10, hp: 3, xp: 0 } })
     const unlocked = applicaXP(capped.istanza, 0, 13)
-    expect(unlocked).toMatchObject({ livelliGuadagnati: 3, evoluzionePendente: null, istanza: { livello: 13, hp: 3, xp: 1 } })
+    expect(unlocked).toMatchObject({ livelliGuadagnati: 0, xpScartata: 0, evoluzionePendente: null, istanza: { livello: 10, hp: 3, xp: 0 } })
+    expect(applicaXP(unlocked.istanza, 1, 13)).toMatchObject({ livelliGuadagnati: 1, istanza: { livello: 11, hp: 3, xp: 0 } })
     expect(attacker).toMatchObject({ livello: 10, hp: 3, xp: 3 })
   })
 
   it('does not downgrade an old creature when its current level exceeds the progression limit', () => {
     const previous = pokemon('old-save', 20, 2, 1)
     const result = applicaXP(previous, 1, 10)
-    expect(result.istanza).toMatchObject({ livello: 20, hp: 2, xp: 2 })
+    expect(result.istanza).toMatchObject({ livello: 20, hp: 2, xp: 0 })
+    expect(result.xpScartata).toBe(1)
     expect(result.livelliGuadagnati).toBe(0)
     expect(result.evoluzionePendente).toBeNull()
   })
 
-  it('defers evolution until the earned level can fit within the cap', () => {
+  it('requires a fresh KO to reach an evolution after the team cap permits it', () => {
     const attacker = pokemon('attacker', 14, 3)
     const capped = applicaXP(attacker, 1, 14)
-    expect(capped.istanza).toMatchObject({ livello: 14, xp: 1, hp: 3 })
+    expect(capped.istanza).toMatchObject({ livello: 14, xp: 0, hp: 3 })
     expect(capped.evoluzionePendente).toBeNull()
     const unlocked = applicaXP(capped.istanza, 0, 15)
-    expect(unlocked.istanza).toMatchObject({ livello: 15, xp: 0, hp: 3 })
-    expect(unlocked.evoluzionePendente).toEqual({ nuovaSpecieId: 2 })
+    expect(unlocked.istanza).toMatchObject({ livello: 14, xp: 0, hp: 3 })
+    expect(unlocked.evoluzionePendente).toBeNull()
+    const earned = applicaXP(unlocked.istanza, 1, 15)
+    expect(earned.istanza).toMatchObject({ livello: 15, xp: 0, hp: 3 })
+    expect(earned.evoluzionePendente).toEqual({ nuovaSpecieId: 2 })
   })
 
   it.each(['A', 'B'] as const)('computes Suprema recoil after the capped progression on side %s', (side: Lato) => {
@@ -76,11 +81,11 @@ describe('cap di cinque livelli fra tutti gli Arkamon in squadra', () => {
       ? resolveBattleAttack(attack, side, attackers, [target], teamProgressionLimit(attackers, attacker.istanzaId), 100)
       : resolveBattleAttack(attack, side, [target], attackers, 100, teamProgressionLimit(attackers, attacker.istanzaId))
     expect(resolved.defender.hp).toBe(0)
-    expect(resolved.attackerProgression).toMatchObject({ xpAssegnata: 1, livelliGuadagnati: 0, istanzaPrimaDelContraccolpo: { livello: 14, hp: 12, xp: 1 } })
+    expect(resolved.attackerProgression).toMatchObject({ xpAssegnata: 1, xpScartata: 1, livelliGuadagnati: 0, istanzaPrimaDelContraccolpo: { livello: 14, hp: 12, xp: 0 } })
     expect(resolved.attackerProgression.autodanno).toBe(costoSuprema(calcolaHPMax(attacker)))
     expect(resolved.attackerProgression.autodanno).toBe(12)
-    expect(resolved.attacker).toMatchObject({ livello: 14, hp: 0, xp: 1 })
-    expect(resolved.attackerProgression.messaggi.join(' ')).toContain('conserva l’XP')
+    expect(resolved.attacker).toMatchObject({ livello: 14, hp: 0, xp: 0 })
+    expect(resolved.attackerProgression.messaggi.join(' ')).toContain('EXP di questo KO non si accumula')
     expect(resolved.winnerSide).toBe(side)
     expect(resolved.outcome).toBe(side === 'A' ? 'vittoria' : 'sconfitta')
   })
@@ -95,5 +100,36 @@ describe('cap di cinque livelli fra tutti gli Arkamon in squadra', () => {
     expect(resolved.attackerProgression.autodanno).toBe(13)
     expect(resolved.attacker.hp).toBe(0)
     expect(resolved.winnerSide).toBe('A')
+  })
+
+  it.each([0, 1, 30, 0.5, -3, Number.NaN, Number.POSITIVE_INFINITY])('ignores a legacy balance of %s and spends only the fresh one-point reward', (xp) => {
+    const previous = { ...pokemon('legacy', 10, 2, xp), stato: { tipo: 'Paralizzato' as const, turniRimanenti: -1 } }
+    const result = applicaXP(previous, 1, 15)
+    expect(result).toMatchObject({ livelliGuadagnati: 1, xpScartata: 0, istanza: { livello: 11, hp: 2, xp: 0, stato: previous.stato } })
+    expect(previous.livello).toBe(10)
+    expect(Object.is(previous.xp, xp)).toBe(true)
+  })
+
+  it('spends multiple whole points immediately and discards every point beyond the cap', () => {
+    const first = applicaXP(pokemon('batch', 10, 2, 100), 3, 11)
+    expect(first).toMatchObject({ livelliGuadagnati: 1, xpScartata: 2, istanza: { livello: 11, xp: 0, hp: 2 } })
+    expect(applicaXP(first.istanza, 0, 14)).toMatchObject({ livelliGuadagnati: 0, istanza: { livello: 11, xp: 0, hp: 2 } })
+    expect(applicaXP(pokemon('batch', 10), 3, 13)).toMatchObject({ livelliGuadagnati: 3, xpScartata: 0, istanza: { livello: 13, xp: 0 } })
+  })
+
+  it('does not accumulate fractional or invalid rewards between calls', () => {
+    const first = applicaXP(pokemon('fraction', 10, 2, 0.9), 0.6)
+    expect(applicaXP(first.istanza, 0.6).istanza).toMatchObject({ livello: 10, hp: 2, xp: 0 })
+    for (const reward of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(applicaXP(pokemon('invalid', 10, 2, 5), reward).istanza).toMatchObject({ livello: 10, hp: 2, xp: 0 })
+    }
+  })
+
+  it('never carries unspent rewards across an evolution or the maximum level', () => {
+    const pending = applicaXP(pokemon('evolving', 14), 3)
+    expect(pending).toMatchObject({ livelliGuadagnati: 1, xpScartata: 2, evoluzionePendente: { nuovaSpecieId: 2 }, istanza: { livello: 15, xp: 0 } })
+    const atMaximum = applicaXP({ ...pokemon('maximum', 99, 0, 200), specieId: 110 }, 3)
+    expect(atMaximum).toMatchObject({ livelliGuadagnati: 1, xpScartata: 2, istanza: { livello: 100, hp: 0, xp: 0 } })
+    expect(applicaXP(atMaximum.istanza, 1)).toMatchObject({ livelliGuadagnati: 0, xpScartata: 1, istanza: { livello: 100, hp: 0, xp: 0 } })
   })
 })

@@ -1,3 +1,4 @@
+import { GameButton } from '@/components/ui/GameButton'
 import { useEffect, useRef, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
@@ -97,8 +98,8 @@ export function TitoloScene() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: reducedMotion ? 0 : 1 / speed }}
       >
-        <button
-          className="arka-button text-xl"
+        <GameButton
+          tone="primary" className="text-xl"
           onClick={() => {
             if (haGiocatori && !window.confirm('Vuoi iniziare una nuova partita? La partita salvata verrà sostituita.')) return
             reset()
@@ -106,14 +107,14 @@ export function TitoloScene() {
           }}
         >
           Nuova Partita
-        </button>
+        </GameButton>
         {haGiocatori && (
-          <button
-            className="arka-button-secondary text-lg"
+          <GameButton
+            className="text-lg"
             onClick={() => vaiAScena(starterCompletati ? 'mappa-principale' : 'laboratorio')}
           >
             Continua
-          </button>
+          </GameButton>
         )}
       </motion.div>
 

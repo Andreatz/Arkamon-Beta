@@ -1,18 +1,18 @@
 # Arkadex, Arkastore, registro e sfide
 
-Le nuove funzioni sono disponibili dal pulsante **Partita**. Il negozio si apre dalle **Attività** della città; in combattimento compare un pulsante **Borsa**.
+Le nuove funzioni sono disponibili dal pulsante **Partita**. Il negozio si apre esclusivamente dalle interazioni configurate sui pallini delle mappe delle città; in combattimento compare un pulsante **Borsa**.
 
 ## Arkadex
 
 **Partita → Arkadex** mostra le 110 specie, con progressi separati per G1 e G2. Ogni scheda è da scoprire, vista oppure ottenuta. Uno starter o una cattura registra la specie ottenuta; un avversario registra la specie vista quando entra effettivamente in campo. Deposito ed evoluzione non cancellano le specie già ottenute.
 
-Le specie sconosciute nascondono nome, tipo, mosse e forma; ricerca e filtri non permettono di scoprirle in anticipo. Puoi cercare le specie note o un numero e filtrare per stato di scoperta e tipo. Il dettaglio mostra categoria HP, mosse, evoluzione, esemplari in squadra/deposito e dati reali di livello, HP, status e XP. Se non possiedi più un esemplare, i valori di riferimento sono dichiarati al livello 5. Il nome della forma evoluta resta nascosto finché non viene vista.
+Le specie sconosciute nascondono nome, tipo, mosse e forma; ricerca e filtri non permettono di scoprirle in anticipo. Puoi cercare le specie note o un numero e filtrare per stato di scoperta e tipo. Il dettaglio mostra categoria HP, mosse, evoluzione, esemplari in squadra/deposito e dati reali di livello, HP e status. Se non possiedi più un esemplare, i valori di riferimento sono dichiarati al livello 5. Il nome della forma evoluta resta nascosto finché non viene vista.
 
 Le animazioni disponibili si avviano su richiesta e sono caricate soltanto per la scheda selezionata. I vecchi salvataggi ricostruiscono l’Arkadex dalla collezione attuale e dall’incontro in corso; non inventano incontri o evoluzioni passate non registrate.
 
 ## Arkastore e Borsa
 
-Ogni città ha un **Arkastore** nel pannello **Attività**. Aprirlo e preparare il carrello non consuma azioni. Un solo **Acquista carrello** compra tutti gli articoli selezionati, addebita il totale e conclude l’interazione del turno. Il secondo giocatore conserva saldo e inventario separati. La regola resta due movimenti oppure un movimento e un’interazione.
+Un **Arkastore** viene assegnato dalla regia a un pallino della città tramite **Admin → Interazioni dei pallini → Attività: Arkastore**. Non viene assegnato automaticamente un negozio ai pallini senza una configurazione. Il giocatore raggiunge il pallino e usa **Interagisci sul punto → Apri Arkastore**; il negozio non compare nel menù Partita o nel pannello generale Attività. Aprirlo e preparare il carrello non consuma azioni. Un solo **Acquista carrello** compra tutti gli articoli selezionati, addebita il totale e conclude l’interazione del turno. Il secondo giocatore conserva saldo e inventario separati. La regola resta due movimenti oppure un movimento e un’interazione.
 
 | Oggetto | Prezzo in monete | Effetto |
 | --- | ---: | --- |
@@ -32,7 +32,7 @@ Questi prezzi sono una prima configurazione di gioco, distinta dal bilanciamento
 
 ## Registro del match
 
-**Partita → Registro del match** riunisce avvio della campagna, starter, movimenti, interazioni, incontri, conclusione delle battaglie, catture, livelli/XP, evoluzioni, acquisti e organizzazione del deposito. Mostra data, giocatore, luogo e dettagli dell’attività. Le letture dei pannelli, le anteprime e una seconda scrittura dello stesso checkpoint non generano eventi nuovi.
+**Partita → Registro del match** riunisce avvio della campagna, starter, movimenti, interazioni, incontri, conclusione delle battaglie, catture, livelli, evoluzioni, acquisti e organizzazione del deposito. Mostra data, giocatore, luogo e dettagli dell’attività. Le letture dei pannelli, le anteprime e una seconda scrittura dello stesso checkpoint non generano eventi nuovi.
 
 Filtra per giocatore, categoria e testo, poi scarica gli eventi selezionati in JSON o testo. Il registro conserva gli ultimi **600 eventi** della campagna ed è incluso nel backup completo insieme all’Arkadex e all’inventario. La nuova partita azzera questi progressi. I dadi e la formula del danno restano consultabili nelle **Cronache** delle battaglie: il registro della campagna non rilancia i dadi.
 
@@ -45,7 +45,7 @@ La differenza fra il membro di livello più alto e quello di livello più basso 
 - Una cattura fuori fascia va nel deposito anche se in squadra ci sono slot vuoti. Se il deposito è pieno, la cattura viene rifiutata senza consumare la Masterball.
 - Uno scambio che crea una squadra fuori fascia è rifiutato con un messaggio. Puoi togliere membri dal gruppo per sistemare una squadra di un vecchio salvataggio.
 - La crescita del singolo Arkamon è limitata al livello del compagno più basso + 5. Se è l’unico membro, resta il massimo normale di livello 100.
-- L’XP ottenuta al cap resta conservata. Quando la fascia lo permette, un successivo premio XP può utilizzarla; non avvengono cure o aumenti artificiali dei livelli dei compagni.
+- Un punto EXP vale un livello immediato. L’EXP ottenuta al cap viene scartata e non si accumula: cambiare squadra non recupera livelli da premi precedenti. I residui EXP dei vecchi salvataggi vengono rimossi senza cambiare livelli, HP o status. Non avvengono cure o aumenti artificiali dei livelli dei compagni.
 - La Suprema continua a premiare il KO prima del contraccolpo; il costo usa gli HP massimi al livello effettivamente raggiunto, rispettando il cap.
 
 Un vecchio salvataggio fuori fascia mantiene tutti gli Arkamon, livelli e HP. Un avviso chiede di sistemare la squadra nel deposito prima di avviare un nuovo incontro; non viene effettuato un abbassamento dei livelli. Gli avversari della campagna conservano le loro squadre definite nei dati.

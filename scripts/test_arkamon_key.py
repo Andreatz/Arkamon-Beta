@@ -31,6 +31,120 @@ def source_patch(colour: tuple[int, int, int]) -> Image.Image:
     return image
 
 
+class ReusedActionSelectionTests(unittest.TestCase):
+    def test_new_set_requires_idle_to_establish_its_geometry(self) -> None:
+        with self.assertRaisesRegex(ValueError, 'Include idle'):
+            converter.conversion_actions(['ko'],False)
+
+    def test_reusing_geometry_keeps_only_requested_actions_without_rekeying_idle(self) -> None:
+        self.assertEqual(converter.conversion_actions(['ko','ko'],True),['ko'])
+        self.assertEqual(converter.conversion_actions(['hit','attack'],True),['hit','attack'])
+
+    def test_supplied_idle_remains_first_and_duplicates_are_removed(self) -> None:
+        self.assertEqual(converter.conversion_actions(['ko','idle','attack','idle'],False),['idle','ko','attack'])
+
+
+class BlueScreenKeyTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.previous = (converter.SCREEN_COLOUR, converter.SCREEN_DOMINANCE_CLEANUP, converter.SCREEN_FRINGE_CLEANUP)
+        converter.SCREEN_COLOUR = 'blue'
+        converter.SCREEN_DOMINANCE_CLEANUP = converter.SCREEN_FRINGE_CLEANUP = False
+
+    def tearDown(self) -> None:
+        converter.SCREEN_COLOUR, converter.SCREEN_DOMINANCE_CLEANUP, converter.SCREEN_FRINGE_CLEANUP = self.previous
+
+    def test_blue_screen_and_enclosed_pocket_become_transparent(self) -> None:
+        image = Image.new('RGB', (128,128), (8,12,245))
+        image.paste((80,155,45), (32,32,96,96))
+        image.paste((8,12,245), (55,55,70,70))
+        keyed, _ = converter.remove_green(image)
+        pixels = np.asarray(keyed)
+        self.assertTrue(np.all(pixels[:32] == 0))
+        self.assertTrue(np.all(pixels[55:70,55:70] == 0))
+        np.testing.assert_array_equal(pixels[40,40], [80,155,45,255])
+
+    def test_green_foliage_red_fire_and_dark_details_keep_exact_rgb(self) -> None:
+        for colour in [(50,170,40),(135,155,55),(225,85,30),(35,30,32)]:
+            with self.subTest(colour=colour):
+                image = Image.new('RGB',(128,128),(8,12,245))
+                image.paste(colour,(48,48,80,80))
+                keyed, _ = converter.remove_green(image)
+                np.testing.assert_array_equal(np.asarray(keyed)[64,64], [*colour,255])
+
+    def test_normalization_preserves_green_interior_instead_of_legacy_green_despill(self) -> None:
+        image = Image.new('RGB',(128,128),(8,12,245))
+        image.paste((50,170,40),(48,48,80,80))
+        clip = {'action':'idle','union':(48,48,80,80),'camera':{'nativeToIdleCoordinateScale':1,'nativeToIdleCoordinateOffset':[0,0]}}
+        common = {'sharedScale':1,'logicalCanvasOrigin':[0,0],'viewport':{'left':0,'top':0},'cellWidth':128,'cellHeight':128}
+        result = converter.normalize_frame(image,clip,common,.08)
+        np.testing.assert_array_equal(np.asarray(result)[64,64], [50,170,40,255])
+        self.assertIsNone(result.getchannel('A').crop((0,0,32,32)).getbbox())
+
+    def test_wrong_screen_channel_is_rejected(self) -> None:
+        with self.assertRaisesRegex(ValueError, 'not sufficiently blue'):
+            converter.remove_green(source_patch((125,55,170)))
+
+    def test_explicit_clip_screen_preserves_a_flash_covering_the_corners(self) -> None:
+        with patch.object(converter, 'SCREEN_BACKGROUND_FALLBACK', (8,12,245)):
+            image = Image.new('RGB',(128,128),(252,253,251))
+            keyed, _ = converter.remove_green(image)
+            np.testing.assert_array_equal(np.asarray(keyed)[64,64], [252,253,251,255])
+            self.assertEqual(keyed.getchannel('A').getbbox(),(0,0,128,128))
+
+    def test_fallback_does_not_override_a_visible_native_screen(self) -> None:
+        with patch.object(converter, 'SCREEN_BACKGROUND_FALLBACK', (8,12,245)):
+            image = Image.new('RGB',(128,128),(14,18,210))
+            image.paste((50,170,40),(48,48,80,80))
+            rgb, alpha, background = converter.key_alpha(image)
+            np.testing.assert_array_equal(background, [14,18,210])
+            self.assertEqual(float(alpha[0,0]),0)
+            self.assertEqual(float(alpha[64,64]),1)
+
+    def test_soft_blue_ratio_retains_a_gradual_native_aura_without_keying_green_body(self) -> None:
+        image=Image.new('RGB',(128,128),(0,0,255))
+        for index,value in enumerate([4,6,12,20,28]):
+            image.paste((value,value,200),(32+index*10,48,42+index*10,70))
+        image.paste((50,170,40),(48,80,80,100))
+        _,hard,_=converter.key_alpha(image,cutoff=.02)
+        with patch.object(converter,'SOFT_BLUE_SCREEN_REJECTION',True):
+            rgb,soft,_=converter.key_alpha(image,cutoff=.02)
+            keyed,_=converter.remove_green(image,cutoff=.02)
+        self.assertEqual(float(hard[60,66]),0)
+        samples=[float(soft[60,36+index*10]) for index in range(5)]
+        self.assertEqual(samples[0],0)
+        self.assertTrue(all(a<b for a,b in zip(samples,samples[1:])),samples)
+        self.assertEqual(float(soft[0,0]),0)
+        np.testing.assert_array_equal(np.asarray(keyed)[90,64],[50,170,40,255])
+
+
+class GreenBodyPreservationTests(unittest.TestCase):
+    def test_audited_green_grey_body_retains_opaque_source_colour(self) -> None:
+        with patch.object(converter,'PRESERVE_GREEN_BODY',True):
+            for colour in [(120,140,125),(70,110,80),(140,175,155)]:
+                image=source_patch(colour)
+                keyed,_=converter.remove_green(image)
+                np.testing.assert_array_equal(np.asarray(keyed)[64,64],[*colour,255])
+
+    def test_screen_pocket_and_mixed_edge_keep_their_alpha(self) -> None:
+        image=source_patch((120,140,125))
+        image.paste((20,180,40),(58,58,70,70))
+        image.paste((40,150,65),(48,48,50,80))
+        _,legacy,_=converter.key_alpha(image)
+        with patch.object(converter,'PRESERVE_GREEN_BODY',True):
+            _,alpha,_=converter.key_alpha(image)
+        self.assertEqual(float(alpha[64,64]),0)
+        self.assertAlmostEqual(float(alpha[60,49]),float(legacy[60,49]))
+        self.assertEqual(float(alpha[52,60]),1)
+
+    def test_resize_despill_preserves_opaque_green_interior(self) -> None:
+        image=source_patch((120,140,125))
+        clip={'action':'idle','union':(48,48,80,80),'camera':{'nativeToIdleCoordinateScale':1,'nativeToIdleCoordinateOffset':[0,0]}}
+        common={'sharedScale':1,'logicalCanvasOrigin':[0,0],'viewport':{'left':0,'top':0},'cellWidth':128,'cellHeight':128}
+        with patch.object(converter,'PRESERVE_GREEN_BODY',True):
+            frame=converter.normalize_frame(image,clip,common,.08)
+        np.testing.assert_array_equal(np.asarray(frame)[64,64],[120,140,125,255])
+
+
 class FringeKeyTests(unittest.TestCase):
     def setUp(self) -> None:
         self.previous = (converter.SCREEN_DOMINANCE_CLEANUP, converter.SCREEN_FRINGE_CLEANUP)

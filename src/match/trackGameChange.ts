@@ -72,9 +72,9 @@ export function trackGameChange(previous: GameSaveState, next: GameSaveState): P
     if (next.battaglia && previous.battaglia) {
       for (const pokemon of next.battaglia.squadraA ?? [next.battaglia.pokemonA]) {
         const old = (previous.battaglia.squadraA ?? [previous.battaglia.pokemonA]).find((p) => p.istanzaId === pokemon.istanzaId)
-        if (old && (old.livello < pokemon.livello || old.xp < pokemon.xp)) add({ id: `level:${battleId}:${pokemon.istanzaId}:${pokemon.livello}:${pokemon.xp}`, kind: 'level', playerId: next.giocatoreAttivo,
-          title: old.livello < pokemon.livello ? `${pokemon.nome} sale di livello` : `${pokemon.nome} guadagna esperienza`,
-          message: `Livello ${old.livello} → ${pokemon.livello}, XP ${old.xp} → ${pokemon.xp}, HP residui ${pokemon.hp}.${old.livello === pokemon.livello ? ' XP conservata al cap di squadra.' : ''}`, speciesId: pokemon.specieId, battleId })
+        if (old && old.livello < pokemon.livello) add({ id: `level:${battleId}:${pokemon.istanzaId}:${pokemon.livello}`, kind: 'level', playerId: next.giocatoreAttivo,
+          title: `${pokemon.nome} sale di livello`,
+          message: `Livello ${old.livello} → ${pokemon.livello}, HP residui ${pokemon.hp}.`, speciesId: pokemon.specieId, battleId })
       }
     }
   }

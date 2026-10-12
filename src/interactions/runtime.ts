@@ -124,6 +124,11 @@ export function resolveConfiguredInteraction(state: InteractionRuntimeState, def
   const requirement = interactionRequirementMessage(state, definition, playerId)
   if (requirement) return failure(requirement)
   const a = definition.action
+  // Opening a shop is free. The atomic checkout validates the same point again.
+  if (a.kind === 'shop') {
+    if (state.scenaCorrente.scena !== 'citta' || state.scenaCorrente.payload?.luogo !== map.id) return failure('Apri la mappa della città e raggiungi il pallino dell’Arkastore.')
+    return { ok: true, message: 'Arkastore disponibile sul pallino. Il turno si conclude soltanto all’acquisto.' }
+  }
   if (a.kind === 'trainer' && player.allenatoriSconfitti.has(a.trainerId)) return failure('Questo allenatore è già stato sconfitto.')
   if (a.kind === 'bush' && player.cespugliVisitati.has(`${map.id}:${a.bush}`)) return failure('Questo cespuglio è già stato esplorato.')
   const startsBattle = a.kind === 'trainer' || a.kind === 'encounter' || a.kind === 'bush'

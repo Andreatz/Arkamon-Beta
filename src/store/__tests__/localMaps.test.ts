@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getLocalMap } from '@data/localMaps'
 import { getAdjacentLocalMapNodes } from '@engine/localMapMovement'
-import { useGameStore } from '@store/gameStore'
-import type { PosizioneAvatar } from '@/types'
+import { calcolaHPMax } from '@engine/battleEngine'
+import { creaIstanza, useGameStore } from '@store/gameStore'
+import type { PosizioneAvatar, StatoBattaglia } from '@/types'
 
 vi.hoisted(() => {
   const values = new Map<string, string>()
@@ -22,6 +23,17 @@ function firstStep(luogo: string): { start: string; next: string } {
   const next = getAdjacentLocalMapNodes(map, map.startNode)[0]
   if (!next) throw new Error(`Il punto d'ingresso di ${luogo} non ha strade.`)
   return { start: map.startNode, next }
+}
+
+function ongoingBattle(): StatoBattaglia {
+  const pokemonA = { ...creaIstanza(1, 5)!, hp: 7 }
+  const pokemonB = { ...creaIstanza(13, 5)!, hp: 3 }
+  return { tipo: 'NPC', pokemonA, pokemonB, squadraA: [pokemonA], squadraB: [pokemonB],
+    hpMaxA: calcolaHPMax(pokemonA), hpMaxB: calcolaHPMax(pokemonB), turnoCorrente: 'A',
+    luogoRitorno: 'Venezia', log: [], evoluzioneInAttesa: null,
+    checkpoint: { version: 1, phase: 'player', initialPriority: 'A', actedThisRound: [],
+      openingComplete: true, outcome: null, evolutions: [], rivalMessages: [] },
+  }
 }
 
 describe('store - mappe locali e due azioni condivise', () => {
@@ -100,7 +112,7 @@ describe('store - mappe locali e due azioni condivise', () => {
 
   it('durante la battaglia non passa il controllo dalla mappa principale', () => {
     const before = useGameStore.getState().turnoOverworld
-    useGameStore.setState({ battaglia: {} as NonNullable<ReturnType<typeof useGameStore.getState>['battaglia']> })
+    useGameStore.setState({ battaglia: ongoingBattle() })
     useGameStore.getState().passaTurnoOverworld()
     expect(useGameStore.getState().turnoOverworld).toBe(before)
     expect(useGameStore.getState().giocatoreAttivo).toBe(1)
@@ -108,7 +120,7 @@ describe('store - mappe locali e due azioni condivise', () => {
 
   it('durante la battaglia blocca anche movimento e interazione sulla mappa principale', () => {
     const before = useGameStore.getState()
-    useGameStore.setState({ battaglia: {} as NonNullable<ReturnType<typeof useGameStore.getState>['battaglia']> })
+    useGameStore.setState({ battaglia: ongoingBattle() })
     const store = useGameStore.getState()
     expect(store.muoviAvatarMappaPrincipale(1, 'Percorso_1')).toBe(false)
     expect(store.interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'no-op' })
@@ -150,7 +162,7 @@ describe('store - mappe locali e due azioni condivise', () => {
   it('non permette movimento, apertura o cambio di turno durante una battaglia', () => {
     const store = useGameStore.getState()
     store.apriMappaLocale(1, 'Venezia')
-    useGameStore.setState({ battaglia: {} as NonNullable<ReturnType<typeof useGameStore.getState>['battaglia']> })
+    useGameStore.setState({ battaglia: ongoingBattle() })
     expect(store.apriMappaLocale(1, 'Venezia')).toBe(false)
     expect(store.muoviAvatarMappaLocale(1, 'Venezia', firstStep('Venezia').next)).toBe(false)
     expect(store.consumaInterazioneMappaLocale(1, 'Venezia')).toBe(false)

@@ -1,0 +1,69 @@
+import { renderToStaticMarkup } from 'react-dom/server'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { initialGameSave } from '@/save/gamePersistence'
+import type { GameState } from '@/store/gameStore'
+import { MenuScreen } from '../MenuScreen'
+import { PlayerUi } from '../PlayerUi'
+import { AnalysisScreen } from '../AnalysisScreen'
+import { DepositScreen } from '../DepositScreen'
+import { PLAYER_UI_SCREENS, isPlayerUiScreen } from '../navigation'
+
+const runtime = vi.hoisted(() => ({ state: undefined as unknown as GameState }))
+vi.mock('@/store/gameStore', () => ({
+  useGameStore: Object.assign((selector?: (state: GameState) => unknown) => selector ? selector(runtime.state) : runtime.state,
+    { getState: () => runtime.state }),
+}))
+
+beforeEach(() => {
+  const state = initialGameSave()
+  state.giocatore1.nome = 'Arianna'
+  state.giocatore1.squadra = [{ istanzaId: 'menu-specimen', specieId: 1, nome: 'Vyrath', livello: 10, hp: 3, xp: 3 }]
+  state.giocatore1.deposito = { '1:1': { istanzaId: 'reserve-specimen', specieId: 9, nome: 'Felyss', livello: 7, hp: 2, xp: 4 } }
+  state.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
+  runtime.state = { ...state, campaignRevision: 0 } as unknown as GameState
+})
+
+describe('player menu navigation and progression facts', () => {
+  it('offers the six match tools once instead of repeating the top navigation', () => {
+    const onAuxiliary = vi.fn()
+    const before = structuredClone(runtime.state.giocatore1)
+    const markup = renderToStaticMarkup(<MenuScreen playerId={1} onAuxiliary={onAuxiliary} />)
+    expect([...markup.matchAll(/aria-label="Apri ([^"]+)"/g)].map(([, name]) => name)).toEqual([
+      'Diario', 'Backup', 'Impostazioni', 'Cronache', 'Registro del match', 'Sfide',
+    ])
+    expect(markup).not.toContain('Apri Squadra')
+    expect(markup).not.toContain('Apri Negozio')
+    expect(markup).not.toContain('pu-journey-actions')
+    expect(onAuxiliary).not.toHaveBeenCalled()
+    expect(runtime.state.giocatore1).toEqual(before)
+  })
+
+  it('keeps the shop outside navigation and exposes exactly one journey resume command', () => {
+    expect(PLAYER_UI_SCREENS).toEqual(['partita', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa'])
+    expect(isPlayerUiScreen('negozio')).toBe(true)
+    const markup = renderToStaticMarkup(<PlayerUi onClose={vi.fn()} />)
+    expect(markup.match(/Riprendi il Viaggio/g)).toHaveLength(1)
+    expect(markup).not.toContain('pu-aux-nav')
+    expect(markup).not.toContain('Esc · Chiudi')
+    expect(markup).not.toContain('>Negozio<')
+    expect(markup.match(/class="pu-button[^\"]*pu-nav-button/g)).toHaveLength(6)
+  })
+
+  it('does not open a shop from an initial screen lacking a point interaction', () => {
+    const markup = renderToStaticMarkup(<PlayerUi initialScreen="negozio" initialPlayerId={1} onClose={vi.fn()} />)
+    expect(markup).toContain('data-player-ui-screen="partita"')
+    expect(markup).not.toContain('data-player-ui-screen="negozio"')
+  })
+
+  it('shows levels and growth in reserve and analysis without a saved or banked XP counter', () => {
+    const before = structuredClone(runtime.state.giocatore1)
+    const deposit = renderToStaticMarkup(<DepositScreen playerId={1} />)
+    const analysis = renderToStaticMarkup(<AnalysisScreen playerId={1} />)
+    for (const markup of [deposit, analysis]) {
+      expect(markup).toContain('Livello')
+      expect(markup).toContain('Crescita')
+      expect(markup).not.toMatch(/\bXP\b|Esperienza|exp|Prossimo livello/)
+    }
+    expect(runtime.state.giocatore1).toEqual(before)
+  })
+})

@@ -91,7 +91,7 @@ test('Suprema reveals KO after dice, preserves XP/recoil order on reload and arc
 
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const tools = page.getByRole('dialog', { name: 'La tua partita' })
-  await tools.getByRole('button', { name: 'Cronache', exact: true }).click()
+  await tools.getByRole('button', { name: 'Apri Cronache', exact: true }).click()
   await tools.getByRole('button', { name: 'Rivedi cronaca e dadi', exact: true }).click()
   const replay = page.getByRole('dialog', { name: 'Cronaca della battaglia', exact: true })
   await expect(replay).toBeVisible()
@@ -117,11 +117,11 @@ test('restoring a different battle in the same scene replaces local HP, checkpoi
   await expect(page.locator('[data-battle-hp-side="player"]')).toHaveAttribute('data-battle-hp', '1')
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const tools = page.getByRole('dialog', { name: 'La tua partita' })
-  await tools.getByRole('button', { name: 'Backup', exact: true }).click()
+  await tools.getByRole('button', { name: 'Apri Backup', exact: true }).click()
   const downloaded = page.waitForEvent('download')
   await tools.getByRole('button', { name: 'Scarica backup partita', exact: true }).click()
   const backup = JSON.parse(await readFile((await (await downloaded).path())!, 'utf8'))
-  const replacement = { istanzaId: 'restored-a', specieId: 5, nome: 'Darklaw Ripristinato', livello: 12, hp: 7, xp: 3 }
+  const replacement = { istanzaId: 'restored-a', specieId: 5, nome: 'Darklaw Ripristinato', livello: 12, hp: 7, xp: 0 }
   const replacementEnemy = { istanzaId: 'restored-b', specieId: 13, nome: 'Wormaren Ripristinato', livello: 5, hp: 9, xp: 0 }
   const restoredChronicle = {
     version: 1, battleId: 'restored-battle', nextSequence: 3, omittedEvents: 0,

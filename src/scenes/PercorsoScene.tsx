@@ -1,5 +1,5 @@
+import { GameButton } from '@/components/ui/GameButton'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
-import { motion } from 'framer-motion'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
 import { getAllenatoriInLuogo, getIncontri } from '@data/index'
@@ -101,14 +101,12 @@ export function PercorsoScene() {
             const haIncontri = getIncontri(luogo, c).length > 0
             const disabled = !interazioneDisponibile || visited || !haIncontri || !haPokemonVivi
             return (
-              <motion.button
+              <GameButton
                 key={c}
-                whileHover={!layoutEditing && !disabled ? { scale: 1.05, y: -4 } : {}}
-                whileTap={!layoutEditing && !disabled ? { scale: 0.95 } : {}}
                 disabled={layoutEditing || disabled}
                 aria-label={`Cespuglio ${c}${visited ? ', esplorato' : ''}`}
                 onClick={() => apriCespuglio(c)}
-                className={`arka-panel flex aspect-square flex-col items-center justify-center
+                className={`flex aspect-square flex-col items-center justify-center
                   ${disabled ? 'cursor-not-allowed opacity-30' : 'cursor-pointer hover:border-arka-accent'}
                 `}
               >
@@ -117,7 +115,7 @@ export function PercorsoScene() {
                 <span className="arka-layout-content text-xs text-arka-text-muted">
                   {visited ? 'esplorato' : haIncontri ? 'cespuglio' : '—'}
                 </span>
-              </motion.button>
+              </GameButton>
             )
           })}
           </div>}
@@ -128,12 +126,12 @@ export function PercorsoScene() {
                 {allenatori.map((allenatore) => {
                   const sconfitto = giocatore.allenatoriSconfitti.has(allenatore.id)
                   return (
-                    <motion.button
+                    <GameButton
                       key={allenatore.id}
                       disabled={layoutEditing || !interazioneDisponibile || sconfitto || !haPokemonVivi}
                       onClick={() => sfidaAllenatore(allenatore.id)}
                       aria-label={sconfitto ? `${allenatore.nome}, già sconfitto` : `Sfida ${allenatore.nome}`}
-                      className={`arka-panel flex w-full items-center gap-3 p-4 text-left ${sconfitto || !haPokemonVivi ? 'cursor-not-allowed opacity-40' : 'hover:border-arka-accent'}`}
+                      className={`flex w-full items-center gap-3 p-4 text-left ${sconfitto || !haPokemonVivi ? 'cursor-not-allowed opacity-40' : 'hover:border-arka-accent'}`}
                     >
                       <span className="text-3xl" aria-hidden="true">{sconfitto ? '✅' : allenatore.tipo === 'PVP' ? '⚔️' : '🥋'}</span>
                       <span>
@@ -142,7 +140,7 @@ export function PercorsoScene() {
                           {sconfitto ? 'Già sconfitto' : `Squadra: ${allenatore.squadra.length} Pokémon · Lv. ${allenatore.squadra[0]?.livello ?? '—'}`}
                         </span>
                       </span>
-                    </motion.button>
+                    </GameButton>
                   )
                 })}
               </div>
@@ -153,7 +151,7 @@ export function PercorsoScene() {
 
   if (!secretAccess) return <section className="local-map-scene" aria-label="Luogo non disponibile">
     <p>Questo luogo non è disponibile per il giocatore attivo.</p>
-    <button className="arka-button-secondary" onClick={() => vaiAScena('mappa-principale')}>Mappa principale</button>
+    <GameButton onClick={() => vaiAScena('mappa-principale')}>Mappa principale</GameButton>
   </section>
 
   if (localMap && !layoutEditing) return <LocalMapScene key={luogo} map={localMap} activities={activities} />
@@ -171,12 +169,12 @@ export function PercorsoScene() {
         editing={layoutEditing}
         onChange={(rect) => updateLuogoLayout('backButton', rect)}
       >
-        <button
-          className="arka-layout-content arka-button-secondary h-full w-full px-3 py-2 text-sm"
+        <GameButton
+          className="arka-layout-content h-full w-full px-3 py-2 text-sm"
           onClick={() => vaiAScena('mappa-principale')}
         >
           ← Torna alla mappa
-        </button>
+        </GameButton>
       </AdminLayoutItem>
 
       <AdminLayoutItem

@@ -34,7 +34,7 @@ test('the real SVG tools open from the title without an invented team and restor
   await expect(trigger).toBeFocused()
 })
 
-test('browsing G2 and all seven screens preserves turn, HP, position and campaign save', async ({ page }) => {
+test('browsing G2 and all six menu screens preserves turn, HP, position and campaign save', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   await seedTwoPlayers(page)
@@ -47,7 +47,9 @@ test('browsing G2 and all seven screens preserves turn, HP, position and campaig
   await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-player', '2')
   await expect(dialog.locator('.pu-currency')).toContainText('490')
   await expect(dialog.locator('.pu-header-meta')).toContainText('Torino')
-  for (const [label, screen] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Negozio', 'negozio'], ['Menù Partita', 'partita']] as const) {
+  await expect(dialog.getByRole('button', { name: 'Negozio', exact: true })).toHaveCount(0)
+  await expect(dialog.getByRole('button', { name: 'Apri Negozio', exact: true })).toHaveCount(0)
+  for (const [label, screen] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Menù Partita', 'partita']] as const) {
     await dialog.getByRole('button', { name: label, exact: true }).click()
     await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', screen)
     await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)

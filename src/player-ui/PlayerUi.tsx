@@ -48,11 +48,12 @@ export interface PlayerUiProps {
   initialPlayerId?: 1 | 2
   initialInstanceId?: string
   initialAuxiliary?: PlayerUiAuxiliary
+  initialShopInteractionId?: string
   onClose: () => void
 }
 
-export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialInstanceId, initialAuxiliary, onClose }: PlayerUiProps) {
-  const [screen, setScreen] = useState<PlayerUiScreen>(initialScreen)
+export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialInstanceId, initialAuxiliary, initialShopInteractionId, onClose }: PlayerUiProps) {
+  const [screen, setScreen] = useState<PlayerUiScreen>(initialScreen === 'negozio' && !initialShopInteractionId ? 'partita' : initialScreen)
   const [playerId, setPlayerId] = useState<1 | 2>(() => initialPlayerId ?? useGameStore.getState().giocatoreAttivo)
   const [instanceId, setInstanceId] = useState(initialInstanceId)
   const [tool, setTool] = useState<PlayerUiAuxiliary | null>(() => initialAuxiliary ?? (useGameStore.getState().challengeContext ? 'challenges' : null))
@@ -67,12 +68,13 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   const player = playerId === 1 ? player1 : player2
   const position = playerId === 1 ? position1 : position2
   const location = scene.scena === 'titolo' ? 'Prima dell’avventura' : scene.scena === 'laboratorio' ? 'Laboratorio' : (position.luogo ?? position.mappaId).replace(/_/g, ' ')
-  const visibleTool = context && tool !== 'settings' ? 'challenges' : tool
+  const visibleTool = context && tool && tool !== 'settings' && tool !== 'challenges' ? 'challenges' : tool
   const blockedScreen = !!context && challengeBlocked.has(screen)
   const page = screens[screen]
   const toolLabel = auxiliary.find(entry => entry.id === visibleTool)?.label
 
   function navigate(next: PlayerUiScreen) {
+    if (next === 'negozio') return
     if (context && next !== 'partita') return
     setScreen(next); setTool(null)
   }
@@ -116,28 +118,24 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     <main className={`pu-content ${visibleTool ? 'pu-content-auxiliary' : ''}`}>
       <Suspense fallback={<p role="status" className="pu-loading">Caricamento…</p>}>
         {visibleTool === 'settings' ? <GameSettingsPanel />
-          : visibleTool === 'challenges' ? <ChallengePanel activeSession={context?.session} onResume={onClose} onLaunch={session => { const result = launchChallenge(session); if (result.ok) onClose(); return result }} />
+          : visibleTool === 'challenges' ? <ChallengePanel activeSession={context?.session} onLaunch={session => { const result = launchChallenge(session); if (result.ok) onClose(); return result }} />
           : visibleTool === 'journal' ? <PlayerJournalPanel key={`journal-${playerId}`} initialPlayerId={playerId} />
           : visibleTool === 'backup' ? <BackupPanel />
           : visibleTool === 'chronicles' ? <BattleArchivePanel />
           : visibleTool === 'match' ? <MatchRegisterPanel key={`match-${playerId}`} initialPlayerId={playerId} />
           : blockedScreen ? <p role="status">Questa funzione torna disponibile dopo la sfida.</p>
-          : screen === 'partita' ? <MenuScreen playerId={playerId} onNavigate={navigate} onAuxiliary={openTool} onResume={onClose} />
+          : screen === 'partita' ? <MenuScreen playerId={playerId} onAuxiliary={openTool} />
           : screen === 'squadra' ? <TeamScreen playerId={playerId} onAnalyse={analyse} onBag={() => navigate('borsa')} onDeposit={() => navigate('deposito')} />
           : screen === 'deposito' ? <DepositScreen playerId={playerId} onAnalyse={analyse} />
           : screen === 'arkadex' ? <ArkadexScreen playerId={playerId} onPlayerChange={changePlayer} />
           : screen === 'analisi' ? <AnalysisScreen playerId={playerId} instanceId={instanceId} />
           : screen === 'borsa' ? <BagScreen playerId={playerId} onPlayerChange={changePlayer} />
-          : <StoreScreen playerId={playerId} />}
+          : <StoreScreen playerId={playerId} shopInteractionId={initialShopInteractionId} />}
       </Suspense>
     </main>
 
-    <nav className="pu-aux-nav" aria-label="Strumenti della partita">
-      {auxiliary.map(entry => <KitButton key={entry.id} active={visibleTool === entry.id} aria-pressed={visibleTool === entry.id}
-        disabled={!!context && entry.id !== 'settings' && entry.id !== 'challenges'} onClick={() => openTool(entry.id)}><KitIcon id={entry.icon} />{entry.label}</KitButton>)}
-    </nav>
     <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} azioni disponibili` : ''}</span>
-      <span>Esc · Chiudi</span><KitButton onClick={onClose} aria-label="Riprendi la partita">Riprendi</KitButton>
+      <span>Esc · Torna al viaggio</span><KitButton active onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</KitButton>
     </footer>
   </div>
 }

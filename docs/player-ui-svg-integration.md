@@ -1,12 +1,12 @@
 # Le sette viste SVG nel gioco
 
-L’interfaccia degli strumenti dell’allenatore è integrata nell’applicazione React e legge la partita reale: squadra, deposito, HP, status, esperienza, scoperte, inventario, monete e progressi dei due giocatori. I pannelli usano il kit di 47 SVG fornito nell’archivio dell’utente, insieme al logo, agli sfondi e alle immagini delle creature già presenti nel gioco.
+L’interfaccia degli strumenti dell’allenatore è integrata nell’applicazione React e legge la partita reale: squadra, deposito, HP, status, livelli, scoperte, inventario, monete e progressi dei due giocatori. I pannelli usano il kit di 47 SVG fornito nell’archivio dell’utente, insieme al logo, agli sfondi e alle immagini delle creature già presenti nel gioco.
 
 Questa guida descrive le sette viste integrate nell’applicazione React e il loro layout compatto. Le [anteprime grafiche autonome](ui-previews/README.md) restano consultabili come riferimento della proposta: usano dati dimostrativi, hanno catture e verifiche proprie e non sono il salvataggio di una campagna. Per utilizzare le nuove viste con i propri Arkamon occorre aprire il gioco, anziché il prototipo in `docs/ui-previews/`.
 
 ## Dove aprire le schermate
 
-Premi **Partita** per aprire la finestra **La tua partita**. La navigazione principale contiene tutte e sette le viste:
+Premi **Partita** per aprire la finestra **La tua partita**. La navigazione principale contiene sei viste. Il negozio usa lo stesso layout, con ingresso esclusivo da un pallino configurato:
 
 | Vista | Percorso nel gioco | Contenuto e operazioni |
 | --- | --- | --- |
@@ -14,15 +14,15 @@ Premi **Partita** per aprire la finestra **La tua partita**. La navigazione prin
 | Gestione Squadra | **Partita → Squadra** | Sei posti, condizioni dei compagni, mosse, fascia dei livelli e riordino dei membri. |
 | Deposito Arkamon | **Partita → Deposito** | Box reali, riserve, squadra e spostamento o scambio tra posti. |
 | Arkadex | **Partita → Arkadex** | Specie viste e ottenute, ricerca, filtri, esemplari e catena evolutiva. |
-| Analisi Arkamon | **Partita → Analisi** | Scheda, crescita, HP, XP, mosse, dadi, affinità e spiegazioni degli status. |
+| Analisi Arkamon | **Partita → Analisi** | Scheda, crescita, HP, mosse, dadi, affinità e spiegazioni degli status. |
 | Borsa Oggetti | **Partita → Borsa** | Scorte possedute, categorie, effetti e uso su un membro della squadra. |
-| Negozio | **Partita → Negozio** | Catalogo dell’Arkastore, quantità, carrello, costo e saldo effettivi. |
+| Negozio | **Mappa locale → Interagisci sul punto → Apri Arkastore** | Catalogo dell’Arkastore, quantità, carrello, costo e saldo effettivi. |
 
-In città, **Attività → Arkastore** apre direttamente la vista Negozio della stessa finestra. Anche l’ingresso nella scena **Deposito** apre il nuovo layout, con squadra e box della partita. Da Squadra o Deposito, **Analizza Arkamon** porta alla scheda dell’esemplare selezionato. **Riprendi** ed **Esc** chiudono gli strumenti; nella scena Deposito, Riprendi torna alla scena precedente.
+Un pallino configurato con attività **Arkastore** apre la vista Negozio della stessa finestra; la navigazione Partita e le attività generali della città non espongono un negozio. Anche l’ingresso nella scena **Deposito** apre il nuovo layout, con squadra e box della partita. Da Squadra o Deposito, **Analizza Arkamon** porta alla scheda dell’esemplare selezionato. Un solo pulsante **Riprendi il Viaggio**, disponibile in tutte le viste, ed **Esc** chiudono gli strumenti; nella scena Deposito tornano alla scena precedente.
 
 Il selettore **G1 / G2** cambia il giocatore consultato in tutte le viste. Non cambia il giocatore attivo, la sua posizione o le azioni rimaste. L’interfaccia indica separatamente il giocatore selezionato e il turno attuale. La consultazione è disponibile anche quando una modifica è bloccata; i comandi mostrano il motivo.
 
-Diario, Backup, Impostazioni, Cronache, Registro del match e Sfide restano disponibili nella navigazione degli strumenti. Il backup e il registro continuano a usare i formati e le funzioni già descritti in [strumenti del giocatore](player-tools.md) e [Arkadex, Arkastore e sfide](arkadex-arkastore-challenges.md).
+Diario, Backup, Impostazioni, Cronache, Registro del match e Sfide sono le sei schede principali del Menù Partita. La barra inferiore duplicata è rimossa. Il backup e il registro continuano a usare i formati e le funzioni già descritti in [strumenti del giocatore](player-tools.md) e [Arkadex, Arkastore e sfide](arkadex-arkastore-challenges.md).
 
 ## Una schermata completa a 1920×1080
 
@@ -34,7 +34,7 @@ Le sette viste utilizzano un layout compatto su un monitor **1920×1080**, adatt
 - **Analisi:** Scheda, Mosse e Status e cure suddividono i dati; la scheda degli status contiene anche le affinità. Le informazioni duplicate vengono riunite nella scheda pertinente.
 - **Borsa:** la griglia conserva tutti gli oggetti della categoria. Il pannello laterale mostra effetto, bersaglio e un solo comando di uso per l’oggetto selezionato. Cambiare oggetto conserva il bersaglio; quando una scorta finisce, la selezione passa a un oggetto ancora posseduto.
 - **Negozio:** i sette articoli, le quantità, il dettaglio selezionato e un carrello con tutti e sette gli articoli entrano contemporaneamente nello schermo, compresi totale, saldo, motivi di blocco e comandi di acquisto.
-- **Menù Partita:** i sei accessi principali e il riepilogo della campagna restano affiancati, con registro, backup e ripresa visibili.
+- **Menù Partita:** le sei schede Diario, Backup, Impostazioni, Cronache, Registro del match e Sfide restano affiancate al riepilogo della campagna; il solo comando di ripresa è nel footer.
 
 La disposizione compatta si attiva con almeno **1100 pixel di larghezza e 820 di altezza disponibili**. Le dimensioni verticali di righe, ritratti e intervalli seguono l’altezza della finestra; le barre del browser non richiedono di passare a schermo intero. Su telefono o sotto queste dimensioni, i pannelli tornano a un flusso adattabile con scorrimento, per mantenere leggibili testi e pulsanti. I formati verificati senza scorrimento sono i viewport del gioco di 1920×1080, 1920×945 e 1920×900.
 
@@ -44,9 +44,9 @@ Squadra e Analisi mostrano gli esemplari posseduti dal giocatore selezionato, co
 
 Il Deposito contiene i **30 box da 35 posti** del motore e i sei posti della squadra. Per organizzarlo, seleziona un Arkamon, premi **Sposta o scambia** e scegli il posto di destinazione. Un posto occupato scambia i due esemplari. Il riordino in Squadra e gli scambi nel Deposito passano attraverso l’azione reale `scambiaSlot`: sono disponibili durante il turno del proprietario, fuori dalla battaglia, dalle sfide e dalle transizioni che richiedono una scelta. Le riserve dei due giocatori restano indipendenti.
 
-Uno spostamento conserva l’identità dell’esemplare, HP, status, XP e livello. Aprire una scheda, cambiare vista o consultare l’altro giocatore non applica una cura. Gli HP residui restano dopo gli scontri; le cure avvengono tramite le azioni previste dal gioco.
+Uno spostamento conserva l’identità dell’esemplare, HP, status e livello. Aprire una scheda, cambiare vista o consultare l’altro giocatore non applica una cura. Gli HP residui restano dopo gli scontri; le cure avvengono tramite le azioni previste dal gioco.
 
-La fascia di squadra resta **massimo cinque livelli tra il membro più basso e quello più alto**, inclusi gli Arkamon KO. Le viste Squadra e Deposito mostrano fascia e differenza; Analisi segnala l’XP conservata quando la crescita attende il cap. Uno scambio che crea una squadra fuori fascia viene rifiutato. I vecchi salvataggi conservano livelli e HP: possono essere riordinati senza abbassare i livelli. Le [regole complete del cap](arkadex-arkastore-challenges.md#cap-di-cinque-livelli) continuano ad applicarsi a catture, crescita e nuovi incontri.
+La fascia di squadra resta **massimo cinque livelli tra il membro più basso e quello più alto**, inclusi gli Arkamon KO. Le viste Squadra e Deposito mostrano fascia e differenza. Un punto EXP fa salire immediatamente di un livello quando la fascia lo consente; al cap il premio viene scartato. Deposito, Analisi e le altre schede non mostrano contatori EXP accumulati. Uno scambio che crea una squadra fuori fascia viene rifiutato. I vecchi salvataggi conservano livelli e HP: possono essere riordinati senza abbassare i livelli. Le [regole complete del cap](arkadex-arkastore-challenges.md#cap-di-cinque-livelli) continuano ad applicarsi a catture, crescita e nuovi incontri.
 
 ## Scoperte, oggetti e acquisti
 
@@ -68,9 +68,9 @@ Durante una sfida il menu mostra il seed e gli strumenti dedicati alla sessione.
 
 I 47 SVG runtime sono in [`public/ui/player-kit/`](../public/ui/player-kit/), con provenienza e impronte nel [`catalog.json`](../public/ui/player-kit/catalog.json). Sono copie dei file del kit fornito: cornici, pulsanti, cerchi, icone e simboli dei tipi vengono usati come risorse vettoriali, senza sostituirli con ritagli PNG. Le creature continuano a usare i poster delle animazioni disponibili, con fallback agli sprite originali; logo e sfondi conservano gli asset esistenti.
 
-I ritratti mostrano la sagoma completa, centrata sui pixel non trasparenti di ciascuna sorgente. Un `viewBox` SVG quadrato con margine uniforme sostituisce l’ingrandimento fisso che tagliava i PNG con pochi margini. Le dimensioni native conservano le proporzioni, anche per gli sprite rettangolari. I 110 PNG originali e i 23 poster restano invariati; se un poster non è disponibile, il fallback usa l’inquadratura del proprio PNG.
+I ritratti mostrano la sagoma completa, centrata sui pixel non trasparenti di ciascuna sorgente. Un `viewBox` SVG quadrato con margine uniforme sostituisce l’ingrandimento fisso che tagliava i PNG con pochi margini. Le dimensioni native conservano le proporzioni, anche per gli sprite rettangolari. I 110 PNG originali e i 23 poster precedenti restano invariati; l’importazione delle forme 25–33 aggiunge nove poster, per **32 poster complessivi**. Se un poster non è disponibile, il fallback usa l’inquadratura del proprio PNG.
 
-[`portraitMetadata.json`](../src/player-ui/portraitMetadata.json) contiene dimensioni e limiti alpha delle 133 sorgenti. Quando si aggiunge o sostituisce una sorgente, eseguire `node scripts/build-player-portrait-metadata.mjs`; `node scripts/build-player-portrait-metadata.mjs --check` confronta i dati con i file attuali senza modificarli. La geometria condivisa è in [`portraitFraming.ts`](../src/player-ui/portraitFraming.ts).
+[`portraitMetadata.json`](../src/player-ui/portraitMetadata.json) contiene dimensioni e limiti alpha delle **142 sorgenti**. Quando si aggiunge o sostituisce una sorgente, eseguire `node scripts/build-player-portrait-metadata.mjs`; `node scripts/build-player-portrait-metadata.mjs --check` confronta i dati con i file attuali senza modificarli. La geometria condivisa è in [`portraitFraming.ts`](../src/player-ui/portraitFraming.ts).
 
 La finestra e le sette viste sono in [`src/player-ui/`](../src/player-ui/). I componenti comuni sono in [`kit.tsx`](../src/player-ui/kit.tsx), il layout adattabile in [`player-ui.css`](../src/player-ui/player-ui.css), e gli ingressi della finestra in [`PlayerTools.tsx`](../src/settings/PlayerTools.tsx). I percorsi dei nuovi asset passano per `assetUrl`, come gli altri asset del gioco. Le schermate vengono caricate quando richieste.
 
@@ -89,6 +89,8 @@ Le regressioni verificano che Esc chiuda soltanto la finestra in primo piano: da
 
 I flussi sono documentati dai test [`player-ui.spec.ts`](../e2e/player-ui.spec.ts) e [`player-ui-integration.spec.ts`](../e2e/player-ui-integration.spec.ts); i controlli delle schede e della separazione dei dati sono in [`src/player-ui/__tests__/`](../src/player-ui/__tests__/) e [`TeamAnalysisDeposit.test.tsx`](../src/player-ui/TeamAnalysisDeposit.test.tsx).
 
-La regressione [`player-ui-1080.spec.ts`](../e2e/player-ui-1080.spec.ts) misura anche le dimensioni effettive dei contenitori, dei testi e dei comandi nel browser a **1920×1080, 1920×945 e 1920×900**. Usa una campagna di prova con nomi lunghi, sei membri, 35 riserve, 110 specie scoperte, tutti gli oggetti e un carrello completo. Controlla le pagine e le schede dell’Arkadex, i dettagli più lunghi, la consultazione di G2, le specie sconosciute e l’ingresso diretto nel deposito; verifica che la consultazione non modifichi il salvataggio. Proietta nel layout reale i limiti alpha di tutti i 110 ritratti, compresi 23 poster, e verifica il fallback a uno sprite con dimensioni diverse quando il poster non è disponibile. Le catture delle sette viste sono state prodotte dalla build di produzione in tutti e tre i formati: **21 immagini**, senza scorrimento dei contenitori principali o errori di pagina.
+La regressione [`player-ui-1080.spec.ts`](../e2e/player-ui-1080.spec.ts) misura anche le dimensioni effettive dei contenitori, dei testi e dei comandi nel browser a **1920×1080, 1920×945 e 1920×900**. Usa una campagna di prova con nomi lunghi, sei membri, 35 riserve, 110 specie scoperte, tutti gli oggetti e un carrello completo. Controlla le pagine e le schede dell’Arkadex, i dettagli più lunghi, la consultazione di G2, le specie sconosciute e l’ingresso diretto nel deposito; verifica che la consultazione non modifichi il salvataggio. Nella verifica dell’11 ottobre proietta nel layout reale i limiti alpha di tutti i 110 ritratti, compresi i 23 poster allora disponibili, e verifica il fallback a uno sprite con dimensioni diverse quando il poster non è disponibile. Le catture delle sette viste sono state prodotte dalla build di produzione in tutti e tre i formati: **21 immagini**, senza scorrimento dei contenitori principali o errori di pagina.
+
+Il **12 ottobre 2026** le nove regressioni desktop sono state verificate nuovamente dopo l’importazione delle forme 25–33, con **32 poster e 78 PNG** nel catalogo visualizzato. Una prova ha richiesto una ripetizione dopo un timeout all’avvio; il dettaglio è nel [rapporto delle nuove animazioni](front-animation-import-2026-10-11.md#verifica). Le altre otto sono passate nella prima esecuzione.
 
 Questi risultati riguardano l’esecuzione locale dell’integrazione e della build; non attestano un esito CI o la disponibilità online. La pubblicazione sul sito richiede il merge della PR in `main`, seguito dal workflow di build e deploy e dalla verifica della versione pubblicata. La [configurazione Pages](github-pages-deployment.md) resta il riferimento per quel passaggio.

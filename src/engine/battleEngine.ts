@@ -541,6 +541,11 @@ export function xpGuadagnato(_nemico: PokemonIstanza): number {
   return 1
 }
 
+/** EXP is a one-off level reward, never a balance carried by a creature. */
+export function clearStoredExperience(istanza: PokemonIstanza): PokemonIstanza {
+  return istanza.xp === 0 ? istanza : { ...istanza, xp: 0 }
+}
+
 export function applicaXP(
   istanza: PokemonIstanza,
   xp: number,
@@ -549,18 +554,21 @@ export function applicaXP(
   istanza: PokemonIstanza
   livelliGuadagnati: number
   evoluzionePendente: { nuovaSpecieId: number } | null
+  xpScartata: number
 } {
+  const reward = Number.isFinite(xp) ? Math.max(0, Math.floor(xp)) : 0
   if (istanza.livello >= LIVELLO_MAX) {
-    return { istanza: { ...istanza, xp: 0 }, livelliGuadagnati: 0, evoluzionePendente: null }
+    return { istanza: { ...istanza, xp: 0 }, livelliGuadagnati: 0, evoluzionePendente: null, xpScartata: reward }
   }
 
-  let nuova = { ...istanza, xp: istanza.xp + xp }
+  const nuova = { ...istanza, xp: 0 }
+  let remainingReward = reward
   let livelliGuadagnati = 0
   let evoluzionePendente: { nuovaSpecieId: number } | null = null
 
   const maximum = Math.max(istanza.livello, Math.min(LIVELLO_MAX, Math.floor(levelLimit)))
-  while (nuova.xp >= xpRichiestoPerLivello(nuova.livello) && nuova.livello < maximum) {
-    nuova.xp -= xpRichiestoPerLivello(nuova.livello)
+  while (remainingReward >= xpRichiestoPerLivello(nuova.livello) && nuova.livello < maximum) {
+    remainingReward -= xpRichiestoPerLivello(nuova.livello)
     nuova.livello += 1
     livelliGuadagnati += 1
 
@@ -575,8 +583,9 @@ export function applicaXP(
     }
   }
 
-  if (nuova.livello >= LIVELLO_MAX) nuova.xp = 0
-  return { istanza: nuova, livelliGuadagnati, evoluzionePendente }
+  // Ignore balances from old saves and discard rewards that cannot be spent now,
+  // including those blocked by the team cap or a pending evolution.
+  return { istanza: nuova, livelliGuadagnati, evoluzionePendente, xpScartata: remainingReward }
 }
 
 /**
@@ -593,9 +602,7 @@ export function applicaXPDopoKO(
   const xpAssegnata = vincitore.hp > 0 && sconfittoPrima.hp > 0 && sconfittoDopo.hp <= 0
     && sconfittoPrima.istanzaId === sconfittoDopo.istanzaId
     ? xpGuadagnato(sconfittoPrima) : 0
-  const progressione = xpAssegnata > 0
-    ? applicaXP(vincitore, xpAssegnata, levelLimit)
-    : { istanza: { ...vincitore }, livelliGuadagnati: 0, evoluzionePendente: null }
+  const progressione = applicaXP(vincitore, xpAssegnata, levelLimit)
   return { ...progressione, xpAssegnata }
 }
 
@@ -611,6 +618,7 @@ export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa, levelLimit
   istanza: PokemonIstanza
   istanzaPrimaDelContraccolpo: PokemonIstanza
   xpAssegnata: number
+  xpScartata: number
   livelliGuadagnati: number
   evoluzionePendente: { nuovaSpecieId: number } | null
   autodanno: number
@@ -631,8 +639,8 @@ export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa, levelLimit
   if (progressione.livelliGuadagnati > 0) {
     messaggi.push(`${attaccante.nome} è salito al livello ${istanzaPrimaDelContraccolpo.livello}!`)
   }
-  if (xpAssegnata && progressione.istanza.livello < LIVELLO_MAX && progressione.istanza.xp >= xpRichiestoPerLivello(progressione.istanza.livello)) {
-    messaggi.push(`${attaccante.nome} conserva l’XP: ha raggiunto il cap di squadra. Allena gli Arkamon di livello più basso.`)
+  if (progressione.xpScartata > 0 && progressione.istanza.livello < LIVELLO_MAX) {
+    messaggi.push(`${attaccante.nome} ha raggiunto il cap di squadra: l’EXP di questo KO non si accumula. Allena gli Arkamon di livello più basso.`)
   }
   if (autodanno > 0) messaggi.push(`${attaccante.nome} si scarica e perde ${autodanno} HP!`)
 

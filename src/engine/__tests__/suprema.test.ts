@@ -188,14 +188,14 @@ describe('KO del bersaglio, XP e contraccolpo Suprema', () => {
     expect(risolto.messaggi.some((messaggio) => messaggio.includes('evolvendo'))).toBe(false)
   })
 
-  it('senza KO del bersaglio mantiene livello e XP e applica soltanto il costo corrente', () => {
+  it('senza KO del bersaglio mantiene il livello, azzera XP legacy e applica soltanto il costo corrente', () => {
     const att = { ...mkIstanza(1, 10, 5), xp: 0.5 }
     const dif = mkIstanza(13, 40)
     const ris = calcolaAzioneSuprema(att, dif, 0, () => 0)!
     expect(ris.difensoreSvenuto).toBe(false)
 
     const risolto = risolviAttaccanteDopoMossa(ris)
-    expect(risolto.istanza).toMatchObject({ livello: 10, xp: 0.5, hp: 0 })
+    expect(risolto.istanza).toMatchObject({ livello: 10, xp: 0, hp: 0 })
     expect(risolto.xpAssegnata).toBe(0)
     expect(risolto.livelliGuadagnati).toBe(0)
     expect(risolto.autodanno).toBe(9)

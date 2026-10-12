@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
+import { seedConfiguredShop, openConfiguredShop } from './helpers/configuredShop'
 
 const sceneSelector = '[data-presented-scene="citta:Venezia"]'
 
@@ -8,6 +9,7 @@ async function readCampaign(page: Page) {
 }
 
 async function seedCityCampaign(page: Page) {
+  await seedConfiguredShop(page)
   // A portable fixture prepares the location; every purchase and item use below goes through the real UI.
   await page.addInitScript(() => {
     if (localStorage.getItem('arkamon-save')) return
@@ -59,9 +61,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   await seedCityCampaign(page)
   const playerTwoBefore = (await readCampaign(page)).giocatore2
 
-  await page.locator(sceneSelector).getByRole('button', { name: 'Attività', exact: true }).click()
-  const activities = page.getByRole('dialog', { name: 'Attività del luogo' })
-  await activities.getByRole('button', { name: 'Arkastore', exact: true }).click()
+  await openConfiguredShop(page)
   const shop = page.getByRole('region', { name: 'Arkastore di Venezia' })
   await expect(shop).toBeVisible()
 
@@ -139,6 +139,37 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   expect((await readCampaign(page)).giocatore1.squadra[0].hp).toBe(6)
   expect((await readCampaign(page)).giocatore1.inventario.potion).toBe(0)
   expect(errors).toEqual([])
+})
+
+test('the map editor assigns an Arkastore to a point and the authored access survives reload', async ({ page }) => {
+  await seedCityCampaign(page)
+  // Author a new shop through the editor, rather than relying on the prepared catalog.
+  await page.evaluate(() => localStorage.setItem('arkamon-interactions-v1', JSON.stringify({ version: 0, state: { interactions: [] } })))
+  await page.reload()
+  await expect(page.locator(sceneSelector)).toHaveAttribute('aria-busy', 'false')
+  await page.getByRole('button', { name: 'Admin', exact: true }).click()
+  await page.getByRole('button', { name: 'Interazioni', exact: true }).click()
+  const editor = page.getByRole('region', { name: 'Editor delle interazioni' })
+  await editor.getByRole('combobox', { name: 'Pallino', exact: true }).selectOption('n56')
+  await editor.getByLabel('Titolo', { exact: true }).fill('Arkastore configurato dalla regia')
+  await editor.getByRole('combobox', { name: 'Attività', exact: true }).selectOption('shop')
+  await expect(editor.getByRole('checkbox', { name: /^Ripetibile/ })).toBeChecked()
+  await expect(editor.getByLabel('Monete da spendere', { exact: true })).toBeDisabled()
+  await editor.getByRole('button', { name: 'Salva interazione', exact: true }).click()
+  await expect(editor.getByRole('status')).toHaveText('Interazione salvata.')
+  await page.getByRole('button', { name: 'Chiudi', exact: true }).click()
+  await page.reload()
+  await expect(page.locator(sceneSelector)).toHaveAttribute('aria-busy', 'false')
+  const before = await readCampaign(page)
+  const dialog = await openConfiguredShop(page)
+  expect(await readCampaign(page)).toEqual(before)
+  await expect(dialog.getByRole('button', { name: 'Negozio', exact: true })).toHaveCount(0)
+  await dialog.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
+  await dialog.getByRole('button', { name: 'Acquista carrello', exact: true }).click()
+  await expect.poll(async () => (await readCampaign(page)).giocatore1.monete).toBe(200)
+  expect((await readCampaign(page)).giocatore2).toEqual(before.giocatore2)
+  await dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: 'Interazioni del punto', exact: true })).toBeHidden()
 })
 
 test('a battle item heals once, consumes the move and resumes at the opponent turn after reload', async ({ page }) => {

@@ -7,7 +7,7 @@
 ## Regole correnti verificate il 10 ottobre 2026
 
 - Gli HP residui restano dopo la battaglia; la cura deve essere esplicita.
-- La squadra del giocatore consente al massimo cinque livelli fra massimo e minimo, inclusi KO. XP oltre la fascia conservata; catture fuori fascia in deposito. Vecchi salvataggi non vengono abbassati: avviso e riordino prima di un nuovo incontro.
+- La squadra del giocatore consente al massimo cinque livelli fra massimo e minimo, inclusi KO. Un singolo punto EXP fa salire subito di un livello; l’EXP non si accumula mai, neppure al cap di squadra o al livello 100. I residui EXP dei vecchi salvataggi vengono azzerati senza cambiare livelli, HP o status; nessun recupero futuro di livelli. Catture fuori fascia in deposito. Vecchi livelli fuori fascia non vengono abbassati: avviso e riordino prima di un nuovo incontro. Regola aggiornata il 12 ottobre 2026.
 - Arkadex e registro sono individuali per la campagna e inclusi nei backup. Arkastore: acquisto multiplo è una interazione; uso oggetto in battaglia sostituisce la mossa. Nessuna cura all’acquisto.
 - Sfide seed/Fanta: contenitore separato dalla campagna, sei specie al livello 20, budget 100, RNG versionato/cursore salvato solo al checkpoint concluso. Nessun voto remoto; classifica locale solo della medesima configurazione.
 - Mossa Suprema: colpisce il bersaglio con danno doppio, assegna XP/livelli per il suo KO, poi applica all'attaccante metà degli HP massimi di contraccolpo. Nel doppio KO vince quello specifico scontro l'attaccante.
@@ -185,6 +185,7 @@ Il prototipo VBA ripristinava gli HP alla fine. La regola web corrente conserva 
 
 ### Sistema XP & Level Up (già presente nel VBA)
 - 1 punto EXP per nemico sconfitto
+- 1 punto EXP = 1 livello immediato, se consentito dalla fascia di squadra; al cap il premio è scartato. Nessuna EXP accumulata o recuperata dopo il riordino della squadra.
 - Da gestire in roadmap: `2× exp` per cattura, `EXP limitata per percorso`
 - Salita di livello → ricalcolo HP max + scaling automatico delle mosse
 

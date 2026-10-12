@@ -4,6 +4,8 @@
   max-height: 94%;
   overflow-y: auto;
   pointer-events: auto;
+  /* Trasparenza solo del fondo: testi, dadi e risultati restano nitidi. */
+  background: color-mix(in srgb, var(--arka-bg) 55%, transparent);
 }
 
 .battle-dice-grid {

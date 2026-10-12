@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises'
 async function openTools(page: Page, tab: 'Arkadex' | 'Registro del match') {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  await dialog.getByRole('button', { name: tab, exact: true }).click()
+  await dialog.getByRole('button', { name: tab === 'Registro del match' ? 'Apri Registro del match' : tab, exact: true }).click()
   return dialog
 }
 
@@ -142,7 +142,8 @@ test('Masterball capture records one event, persists discovered species and leav
   await expect(dex).toContainText('1 / 110 viste · 1 / 110 ottenute')
   await dex.getByLabel('Cerca specie scoperta o numero').fill('#13')
   await expect(dex.getByRole('button', { name: 'Numero 13: specie da scoprire · Da scoprire', exact: true })).toBeVisible()
-  await dialog.getByRole('button', { name: 'Registro del match', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Menù Partita', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Apri Registro del match', exact: true }).click()
   const register = dialog.getByRole('region', { name: 'Registro del match', exact: true })
   await expect(register.getByRole('combobox', { name: 'Giocatore del registro', exact: true })).toHaveValue('2')
   await register.getByLabel('Tipo di evento').selectOption('capture')

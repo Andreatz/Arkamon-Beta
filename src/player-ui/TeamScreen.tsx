@@ -124,7 +124,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
         <KitPanel className="pu-detail-panel">
           <p className="pu-kicker">Condizioni del compagno</p>
           <h2 className="pu-section-title">{current ? current.hp <= 0 ? 'Arkamon esausto' : current.stato ? current.stato.tipo : 'Pronto al viaggio' : 'Nessun Arkamon selezionato'}</h2>
-          {current && <><HealthBar pokemon={current} /><p className="pu-note">Gli HP restano dopo ogni scontro. La cura è sempre esplicita.</p><h3>Mosse disponibili</h3><PokemonMoves pokemon={current} /><p className="pu-note">{current.xp} XP conservati.</p></>}
+          {current && <><HealthBar pokemon={current} /><p className="pu-note">Gli HP restano dopo ogni scontro. La cura è sempre esplicita.</p><h3>Mosse disponibili</h3><PokemonMoves pokemon={current} /></>}
           {!mayManage && <p className="pu-readonly" role="status">Consultazione: il riordino è disponibile nel tuo turno, fuori dalla battaglia.</p>}
           {(message || (mayManage && ruleMessage)) && <p className="pu-note" role="status">{message || ruleMessage}</p>}
           {movingId && mayManage && <p className="pu-note" role="status">Scegli un altro Arkamon della squadra per scambiare i due posti.</p>}

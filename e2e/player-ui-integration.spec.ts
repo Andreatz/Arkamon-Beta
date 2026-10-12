@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
+import { openConfiguredShop, seedConfiguredShop } from './helpers/configuredShop'
 import type { BattleChronicle, PokemonIstanza } from '../src/types'
 
 const SAVE_KEY = 'arkamon-save'
@@ -22,13 +23,14 @@ interface CampaignSnapshot {
 
 /** A valid portable campaign starts the test; every mutation then uses the production UI. */
 async function seedCampaign(page: Page, location: 'map' | 'city' | 'route' | 'deposit' = 'map') {
+  await seedConfiguredShop(page)
   await page.addInitScript(({ key, location }) => {
     // Reloads must read the result of the real persisted action, rather than reseeding it.
     if (localStorage.getItem(key)) return
-    const first = { istanzaId: 'integration-g1-first', specieId: 1, nome: 'Vyrath di Arianna', livello: 10, hp: 3, xp: 2, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }
+    const first = { istanzaId: 'integration-g1-first', specieId: 1, nome: 'Vyrath di Arianna', livello: 10, hp: 3, xp: 0, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }
     const teammate = { istanzaId: 'integration-g1-second', specieId: 5, nome: 'Darklaw compagno', livello: 5, hp: 6, xp: 0 }
-    const reserve = { istanzaId: 'integration-g1-reserve', specieId: 9, nome: 'Felyss in riserva', livello: 7, hp: 2, xp: 1, stato: { tipo: 'Avvelenato', turniRimanenti: -1, turniTrascorsi: 2 } }
-    const outsideCap = { istanzaId: 'integration-g1-outside-cap', specieId: 13, nome: 'Wormaren fuori fascia', livello: 20, hp: 4, xp: 2 }
+    const reserve = { istanzaId: 'integration-g1-reserve', specieId: 9, nome: 'Felyss in riserva', livello: 7, hp: 2, xp: 0, stato: { tipo: 'Avvelenato', turniRimanenti: -1, turniTrascorsi: 2 } }
+    const outsideCap = { istanzaId: 'integration-g1-outside-cap', specieId: 13, nome: 'Wormaren fuori fascia', livello: 20, hp: 4, xp: 0 }
     const foreign = { istanzaId: 'integration-g2-first', specieId: 5, nome: 'Darklaw di Bruno', livello: 6, hp: 9, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Arianna' : 'Bruno', squadra: id === 1 ? [first, teammate] : [foreign],
       deposito: id === 1 ? { '1:1': reserve, '1:2': outsideCap } : {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [],
@@ -69,12 +71,12 @@ test.beforeEach(async ({ page, isMobile }) => {
   if (!isMobile) await page.setViewportSize({ width: 1440, height: 1000 })
 })
 
-test('all seven integrated screens fit the desktop and phone viewport with loaded SVG artwork', async ({ page }) => {
+test('all six menu screens fit the desktop and phone viewport with loaded SVG artwork', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   await seedCampaign(page)
   const dialog = await openTools(page, 'Squadra')
-  for (const [name, id] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Negozio', 'negozio'], ['Menù Partita', 'partita']] as const) {
+  for (const [name, id] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Menù Partita', 'partita']] as const) {
     await dialog.getByRole('button', { name, exact: true }).click()
     await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
     await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
@@ -109,9 +111,7 @@ test('the city shop opens the integrated window and the direct deposit respects 
   await page.keyboard.press('Escape')
   await expect(page.locator('[data-presented-scene]')).toHaveAttribute('data-presented-scene', 'citta:Venezia')
   await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
-  await page.getByRole('button', { name: 'Attività', exact: true }).click()
-  await page.getByRole('button', { name: 'Arkastore', exact: true }).click()
-  const dialog = page.getByRole('dialog', { name: 'La tua partita' })
+  const dialog = await openConfiguredShop(page)
   await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'negozio')
   await expect(dialog.getByRole('region', { name: 'Arkastore di Venezia' })).toBeVisible()
   const after = await campaign(page)
@@ -142,7 +142,8 @@ test('Escape closes an archived replay above the direct deposit without closing 
   const before = await campaign(page)
   const beforeArchive = await page.evaluate(() => localStorage.getItem('arkamon-battle-archive-v1'))
   const scene = page.locator('.pu-scene-host')
-  await scene.getByRole('button', { name: 'Cronache', exact: true }).click()
+  await scene.getByRole('button', { name: 'Menù Partita', exact: true }).click()
+  await scene.getByRole('button', { name: 'Apri Cronache', exact: true }).click()
   const review = scene.getByRole('button', { name: 'Rivedi cronaca e dadi', exact: true })
   await review.click()
   const replay = page.getByRole('dialog', { name: 'Cronaca della battaglia', exact: true })
@@ -221,7 +222,7 @@ test('moving a reserve to team slot six selects its compact destination and pres
   expect(moved.turnoOverworld).toEqual(initial.turnoOverworld)
   await expect(dialog.getByRole('button', { name: 'Squadra, posto 3: Felyss in riserva, livello 7', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await expect(dialog.getByRole('button', { name: 'Squadra, posto 6: vuoto', exact: true })).toHaveAttribute('aria-pressed', 'false')
-  await expect(dialog.locator('.pu-deposit-detail')).toContainText('Arkamon spostato. HP, esperienza e status sono conservati.')
+  await expect(dialog.locator('.pu-deposit-detail')).toContainText('Arkamon spostato. Livello, HP e status sono conservati.')
   await expect(dialog.getByRole('region', { name: 'Arkamon selezionato: Felyss in riserva', exact: true })).toBeVisible()
   await dialog.getByRole('button', { name: 'Analizza Arkamon', exact: true }).click()
   await expect(dialog.getByLabel('Arkamon da analizzare')).toHaveValue('integration-g1-reserve')
@@ -250,7 +251,7 @@ test('the integrated bag cures paralysis once, preserves HP and persists the spe
   await bag.getByRole('button', { name: 'Usa Antiparalisi', exact: true }).click()
   await expect.poll(async () => (await campaign(page)).giocatore1.inventario['paralysis-heal']).toBe(0)
   const after = await campaign(page)
-  expect(after.giocatore1.squadra[0]).toMatchObject({ istanzaId: 'integration-g1-first', hp: 3, livello: 10, xp: 2 })
+  expect(after.giocatore1.squadra[0]).toMatchObject({ istanzaId: 'integration-g1-first', hp: 3, livello: 10, xp: 0 })
   expect(after.giocatore1.squadra[0].stato).toBeUndefined()
   expect(after.giocatore1.inventario.potion).toBe(2)
   expect(after.giocatore1.monete).toBe(before.giocatore1.monete)
@@ -270,7 +271,7 @@ test('the integrated bag cures paralysis once, preserves HP and persists the spe
 test('the integrated city checkout charges the real cart once without healing or changing G2', async ({ page }) => {
   await seedCampaign(page, 'city')
   const before = await campaign(page)
-  const dialog = await openTools(page, 'Negozio')
+  const dialog = await openConfiguredShop(page)
   const shop = dialog.getByRole('region', { name: 'Arkastore di Venezia', exact: true })
   await shop.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
   await shop.getByLabel('Quantità di Antiparalisi', { exact: true }).fill('1')
@@ -289,13 +290,62 @@ test('the integrated city checkout charges the real cart once without healing or
   expect((await campaign(page)).giocatore1).toEqual(after.giocatore1)
 })
 
-test('consulting the integrated shop on a route never creates an available purchase or consumes resources', async ({ page }) => {
+test('the route menu has no shop entry and rejects an incomplete shop request without changing resources', async ({ page }) => {
   await seedCampaign(page, 'route')
   const before = await campaign(page)
-  const dialog = await openTools(page, 'Negozio')
-  const shop = dialog.getByRole('region', { name: 'Arkastore di Percorso_1', exact: true })
-  await expect(shop).toContainText('In questo luogo non è presente un Arkastore.')
-  await expect(shop.getByLabel('Quantità di Pozione', { exact: true })).toBeDisabled()
-  await expect(shop.getByRole('button', { name: 'Acquista carrello', exact: true })).toBeDisabled()
+  const dialog = await openTools(page, 'Menù Partita')
+  await expect(dialog.getByRole('button', { name: 'Negozio', exact: true })).toHaveCount(0)
+  await expect(dialog.getByRole('button', { name: 'Apri Negozio', exact: true })).toHaveCount(0)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(6)
+  await expect(dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true })).toHaveCount(1)
+  await expect(dialog.getByRole('button', { name: /^(Chiudi|Riprendi)$/ })).toHaveCount(0)
+  await page.evaluate(() => window.dispatchEvent(new CustomEvent('arkamon:open-player-ui', { detail: { screen: 'negozio', playerId: 1 } })))
+  await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'partita')
+  expect(await campaign(page)).toEqual(before)
+})
+
+test('six match utilities use their main cards, the original fonts and a single journey resume command', async ({ page, isMobile }) => {
+  if (!isMobile) await page.setViewportSize({ width: 1920, height: 1080 })
+  await seedCampaign(page)
+  const before = await campaign(page)
+  const dialog = await openTools(page, 'Menù Partita')
+  const utilities = [
+    ['Diario', 'journal', 'Diario dei giocatori'],
+    ['Backup', 'backup', 'Backup della partita'],
+    ['Impostazioni', 'settings', 'Impostazioni del gioco'],
+    ['Cronache', 'chronicles', 'Cronache delle battaglie'],
+    ['Registro del match', 'match', 'Registro del match'],
+    ['Sfide', 'challenges', 'Sfide a seed e Fanta-Team Builder'],
+  ] as const
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(6)
+  await page.evaluate(() => document.fonts.ready)
+  const fonts = await dialog.evaluate(element => ({
+    button: getComputedStyle(element.querySelector('.pu-menu-tile')!).fontFamily,
+    title: getComputedStyle(element.querySelector('.pu-shell h1')!).fontFamily,
+    text: getComputedStyle(element.querySelector('.pu-shell')!).fontFamily,
+    loaded: document.fonts.check('16px "Chela One"'),
+  }))
+  expect(fonts.button).toContain('Segoe UI')
+  expect(fonts.title).toContain('Chela One')
+  expect(fonts.text).toContain('Segoe UI')
+  expect(fonts.loaded).toBe(true)
+  const screenshot = await page.screenshot({ path: test.info().outputPath(isMobile ? 'menu-phone.png' : 'menu-1920x1080.png') })
+  await test.info().attach('Menù aggiornato con il font originale', { body: screenshot, contentType: 'image/png' })
+  for (const [label, id, region] of utilities) {
+    await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
+    await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
+    await expect(dialog.getByRole('region', { name: region, exact: true })).toBeVisible()
+    await expect(dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true })).toHaveCount(1)
+    await expect(dialog.getByRole('button', { name: /^(Chiudi|Riprendi)$/ })).toHaveCount(0)
+    await dialog.getByRole('button', { name: 'Menù Partita', exact: true }).click()
+  }
+  for (const screen of ['Deposito', 'Analisi']) {
+    await dialog.getByRole('button', { name: screen, exact: true }).click()
+    await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+    await expect(dialog.locator('.pu-content')).not.toContainText(/\bXP\b|Esperienza/)
+  }
+  await dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true }).click()
+  await expect(dialog).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Partita', exact: true })).toBeFocused()
   expect(await campaign(page)).toEqual(before)
 })
