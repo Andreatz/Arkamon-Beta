@@ -4,6 +4,7 @@ import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
+import { validateNativeManifestCompleteness } from './native-manifest-completeness.mjs'
 
 export const MAX_MEDIA_ARCHIVE_BYTES = 192 * 1024 * 1024
 const BLOCK_BYTES = 512, RECORD_BYTES = 20 * BLOCK_BYTES
@@ -104,7 +105,7 @@ export async function packageMediaRelease({ root, output, revision, maxBytes = M
   const manifest = JSON.parse(manifestBuffer), verification = JSON.parse(verificationBuffer), pin = JSON.parse(pinBuffer)
   const clips = Object.values(manifest.clips ?? {}).sort((a, b) => order(a.originalSrc, b.originalSrc))
   if (pin.version !== 1 || pin.revision !== revision || pin.manifestSha256 !== digest(JSON.stringify(manifest))) throw new Error('Native manifest or revision differs from the pinned media release')
-  if (requireComplete && clips.length !== 160) throw new Error(`Native pages incomplete: ${clips.length}/160`)
+  if (requireComplete) await validateNativeManifestCompleteness({ root, manifest })
   if (!clips.length || verification.clips?.length !== clips.length || verification.allVisibleRgbaPixelsAndAlphaPreserved !== true) throw new Error('Native conversion proof is incomplete')
   const proofBySource = new Map(verification.clips.map(clip => [clip.source, clip]))
   const nativeClips = [], originals = [], allPaths = new Set()

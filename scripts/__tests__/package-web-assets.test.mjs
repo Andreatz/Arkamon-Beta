@@ -31,7 +31,7 @@ describe('bounded web asset packaging', () => {
   })
   it('refuses partial native manifests, mutable revisions and an oversized Pages package', async () => {
     const f = await fixture()
-    await expect(packageWebAssets({ ...f.args, requireComplete: true })).rejects.toThrow('1/160')
+    await expect(packageWebAssets({ ...f.args, requireComplete: true })).rejects.toThrow('Native animation contract incomplete')
     await expect(packageWebAssets({ ...f.args, revision: 'main' })).rejects.toThrow('immutable')
     await expect(packageWebAssets({ ...f.args, maxBytes: 1 })).rejects.toThrow('exceeds')
   })

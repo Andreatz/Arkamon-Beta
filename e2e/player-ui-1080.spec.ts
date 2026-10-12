@@ -267,8 +267,8 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
           if (pageNumber < 19) await next.click()
         }
         expect(visitedSpecies).toEqual(pokemonCatalog.map(species => species.id))
-        expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(32)
-        expect([...portraitSources].filter(source => source.endsWith('.png'))).toHaveLength(78)
+        expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(37)
+        expect([...portraitSources].filter(source => source.endsWith('.png'))).toHaveLength(73)
         await expect(next).toBeDisabled()
         await previous.click()
         await expect(pagination).toContainText('Pagina 18 / 19')

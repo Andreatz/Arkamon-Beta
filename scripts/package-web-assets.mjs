@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
+import { validateNativeManifestCompleteness } from './native-manifest-completeness.mjs'
 
 export const MAX_WEB_BYTES = 900 * 1024 * 1024
 export const STATIC_DIRS = ['ui', 'maps', 'backgrounds', 'assets', 'sprites/front_sprites', 'sprites/back_sprites', 'sprites/small_sprites', 'audio', 'audio-lab']
@@ -23,7 +24,7 @@ export async function packageWebAssets({ root, output, revision, requireComplete
   const publicRoot = path.join(root, 'public')
   const manifest = JSON.parse(await fs.readFile(path.join(root, 'src/data/arkamon-paged.json'), 'utf8'))
   const clips = Object.values(manifest.clips ?? {})
-  if (requireComplete && clips.length !== 160) throw new Error(`Native pages incomplete: ${clips.length}/160 clips. Build refused.`)
+  if (requireComplete) await validateNativeManifestCompleteness({ root, manifest })
   if (requireComplete) {
     const pinned = JSON.parse(await fs.readFile(path.join(root, 'src/data/media-release.json'), 'utf8'))
     const fingerprint = createHash('sha256').update(JSON.stringify(manifest)).digest('hex')

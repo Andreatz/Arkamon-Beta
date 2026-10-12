@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]
+const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -88,7 +88,8 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     const conversion = readConversion(speciesId, animation)
     expect(conversion.source.file).toBe(`animation-source/raw/${speciesId}/front/${animation}.mp4`)
     const video = readFileSync(resolve(conversion.source.file))
-    const suppliedVideo = readFileSync(resolve(`public/sprites/animation/Front/${speciesId} ${animation}.mp4`))
+    const suppliedAction = speciesId === 36 && animation === 'ko' ? 'defeat' : animation
+    const suppliedVideo = readFileSync(resolve(`public/sprites/animation/Front/${speciesId} ${suppliedAction}.mp4`))
     expect(video.byteLength).toBeGreaterThan(0)
     expect(suppliedVideo.byteLength).toBeGreaterThan(0)
     expect(video.equals(suppliedVideo)).toBe(true)
