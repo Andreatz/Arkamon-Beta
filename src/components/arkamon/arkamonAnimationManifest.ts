@@ -1,4 +1,6 @@
 import type { SpriteSheetMeta } from '@/components/vfx/types'
+import pagedManifest from '@/data/arkamon-paged.json'
+import type { SpritePage } from '@/components/vfx/spritePages'
 
 export type ArkamonBattleAnimation =
   | 'idle'
@@ -15,6 +17,7 @@ export interface ArkamonAnimationAsset extends SpriteSheetMeta {
   height: number
   durationMs?: number
   loop?: boolean
+  pages?: readonly SpritePage[]
   /** Native source frame where an attack releases its effect. */
   releaseFrame?: number
   /** Native source frame where the defender visibly reacts to the impact. */
@@ -114,6 +117,15 @@ export interface ResolvedArkamonAnimation {
   isIdleFallback: boolean
 }
 
+interface PagedClip { frameWidth: number; frameHeight: number; frameCount: number; fps: number; pages: SpritePage[] }
+/** Runtime pages are derived from the authoritative native atlas, never a second animation spec. */
+export function getArkamonRuntimeAsset(asset: ArkamonAnimationAsset): ArkamonAnimationAsset {
+  const clip = (pagedManifest.clips as Record<string, PagedClip>)[asset.src]
+  return clip && clip.frameWidth === asset.frameWidth && clip.frameHeight === asset.frameHeight
+    && clip.frameCount === asset.frameCount && clip.fps === asset.fps
+    ? { ...asset, pages: clip.pages } : asset
+}
+
 /** A dedicated clip's real runtime; static/procedural views add no battle wait. */
 export function getArkamonAnimationDurationMs(
   speciesId: number,
@@ -131,8 +143,8 @@ export function resolveArkamonAnimationAsset(
   animation: ArkamonBattleAnimation
 ): ResolvedArkamonAnimation | undefined {
   const exact = getArkamonAnimationAsset(speciesId, side, animation)
-  if (exact) return { asset: exact, animation, isIdleFallback: false }
+  if (exact) return { asset: getArkamonRuntimeAsset(exact), animation, isIdleFallback: false }
 
   const idle = getArkamonAnimationAsset(speciesId, side, 'idle')
-  return idle ? { asset: idle, animation: 'idle', isIdleFallback: true } : undefined
+  return idle ? { asset: getArkamonRuntimeAsset(idle), animation: 'idle', isIdleFallback: true } : undefined
 }

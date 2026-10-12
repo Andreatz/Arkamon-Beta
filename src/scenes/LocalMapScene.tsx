@@ -96,13 +96,16 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     return moved
   }
   const passTurn = () => {
-    if (blocked || !pass()) return
-    const state = useGameStore.getState()
-    const world = state.giocatoreAttivo === 1 ? state.posizione1 : state.posizione2
-    const target = world.mappaId === 'mappa-principale' ? getLocalMap(world.luogo ?? '') : undefined
-    if (target && state.apriMappaLocale(state.giocatoreAttivo, target.id)) {
-      navigate(target.id.startsWith('Percorso_') ? 'percorso' : 'citta', { luogo: target.id })
-    } else navigate('mappa-principale')
+    if (blocked) return
+    useGameStore.getState().eseguiTransazione(read => {
+      if (!pass()) return
+      const state = read()
+      const world = state.giocatoreAttivo === 1 ? state.posizione1 : state.posizione2
+      const target = world.mappaId === 'mappa-principale' ? getLocalMap(world.luogo ?? '') : undefined
+      if (target && state.apriMappaLocale(state.giocatoreAttivo, target.id)) {
+        navigate(target.id.startsWith('Percorso_') ? 'percorso' : 'citta', { luogo: target.id })
+      } else navigate('mappa-principale')
+    })
   }
 
   if (secret && !secretAccess) return <section className="local-map-scene" aria-label="Luogo non disponibile">

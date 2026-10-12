@@ -5,6 +5,7 @@ node_modules
 
 # Build
 dist
+dist-web/
 dist-ssr
 src-tauri/target
 *.local
@@ -37,6 +38,7 @@ lerna-debug.log*
 .cache
 test-results/
 playwright-report/
+native-pages-test-results/
 
 # Cache Python generata dagli strumenti locali
 __pycache__/

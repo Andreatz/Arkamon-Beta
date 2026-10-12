@@ -786,9 +786,10 @@ export function BattagliaScene() {
       location: luogoRitorno, battleType: battaglia?.tipo ?? 'Selvatico',
       title: `${giocatore.nome} · ${battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico'}`,
     })
-    if (isNPC && esito) risolviBattagliaNPC(esito)
-    for (const p of squadraA) aggiornaPokemon(giocatoreAttivo, p)
-    terminaBattaglia(false)
+    useGameStore.getState().eseguiTransazione(() => {
+      if (isNPC && esito) risolviBattagliaNPC(esito)
+      for (const p of squadraA) aggiornaPokemon(giocatoreAttivo, p)
+      terminaBattaglia(false)
 
     if (evoluzioniInAttesa.length > 0) {
       vaiAScena('evoluzione', {
@@ -808,6 +809,7 @@ export function BattagliaScene() {
     } else {
       vaiAScena('mappa-principale')
     }
+    })
   }
 
   if (!pkmnA || !pkmnB) return <div className="text-white p-8">Caricamento...</div>

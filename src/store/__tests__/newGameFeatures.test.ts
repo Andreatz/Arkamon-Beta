@@ -8,6 +8,7 @@ import { emptyMatchLog, appendMatchEvent } from '@/match/matchLog'
 import { initialGameSave, normalizeGameSave, serializeGameState } from '@/save/gamePersistence'
 import { serializeGameBackup, stateFromValidatedBackup, validateGameBackup } from '@/save/gameBackup'
 import { restoreGameBackup } from '@/save/restoreGameBackup'
+import { useSaveWriteStatus } from '@/save/durableWrites'
 import { haSpazioPokemon, useGameStore } from '@/store/gameStore'
 import type { PokemonIstanza, StatoBattaglia } from '@/types'
 
@@ -54,6 +55,7 @@ function finishCapture(battle: StatoBattaglia): Partial<StatoBattaglia> {
 }
 
 beforeEach(() => {
+  useSaveWriteStatus.getState().clear()
   savedValues.clear()
   useGameStore.getState().reset()
   useGameStore.setState({ challengeContext: null })
@@ -209,7 +211,9 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
       expect(useGameStore.getState().giocatore1.squadra[0].hp).toBe(3)
       expect(localStorage.getItem('arkamon-save')).toBe(persistedBefore)
     } finally { writer.mockRestore() }
-    expect(useGameStore.getState().acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia', 'test-shop').ok).toBe(true)
+    // The error dialog freezes further gameplay; retry its preserved operation.
+    expect(useGameStore.getState().acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia', 'test-shop').ok).toBe(false)
+    expect(useSaveWriteStatus.getState().retry?.()).toBe(true)
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!).state
     expect(saved.giocatore1.monete).toBe(120)
     expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, 'paralysis-heal': 1 })
@@ -236,7 +240,8 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
       expect(useGameStore.getState().matchLog).toBe(before.matchLog)
       expect(localStorage.getItem('arkamon-save')).toBe(persistedBefore)
     } finally { writer.mockRestore() }
-    expect(useGameStore.getState().applicaOggetto(1, 'potion', 'one').ok).toBe(true)
+    expect(useGameStore.getState().applicaOggetto(1, 'potion', 'one').ok).toBe(false)
+    expect(useSaveWriteStatus.getState().retry?.()).toBe(true)
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!).state
     expect(saved.giocatore1.squadra[0].hp).toBe(6)
     expect(saved.giocatore1.inventario.potion).toBe(0)

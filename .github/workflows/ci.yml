@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   test-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -25,8 +25,16 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Build dependency security regressions
+        run: npm run test:security
+
+      - name: Runtime catalog consistency
+        run: npm run media:catalog
+
       - name: Build
         run: npm run build
+        env:
+          GITHUB_PAGES: 'true'
 
       - name: Install browser
         run: npx playwright install --with-deps chromium

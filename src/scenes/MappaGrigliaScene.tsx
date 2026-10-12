@@ -272,7 +272,7 @@ export function MappaGrigliaScene() {
   // viene riportato sullo spawn della mappa di default.
   useEffect(() => {
     if (!REGISTRY[posizione1.mappaId]) {
-      useGameStore.setState({
+      useGameStore.getState().aggiornaStato({
         posizione1: {
           mappaId: MAPPA_DI_DEFAULT.id,
           ...MAPPA_DI_DEFAULT.spawnDefault,
@@ -281,7 +281,7 @@ export function MappaGrigliaScene() {
       })
     }
     if (!REGISTRY[posizione2.mappaId]) {
-      useGameStore.setState({
+      useGameStore.getState().aggiornaStato({
         posizione2: {
           mappaId: MAPPA_DI_DEFAULT.id,
           x: MAPPA_DI_DEFAULT.larghezza - 1,
@@ -383,22 +383,20 @@ export function MappaGrigliaScene() {
     }
 
     // Allinea il giocatoreAttivo "di battaglia" al turno overworld
-    useGameStore.setState({ giocatoreAttivo: giocatoreId })
-
-    const r = interagisciCasella(giocatoreId, mappa, x, y)
-    handleRisultato(r)
+    useGameStore.getState().eseguiTransazione(read => {
+      read().aggiornaStato({ giocatoreAttivo: giocatoreId })
+      const r = interagisciCasella(giocatoreId, mappa, x, y)
+      handleRisultato(r, read())
+    })
   }
 
-  const handleRisultato = (r: RisultatoInterazione) => {
+  const handleRisultato = (r: RisultatoInterazione, state: ReturnType<typeof useGameStore.getState>) => {
     switch (r.tipo) {
       case 'battaglia-selvatica': {
         const incontri = getIncontri(mappa.id, r.cespuglioId)
         const selvatico = generaIncontroDaCespuglio(incontri)
-        const giocId = useGameStore.getState().giocatoreAttivo
-        const g =
-          giocId === 1
-            ? useGameStore.getState().giocatore1
-            : useGameStore.getState().giocatore2
+        const giocId = state.giocatoreAttivo
+        const g = giocId === 1 ? state.giocatore1 : state.giocatore2
         const primo = g.squadra.find((p) => p.hp > 0)
         if (!selvatico || !primo) {
           aggiungiLog('Nessun Pokémon nel cespuglio.')
@@ -429,7 +427,7 @@ export function MappaGrigliaScene() {
         break
       }
       case 'edificio': {
-        const giocId = useGameStore.getState().giocatoreAttivo
+        const giocId = state.giocatoreAttivo
         if (r.edificioId === 'centro') {
           curaSquadra(giocId)
           aggiungiLog(
@@ -447,7 +445,7 @@ export function MappaGrigliaScene() {
           setTransizione({
             da: mappa.id,
             a: 'mappa-principale',
-            giocatoreId: useGameStore.getState().giocatoreAttivo,
+            giocatoreId: state.giocatoreAttivo,
           })
           aggiungiLog('Uscita verso la mappa principale.')
           vaiAScena('mappa-principale')
@@ -458,7 +456,7 @@ export function MappaGrigliaScene() {
           setTransizione({
             da: mappa.id,
             a: r.versoMappaId,
-            giocatoreId: useGameStore.getState().giocatoreAttivo,
+            giocatoreId: state.giocatoreAttivo,
           })
           aggiungiLog(`Sei entrato in: ${r.versoMappaId}.`)
         } else {

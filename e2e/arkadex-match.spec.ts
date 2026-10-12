@@ -204,6 +204,10 @@ test('the evolution tab conceals all thresholds and artwork of undiscovered ance
   })
   await page.reload()
   await expect(page.locator('[data-presented-scene="citta:Venezia"]')).toHaveAttribute('aria-busy', 'false')
+  // The scene module loads on demand; wait for its initialization, then verify
+  // that browsing the encyclopedia introduces no additional campaign writes.
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.posizioniLocali1.Venezia)).toBe('n56')
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.posizioniLocali2.Venezia)).toBe('n56')
   const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   const dialog = await openTools(page, 'Arkadex')
   const dex = dialog.getByRole('region', { name: 'Arkadex', exact: true })

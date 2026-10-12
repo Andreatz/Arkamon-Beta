@@ -1,3 +1,4 @@
+import { resolveAssetUrl } from '@/utils/assetUrl'
 export interface AudioEntry {
   id: string
   name: string
@@ -59,7 +60,7 @@ export function parseAudioChoices(raw: string | null, validIds: Set<string>): Au
   } catch { return {} }
 }
 export function audioSourceUrl(src: string, base: string): string {
-  return `${base.replace(/\/?$/, '/')}${src.split('/').map(encodeURIComponent).join('/')}`
+  return resolveAssetUrl(src, base, import.meta.env.VITE_SPLIT_MEDIA ? import.meta.env.VITE_MEDIA_REVISION : undefined, import.meta.env.VITE_MEDIA_BASE_URL, true)
 }
 export function suggestedAudio(files: AudioEntry[], tags: readonly string[], durationMs = 1000): AudioEntry[] {
   return files.filter((file) => file.shortlist && !file.error && file.tags.some((tag) => tags.includes(tag)))

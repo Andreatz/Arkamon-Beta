@@ -1,15 +1,15 @@
 import { normalizeGameSave, serializeGameState } from '@/save/gamePersistence'
 import { createSeededRandomState } from './seededRandom'
-import { createChallengeSession } from './challengeRules'
+import { createChallengeSession, isChallengeRulesVersion } from './challengeRules'
 import type { ChallengeSession } from './types'
 
 export const ACTIVE_CHALLENGE_STORAGE_KEY = 'arkamon-active-challenge-v1'
 export interface ChallengeContext { version: 1; attemptId: string; session: ChallengeSession; campaign: Record<string, unknown> }
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
 export function canonicalChallengeSession(value: unknown): ChallengeSession | null {
-  if (!record(value) || value.version !== 1 || value.rulesVersion !== 1 || !Array.isArray(value.team) || value.team.length !== 6
+  if (!record(value) || !isChallengeRulesVersion(value.version) || value.rulesVersion !== value.version || !Array.isArray(value.team) || value.team.length !== 6
     || !value.team.every((p) => record(p) && typeof p.specieId === 'number') || (value.mode !== 'seed' && value.mode !== 'fanta') || typeof value.seed !== 'string') return null
-  try { return createChallengeSession({ version: 1, mode: value.mode, seed: value.seed, speciesIds: value.team.map((p) => (p as { specieId: number }).specieId) }) }
+  try { return createChallengeSession({ version: value.version, mode: value.mode, seed: value.seed, speciesIds: value.team.map((p) => (p as { specieId: number }).specieId) }) }
   catch { return null }
 }
 export function normalizeChallengeContext(value: unknown): ChallengeContext | null {

@@ -48,10 +48,12 @@ export function CittaScene() {
 
   const sfida = (allenatoreId: number) => {
     if (layoutEditing || !interazioneDisponibile || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
-    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.setState({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
-    if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
-    const ok = iniziaBattagliaNPC(allenatoreId, luogo)
-    if (ok) vaiAScena('battaglia')
+    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.getState().aggiornaStato({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
+    useGameStore.getState().eseguiTransazione(() => {
+      if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+      const ok = iniziaBattagliaNPC(allenatoreId, luogo)
+      if (ok) vaiAScena('battaglia')
+    })
   }
 
   const bg = getBackground(luogo)
@@ -68,8 +70,10 @@ export function CittaScene() {
           <GameButton
             disabled={layoutEditing || !interazioneDisponibile}
             onClick={() => {
-              if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
-              curaSquadra(giocatoreAttivo)
+              useGameStore.getState().eseguiTransazione(() => {
+                if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+                curaSquadra(giocatoreAttivo)
+              })
             }}
             className="col-span-1 flex cursor-pointer flex-col items-center justify-center p-6 hover:border-arka-accent"
           >

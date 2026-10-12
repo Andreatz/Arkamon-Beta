@@ -458,6 +458,7 @@ function AnimatedArkamonVisual({
         />}
         <AnimatedSprite
           src={assetUrl(animated.src)}
+          pages={animated.pages}
           renderMode="canvas"
           frameWidth={animated.frameWidth}
           frameHeight={animated.frameHeight}

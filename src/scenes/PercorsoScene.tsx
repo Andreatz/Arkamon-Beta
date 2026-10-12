@@ -49,14 +49,16 @@ export function PercorsoScene() {
 
   const sfidaAllenatore = (allenatoreId: number) => {
     if (layoutEditing || !interazioneDisponibile || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
-    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.setState({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
-    if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
-    if (iniziaBattagliaNPC(allenatoreId, luogo)) vaiAScena('battaglia')
+    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.getState().aggiornaStato({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
+    useGameStore.getState().eseguiTransazione(() => {
+      if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+      if (iniziaBattagliaNPC(allenatoreId, luogo)) vaiAScena('battaglia')
+    })
   }
 
   const apriCespuglio = (cespuglio: string) => {
     if (layoutEditing || !interazioneDisponibile) return
-    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.setState({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
+    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.getState().aggiornaStato({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
     if (cespuglioVisitato(giocatoreAttivo, luogo, cespuglio)) return
     const incontri = getIncontri(luogo, cespuglio)
     const selvatico = generaIncontroDaCespuglio(incontri)
@@ -64,10 +66,6 @@ export function PercorsoScene() {
 
     const primoDellaSquadra = giocatore.squadra.find((pokemon) => pokemon.hp > 0)
     if (!primoDellaSquadra) return
-    if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
-
-    segnaCespuglioVisitato(giocatoreAttivo, luogo, cespuglio)
-
     const battaglia: StatoBattaglia = {
       tipo: 'Selvatico',
       pokemonA: primoDellaSquadra,
@@ -79,8 +77,12 @@ export function PercorsoScene() {
       log: [`Appare ${selvatico.nome} selvatico!`],
       evoluzioneInAttesa: null,
     }
-    iniziaBattaglia(battaglia)
-    vaiAScena('battaglia')
+    useGameStore.getState().eseguiTransazione(() => {
+      if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+      segnaCespuglioVisitato(giocatoreAttivo, luogo, cespuglio)
+      iniziaBattaglia(battaglia)
+      vaiAScena('battaglia')
+    })
   }
 
   const bg = getBackground(luogo)

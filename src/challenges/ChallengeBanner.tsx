@@ -9,7 +9,7 @@ export function ChallengeBanner() {
   if (!context) return null
   return createPortal(<aside aria-label="Sfida in corso" className="fixed left-1/2 top-2 z-[950] w-[min(90vw,34rem)] -translate-x-1/2 rounded-lg border border-cyan-300 bg-slate-950/95 p-2 text-center text-sm text-white shadow-xl">
     <strong>{context.session.mode === 'fanta' ? 'Fanta-Team' : 'Sfida a seed'} · Seed {context.session.seed}</strong>
-    <p className="text-xs text-slate-300">Campagna conservata separatamente · regole v1</p>
+    <p className="text-xs text-slate-300">Campagna conservata separatamente · {context.session.rulesVersion === 1 ? 'regole classiche v1' : 'regole aggiornate v2'}</p>
     {confirm ? <div className="mt-2 flex flex-wrap justify-center gap-2"><span>Abbandonare la sfida? Il tentativo non entra in classifica.</span>
       <button className="rounded bg-red-800 px-3 py-2" onClick={() => { const result = exitChallenge(); if (!result.ok) setError(result.message) }}>Conferma uscita</button>
       <button className="rounded border px-3 py-2" onClick={() => setConfirm(false)}>Annulla</button></div>

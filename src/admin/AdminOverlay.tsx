@@ -1,7 +1,9 @@
 import { createPortal } from 'react-dom'
+import { lazy, Suspense } from 'react'
 import { useAdminStore } from '@store/adminStore'
-import { AdminPanel } from './AdminPanel'
 import { useAdminHotkey } from './useAdminHotkey'
+
+const AdminPanel = lazy(() => import('./AdminPanel').then(module => ({ default: module.AdminPanel })))
 
 export function AdminOverlay() {
   useAdminHotkey()
@@ -26,7 +28,7 @@ export function AdminOverlay() {
         Admin
       </button>
 
-      {panelOpen ? <AdminPanel /> : null}
+      {panelOpen ? <Suspense fallback={<div role="status" className="pointer-events-auto absolute right-3 top-14 rounded-md border border-[var(--arka-primary)] bg-[var(--arka-surface)] p-3 text-[var(--arka-text)]">Caricamento Admin…</div>}><AdminPanel /></Suspense> : null}
     </div>,
     document.body,
   )

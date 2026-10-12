@@ -8,9 +8,10 @@ export interface GamePreferences {
   effectsVolume: number
   animationSpeed: 'normal' | 'fast'
   reducedMotion: MotionPreference
+  graphicsMemory: 'auto' | 'full' | 'low'
 }
 export const DEFAULT_GAME_PREFERENCES: GamePreferences = {
-  musicVolume: 1, effectsVolume: 1, animationSpeed: 'normal', reducedMotion: 'system',
+  musicVolume: 1, effectsVolume: 1, animationSpeed: 'normal', reducedMotion: 'system', graphicsMemory: 'auto',
 }
 const volume = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value)
   ? Math.max(0, Math.min(1, value)) : fallback
@@ -20,6 +21,7 @@ export function normalizeGamePreferences(value: unknown): GamePreferences {
     musicVolume: volume(data.musicVolume, 1), effectsVolume: volume(data.effectsVolume, 1),
     animationSpeed: data.animationSpeed === 'fast' ? 'fast' : 'normal',
     reducedMotion: data.reducedMotion === 'on' || data.reducedMotion === 'off' ? data.reducedMotion : 'system',
+    graphicsMemory: data.graphicsMemory === 'full' || data.graphicsMemory === 'low' ? data.graphicsMemory : 'auto',
   }
 }
 interface PreferencesStore extends GamePreferences {
@@ -32,7 +34,7 @@ export const useGamePreferences = create<PreferencesStore>()(persist((set, get) 
   resetPreferences: () => set({ ...DEFAULT_GAME_PREFERENCES }),
 }), {
   name: 'arkamon-preferences-v1', version: 1,
-  partialize: ({ musicVolume, effectsVolume, animationSpeed, reducedMotion }) => ({ musicVolume, effectsVolume, animationSpeed, reducedMotion }),
+  partialize: ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory }) => ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory }),
   merge: (saved, current) => ({ ...current, ...normalizeGamePreferences(saved) }),
 }))
 

@@ -267,27 +267,27 @@ export function MappaPrincipaleScene() {
   const interactWithCurrentNode = () => {
     if (layoutEditing) return
     if (getLocalMap(activeNodeName)) {
-      if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, activeNodeName)) {
-        vaiAScena(isRouteNode(COORDS[activeNodeName].tipo) ? 'percorso' : 'citta', { luogo: activeNodeName })
-      }
+      useGameStore.getState().eseguiTransazione(() => {
+        if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, activeNodeName)) {
+          vaiAScena(isRouteNode(COORDS[activeNodeName].tipo) ? 'percorso' : 'citta', { luogo: activeNodeName })
+        }
+      })
       return
     }
-    const result = interagisciLuogoMappaPrincipale(giocatoreAttivo)
-    if (result.tipo === 'no-op') return
-
-    const coord = COORDS[result.luogo]
-    if (!coord) return
-
-    if (isRouteNode(coord.tipo)) {
-      vaiAScena('percorso', { luogo: result.luogo })
-    } else {
-      vaiAScena('citta', { luogo: result.luogo })
-    }
+    useGameStore.getState().eseguiTransazione(() => {
+      const result = interagisciLuogoMappaPrincipale(giocatoreAttivo)
+      if (result.tipo === 'no-op') return
+      const coord = COORDS[result.luogo]
+      if (!coord) return
+      vaiAScena(isRouteNode(coord.tipo) ? 'percorso' : 'citta', { luogo: result.luogo })
+    })
   }
 
   const apriDeposito = () => {
-    useGameStore.setState({ giocatoreAttivo })
-    vaiAScena('deposito')
+    useGameStore.getState().eseguiTransazione(() => {
+      useGameStore.getState().aggiornaStato({ giocatoreAttivo })
+      vaiAScena('deposito')
+    })
   }
 
   const click = (nome: string, tipo: Tipo) => {
@@ -500,7 +500,9 @@ export function MappaPrincipaleScene() {
       <span className="local-map-budget" role="status">{turnoOverworld.azioniRimaste} azioni</span>
       {canAccessSecretLocation(giocatore, activePosition) && <>
         <GameButton onClick={() => {
-          if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, SECRET_LOCATION_ID)) vaiAScena('percorso', { luogo: SECRET_LOCATION_ID })
+          useGameStore.getState().eseguiTransazione(() => {
+            if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, SECRET_LOCATION_ID)) vaiAScena('percorso', { luogo: SECRET_LOCATION_ID })
+          })
         }}>Riapri Percorso 15</GameButton>
         <GameButton tone="primary" disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>Torna a Roma · 1 movimento</GameButton>
       </>}

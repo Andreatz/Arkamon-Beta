@@ -1,13 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
-import { LaboratorioScene } from '@scenes/LaboratorioScene'
-import { MappaPrincipaleScene } from '@scenes/MappaPrincipaleScene'
-import { BattagliaScene } from '@scenes/BattagliaScene'
-import { PercorsoScene } from '@scenes/PercorsoScene'
-import { CittaScene } from '@scenes/CittaScene'
-import { DepositoScene } from '@scenes/DepositoScene'
-import { EvoluzioneScene } from '@scenes/EvoluzioneScene'
 import { SceneTransition } from '@/components/transitions/SceneTransition'
 import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
 import type { NavigazioneScena, SceneId } from '@/types'
@@ -19,6 +12,7 @@ import { PlayerTools } from '@/settings/PlayerTools'
 import { MotionConfig } from 'framer-motion'
 import { useGamePreferences } from '@/settings/gamePreferences'
 import { ChallengeBanner } from '@/challenges/ChallengeBanner'
+import { SaveFailureNotice } from '@/save/SaveFailureNotice'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
@@ -28,6 +22,13 @@ const BattleDiceLab = lazy(() => import('@/components/battle/BattleDiceLab').the
 const DepositLab = lazy(() => import('@/components/deposit/DepositLab').then((module) => ({ default: module.DepositLab })))
 const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then((module) => ({ default: module.DarklawAnimationLab })))
 const MappaGrigliaScene = lazy(() => import('@scenes/MappaGrigliaScene').then((module) => ({ default: module.MappaGrigliaScene })))
+const LaboratorioScene = lazy(() => import('@scenes/LaboratorioScene').then((module) => ({ default: module.LaboratorioScene })))
+const MappaPrincipaleScene = lazy(() => import('@scenes/MappaPrincipaleScene').then((module) => ({ default: module.MappaPrincipaleScene })))
+const BattagliaScene = lazy(() => import('@scenes/BattagliaScene').then((module) => ({ default: module.BattagliaScene })))
+const PercorsoScene = lazy(() => import('@scenes/PercorsoScene').then((module) => ({ default: module.PercorsoScene })))
+const CittaScene = lazy(() => import('@scenes/CittaScene').then((module) => ({ default: module.CittaScene })))
+const DepositoScene = lazy(() => import('@scenes/DepositoScene').then((module) => ({ default: module.DepositoScene })))
+const EvoluzioneScene = lazy(() => import('@scenes/EvoluzioneScene').then((module) => ({ default: module.EvoluzioneScene })))
 
 /**
  * Router delle scene.
@@ -75,6 +76,7 @@ function App() {
       <AdminRuntime />
       <AdminOverlay />
       <PlayerTools />
+      <SaveFailureNotice />
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
       <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene}>
         <AudioController />
@@ -90,7 +92,9 @@ function LabShell({ children }: { children: React.ReactNode }) {
 }
 
 function renderPresentedScene(navigation: NavigazioneScena) {
-  return renderScena(navigation.scena)
+  return <Suspense fallback={<div className="flex h-full items-center justify-center p-4 text-arka-text-muted" role="status">Caricamento scena…</div>}>
+    {renderScena(navigation.scena)}
+  </Suspense>
 }
 
 function renderScena(scena: SceneId) {

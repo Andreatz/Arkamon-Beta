@@ -45,10 +45,10 @@ test('the match menu keeps its keyboard navigation during a map transition', asy
   await expect(page.locator('[data-presented-scene="citta:Venezia"]')).toHaveAttribute('aria-busy', 'false')
 })
 
-test('a slow native atlas keeps a visible creature until its first painted frame', async ({ page }) => {
+test('a slow native page keeps a visible creature until its first painted frame', async ({ page }) => {
   let release!: () => void
   const loading = new Promise<void>(resolve => { release = resolve })
-  await page.route('**/sprites/arkamon/13/front/idle.webp', async route => {
+  await page.route('**/sprites/arkamon-paged/13/front/idle/page-00.webp', async route => {
     await loading
     await route.continue()
   })

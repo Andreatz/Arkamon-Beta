@@ -4,6 +4,7 @@ import {
   getArkamonAnimationAsset,
   getArkamonAnimationDurationMs,
   resolveArkamonAnimationAsset,
+  getArkamonRuntimeAsset,
   type ArkamonBattleAnimation,
 } from '../arkamonAnimationManifest'
 
@@ -37,7 +38,7 @@ describe('Arkamon animation manifest', () => {
     expect(asset).toBeDefined()
     expect(asset!.src).toBe(`/sprites/arkamon/${speciesId}/front/${animation}.webp`)
     expect(resolveArkamonAnimationAsset(speciesId, 'front', animation)).toEqual({
-      asset, animation, isIdleFallback: false,
+      asset: getArkamonRuntimeAsset(asset!), animation, isIdleFallback: false,
     })
     expect(asset!.loop).toBe(animation === 'idle')
     expect(getArkamonAnimationDurationMs(speciesId, 'front', animation)).toBe(asset!.durationMs)
@@ -67,7 +68,7 @@ describe('Arkamon animation manifest', () => {
     delete front.hit
     try {
       expect(resolveArkamonAnimationAsset(5, 'front', 'hit')).toEqual({
-        asset: front.idle, animation: 'idle', isIdleFallback: true,
+        asset: getArkamonRuntimeAsset(front.idle!), animation: 'idle', isIdleFallback: true,
       })
     } finally {
       front.hit = hit

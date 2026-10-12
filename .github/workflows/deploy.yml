@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -34,6 +34,9 @@ jobs:
         env:
           GITHUB_PAGES: 'true'
 
+      - name: Verify bounded web package
+        run: test -f dist/media-release.json
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
@@ -44,7 +47,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

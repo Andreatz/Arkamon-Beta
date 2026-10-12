@@ -18,6 +18,7 @@ import { appendMatchEvent, emptyMatchLog } from '@/match/matchLog'
 import { trackGameChange } from '@/match/trackGameChange'
 import { canJoinTeam, isTeamWithinLevelCap, teamCapMessage, teamLevelRange } from '@/engine/teamLevelCap'
 import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
+import { rememberRecoveryCopy, reportSaveFailure, useSaveWriteStatus } from '@/save/durableWrites'
 import { resolveShopPurchase, type ShopPurchaseResult } from '@/shop/purchase'
 import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
 import { resolveItemEffect } from '@/shop/itemEffects'
@@ -68,6 +69,9 @@ import {
 } from '@engine/movimento'
 
 export interface GameState extends GameSaveState {
+  /** Publish a compound action only after its complete checkpoint is durable. */
+  eseguiTransazione: (operation: (read: () => GameState) => void) => boolean
+  aggiornaStato: (patch: Partial<GameSaveState> & { teamRuleMessage?: string | null }) => boolean
   challengeContext: ChallengeContext | null
   teamRuleMessage: string | null
   dismissTeamRuleMessage: () => void
@@ -282,28 +286,67 @@ export function haSpazioPokemon(giocatore: StatoGiocatore, target?: PokemonIstan
 
 export const useGameStore = create<GameState>()(
   persist(
-    (rawSet, get) => {
-      const set: typeof rawSet = (update, replace) => rawSet((previous) => {
+    (rawSet, getRaw) => {
+      let staged: GameState | null = null
+      let retryingWrite = false
+      const get = (): GameState => staged ?? getRaw()
+      const set = (update: Parameters<typeof rawSet>[0], replace?: boolean): boolean => {
+        const previous = get()
         const patch = typeof update === 'function' ? update(previous) : update
-        if (patch === previous) return previous
-        const next = { ...previous, ...patch }
-        return next.challengeContext ? next : { ...next, ...trackGameChange(previous, next) }
-      }, replace)
-      const commitDurable = (patch: Partial<GameState>): boolean => {
+        if (patch === previous) return true
+        if (staged) { staged = { ...staged, ...patch }; return true }
+        return commitDurable(patch, false, replace)
+      }
+      const publish = (state: GameState, replace?: boolean) => {
+        const storage = useGameStore.persist?.getOptions().storage
+        if (storage) useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
+        try { rawSet(state, replace) } finally { if (storage) useGameStore.persist.setOptions({ storage }) }
+      }
+      const commitDurable = (patch: Partial<GameState>, local = false, replace?: boolean): boolean => {
+        if (staged) { staged = { ...staged, ...patch }; return true }
+        const pendingWrite = useSaveWriteStatus.getState()
+        // Background checkpoint effects must not replace an unsaved action.
+        if (!retryingWrite && pendingWrite.error && !pendingWrite.local) return false
         const previous = get(), next = { ...previous, ...patch }
         const tracked = next.challengeContext ? next : { ...next, ...trackGameChange(previous, next) }
-        const options = useGameStore.persist.getOptions(), storage = options.storage
-        if (!storage) { if (typeof window !== 'undefined') return false; rawSet(tracked); return true }
+        const options = useGameStore.persist?.getOptions(), storage = options?.storage
+        const previousSave = { ...serializeGameState(previous), ...(previous.challengeContext ? { challengeContext: previous.challengeContext } : {}) }
+        const saved = { ...serializeGameState(tracked), ...(tracked.challengeContext ? { challengeContext: tracked.challengeContext } : {}) }
+        const baseline = JSON.stringify(previousSave)
+        if (baseline === JSON.stringify(saved)) { publish(tracked, replace); return true }
+        const failed = () => {
+          reportSaveFailure(() => {
+            const current = get()
+            const currentSaved = { ...serializeGameState(current), ...(current.challengeContext ? { challengeContext: current.challengeContext } : {}) }
+            if (current.campaignRevision !== previous.campaignRevision || JSON.stringify(currentSaved) !== baseline) { useSaveWriteStatus.getState().clear(); return false }
+            retryingWrite = true
+            try { return commitDurable(patch, local, replace) } finally { retryingWrite = false }
+          }, local, () => publish({ ...getRaw(), campaignRevision: getRaw().campaignRevision + 1 }))
+          return false
+        }
+        if (!storage) { if (typeof window !== 'undefined') return failed(); publish(tracked, replace); return true }
         try {
-          const saved = { ...serializeGameState(tracked), ...(tracked.challengeContext ? { challengeContext: tracked.challengeContext } : {}) }
-          const result = storage.setItem(options.name ?? GAME_SAVE_STORAGE_KEY, { state: saved as unknown as GameState, version: 0 })
-          if (result instanceof Promise) { void result.catch(() => {}); return false }
-          useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
-          try { rawSet(tracked) } finally { useGameStore.persist.setOptions({ storage }) }
+          const result = storage.setItem(options?.name ?? GAME_SAVE_STORAGE_KEY, { state: saved as unknown as GameState, version: 0 })
+          if (result instanceof Promise) { void result.catch(() => {}); return failed() }
+          if (!previous.challengeContext && !tracked.challengeContext && typeof window !== 'undefined' && typeof localStorage !== 'undefined') rememberRecoveryCopy(previous)
+          // A retried battle action must rebuild its scene from the checkpoint;
+          // the failed action's local HP/messages are not authoritative.
+          publish(retryingWrite && !local && tracked.scenaCorrente.scena === 'battaglia'
+            ? { ...tracked, campaignRevision: tracked.campaignRevision + 1 } : tracked, replace)
+          useSaveWriteStatus.getState().clear()
           return true
-        } catch { return false }
+        } catch { return failed() }
       }
       return ({
+      aggiornaStato: (patch) => set(patch),
+      eseguiTransazione: (operation) => {
+        if (staged) { operation(get); return true }
+        const previous = getRaw()
+        staged = previous
+        let candidate: GameState
+        try { operation(get); candidate = staged } finally { staged = null }
+        return candidate === previous ? true : commitDurable(candidate)
+      },
       giocatore1: giocatoreVuoto(1),
       giocatore2: giocatoreVuoto(2),
       giocatoreAttivo: 1,
@@ -370,12 +413,11 @@ export const useGameStore = create<GameState>()(
         if (!istanza) return false
         const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
         const rimanenti = STARTER_IDS.filter((id) => id !== specieId && !scelti.includes(id))
-        set({
+        return set({
           [chiaveG]: { ...state[chiaveG], squadra: [istanza] },
           giocatoreAttivo: giocatoreId === 1 ? 2 : state.turnoOverworld.giocatoreAttivo,
           ...(giocatoreId === 2 && rimanenti.length === 1 ? { rivaleStarterId: rimanenti[0] } : {}),
         } as Partial<GameState>)
-        return true
       },
 
       aggiungiPokemon: (giocatoreId, creature) =>
@@ -416,7 +458,7 @@ export const useGameStore = create<GameState>()(
             ? { ...player.inventario, masterball: (player.inventario.masterball ?? 0) - 1 }
             : player.inventario,
         }
-        return commitDurable({ [key]: nextPlayer, battaglia: clearBattleExperience({ ...battle, ...patch }) } as Partial<GameState>)
+        return commitDurable({ [key]: nextPlayer, battaglia: clearBattleExperience({ ...battle, ...patch }) } as Partial<GameState>, true)
       },
 
       aggiornaPokemon: (giocatoreId, creature) =>
@@ -569,7 +611,7 @@ export const useGameStore = create<GameState>()(
         const turnoCorrente = determinaIniziativa(pokemonA.livello, pokemonB.livello, Math.random, pokemonA.stato?.tipo, pokemonB.stato?.tipo)
         const tipo = allenatore.tipo === 'PVP' ? 'PVP' : 'NPC'
 
-        set({
+        return set({
           battaglia: {
             tipo,
             pokemonA,
@@ -585,7 +627,6 @@ export const useGameStore = create<GameState>()(
             evoluzioneInAttesa: null,
           },
         })
-        return true
       },
 
       risolviBattagliaNPC: (esito) => {
@@ -701,7 +742,7 @@ export const useGameStore = create<GameState>()(
         const definition = useInteractionStore.getState().interactions.find((entry) => entry.id === interactionId)
         const result = resolveConfiguredInteraction(get(), definition, giocatoreId)
         if (result.patch?.battaglia && !isTeamWithinLevelCap(result.patch.battaglia.squadraA ?? [])) return { ok: false, message: teamCapMessage(result.patch.battaglia.squadraA ?? []) }
-        if (result.ok && result.patch) set(result.patch)
+        if (result.ok && result.patch && !set(result.patch)) return { ok: false, message: 'Interazione non salvata. Costi, ricompense e azioni restano intatti.' }
         return { ok: result.ok, message: result.message }
       },
 
@@ -723,11 +764,10 @@ export const useGameStore = create<GameState>()(
         const turnoFinale =
           turnoNuovo.azioniRimaste <= 0 ? nuovoTurno(giocatoreId) : turnoNuovo
 
-        set({
+        return set({
           [chiavePos]: nuovaPos,
           turnoOverworld: turnoFinale,
         } as Partial<GameState>)
-        return true
       },
 
       interagisciCasella: (giocatoreId, mappa, x, y) => {
@@ -782,11 +822,11 @@ export const useGameStore = create<GameState>()(
         // Interazione consuma l'intero turno → swap immediato.
         const turnoFinale = nuovoTurno(giocatoreId)
 
-        set({
+        if (!set({
           [chiaveG]: { ...g, caselleConsumate: nuoveConsumate },
           [chiavePos]: nuovaPos,
           turnoOverworld: turnoFinale,
-        } as Partial<GameState>)
+        } as Partial<GameState>)) return { tipo: 'no-op' }
         return r
       },
 
@@ -817,7 +857,7 @@ export const useGameStore = create<GameState>()(
             || !isSecretLocationConnection(luogoCorrente, luogoDestinazione)) return false
         } else if (!areMainMapNodesConnected(luogoCorrente, luogoDestinazione)) return false
 
-        set({
+        return set({
           [chiavePos]: posizioneMappaPrincipale(luogoDestinazione),
           giocatoreAttivo: giocatoreId,
           turnoOverworld: {
@@ -825,7 +865,6 @@ export const useGameStore = create<GameState>()(
             azioniRimaste: state.turnoOverworld.azioniRimaste - 1,
           },
         } as Partial<GameState>)
-        return true
       },
 
       attraversaPassaggioSegreto: (giocatoreId) => {
@@ -834,10 +873,14 @@ export const useGameStore = create<GameState>()(
         if (posizione.mappaId !== 'mappa-principale'
           || (posizione.luogo !== SECRET_LOCATION_ORIGIN && posizione.luogo !== SECRET_LOCATION_ID)) return false
         const destinazione = posizione.luogo === SECRET_LOCATION_ORIGIN ? SECRET_LOCATION_ID : SECRET_LOCATION_ORIGIN
-        if (!state.muoviAvatarMappaPrincipale(giocatoreId, destinazione)) return false
-        get().inizializzaPosizioneLocale(giocatoreId, destinazione)
-        get().vaiAScena(destinazione === SECRET_LOCATION_ID ? 'percorso' : 'citta', { luogo: destinazione })
-        return true
+        let moved = false
+        const written = state.eseguiTransazione(() => {
+          moved = state.muoviAvatarMappaPrincipale(giocatoreId, destinazione)
+          if (!moved) return
+          get().inizializzaPosizioneLocale(giocatoreId, destinazione)
+          get().vaiAScena(destinazione === SECRET_LOCATION_ID ? 'percorso' : 'citta', { luogo: destinazione })
+        })
+        return moved && written
       },
 
       interagisciLuogoMappaPrincipale: (giocatoreId) => {
@@ -851,11 +894,11 @@ export const useGameStore = create<GameState>()(
 
         const luogo = luogoMappaPrincipale(posizione)
         if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return { tipo: 'no-op' }
-        set({
+        if (!set({
           [chiavePos]: posizioneMappaPrincipale(luogo),
           giocatoreAttivo: giocatoreId,
           turnoOverworld: nuovoTurno(giocatoreId),
-        } as Partial<GameState>)
+        } as Partial<GameState>)) return { tipo: 'no-op' }
 
         return { tipo: 'luogo', luogo }
       },
@@ -871,7 +914,7 @@ export const useGameStore = create<GameState>()(
         const positionKey = giocatoreId === 1 ? 'posizioniLocali1' : 'posizioniLocali2'
         const nodeId = getLocalMapNode(map, state[positionKey][luogo]).id
         if (state[positionKey][luogo] !== nodeId) {
-          set({ [positionKey]: { ...state[positionKey], [luogo]: nodeId } } as Partial<GameState>)
+          if (!set({ [positionKey]: { ...state[positionKey], [luogo]: nodeId } } as Partial<GameState>)) return null
         }
         return nodeId
       },
@@ -880,9 +923,12 @@ export const useGameStore = create<GameState>()(
         const state = get()
         if (state.battaglia || state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
         if (luogo === SECRET_LOCATION_ID && state.giocatoreAttivo !== giocatoreId) return false
-        if (state.inizializzaPosizioneLocale(giocatoreId, luogo) === null) return false
-        set({ giocatoreAttivo: giocatoreId })
-        return true
+        let valid = false
+        const written = state.eseguiTransazione(() => {
+          valid = state.inizializzaPosizioneLocale(giocatoreId, luogo) !== null
+          if (valid) set({ giocatoreAttivo: giocatoreId })
+        })
+        return valid && written
       },
 
       muoviAvatarMappaLocale: (giocatoreId, luogo, nodoDestinazione) => {
@@ -898,11 +944,10 @@ export const useGameStore = create<GameState>()(
         }
         const from = getLocalMapNode(map, state[positionKey][luogo]).id
         if (!canMoveOnLocalMap(map, from, nodoDestinazione)) return false
-        set({
+        return set({
           [positionKey]: { ...state[positionKey], [luogo]: nodoDestinazione },
           turnoOverworld: consumaAzione(state.turnoOverworld, 'movimento'),
         } as Partial<GameState>)
-        return true
       },
 
       consumaInterazioneMappaLocale: (giocatoreId, luogo) => {
@@ -914,8 +959,7 @@ export const useGameStore = create<GameState>()(
           || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
           return false
         }
-        set({ turnoOverworld: nuovoTurno(giocatoreId) })
-        return true
+        return set({ turnoOverworld: nuovoTurno(giocatoreId) })
       },
 
       passaTurnoMappaLocale: () => {
@@ -924,8 +968,7 @@ export const useGameStore = create<GameState>()(
         const turnoOverworld = state.giocatoreAttivo !== state.turnoOverworld.giocatoreAttivo
           ? state.turnoOverworld
           : nuovoTurno(state.giocatoreAttivo)
-        set({ turnoOverworld, giocatoreAttivo: turnoOverworld.giocatoreAttivo })
-        return true
+        return set({ turnoOverworld, giocatoreAttivo: turnoOverworld.giocatoreAttivo })
       },
 
       reset: () =>
@@ -966,7 +1009,7 @@ export const useGameStore = create<GameState>()(
       },
       onRehydrateStorage: () => (state, error) => {
         if (error) queueMicrotask(() => {
-          const storage = useGameStore.persist.getOptions().storage
+          const storage = useGameStore.persist?.getOptions().storage
           if (storage) useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
           try {
             useGameStore.setState({ saveRecoveryWarnings: [
