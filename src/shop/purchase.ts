@@ -1,6 +1,10 @@
 import { nuovoTurno } from '@/engine/movimento'
 import type { NavigazioneScena, PosizioneAvatar, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
 import { getShopItem, hasArkaStore, isShopItemId, MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, type ShopCart, type ShopInventory, type ShopItemId } from './catalog'
+import { getLocalMap } from '@/data/localMaps'
+import { validateInteraction } from '@/interactions/schema'
+import { interactionRequirementMessage } from '@/interactions/runtime'
+import { emptyInteractionProgress, type InteractionDefinition, type InteractionProgress } from '@/interactions/types'
 
 export type ShopPlayer = Omit<StatoGiocatore, 'inventario'> & { inventario: ShopInventory }
 export interface ShopRuntimeState {
@@ -12,8 +16,11 @@ export interface ShopRuntimeState {
   turnoOverworld: StatoTurnoOverworld
   battaglia: StatoBattaglia | null
   scenaCorrente: NavigazioneScena
-  interactionProgress?: { pendingBattle: unknown }
+  interactionProgress?: Pick<InteractionProgress, 'pendingBattle'> & Partial<Omit<InteractionProgress, 'pendingBattle'>>
+  posizioniLocali1?: Record<string, string>
+  posizioniLocali2?: Record<string, string>
 }
+export interface ShopPointContext { interactionId?: string; interactions: readonly InteractionDefinition[] }
 export type ShopPurchasePatch = Partial<Pick<ShopRuntimeState, 'giocatore1' | 'giocatore2' | 'turnoOverworld'>>
 export interface ShopReceipt {
   location: string
@@ -25,7 +32,7 @@ export interface ShopReceipt {
 export interface ShopPurchaseResult { ok: boolean; message: string; patch?: ShopPurchasePatch; receipt?: ShopReceipt }
 
 /** Controllo condiviso fra pannello e acquisto: navigare alla scena di un'altra città non basta. */
-export function shopAvailabilityMessage(state: ShopRuntimeState, playerId: 1 | 2, location: string): string | null {
+export function shopAvailabilityMessage(state: ShopRuntimeState, playerId: 1 | 2, location: string, point?: ShopPointContext): string | null {
   if (playerId !== 1 && playerId !== 2) return 'Giocatore non valido.'
   if (!hasArkaStore(location)) return 'In questo luogo non è presente un Arkastore.'
   if (state.battaglia || state.interactionProgress?.pendingBattle) return 'Concludi prima la battaglia in corso.'
@@ -37,13 +44,23 @@ export function shopAvailabilityMessage(state: ShopRuntimeState, playerId: 1 | 2
   const player = state[playerId === 1 ? 'giocatore1' : 'giocatore2']
   if (!player.squadra.length) return 'Scegli prima il tuo starter.'
   if (!Number.isSafeInteger(player.monete) || player.monete < 0) return 'Il saldo della partita non è valido: ripristina un backup valido.'
+  const entry = point?.interactions.find(item => item.id === point.interactionId)
+  const map = getLocalMap(location)
+  const positions = state[playerId === 1 ? 'posizioniLocali1' : 'posizioniLocali2']
+  if (!entry || validateInteraction(entry) || !entry.enabled || entry.action.kind !== 'shop'
+    || entry.mapId !== location || !map || (positions?.[location] ?? map.startNode) !== entry.nodeId) {
+    return 'Raggiungi il pallino configurato dell’Arkastore e apri il negozio da quell’interazione.'
+  }
+  const requirement = interactionRequirementMessage({ giocatore1: state.giocatore1, giocatore2: state.giocatore2,
+    interactionProgress: { ...emptyInteractionProgress(), ...state.interactionProgress } }, entry, playerId)
+  if (requirement) return requirement
   return null
 }
 
 /** Il prezzo viene sempre ricalcolato dal catalogo; tutti gli articoli e il turno cambiano insieme. */
-export function resolveShopPurchase(state: ShopRuntimeState, playerId: 1 | 2, cart: unknown, location: string): ShopPurchaseResult {
+export function resolveShopPurchase(state: ShopRuntimeState, playerId: 1 | 2, cart: unknown, location: string, point?: ShopPointContext): ShopPurchaseResult {
   const fail = (message: string): ShopPurchaseResult => ({ ok: false, message })
-  const unavailable = shopAvailabilityMessage(state, playerId, location)
+  const unavailable = shopAvailabilityMessage(state, playerId, location, point)
   if (unavailable) return fail(unavailable)
   if (!cart || typeof cart !== 'object' || Array.isArray(cart)) return fail('Il carrello non è valido.')
   const playerKey = playerId === 1 ? 'giocatore1' : 'giocatore2'

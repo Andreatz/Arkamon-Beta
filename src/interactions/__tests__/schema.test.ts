@@ -38,6 +38,20 @@ describe('catalogo interazioni e adattatore Tiled', () => {
     result.catalog!.interactions[0].reward.coins = 99
     expect(first.reward.coins).toBe(0)
   })
+  it('rifiuta un negozio come tappa precedente ma permette di sbloccarlo con una missione completabile', () => {
+    const shop = { ...entry('shop-step'), title: 'Arkastore', repeatable: true, action: { kind: 'shop' as const } }
+    const quest = { ...entry('quest-step'), requirements: { ...entry().requirements, completedInteractions: [shop.id] } }
+    const before = structuredClone([shop, quest])
+    expect(validateInteraction(shop)).toBeNull()
+    const blocked = validateCatalog({ version: 1, interactions: [shop, quest] })
+    expect(blocked.catalog).toBeUndefined()
+    expect(blocked.error).toMatch(/Arkastore.*non possono essere tappe precedenti/)
+    expect([shop, quest]).toEqual(before)
+
+    const completedQuest = { ...quest, requirements: { ...quest.requirements, completedInteractions: [] } }
+    const unlockedShop = { ...shop, requirements: { ...shop.requirements, completedInteractions: [completedQuest.id] } }
+    expect(validateCatalog({ version: 1, interactions: [completedQuest, unlockedShop] }).error).toBeUndefined()
+  })
   it('Tiled roundtrip conserva mappe, nodi e definizioni; spostare un oggetto non riscrive le strade', () => {
     const map = getLocalMap('Venezia')!
     const original = JSON.stringify(map)

@@ -6,6 +6,7 @@ import { useInteractionStore } from './interactionStore'
 import { newInteractionDefinition, type InteractionAction, type InteractionDefinition } from './types'
 import { exportTiledInteractions, importTiledInteractions } from './tiledAdapter'
 import './interactions.css'
+import { hasArkaStore } from '@/shop/catalog'
 
 const maps = Object.values(LOCAL_MAPS)
 const createDraft = (mapId: string, nodeId: string) => newInteractionDefinition(mapId, nodeId, `interaction-${crypto.randomUUID()}`)
@@ -40,7 +41,8 @@ export function AdminInteractionEditor() {
   const chooseAction = (kind: InteractionAction['kind']) => {
     const action: InteractionAction = kind === 'trainer' ? { kind, trainerId: trainers[0]?.id ?? 0 }
       : kind === 'bush' ? { kind, bush: bushes[0] ?? 'A' } : kind === 'encounter' ? { kind, speciesId: POKEMON_BASE[0].id, level: 5 } : { kind }
-    change({ action, repeatable: kind === 'dialogue' || kind === 'heal' ? draft.repeatable : false })
+    change({ action, repeatable: kind === 'shop' || ((kind === 'dialogue' || kind === 'heal') && draft.repeatable),
+      ...(kind === 'shop' ? { cost: { coins: 0, items: {} }, reward: { coins: 0, items: {} } } : {}) })
   }
   const pointName = (id: string) => map.nodes.find((node) => node.id === id)?.label ?? id
   return <section className="interaction-editor" aria-label="Editor delle interazioni">
@@ -69,6 +71,7 @@ export function AdminInteractionEditor() {
       <p className="interaction-note">Nel completamento condiviso il premio va soltanto al giocatore che completa per primo. I requisiti riguardano sempre il giocatore che agisce.</p>
       <label>Attività<select value={draft.action.kind} onChange={(e) => chooseAction(e.target.value as InteractionAction['kind'])}>
         <option value="dialogue">Dialogo / missione / ricompensa</option><option value="heal">Cura della squadra</option>
+        <option value="shop" disabled={!hasArkaStore(mapId)}>Arkastore</option>
         <option value="trainer" disabled={!trainers.length}>Allenatore esistente</option><option value="bush" disabled={!bushes.length}>Cespuglio esistente</option><option value="encounter">Incontro definito dalla regia</option>
       </select></label>
       {draft.action.kind === 'trainer' && <label>Allenatore<select value={draft.action.trainerId} onChange={(e) => change({ action: { kind: 'trainer', trainerId: Number(e.target.value) } })}>{trainers.map((trainer) => <option value={trainer.id} key={trainer.id}>{trainer.nome} · {trainer.tipo}</option>)}</select></label>}
@@ -78,19 +81,19 @@ export function AdminInteractionEditor() {
         <label>Livello incontro<input type="number" min={5} max={100} value={draft.action.level} onChange={(e) => { if (draft.action.kind === 'encounter') change({ action: { ...draft.action, level: Number(e.target.value) } }) }} /></label>
       </>}
       <label className="interaction-check"><input type="checkbox" checked={draft.enabled} onChange={(e) => change({ enabled: e.target.checked })} />Disponibile nel gioco</label>
-      <label className="interaction-check"><input type="checkbox" disabled={draft.action.kind !== 'dialogue' && draft.action.kind !== 'heal'} checked={draft.repeatable} onChange={(e) => change({ repeatable: e.target.checked })} />Ripetibile (dialoghi/cure, senza premio)</label>
+      <label className="interaction-check"><input type="checkbox" disabled={draft.action.kind !== 'dialogue' && draft.action.kind !== 'heal'} checked={draft.repeatable} onChange={(e) => change({ repeatable: e.target.checked })} />Ripetibile (dialoghi, cure e Arkastore, senza premio)</label>
       <fieldset><legend>Requisiti, controllati prima di consumare il turno</legend>
         <label>Livello minimo in squadra<input type="number" min={0} max={100} value={draft.requirements.minLevel} onChange={(e) => change({ requirements: { ...draft.requirements, minLevel: Number(e.target.value) } })} /></label>
         <label>Monete minime possedute<input type="number" min={0} max={1000000} value={draft.requirements.minCoins} onChange={(e) => change({ requirements: { ...draft.requirements, minCoins: Number(e.target.value) } })} /></label>
         <label>Masterball minime possedute<input type="number" min={0} max={999} value={draft.requirements.items.masterball ?? 0} onChange={(e) => change({ requirements: { ...draft.requirements, items: { masterball: Number(e.target.value) } } })} /></label>
         <div>Medaglie richieste</div>{ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra').map((trainer) => <label key={trainer.id} className="interaction-check"><input type="checkbox" checked={draft.requirements.gymIds.includes(trainer.id)} onChange={(e) => change({ requirements: { ...draft.requirements, gymIds: e.target.checked ? [...draft.requirements.gymIds, trainer.id] : draft.requirements.gymIds.filter((id) => id !== trainer.id) } })} />{trainer.luogo}</label>)}
-        <div>Tappe precedenti (anche in altre città)</div>{interactions.filter((entry) => entry.id !== draft.id).map((entry) => <label key={entry.id} className="interaction-check"><input type="checkbox" checked={draft.requirements.completedInteractions.includes(entry.id)} onChange={(e) => change({ requirements: { ...draft.requirements, completedInteractions: e.target.checked ? [...draft.requirements.completedInteractions, entry.id] : draft.requirements.completedInteractions.filter((id) => id !== entry.id) } })} />{entry.mapId.replace(/_/g, ' ')} · {entry.title}</label>)}
+        <div>Tappe precedenti (anche in altre città)</div>{interactions.filter((entry) => entry.id !== draft.id && entry.action.kind !== 'shop').map((entry) => <label key={entry.id} className="interaction-check"><input type="checkbox" checked={draft.requirements.completedInteractions.includes(entry.id)} onChange={(e) => change({ requirements: { ...draft.requirements, completedInteractions: e.target.checked ? [...draft.requirements.completedInteractions, entry.id] : draft.requirements.completedInteractions.filter((id) => id !== entry.id) } })} />{entry.mapId.replace(/_/g, ' ')} · {entry.title}</label>)}
       </fieldset>
-      {(['cost', 'reward'] as const).map((section) => <fieldset key={section}><legend>{section === 'cost' ? 'Costo all’avvio' : 'Ricompensa al completamento'}</legend>
+      {(['cost', 'reward'] as const).map((section) => <fieldset key={section} disabled={draft.action.kind === 'shop'}><legend>{section === 'cost' ? 'Costo all’avvio' : 'Ricompensa al completamento'}</legend>
         <label>{section === 'cost' ? 'Monete da spendere' : 'Monete da assegnare'}<input type="number" min={0} max={1000000} value={draft[section].coins} onChange={(e) => changeNumber(section, 'coins', e.target.value)} /></label>
         <label>{section === 'cost' ? 'Masterball da spendere' : 'Masterball da assegnare'}<input type="number" min={0} max={999} value={draft[section].items.masterball ?? 0} onChange={(e) => changeNumber(section, 'masterball', e.target.value)} /></label>
       </fieldset>)}
-      <p className="interaction-note">L’interazione conclude il turno: due movimenti oppure un movimento e un’interazione. Negli incontri il costo viene speso all’avvio; il premio aggiuntivo arriva solo alla vittoria o cattura. Restano le ricompense ordinarie degli allenatori.</p>
+      <p className="interaction-note">L’interazione conclude il turno: due movimenti oppure un movimento e un’interazione. L’Arkastore si apre gratuitamente; solo l’acquisto del carrello conclude il turno. Negli incontri il costo viene speso all’avvio; il premio aggiuntivo arriva solo alla vittoria o cattura. Restano le ricompense ordinarie degli allenatori.</p>
       <div className="interaction-actions"><button className="arka-button" onClick={() => setMessage(save(draft) ?? 'Interazione salvata.')}>Salva interazione</button>
         <button className="arka-button-secondary" onClick={() => { setDraft(createDraft(mapId, draft.nodeId)); setMessage('Nuova interazione sul pallino selezionato.') }}>Nuova sul pallino</button>
         <button className="arka-button-secondary" disabled={!interactions.some((entry) => entry.id === draft.id)} onClick={() => { const error = remove(draft.id); setMessage(error ?? 'Interazione eliminata.'); if (!error) setDraft(createDraft(mapId, draft.nodeId)) }}>Elimina interazione</button>

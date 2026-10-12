@@ -2,6 +2,7 @@ import { getLocalMap } from '@/data/localMaps'
 import { getAllenatore, getIncontri, getPokemon, ALLENATORI } from '@/data'
 import type { InteractionCatalog, InteractionDefinition, InteractionProgress, InteractionResources } from './types'
 import { emptyInteractionProgress } from './types'
+import { hasArkaStore } from '@/shop/catalog'
 
 const object = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
 const integer = (value: unknown, max = 1_000_000): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 && value <= max
@@ -27,14 +28,18 @@ export function validateInteraction(value: unknown): string | null {
     || r.completedInteractions.includes(value.id) || !validResources({ coins: 0, items: r.items })) return 'Requisiti non validi: controlla livelli, medaglie, oggetti e tappe precedenti.'
   if (!validResources(value.cost) || !validResources(value.reward)) return 'Costi o ricompense non validi.'
   const a = value.action
-  if (!object(a) || !['dialogue', 'heal', 'trainer', 'bush', 'encounter'].includes(String(a.kind))) return 'Scegli un’attività valida.'
+  if (!object(a) || !['dialogue', 'heal', 'shop', 'trainer', 'bush', 'encounter'].includes(String(a.kind))) return 'Scegli un’attività valida.'
+  if (a.kind === 'shop' && (!hasArkaStore(map.id) || !value.repeatable || value.cost.coins > 0 || value.reward.coins > 0
+    || Object.values(value.cost.items).some(q => Number(q) > 0) || Object.values(value.reward.items).some(q => Number(q) > 0))) {
+    return 'Un Arkastore deve essere ripetibile, in una città e senza costi o premi di apertura: si pagano soltanto gli acquisti.'
+  }
   if (a.kind === 'trainer') {
     const trainer = integer(a.trainerId) ? getAllenatore(a.trainerId) : undefined
     if (!trainer || trainer.luogo !== map.id || !trainer.squadra.length) return 'L’allenatore deve appartenere al luogo selezionato.'
   }
   if (a.kind === 'bush' && (typeof a.bush !== 'string' || !getIncontri(map.id, a.bush).length)) return 'Il cespuglio scelto non ha incontri definiti in questo luogo.'
   if (a.kind === 'encounter' && (!integer(a.speciesId) || !getPokemon(a.speciesId) || !integer(a.level, 100) || a.level < 5)) return 'Seleziona una specie esistente e un livello fra 5 e 100.'
-  if (value.repeatable && (a.kind !== 'dialogue' && a.kind !== 'heal')) return 'Solo dialoghi e cure possono essere ripetibili.'
+  if (value.repeatable && !['dialogue', 'heal', 'shop'].includes(String(a.kind))) return 'Solo dialoghi, cure e Arkastore possono essere ripetibili.'
   if (value.repeatable && (value.reward.coins > 0 || Object.values(value.reward.items).some((q) => Number(q) > 0))) return 'Le attività ripetibili non possono assegnare ricompense.'
   return null
 }
@@ -49,10 +54,13 @@ export function validateCatalog(value: unknown): { catalog?: InteractionCatalog;
     if (ids.has(interaction.id)) return { error: 'Due interazioni hanno lo stesso identificatore.' }
     ids.add(interaction.id)
   }
-  for (const entry of value.interactions as InteractionDefinition[]) {
-    if (entry.requirements.completedInteractions.some((id) => !ids.has(id))) return { error: `La tappa «${entry.title}» richiede un’interazione assente dal catalogo.` }
-  }
   const entries = value.interactions as InteractionDefinition[]
+  for (const entry of entries) {
+    if (entry.requirements.completedInteractions.some((id) => !ids.has(id))) return { error: `La tappa «${entry.title}» richiede un’interazione assente dal catalogo.` }
+    if (entry.requirements.completedInteractions.some((id) => entries.find((candidate) => candidate.id === id)!.action.kind === 'shop')) {
+      return { error: `La tappa «${entry.title}» richiede un Arkastore: i negozi non si completano e non possono essere tappe precedenti.` }
+    }
+  }
   const visiting = new Set<string>(), done = new Set<string>()
   const cycle = (id: string): boolean => {
     if (visiting.has(id)) return true

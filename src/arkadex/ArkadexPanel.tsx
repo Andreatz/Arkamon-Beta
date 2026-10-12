@@ -80,7 +80,7 @@ export function ArkadexPanel({ initialPlayerId }: { initialPlayerId?: 1 | 2 } = 
         {specimens.length > 1 && <label>Esemplare<select value={specimen?.pokemon.istanzaId} onChange={(event) => setSelectedInstanceId(event.target.value)}>{specimens.map((entry) => <option key={`${entry.source}-${entry.pokemon.istanzaId}`} value={entry.pokemon.istanzaId}>{entry.pokemon.nome} · Lv. {entry.pokemon.livello} · {entry.source}</option>)}</select></label>}
         <p>{specimen ? `Esemplare in ${specimen.source}: ${pokemon.nome}, livello ${pokemon.livello}.` : 'Dati di riferimento al livello 5: nessun esemplare di questa specie disponibile.'}</p>
         <dl className="arkadex-stats"><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura} / 5</dd></div></dl>
-        {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}. XP: {pokemon.xp}.</p>}
+        {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}.</p>}
         <h4>Mosse al livello {pokemon.livello}</h4><ul className="arkadex-moves">{species.mosse.filter((id) => id > 0).map((id) => {
           const move = getMossa(id)
           if (!move) return null

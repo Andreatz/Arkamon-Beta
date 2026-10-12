@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
+import { openConfiguredShop, seedConfiguredShop } from './helpers/configuredShop'
 import type { PokemonIstanza } from '../src/types'
 
 const SAVE_KEY = 'arkamon-save'
@@ -8,7 +9,7 @@ type PortraitMetadata = { width: number; height: number; alphaBounds: [number, n
 const portraitMetadata: Record<string, PortraitMetadata> = JSON.parse(readFileSync(new URL('../src/player-ui/portraitMetadata.json', import.meta.url), 'utf8'))
 const SCREENS = [
   ['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'],
-  ['Borsa', 'borsa'], ['Negozio', 'negozio'], ['Menù Partita', 'partita'],
+  ['Borsa', 'borsa'], ['Menù Partita', 'partita'],
 ] as const
 const ITEMS = [
   ['potion', 'Pozione'], ['super-potion', 'Superpozione'], ['revive', 'Rianimatore'],
@@ -17,6 +18,7 @@ const ITEMS = [
 
 /** Dense but valid portable data exercises layout; UI consultation must never change it. */
 async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directDeposit = false) {
+  await seedConfiguredShop(page)
   const allIds = pokemonCatalog.map(species => species.id)
   const creature = (owner: 1 | 2, index: number, reserve = false): PokemonIstanza => {
     const species = pokemonCatalog[reserve ? (index + 12) % pokemonCatalog.length : [0, 8, 24, 55, 75, 109][index]]
@@ -29,7 +31,7 @@ async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directD
     return {
       istanzaId: `viewport1080-g${owner}-${reserve ? 'reserve' : 'team'}-${index + 1}`,
       specieId: species.id, nome: `${species.nome} delle Costellazioni d’Oriente`,
-      livello: 20 + index % 6, hp: !reserve && index === 5 ? 0 : 3 + index % 7, xp: 2 + index % 5,
+      livello: 20 + index % 6, hp: !reserve && index === 5 ? 0 : 3 + index % 7, xp: 0,
       ...(conditions[index % 6] ? { stato: conditions[index % 6] } : {}),
     }
   }
@@ -214,11 +216,11 @@ async function assertFitsWithoutScroll(dialog: Locator, context: string) {
   return { portraits }
 }
 
-test.describe('Seven real player tools at 1920×1080 with maximum content', () => {
+test.describe('Six real player tools at 1920×1080 with maximum content', () => {
   test.use({ viewport: { width: 1920, height: 1080 } })
   test.skip(({ isMobile }) => isMobile, 'This requirement targets the desktop 1920×1080 viewport; existing tests cover phones.')
 
-  test('all seven views and their dense selected contents stay visible without scroll or campaign mutations', async ({ page }) => {
+  test('all six views and their dense selected contents stay visible without scroll or campaign mutations', async ({ page }) => {
     test.setTimeout(180_000)
     await seedFullCampaign(page)
     const before = await savedCampaign(page)
@@ -305,19 +307,11 @@ test.describe('Seven real player tools at 1920×1080 with maximum content', () =
           await assertFitsWithoutScroll(dialog, `Borsa: ${itemName} details and real use commands`)
         }
       }
-      if (id === 'negozio') {
-        for (const [, itemName] of ITEMS) await dialog.getByLabel(`Quantità di ${itemName}`, { exact: true }).fill('99')
-        await assertFitsWithoutScroll(dialog, 'Arkastore: all seven cart entries, capacity warnings and checkout')
-        for (const [, itemName] of ITEMS) {
-          await dialog.getByRole('button', { name: `Seleziona ${itemName}`, exact: true }).click()
-          await assertFitsWithoutScroll(dialog, `Arkastore: full cart and ${itemName} description`)
-        }
-      }
       expect(await savedCampaign(page), `${name}: layout consultation preserves all campaign data`).toEqual(before)
     }
   })
 
-  test('all seven G2 consultation views include readonly notices without hiding commands or altering the active turn', async ({ page }) => {
+  test('all six G2 consultation views include readonly notices without hiding commands or altering the active turn', async ({ page }) => {
     test.setTimeout(90_000)
     await seedFullCampaign(page)
     const before = await savedCampaign(page)
@@ -353,7 +347,7 @@ test.describe('Seven real player tools at 1920×1080 with maximum content', () =
     expect(await savedCampaign(page)).toEqual(before)
   })
 
-  test('the direct deposit scene and its seven tools also fit without scrolling', async ({ page }) => {
+  test('the direct deposit scene and its six tools also fit without scrolling', async ({ page }) => {
     await seedFullCampaign(page, false, true)
     const before = await savedCampaign(page)
     const scene = page.locator('.pu-scene-host')
@@ -366,8 +360,8 @@ test.describe('Seven real player tools at 1920×1080 with maximum content', () =
   })
 })
 
-for (const height of [900, 945]) {
-  test.describe(`Seven player tools in a normal desktop browser, 1920×${height} content viewport`, () => {
+for (const height of [900, 945, 1080]) {
+  test.describe(`Six player tools in a normal desktop browser, 1920×${height} content viewport`, () => {
     test.use({ viewport: { width: 1920, height } })
     test.skip(({ isMobile }) => isMobile, 'Desktop browser chrome reduces usable height; phone layouts have separate coverage.')
 
@@ -392,7 +386,6 @@ for (const height of [900, 945]) {
             await assertFitsWithoutScroll(dialog, `${height}px dialog, G1 analysis ${tab}`)
           }
         }
-        if (id === 'negozio') for (const [, itemName] of ITEMS) await dialog.getByLabel(`Quantità di ${itemName}`, { exact: true }).fill('99')
         await assertFitsWithoutScroll(dialog, `${height}px dialog, G1 ${name}, full team, reserves and cart`)
       }
       await dialog.getByRole('button', { name: 'G2 · Bruno delle Costellazioni', exact: true }).click()
@@ -403,7 +396,7 @@ for (const height of [900, 945]) {
       expect(await savedCampaign(page)).toEqual(before)
     })
 
-    test('the direct deposit scene fits all seven tools, then the returned city fits a complete shopping cart', async ({ page }) => {
+    test('the direct deposit scene fits all six tools, then the returned city fits a complete shopping cart', async ({ page }) => {
       test.setTimeout(90_000)
       await seedFullCampaign(page, false, true)
       const before = await savedCampaign(page)
@@ -411,20 +404,14 @@ for (const height of [900, 945]) {
       await expect(scene.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'deposito')
       for (const [name, id] of SCREENS) {
         await selectScreen(scene, name, id)
-        if (id === 'negozio') {
-          // The deposit is a consultation scene, so the purchase guard must remain in force until returning to the city.
-          await expect(scene.getByRole('status').filter({ hasText: 'Raggiungi questa città per acquistare nel suo Arkastore.' })).toBeVisible()
-          for (const [, itemName] of ITEMS) await expect(scene.getByLabel(`Quantità di ${itemName}`, { exact: true })).toBeDisabled()
-        }
         await assertFitsWithoutScroll(scene, `${height}px direct scene, G1 ${name} and full selected contents`)
       }
       expect(await savedCampaign(page)).toEqual(before)
-      await scene.getByRole('button', { name: 'Riprendi la partita', exact: true }).click()
+      await scene.getByRole('button', { name: 'Riprendi il Viaggio', exact: true }).click()
       await expect(page.locator('[data-presented-scene="citta:Venezia"]')).toHaveAttribute('aria-busy', 'false')
       const returnedCampaign = await savedCampaign(page)
       expect(returnedCampaign).toEqual({ ...before, scenaCorrente: before.scenaPrecedente, scenaPrecedente: null })
-      const dialog = await openTools(page)
-      await selectScreen(dialog, 'Negozio', 'negozio')
+      const dialog = await openConfiguredShop(page)
       for (const [, itemName] of ITEMS) {
         const quantity = dialog.getByLabel(`Quantità di ${itemName}`, { exact: true })
         await expect(quantity).toBeEnabled()

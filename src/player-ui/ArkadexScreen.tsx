@@ -161,7 +161,7 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
           <div className="pu-dex-tab-content" data-arkadex-detail={detailTab}>
           {detailTab === 'information' && <>
             <dl className="pu-facts"><div><dt>Tipo</dt><dd><TypeBadge type={species.tipo} /></dd></div><div><dt>Categoria</dt><dd>{species.categoria}</dd></div><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura} / 5</dd></div><div><dt>Livello</dt><dd>{pokemon.livello}</dd></div></dl>
-            {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}. XP: {pokemon.xp}.</p>}
+            {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}.</p>}
           </>}
           {detailTab === 'moves' && <><h3>Mosse al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} /></>}
           {detailTab === 'evolution' && <><h3>Linea evolutiva</h3><div className="pu-evolution">{chain.map((entry, index) => {

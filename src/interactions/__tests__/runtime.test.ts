@@ -31,6 +31,20 @@ function prepare() {
 }
 describe('interazioni configurate: regole, risorse e persistenza atomica', () => {
   beforeEach(prepare)
+  it('opens the configured shop freely without consuming the turn or awarding rewards', () => {
+    useGameStore.setState({ scenaCorrente: { scena: 'citta', payload: { luogo: map.id } } })
+    const entry = definition('test-shop')
+    entry.action = { kind: 'shop' }; entry.repeatable = true; entry.cost = { coins: 0, items: {} }; entry.reward = { coins: 0, items: {} }
+    expect(useInteractionStore.getState().saveInteraction(entry)).toBeNull()
+    const before = useGameStore.getState()
+    expect(before.eseguiInterazioneConfigurata(1, entry.id)).toMatchObject({ ok: true })
+    const after = useGameStore.getState()
+    expect(after.giocatore1).toBe(before.giocatore1)
+    expect(after.turnoOverworld).toBe(before.turnoOverworld)
+    expect(after.interactionProgress).toBe(before.interactionProgress)
+    useGameStore.setState({ posizioniLocali1: { [map.id]: 'n1' } })
+    expect(useGameStore.getState().eseguiInterazioneConfigurata(1, entry.id)).toMatchObject({ ok: false })
+  })
   it('aggiorna premio, completamento e turno nello stesso salvataggio; la ricompensa non si ripete', () => {
     const entry = definition()
     expect(useInteractionStore.getState().saveInteraction(entry)).toBeNull()

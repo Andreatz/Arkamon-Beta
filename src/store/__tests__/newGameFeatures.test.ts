@@ -34,6 +34,9 @@ function preparedCity() {
   initial.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
   initial.posizioniLocali1 = initial.posizioniLocali2 = { Venezia: 'n56' }
   useGameStore.setState(initial)
+  const shop = newInteractionDefinition('Venezia', 'n56', 'test-shop')
+  shop.title = 'Arkastore'; shop.action = { kind: 'shop' }; shop.repeatable = true
+  useInteractionStore.setState({ interactions: [shop] })
   return useGameStore.getState()
 }
 function wildBattle(target: PokemonIstanza): StatoBattaglia {
@@ -179,7 +182,7 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
       savedValues.set(key, value)
     })
     try {
-      const result = before.acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia')
+      const result = before.acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia', 'test-shop')
       expect(result.ok).toBe(false)
       expect(result.message).toContain('non salvato')
       expect(useGameStore.getState()).toBe(before)
@@ -190,7 +193,7 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
       expect(useGameStore.getState().giocatore1.squadra[0].hp).toBe(3)
       expect(localStorage.getItem('arkamon-save')).toBe(persistedBefore)
     } finally { writer.mockRestore() }
-    expect(useGameStore.getState().acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia').ok).toBe(true)
+    expect(useGameStore.getState().acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia', 'test-shop').ok).toBe(true)
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!).state
     expect(saved.giocatore1.monete).toBe(120)
     expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, 'paralysis-heal': 1 })
@@ -229,14 +232,14 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
     preparedCity()
     useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, squadra: [{ ...state.giocatore1.squadra[0], stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }] } }))
     const before = useGameStore.getState(), other = before.giocatore2
-    expect(before.acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia').ok).toBe(true)
+    expect(before.acquistaOggetti(1, { potion: 1, 'paralysis-heal': 1 }, 'Venezia', 'test-shop').ok).toBe(true)
     let state = useGameStore.getState()
     expect(state.giocatore1.monete).toBe(120)
     expect(state.giocatore1.squadra[0]).toMatchObject({ hp: 3, stato: { tipo: 'Paralizzato' } })
     expect(state.giocatore2).toEqual(other)
     expect(state.matchLog.events.filter((event) => event.kind === 'shop')).toHaveLength(1)
     expect(state.matchLog.events.find((event) => event.kind === 'shop')).toMatchObject({ amount: -180, playerId: 1, place: 'Venezia' })
-    expect(state.acquistaOggetti(1, { potion: 1 }, 'Venezia').ok).toBe(false)
+    expect(state.acquistaOggetti(1, { potion: 1 }, 'Venezia', 'test-shop').ok).toBe(false)
     expect(state.applicaOggetto(1, 'paralysis-heal', 'one').ok).toBe(false)
     state.passaTurnoMappaLocale(); useGameStore.getState().passaTurnoMappaLocale()
     expect(useGameStore.getState().applicaOggetto(1, 'paralysis-heal', 'one').ok).toBe(true)

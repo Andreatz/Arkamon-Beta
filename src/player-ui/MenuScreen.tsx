@@ -3,26 +3,24 @@ import { ALLENATORI, POKEMON_BASE } from '@/data'
 import { deriveArkadexProgress } from '@/arkadex/arkadexModel'
 import { getBackground } from '@/data/backgrounds'
 import { useGameStore } from '@/store/gameStore'
-import { CreaturePortrait, KitButton, KitFrame, KitIcon, KitPanel, formatNumber } from './kit'
-import type { PlayerUiAuxiliary, PlayerUiScreen } from './navigation'
+import { CreaturePortrait, KitFrame, KitIcon, KitPanel, formatNumber } from './kit'
+import type { PlayerUiAuxiliary } from './navigation'
 
 interface MenuScreenProps {
   playerId: 1 | 2
-  onNavigate: (screen: PlayerUiScreen) => void
   onAuxiliary: (tool: PlayerUiAuxiliary) => void
-  onResume: () => void
 }
-const tiles: { id: PlayerUiScreen | 'challenges'; title: string; description: string; icon: string }[] = [
-  { id: 'squadra', title: 'Squadra', description: 'Gestisci i tuoi compagni', icon: 'icon-team' },
-  { id: 'deposito', title: 'Deposito', description: 'Organizza le tue riserve', icon: 'icon-box' },
-  { id: 'arkadex', title: 'Arkadex', description: 'Ritrova ogni forma scoperta', icon: 'icon-book' },
-  { id: 'analisi', title: 'Analisi', description: 'Mosse, crescita e condizioni', icon: 'icon-analysis' },
-  { id: 'borsa', title: 'Borsa', description: 'Cure e strumenti di viaggio', icon: 'icon-bag' },
+const tiles: { id: PlayerUiAuxiliary; title: string; description: string; icon: string }[] = [
+  { id: 'journal', title: 'Diario', description: 'Luoghi, incontri e progressi', icon: 'icon-book' },
+  { id: 'backup', title: 'Backup', description: 'Salva e importa la tua partita', icon: 'icon-box' },
+  { id: 'settings', title: 'Impostazioni', description: 'Audio, animazioni e preferenze', icon: 'icon-options' },
+  { id: 'chronicles', title: 'Cronache', description: 'Rivivi le battaglie concluse', icon: 'icon-activity' },
+  { id: 'match', title: 'Registro del match', description: 'Ripercorri gli eventi dell’avventura', icon: 'icon-activity' },
   { id: 'challenges', title: 'Sfide', description: 'Seed e Fanta-Team Builder', icon: 'icon-activity' },
 ]
 const sceneNames: Record<string, string> = { titolo: 'Titolo', laboratorio: 'Laboratorio', 'mappa-principale': 'Mappa principale', 'mappa-griglia': 'Mappa locale', citta: 'Città', percorso: 'Percorso', palestra: 'Palestra', 'centro-pokemon': 'Centro Pokémon', battaglia: 'Battaglia', deposito: 'Deposito', squadra: 'Squadra', evoluzione: 'Evoluzione' }
 
-export function MenuScreen({ playerId, onNavigate, onAuxiliary, onResume }: MenuScreenProps) {
+export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
   const one = useGameStore(state => state.giocatore1)
   const two = useGameStore(state => state.giocatore2)
   const position1 = useGameStore(state => state.posizione1)
@@ -47,8 +45,8 @@ export function MenuScreen({ playerId, onNavigate, onAuxiliary, onResume }: Menu
 
   return <div className="pu-menu-layout">
     <div className="pu-menu-grid">{tiles.map((tile, index) => <button type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
-      aria-label={`Apri ${tile.title}`} disabled={!!context && (tile.id === 'deposito' || tile.id === 'borsa')}
-      onClick={() => tile.id === 'challenges' ? onAuxiliary('challenges') : onNavigate(tile.id)}>
+      aria-label={`Apri ${tile.title}`} disabled={!!context && tile.id !== 'settings' && tile.id !== 'challenges'}
+      onClick={() => onAuxiliary(tile.id)}>
       <KitFrame id={index === 0 ? 'panel-wide' : 'panel-medium'} /><KitIcon id={tile.icon} />
       <span className="pu-tile-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
       <div><h2>{tile.title}</h2><p>{tile.description}</p></div>
@@ -71,11 +69,6 @@ export function MenuScreen({ playerId, onNavigate, onAuxiliary, onResume }: Menu
       <p className="pu-muted">{npcCount} allenatori NPC sconfitti · {obtained} specie ottenute · {formatNumber(player.monete)} monete</p>
       <div className="pu-mini-team" aria-label={`Squadra di G${playerId}`}>{player.squadra.map(pokemon => <span key={pokemon.istanzaId} title={`${pokemon.nome} · Lv. ${pokemon.livello}`}><CreaturePortrait pokemon={pokemon} /></span>)}</div>
       <p className="pu-muted">Scena attuale: {sceneNames[scene.scena] ?? scene.scena}{battle ? ' · scontro in corso' : ''}.</p>
-      <div className="pu-journey-actions">
-        <KitButton onClick={() => onAuxiliary('match')} aria-label="Consulta il registro del match" disabled={!!context}><KitIcon id="icon-book" />Registro del match</KitButton>
-        <KitButton onClick={() => onAuxiliary('backup')} aria-label="Gestisci backup" disabled={!!context}><KitIcon id="icon-box" />Backup della partita</KitButton>
-        <KitButton active onClick={onResume} aria-label="Riprendi il viaggio"><KitIcon id="icon-home" />Riprendi il viaggio</KitButton>
-      </div>
     </KitPanel>
   </div>
 }

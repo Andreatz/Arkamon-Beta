@@ -1,5 +1,6 @@
 import { useSettledBattleCheckpoint } from '@/components/battle/useSettledBattleCheckpoint'
 import { BattleLayoutItem, ImpactPulseOverlay, InfoBox, ScambioModal, SquadIndicator, PokemonBattleSlot, HpBar, ActionButton, SupremeButton, MoveButton, type ImpactPulseDisplay } from '@/components/battle/BattlePresentation'
+import '@/components/ui/gameButton.css'
 import { BattleLogPanel } from '@/components/battle/BattleLogPanel'
 import { useBattleChronicle } from '@/components/battle/useBattleChronicle'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
@@ -900,6 +901,9 @@ export function BattagliaScene() {
       playSound('level-up')
       if (annunciaLivello) messaggi.push(`${attivo.nome} è salito al livello ${xpRes.istanza.livello}!`)
     }
+    if (annunciaLivello && xpRes.xpScartata > 0 && xpRes.istanza.livello < 100) {
+      messaggi.push(`${attivo.nome} ha raggiunto il cap di squadra: l’EXP di questo KO non si accumula. Allena gli Arkamon di livello più basso.`)
+    }
     if (xpRes.evoluzionePendente) {
       playSound('evolution')
       messaggi.push(`Cosa? ${attivo.nome} si sta evolvendo!`)
@@ -1795,7 +1799,10 @@ export function BattagliaScene() {
         editing={layoutEditing}
         onChange={updateBattleLayout}
       >
-        <div className="arka-panel flex h-full w-full items-center justify-center px-4 py-1">
+        <div role="status" data-battle-turn-status className={`${diceRoll ? 'relative isolate' : 'arka-panel'} flex h-full w-full items-center justify-center px-4 py-1`}>
+        {diceRoll && <span className="game-button-frame" data-kit="button-primary" aria-hidden="true" style={{
+          borderImageSource: `url("${assetUrl('/ui/player-kit/button-primary.svg')}")`, borderImageSlice: '44 fill',
+        }} />}
         <span className="arka-layout-content text-sm text-center">
           {terminata
             ? 'Battaglia finita'

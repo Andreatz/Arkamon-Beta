@@ -15,6 +15,7 @@ export interface InteractionResources {
 export type InteractionAction =
   | { kind: 'dialogue' }
   | { kind: 'heal' }
+  | { kind: 'shop' }
   | { kind: 'trainer'; trainerId: number }
   | { kind: 'bush'; bush: string }
   | { kind: 'encounter'; speciesId: number; level: number }

@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import { initialGameSave } from '@/save/gamePersistence'
-import { resolveShopPurchase, shopAvailabilityMessage, shopCartTotal, type ShopRuntimeState } from '../purchase'
+import { resolveShopPurchase as resolvePurchaseAtPoint, shopAvailabilityMessage, shopCartTotal, type ShopRuntimeState } from '../purchase'
+import { newInteractionDefinition } from '@/interactions/types'
 import { hasArkaStore, MAX_ITEM_QUANTITY, normalizeShopInventory, SHOP_ITEMS } from '../catalog'
+
+const shop = { ...newInteractionDefinition('Venezia', 'n56', 'test-shop'), title: 'Arkastore', repeatable: true, action: { kind: 'shop' as const } }
+const point = { interactionId: shop.id, interactions: [shop] }
+const resolveShopPurchase = (state: ShopRuntimeState, id: 1 | 2, cart: unknown, location: string) => resolvePurchaseAtPoint(state, id, cart, location, point)
 
 function campaign(playerId: 1 | 2 = 1): ShopRuntimeState {
   const save = initialGameSave()
   save.giocatoreAttivo = playerId
   save.turnoOverworld = { giocatoreAttivo: playerId, azioniRimaste: 2 }
+  save.posizioniLocali1 = save.posizioniLocali2 = { Venezia: 'n56' }
   save.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
   save.posizione1.luogo = save.posizione2.luogo = 'Venezia'
   for (const player of [save.giocatore1, save.giocatore2]) {
@@ -17,6 +23,26 @@ function campaign(playerId: 1 | 2 = 1): ShopRuntimeState {
 }
 
 describe('checkout Arkastore', () => {
+  it('requires the authored shop point and rechecks it at checkout', () => {
+    const state = campaign()
+    expect(resolvePurchaseAtPoint(state, 1, { potion: 1 }, 'Venezia').ok).toBe(false)
+    expect(resolvePurchaseAtPoint(state, 1, { potion: 1 }, 'Venezia', { ...point, interactionId: 'other' }).ok).toBe(false)
+    expect(resolveShopPurchase(state, 1, { potion: 1 }, 'Venezia').ok).toBe(true)
+    state.posizioniLocali1 = { Venezia: 'n1' }
+    expect(resolveShopPurchase(state, 1, { potion: 1 }, 'Venezia')).toMatchObject({ ok: false, message: expect.stringContaining('pallino configurato') })
+    state.posizioniLocali1 = { Venezia: 'n56' }
+    expect(resolvePurchaseAtPoint(state, 1, { potion: 1 }, 'Venezia', { ...point, interactions: [{ ...shop, enabled: false }] }).ok).toBe(false)
+    expect(resolvePurchaseAtPoint(state, 1, { potion: 1 }, 'Venezia', { ...point, interactions: [] }).ok).toBe(false)
+  })
+
+  it('enforces shop requirements again when a shop was already open', () => {
+    const state = campaign()
+    const locked = { ...shop, requirements: { ...shop.requirements, minLevel: 20 } }
+    expect(resolvePurchaseAtPoint(state, 1, { potion: 1 }, 'Venezia', { ...point, interactions: [locked] }))
+      .toMatchObject({ ok: false, message: expect.stringContaining('livello 20') })
+    expect(state.giocatore1.monete).toBe(4000)
+    expect(state.turnoOverworld.azioniRimaste).toBe(2)
+  })
   it('commits a complete cart, charges catalog prices and closes the interaction turn once', () => {
     const state = campaign()
     const before = structuredClone(state)
@@ -106,7 +132,7 @@ describe('checkout Arkastore', () => {
     state.battaglia = { tipo: 'Selvatico', pokemonA: state.giocatore1.squadra[0], pokemonB: state.giocatore2.squadra[0], hpMaxA: 12, hpMaxB: 12, turnoCorrente: 'A', luogoRitorno: 'Venezia', log: [], evoluzioneInAttesa: null }
     expect(resolveShopPurchase(state, 1, { potion: 1 }, 'Venezia').ok).toBe(false)
     state.battaglia = null
-    state.interactionProgress = { pendingBattle: {} }
+    state.interactionProgress = { pendingBattle: {} as NonNullable<NonNullable<ShopRuntimeState['interactionProgress']>['pendingBattle']> }
     expect(resolveShopPurchase(state, 1, { potion: 1 }, 'Venezia').ok).toBe(false)
   })
 

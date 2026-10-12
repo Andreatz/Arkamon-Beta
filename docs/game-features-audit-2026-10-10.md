@@ -1,5 +1,7 @@
 # Verifica di Arkadex, Arkastore, registro e sfide — 10 ottobre 2026
 
+> Rapporto storico del 10 ottobre. Dal 12 ottobre l’EXP al cap viene scartata, anziché conservata, e l’Arkastore si apre soltanto dai pallini configurati. Vedi [revisione corrente](game-ui-revision-2026-10-12.md). Le prove riportate sotto descrivono il comportamento allora verificato.
+
 La consegna comprende le cinque funzioni richieste: Arkadex, negozi, registro complessivo del match, sfide a seed/Fanta-Team Builder e differenza massima di cinque livelli in squadra. La [guida d’uso](./arkadex-arkastore-challenges.md) documenta controlli, prezzi e regole v1.
 
 ## Dati e integrazione

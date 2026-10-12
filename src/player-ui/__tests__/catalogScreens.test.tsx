@@ -77,7 +77,7 @@ describe('real catalog screen visibility and action boundaries', () => {
     state.battaglia = { pokemonA: latest, pokemonB: state.giocatore2.squadra[0] } as StatoBattaglia
     const markup = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
     expect(markup).toContain('<dt>HP attuali</dt><dd>1</dd>')
-    expect(markup).toContain('Status: Avvelenato. XP: 0.')
+    expect(markup).toContain('Status: Avvelenato.')
     expect(state.giocatore1.squadra[0]).toBe(saved)
     expect(saved.hp).toBe(3)
     expect(saved.stato?.tipo).toBe('Paralizzato')

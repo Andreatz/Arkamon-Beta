@@ -1,3 +1,4 @@
+import { GameButton } from '@/components/ui/GameButton'
 import { useGameStore } from '@store/gameStore'
 import { TurnSummary } from '@/journal/TurnSummary'
 import { useAdminStore } from '@store/adminStore'
@@ -498,12 +499,12 @@ export function MappaPrincipaleScene() {
       <div className="local-map-heading"><h1>{canAccessSecretLocation(giocatore, activePosition) ? 'Percorso 15' : 'Luogo non disponibile'}</h1><span>G{giocatoreAttivo} · {giocatore.nome}</span></div>
       <span className="local-map-budget" role="status">{turnoOverworld.azioniRimaste} azioni</span>
       {canAccessSecretLocation(giocatore, activePosition) && <>
-        <button className="arka-button-secondary" onClick={() => {
+        <GameButton onClick={() => {
           if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, SECRET_LOCATION_ID)) vaiAScena('percorso', { luogo: SECRET_LOCATION_ID })
-        }}>Riapri Percorso 15</button>
-        <button className="arka-button" disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>Torna a Roma · 1 movimento</button>
+        }}>Riapri Percorso 15</GameButton>
+        <GameButton tone="primary" disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>Torna a Roma · 1 movimento</GameButton>
       </>}
-      <button className="arka-button-secondary" onClick={passaTurnoOverworld}>Passa turno</button>
+      <GameButton onClick={passaTurnoOverworld}>Passa turno</GameButton>
     </header>
     <p>Il passaggio conduce a Roma. Tornare alla città consuma un movimento.</p>
   </section>
@@ -692,13 +693,13 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('enterButton', rect)}
         zIndex={35}
       >
-        <button
+        <GameButton
           onClick={interactWithCurrentNode}
           disabled={!aperturaDisponibile}
-          className="arka-button h-full w-full overflow-hidden px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-45"
+          tone="primary" className="h-full w-full overflow-hidden px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-45"
         >
           <span className="arka-layout-content block truncate">{getLocalMap(activeNodeName) ? 'Apri mappa di' : 'Entra in'} {activeNodeName.replace('_', ' ')}</span>
-        </button>
+        </GameButton>
       </AdminLayoutItem>
 
       <AdminLayoutItem
@@ -709,12 +710,12 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('passButton', rect)}
         zIndex={35}
       >
-        <button
+        <GameButton
           onClick={passaTurnoOverworld}
-          className="arka-button-secondary h-full w-full overflow-hidden px-2 py-1 text-sm"
+          className="h-full w-full overflow-hidden px-2 py-1 text-sm"
         >
           <span className="arka-layout-content block truncate">Passa turno</span>
-        </button>
+        </GameButton>
       </AdminLayoutItem>
 
       <AdminLayoutItem
@@ -725,12 +726,12 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('depositButton', rect)}
         zIndex={35}
       >
-        <button
+        <GameButton
           onClick={apriDeposito}
-          className="arka-button-secondary h-full w-full overflow-hidden px-2 py-1 text-sm"
+          className="h-full w-full overflow-hidden px-2 py-1 text-sm"
         >
           <span className="arka-layout-content block truncate">Deposito</span>
-        </button>
+        </GameButton>
       </AdminLayoutItem>
 
       <AdminLayoutItem
@@ -741,12 +742,12 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('titleButton', rect)}
         zIndex={35}
       >
-        <button
+        <GameButton
           onClick={() => vaiAScena('titolo')}
-          className="arka-button-secondary h-full w-full overflow-hidden px-2 py-1 text-sm"
+          className="h-full w-full overflow-hidden px-2 py-1 text-sm"
         >
           <span className="arka-layout-content block truncate">Titolo</span>
-        </button>
+        </GameButton>
       </AdminLayoutItem>
 
       {player1NodeName !== SECRET_LOCATION_ID && <MainMapAvatar

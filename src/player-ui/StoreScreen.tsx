@@ -3,12 +3,14 @@ import { useGameStore } from '@/store/gameStore'
 import { MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, SHOP_ITEMS, type ShopCart, type ShopItemId } from '@/shop/catalog'
 import { shopAvailabilityMessage, shopCartTotal } from '@/shop/purchase'
 import { ITEM_ICONS, KitButton, KitIcon, KitPanel } from './kit'
+import { useInteractionStore } from '@/interactions/interactionStore'
 
-export interface StoreScreenProps { playerId: 1 | 2; inputBlocked?: boolean }
+export interface StoreScreenProps { playerId: 1 | 2; inputBlocked?: boolean; shopInteractionId?: string }
 
 /** Browsing is free; purchases use the existing atomic, persisted checkout action. */
-export function StoreScreen({ playerId, inputBlocked = false }: StoreScreenProps) {
+export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId }: StoreScreenProps) {
   const state = useGameStore()
+  const interactions = useInteractionStore(s => s.interactions)
   const player = state[playerId === 1 ? 'giocatore1' : 'giocatore2']
   const position = state[playerId === 1 ? 'posizione1' : 'posizione2']
   const location = state.scenaCorrente.scena === 'citta'
@@ -17,8 +19,8 @@ export function StoreScreen({ playerId, inputBlocked = false }: StoreScreenProps
   const [selectedId, setSelectedId] = useState<ShopItemId>(SHOP_ITEMS[0].id)
   const [cart, setCart] = useState<ShopCart>({})
   const [message, setMessage] = useState('')
-  useEffect(() => { setCart({}); setMessage(''); setSelectedId(SHOP_ITEMS[0].id) }, [playerId, location, state.campaignRevision])
-  const unavailable = shopAvailabilityMessage(state, playerId, location)
+  useEffect(() => { setCart({}); setMessage(''); setSelectedId(SHOP_ITEMS[0].id) }, [playerId, location, shopInteractionId, state.campaignRevision])
+  const unavailable = shopAvailabilityMessage(state, playerId, location, { interactionId: shopInteractionId, interactions })
   const selected = SHOP_ITEMS.find((item) => item.id === selectedId) ?? SHOP_ITEMS[0]
   const total = shopCartTotal(cart)
   const quantity = Object.values(cart).reduce((sum, value) => sum + (value ?? 0), 0)
@@ -65,7 +67,7 @@ export function StoreScreen({ playerId, inputBlocked = false }: StoreScreenProps
         <div className="pu-store-totals"><strong>Carrello: {quantity} oggetti · {total} ₳</strong><span>Saldo dopo l’acquisto: {Math.max(0, player.monete - total)} ₳</span></div>
         <div className="pu-store-actions"><KitButton disabled={!quantity} onClick={() => { setCart({}); setMessage('') }}>Svuota carrello</KitButton>
           <KitButton active disabled={editBlocked || !quantity || insufficient || !!capacityItem} onClick={() => {
-            const result = state.acquistaOggetti(playerId, cart, location)
+            const result = state.acquistaOggetti(playerId, cart, location, shopInteractionId)
             setMessage(result.message)
             if (result.ok) setCart({})
           }}>Acquista carrello</KitButton></div>

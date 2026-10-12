@@ -3,8 +3,10 @@ import { useGameStore } from '@/store/gameStore'
 import { useInteractionStore } from './interactionStore'
 import { interactionRequirementMessage, isInteractionComplete } from './runtime'
 import './interactions.css'
+import { openPlayerUi } from '@/player-ui/navigation'
+import { GameButton } from '@/components/ui/GameButton'
 
-export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false }: { mapId: string; nodeId: string; inputBlocked?: boolean }) {
+export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false, onShopOpened }: { mapId: string; nodeId: string; inputBlocked?: boolean; onShopOpened?: () => void }) {
   const definitions = useInteractionStore((s) => s.interactions)
   const playerId = useGameStore((s) => s.giocatoreAttivo)
   const player1 = useGameStore((s) => s.giocatore1)
@@ -30,9 +32,16 @@ export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false
         <small>{entry.scope === 'shared' ? 'Si completa una volta per la partita; il premio va a chi la completa.' : 'Completamento indipendente per questo giocatore.'}{entry.repeatable ? ' Attività ripetibile.' : ''}</small>
         {cost && <small>Costo all’avvio: {cost}.</small>}{reward && <small>Ricompensa al completamento: {reward}{['trainer', 'bush', 'encounter'].includes(entry.action.kind) ? ', soltanto dopo una vittoria o cattura' : ''}.</small>}
         {requirement && <p>{requirement}</p>}
-        <button className="arka-button" disabled={disabled} onClick={() => setMessage(execute(playerId, entry.id).message)}>
-          {done ? 'Completata' : entry.action.kind === 'heal' ? 'Cura la squadra' : ['trainer', 'bush', 'encounter'].includes(entry.action.kind) ? 'Avvia incontro' : 'Interagisci'}
-        </button>
+        <GameButton tone="primary" disabled={disabled} onClick={() => {
+          const result = execute(playerId, entry.id)
+          setMessage(result.message)
+          if (result.ok && entry.action.kind === 'shop') {
+            onShopOpened?.()
+            openPlayerUi('negozio', { playerId, shopInteractionId: entry.id })
+          }
+        }}>
+          {done ? 'Completata' : entry.action.kind === 'shop' ? 'Apri Arkastore' : entry.action.kind === 'heal' ? 'Cura la squadra' : ['trainer', 'bush', 'encounter'].includes(entry.action.kind) ? 'Avvia incontro' : 'Interagisci'}
+        </GameButton>
       </article>
     })}
     <p role="status" aria-live="polite">{message}</p>

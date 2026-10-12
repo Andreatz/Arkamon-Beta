@@ -1,3 +1,4 @@
+import { GameButton } from '@/components/ui/GameButton'
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LocalMapBoard, type LocalMapPlayer } from '@/components/map/LocalMapBoard'
 import { getLocalMap, type LocalMapDefinition } from '@/data/localMaps'
@@ -32,7 +33,7 @@ function ActivityDialog({ open, onClose, children, title = 'Attività del luogo'
     return () => { element.removeEventListener('keydown', keyboard); release(); before?.focus() }
   }, [open, onClose])
   return <div ref={dialog} hidden={!open} role="dialog" aria-modal="true" aria-label={title} className="local-map-activities">
-    <header><div><h2>{title}</h2><p>Un’interazione conclude il turno.</p></div><button ref={close} className="arka-button-secondary" onClick={onClose}>Chiudi attività</button></header>
+    <header><div><h2>{title}</h2><p>Un’interazione conclude il turno.</p></div><GameButton ref={close} onClick={onClose}>Chiudi attività</GameButton></header>
     <div className="local-map-activities-content">{children}</div>
   </div>
 }
@@ -106,20 +107,20 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
 
   if (secret && !secretAccess) return <section className="local-map-scene" aria-label="Luogo non disponibile">
     <p>Questo luogo non è disponibile per il giocatore attivo.</p>
-    <button className="arka-button-secondary" onClick={() => navigate('mappa-principale')}>Mappa principale</button>
+    <GameButton onClick={() => navigate('mappa-principale')}>Mappa principale</GameButton>
   </section>
 
   return <section className="local-map-scene" aria-label={`Esplorazione ${map.id.replace(/_/g, ' ')}`}>
     <header className="local-map-toolbar">
-      <button className="arka-button-secondary" disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</button>
+      <GameButton disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</GameButton>
       <div className="local-map-heading"><h1>{map.id.replace(/_/g, ' ')}</h1><span>G{actor} · {player.nome}</span></div>
       <span className="local-map-budget" role="status">{remaining} {remaining === 1 ? 'azione' : 'azioni'}</span>
-      <button className="arka-button-secondary" disabled={blocked} onClick={() => setActivitiesOpen(true)}>Attività</button>
-      {(secretPassageVisible || secret) && <button className="arka-button-secondary"
+      <GameButton disabled={blocked} onClick={() => setActivitiesOpen(true)}>Attività</GameButton>
+      {(secretPassageVisible || secret) && <GameButton
         disabled={!canMove || activitiesOpen || interactionOpen} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
         {secret ? 'Torna a Roma' : 'Passaggio segreto'} · 1 movimento
-      </button>}
-      <button className="arka-button" disabled={blocked} onClick={passTurn}>Passa turno</button>
+      </GameButton>}
+      <GameButton tone="primary" disabled={blocked} onClick={passTurn}>Passa turno</GameButton>
     </header>
     <div className="local-map-play-area">
       <LocalMapBoard map={map} players={players} activePlayerId={actor} remainingActions={remaining} canMove={canMove}
@@ -133,15 +134,15 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
         {currentNode ? <><strong>{pointInteractions[0]?.title ?? nodeLabel(selected ?? currentNode.id)}</strong><span>{pointInteractions.length ? `${pointInteractions.length} interazioni disponibili sul punto` : 'Interazione da definire'}</span></> : <span>Questo giocatore si trova in un altro luogo.</span>}
       </div>
       <nav aria-label="Punti raggiungibili" className="local-map-neighbours">
-        {adjacent.map((id) => <button key={id} className="arka-button-secondary" disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)}</button>)}
+        {adjacent.map((id) => <GameButton key={id} disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)}</GameButton>)}
       </nav>
-      {pointInteractions.length > 0 && <button className="arka-button-secondary" disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</button>}
+      {pointInteractions.length > 0 && <GameButton disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</GameButton>}
       <p>{remaining > 0 ? 'Due movimenti, oppure un movimento e un’interazione.' : 'Turno concluso. Passa il controllo all’altro giocatore.'}</p>
       <TurnSummary />
     </footer>
     <ActivityDialog open={activitiesOpen} onClose={closeActivities}>{activities}</ActivityDialog>
     {currentNode && <ActivityDialog open={interactionOpen} onClose={closeInteraction} title="Interazioni del punto">
-      <ConfiguredInteractionPanel mapId={map.id} nodeId={currentNode.id} inputBlocked={blocked} />
+      <ConfiguredInteractionPanel mapId={map.id} nodeId={currentNode.id} inputBlocked={blocked} onShopOpened={closeInteraction} />
     </ActivityDialog>}
   </section>
 }

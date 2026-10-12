@@ -83,7 +83,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRo
         exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 12 }}
         transition={{ duration: reducedMotion ? 0 : 0.22 / speed }}
         onAnimationComplete={() => revealRef.current?.panelVisible()}
-        className="battle-dice-panel rounded-md border border-white/20 bg-slate-950/90 px-5 py-4 text-center text-white shadow-2xl backdrop-blur-sm"
+        className="battle-dice-panel rounded-md border border-white/20 px-5 py-4 text-center text-white shadow-2xl"
       >
         <p className="text-[11px] font-black uppercase text-blue-300 arka-letter-outline">
           {roll.side === 'A' ? 'Lancio giocatore' : 'Lancio avversario'}

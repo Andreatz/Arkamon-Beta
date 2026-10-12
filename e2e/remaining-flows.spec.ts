@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import type { AudienceRound, AudienceRoundRequest } from '../src/audience/types'
 
-test('deposit swaps and cross-box moves survive reload with residual HP, status and separate player inventories', async ({ page }) => {
+test('deposit discards legacy EXP; swaps and cross-box moves survive reload with residual HP, status and separate inventories', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   await page.addInitScript(() => {
@@ -41,12 +41,13 @@ test('deposit swaps and cross-box moves survive reload with residual HP, status 
   await expect(scene.getByRole('button', { name: 'Squadra, posto 2: vuoto', exact: true })).toBeVisible()
   const moved = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   expect(moved.giocatore1.squadra).toEqual([initial.giocatore1.deposito['1:1']])
-  expect(moved.giocatore1.deposito['1:1']).toEqual(initial.giocatore1.squadra[0])
-  expect(moved.giocatore1.deposito['2:35']).toEqual(initial.giocatore1.squadra[1])
+  expect(moved.giocatore1.deposito['1:1']).toEqual({ ...initial.giocatore1.squadra[0], xp: 0 })
+  expect(moved.giocatore1.deposito['2:35']).toEqual({ ...initial.giocatore1.squadra[1], xp: 0 })
   expect(moved.giocatore2).toEqual(initial.giocatore2)
   expect(moved.turnoOverworld).toEqual(initial.turnoOverworld)
-  const ids = [...moved.giocatore1.squadra, ...Object.values(moved.giocatore1.deposito)] as { istanzaId: string }[]
+  const ids = [...moved.giocatore1.squadra, ...Object.values(moved.giocatore1.deposito)] as { istanzaId: string; xp: number; livello: number }[]
   expect(new Set(ids.map((pokemon) => pokemon.istanzaId)).size).toBe(3)
+  expect(ids.every((pokemon) => pokemon.xp === 0 && pokemon.livello === 5)).toBe(true)
 
   await page.reload()
   await expect(scene).toHaveAttribute('aria-busy', 'false')

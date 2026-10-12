@@ -55,6 +55,19 @@ describe('cronaca rivelata e replay senza nuovi dadi', () => {
     expect(resumed.events.filter((event) => event.kind === 'xp')).toHaveLength(1)
   })
 
+  it('registra il premio KO scartato al cap senza promettere EXP conservata o livelli futuri', () => {
+    const attacker = pokemon('A', 14, 13)
+    const target = pokemon('B', 5, 1)
+    const teammate = pokemon('low-ko', 9, 0)
+    const result = calcolaDanno(attacker, target, 0, () => 0, false)!
+    const settled = resolveBattleAttack(result, 'A', [attacker, teammate], [target], 14)
+    const event = settledAttackEvents(result, settled, 'A', 'battle:1').find((entry) => entry.kind === 'xp')!
+    expect(event).toMatchObject({ title: 'A: EXP non accumulata', levelBefore: 14, levelAfter: 14, actor: { level: 14, hp: 13 } })
+    expect(event.messages.join(' ')).toContain('Cap di squadra raggiunto')
+    expect(event.messages.join(' ')).toContain('non darà livelli successivamente')
+    expect(settled.attacker.xp).toBe(0)
+  })
+
   it('rivedere o esportare la cronaca non usa il generatore casuale e non cambia HP', () => {
     const attacker = pokemon('A', 10, 5)
     const target = pokemon('B', 20, 20)

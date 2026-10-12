@@ -3,7 +3,7 @@ import { getPokemon } from '@/data'
 import { MAIN_MAP_START_NODE, getAdjacentMainMapNodes } from '@/data/mainMapRoads'
 import { getLocalMap } from '@/data/localMaps'
 import { getLocalMapNode } from '@/engine/localMapMovement'
-import { calcolaHPMax } from '@/engine/battleEngine'
+import { calcolaHPMax, clearStoredExperience } from '@/engine/battleEngine'
 import { SECRET_LOCATION_ID, SECRET_LOCATION_ORIGIN, canAccessSecretLocation, hasUnlockedSecretLocation, isSecretLocationPosition } from '@/data/secretLocation'
 import { restoreBattleCheckpoint } from '@/components/battle/battleCheckpoint'
 import { emptyInteractionProgress, type InteractionProgress } from '@/interactions/types'
@@ -99,9 +99,10 @@ function restorePokemon(value: unknown, warn: Warn, label: string): PokemonIstan
   const pokemon: PokemonIstanza = {
     istanzaId: value.istanzaId, specieId: value.specieId, livello: value.livello as number, hp: value.hp,
     nome: typeof value.nome === 'string' && value.nome.trim() ? value.nome : getPokemon(value.specieId)!.nome,
-    xp: finite(value.xp) && value.xp >= 0 ? value.xp : 0,
+    xp: 0,
   }
-  if (pokemon.nome !== value.nome || pokemon.xp !== value.xp) warn(`${label}: recuperati nome o esperienza mancanti.`)
+  if (pokemon.nome !== value.nome || !finite(value.xp) || value.xp < 0) warn(`${label}: recuperati nome o esperienza mancanti.`)
+  else if (value.xp > 0) warn(`${label}: rimossa l’esperienza accumulata dal vecchio salvataggio; livelli, HP e status restano invariati. L’EXP si usa subito e non si accumula.`)
   if (pokemon.hp > calcolaHPMax(pokemon)) {
     pokemon.hp = calcolaHPMax(pokemon)
     warn(`${label}: HP oltre il massimo corretti senza applicare una cura.`)
@@ -123,9 +124,9 @@ function restorePlayer(value: unknown, fallback: StatoGiocatore, warn: Warn): St
   const label = `Giocatore ${fallback.id}`
   if (value !== undefined && !isSaveRecord(value)) warn(`${label}: dati non validi, recuperate le impostazioni iniziali.`)
   const squadra = Array.isArray(g.squadra)
-    ? g.squadra.map((p) => restorePokemon(p, warn, label)).filter((p): p is PokemonIstanza => p !== null) : fallback.squadra
+    ? g.squadra.map((p) => restorePokemon(p, warn, label)).filter((p): p is PokemonIstanza => p !== null) : fallback.squadra.map(clearStoredExperience)
   if (g.squadra !== undefined && !Array.isArray(g.squadra)) warn(`${label}: squadra non valida.`)
-  const deposito: Record<string, PokemonIstanza> = isSaveRecord(g.deposito) ? {} : { ...fallback.deposito }
+  const deposito: Record<string, PokemonIstanza> = isSaveRecord(g.deposito) ? {} : Object.fromEntries(Object.entries(fallback.deposito).map(([slot, pokemon]) => [slot, clearStoredExperience(pokemon)]))
   if (g.deposito !== undefined && !isSaveRecord(g.deposito)) warn(`${label}: deposito non valido.`)
   if (isSaveRecord(g.deposito)) for (const [slot, value] of Object.entries(g.deposito)) {
     const parts = /^(\d+):(\d+)$/.exec(slot)
@@ -284,10 +285,18 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
 
 /** Never serializes functions, UI settings from other stores or unknown root fields. */
 export function serializeGameState(state: GameSaveState): Record<string, unknown> {
-  const player = (g: StatoGiocatore) => ({ ...g, cespugliVisitati: [...g.cespugliVisitati], allenatoriSconfitti: [...g.allenatoriSconfitti], caselleConsumate: [...g.caselleConsumate] })
+  const player = (g: StatoGiocatore) => ({ ...g,
+    squadra: g.squadra.map(clearStoredExperience),
+    deposito: Object.fromEntries(Object.entries(g.deposito).map(([slot, pokemon]) => [slot, clearStoredExperience(pokemon)])),
+    cespugliVisitati: [...g.cespugliVisitati], allenatoriSconfitti: [...g.allenatoriSconfitti], caselleConsumate: [...g.caselleConsumate] })
+  const battaglia = state.battaglia ? { ...state.battaglia,
+    pokemonA: clearStoredExperience(state.battaglia.pokemonA), pokemonB: clearStoredExperience(state.battaglia.pokemonB),
+    ...(state.battaglia.squadraA ? { squadraA: state.battaglia.squadraA.map(clearStoredExperience) } : {}),
+    ...(state.battaglia.squadraB ? { squadraB: state.battaglia.squadraB.map(clearStoredExperience) } : {}),
+  } : null
   return {
     giocatore1: player(state.giocatore1), giocatore2: player(state.giocatore2), giocatoreAttivo: state.giocatoreAttivo,
-    battaglia: state.battaglia, rivaleStarterId: state.rivaleStarterId, posizione1: state.posizione1, posizione2: state.posizione2,
+    battaglia, rivaleStarterId: state.rivaleStarterId, posizione1: state.posizione1, posizione2: state.posizione2,
     turnoOverworld: state.turnoOverworld, posizioniLocali1: state.posizioniLocali1, posizioniLocali2: state.posizioniLocali2,
     scenaCorrente: state.scenaCorrente, scenaPrecedente: state.scenaPrecedente, audioMuted: state.audioMuted,
     interactionProgress: state.interactionProgress,
