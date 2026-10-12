@@ -19,7 +19,7 @@ Questa consegna implementa le otto priorità della sezione «Priorità rimaste»
 
 La revisione nativa è `7f0c93114684929e1b678855ab74fe1297281e8f`. `src/data/media-release.json` conserva SHA della revisione e impronta canonica del manifest. Il confezionamento controlla la presenza, il nome esatto, la dimensione e lo SHA-256 di ogni pagina; una conversione parziale o un manifest non vincolato impediscono la build.
 
-La release in bozza contiene sette tar nativi entro 192 MiB, un tar con 163 metadati e tre file indice/checksum. Tutte le 2.120 pagine sono verificate; 27 pagine campione e tutti i metadati sono estratti e confrontati. I sorgenti restano intatti. Vedere [rapporto delle animazioni](arkamon-native-pages-2026-10-12.md).
+La [release in bozza](https://github.com/Andreatz/Arkamon-Beta/releases/tag/untagged-8992bd9b77d975e73efb) contiene sette tar nativi entro 192 MiB, un tar con 163 metadati e tre file indice/checksum. Tutte le 2.120 pagine sono verificate; 27 pagine campione e tutti i metadati sono estratti e confrontati. I sorgenti restano intatti. Vedere [rapporto delle animazioni](arkamon-native-pages-2026-10-12.md).
 
 Per rigenerare: `npm run animations:pages`, quindi commit dei file generati, `npm run media:pin` e commit del nuovo pin. `npm run media:release` produce gli archivi fuori dal checkout. `GITHUB_PAGES=true npm run build` produce il pacchetto separato; `VITE_MEDIA_BASE_URL` può indirizzare una copia della stessa struttura su una CDN. Le build locali/desktop conservano l’uso dei percorsi locali. Il file `dist/media-release.json` elenca risorse locali, esterne e sorgenti esclusi.
 
@@ -35,7 +35,7 @@ Le prove includono un browser che nega l’accesso a `localStorage` già al prim
 
 ## Verifica e limiti
 
-La suite completa precedente alla revisione finale passa **2.523 test in 122 file**. Le regressioni successive coprono archivi reali, getter storage bloccato, nomi atomici, due varianti di passaggio turno, oggetti e serializzazione canonica. Il risultato completo del commit consegnato è riportato dalla CI della pull request.
+La suite completa passa **2.542 test in 123 file**, oltre a **9 test security**. Le regressioni coprono archivi reali, getter storage bloccato, nomi atomici, due varianti di passaggio turno, oggetti e serializzazione canonica. Il risultato del commit consegnato è riportato dalla CI della pull request.
 
 Le prove browser usano Chromium con contesti isolati, desktop 1920×1080 e Pixel 7 emulato, senza leggere o sostituire i progressi del browser abituale. Coprono UI, stato su disco, quote rifiutate, retry, ricarica, focus, cap, condivisione/versioni, pagine lente e due creature simultanee. La build con `/Arkamon-Beta/` è stata provata nel browser usando asset remoti reali: cattura salvata e ripresa, Deposito con ritratti caricati, geometria 1896×1056 senza scroll, nessun errore JavaScript e nessun chunk battaglia/Admin/nativo richiesto al Titolo.
 
