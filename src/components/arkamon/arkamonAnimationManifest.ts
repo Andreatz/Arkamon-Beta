@@ -101,6 +101,11 @@ export const ARKAMON_ANIMATION_MANIFEST: Partial<Record<number, ArkamonAnimation
   31: frontAnimationSet(31, 768, { width: 288, height: 288, left: 264, top: 240 }, 32, 11),
   32: frontAnimationSet(32, 768, { width: 256, height: 256, left: 256, top: 258 }, 30, 25),
   33: frontAnimationSet(33, 768, { width: 320, height: 320, left: 226, top: 227 }, 45, 14),
+  34: frontAnimationSet(34, 704, { width: 256, height: 256, left: 223, top: 227 }, 49, 18),
+  35: frontAnimationSet(35, 768, { width: 288, height: 288, left: 240, top: 239 }, 31, 7),
+  36: frontAnimationSet(36, 768, { width: 256, height: 256, left: 257, top: 230 }, 50, 30),
+  37: frontAnimationSet(37, 768, { width: 256, height: 256, left: 256, top: 241 }, 31, 23),
+  38: frontAnimationSet(38, 768, { width: 256, height: 256, left: 256, top: 258 }, 45, 18),
 }
 
 export function getArkamonAnimationAsset(

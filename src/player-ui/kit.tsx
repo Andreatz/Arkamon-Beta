@@ -2,7 +2,6 @@ import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, typ
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { getMossa, getPokemon } from '@/data'
 import { calcolaHPMax, getMossaAlLivello } from '@/engine/battleEngine'
-import { getArkamonAnimationAsset } from '@/components/arkamon/arkamonAnimationManifest'
 import { assetUrl } from '@/utils/assetUrl'
 import { getPortraitFraming } from './portraitFraming'
 import './player-ui.css'
@@ -36,25 +35,22 @@ export function TypeBadge({ type }: { type: TipoPokemon }) {
   return <span className="pu-type"><KitIcon id={TYPE_ICONS[type]} />{type}</span>
 }
 function CreatureImage({ speciesId }: { speciesId: number }) {
-  const idle = getArkamonAnimationAsset(speciesId, 'front', 'idle')
-  const poster = idle ? idle.src.replace(/idle\.webp$/, 'idle-poster.webp') : `/sprites/front_sprites/${speciesId}.png`
-  const [fallback, setFallback] = useState(false)
+  const source = `/sprites/front_sprites/${speciesId}.png`
   const [loadedSource, setLoadedSource] = useState<string | null>(null)
-  const source = fallback ? `/sprites/front_sprites/${speciesId}.png` : poster
   const framing = getPortraitFraming(source)
   useEffect(() => {
     // Native SVG image load events are not consistently delivered by React.
-    // Decode the same resource explicitly, including a cached poster or fallback.
+    // Decode the official front sprite; framing keeps all of its visible pixels.
     let current = true
     const resource = new Image()
     resource.src = assetUrl(source)
     resource.decode().then(() => {
       if (current) setLoadedSource(source)
     }).catch(() => {
-      if (current && !fallback) setFallback(true)
+      if (current) setLoadedSource(null)
     })
     return () => { current = false }
-  }, [source, fallback])
+  }, [source])
   return <svg className="pu-creature-art" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet"
     aria-hidden="true" focusable="false" data-species-id={speciesId} data-creature-source={source}
     data-creature-loaded={loadedSource === source ? 'true' : undefined}>
