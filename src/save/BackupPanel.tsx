@@ -40,6 +40,7 @@ export function BackupPanel() {
   }
   const restore = () => {
     if (!preview || !accepted) return
+    ++fileReadRevision.current
     const result = restoreGameBackup(preview)
     if (!result.ok) { setError(result.error); return }
     setPreviousAvailable(true); setPreview(null); setAccepted(false); setError(null)
@@ -53,6 +54,7 @@ export function BackupPanel() {
       <p className="font-bold">Copie automatiche dei progressi precedenti</p>
       <p>Ogni copia conserva un punto già valido della campagna. Controlla l’anteprima prima del ripristino.</p>
       <div className="mt-2 flex flex-wrap gap-2">{copies.map((copy, index) => <button key={copy.createdAt + index} type="button" className="rounded border border-current px-3 py-2" onClick={() => {
+        ++fileReadRevision.current
         const result = validateGameBackup(copy.backup)
         setAccepted(false); setError(null); setMessage(null)
         if (result.ok) setPreview(result.preview); else setError(result.error)
@@ -90,7 +92,7 @@ export function BackupPanel() {
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
         <span>Confermo la sostituzione della partita attuale{preview.warnings.length ? ' e accetto i recuperi indicati' : ''}. Verrà conservato un backup della partita precedente.</span></label>
       <div className="flex flex-wrap gap-2"><button type="button" disabled={!accepted} className="rounded border border-current px-3 py-2 font-semibold disabled:opacity-40" onClick={restore}>Ripristina questa partita</button>
-        <button type="button" className="rounded border border-current px-3 py-2" onClick={() => { setPreview(null); setAccepted(false) }}>Annulla importazione</button></div>
+        <button type="button" className="rounded border border-current px-3 py-2" onClick={() => { ++fileReadRevision.current; setPreview(null); setAccepted(false) }}>Annulla importazione</button></div>
     </div>}
   </section>
 }

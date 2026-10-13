@@ -2,10 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameStore } from '@/store/gameStore'
 import { GAME_SAVE_STORAGE_KEY, initialGameSave, serializeGameState } from '@/save/gamePersistence'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
-import { createChallengeSession } from './challengeRules'
+import { createChallengeSession, generateSeedTeam } from './challengeRules'
 import { ACTIVE_CHALLENGE_STORAGE_KEY } from './challengePersistence'
 import { CHALLENGE_STORAGE_KEY, useChallengeStore } from './challengeStore'
 import { exitChallenge, launchChallenge } from './challengeRuntime'
+import { serializeGameBackup, stateFromValidatedBackup, validateGameBackup } from '@/save/gameBackup'
 
 vi.hoisted(() => {
   class MemoryStorage implements Storage {
@@ -86,6 +87,24 @@ describe('Challenge campaign preservation and durable recovery', () => {
     expect(useGameStore.getState().challengeContext).toBeNull()
     expect(localStorage.getItem(ACTIVE_CHALLENGE_STORAGE_KEY)).toBeNull()
     expect(useChallengeStore.getState().results).toEqual([])
+  })
+
+  it.each([
+    { version: 1, mode: 'seed' }, { version: 2, mode: 'seed' },
+    { version: 1, mode: 'fanta' }, { version: 2, mode: 'fanta' },
+  ] as const)('exports the conserved campaign while a $mode rules v$version challenge is active', ({ version, mode }) => {
+    const original = serializeGameState(useGameStore.getState())
+    const configured = createChallengeSession({ version, mode, seed: 'Backup-during-challenge', speciesIds: mode === 'seed' ? [] : generateSeedTeam('Backup-during-challenge', 'player', version) })
+    expect(launchChallenge(configured).ok).toBe(true)
+    const diskBefore = localStorage.getItem(ACTIVE_CHALLENGE_STORAGE_KEY)
+    const checked = validateGameBackup(serializeGameBackup(useGameStore.getState()))
+    expect(checked.ok).toBe(true)
+    if (!checked.ok) throw new Error(checked.error)
+    expect(serializeGameState(stateFromValidatedBackup(checked.preview)!)).toEqual(original)
+    expect(checked.preview.players.map(player => player.name)).toEqual(['Campagna uno', 'Campagna due'])
+    expect(checked.preview.battle).toBe(false)
+    expect(checked.preview.source).not.toContain('challengeContext')
+    expect(localStorage.getItem(ACTIVE_CHALLENGE_STORAGE_KEY)).toBe(diskBefore)
   })
 
   it('refuses to score an unfinished challenge and keeps the recoverable active checkpoint', () => {

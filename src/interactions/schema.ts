@@ -44,7 +44,7 @@ export function validateInteraction(value: unknown): string | null {
   return null
 }
 
-export function validateCatalog(value: unknown): { catalog?: InteractionCatalog; error?: string } {
+export function validateCatalog(value: unknown, options: { allowLegacyRepeatableRequirements?: boolean; legacyInteractions?: readonly InteractionDefinition[] } = {}): { catalog?: InteractionCatalog; error?: string; warning?: string } {
   if (!object(value) || value.version !== 1 || !Array.isArray(value.interactions) || value.interactions.length > 200) return { error: 'Formato non valido: importa un catalogo Arkamon versione 1 (massimo 200 interazioni).' }
   const ids = new Set<string>()
   for (const entry of value.interactions) {
@@ -55,10 +55,22 @@ export function validateCatalog(value: unknown): { catalog?: InteractionCatalog;
     ids.add(interaction.id)
   }
   const entries = value.interactions as InteractionDefinition[]
+  let warning: string | undefined
   for (const entry of entries) {
     if (entry.requirements.completedInteractions.some((id) => !ids.has(id))) return { error: `La tappa «${entry.title}» richiede un’interazione assente dal catalogo.` }
     if (entry.requirements.completedInteractions.some((id) => entries.find((candidate) => candidate.id === id)!.action.kind === 'shop')) {
       return { error: `La tappa «${entry.title}» richiede un Arkastore: i negozi non si completano e non possono essere tappe precedenti.` }
+    }
+    const repeatableRequirements = entry.requirements.completedInteractions.filter((id) => entries.find((candidate) => candidate.id === id)!.repeatable)
+    if (repeatableRequirements.length) {
+      const message = `La tappa «${entry.title}» richiede un’attività ripetibile: queste attività non registrano completamenti e non possono essere tappe precedenti.`
+      const existing = options.legacyInteractions?.find(candidate => candidate.id === entry.id)
+      const unchangedLegacyEdges = repeatableRequirements.every(id => existing?.requirements.completedInteractions.includes(id)
+        && options.legacyInteractions?.find(candidate => candidate.id === id)?.repeatable)
+      if (!options.allowLegacyRepeatableRequirements && !unchangedLegacyEdges) return { error: message }
+      // A formerly accepted catalog must remain editable and portable. Reading
+      // it never executes the impossible dependency or erases unrelated entries.
+      warning = `${message} Correggi il requisito nell’editor delle interazioni.`
     }
   }
   const visiting = new Set<string>(), done = new Set<string>()
@@ -71,7 +83,7 @@ export function validateCatalog(value: unknown): { catalog?: InteractionCatalog;
     return false
   }
   if (entries.some((entry) => cycle(entry.id))) return { error: 'Le tappe precedenti formano un ciclo: nessuna potrebbe essere iniziata.' }
-  return { catalog: { version: 1, interactions: structuredClone(entries) } }
+  return { catalog: { version: 1, interactions: structuredClone(entries) }, ...(warning ? { warning } : {}) }
 }
 
 export function normalizeInteractionProgress(value: unknown): InteractionProgress {

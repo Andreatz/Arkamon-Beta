@@ -57,4 +57,19 @@ describe('catalogo: pubblicazione soltanto dopo il salvataggio duraturo', () => 
     expect(useInteractionStore.getState().interactions).toBe(previous)
     expect(storageState.writes).toBe(0)
   })
+  it('ripara gradualmente i vecchi prerequisiti ripetibili senza autorizzarne di nuovi', () => {
+    const repeatable = { ...entry('repeatable'), repeatable: true }
+    const dependent = (id: string) => ({ ...entry(id), requirements: { ...entry(id).requirements, completedInteractions: [repeatable.id] } })
+    const first = dependent('first'), second = dependent('second')
+    useInteractionStore.setState({ interactions: [repeatable, first, second] })
+    const repaired = { ...first, requirements: { ...first.requirements, completedInteractions: [] } }
+    expect(useInteractionStore.getState().saveInteraction(repaired)).toBeNull()
+    expect(useInteractionStore.getState().interactions).toEqual([repeatable, repaired, second])
+    const before = storageState.values.get(INTERACTION_STORAGE_KEY)
+    expect(useInteractionStore.getState().saveInteraction(dependent('new'))).toMatch(/ripetibile/)
+    expect(useInteractionStore.getState().saveInteraction(first)).toMatch(/ripetibile/)
+    expect(useInteractionStore.getState().importCatalog(JSON.stringify({ version: 1, interactions: [repeatable, repaired, second] }))).toMatch(/ripetibile/)
+    expect(storageState.values.get(INTERACTION_STORAGE_KEY)).toBe(before)
+    expect(useInteractionStore.getState().saveInteraction({ ...second, requirements: { ...second.requirements, completedInteractions: [] } })).toBeNull()
+  })
 })

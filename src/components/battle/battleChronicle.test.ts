@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { applicaStato, calcolaAzioneSuprema, calcolaDanno, calcolaHPMax, risolviStatoInizioTurno } from '@/engine/battleEngine'
 import { resolveBattleAttack } from '@/engine/battleResolution'
 import { createBattleDamageReveal } from './battleVisualSequence'
-import { appendBattleEvents, chronicleText, createBattleChronicle, MAX_BATTLE_LOG_EVENTS, normalizeBattleChronicle, revealedAttackEvents, settledAttackEvents, statusEvents } from './battleChronicle'
+import { appendBattleEvents, chronicleText, createBattleChronicle, MAX_BATTLE_LOG_EVENTS, normalizeBattleChronicle, reserveBattleAction, revealedAttackEvents, settledAttackEvents, statusEvents } from './battleChronicle'
 import { makeSettledBattlePatch } from './useSettledBattleCheckpoint'
 import { restoreBattleCheckpoint } from './battleCheckpoint'
 import type { PokemonIstanza, StatoBattaglia } from '@/types'
@@ -109,5 +109,44 @@ describe('cronaca rivelata e replay senza nuovi dadi', () => {
     expect(clean.events).toEqual([{ id: 'good', kind: 'attack', title: 'Ok', messages: ['Reale'] }])
     expect(JSON.stringify(clean)).not.toContain('secret')
     expect(normalizeBattleChronicle(null).events).toEqual([])
+  })
+
+  it('ripara un contatore importato che non consente più identità sicure per le azioni', () => {
+    const prior = appendBattleEvents(createBattleChronicle('battle'), [
+      { id: 'battle:1:attack', kind: 'attack', title: 'Colpo precedente', messages: [] },
+    ])
+    const restored = normalizeBattleChronicle({ ...prior, nextSequence: Number.MAX_SAFE_INTEGER })
+    expect(restored.events).toEqual(prior.events)
+    expect(restored.nextSequence).toBeLessThan(1_000_000_000)
+    expect(Number.isSafeInteger(restored.nextSequence + 2)).toBe(true)
+  })
+
+  it('conserva i colpi nuovi quando un backup ha un contatore arretrato rispetto ai suoi eventi', () => {
+    const restored = normalizeBattleChronicle({ ...createBattleChronicle('battle'), nextSequence: 1, events: [
+      { id: 'battle:1:attack', kind: 'attack', title: 'Primo colpo', messages: [] },
+      { id: 'battle:2:status', kind: 'status', title: 'Status precedente', messages: [] },
+    ] })
+    const first = reserveBattleAction(restored)
+    const withAttack = appendBattleEvents(first.chronicle, [{ id: `${first.actionId}:attack`, kind: 'attack', title: 'Nuovo colpo', messages: [] }])
+    const reloaded = normalizeBattleChronicle(JSON.parse(JSON.stringify(withAttack)))
+    const second = reserveBattleAction(reloaded)
+    expect(first.actionId).toBe('battle:3')
+    expect(second.actionId).toBe('battle:4')
+    expect(reloaded.events.map((event) => event.title)).toEqual(['Primo colpo', 'Status precedente', 'Nuovo colpo'])
+    expect(appendBattleEvents(reloaded, [withAttack.events[2]])).toBe(reloaded)
+  })
+
+  it('supera il limite del contatore con identità distinte e senza usare i dadi di gioco', () => {
+    const initial = { ...createBattleChronicle('battle'), nextSequence: 999_999_999 }
+    const rng = vi.spyOn(Math, 'random').mockImplementation(() => { throw new Error('Le identità non tirano dadi') })
+    try {
+      const first = reserveBattleAction(initial)
+      const second = reserveBattleAction(first.chronicle)
+      const third = reserveBattleAction(second.chronicle)
+      expect(new Set([first.actionId, second.actionId, third.actionId]).size).toBe(3)
+      expect([first.chronicle.nextSequence, second.chronicle.nextSequence, third.chronicle.nextSequence].every(Number.isSafeInteger)).toBe(true)
+      expect(initial.nextSequence).toBe(999_999_999)
+      expect(rng).not.toHaveBeenCalled()
+    } finally { rng.mockRestore() }
   })
 })

@@ -15,6 +15,7 @@ export function SaveFailureNotice() {
   const local = useSaveWriteStatus(s => s.local)
   const clear = useSaveWriteStatus(s => s.clear)
   const cancel = useSaveWriteStatus(s => s.cancel)
+  const challengeContext = useGameStore(s => s.challengeContext)
   const discard = () => { cancel?.(); clear() }
   const download = () => {
     try {
@@ -26,6 +27,7 @@ export function SaveFailureNotice() {
   return <GameDialog title="Salvataggio da completare" onClose={discard} showCloseButton={false}>
     <p role="alert">{error}</p>
     <p className="mt-3 text-sm">Libera spazio per i dati del browser, poi riprova. Puoi scaricare una copia dei progressi conservati prima di continuare.</p>
+    {challengeContext && <p className="mt-3 text-sm">Il download conserva la campagna dei due giocatori. La sfida a seed o Fanta-Team resta nel suo salvataggio separato.</p>}
     <div className="mt-4 flex flex-wrap gap-3">
       <GameButton tone="primary" onClick={() => retry?.()}>Riprova salvataggio</GameButton>
       <GameButton onClick={download}>Scarica progressi conservati</GameButton>

@@ -38,7 +38,7 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
     const existing = get().interactions
     const next = existing.some((entry) => entry.id === interaction.id)
       ? existing.map((entry) => entry.id === interaction.id ? interaction : entry) : [...existing, interaction]
-    const validated = validateCatalog({ version: 1, interactions: next })
+    const validated = validateCatalog({ version: 1, interactions: next }, { legacyInteractions: existing })
     if (validated.error) return validated.error
     return commitCatalog(validated.catalog!.interactions, set)
   },
@@ -60,6 +60,6 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
   partialize: (state) => ({ interactions: state.interactions }),
   merge: (saved, current) => {
     const interactions = saved && typeof saved === 'object' && 'interactions' in saved ? saved.interactions : []
-    return { ...current, interactions: validateCatalog({ version: 1, interactions }).catalog?.interactions ?? [] }
+    return { ...current, interactions: validateCatalog({ version: 1, interactions }, { allowLegacyRepeatableRequirements: true }).catalog?.interactions ?? [] }
   },
 }))

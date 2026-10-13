@@ -20,7 +20,8 @@ export async function syncVfxCurationCatalog(root, check = false) {
   const target = path.join(root, 'src/data/vfx-curation-runtime.json')
   const contents = `${JSON.stringify(slimVfxCurationCatalog(source))}\n`
   if (check) {
-    if (await fs.readFile(target, 'utf8') !== contents) throw new Error('Runtime VFX curation catalog is stale: run node scripts/build-vfx-curation-catalog.mjs')
+    const saved = (await fs.readFile(target, 'utf8')).replace(/\r\n/g, '\n')
+    if (saved !== contents) throw new Error('Runtime VFX curation catalog is stale: run node scripts/build-vfx-curation-catalog.mjs')
   } else await fs.writeFile(target, contents)
   return { assets: source.assets.length, bytes: Buffer.byteLength(contents) }
 }
