@@ -104,6 +104,19 @@ describe('votazione del turno avversario', () => {
     expect(test.state()).toMatchObject({ status: 'closed', round: { winnerIndex: 1 } })
     test.controller.dispose()
   })
+  it('impedisce richieste duplicate mentre la chiusura remota è ancora in viaggio', async () => {
+    const closing = deferred<AudienceHostSnapshot>()
+    const test = setup({ control: vi.fn().mockReturnValue(closing.promise) })
+    await test.controller.start()
+    const first = test.controller.closeEarly()
+    expect(test.state()?.status).toBe('closing')
+    await test.controller.closeEarly()
+    expect(test.dependencies.control).toHaveBeenCalledTimes(1)
+    closing.resolve(closedSnapshot())
+    await first
+    expect(test.state()).toMatchObject({ status: 'closed', round: { winnerIndex: 1 } })
+    test.controller.dispose()
+  })
   it('l’annullamento trova solo il ballot della richiesta originale', async () => {
     const test = setup({ get: vi.fn().mockResolvedValue({ ...snapshot, round: { ...round, turnKey: 'another-battle' } }) })
     await test.controller.cancel()

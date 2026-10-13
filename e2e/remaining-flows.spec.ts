@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+import { writeFile } from 'node:fs/promises'
 import type { AudienceRound, AudienceRoundRequest } from '../src/audience/types'
 
 test('deposit discards legacy EXP; swaps and cross-box moves survive reload with residual HP, status and separate inventories', async ({ page }) => {
@@ -84,6 +86,10 @@ test('an NPC ballot resumes its same saved turn after reload and applies the moc
   let round: AudienceRound | null = null
   let createdRounds = 0
   let closes = 0
+  let releaseOpening!: () => void
+  const openingResponse = new Promise<void>(resolve => { releaseOpening = resolve })
+  let releaseClosing!: () => void
+  const closingResponse = new Promise<void>(resolve => { releaseClosing = resolve })
   const openedTurnKeys: string[] = []
   await page.route(`${serviceUrl}/api/arkamon-votes/**`, async (route) => {
     const call = route.request()
@@ -99,11 +105,13 @@ test('an NPC ballot resumes its same saved turn after reload and applies the moc
           trainer: posted.trainer, pokemon: posted.pokemon, options: posted.options, counts: [7, 2, 0], winnerIndex: null, resolution: null }
         createdRounds += 1
       }
+      if (openedTurnKeys.length === 1) await openingResponse
     } else if (call.method() === 'POST' && path.endsWith('/host')) {
       const control = call.postDataJSON() as { action: string; roundId: string }
       expect(control.action).toBe('close')
       expect(control.roundId).toBe(round?.id)
       closes += 1
+      await closingResponse
       round = { ...round!, status: 'closed', closedAt: Date.now(), winnerIndex: 0, resolution: 'majority' }
     } else expect(call.method()).toBe('GET')
     await route.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({
@@ -134,6 +142,13 @@ test('an NPC ballot resumes its same saved turn after reload and applies the moc
   await page.goto('/')
   await expect(page.locator('[data-presented-scene="battaglia"]')).toHaveAttribute('aria-busy', 'false')
   let ballot = page.getByRole('dialog', { name: 'Votazione del pubblico', exact: true })
+  await expect(ballot).toBeFocused()
+  await expect(ballot.getByRole('button', { name: 'Chiudi votazione', exact: true })).toBeDisabled()
+  await page.keyboard.press('Tab')
+  await expect(ballot.getByRole('button', { name: 'Continua senza votazione', exact: true })).toBeFocused()
+  await page.keyboard.press('Shift+Tab')
+  await expect(ballot.getByRole('button', { name: 'Continua senza votazione', exact: true })).toBeFocused()
+  releaseOpening()
   await expect(ballot.getByRole('button', { name: 'Chiudi votazione', exact: true })).toBeEnabled()
   await expect(ballot).toContainText('Pubblico NPC')
   await expect(ballot.getByRole('img', { name: 'Inquadra per votare dal telefono', exact: true })).toBeVisible()
@@ -153,6 +168,12 @@ test('an NPC ballot resumes its same saved turn after reload and applies the moc
   expect(resumed.pokemonA).toEqual(firstSave.pokemonA)
   expect(resumed.pokemonB).toEqual(firstSave.pokemonB)
   await ballot.getByRole('button', { name: 'Chiudi votazione', exact: true }).click()
+  const closingButton = ballot.getByRole('button', { name: 'Chiusura in corso…', exact: true })
+  await expect(closingButton).toBeDisabled()
+  await expect(ballot).toBeFocused()
+  await expect(ballot.getByRole('status')).toHaveText('Chiusura della votazione…')
+  expect(closes).toBe(1)
+  releaseClosing()
   await expect(ballot).toHaveCount(0)
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.battaglia.checkpoint.phase)).toBe('player')
   const settled = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.battaglia)
@@ -180,4 +201,52 @@ test('an NPC ballot resumes its same saved turn after reload and applies the moc
   expect(after.cronaca.events).toEqual(settled.cronaca.events)
   expect(openedTurnKeys.length).toBe(settledOpenCount)
   expect(errors).toEqual([])
+})
+
+test('healing moves show their real effect in team, analysis and Arkadex without changing the campaign', async ({ page, isMobile }) => {
+  if (!isMobile) await page.setViewportSize({ width: 1920, height: 1080 })
+  await page.addInitScript(() => {
+    const creature = { istanzaId: 'healing-facts', specieId: 95, nome: 'Beestrix', livello: 10, hp: 3, xp: 0 }
+    const player = (id: 1 | 2) => ({ id, nome: `Giocatore ${id}`, squadra: id === 1 ? [creature] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {}, caselleConsumate: [] })
+    const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+      giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
+      posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
+      posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true, battaglia: null,
+      scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null,
+      interactionProgress: { completed1: [], completed2: [], completedShared: [], log1: [], log2: [], pendingBattle: null },
+    } }))
+  })
+  await page.goto('/')
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
+  const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
+  await page.getByRole('button', { name: 'Partita', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
+  for (const screen of ['Squadra', 'Analisi', 'Arkadex']) {
+    await dialog.getByRole('button', { name: screen, exact: true }).click()
+    if (screen === 'Analisi' || screen === 'Arkadex') await dialog.getByRole('button', { name: 'Mosse', exact: true }).click()
+    const move = dialog.locator('.pu-move').filter({ hasText: 'Assorbilinfa' })
+    await expect(move.locator('.pu-dice')).toHaveText('Cura 25%')
+    await expect(move.locator('.pu-dice')).toHaveAttribute('aria-label', 'Cura 25% degli HP massimi e rimuove veleno e paralisi')
+    await expect(move).not.toContainText(/\d+d6/)
+    const geometry = await move.evaluate(element => ({ width: element.scrollWidth, viewport: element.clientWidth }))
+    expect(geometry.width).toBeLessThanOrEqual(geometry.viewport + 1)
+    const accessibility = await new AxeBuilder({ page }).include('.player-ui-dialog').analyze()
+    expect(accessibility.violations).toEqual([])
+    if (!isMobile) {
+      const readability = await dialog.locator('.pu-content').evaluate(element => Array.from(element.querySelectorAll<HTMLElement>('.pu-move strong,.pu-dice,.pu-health>span,.pu-note,.pu-status-pill'))
+        .filter(node => node.getClientRects().length > 0).map(node => ({ text: node.innerText, fontSize: getComputedStyle(node).fontSize, streamedAt960: parseFloat(getComputedStyle(node).fontSize) / 2, streamedAt360: parseFloat(getComputedStyle(node).fontSize) * 360 / 1920 })))
+      const readabilityPath = test.info().outputPath(`readability-${screen.toLowerCase()}.json`)
+      await writeFile(readabilityPath, JSON.stringify(readability, null, 2))
+      await test.info().attach(`${screen} leggibilità trasmissione`, { path: readabilityPath, contentType: 'application/json' })
+    }
+    const screenshotPath = test.info().outputPath(`cura-${screen.toLowerCase()}.png`)
+    await page.screenshot({ path: screenshotPath })
+    await test.info().attach(`${screen} cura effettiva`, { path: screenshotPath, contentType: 'image/png' })
+  }
+  await page.keyboard.press('Escape')
+  const after = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
+  expect(after.giocatore1).toEqual(before.giocatore1)
+  expect(after.giocatore2).toEqual(before.giocatore2)
+  expect(after.turnoOverworld).toEqual(before.turnoOverworld)
 })

@@ -56,18 +56,27 @@ export function normalizeMatchLog(value: unknown): MatchLog {
   const latestSequence = events[events.length - 1]?.sequence ?? 0
   const nextSequence = finite(value.nextSequence) && Number.isSafeInteger(value.nextSequence) && value.nextSequence > latestSequence && value.nextSequence < MAX_MATCH_SEQUENCE
     ? value.nextSequence : latestSequence + 1
-  return { version: 1, nextSequence, events: events.slice(-MATCH_LOG_LIMIT) }
+  const retained = events.slice(-MATCH_LOG_LIMIT)
+  // A valid final sequence at the import limit must not strand the register.
+  // Preserve identity, chronology and event contents while restarting ordinals.
+  if (nextSequence >= MAX_MATCH_SEQUENCE) return {
+    version: 1, nextSequence: retained.length + 1,
+    events: retained.map((event, index) => ({ ...event, sequence: index + 1 })),
+  }
+  return { version: 1, nextSequence, events: retained }
 }
 
 /** Explicit IDs make repeated settlement/checkpoint writes harmless. Never uses gameplay RNG. */
 export function appendMatchEvent(log: MatchLog, input: MatchEventInput, at = Date.now()): MatchLog {
   if (input.id && log.events.some((event) => event.id === input.id)) return log
-  const sequence = log.nextSequence
+  const source = !Number.isSafeInteger(log.nextSequence) || log.nextSequence < 1 || log.nextSequence >= MAX_MATCH_SEQUENCE
+    ? normalizeMatchLog(log) : log
+  const sequence = source.nextSequence
   let generatedId = `match-${sequence}`
   let suffix = 0
-  while (!input.id && log.events.some((event) => event.id === generatedId)) generatedId = `match-${sequence}-${++suffix}`
+  while (!input.id && source.events.some((event) => event.id === generatedId)) generatedId = `match-${sequence}-${++suffix}`
   const event = { ...input, id: input.id ?? generatedId, sequence, at }
-  const normalized = normalizeMatchLog({ version: 1, nextSequence: sequence + 1, events: [...log.events, event] })
+  const normalized = normalizeMatchLog({ version: 1, nextSequence: sequence + 1, events: [...source.events, event] })
   return normalized.events.some((entry) => entry.id === event.id) ? normalized : log
 }
 

@@ -72,6 +72,33 @@ describe('backup portabile e ripristino guidato della campagna', () => {
     expect(restored.posizioniLocali1).toEqual(state.posizioniLocali1)
     expect(restored.interactionProgress.completed1).toEqual(['quest-a'])
   })
+  it('does not disguise a damaged conserved campaign as a downloadable challenge roster', () => {
+    const current = campaign()
+    for (const challengeContext of [{}, { campaign: {} }, { campaign: { giocatore1: current.giocatore1, giocatore2: null } }]) {
+      expect(() => serializeGameBackup({ ...current, challengeContext }, date)).toThrow(/campagna conservata/)
+    }
+    expect(serializeGameBackup({ ...current, challengeContext: null }, date)).toBe(serializeGameBackup(current, date))
+  })
+  it('preserves previously accepted repeatable dependencies in backups with an explicit repair warning', async () => {
+    const prerequisite = { ...definition('repeatable-step'), repeatable: true }
+    const dependent = { ...definition('dependent-step'), requirements: { ...definition().requirements, completedInteractions: [prerequisite.id] } }
+    const catalog = [prerequisite, dependent]
+    localStorage.setItem(INTERACTION_STORAGE_KEY, JSON.stringify({ version: 0, state: { interactions: catalog } }))
+    await useInteractionStore.persist.rehydrate()
+    expect(useInteractionStore.getState().interactions).toEqual(catalog)
+    expect(useInteractionStore.getState().importCatalog(JSON.stringify({ version: 1, interactions: catalog }))).toMatch(/ripetibile/)
+    expect(useInteractionStore.getState().interactions).toEqual(catalog)
+    const checked = validateGameBackup(serializeGameBackup(campaign(), date, catalog))
+    expect(checked.ok).toBe(true)
+    if (!checked.ok) throw new Error(checked.error)
+    expect(checked.preview.interactionCatalog?.interactions).toEqual(catalog)
+    expect(checked.preview.warnings).toContainEqual(expect.stringMatching(/Correggi il requisito/))
+    useInteractionStore.setState({ interactions: [] })
+    expect(restoreGameBackup(checked.preview).ok).toBe(true)
+    expect(useInteractionStore.getState().interactions).toEqual(catalog)
+    expect(JSON.parse(localStorage.getItem(INTERACTION_STORAGE_KEY)!).state.interactions).toEqual(catalog)
+    expect(useGameStore.getState().saveRecoveryWarnings).toContainEqual(expect.stringMatching(/Correggi il requisito/))
+  })
 
   it.each([null, {}, { format: 'other-game', version: 1 }, { format: GAME_BACKUP_FORMAT, version: 999 }, { format: GAME_BACKUP_FORMAT, version: 1, saveSchemaVersion: 1, createdAt: 'yesterday', campaign: {} }])('rifiuta formati/versioni sconosciuti senza cambiare stato: %j', (data) => {
     const before = useGameStore.getState()

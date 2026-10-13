@@ -45,8 +45,21 @@ function portableCampaignData(state: GameSaveState): Record<string, unknown> {
   return campaign
 }
 
-export function serializeGameBackup(state: GameSaveState, createdAt = new Date(), interactions?: InteractionDefinition[], battleArchive?: BattleArchive): string {
-  const normalized = normalizeGameSave(serializeGameState(state), initialGameSave()).state
+export function serializeGameBackup(state: GameSaveState & { challengeContext?: unknown }, createdAt = new Date(), interactions?: InteractionDefinition[], battleArchive?: BattleArchive): string {
+  // During a challenge the visible roster is temporary. Both download entry
+  // points must export the conserved campaign, never turn that roster into it.
+  let campaign: unknown = serializeGameState(state)
+  if (state.challengeContext !== undefined && state.challengeContext !== null) {
+    const context = state.challengeContext
+    if (!isSaveRecord(context) || !isSaveRecord(context.campaign)
+      || !isSaveRecord(context.campaign.giocatore1) || !isSaveRecord(context.campaign.giocatore2)
+      || !Array.isArray(context.campaign.giocatore1.squadra) || !Array.isArray(context.campaign.giocatore2.squadra)
+      || !isSaveRecord(context.campaign.giocatore1.deposito) || !isSaveRecord(context.campaign.giocatore2.deposito)) {
+      throw new Error('La campagna conservata della sfida non è leggibile. Non è stato esportato un backup sostitutivo.')
+    }
+    campaign = context.campaign
+  }
+  const normalized = normalizeGameSave(campaign, initialGameSave()).state
   return JSON.stringify({ format: GAME_BACKUP_FORMAT, version: GAME_BACKUP_VERSION, saveSchemaVersion: 1,
     createdAt: createdAt.toISOString(), campaign: portableCampaignData(normalized),
     ...(interactions === undefined ? {} : { interactionCatalog: { version: 1, interactions } }),
@@ -69,7 +82,7 @@ export function validateGameBackup(text: string): GameBackupValidation {
     return { ok: false, error: 'Mancano i dati essenziali dei due giocatori. Il file non può essere ripristinato.' }
   }
   const recovered = normalizeGameSave(campaign, initialGameSave())
-  const catalog = parsed.interactionCatalog === undefined ? undefined : validateCatalog(parsed.interactionCatalog)
+  const catalog = parsed.interactionCatalog === undefined ? undefined : validateCatalog(parsed.interactionCatalog, { allowLegacyRepeatableRequirements: true })
   if (catalog?.error) return { ok: false, error: `Il catalogo delle interazioni non è valido: ${catalog.error}` }
   if (parsed.battleArchive !== undefined && (!isSaveRecord(parsed.battleArchive) || parsed.battleArchive.version !== 1 || !Array.isArray(parsed.battleArchive.matches))) {
     return { ok: false, error: 'Il formato dell’archivio battaglie non è supportato.' }
@@ -77,6 +90,7 @@ export function validateGameBackup(text: string): GameBackupValidation {
   const archive = parsed.battleArchive === undefined ? undefined : normalizeBattleArchive(parsed.battleArchive)
   const state = portableState(recovered.state)
   const warnings = [...recovered.warnings]
+  if (catalog?.warning) warnings.push(catalog.warning)
   if (archive && isSaveRecord(parsed.battleArchive) && Array.isArray(parsed.battleArchive.matches) && archive.matches.length !== parsed.battleArchive.matches.length) {
     warnings.push('Rimossi dall’archivio i replay non validi o oltre il limite di venti battaglie.')
   }

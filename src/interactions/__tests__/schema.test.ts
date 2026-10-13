@@ -52,6 +52,20 @@ describe('catalogo interazioni e adattatore Tiled', () => {
     const unlockedShop = { ...shop, requirements: { ...shop.requirements, completedInteractions: [completedQuest.id] } }
     expect(validateCatalog({ version: 1, interactions: [completedQuest, unlockedShop] }).error).toBeUndefined()
   })
+  it.each(['dialogue', 'heal'] as const)('rifiuta il prerequisito %s ripetibile che non registra completamenti', (kind) => {
+    const prerequisite = { ...entry('repeatable-step'), repeatable: true, action: { kind } }
+    const dependent = { ...entry('dependent-step'), requirements: { ...entry().requirements, completedInteractions: [prerequisite.id] } }
+    const before = structuredClone([prerequisite, dependent])
+    expect(validateInteraction(prerequisite)).toBeNull()
+    const result = validateCatalog({ version: 1, interactions: [prerequisite, dependent] })
+    expect(result.catalog).toBeUndefined()
+    expect(result.error).toMatch(/ripetibile.*non.*tappe precedenti/)
+    expect([prerequisite, dependent]).toEqual(before)
+    const legacy = validateCatalog({ version: 1, interactions: before }, { allowLegacyRepeatableRequirements: true })
+    expect(legacy.catalog?.interactions).toEqual(before)
+    expect(legacy.warning).toMatch(/Correggi il requisito/)
+    expect(validateCatalog({ version: 1, interactions: [{ ...prerequisite, repeatable: false }, dependent] }).catalog).toBeDefined()
+  })
   it('Tiled roundtrip conserva mappe, nodi e definizioni; spostare un oggetto non riscrive le strade', () => {
     const map = getLocalMap('Venezia')!
     const original = JSON.stringify(map)

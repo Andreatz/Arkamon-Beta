@@ -3,6 +3,7 @@ import type { BattleAttackResolution } from '@/engine/battleResolution'
 import type { applicaXP, risolviStatoInizioTurno } from '@/engine/battleEngine'
 
 export const MAX_BATTLE_LOG_EVENTS = 240
+const MAX_BATTLE_ACTION_SEQUENCE = 1_000_000_000
 const kinds = new Set<BattleLogKind>(['opening', 'attack', 'status', 'heal', 'ko', 'xp', 'recoil', 'winner', 'switch', 'capture', 'audience', 'outcome'])
 const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === 'object' && !Array.isArray(value))
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value)
@@ -10,6 +11,26 @@ export const logPokemon = (pokemon: PokemonIstanza) => ({ instanceId: pokemon.is
 
 export function createBattleChronicle(battleId: string): BattleChronicle {
   return { version: 1, battleId, nextSequence: 1, omittedEvents: 0, events: [] }
+}
+
+/** Recover imported counters without reusing the identity of a retained action. */
+function availableActionSequence(chronicle: BattleChronicle): number {
+  let sequence = Number.isSafeInteger(chronicle.nextSequence) && chronicle.nextSequence > 0
+    && chronicle.nextSequence < MAX_BATTLE_ACTION_SEQUENCE ? chronicle.nextSequence : 1
+  while (chronicle.events.some((event) => {
+    const id = `${chronicle.battleId}:${sequence}`
+    return event.id === id || event.id.startsWith(`${id}:`)
+  })) {
+    sequence += 1
+    if (sequence >= MAX_BATTLE_ACTION_SEQUENCE) sequence = 1
+  }
+  return sequence
+}
+
+/** Action IDs are deterministic metadata and must never consume gameplay RNG. */
+export function reserveBattleAction(chronicle: BattleChronicle): { actionId: string; chronicle: BattleChronicle } {
+  const sequence = availableActionSequence(chronicle)
+  return { actionId: `${chronicle.battleId}:${sequence}`, chronicle: { ...chronicle, nextSequence: sequence + 1 } }
 }
 
 /** Old/corrupt saves and imported replays cannot introduce unbounded records or invalid dice. */
@@ -41,11 +62,12 @@ export function normalizeBattleChronicle(value: unknown, fallbackId = 'recovered
     }
     events.push(event)
   }
-  return {
+  const normalized: BattleChronicle = {
     version: 1, battleId: typeof value.battleId === 'string' ? value.battleId.slice(0, 100) : fallbackId,
     nextSequence: Number.isSafeInteger(value.nextSequence) && finite(value.nextSequence) && value.nextSequence > 0 ? value.nextSequence : events.length + 1,
     omittedEvents: finite(value.omittedEvents) ? Math.max(0, Math.trunc(value.omittedEvents)) + Math.max(0, value.events.length - MAX_BATTLE_LOG_EVENTS) : Math.max(0, value.events.length - MAX_BATTLE_LOG_EVENTS), events,
   }
+  return { ...normalized, nextSequence: availableActionSequence(normalized) }
 }
 
 /** Duplicate reveal/complete callbacks are harmless. An unfinished action is never passed here. */

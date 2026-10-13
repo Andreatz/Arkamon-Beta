@@ -1,7 +1,7 @@
 import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { getMossa, getPokemon } from '@/data'
-import { calcolaHPMax, getMossaAlLivello } from '@/engine/battleEngine'
+import { calcolaHPMax, getMossaAlLivello, èMossaCura, èMossaSoloStato } from '@/engine/battleEngine'
 import { assetUrl } from '@/utils/assetUrl'
 import { getPortraitFraming } from './portraitFraming'
 import './player-ui.css'
@@ -75,8 +75,12 @@ export function PokemonMoves({ pokemon }: { pokemon: PokemonIstanza }) {
   return <div className="pu-moves">{definition?.mosse.filter(id => id > 0).map(id => {
     const move = getMossa(id); if (!move) return null
     const dice = getMossaAlLivello(move, pokemon.livello)
+    const healing = èMossaCura(move)
+    const effect = healing ? `Cura ${move.valoreEffetto ?? 0}${move.effetto === 'CURA_PCT' ? '%' : ' HP'}`
+      : èMossaSoloStato(move) ? 'Stato' : `${dice.dadi}d6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}`
+    const description = healing ? `${effect}${move.effetto === 'CURA_PCT' ? ' degli HP massimi' : ''} e rimuove veleno e paralisi` : undefined
     return <div className="pu-move" key={id}><div><strong>{move.nome}</strong><TypeBadge type={move.tipo} /></div>
-      <span className="pu-dice">{move.soloStato ? 'Stato' : `${dice.dadi}d6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}`}</span></div>
+      <span className="pu-dice" role={healing ? 'note' : undefined} aria-label={description} title={description}>{effect}</span></div>
   })}</div>
 }
 export function PokemonHero({ pokemon, className = '', children }: { pokemon: PokemonIstanza; className?: string; children?: ReactNode }) {

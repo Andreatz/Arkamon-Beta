@@ -65,6 +65,27 @@ describe('Campaign match register', () => {
     expect(next.nextSequence).toBe(3)
   })
 
+  it('keeps an imported boundary event and continues recording instead of freezing the register', () => {
+    const prior = appendMatchEvent(emptyMatchLog(), { id: 'prior', kind: 'start', title: 'Partita', message: 'Campagna avviata.' }, 1).events[0]
+    const restored = normalizeMatchLog({ version: 1, nextSequence: 1_000_000_000, events: [{ ...prior, sequence: 999_999_999 }] })
+    const updated = appendMatchEvent(restored, { kind: 'move', title: 'Spostamento', message: 'Venezia raggiunta.' }, 2)
+    expect(updated.events).toHaveLength(2)
+    expect(updated.events[0]).toMatchObject({ id: 'prior', at: 1, title: 'Partita' })
+    expect(updated.events[1]).toMatchObject({ kind: 'move', at: 2 })
+    expect(updated.nextSequence).toBeGreaterThan(updated.events[1].sequence)
+  })
+
+  it('rolls over at the boundary without losing a newly committed event or its explicit identity', () => {
+    const prior = appendMatchEvent(emptyMatchLog(), { id: 'prior', kind: 'start', title: 'Partita', message: 'Campagna avviata.' }, 1).events[0]
+    const restored = normalizeMatchLog({ version: 1, nextSequence: 999_999_999, events: [{ ...prior, sequence: 999_999_998 }] })
+    const first = appendMatchEvent(restored, { id: 'capture-final', kind: 'capture', title: 'Cattura', message: 'Arkamon ottenuto.' }, 2)
+    const second = appendMatchEvent(first, { kind: 'move', title: 'Spostamento', message: 'Percorso raggiunto.' }, 3)
+    expect(second.events.map((event) => event.id)).toEqual(['prior', 'capture-final', 'match-3'])
+    expect(second.events.map((event) => event.sequence)).toEqual([1, 2, 3])
+    expect(second.events.map((event) => event.at)).toEqual([1, 2, 3])
+    expect(appendMatchEvent(second, { id: 'capture-final', kind: 'capture', title: 'Cattura', message: 'Replay dello stesso evento.' }, 4)).toBe(second)
+  })
+
   it('includes campaign events in individual filters but never the other player actions', () => {
     let log = appendMatchEvent(emptyMatchLog(), { kind: 'start', title: 'Partita', message: 'Campagna avviata' }, 1)
     log = appendMatchEvent(log, { kind: 'move', playerId: 1, title: 'Venezia', message: 'Spostamento verso Piacenza', place: 'Percorso_1' }, 2)

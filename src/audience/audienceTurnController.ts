@@ -123,6 +123,8 @@ export class AudienceTurnController {
     this.abort?.abort()
     this.abort = new AbortController()
     this.clearTimers()
+    // A slow response must not leave the close command active or send it twice.
+    this.publish({ status: 'closing', error: null })
     try {
       const snapshot = await this.dependencies.control(this.session, 'close', roundId, this.abort.signal)
       if (this.current(revision)) this.apply(snapshot)

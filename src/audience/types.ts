@@ -66,4 +66,4 @@ export interface AudienceHostSession {
 }
 
 export type AudienceCreateResponse = AudienceHostSnapshot & { hostToken: string }
-export type AudienceTurnStatus = 'idle' | 'opening' | 'open' | 'closed' | 'error'
+export type AudienceTurnStatus = 'idle' | 'opening' | 'open' | 'closing' | 'closed' | 'error'
