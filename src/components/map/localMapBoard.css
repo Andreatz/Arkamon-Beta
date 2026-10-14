@@ -130,3 +130,18 @@
 
 .local-map-avatar-label--1 { background: #b51f55; }
 .local-map-avatar-label--2 { background: #0875a1; }
+
+.local-map-move-preview {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  z-index: 4;
+  transform: translateX(-50%);
+  padding: 6px 16px;
+  border: 2px solid var(--arka-primary);
+  border-radius: 4px;
+  background: var(--arka-bg);
+  color: var(--arka-text);
+  font-size: 14px;
+  pointer-events: none;
+}

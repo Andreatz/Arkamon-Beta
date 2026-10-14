@@ -15,7 +15,8 @@
 - Sonno: fino a tre turni, primo obbligatorio senza dado, risveglio 4–6 dal secondo. Veleno: 10%, 20%, 30% e così via degli HP massimi.
 - Ogni turno sulla mappa consente due movimenti oppure un movimento e una interazione, condivisi fra mappa principale e mappa locale. Le posizioni dei due giocatori sono separate. I numeri dei pallini restano interni.
 - Percorso 15 si sblocca per ciascun giocatore dopo tutte le otto palestre e Roma; non aggiungere interazioni, incontri o premi senza definizione dell'utente.
-- Il pubblico ha due canali QR: NPC e Capipalestra/PvP. La scelta votata è normale; il fallback automatico conserva la classificazione legacy dell'IA. Non introdurre una Suprema votabile.
+- Il pubblico vota soltanto le mosse dei normali NPC. Il canale QR `boss` è un invito privato per un singolo ospite che interpreta Capipalestra, rivale, Superquattro o Campione: non è una votazione pubblica. Rinnovo, revoca e scadenza invalidano il precedente controllore. Il fallback della regia è esplicito; non introdurre una Suprema votabile. Regola aggiornata il 14 ottobre 2026.
+- La Lega comprende quattro battaglie consecutive nello stesso turno dopo Roma e otto medaglie. Nomi, squadre, livelli, regola della sconfitta ed eventuale Campione finale restano nella configurazione Admin; una bozza incompleta non può iniziare. Il primo completamento salva il vincitore della campagna. Nessuna attività narrativa: Livio usa il teatro mentale. Vedi [miglioramenti live GDR](docs/live-rpg-improvements-2026-10-14.md).
 - La griglia è un prototipo legacy. Conservare lo stack attuale; eventuali migrazioni principali richiedono un piano e verifiche dedicate.
 - Specifica STAB/valutazione IA ancora da consolidare: non cambiare bilanciamento per risolvere una discrepanza fra nomi nel codice e descrizione VBA.
 

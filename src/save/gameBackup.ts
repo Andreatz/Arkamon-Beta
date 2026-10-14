@@ -28,7 +28,7 @@ function portableState(state: GameSaveState): GameSaveState {
     const payload = nav.payload
     if (!payload) return nav
     return { scena: nav.scena, payload: Object.fromEntries(Object.entries(payload).filter(([key]) =>
-      ['luogo', 'luogoRitorno', 'giocatoreId', 'mappaId', 'evoluzioni'].includes(key))) }
+      ['luogo', 'luogoRitorno', 'giocatoreId', 'playerId', 'mappaId', 'evoluzioni'].includes(key))) }
   }
   const publicState = { ...state, scenaCorrente: scene(state.scenaCorrente)!, scenaPrecedente: scene(state.scenaPrecedente) }
   if (!state.battaglia?.checkpoint) return publicState

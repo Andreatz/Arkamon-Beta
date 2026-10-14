@@ -2,6 +2,7 @@ import { useSettledBattleCheckpoint } from '@/components/battle/useSettledBattle
 import { BattleLayoutItem, ImpactPulseOverlay, InfoBox, ScambioModal, SquadIndicator, PokemonBattleSlot, HpBar, ActionButton, SupremeButton, MoveButton, type ImpactPulseDisplay } from '@/components/battle/BattlePresentation'
 import '@/components/ui/gameButton.css'
 import { BattleLogPanel } from '@/components/battle/BattleLogPanel'
+import { BattleResultCard } from '@/components/battle/BattleResultCard'
 import { useBattleChronicle } from '@/components/battle/useBattleChronicle'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { appendBattleEvents, logPokemon, revealedAttackEvents, settledAttackEvents, statusEvents, xpEvent } from '@/components/battle/battleChronicle'
@@ -150,7 +151,11 @@ export function BattagliaScene() {
       : s.giocatore2.inventario.masterball ?? 0
   )
   const [initialCheckpoint] = useState(() => battaglia ? restoreBattleCheckpoint(battaglia) : null)
-  const audienceEnabled = useAudienceStore((s) => s.enabled) && !isChallenge
+  const publicAudienceEnabled = useAudienceStore((s) => s.enabled)
+  const guestAudienceEnabled = useAudienceStore((s) => s.guestEnabled)
+  const guestProtocol = useAudienceStore((s) => s.snapshot?.guest?.protocol ?? s.session?.guestProtocol)
+  const audienceEnabled = !isChallenge && (audienceChannelForBattle(battaglia) === 'boss'
+    ? guestAudienceEnabled && guestProtocol === 'private-guest-v1' : publicAudienceEnabled)
   const audienceSession = useAudienceStore((s) => s.session)
   const audienceDuration = useAudienceStore((s) => s.durationSeconds)
   const audienceBattleId = useRef(initialCheckpoint?.audienceBattleId ?? createAudienceBattleId())
@@ -359,7 +364,7 @@ export function BattagliaScene() {
   useEffect(() => {
     if (!terminata || !esito) return
     appendChronicle([{ id: `${chronicleRef.current.battleId}:outcome`, kind: 'outcome', winnerSide: esito === 'vittoria' ? 'A' : 'B', title: esito === 'vittoria' ? 'Vittoria del giocatore' : 'Vittoria dell’avversario', messages: ['Battaglia conclusa. Gli HP residui restano nella squadra.'] }])
-    if (!isChallenge) useBattleArchiveStore.getState().archiveBattle({ chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo, location: luogoRitornoRef.current, battleType: battaglia?.tipo ?? 'Selvatico', title: `${giocatore.nome} · ${battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico'}` })
+    if (!isChallenge) useBattleArchiveStore.getState().archiveBattle({ chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo, location: luogoRitornoRef.current, battleType: battaglia?.tipo ?? 'Selvatico', title: `${giocatore.nome} · ${battaglia?.leagueOpponent?.nome ?? (battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico')}` })
   }, [terminata, esito, appendChronicle, chronicleRef, giocatoreAttivo, giocatore.nome, battaglia?.tipo, battaglia?.allenatoreId])
 
   useEffect(() => {
@@ -371,6 +376,12 @@ export function BattagliaScene() {
     }
     if (!audienceEnabled || audienceSession?.sessionId !== audienceChoice.sessionId) {
       void audienceVote.cancel().catch(() => {})
+      if (audienceChoice.request.channel === 'boss') {
+        setAudienceChoice(null)
+        setMostraMoseB(true)
+        mostraMessaggi(['Comando ospite disattivato: la regia sceglie la mossa dalla pulsantiera.'])
+        return
+      }
       finishAudienceChoice(audienceChoice.request.fallbackIndex, 'Votazione disattivata: il rivale sceglie automaticamente.', true)
       return
     }
@@ -380,7 +391,8 @@ export function BattagliaScene() {
     const index = validAudienceWinner(audienceChoice, result, pkmnB, currentKey)
     if (index === null) return
     const selected = audienceChoice.request.options.find((option) => option.index === index)!
-    const reason = result.resolution === 'no-votes' ? 'Nessun voto: il rivale sceglie automaticamente.'
+    const reason = result.resolution === 'guest' ? `L’ospite ha scelto ${selected.name}.`
+      : result.resolution === 'no-votes' ? 'Nessun voto: il rivale sceglie automaticamente.'
       : result.resolution === 'tie' ? `Parità: è stata estratta ${selected.name}.`
       : `Il pubblico ha scelto ${selected.name} (${result.counts[index]} voti).`
     finishAudienceChoice(index, reason, result.resolution === 'no-votes')
@@ -408,7 +420,7 @@ export function BattagliaScene() {
   useEffect(() => {
     // A corrupted/disabled saved ballot still contains a B whose mandatory
     // status step was completed. NPC recovery chooses a move without re-ticking it.
-    if (!mostraMoseB || battaglia?.tipo === 'PVP' || audienceEnabled && audienceSession
+    if (!mostraMoseB || audienceChannelForBattle(battaglia) === 'boss' || audienceEnabled && audienceSession
       || audienceChoice || !pkmnA || !pkmnB || terminata || coinOpen || statusRoll
       || azioneInCorso || actionInProgressRef.current) return
     setMostraMoseB(false)
@@ -781,10 +793,15 @@ export function BattagliaScene() {
   const tornaIndietro = () => {
     if (isChallenge) { const result = exitChallenge(true); if (!result.ok) mostraMessaggi([result.message]); return }
     if (audienceChoice) void audienceVote.cancel().catch(() => {})
+    if (battaglia?.leagueBattle && esito) {
+      const result = useGameStore.getState().concludiBattagliaLega(esito, squadraA, evoluzioniInAttesa)
+      if (!result.ok) mostraMessaggi([result.message])
+      return
+    }
     if (esito) useBattleArchiveStore.getState().archiveBattle({
       chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo,
       location: luogoRitorno, battleType: battaglia?.tipo ?? 'Selvatico',
-      title: `${giocatore.nome} · ${battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico'}`,
+      title: `${giocatore.nome} · ${battaglia?.leagueOpponent?.nome ?? (battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico')}`,
     })
     useGameStore.getState().eseguiTransazione(() => {
       if (isNPC && esito) risolviBattagliaNPC(esito)
@@ -815,6 +832,7 @@ export function BattagliaScene() {
   if (!pkmnA || !pkmnB) return <div className="text-white p-8">Caricamento...</div>
 
   const specieB = getPokemon(pkmnB.specieId)!
+  const rivalTrainerName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? 'Rivale'
 
   const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2, suprema = false) => {
     if (terminata || turnoA || !mostraMoseB || azioneInCorso || actionInProgressRef.current) return
@@ -1276,7 +1294,7 @@ export function BattagliaScene() {
       }
     }
 
-    if (isPvP) {
+    if (isPvP || audienceChannelForBattle(battaglia) === 'boss') {
       messaggiTurnoBRef.current = statoRes.messaggi
       setMostraMoseB(true)
       return
@@ -1405,7 +1423,7 @@ export function BattagliaScene() {
     const option = pending.request.options.find((item) => item.index === index)
     if (!option || getPokemon(current.specieId)?.mosse[index] !== option.moveId) return
     completedAudienceTurns.current.add(pending.request.turnKey)
-    appendChronicle([{ id: `${pending.request.turnKey}:audience`, kind: 'audience', side: 'B', title: 'Scelta del pubblico', messages: [message] }])
+    appendChronicle([{ id: `${pending.request.turnKey}:audience`, kind: 'audience', side: 'B', title: pending.request.channel === 'boss' ? 'Comando dell’ospite' : 'Scelta del pubblico', messages: [message] }])
     setAudienceChoice(null)
     setMostraMoseB(false)
     // A public choice is a normal human action, including legacy SUPREMA moves.
@@ -1416,7 +1434,9 @@ export function BattagliaScene() {
   const continueWithoutAudience = () => {
     if (!audienceChoice) return
     void audienceVote.cancel().catch(() => {})
-    finishAudienceChoice(audienceChoice.request.fallbackIndex, 'La regia continua senza votazione: il rivale sceglie automaticamente.', true)
+    finishAudienceChoice(audienceChoice.request.fallbackIndex, audienceChoice.request.channel === 'boss'
+      ? 'La regia sceglie esplicitamente la mossa automatica al posto dell’ospite.'
+      : 'La regia continua senza votazione: il rivale sceglie automaticamente.', true)
   }
 
   const bgBattaglia = customBattleBackground
@@ -1472,7 +1492,7 @@ export function BattagliaScene() {
       {audienceChoice && !terminata && <BattleAudienceOverlay
         request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}
         remainingMs={audienceVote.remainingMs} error={audienceVote.error}
-        joinUrl={audienceSession?.joinUrls[audienceChoice.request.channel] ?? ''}
+        joinUrl={audienceChoice.request.channel === 'npc' ? audienceSession?.joinUrls.npc ?? '' : ''}
         onRetry={audienceVote.retry} onCloseEarly={audienceVote.closeEarly} onFallback={continueWithoutAudience}
       />}
       {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
@@ -1660,6 +1680,7 @@ export function BattagliaScene() {
                   key={idx}
                   mossa={mossa}
                   livello={pkmnA.livello}
+                  defenderType={specieB.tipo}
                   textKeyPrefix={`move-${idx}`}
                   disabled={!turnoA || azioneInCorso}
                   onClick={() => eseguiMossa(idx)}
@@ -1708,7 +1729,7 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       )}
 
-      {isPvP && mostraMoseB && !terminata && !scambioRichiesto && (
+      {(isPvP || audienceChannelForBattle(battaglia) === 'boss') && mostraMoseB && !terminata && !scambioRichiesto && (
         <BattleLayoutItem
           layoutKey="enemyMoves"
           label="Mosse rivale"
@@ -1726,6 +1747,7 @@ export function BattagliaScene() {
                   key={`B-${idx}`}
                   mossa={mossa}
                   livello={pkmnB.livello}
+                  defenderType={specieA.tipo}
                   textKeyPrefix={`move-${idx}`}
                   disabled={azioneInCorso}
                   onClick={() => eseguiMossaPvP_B(idx)}
@@ -1776,7 +1798,7 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       )}
 
-      {terminata && isNPC && esito && (() => {
+      {terminata && isNPC && !battaglia?.leagueBattle && esito && (() => {
         const allenatore = battaglia?.allenatoreId !== undefined
           ? getAllenatore(battaglia.allenatoreId)
           : null
@@ -1797,6 +1819,9 @@ export function BattagliaScene() {
           </div>
         )
       })()}
+
+      {terminata && <BattleResultCard chronicle={chronicle} outcome={isSelvatico && esito === 'vittoria' && pkmnB.hp > 0 ? 'cattura' : esito}
+        gymVictory={esito === 'vittoria' && battaglia?.allenatoreId !== undefined && getAllenatore(battaglia.allenatoreId)?.tipo === 'Capopalestra'} />}
 
       {terminata && (
         <BattleLayoutItem
@@ -1828,6 +1853,10 @@ export function BattagliaScene() {
             ? 'Battaglia finita'
             : pendingCaptureSave
             ? 'Cattura in attesa di salvataggio'
+            : audienceChoice
+            ? audienceChoice.request.channel === 'boss'
+              ? `Ospite · ${audienceChoice.request.trainer.name} · sceglie la mossa`
+              : 'Pubblico NPC · votazione in corso'
             : moveVfx
             ? 'Animazione mossa...'
             : diceRoll
@@ -1836,15 +1865,13 @@ export function BattagliaScene() {
             ? 'Premi Avversario... per continuare'
             : isPvP && attesaPassaggio
             ? attesaPassaggio.direzione === 'A→B'
-              ? 'Pronto per passare il controllo al Rivale'
-              : 'Pronto per passare il controllo al Giocatore'
-            : isPvP && mostraMoseB
-            ? 'Turno del Rivale — scegli una mossa'
-            : isPvP && turnoA
-            ? 'Turno del Giocatore — scegli una mossa'
+              ? `Passa il controllo a ${rivalTrainerName}`
+              : `Passa il controllo a ${giocatore.nome}`
+            : mostraMoseB
+            ? `${rivalTrainerName} · scegli una mossa`
             : turnoA
-            ? 'Il tuo turno'
-            : 'Turno avversario...'}
+            ? `Turno di ${giocatore.nome} · scegli una mossa`
+            : `Turno di ${rivalTrainerName}...`}
         </span>
         </div>
       </BattleLayoutItem>

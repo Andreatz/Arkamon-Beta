@@ -11,7 +11,7 @@ export interface AudienceMoveOption {
 
 export interface AudienceTrainer {
   name: string
-  kind: 'NPC' | 'Capopalestra' | 'PVP'
+  kind: 'NPC' | 'Capopalestra' | 'PVP' | 'Superquattro' | 'Campione'
 }
 
 export interface AudiencePokemon {
@@ -44,7 +44,7 @@ export interface AudienceRound {
   options: AudienceMoveOption[]
   counts: [number, number, number]
   winnerIndex: AudienceMoveIndex | null
-  resolution: 'majority' | 'tie' | 'no-votes' | null
+  resolution: 'majority' | 'tie' | 'no-votes' | 'guest' | null
 }
 
 export interface AudienceHostSnapshot {
@@ -54,6 +54,7 @@ export interface AudienceHostSnapshot {
   joinUrls: { npc: string; boss: string }
   participants: { npc: number; boss: number }
   round: AudienceRound | null
+  guest?: { protocol: 'private-guest-v1'; claimed: boolean; revoked: boolean; expiresAt: number; generation: number }
 }
 
 /** Host capability stays in this organizer's storage, never in an invitation. */
@@ -63,6 +64,7 @@ export interface AudienceHostSession {
   hostToken: string
   expiresAt: number
   joinUrls: { npc: string; boss: string }
+  guestProtocol?: 'private-guest-v1'
 }
 
 export type AudienceCreateResponse = AudienceHostSnapshot & { hostToken: string }

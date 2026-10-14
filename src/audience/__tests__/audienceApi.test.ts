@@ -50,6 +50,15 @@ describe('indirizzi e richieste di voto', () => {
     expect(() => parseAudienceHostSnapshot(snapshot, serviceUrl, 'another-session')).toThrow()
     expect(() => parseAudienceHostSnapshot({ ...snapshot, round: { ...round, winnerIndex: 1 } }, serviceUrl)).toThrow()
   })
+  it('accetta solo un comando ospite privato, mai un vecchio risultato a maggioranza sul canale boss', () => {
+    const guest = { protocol: 'private-guest-v1', claimed: true, revoked: false, expiresAt: snapshot.expiresAt, generation: 1 }
+    const bossRound = { ...closedSnapshot().round!, channel: 'boss', trainer: { name: 'Ospite', kind: 'Superquattro' }, resolution: 'guest' }
+    const value = { ...snapshot, participants: { npc: 4, boss: 1 }, guest, round: bossRound }
+    expect(parseAudienceHostSnapshot(value, serviceUrl).round?.resolution).toBe('guest')
+    expect(() => parseAudienceHostSnapshot({ ...value, round: { ...bossRound, resolution: 'majority' } }, serviceUrl)).toThrow()
+    expect(() => parseAudienceHostSnapshot({ ...value, participants: { npc: 4, boss: 2 } }, serviceUrl)).toThrow()
+    expect(() => parseAudienceHostSnapshot({ ...value, guest: { ...guest, revoked: true } }, serviceUrl)).toThrow()
+  })
   it('gli inviti contengono solo il canale e la capacità pubblica prevista nel frammento', () => {
     expect(validateAudienceJoinUrl(invitation('npc'), serviceUrl, sessionId, 'npc')).toBe(invitation('npc'))
     for (const url of [invitation('boss'), invitation('npc').replace(serviceUrl, 'https://other.example'), `${invitation('npc')}&hostToken=${hostToken}`, invitation('npc').replace('#', `?hostToken=${hostToken}#`)]) {

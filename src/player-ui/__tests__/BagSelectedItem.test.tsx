@@ -74,5 +74,25 @@ describe('selected inventory item action view', () => {
     expect(markup).toContain('value="selected-bag-target"')
     expect(runtime.state.giocatore1).toEqual(playerBefore)
     expect(runtime.state.applicaOggetto).not.toHaveBeenCalled()
+    expect(markup).toContain('Anteprima su Vyrath selezionato')
+    expect(markup).toContain('HP di Vyrath selezionato: 3 su 12')
+    expect(markup).toContain('HP di Vyrath selezionato: 6 su 12')
+    expect(markup).toContain('+3 HP')
+    expect(markup).toContain('Paralizzato')
+  })
+
+  it('allows configured between-battle items with the reserved zero-action League turn and shows its real consequence', () => {
+    runtime.state.league.players[1].status = 'running'
+    runtime.state.league.config = { version: 1, opponents: [{ name: 'A', team: [] }, { name: 'B', team: [] }, { name: 'C', team: [] }, { name: 'D', team: [] }], champion: null, championEnabled: false, betweenBattleItems: true, defeat: 'restart' }
+    runtime.state.turnoOverworld.azioniRimaste = 0
+    runtime.state.scenaCorrente = { scena: 'lega' }
+    const markup = renderToStaticMarkup(<BagScreen playerId={1} />)
+    expect(markup).toContain('Gli oggetti consentiti fra gli incontri non interrompono la serie della Lega')
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Usa Pozione<\/button>/)
+    expect(markup).not.toContain('Usare un oggetto conclude il turno')
+    runtime.state.league.config.betweenBattleItems = false
+    const blocked = renderToStaticMarkup(<BagScreen playerId={1} />)
+    expect(blocked).toContain('Gli oggetti fra gli incontri della Lega non sono consentiti')
+    expect(blocked).toMatch(/<button[^>]*disabled=""[^>]*>Usa Pozione<\/button>/)
   })
 })

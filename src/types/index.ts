@@ -25,7 +25,7 @@ export type CategoriaHP = 'Lenta' | 'Media' | 'Veloce' | 'Leggendaria'
 
 export type Probabilita = 'Comune' | 'Medio' | 'Difficile'
 
-export type TipoAllenatore = 'PVP' | 'NPC' | 'Capopalestra'
+export type TipoAllenatore = 'PVP' | 'NPC' | 'Capopalestra' | 'Superquattro' | 'Campione'
 
 export type TipoBattaglia = 'Selvatico' | 'NPC' | 'PVP'
 
@@ -162,6 +162,9 @@ export interface StatoGiocatore {
 
 /** Stato della battaglia in corso (analogo del foglio Battaglia_Corrente VBA) */
 export interface StatoBattaglia {
+  /** League opponents are explicitly configured, not synthetic entries in the campaign catalog. */
+  leagueOpponent?: AllenatoreDef
+  leagueBattle?: { runId: string; stageIndex: number; playerId: 1 | 2 }
   /** Competitive battle randomness. Saved only with a settled checkpoint. */
   seeded?: SeededRandomState
   challengeActionCount?: number
@@ -329,6 +332,7 @@ export type PosizioniMappeLocali = Record<string, string>
 // =============================================================
 
 export type SceneId =
+  | 'lega'
   | 'titolo'
   | 'laboratorio'
   | 'mappa-principale'

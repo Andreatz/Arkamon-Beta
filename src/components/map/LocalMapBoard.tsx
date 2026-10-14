@@ -166,6 +166,7 @@ export function LocalMapBoard({
   const root = useRef<HTMLDivElement>(null)
   const [bounds, setBounds] = useState<BoardSize>({ width: 0, height: 0 })
   const [imageRatio, setImageRatio] = useState(1619 / 971)
+  const [previewNode, setPreviewNode] = useState<string | null>(null)
   const instructionsId = useId()
   const activePlayer = players.find((player) => player.id === activePlayerId)
   const currentNode = activePlayer?.nodeId
@@ -226,8 +227,9 @@ export function LocalMapBoard({
                 key={nextNode}
                 d={pathString(points)}
                 fill="none"
-                stroke="rgba(255,225,116,0.65)"
-                strokeWidth="2.5"
+                data-local-road-preview={previewNode === nextNode ? nextNode : undefined}
+                stroke={previewNode === nextNode ? 'var(--arka-primary)' : 'rgba(255,225,116,0.65)'}
+                strokeWidth={previewNode === nextNode ? '5' : '2.5'}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 vectorEffect="non-scaling-stroke"
@@ -252,6 +254,10 @@ export function LocalMapBoard({
               aria-current={isCurrent ? 'location' : undefined}
               aria-label={`${label}${isCurrent ? ', posizione attuale; mostra interazione' : isReachable ? ', muoviti qui' : ', non adiacente'}`}
               title={isCurrent ? `${label} · ${interactionLabels[node.id] ?? 'interazione da definire'}` : isReachable ? `Vai a ${label}` : label}
+              onMouseEnter={() => setPreviewNode(isReachable ? node.id : null)}
+              onMouseLeave={() => setPreviewNode(null)}
+              onFocus={() => setPreviewNode(isReachable ? node.id : null)}
+              onBlur={() => setPreviewNode(null)}
               onClick={() => {
                 if (!enabled) return
                 if (isCurrent) onSelectNode(node.id)
@@ -263,6 +269,7 @@ export function LocalMapBoard({
             </button>
           )
         })}
+        {previewNode && movementEnabled && neighbours.includes(previewNode) && <span className="local-map-move-preview" role="status">Movimento · 1 azione</span>}
         {players.map((player) => {
           const node = map.nodes.find((item) => item.id === player.nodeId)
           if (!node) return null

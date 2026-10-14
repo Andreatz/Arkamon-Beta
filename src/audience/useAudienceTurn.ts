@@ -6,7 +6,9 @@ import type { AudienceHostSession, AudienceRoundRequest } from './types'
 
 export function useAudienceTurn(request: AudienceRoundRequest | null) {
   const session = useAudienceStore((state) => state.session)
-  const enabled = useAudienceStore((state) => state.enabled)
+  const publicEnabled = useAudienceStore((state) => state.enabled)
+  const guestEnabled = useAudienceStore((state) => state.guestEnabled)
+  const enabled = request?.channel === 'boss' ? guestEnabled : publicEnabled
   const controller = useRef<AudienceTurnController | null>(null)
   const lastContext = useRef<{ session: AudienceHostSession; request: AudienceRoundRequest } | null>(null)
   const [result, setResult] = useState<{ state: AudienceTurnState; identity: string }>({ state: idleAudienceTurn, identity: '' })

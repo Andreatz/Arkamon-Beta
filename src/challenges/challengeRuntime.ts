@@ -15,6 +15,7 @@ function publishWithoutSecondWrite(patch: Partial<GameState>) {
 export function launchChallenge(value: ChallengeSession): { ok: boolean; message: string } {
   const previous = useGameStore.getState()
   if (previous.challengeContext) return { ok: false, message: 'Concludi o abbandona la sfida in corso.' }
+  if (previous.league.players[1].status === 'running' || previous.league.players[2].status === 'running') return { ok: false, message: 'Concludi il tentativo della Lega prima di una sfida separata.' }
   if (previous.battaglia || previous.scenaCorrente.scena === 'evoluzione' || previous.scenaCorrente.scena === 'laboratorio') return { ok: false, message: 'Concludi questa attività prima di aprire una sfida separata.' }
   const session = canonicalChallengeSession(value)
   if (!session) return { ok: false, message: 'La configurazione della sfida non è valida.' }

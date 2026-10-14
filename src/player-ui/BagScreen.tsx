@@ -2,7 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { ItemUsePanel } from '@/shop/ItemUsePanel'
 import { SHOP_ITEMS, type ShopItemId } from '@/shop/catalog'
-import { ITEM_ICONS, KitButton, KitIcon, KitPanel, kitAsset } from './kit'
+import { ITEM_ICONS, CreaturePortrait, HealthBar, KitButton, KitIcon, KitPanel, kitAsset } from './kit'
 
 type BagCategory = 'all' | 'heal' | 'status' | 'capture'
 export interface BagScreenProps { playerId: 1 | 2; onPlayerChange?: (playerId: 1 | 2) => void }
@@ -18,9 +18,11 @@ export function BagScreen({ playerId, onPlayerChange }: BagScreenProps) {
   const owned = SHOP_ITEMS.filter((item) => (player.inventario[item.id] ?? 0) > 0)
   const filtered = owned.filter((item) => category === 'all' || (category === 'heal' ? item.effect.kind === 'heal' || item.effect.kind === 'revive' : item.effect.kind === category))
   const selected = filtered.find((item) => item.id === selectedId) ?? filtered[0]
+  const leagueRunning = state.league?.players[viewPlayerId].status === 'running'
   const unavailable = state.battaglia || state.interactionProgress.pendingBattle
     ? 'Durante la battaglia usa la borsa della pulsantiera di combattimento.'
-    : viewPlayerId !== state.giocatoreAttivo || state.turnoOverworld.giocatoreAttivo !== viewPlayerId || state.turnoOverworld.azioniRimaste <= 0
+    : leagueRunning && !state.league?.config?.betweenBattleItems ? 'Gli oggetti fra gli incontri della Lega non sono consentiti dalla configurazione della partita.'
+    : viewPlayerId !== state.giocatoreAttivo || state.turnoOverworld.giocatoreAttivo !== viewPlayerId || (!leagueRunning && state.turnoOverworld.azioniRimaste <= 0)
       ? 'Puoi usare gli oggetti soltanto durante il turno di questo giocatore.'
       : ['titolo', 'laboratorio', 'evoluzione'].includes(state.scenaCorrente.scena)
         ? 'Concludi questa schermata prima di usare un oggetto.' : null
@@ -55,8 +57,12 @@ export function BagScreen({ playerId, onPlayerChange }: BagScreenProps) {
           <ItemUsePanel key={`${viewPlayerId}:${state.campaignRevision}`} squad={player.squadra} inventory={player.inventario} unavailableMessage={unavailable}
             visibleItemIds={[selected.id]}
             renderItemIcon={itemId => <KitIcon id={ITEM_ICONS[itemId]} />}
+            renderEffectPreview={(target, _itemId, result) => <div className="pu-cure-preview" aria-label={`Anteprima su ${target.nome}`}>
+              <CreaturePortrait pokemon={target} /><div><span className="pu-kicker">Prima di usare l’oggetto</span><strong>{target.nome}</strong><HealthBar pokemon={target} /></div>
+              {result.ok && result.pokemon ? <div className="pu-cure-after"><span className="pu-kicker">Dopo</span><HealthBar pokemon={result.pokemon} /><span>{result.recoveredHp ? `+${result.recoveredHp} HP` : 'Status rimosso'} · {result.pokemon.stato?.tipo ?? (result.pokemon.hp > 0 ? 'In salute' : 'KO')}</span></div> : <span className="pu-cure-no-effect">Nessun effetto sul compagno selezionato.</span>}
+            </div>}
             onUse={(itemId, instanceId) => { setSelectedId(itemId); return state.applicaOggetto(viewPlayerId, itemId, instanceId) }}
-            actionNote="Usare un oggetto conclude il turno. Gli oggetti inutili non vengono consumati." />
+            actionNote={leagueRunning ? 'Gli oggetti consentiti fra gli incontri non interrompono la serie della Lega. Gli oggetti inutili non vengono consumati.' : 'Usare un oggetto conclude il turno. Gli oggetti inutili non vengono consumati.'} />
         </div>}
       </KitPanel>
     </div>

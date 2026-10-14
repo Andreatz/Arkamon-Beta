@@ -13,8 +13,9 @@ import './adminPanel.css'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 const AdminInteractionEditor = lazy(() => import('@/interactions/AdminInteractionEditor').then((module) => ({ default: module.AdminInteractionEditor })))
+const AdminLeaguePanel = lazy(() => import('@/league/AdminLeaguePanel').then((module) => ({ default: module.AdminLeaguePanel })))
 
-type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience' | 'interactions'
+type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience' | 'interactions' | 'league'
 
 const tabs: { id: AdminTab; label: string }[] = [
   { id: 'colors', label: 'Colori' },
@@ -27,6 +28,7 @@ const tabs: { id: AdminTab; label: string }[] = [
   { id: 'json', label: 'Import/Export' },
   { id: 'audience', label: 'Pubblico' },
   { id: 'interactions', label: 'Interazioni' },
+  { id: 'league', label: 'Lega' },
 ]
 
 export function AdminPanel() {
@@ -96,6 +98,7 @@ export function AdminPanel() {
         {activeTab === 'json' ? <AdminImportExport /> : null}
         {activeTab === 'audience' ? <AdminAudiencePanel /> : null}
         {activeTab === 'interactions' ? <Suspense fallback={<p role="status">Caricamento interazioni…</p>}><AdminInteractionEditor /></Suspense> : null}
+        {activeTab === 'league' ? <Suspense fallback={<p role="status">Caricamento Lega…</p>}><AdminLeaguePanel /></Suspense> : null}
       </div>
     </section>
   )

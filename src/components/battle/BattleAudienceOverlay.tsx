@@ -49,25 +49,26 @@ export function BattleAudienceOverlay({ request, round, status, remainingMs, err
   }, [status])
   const counts = round?.turnKey === request.turnKey ? round.counts : [0, 0, 0]
   const total = counts.reduce((sum, value) => sum + value, 0)
-  return <div ref={root} className="battle-audience-overlay" role="dialog" aria-modal="true" aria-label="Votazione del pubblico" tabIndex={-1}>
+  const guest = request.channel === 'boss'
+  return <div ref={root} className="battle-audience-overlay" role="dialog" aria-modal="true" aria-label={guest ? 'Comando dell’ospite' : 'Votazione del pubblico'} tabIndex={-1}>
     <section className="battle-audience-card">
-      <header><div><p className="battle-audience-channel">{request.channel === 'npc' ? 'Pubblico NPC' : 'Pubblico Capipalestra e PvP'}</p>
-        <h2>Il pubblico sceglie la mossa</h2><p>{request.pokemon.name} · livello {request.pokemon.level} · {request.trainer.name}</p></div>
+      <header><div><p className="battle-audience-channel">{guest ? 'Ospite · collegamento privato' : 'Pubblico NPC'}</p>
+        <h2>{guest ? 'L’ospite sceglie la mossa' : 'Il pubblico sceglie la mossa'}</h2><p>{request.pokemon.name} · livello {request.pokemon.level} · {request.trainer.name}</p></div>
         <strong className="battle-audience-timer" role="timer" aria-label="Tempo di votazione">
           {status === 'opening' || status === 'closing' ? '…' : status === 'error' ? '!' : `${Math.max(0, Math.ceil(remainingMs / 1000))} s`}
         </strong></header>
       <div className="battle-audience-content"><div className="battle-audience-options">
         {request.options.map((option) => <div key={option.index} className="battle-audience-option">
           <div><strong>{option.name}</strong><span>{option.type} · {option.description}</span></div>
-          <b>{counts[option.index]} {counts[option.index] === 1 ? 'voto' : 'voti'}</b>
+          {!guest && <b>{counts[option.index]} {counts[option.index] === 1 ? 'voto' : 'voti'}</b>}
         </div>)}
         <p role="status">{status === 'error' ? error ?? 'Collegamento interrotto. Riprova oppure continua senza votazione.'
-          : status === 'opening' ? 'Apertura della votazione…' : status === 'closing' ? 'Chiusura della votazione…' : `${total} ${total === 1 ? 'voto ricevuto' : 'voti ricevuti'}`}</p>
-        <p className="battle-audience-rules">Un voto per turno, modificabile fino alla chiusura. In parità si sorteggia fra le mosse più votate; senza voti sceglie il rivale.</p>
-      </div>{joinUrl && <aside><AudienceQrCode url={joinUrl} label="Inquadra per votare dal telefono" /></aside>}</div>
+          : status === 'opening' ? guest ? 'Collegamento all’ospite…' : 'Apertura della votazione…' : status === 'closing' ? 'Chiusura della votazione…' : guest ? 'In attesa del comando privato dell’ospite.' : `${total} ${total === 1 ? 'voto ricevuto' : 'voti ricevuti'}`}</p>
+        <p className="battle-audience-rules">{guest ? 'Solo l’ospite invitato può scegliere. L’attesa non applica una mossa automatica; la regia decide come proseguire.' : 'Un voto per turno, modificabile fino alla chiusura. In parità si sorteggia fra le mosse più votate; senza voti sceglie il rivale.'}</p>
+      </div>{!guest && joinUrl && <aside><AudienceQrCode url={joinUrl} label="Inquadra per votare dal telefono" /></aside>}</div>
       <footer>{status === 'error' ? <button ref={firstButton} className="arka-button" onClick={onRetry}>Riprova collegamento</button>
-        : <button ref={firstButton} className="arka-button" disabled={status !== 'open'} onClick={() => void onCloseEarly()}>{status === 'closing' ? 'Chiusura in corso…' : 'Chiudi votazione'}</button>}
-        <button className="arka-button-secondary" onClick={onFallback}>Continua senza votazione</button></footer>
+        : !guest && <button ref={firstButton} className="arka-button" disabled={status !== 'open'} onClick={() => void onCloseEarly()}>{status === 'closing' ? 'Chiusura in corso…' : 'Chiudi votazione'}</button>}
+        <button className="arka-button-secondary" onClick={onFallback}>{guest ? 'Regia: usa la scelta automatica' : 'Continua senza votazione'}</button></footer>
     </section>
   </div>
 }

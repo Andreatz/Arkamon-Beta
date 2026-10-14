@@ -10,7 +10,8 @@ export function createAudienceBattleId(): string {
 
 export function audienceChannelForBattle(battle: StatoBattaglia | null): AudienceChannel | null {
   if (!battle || battle.tipo === 'Selvatico') return null
-  return battle.tipo === 'PVP' || getAllenatore(battle.allenatoreId ?? 0)?.tipo === 'Capopalestra' ? 'boss' : 'npc'
+  const trainer = battle.leagueOpponent ?? getAllenatore(battle.allenatoreId ?? 0)
+  return battle.tipo === 'PVP' || trainer && trainer.tipo !== 'NPC' ? 'boss' : 'npc'
 }
 
 export function makeAudienceRoundRequest(
@@ -33,9 +34,9 @@ export function makeAudienceRoundRequest(
   const fallback = scegliMossaIA(pokemon, target)
   return {
     turnKey: `${battleId}:B:${opponentTurn}:${pokemon.istanzaId}`,
-    channel, durationSeconds,
-    trainer: { name: battle.tipo === 'PVP' ? 'Rivale PvP' : getAllenatore(battle.allenatoreId ?? 0)?.nome ?? 'Allenatore rivale',
-      kind: battle.tipo === 'PVP' ? 'PVP' : channel === 'boss' ? 'Capopalestra' : 'NPC' },
+    channel, durationSeconds: channel === 'boss' ? 120 : durationSeconds,
+    trainer: { name: battle.leagueOpponent?.nome ?? getAllenatore(battle.allenatoreId ?? 0)?.nome ?? (battle.tipo === 'PVP' ? 'Rivale PvP' : 'Allenatore rivale'),
+      kind: battle.leagueOpponent?.tipo ?? (battle.tipo === 'PVP' ? 'PVP' : channel === 'boss' ? 'Capopalestra' : 'NPC') },
     pokemon: { instanceId: pokemon.istanzaId, speciesId: pokemon.specieId, name: pokemon.nome, level: pokemon.livello },
     options, fallbackIndex: options.some((option) => option.index === fallback) ? fallback : options[0].index,
   }
@@ -47,6 +48,7 @@ export function validAudienceWinner(
   pokemon: PokemonIstanza, currentTurnKey: string,
 ): 0 | 1 | 2 | null {
   if (round.status !== 'closed' || round.turnKey !== currentTurnKey || pending.request.turnKey !== currentTurnKey
+    || (round.channel === 'boss' && round.resolution !== 'guest') || (round.channel === 'npc' && round.resolution === 'guest')
     || round.channel !== pending.request.channel || round.pokemon.instanceId !== pokemon.istanzaId
     || pending.request.pokemon.instanceId !== pokemon.istanzaId || pokemon.hp <= 0
     || round.winnerIndex === null || ![0, 1, 2].includes(round.winnerIndex)) return null

@@ -80,7 +80,9 @@ export class AudienceTurnController {
     if (!round || !audienceRoundMatchesRequest(round, this.request)) throw new AudienceApiError('Questa risposta appartiene a un altro turno. Riprova oppure usa la scelta automatica.', 'STALE_ROUND')
     this.clockOffset = snapshot.serverNow - this.dependencies.now()
     this.acceptSnapshot(snapshot)
-    if (round.status === 'cancelled') throw new AudienceApiError('La votazione è stata annullata. Puoi usare la scelta automatica.', 'ROUND_CANCELLED')
+    if (round.status === 'cancelled') throw new AudienceApiError(this.request.channel === 'boss'
+      ? 'L’attesa dell’ospite è terminata o l’invito è stato revocato. La regia può scegliere esplicitamente come proseguire.'
+      : 'La votazione è stata annullata. Puoi usare la scelta automatica.', 'ROUND_CANCELLED')
     this.publish({ round, status: round.status, remainingMs: round.status === 'open' ? Math.max(0, round.deadlineAt - snapshot.serverNow) : 0, error: null })
     this.clearTimers()
     if (round.status === 'open') {

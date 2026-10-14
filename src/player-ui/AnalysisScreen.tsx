@@ -60,7 +60,7 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
             </dl>
           </>}
           {tab === 'mosse' && <>
-            <h3>Mosse disponibili al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} />
+            <h3>Mosse disponibili al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} detailed />
             <KitPanel className="pu-note pu-supreme-note"><KitIcon id="icon-activity" /><div><strong>Mossa Suprema · potenza doppia</strong><p>Danno al bersaglio e salita di livello prima del contraccolpo: metà degli HP massimi. Nel doppio KO vince l’attaccante.</p></div></KitPanel>
           </>}
           {tab === 'status' && <>

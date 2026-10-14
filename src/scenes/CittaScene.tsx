@@ -14,6 +14,8 @@ import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
   NPC: 200,
   Capopalestra: 1000,
+  Superquattro: 0,
+  Campione: 0,
   PVP: 0,
 }
 

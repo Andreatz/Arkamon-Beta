@@ -18,7 +18,7 @@ const tiles: { id: PlayerUiAuxiliary; title: string; description: string; icon: 
   { id: 'match', title: 'Registro del match', description: 'Ripercorri gli eventi dell’avventura', icon: 'icon-activity' },
   { id: 'challenges', title: 'Sfide', description: 'Seed e Fanta-Team Builder', icon: 'icon-activity' },
 ]
-const sceneNames: Record<string, string> = { titolo: 'Titolo', laboratorio: 'Laboratorio', 'mappa-principale': 'Mappa principale', 'mappa-griglia': 'Mappa locale', citta: 'Città', percorso: 'Percorso', palestra: 'Palestra', 'centro-pokemon': 'Centro Pokémon', battaglia: 'Battaglia', deposito: 'Deposito', squadra: 'Squadra', evoluzione: 'Evoluzione' }
+const sceneNames: Record<string, string> = { titolo: 'Titolo', laboratorio: 'Laboratorio', 'mappa-principale': 'Mappa principale', 'mappa-griglia': 'Mappa locale', citta: 'Città', percorso: 'Percorso', palestra: 'Palestra', 'centro-pokemon': 'Centro Pokémon', battaglia: 'Battaglia', deposito: 'Deposito', squadra: 'Squadra', evoluzione: 'Evoluzione', lega: 'Lega' }
 
 export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
   const one = useGameStore(state => state.giocatore1)
@@ -31,6 +31,7 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
   const scene = useGameStore(state => state.scenaCorrente)
   const savedArkadex = useGameStore(state => state.arkadex)
   const context = useGameStore(state => state.challengeContext)
+  const league = useGameStore(state => state.league)
   const player = playerId === 1 ? one : two
   const position = playerId === 1 ? position1 : position2
   const progress = useMemo(() => deriveArkadexProgress(savedArkadex, { giocatore1: one, giocatore2: two, giocatoreAttivo: active, battaglia: battle }), [savedArkadex, one, two, active, battle])
@@ -42,6 +43,8 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
   const location = scene.scena === 'titolo' ? 'Prima dell’avventura' : scene.scena === 'laboratorio' ? 'Laboratorio' : (position.luogo ?? position.mappaId).replace(/_/g, ' ')
   const background = position.luogo ? getBackground(position.luogo) : null
   const actions = active === playerId && turn.giocatoreAttivo === playerId ? turn.azioniRimaste : 0
+  const leagueProgress = league?.players[playerId]
+  const leagueStages = league?.config?.championEnabled ? 5 : 4
 
   return <div className="pu-menu-layout">
     <div className="pu-menu-grid">{tiles.map((tile, index) => <button type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
@@ -53,7 +56,7 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
     </button>)}</div>
 
     <KitPanel className="pu-journey" aria-label={`Riepilogo della partita di G${playerId}`}>
-      <span className="pu-kicker">La tua avventura</span><h2>{player.squadra.length ? 'Il viaggio continua' : 'L’avventura ti aspetta'}</h2>
+      <span className="pu-kicker">Carta allenatore · G{playerId}</span><h2>{player.nome || `Giocatore ${playerId}`}</h2>
       <div className="pu-journey-scene">{background && scene.scena !== 'titolo' && <img src={background} alt="" />}<strong>{location}</strong></div>
       {!player.squadra.length && <p className="pu-empty-copy">Scegli il tuo starter nel laboratorio per iniziare. Ogni giocatore ha una squadra, un deposito e scoperte indipendenti.</p>}
       <dl className="pu-summary">
@@ -65,6 +68,10 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
       <div className="pu-gym-progress"><span className="pu-kicker">Medaglie delle palestre · {gymCount} / {gyms.length}</span>
         <div className="pu-gym-badges" aria-label="Medaglie ottenute">{gyms.map(gym => <span key={gym.id} className={player.allenatoriSconfitti.has(gym.id) ? 'earned' : ''}
           title={`${gym.luogo} · ${player.allenatoriSconfitti.has(gym.id) ? 'ottenuta' : 'da ottenere'}`} aria-label={`${gym.luogo}: ${player.allenatoriSconfitti.has(gym.id) ? 'medaglia ottenuta' : 'medaglia da ottenere'}`}>✦</span>)}</div>
+      </div>
+      <div className="pu-trainer-progress" aria-label={`Progresso della Lega di G${playerId}`}>
+        <strong>{league?.winner ? `Campione della regione: ${league.winner.name}` : 'La sfida della Lega'}</strong>
+        <p>{leagueProgress?.status === 'completed' ? 'Lega completata' : leagueProgress?.status === 'running' ? `Serie in corso · ${leagueProgress.completedStages.length} / ${leagueStages} vittorie` : leagueProgress?.status === 'defeated' ? `Serie interrotta · ${leagueProgress.completedStages.length} / ${leagueStages} vittorie` : `${gymCount} / ${gyms.length} medaglie · Quattro battaglie consecutive nello stesso turno`}</p>
       </div>
       <p className="pu-muted">{npcCount} allenatori NPC sconfitti · {obtained} specie ottenute · {formatNumber(player.monete)} monete</p>
       <div className="pu-mini-team" aria-label={`Squadra di G${playerId}`}>{player.squadra.map(pokemon => <span key={pokemon.istanzaId} title={`${pokemon.nome} · Lv. ${pokemon.livello}`}><CreaturePortrait pokemon={pokemon} /></span>)}</div>

@@ -22,6 +22,7 @@ import { rememberRecoveryCopy, reportSaveFailure, useSaveWriteStatus } from '@/s
 import { resolveShopPurchase, type ShopPurchaseResult } from '@/shop/purchase'
 import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
 import { resolveItemEffect } from '@/shop/itemEffects'
+import { emptyLeagueState, emptyLeagueProgress, isLeagueTurnLocked, leagueConfigurationProblems, leagueOpponents, makeLeagueBattle, normalizeLeagueConfiguration, type LeagueConfiguration } from '@/league/leagueModel'
 import type {
   StatoGiocatore,
   StatoBattaglia,
@@ -69,6 +70,12 @@ import {
 } from '@engine/movimento'
 
 export interface GameState extends GameSaveState {
+  configuraLega: (configuration: LeagueConfiguration) => { ok: boolean; message: string }
+  iniziaLega: () => { ok: boolean; message: string }
+  prossimoIncontroLega: () => { ok: boolean; message: string }
+  concludiBattagliaLega: (esito: EsitoBattaglia, squadra: PokemonIstanza[], evoluzioni?: { istanzaId: string; oldSpecieId: number; newSpecieId: number }[]) => { ok: boolean; message: string }
+  usaOggettoLega: (itemId: OggettoId, instanceId: string) => { ok: boolean; message: string }
+  abbandonaLega: () => { ok: boolean; message: string }
   /** Publish a compound action only after its complete checkpoint is durable. */
   eseguiTransazione: (operation: (read: () => GameState) => void) => boolean
   aggiornaStato: (patch: Partial<GameSaveState> & { teamRuleMessage?: string | null }) => boolean
@@ -362,6 +369,7 @@ export const useGameStore = create<GameState>()(
       audioMuted: false,
       campaignRevision: 0,
       challengeContext: null,
+      league: emptyLeagueState(),
       interactionProgress: emptyInteractionProgress(),
       arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(),
       teamRuleMessage: null,
@@ -386,7 +394,7 @@ export const useGameStore = create<GameState>()(
       setAudioMuted: (audioMuted) => set({ audioMuted }),
 
       cambiaGiocatoreAttivo: () =>
-        set((s) => ({ giocatoreAttivo: s.giocatoreAttivo === 1 ? 2 : 1 })),
+        set((s) => isLeagueTurnLocked(s.league) ? s : ({ giocatoreAttivo: s.giocatoreAttivo === 1 ? 2 : 1 })),
 
       impostaNomeGiocatore: (giocatoreId, nome) =>
         set((s) => {
@@ -472,7 +480,10 @@ export const useGameStore = create<GameState>()(
             const nuovaSquadra = [...g.squadra]
             nuovaSquadra[idxSquadra] = istanza
             if (teamLevelRange(nuovaSquadra).gap > Math.max(5, teamLevelRange(g.squadra).gap)) return { teamRuleMessage: teamCapMessage(nuovaSquadra) }
-            return { [chiaveG]: { ...g, squadra: nuovaSquadra } } as Partial<GameState>
+            return { [chiaveG]: { ...g, squadra: nuovaSquadra },
+              ...(s.league.winner?.playerId === giocatoreId && s.scenaCorrente.scena === 'evoluzione'
+                ? { league: { ...s.league, winner: { ...s.league.winner, team: s.league.winner.team.map((p) => p.istanzaId === istanza.istanzaId ? istanza : p) } } } : {}),
+            } as Partial<GameState>
           }
           // Poi nel deposito
           for (const [chiave, p] of Object.entries(g.deposito)) {
@@ -549,6 +560,9 @@ export const useGameStore = create<GameState>()(
       },
       applicaOggetto: (playerId, itemId, instanceId) => {
         const state = get(), key = playerId === 1 ? 'giocatore1' : 'giocatore2', player = state[key]
+        if (state.league.players[state.giocatoreAttivo].status === 'running' && !state.battaglia) {
+          return playerId === state.giocatoreAttivo ? state.usaOggettoLega(itemId, instanceId) : { ok: false, message: 'La Lega è riservata al giocatore in sfida.' }
+        }
         if (state.battaglia || state.interactionProgress.pendingBattle) return { ok: false, message: 'Usa la Borsa della battaglia durante uno scontro.' }
         if (['titolo', 'laboratorio', 'evoluzione'].includes(state.scenaCorrente.scena)) return { ok: false, message: 'Concludi questa schermata prima di usare un oggetto.' }
         if (state.giocatoreAttivo !== playerId || state.turnoOverworld.giocatoreAttivo !== playerId || state.turnoOverworld.azioniRimaste < 1) return { ok: false, message: 'Il turno di questo giocatore è concluso.' }
@@ -569,6 +583,7 @@ export const useGameStore = create<GameState>()(
         if (!allenatore || allenatore.squadra.length === 0) return false
 
         const state = get()
+        if (isLeagueTurnLocked(state.league)) return false
         if ((luogoRitorno === SECRET_LOCATION_ID || allenatore.luogo === SECRET_LOCATION_ID)
           && (!puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo) || allenatore.luogo !== luogoRitorno)) return false
         const giocatore =
@@ -632,7 +647,7 @@ export const useGameStore = create<GameState>()(
       risolviBattagliaNPC: (esito) => {
         const state = get()
         const b = state.battaglia
-        if (!b || b.allenatoreId === undefined || b.tipo === 'Selvatico' || b.ricompenseApplicate) return
+        if (!b || b.leagueBattle || b.allenatoreId === undefined || b.tipo === 'Selvatico' || b.ricompenseApplicate) return
 
         // tipoAvv per il calcolo monete: derivato da allenatore.tipo
         // (Capopalestra → +1000, NPC → +200, PVP → 0)
@@ -675,6 +690,7 @@ export const useGameStore = create<GameState>()(
       // Porting di: EseguiScambioDati da old_files/Mod_Deposito.txt
       scambiaSlot: (giocatoreId, source, target) =>
         set((s) => {
+          if (s.league.players[1].status === 'running' || s.league.players[2].status === 'running') return s
           const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
           const g = s[chiaveG]
           const r = scambia(g.squadra, g.deposito, source, target)
@@ -690,6 +706,7 @@ export const useGameStore = create<GameState>()(
 
       iniziaBattaglia: (battaglia) => {
         const state = get()
+        if (isLeagueTurnLocked(state.league)) return
         if (battaglia.luogoRitorno === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo)) return
         const team = battaglia.squadraA ?? state[state.giocatoreAttivo === 1 ? 'giocatore1' : 'giocatore2'].squadra
         if (!isTeamWithinLevelCap(team)) { set({ teamRuleMessage: teamCapMessage(team) }); return }
@@ -739,6 +756,7 @@ export const useGameStore = create<GameState>()(
         }),
 
       eseguiInterazioneConfigurata: (giocatoreId, interactionId) => {
+        if (isLeagueTurnLocked(get().league)) return { ok: false, message: 'Concludi la Lega prima di altre interazioni.' }
         const definition = useInteractionStore.getState().interactions.find((entry) => entry.id === interactionId)
         const result = resolveConfiguredInteraction(get(), definition, giocatoreId)
         if (result.patch?.battaglia && !isTeamWithinLevelCap(result.patch.battaglia.squadraA ?? [])) return { ok: false, message: teamCapMessage(result.patch.battaglia.squadraA ?? []) }
@@ -746,6 +764,106 @@ export const useGameStore = create<GameState>()(
         return { ok: result.ok, message: result.message }
       },
 
+      configuraLega: (configuration) => {
+        const state = get()
+        if (state.challengeContext || isLeagueTurnLocked(state.league) || state.league.players[1].attempt > 0 || state.league.players[2].attempt > 0)
+          return { ok: false, message: 'La configurazione della Lega resta fissa dopo il primo tentativo.' }
+        const config = normalizeLeagueConfiguration(configuration)
+        if (!config) return { ok: false, message: 'La configurazione della Lega non è valida.' }
+        const written = set({ league: { ...state.league, config } })
+        return { ok: written, message: written ? (leagueConfigurationProblems(config).length ? 'Bozza della Lega salvata: completa i dati mancanti prima di iniziare.' : 'Lega configurata: quattro incontri consecutivi nello stesso turno.') : 'Configurazione non salvata: libera spazio nel browser.' }
+      },
+      iniziaLega: () => {
+        const state = get(), playerId = state.giocatoreAttivo, key = playerId === 1 ? 'giocatore1' : 'giocatore2', player = state[key]
+        const problems = leagueConfigurationProblems(state.league.config)
+        if (state.challengeContext || state.battaglia || state.interactionProgress.pendingBattle) return { ok: false, message: 'Concludi l’attività in corso prima della Lega.' }
+        if (state.league.winner) return { ok: false, message: `${state.league.winner.name} ha già vinto la Lega.` }
+        if (state.league.players[1].status === 'running' || state.league.players[2].status === 'running') return { ok: false, message: 'Un tentativo della Lega è già in corso.' }
+        if (problems.length) return { ok: false, message: problems.join(' ') }
+        const position = state[playerId === 1 ? 'posizione1' : 'posizione2']
+        if (position.mappaId !== 'mappa-principale' || position.luogo !== 'Roma' || !hasUnlockedSecretLocation(player))
+          return { ok: false, message: 'Raggiungi Roma e conquista tutte le otto medaglie per entrare nella Lega.' }
+        if (state.turnoOverworld.giocatoreAttivo !== playerId || state.turnoOverworld.azioniRimaste < 1) return { ok: false, message: 'Il turno di questo giocatore è concluso.' }
+        if (!isTeamWithinLevelCap(player.squadra)) return { ok: false, message: teamCapMessage(player.squadra) }
+        const previous = state.league.players[playerId]
+        if (previous.attempt >= 100_000) return { ok: false, message: 'Il numero massimo di tentativi della Lega è stato raggiunto.' }
+        const restart = state.league.config!.defeat === 'restart'
+        const progress = { ...(restart ? emptyLeagueProgress() : previous), status: 'running' as const,
+          runId: `league-${playerId}-${previous.attempt + 1}-${Date.now()}`, attempt: previous.attempt + 1, stageCompleted: false }
+        const battle = makeLeagueBattle(state.league.config!, progress, playerId, player.squadra)
+        if (!battle) return { ok: false, message: 'Nessun Arkamon può combattere. Cura esplicitamente la squadra prima di entrare.' }
+        const written = set({ league: { ...state.league, players: { ...state.league.players, [playerId]: progress } }, battaglia: battle,
+          turnoOverworld: { giocatoreAttivo: playerId, azioniRimaste: 0 }, scenaPrecedente: { scena: 'lega' }, scenaCorrente: { scena: 'battaglia' },
+          matchLog: appendMatchEvent(state.matchLog, { kind: 'battle', playerId, title: 'Ingresso nella Lega', message: `Tentativo ${progress.attempt}: quattro incontri consecutivi nello stesso turno.`, place: 'Roma' }) })
+        return { ok: written, message: written ? 'La sfida della Lega ha inizio.' : 'Tentativo non salvato: la squadra resta intatta.' }
+      },
+      prossimoIncontroLega: () => {
+        const state = get(), playerId = state.giocatoreAttivo, progress = state.league.players[playerId]
+        if (state.challengeContext || state.battaglia || state.league.winner || progress.status !== 'running' || !state.league.config) return { ok: false, message: 'Non c’è un prossimo incontro pronto.' }
+        const player = state[playerId === 1 ? 'giocatore1' : 'giocatore2']
+        if (!isTeamWithinLevelCap(player.squadra)) return { ok: false, message: teamCapMessage(player.squadra) }
+        const battle = makeLeagueBattle(state.league.config, progress, playerId, player.squadra)
+        if (!battle) return { ok: false, message: 'Nessun Arkamon può combattere. Usa una cura consentita o termina il tentativo.' }
+        const written = set({ battaglia: battle, league: { ...state.league, players: { ...state.league.players, [playerId]: { ...progress, stageCompleted: false } } },
+          scenaCorrente: { scena: 'battaglia' }, scenaPrecedente: { scena: 'lega' }, campaignRevision: state.campaignRevision + 1 })
+        return { ok: written, message: written ? 'Prossimo incontro della Lega.' : 'Incontro non salvato: riprova dopo aver liberato spazio.' }
+      },
+      concludiBattagliaLega: (esito, squadra, evoluzioni = []) => {
+        const state = get(), battle = state.battaglia, reference = battle?.leagueBattle
+        if (!reference || state.challengeContext || !state.league.config || battle?.checkpoint?.phase !== 'ended' || battle.checkpoint.outcome !== esito)
+          return { ok: false, message: 'Attendi che l’esito della battaglia sia salvato prima di proseguire.' }
+        const playerId = reference.playerId, progress = state.league.players[playerId], key = playerId === 1 ? 'giocatore1' : 'giocatore2'
+        if (progress.status !== 'running' || progress.runId !== reference.runId || progress.nextStage !== reference.stageIndex || state.giocatoreAttivo !== playerId || state.league.winner)
+          return { ok: false, message: 'Questo incontro della Lega è già stato concluso.' }
+        const player = state[key], teamIds = new Set(player.squadra.map((p) => p.istanzaId))
+        if (squadra.length !== player.squadra.length || new Set(squadra.map((p) => p.istanzaId)).size !== squadra.length || squadra.some((p) => !teamIds.has(p.istanzaId)))
+          return { ok: false, message: 'La squadra non coincide con quella entrata nella Lega.' }
+        if (squadra.some((p) => !getPokemon(p.specieId) || !Number.isSafeInteger(p.livello) || p.livello < 5 || p.livello > 100
+          || !Number.isFinite(p.hp) || p.hp < 0 || p.hp > calcolaHPMax(p)) || !isTeamWithinLevelCap(squadra))
+          return { ok: false, message: 'La squadra non ha un risultato valido per la Lega.' }
+        const total = leagueOpponents(state.league.config).length
+        const nextStage = esito === 'vittoria' ? progress.nextStage + 1 : progress.nextStage
+        const completed = esito === 'vittoria' && nextStage === total
+        const next = { ...progress, nextStage, status: completed ? 'completed' as const : esito === 'sconfitta' ? 'defeated' as const : 'running' as const,
+          completedStages: esito === 'vittoria' ? [...progress.completedStages, reference.stageIndex] : progress.completedStages, stageCompleted: esito === 'vittoria' }
+        const team = squadra.map(clearStoredExperience).map((p) => {
+          if (p.stato?.tipo === 'Paralizzato') return p
+          const { stato: _status, ...clean } = p
+          return clean
+        })
+        const winner = completed ? { playerId, name: player.nome, team: team.map((p) => ({ ...p })), runId: reference.runId, completedAt: new Date().toISOString() } : null
+        const written = set({ battaglia: null, [key]: { ...player, squadra: team },
+          league: { ...state.league, players: { ...state.league.players, [playerId]: next }, winner },
+          turnoOverworld: esito === 'sconfitta' ? nuovoTurno(playerId) : { giocatoreAttivo: playerId, azioniRimaste: 0 },
+          ...(esito === 'sconfitta' ? { giocatoreAttivo: playerId === 1 ? 2 : 1 } : {}),
+          scenaCorrente: evoluzioni.length ? { scena: 'evoluzione', payload: { evoluzioni, luogoRitorno: 'lega', giocatoreId: playerId } } : { scena: 'lega', payload: { playerId } },
+          scenaPrecedente: null,
+          matchLog: appendMatchEvent(state.matchLog, { id: `${reference.runId}-${reference.stageIndex}-result`, kind: 'battle', playerId,
+            title: completed ? `${player.nome} è Campione della regione` : esito === 'vittoria' ? `Lega: incontro ${nextStage}/${total} vinto` : 'Lega: tentativo concluso',
+            message: completed ? 'La corsa alla Lega è conclusa. La squadra del Campione resta nel registro.' : esito === 'vittoria' ? 'Gli HP residui restano nella squadra. Il prossimo incontro usa lo stesso turno.' : 'Gli HP residui restano nella squadra. Il turno passa all’altro giocatore.', place: 'Roma' }) })
+        return { ok: written, message: written ? (completed ? `${player.nome} ha vinto la Lega!` : 'Risultato della Lega salvato.') : 'Risultato non salvato: resta su questa schermata e riprova.' }
+      },
+      usaOggettoLega: (itemId, instanceId) => {
+        const state = get(), playerId = state.giocatoreAttivo, key = playerId === 1 ? 'giocatore1' : 'giocatore2', player = state[key]
+        if (state.challengeContext || state.battaglia || state.league.players[playerId].status !== 'running' || state.league.config?.betweenBattleItems !== true)
+          return { ok: false, message: 'Gli oggetti fra questi incontri non sono consentiti.' }
+        if (!isShopItemId(itemId) || (player.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
+        const pokemon = player.squadra.find((p) => p.istanzaId === instanceId)
+        if (!pokemon) return { ok: false, message: 'Scegli un Arkamon della squadra.' }
+        const effect = resolveItemEffect(pokemon, itemId)
+        if (!effect.ok || !effect.pokemon) return effect
+        const written = set({ [key]: { ...player, squadra: player.squadra.map((p) => p.istanzaId === instanceId ? effect.pokemon! : p),
+          inventario: { ...player.inventario, [itemId]: player.inventario[itemId]! - 1 } } } as Partial<GameState>)
+        return { ok: written, message: written ? effect.message : 'Oggetto non salvato: borsa e HP restano intatti.' }
+      },
+      abbandonaLega: () => {
+        const state = get(), playerId = state.giocatoreAttivo, progress = state.league.players[playerId]
+        if (state.challengeContext || state.battaglia || progress.status !== 'running' || state.league.winner) return { ok: false, message: 'Concludi la battaglia prima di terminare il tentativo.' }
+        const turn = nuovoTurno(playerId)
+        const written = set({ league: { ...state.league, players: { ...state.league.players, [playerId]: { ...progress, status: 'defeated' } } },
+          turnoOverworld: turn, giocatoreAttivo: turn.giocatoreAttivo, scenaCorrente: { scena: 'lega', payload: { playerId } } })
+        return { ok: written, message: written ? 'Tentativo terminato. Gli HP residui restano nella squadra.' : 'Tentativo non salvato.' }
+      },
       // ----------------------------------------------------------------
       // OVERWORLD (Fase E)
       // ----------------------------------------------------------------
@@ -754,6 +872,7 @@ export const useGameStore = create<GameState>()(
         const state = get()
         const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
         const da = state[chiavePos]
+        if (isLeagueTurnLocked(state.league)) return false
         if (mappa.id === SECRET_LOCATION_ID || nuovaPos.luogo === SECRET_LOCATION_ID || isSecretLocationPosition(da)) return false
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
         if (state.turnoOverworld.azioniRimaste <= 0) return false
@@ -772,6 +891,7 @@ export const useGameStore = create<GameState>()(
 
       interagisciCasella: (giocatoreId, mappa, x, y) => {
         const state = get()
+        if (isLeagueTurnLocked(state.league)) return { tipo: 'no-op' }
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) {
           return { tipo: 'no-op' }
         }
@@ -832,7 +952,7 @@ export const useGameStore = create<GameState>()(
 
       passaTurnoOverworld: () =>
         set((s) => {
-          if (s.battaglia) return s
+          if (s.battaglia || isLeagueTurnLocked(s.league)) return s
           const turnoOverworld = nuovoTurno(s.turnoOverworld.giocatoreAttivo)
           return {
             turnoOverworld,
@@ -842,7 +962,7 @@ export const useGameStore = create<GameState>()(
 
       muoviAvatarMappaPrincipale: (giocatoreId, luogoDestinazione) => {
         const state = get()
-        if (state.battaglia) return false
+        if (state.battaglia || isLeagueTurnLocked(state.league)) return false
         const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
         const posizione = state[chiavePos]
         const luogoCorrente = luogoMappaPrincipale(posizione)
@@ -885,7 +1005,7 @@ export const useGameStore = create<GameState>()(
 
       interagisciLuogoMappaPrincipale: (giocatoreId) => {
         const state = get()
-        if (state.battaglia) return { tipo: 'no-op' }
+        if (state.battaglia || isLeagueTurnLocked(state.league)) return { tipo: 'no-op' }
         const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
         const posizione = state[chiavePos]
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return { tipo: 'no-op' }
@@ -921,7 +1041,7 @@ export const useGameStore = create<GameState>()(
 
       apriMappaLocale: (giocatoreId, luogo) => {
         const state = get()
-        if (state.battaglia || state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
+        if (state.battaglia || isLeagueTurnLocked(state.league) || state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
         if (luogo === SECRET_LOCATION_ID && state.giocatoreAttivo !== giocatoreId) return false
         let valid = false
         const written = state.eseguiTransazione(() => {
@@ -937,7 +1057,7 @@ export const useGameStore = create<GameState>()(
         const positionKey = giocatoreId === 1 ? 'posizioniLocali1' : 'posizioniLocali2'
         const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
         if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return false
-        if (!map || state.battaglia || state.giocatoreAttivo !== giocatoreId
+        if (!map || state.battaglia || isLeagueTurnLocked(state.league) || state.giocatoreAttivo !== giocatoreId
           || state.turnoOverworld.giocatoreAttivo !== giocatoreId || state.turnoOverworld.azioniRimaste <= 0
           || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
           return false
@@ -954,7 +1074,7 @@ export const useGameStore = create<GameState>()(
         const state = get()
         const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
         if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return false
-        if (state.battaglia || !getLocalMap(luogo) || state.giocatoreAttivo !== giocatoreId
+        if (state.battaglia || isLeagueTurnLocked(state.league) || !getLocalMap(luogo) || state.giocatoreAttivo !== giocatoreId
           || state.turnoOverworld.giocatoreAttivo !== giocatoreId || state.turnoOverworld.azioniRimaste <= 0
           || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
           return false
@@ -964,7 +1084,7 @@ export const useGameStore = create<GameState>()(
 
       passaTurnoMappaLocale: () => {
         const state = get()
-        if (state.battaglia) return false
+        if (state.battaglia || isLeagueTurnLocked(state.league)) return false
         const turnoOverworld = state.giocatoreAttivo !== state.turnoOverworld.giocatoreAttivo
           ? state.turnoOverworld
           : nuovoTurno(state.giocatoreAttivo)
@@ -978,6 +1098,7 @@ export const useGameStore = create<GameState>()(
           giocatore2: giocatoreVuoto(2),
           giocatoreAttivo: 1,
           battaglia: null,
+          league: emptyLeagueState(),
           rivaleStarterId: null,
           posizione1: posizioneIniziale(),
           posizione2: posizioneIniziale(),

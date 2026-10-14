@@ -4,7 +4,7 @@ import { TurnSummary } from '@/journal/TurnSummary'
 import { useAdminStore } from '@store/adminStore'
 import { MAPPE } from '@data/index'
 import { getLocalMap } from '@/data/localMaps'
-import { SECRET_LOCATION_ID, canAccessSecretLocation, isSecretLocationPosition } from '@/data/secretLocation'
+import { SECRET_LOCATION_ID, canAccessSecretLocation, hasUnlockedSecretLocation, isSecretLocationPosition } from '@/data/secretLocation'
 import {
   MAIN_MAP_START_NODE,
   MAIN_MAP_ROAD_CONNECTIONS,
@@ -17,6 +17,9 @@ import {
   orthogonalizeRoadPoints,
 } from '@/utils/mainMapRoadGeometry'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
+import { MainMapAvatar } from '@/components/map/MainMapAvatar'
+import { getMainMapJourney } from '@/components/map/mapJourney'
+import { useState } from 'react'
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react'
 import type {
   AdminLayoutRect,
@@ -227,6 +230,7 @@ function getMapNodeIconSize(nome: string, tipo: Tipo): number {
 }
 
 export function MappaPrincipaleScene() {
+  const [previewDestination, setPreviewDestination] = useState<string | null>(null)
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const turnoOverworld = useGameStore((s) => s.turnoOverworld)
   const posizione1 = useGameStore((s) => s.posizione1)
@@ -752,12 +756,24 @@ export function MappaPrincipaleScene() {
         </GameButton>
       </AdminLayoutItem>
 
+      {activeNodeName === 'Roma' && hasUnlockedSecretLocation(giocatore) && !layoutEditing && <GameButton
+        className="absolute right-3 top-[42%] z-[35] min-w-36 px-4 py-3" tone="primary"
+        onClick={() => vaiAScena('lega')}>Lega Arkamon</GameButton>}
+
+      {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <svg
+        className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"
+        data-main-map-road-preview={previewDestination}>
+        <path d={roadPath(getMainMapJourney(roadRenderItems, activeNodeName, previewDestination))} fill="none"
+          stroke="var(--arka-primary)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+      </svg>}
+
       {player1NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
         playerId={1}
         nodeName={player1NodeName}
         sameNode={player1NodeName === player2NodeName}
         active={giocatoreAttivo === 1}
         getPosition={(name) => nodePositions[name] ?? COORDS[name]}
+        roads={roadRenderItems}
       />}
       {player2NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
         playerId={2}
@@ -765,6 +781,7 @@ export function MappaPrincipaleScene() {
         sameNode={player1NodeName === player2NodeName}
         active={giocatoreAttivo === 2}
         getPosition={(name) => nodePositions[name] ?? COORDS[name]}
+        roads={roadRenderItems}
       />}
 
       {MAPPE.map((luogo) => {
@@ -795,6 +812,11 @@ export function MappaPrincipaleScene() {
               whileHover={!layoutEditing && isActionable ? { scale: 1.25 } : {}}
               whileTap={!layoutEditing && isActionable ? { scale: 0.9 } : {}}
               onClick={() => click(luogo.nome, coord.tipo)}
+              onMouseEnter={() => setPreviewDestination(isReachable ? luogo.nome : null)}
+              onMouseLeave={() => setPreviewDestination(null)}
+              onFocus={() => setPreviewDestination(isReachable ? luogo.nome : null)}
+              onBlur={() => setPreviewDestination(null)}
+              aria-label={`${luogo.nome.replace('_', ' ')}${isCurrent ? ', posizione attuale' : isReachable ? ', 1 movimento' : ', non raggiungibile'}`}
               className={`flex flex-col items-center gap-0.5 ${
                 !layoutEditing && !isActionable ? 'cursor-default' : ''
               }`}
@@ -860,56 +882,5 @@ export function MappaPrincipaleScene() {
         <TurnSummary compact />
       </AdminLayoutItem>
     </div>
-  )
-}
-
-function MainMapAvatar({
-  playerId,
-  nodeName,
-  sameNode,
-  active,
-  getPosition,
-}: {
-  playerId: 1 | 2
-  nodeName: string
-  sameNode: boolean
-  active: boolean
-  getPosition: (name: string) => AdminMapRoadPoint | undefined
-}) {
-  const position = getPosition(nodeName)
-  if (!position) return null
-
-  const offsetX = sameNode ? (playerId === 1 ? -44 : -12) : -27
-  const src = playerId === 1 ? '/ui/player1.png' : '/ui/player2.png'
-
-  return (
-    <motion.div
-      className="pointer-events-none absolute z-30 h-[72px] w-[72px]"
-      initial={false}
-      animate={{
-        left: `${position.x}%`,
-        top: `${position.y}%`,
-        x: offsetX,
-        y: -81,
-        scale: active ? 1.08 : 0.94,
-      }}
-      transition={{ type: 'spring', stiffness: 160, damping: 18 }}
-    >
-      <img
-        src={assetUrl(src)}
-        alt=""
-        className={`h-full w-full object-contain drop-shadow-2xl ${
-          active ? '' : 'opacity-80 grayscale-[0.25]'
-        }`}
-        draggable={false}
-      />
-      <span
-        className={`absolute -bottom-1 left-1/2 -translate-x-1/2 rounded border border-white/70 px-1.5 py-0.5 text-[10px] font-black leading-none text-white shadow ${
-          playerId === 1 ? 'bg-rose-600' : 'bg-sky-600'
-        }`}
-      >
-        G{playerId}
-      </span>
-    </motion.div>
   )
 }
