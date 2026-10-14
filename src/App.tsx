@@ -29,6 +29,7 @@ const PercorsoScene = lazy(() => import('@scenes/PercorsoScene').then((module) =
 const CittaScene = lazy(() => import('@scenes/CittaScene').then((module) => ({ default: module.CittaScene })))
 const DepositoScene = lazy(() => import('@scenes/DepositoScene').then((module) => ({ default: module.DepositoScene })))
 const EvoluzioneScene = lazy(() => import('@scenes/EvoluzioneScene').then((module) => ({ default: module.EvoluzioneScene })))
+const LeagueScene = lazy(() => import('@/league/LeagueScene').then((module) => ({ default: module.LeagueScene })))
 
 /**
  * Router delle scene.
@@ -72,7 +73,7 @@ function App() {
   }
 
   return (
-    <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}`}>
+    <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}${scenaCorrente.scena === 'lega' ? ' arka-stage--league' : ''}`}>
       <AdminRuntime />
       <AdminOverlay />
       <PlayerTools />
@@ -99,6 +100,8 @@ function renderPresentedScene(navigation: NavigazioneScena) {
 
 function renderScena(scena: SceneId) {
   switch (scena) {
+    case 'lega':
+      return <LeagueScene />
     case 'titolo':
       return <TitoloScene />
     case 'laboratorio':

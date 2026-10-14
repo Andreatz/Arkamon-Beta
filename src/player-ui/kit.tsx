@@ -68,9 +68,10 @@ export function CreaturePortrait({ pokemon, ...props }: { pokemon: PokemonIstanz
 }
 export function HealthBar({ pokemon }: { pokemon: PokemonIstanza }) {
   const maximum = calcolaHPMax(pokemon), value = Math.min(maximum, Math.max(0, pokemon.hp))
-  return <div className="pu-health"><progress aria-label={`HP di ${pokemon.nome}: ${value} su ${maximum}`} max={maximum} value={value} /><span>{value} / {maximum} HP</span></div>
+  const condition = value <= 0 ? 'ko' : value / maximum <= .25 ? 'low' : value / maximum <= .5 ? 'medium' : 'high'
+  return <div className="pu-health" data-health={condition}><progress aria-label={`HP di ${pokemon.nome}: ${value} su ${maximum}`} max={maximum} value={value} /><span>{value} / {maximum} HP</span></div>
 }
-export function PokemonMoves({ pokemon }: { pokemon: PokemonIstanza }) {
+export function PokemonMoves({ pokemon, detailed = false }: { pokemon: PokemonIstanza; detailed?: boolean }) {
   const definition = getPokemon(pokemon.specieId)
   return <div className="pu-moves">{definition?.mosse.filter(id => id > 0).map(id => {
     const move = getMossa(id); if (!move) return null
@@ -78,8 +79,11 @@ export function PokemonMoves({ pokemon }: { pokemon: PokemonIstanza }) {
     const healing = èMossaCura(move)
     const effect = healing ? `Cura ${move.valoreEffetto ?? 0}${move.effetto === 'CURA_PCT' ? '%' : ' HP'}`
       : èMossaSoloStato(move) ? 'Stato' : `${dice.dadi}d6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}`
-    const description = healing ? `${effect}${move.effetto === 'CURA_PCT' ? ' degli HP massimi' : ''} e rimuove veleno e paralisi` : undefined
-    return <div className="pu-move" key={id}><div><strong>{move.nome}</strong><TypeBadge type={move.tipo} /></div>
+    const statusName: Record<string, string> = { PARALISI: 'Paralisi', PARALIZZATO: 'Paralisi', VELENO: 'Veleno', SONNO: 'Sonno', CONFUSIONE: 'Confusione' }
+    const description = healing ? `${effect}${move.effetto === 'CURA_PCT' ? ' degli HP massimi' : ''} e rimuove veleno e paralisi`
+      : èMossaSoloStato(move) ? `${statusName[move.effetto ?? ''] ?? 'Stato alterato'} · Nessun danno e nessuna Suprema`
+        : 'Dadi e bonus al livello attuale · Il tipo del bersaglio modifica il danno'
+    return <div className="pu-move" key={id} data-move-kind={healing ? 'heal' : èMossaSoloStato(move) ? 'status' : 'attack'}><div><strong>{move.nome}</strong><TypeBadge type={move.tipo} />{detailed && <small className="pu-move-tactical">{description}</small>}</div>
       <span className="pu-dice" role={healing ? 'note' : undefined} aria-label={description} title={description}>{effect}</span></div>
   })}</div>
 }

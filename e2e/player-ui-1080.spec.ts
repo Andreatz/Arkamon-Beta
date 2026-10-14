@@ -55,6 +55,10 @@ async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directD
     scenaPrecedente: directDeposit ? { scena: 'citta', payload: { luogo: 'Venezia' } } : { scena: 'mappa-principale' }, audioMuted: true,
     arkadex: { seen1: allIds, caught1: allIds, seen2: g2Discoveries, caught2: g2Discoveries },
     matchLog: { version: 1, nextSequence: 1, events: [] },
+    league: { version: 1, config: null, winner: null, players: {
+      1: { runId: null, nextStage: 0, status: 'idle', attempt: 0, completedStages: [], stageCompleted: false },
+      2: { runId: null, nextStage: 0, status: 'idle', attempt: 0, completedStages: [], stageCompleted: false },
+    } },
     interactionProgress: { completed1: [], completed2: [], completedShared: [], log1: [], log2: [], pendingBattle: null },
   }
   await page.addInitScript(({ key, state }) => {

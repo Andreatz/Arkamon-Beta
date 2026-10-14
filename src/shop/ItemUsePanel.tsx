@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { calcolaHPMax } from '@/engine/battleEngine'
 import type { PokemonIstanza } from '@/types'
 import { SHOP_ITEMS, type ShopInventory, type ShopItemId } from './catalog'
-import { resolveItemEffect } from './itemEffects'
+import { resolveItemEffect, type ItemEffectResult } from './itemEffects'
 import './shop.css'
 
 export interface ItemUsePanelProps {
@@ -15,10 +15,12 @@ export interface ItemUsePanelProps {
   renderItemIcon?: (itemId: ShopItemId) => ReactNode
   /** Omitted in the legacy and battle bags; a single selected item uses the compact action view. */
   visibleItemIds?: readonly ShopItemId[]
+  /** Player tools can show a visual preview; the battle bag keeps its current presentation. */
+  renderEffectPreview?: (target: PokemonIstanza, itemId: ShopItemId, result: ItemEffectResult) => ReactNode
 }
 
 /** La stessa selezione di oggetto e bersaglio serve per la borsa e per il turno di battaglia. */
-export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavailableMessage, actionNote, renderItemIcon, visibleItemIds }: ItemUsePanelProps) {
+export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavailableMessage, actionNote, renderItemIcon, visibleItemIds, renderEffectPreview }: ItemUsePanelProps) {
   const [selectedId, setSelectedId] = useState(squad[0]?.istanzaId ?? '')
   const [message, setMessage] = useState('')
   useEffect(() => {
@@ -45,6 +47,7 @@ export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavai
           {!singleItem && <><div className="arka-store-item-title">{renderItemIcon ? renderItemIcon(item.id) : <span aria-hidden="true">{item.icon}</span>}<h4>{item.name}</h4><strong>×{inventory[item.id]}</strong></div>
             <p>{item.description}</p></>}
           {disabledReason && <small>{disabledReason}</small>}
+          {target && preview && renderEffectPreview?.(target, item.id, preview)}
           <button type="button" className="arka-button" disabled={disabled || !!unavailableMessage || !target || !!disabledReason} onClick={() => {
             if (target) setMessage(onUse(item.id, target.istanzaId).message)
           }}>Usa {item.name}</button>

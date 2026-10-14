@@ -14,9 +14,11 @@ import { emptyMatchLog, normalizeMatchLog, type MatchLog } from '@/match/matchLo
 import { normalizeShopInventory } from '@/shop/catalog'
 import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 import { createSeededRandomState } from '@/challenges/seededRandom'
+import { emptyLeagueState, normalizeLeagueState, leagueTrainer, type LeagueState } from '@/league/leagueModel'
 
 /** This whitelist is shared by browser persistence and portable campaign files. */
 export interface GameSaveState {
+  league: LeagueState
   arkadex: ArkadexProgress
   matchLog: MatchLog
   giocatore1: StatoGiocatore
@@ -52,7 +54,7 @@ export function initialGameSave(): GameSaveState {
     rivaleStarterId: null, posizione1: mainMapPosition(), posizione2: mainMapPosition(),
     turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {},
     scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, audioMuted: false, interactionProgress: emptyInteractionProgress(),
-    arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(),
+    arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(), league: emptyLeagueState(),
   }
 }
 
@@ -159,7 +161,7 @@ function restorePlayer(value: unknown, fallback: StatoGiocatore, warn: Warn): St
   return player
 }
 
-const SCENES: SceneId[] = ['titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso', 'citta', 'palestra', 'centro-pokemon', 'battaglia', 'deposito', 'squadra', 'evoluzione']
+const SCENES: SceneId[] = ['lega', 'titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso', 'citta', 'palestra', 'centro-pokemon', 'battaglia', 'deposito', 'squadra', 'evoluzione']
 function restoreNavigation(value: unknown, fallback: NavigazioneScena | null, warn: Warn): NavigazioneScena | null {
   if (value === null && fallback === null) return null
   if (!isSaveRecord(value) || !SCENES.includes(value.scena as SceneId)) {
@@ -204,6 +206,14 @@ function restoreBattle(value: unknown, warn: Warn): StatoBattaglia | null {
     ...(Array.isArray(value.squadraB) ? { squadraB: roster(value.squadraB) } : {}),
     ...(value.cronaca === undefined ? {} : { cronaca: normalizeBattleChronicle(value.cronaca) }),
   }
+  if (value.leagueBattle !== undefined) {
+    const reference = value.leagueBattle
+    if (isSaveRecord(reference) && typeof reference.runId === 'string' && /^[a-zA-Z0-9_-]{1,120}$/.test(reference.runId)
+      && Number.isSafeInteger(reference.stageIndex) && (reference.stageIndex as number) >= 0 && (reference.stageIndex as number) <= 4
+      && (reference.playerId === 1 || reference.playerId === 2)) {
+      battle.leagueBattle = { runId: reference.runId, stageIndex: reference.stageIndex as number, playerId: reference.playerId }
+    } else { warn('La battaglia della Lega non ha un riferimento valido.'); return null }
+  }
   if (isSaveRecord(value.checkpoint)) {
     battle.checkpoint = restoreBattleCheckpoint({ ...battle, checkpoint: value.checkpoint as unknown as NonNullable<StatoBattaglia['checkpoint']> })
     if (value.checkpoint.version !== 1 || value.checkpoint.phase !== battle.checkpoint.phase
@@ -243,6 +253,7 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
   }
   if (p.turnoOverworld !== undefined && (turn.giocatoreAttivo !== turnoOverworld.giocatoreAttivo || turn.azioniRimaste !== turnoOverworld.azioniRimaste)) warn('Recuperato il turno della mappa.')
   const state: GameSaveState = {
+    league: normalizeLeagueState(p.league, (v) => restorePokemon(v, warn, 'Squadra del Campione'), warn),
     giocatore1: restorePlayer(p.giocatore1, fallback.giocatore1, warn), giocatore2: restorePlayer(p.giocatore2, fallback.giocatore2, warn),
     giocatoreAttivo: p.giocatoreAttivo === 2 ? 2 : 1,
     rivaleStarterId: finite(p.rivaleStarterId) && !!getPokemon(p.rivaleStarterId) ? p.rivaleStarterId : null,
@@ -255,6 +266,33 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
     arkadex: normalizeArkadexProgress(p.arkadex), matchLog: normalizeMatchLog(p.matchLog),
   }
   state.arkadex = deriveArkadexProgress(state.arkadex, state)
+  if (state.battaglia?.leagueBattle) {
+    const reference = state.battaglia.leagueBattle
+    const progress = state.league.players[reference.playerId]
+    const opponent = state.league.config ? leagueTrainer(state.league.config, reference.stageIndex) : null
+    if (!opponent || progress.status !== 'running' || progress.runId !== reference.runId || progress.nextStage !== reference.stageIndex
+      || state.giocatoreAttivo !== reference.playerId || state.battaglia.tipo !== 'PVP') {
+      state.battaglia = null
+      state.scenaCorrente = { scena: 'lega' }
+      warn('Il riferimento alla battaglia della Lega non coincide con il progresso: riprendi dall’ingresso della Lega.')
+    } else state.battaglia = { ...state.battaglia, leagueOpponent: opponent, allenatoreId: opponent.id }
+  } else if (state.battaglia?.luogoRitorno === 'lega') {
+    state.battaglia = null
+    state.scenaCorrente = { scena: 'lega' }
+    warn('Rimossa una battaglia della Lega priva di riferimento.')
+  }
+  const runningPlayer = ([1, 2] as const).find((id) => state.league.players[id].status === 'running')
+  if (runningPlayer) {
+    const other = runningPlayer === 1 ? 2 : 1
+    if (state.league.players[other].status === 'running') {
+      state.league.players[other] = { ...state.league.players[other], status: 'defeated' }
+      warn('Due tentativi della Lega risultavano simultanei: recuperato il primo tentativo.')
+    }
+    state.giocatoreAttivo = runningPlayer
+    state.turnoOverworld = { giocatoreAttivo: runningPlayer, azioniRimaste: 0 }
+    if (!state.battaglia && state.scenaCorrente.scena !== 'evoluzione') state.scenaCorrente = { scena: 'lega' }
+  }
+  if (state.league.winner && state.scenaCorrente.scena !== 'evoluzione') state.scenaCorrente = { scena: 'lega' }
   for (const player of [state.giocatore1, state.giocatore2]) {
     if (!isTeamWithinLevelCap(player.squadra)) warn(`Giocatore ${player.id}: ${teamCapMessage(player.squadra)} Livelli e HP sono stati conservati.`)
   }
@@ -301,6 +339,6 @@ export function serializeGameState(state: GameSaveState): Record<string, unknown
     turnoOverworld: state.turnoOverworld, posizioniLocali1: state.posizioniLocali1, posizioniLocali2: state.posizioniLocali2,
     scenaCorrente: state.scenaCorrente, scenaPrecedente: state.scenaPrecedente, audioMuted: state.audioMuted,
     interactionProgress: state.interactionProgress,
-    arkadex: state.arkadex, matchLog: state.matchLog,
+    arkadex: state.arkadex, matchLog: state.matchLog, league: state.league,
   }
 }

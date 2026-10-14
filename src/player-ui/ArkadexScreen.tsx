@@ -124,7 +124,7 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
             onClick={() => { setSelectedId(entry.id); setSelectedInstanceId(null); setAnimatedSpeciesId(null); setDetailTab('information') }}>
             {entry.species ? <SpeciesPortrait speciesId={entry.id} /> : <span className="pu-unknown-portrait" aria-hidden="true">?</span>}
             <span className="pu-dex-row-copy"><span className="pu-dex-row-title"><small>Nº {String(entry.id).padStart(3, '0')}</small><strong>{entry.species?.nome ?? '???'}</strong></span><small>{statusLabels[entry.status]}</small></span>
-            <span className="pu-discovery-mark" aria-hidden="true">{entry.status === 'caught' ? '◉' : entry.status === 'seen' ? '◇' : '?'}</span>
+            <span className={`pu-discovery-mark is-${entry.status}`} aria-hidden="true">{entry.status === 'caught' ? '●' : entry.status === 'seen' ? '◐' : '?'}</span>
           </KitButton>)}
           {!entries.length && <p className="pu-empty">Nessuna specie corrisponde ai filtri scelti.</p>}
         </div>

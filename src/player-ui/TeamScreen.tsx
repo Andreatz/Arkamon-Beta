@@ -15,10 +15,11 @@ export interface TeamScreenProps {
 
 /** Viewing another player's tools never changes the active turn. */
 export function canManagePlayerTeam(
-  state: Pick<GameState, 'battaglia' | 'interactionProgress' | 'giocatoreAttivo' | 'turnoOverworld' | 'challengeContext' | 'scenaCorrente'>,
+  state: Pick<GameState, 'battaglia' | 'interactionProgress' | 'giocatoreAttivo' | 'turnoOverworld' | 'challengeContext' | 'scenaCorrente' | 'league'>,
   playerId: 1 | 2,
 ): boolean {
   return !state.battaglia && !state.interactionProgress.pendingBattle && !state.challengeContext
+    && !Object.values(state.league?.players ?? {}).some(progress => progress.status === 'running')
     && !['titolo', 'laboratorio', 'evoluzione'].includes(state.scenaCorrente.scena)
     && state.giocatoreAttivo === playerId
     && state.turnoOverworld.giocatoreAttivo === playerId
@@ -41,6 +42,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
   const battle = useGameStore((state) => state.battaglia)
   const mayManage = useGameStore((state) => canManagePlayerTeam(state, playerId))
   const ruleMessage = useGameStore((state) => state.teamRuleMessage)
+  const leagueRunning = useGameStore((state) => Object.values(state.league?.players ?? {}).some(progress => progress.status === 'running'))
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [movingId, setMovingId] = useState<string | null>(null)
   const [message, setMessage] = useState('')
@@ -125,7 +127,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
           <p className="pu-kicker">Condizioni del compagno</p>
           <h2 className="pu-section-title">{current ? current.hp <= 0 ? 'Arkamon esausto' : current.stato ? current.stato.tipo : 'Pronto al viaggio' : 'Nessun Arkamon selezionato'}</h2>
           {current && <><HealthBar pokemon={current} /><p className="pu-note">Gli HP restano dopo ogni scontro. La cura è sempre esplicita.</p><h3>Mosse disponibili</h3><PokemonMoves pokemon={current} /></>}
-          {!mayManage && <p className="pu-readonly" role="status">Consultazione: il riordino è disponibile nel tuo turno, fuori dalla battaglia.</p>}
+          {!mayManage && <p className="pu-readonly" role="status">{leagueRunning ? 'Consultazione: concludi il tentativo della Lega prima di cambiare squadra.' : 'Consultazione: il riordino è disponibile nel tuo turno, fuori dalla battaglia.'}</p>}
           {(message || (mayManage && ruleMessage)) && <p className="pu-note" role="status">{message || ruleMessage}</p>}
           {movingId && mayManage && <p className="pu-note" role="status">Scegli un altro Arkamon della squadra per scambiare i due posti.</p>}
           <div className="pu-actions">

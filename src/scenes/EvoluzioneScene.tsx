@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from 'react'
 import { EVOLUTION_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { playSound } from '@/utils/soundManager'
+import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gamePreferences'
+import { getPortraitFraming } from '@/player-ui/portraitFraming'
 import type { AdminEvolutionLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import type { PokemonIstanza } from '@/types'
 
@@ -47,6 +49,7 @@ export function getPendingEvolutionQueue(evoluzioni: EvoluzioneSpec[], squadra: 
 }
 
 export function EvoluzioneScene() {
+  const { reducedMotion, speed } = useGameMotionPreferences()
   const scenaCorrente = useSceneNavigation()
   const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
   const vaiAScena = useGameStore((s) => s.vaiAScena)
@@ -82,7 +85,9 @@ export function EvoluzioneScene() {
     navigationRequestedRef.current = true
 
     const isPercorso = /^Percorso_/.test(luogoRitorno)
-    if (luogoRitorno === 'mappa-griglia') {
+    if (luogoRitorno === 'lega') {
+      vaiAScena('lega', { playerId: giocatoreId })
+    } else if (luogoRitorno === 'mappa-griglia') {
       vaiAScena('mappa-griglia')
     } else if (isPercorso) {
       vaiAScena('percorso', { luogo: luogoRitorno })
@@ -152,7 +157,7 @@ export function EvoluzioneScene() {
       evoluto.hp = Math.min(istanza.hp, calcolaHPMax(evoluto))
       aggiornaPokemon(giocatoreId, evoluto)
       evolutionTimerRef.current = null
-    }, 1800)
+    }, reducedMotion ? 0 : getAnimationDuration(1800))
   }
 
   const continua = () => {
@@ -172,7 +177,7 @@ export function EvoluzioneScene() {
       style={{ backgroundImage: `url(${EVOLUTION_BG})` }}
     >
       {/* Sfondo a stelline animate */}
-      <div className="absolute inset-0 opacity-30">
+      {!reducedMotion && <div className="absolute inset-0 opacity-30">
         {Array.from({ length: 30 }).map((_, i) => (
           <motion.div
             key={i}
@@ -192,7 +197,7 @@ export function EvoluzioneScene() {
             }}
           />
         ))}
-      </div>
+      </div>}
 
       {/* Contatore */}
       <AdminLayoutItem
@@ -222,11 +227,10 @@ export function EvoluzioneScene() {
       <div className="relative h-full w-full flex items-center justify-center">
         <motion.div
           animate={
-            fase === 'morphing'
+            fase === 'morphing' && !reducedMotion
               ? {
                   opacity: 1,
-                  scale: [1, 1.2, 0.9, 1.3, 1],
-                  rotate: [0, 90, 180, 270, 360],
+                  scale: [1, 1.04, 1, 1.08, 1],
                   filter: [
                     'brightness(1)',
                     'brightness(2)',
@@ -244,22 +248,29 @@ export function EvoluzioneScene() {
           }
           transition={
             fase === 'morphing'
-              ? { duration: 1.8, ease: 'easeInOut' }
-              : { duration: 0.35, ease: 'easeOut' }
+              ? { duration: reducedMotion ? 0 : 1.8 / speed, ease: 'easeInOut' }
+              : { duration: reducedMotion ? 0 : .35 / speed, ease: 'easeOut' }
           }
           className="relative z-10 flex h-full w-full items-center justify-center overflow-visible"
         >
           {fase === 'pre' && (
             <SpriteOrEmoji specieId={oldSpec.id} fallback={spriteFor(oldSpec.tipo)} />
           )}
-          {fase === 'morphing' && <span className="text-8xl">✨</span>}
+          {fase === 'morphing' && <div className="relative h-full w-full" data-evolution-morph>
+            <motion.div className="absolute inset-0" initial={false} animate={{ opacity: reducedMotion ? 0 : [1, .1, 1, 0], filter: 'brightness(3)' }} transition={{ duration: reducedMotion ? 0 : 1.8 / speed }}>
+              <SpriteOrEmoji specieId={oldSpec.id} fallback={spriteFor(oldSpec.tipo)} />
+            </motion.div>
+            <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: reducedMotion ? 1 : [0, .6, 0, 1], filter: 'brightness(3)' }} transition={{ duration: reducedMotion ? 0 : 1.8 / speed }}>
+              <SpriteOrEmoji specieId={newSpec.id} fallback={spriteFor(newSpec.tipo)} />
+            </motion.div>
+          </div>}
           {fase === 'post' && (
             <SpriteOrEmoji specieId={newSpec.id} fallback={spriteFor(newSpec.tipo)} />
           )}
         </motion.div>
 
         {/* Particelle che esplodono dal centro all'apparizione del nuovo sprite */}
-        {fase === 'post' && (
+        {fase === 'post' && !reducedMotion && (
           <div className="absolute inset-0 pointer-events-none">
             {Array.from({ length: 14 }).map((_, i) => {
               const angle = (i / 14) * Math.PI * 2
@@ -275,7 +286,7 @@ export function EvoluzioneScene() {
                     opacity: 0,
                     scale: 0.3,
                   }}
-                  transition={{ duration: 1.1, ease: 'easeOut', delay: 0.1 }}
+                  transition={{ duration: 1.1 / speed, ease: 'easeOut', delay: .1 / speed }}
                 />
               )
             })}
@@ -309,8 +320,8 @@ export function EvoluzioneScene() {
           </>
         )}
         {fase === 'morphing' && (
-          <h2 className="arka-layout-content arka-readable-title text-2xl font-bold text-white animate-pulse">
-            ???
+          <h2 className="arka-layout-content arka-readable-title text-2xl font-bold text-white">
+            Evoluzione in corso…
           </h2>
         )}
         {fase === 'post' && (
@@ -339,6 +350,8 @@ function SpriteOrEmoji({
   fallback: string
 }) {
   const [sourceIndex, setSourceIndex] = useState(0)
+  const frontSource = `/sprites/front_sprites/${specieId}.png`
+  const framing = getPortraitFraming(frontSource)
   const sources = [
     assetUrl(`/sprites/front_sprites/${specieId}.png`),
     assetUrl(`/sprites/small_sprites/Sprite Small ${specieId}.png`),
@@ -350,7 +363,9 @@ function SpriteOrEmoji({
 
   return (
     <>
-      {sourceIndex < sources.length ? (
+      {sourceIndex === 0 ? <svg className="h-full w-full" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true" data-evolution-species={specieId}>
+        <image href={assetUrl(frontSource)} width={framing.width} height={framing.height} preserveAspectRatio="none" onError={() => setSourceIndex(1)} />
+      </svg> : sourceIndex < sources.length ? (
         <img
           key={`${specieId}-${sourceIndex}`}
           src={sources[sourceIndex]}

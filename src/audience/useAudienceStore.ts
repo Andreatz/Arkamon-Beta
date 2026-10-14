@@ -10,6 +10,7 @@ export type AudienceConnectionStatus = 'disconnected' | 'connecting' | 'connecte
 
 export interface AudienceStoreState {
   enabled: boolean
+  guestEnabled: boolean
   durationSeconds: number
   serviceUrl: string
   session: AudienceHostSession | null
@@ -19,6 +20,8 @@ export interface AudienceStoreState {
   disconnectFailed: boolean
   configureService(value: string): void
   setEnabled(value: boolean): void
+  setGuestEnabled(value: boolean): void
+  controlGuest(action: 'renew-guest' | 'revoke-guest'): Promise<void>
   setDuration(value: number): void
   connect(password: string): Promise<void>
   disconnect(): Promise<void>
@@ -28,8 +31,8 @@ export interface AudienceStoreState {
   expireSession(sessionId: string): void
 }
 
-function readPreferences(): Pick<AudienceStoreState, 'enabled' | 'durationSeconds' | 'serviceUrl' | 'session'> {
-  const defaults = { enabled: false, durationSeconds: 15, serviceUrl: '', session: null }
+function readPreferences(): Pick<AudienceStoreState, 'enabled' | 'guestEnabled' | 'durationSeconds' | 'serviceUrl' | 'session'> {
+  const defaults = { enabled: false, guestEnabled: true, durationSeconds: 15, serviceUrl: '', session: null }
   try {
     if (typeof localStorage === 'undefined') return defaults
     const raw = JSON.parse(localStorage.getItem(AUDIENCE_STORAGE_KEY) ?? 'null') as Record<string, unknown> | null
@@ -38,6 +41,7 @@ function readPreferences(): Pick<AudienceStoreState, 'enabled' | 'durationSecond
     const serviceUrl = typeof raw.serviceUrl === 'string' && raw.serviceUrl ? normalizeAudienceServiceUrl(raw.serviceUrl) : ''
     return {
       enabled: Boolean(session && raw.enabled === true), session,
+      guestEnabled: raw.guestEnabled !== false,
       durationSeconds: normalizeAudienceDuration(typeof raw.durationSeconds === 'number' ? raw.durationSeconds : 15), serviceUrl: session?.serviceUrl ?? serviceUrl,
     }
   } catch { return defaults }
@@ -72,6 +76,13 @@ export const useAudienceStore = create<AudienceStoreState>((set, get) => ({
     }
     set({ enabled: value, error: null })
   },
+  setGuestEnabled(value) { set({ guestEnabled: value, error: null }) },
+  async controlGuest(action) {
+    const session = get().session
+    if (!session) return
+    try { get().acceptSnapshot(session.sessionId, await controlAudienceSession(session, action)) }
+    catch (error) { set({ error: audienceErrorMessage(error) }) }
+  },
   setDuration(value) { set({ durationSeconds: normalizeAudienceDuration(value) }) },
   async connect(password) {
     const state = get()
@@ -95,7 +106,8 @@ export const useAudienceStore = create<AudienceStoreState>((set, get) => ({
       const response = await createAudienceSession(serviceUrl, password, signal)
       if (revision !== connectionRevision || signal.aborted) return
       const { hostToken, ...snapshot } = response
-      set({ serviceUrl, session: { serviceUrl, sessionId: response.sessionId, hostToken, expiresAt: response.expiresAt, joinUrls: response.joinUrls },
+      set({ serviceUrl, session: { serviceUrl, sessionId: response.sessionId, hostToken, expiresAt: response.expiresAt, joinUrls: response.joinUrls,
+        ...(snapshot.guest?.protocol ? { guestProtocol: snapshot.guest.protocol } : {}) },
         snapshot, connectionStatus: 'connected', enabled: false, error: null })
     } catch (error) {
       if (revision !== connectionRevision || signal.aborted) return
@@ -146,7 +158,7 @@ export const useAudienceStore = create<AudienceStoreState>((set, get) => ({
     if (!session || session.sessionId !== sessionId || snapshot.sessionId !== sessionId) return
     if (get().snapshot && snapshot.serverNow < get().snapshot!.serverNow) return
     if (snapshot.expiresAt <= snapshot.serverNow) { get().expireSession(sessionId); return }
-    set({ session: { ...session, expiresAt: snapshot.expiresAt, joinUrls: snapshot.joinUrls }, snapshot, connectionStatus: 'connected', error: null, disconnectFailed: false })
+    set({ session: { ...session, expiresAt: snapshot.expiresAt, joinUrls: snapshot.joinUrls, guestProtocol: snapshot.guest?.protocol }, snapshot, connectionStatus: 'connected', error: null, disconnectFailed: false })
   },
   expireSession(sessionId) {
     if (get().session?.sessionId !== sessionId) return
@@ -160,6 +172,6 @@ export const useAudienceStore = create<AudienceStoreState>((set, get) => ({
 useAudienceStore.subscribe((state) => {
   try {
     if (typeof localStorage === 'undefined') return
-    localStorage.setItem(AUDIENCE_STORAGE_KEY, JSON.stringify({ version: 1, enabled: state.enabled, durationSeconds: state.durationSeconds, serviceUrl: state.serviceUrl, session: state.session }))
+    localStorage.setItem(AUDIENCE_STORAGE_KEY, JSON.stringify({ version: 1, enabled: state.enabled, guestEnabled: state.guestEnabled, durationSeconds: state.durationSeconds, serviceUrl: state.serviceUrl, session: state.session }))
   } catch { /* Gameplay remains usable when organizer preferences cannot be saved. */ }
 })

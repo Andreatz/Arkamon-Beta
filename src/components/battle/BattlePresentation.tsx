@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useAdminStore } from '@/store/adminStore'
 import { getPokemon } from '@/data/index'
-import { calcolaHPMax, getMossaAlLivello, èMossaSoloStato } from '@/engine/battleEngine'
+import { calcolaHPMax, getMossaAlLivello } from '@/engine/battleEngine'
 import { assetUrl } from '@/utils/assetUrl'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { ArkamonBattleSprite, type ArkamonAnimationCue } from '@/components/arkamon/ArkamonBattleSprite'
@@ -10,8 +10,10 @@ import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '@/compone
 import { getBattleSideCenter } from '@/components/vfx/battleVfxPosition'
 import { StatusToken } from './StatusToken'
 import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gamePreferences'
+import { battleMoveFacts } from './battleMoveFacts'
+import './battleRpg.css'
 import type { AdminBattleLayoutKey, AdminLayoutRect, AdminBattleLayout } from '@/theme/adminThemeTypes'
-import type { PokemonIstanza, MossaDef, Stato } from '@/types'
+import type { PokemonIstanza, MossaDef, Stato, TipoPokemon } from '@/types'
 
 
 export function BattleLayoutItem({
@@ -108,7 +110,7 @@ export function InfoBox({
   showOpponentButton: boolean
   onOpponentTurn: () => void
 }) {
-  const righe = messaggi.slice(-4)
+  const righe = messaggi.slice(-3)
   const frameSrc = assetUrl('/ui/infobox.png')
 
   return (
@@ -121,7 +123,7 @@ export function InfoBox({
       }}
     >
       <div
-        className={`absolute left-[8%] top-[16%] space-y-0.5 text-3xl leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)] ${
+        className={`battle-message-lines absolute left-[8%] top-[16%] space-y-1 text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)] ${
           showOpponentButton ? 'right-[28%]' : 'right-[8%]'
         }`}
       >
@@ -445,14 +447,15 @@ export function HpBar({
       <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
         <span
           data-admin-layout-text-key="pokemon-name"
-          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.25vw,18px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          title={nome}
+          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.35vw,23px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           {nome}
 
         </span>
         <span
           data-admin-layout-text-key="pokemon-level"
-          className="arka-layout-content shrink-0 text-[clamp(11px,1vw,15px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          className="arka-layout-content shrink-0 text-[clamp(11px,1.1vw,19px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           LV. {livello}
         </span>
@@ -485,10 +488,10 @@ export function HpBar({
           className="pointer-events-none absolute inset-0 h-full w-full mix-blend-multiply"
         />
       </div>
-      {side === 'player' && (
+      {(
         <div
-          data-admin-layout-text-key="pokemon-hp"
-          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,0.9vw,13px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          data-admin-layout-text-key={side === 'enemy' ? 'pokemon-enemy-hp' : 'pokemon-hp'}
+          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,1vw,17px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           {hp}/{hpMax}
         </div>
@@ -545,14 +548,17 @@ export function MoveButton({
   textKeyPrefix,
   disabled,
   onClick,
+  defenderType,
 }: {
   mossa: MossaDef
   livello: number
   textKeyPrefix: string
   disabled: boolean
   onClick: () => void
+  defenderType?: TipoPokemon
 }) {
   const { dadi, incremento } = getMossaAlLivello(mossa, livello)
+  const facts = battleMoveFacts(mossa, livello, defenderType)
   const frameSrc = assetUrl('/ui/move_button.png')
   const typeSrc = assetUrl(`/ui/${mossa.tipo.toLocaleLowerCase('it-IT')}.png`)
 
@@ -562,13 +568,15 @@ export function MoveButton({
       whileTap={!disabled ? { scale: 0.95 } : {}}
       disabled={disabled}
       onClick={onClick}
-      className="arka-battle-font relative h-full min-h-0 overflow-hidden px-[8%] py-[7%] text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
+      title={facts.detail}
+      className="battle-move-button arka-battle-font relative h-full min-h-0 overflow-hidden px-[8%] py-[7%] text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
         backgroundRepeat: 'no-repeat',
       }}
     >
+      <span className="battle-command-cursor" aria-hidden="true">▶</span>
       <div
         data-admin-layout-text-key={`${textKeyPrefix}-name`}
         className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
@@ -580,7 +588,7 @@ export function MoveButton({
           data-admin-layout-text-key={`${textKeyPrefix}-dice`}
           className="arka-layout-content flex items-center gap-[0.14em] whitespace-nowrap text-[clamp(15px,1.65vw,26px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
-          {èMossaSoloStato(mossa) ? <span className="text-[0.65em]">Status</span> : <>
+          {facts.kind !== 'attack' ? <span className="text-[0.65em]">{facts.label}</span> : <>
             <span>{dadi}</span>
             <span className="text-[0.78em]" aria-label="dadi D6">🎲</span>
             {incremento !== 0 && <span>{incremento > 0 ? `+${incremento}` : incremento}</span>}

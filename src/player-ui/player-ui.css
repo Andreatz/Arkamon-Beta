@@ -58,6 +58,60 @@
 .pu-store-notices{display:grid;gap:6px;margin-top:12px}
 .pu-store-notices>p{margin:0;line-height:1.45}
 
+/* RPG windows: retain the original art and fonts, with a shared cursor,
+   restrained chrome and fixed command areas like a DS creature summary. */
+.pu-shell{--pu-selected:#dcf4ff;--pu-window-line:#82add0;color:#eff8ff}
+.pu-shell button:focus-visible,.pu-shell input:focus-visible,.pu-shell select:focus-visible{outline:2px solid #effcff;outline-offset:3px}
+.pu-shell .pu-button,.pu-team-slot,.pu-box-slot,.pu-menu-tile{transition:filter .12s ease}
+.pu-shell .pu-button:hover:not(:disabled),.pu-team-slot:hover:not(:disabled),.pu-menu-tile:hover:not(:disabled){filter:brightness(1.12)}
+.pu-panel h2,.pu-panel h3{line-height:1.15}.pu-panel-heading{align-items:center}
+.pu-panel-heading>span{color:#b7d7ee;font-variant-numeric:tabular-nums}
+.pu-team-slot-title>strong{overflow-wrap:anywhere}
+.pu-team-slot.is-selected::after,.pu-dex-row.is-active::after,.pu-box-slot.is-selected::after{content:"";position:absolute;width:10px;height:14px;background:var(--pu-selected);clip-path:polygon(0 0,100% 50%,0 100%);filter:drop-shadow(1px 1px 1px #001a32);z-index:3;pointer-events:none}
+.pu-team-slot.is-selected::after{left:10px;top:calc(50% - 7px)}
+.pu-team-slot.is-selected>.pu-slot-number{visibility:hidden}
+.pu-dex-row.is-active::after{left:9px;top:calc(50% - 7px)}
+.pu-dex-row.pu-button{padding-left:25px}
+.pu-box-slot.is-selected::after{left:5px;top:5px;width:8px;height:11px}
+.pu-team-slot.is-move-target,.pu-box-slot.is-move-target{outline:1px dashed #b0e7ff;outline-offset:-3px}
+.pu-health{font-variant-numeric:tabular-nums}
+.pu-health[data-health="high"] progress::-webkit-progress-value{background:linear-gradient(#67eba9,#1fab77)}
+.pu-health[data-health="medium"] progress::-webkit-progress-value{background:linear-gradient(#ffe694,#e5ad36)}
+.pu-health[data-health="low"] progress::-webkit-progress-value{background:linear-gradient(#ffabb1,#e45166)}
+.pu-health[data-health="high"] progress::-moz-progress-bar{background:#1fab77}
+.pu-health[data-health="medium"] progress::-moz-progress-bar{background:#e5ad36}
+.pu-health[data-health="low"] progress::-moz-progress-bar{background:#e45166}
+.pu-status-ko{background:#823746}.pu-status-pill{border:1px solid #adcce744}
+.pu-hero-column,.pu-dex-hero{position:relative;isolation:isolate;background:linear-gradient(180deg,#17385855,#0b1d3355);border:1px solid #82add044;border-radius:5px}
+.pu-hero-column::before,.pu-dex-hero::before{content:"";position:absolute;inset:16px;border:1px solid #a6d8f51c;pointer-events:none;z-index:-1}
+.pu-hero-caption{width:100%;padding:0 18px;box-sizing:border-box}.pu-hero-caption h2{overflow-wrap:anywhere}
+.pu-hero-caption .pu-kicker{color:#a3d3ed}.pu-species-number{font-variant-numeric:tabular-nums;letter-spacing:1px}
+.pu-tabs{border-bottom:1px solid #96c8e944;padding-bottom:7px}.pu-tabs .is-active{filter:brightness(1.08)}
+.pu-actions{border-top:1px solid #82add044}.pu-move-tactical{display:block;color:#bdd7ec;font-size:13px;line-height:1.4;margin-top:6px;max-width:48ch}
+.pu-move[data-move-kind="heal"] .pu-dice{color:#b8f6d2;border-color:#68b798}
+.pu-move[data-move-kind="status"] .pu-dice{color:#e6cdff;border-color:#a77fc7}
+.pu-discovery-mark{width:21px;height:21px;border:1px solid #80b8df88;border-radius:50%;display:grid;place-items:center;flex:none;font-size:14px}
+.pu-discovery-mark.is-caught{color:#b4efcd}.pu-discovery-mark.is-seen{color:#bee3ff}
+.pu-deposit-filters{display:grid;grid-template-columns:minmax(130px,1.5fr) minmax(88px,1fr) minmax(88px,1fr) minmax(66px,.6fr) minmax(66px,.6fr) auto;gap:8px;align-items:end;margin-top:10px}
+.pu-deposit-filters label{display:grid;gap:3px;font-size:12px;color:#bdd7ec;min-width:0}
+.pu-deposit-filters input,.pu-deposit-filters select{width:100%;box-sizing:border-box;min-width:0}
+.pu-deposit-filters .pu-button{white-space:nowrap;min-height:32px;font-size:12px;padding:4px 10px}
+.pu-deposit-filter-result{color:#adcce2;font-size:12px;line-height:1.4;margin:5px 0 0}
+.pu-box-slot.is-filtered-out .pu-creature-portrait,.pu-box-slot.is-filtered-out .pu-box-slot-level{opacity:.22}
+.pu-box-slot.is-filtered-out:hover .pu-creature-portrait,.pu-box-slot.is-filtered-out:focus-visible .pu-creature-portrait{opacity:.65}
+.pu-box-slot.is-filtered-out.is-selected .pu-creature-portrait{opacity:1}
+.pu-next-match{font-size:12px}
+.pu-swap-preview{display:grid;gap:4px;border:1px solid #72b99d;padding:10px 12px;background:#102d2c;font-size:13px;line-height:1.3;margin-top:7px}
+.pu-swap-preview.is-blocked{border-color:#d7a263;background:#34291f;color:#ffe0b1}
+.pu-cure-preview{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px 12px;border:1px solid #80b8df66;padding:10px 12px;margin:7px 0 10px;background:#102842}
+.pu-cure-preview>.pu-creature-portrait{width:52px;height:52px}.pu-cure-preview>div{min-width:0}
+.pu-cure-preview strong{display:block;font-size:14px}.pu-cure-preview .pu-health{margin-top:3px}
+.pu-cure-after,.pu-cure-no-effect{grid-column:2}.pu-cure-after>span:last-child,.pu-cure-no-effect{font-size:12px;color:#bcebcf}
+.pu-cure-no-effect{color:#c2d3e1}.pu-trainer-progress{border-top:1px solid #82add044;padding-top:8px;margin-top:8px}
+.pu-trainer-progress strong{font-size:16px}.pu-trainer-progress p{font-size:13px;margin:4px 0}
+@media(prefers-reduced-motion:reduce){.pu-shell .pu-button,.pu-team-slot,.pu-box-slot,.pu-menu-tile{transition:none}}
+@media(max-width:1100px){.pu-deposit-filters{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.pu-deposit-filters .pu-button{width:100%}}
+
 /* Desktop pages use the actual available viewport height. Lists have a finite
    page size; no overflow clipping or whole-page scaling hides their contents. */
 @media(min-width:1100px) and (min-height:820px){
@@ -209,3 +263,30 @@
 }
 
 .pu-stat-grid-pair{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+@media(min-width:1100px) and (min-height:820px){
+  .pu-topbar{padding:4px 18px;min-height:54px}.pu-brand img{width:145px}
+  .pu-nav{min-height:52px}.pu-nav-button{min-height:40px;font-size:15px}
+  .pu-screen-heading,.pu-page-head{min-height:54px}
+  .pu-screen-heading>div>p:last-child:not(.pu-kicker),.pu-page-head>div>p{display:none}
+  .pu-team-layout{grid-template-columns:minmax(340px,1.15fr) minmax(285px,.9fr) minmax(330px,1fr)}
+  .pu-team-slot-content strong{font-size:18px}.pu-team-slot-title>span{font-size:14px}
+  .pu-team-slot .pu-health>span{font-size:13px}.pu-team-slot .pu-team-slot-meta .pu-type{font-size:13px}
+  .pu-team-slot-meta .pu-status-pill{font-size:12px}.pu-hero-caption h2{font-size:27px}
+  .pu-dex-row.pu-button{padding-left:25px}.pu-dex-row .pu-dex-row-title strong{font-size:17px}
+  .pu-deposit-screen{--pu-box-row:clamp(44px,calc(7.78dvh - 20px),60px)}
+  .pu-deposit-filters{margin-top:7px}.pu-deposit-filter-result{font-size:12px}
+  .pu-deposit-grid-panel .pu-box-grid{margin:6px 0}.pu-deposit-grid-panel>.pu-note{padding-top:4px}
+  .pu-swap-preview{padding:8px 10px;font-size:12px}.pu-swap-preview strong{font-size:14px}
+  .pu-bag-detail .pu-item-hero{height:120px}.pu-bag-detail .pu-item-hero>.pu-kit-icon{width:120px;height:120px}
+  .pu-bag-detail .pu-description{font-size:14px}.pu-bag-detail .pu-item-use{margin-top:7px;padding-top:7px}
+  .pu-cure-preview{padding:7px 10px;grid-template-columns:44px minmax(0,1fr) minmax(0,1fr);gap:8px}
+  .pu-cure-preview>.pu-creature-portrait{width:44px;height:44px}.pu-cure-after,.pu-cure-no-effect{grid-column:3}
+  .pu-cure-preview .pu-health>span{font-size:16px;font-weight:600}.pu-cure-preview strong{font-size:13px;overflow-wrap:anywhere}
+  .pu-cure-after>span:last-child{display:block;margin-top:4px}.pu-cure-preview .pu-kicker{font-size:9px}
+}
+@media(min-width:1100px) and (min-height:820px) and (max-height:1000px){
+  .pu-bag-detail .pu-item-hero{height:88px}.pu-bag-detail .pu-item-hero>.pu-kit-icon{width:88px;height:88px}
+  .pu-bag-detail h2,.pu-bag-detail .pu-description,.pu-bag-detail .pu-item-held{margin:4px 0}
+  .pu-bag-detail .arka-store-note,.pu-bag-detail .arka-store-warning{font-size:12px;line-height:1.35}
+}

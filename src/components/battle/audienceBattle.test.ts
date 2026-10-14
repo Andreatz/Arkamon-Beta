@@ -29,6 +29,18 @@ describe('audience battle turn identity and actual moves', () => {
     expect(audienceChannelForBattle({ ...battle, tipo: 'Selvatico' })).toBeNull()
     expect(audienceChannelForBattle(null)).toBeNull()
   })
+  it('assigns Elite Four and champions only to the private guest channel and rejects old boss majority results', () => {
+    for (const tipo of ['Superquattro', 'Campione'] as const) {
+      const leagueBattle = { ...battle, tipo: 'PVP' as const, leagueOpponent: { ...gym, tipo, nome: tipo } }
+      expect(audienceChannelForBattle(leagueBattle)).toBe('boss')
+      const guestRequest = makeAudienceRoundRequest(leagueBattle, pokemon, target, 'league', 1, 15)!
+      expect(guestRequest.trainer.kind).toBe(tipo)
+      expect(guestRequest.durationSeconds).toBe(120)
+      const guestRound = { ...round, ...guestRequest, resolution: 'guest' as const }
+      expect(validAudienceWinner({ ...pending, request: guestRequest }, guestRound, pokemon, guestRequest.turnKey)).toBe(guestRound.winnerIndex)
+      expect(validAudienceWinner({ ...pending, request: guestRequest }, { ...guestRound, resolution: 'majority' }, pokemon, guestRequest.turnKey)).toBeNull()
+    }
+  })
   it('includes only actual populated move slots for every species, including sparse slots and healing/status moves', () => {
     for (let id = 1; id <= 110; id++) {
       const actor = creaIstanza(id, 25)!

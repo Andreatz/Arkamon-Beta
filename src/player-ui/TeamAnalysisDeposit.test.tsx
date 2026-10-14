@@ -6,6 +6,7 @@ import { emptyInteractionProgress } from '@/interactions/types'
 import { TeamScreen, canManagePlayerTeam, liveOwnedPokemon } from './TeamScreen'
 import { AnalysisScreen } from './AnalysisScreen'
 import { DepositScreen } from './DepositScreen'
+import { emptyLeagueState } from '@/league/leagueModel'
 
 const fixture = vi.hoisted(() => ({ state: null as unknown as GameState }))
 vi.mock('@store/gameStore', () => ({
@@ -104,5 +105,15 @@ describe('Real player team tools', () => {
     }
     expect(canManagePlayerTeam(original, 1)).toBe(true)
     expect(canManagePlayerTeam(original, 2)).toBe(false)
+  })
+
+  it('keeps both players in consultation throughout a consecutive League run', () => {
+    fixture.state.league = emptyLeagueState()
+    fixture.state.league.players[1].status = 'running'
+    expect(canManagePlayerTeam(fixture.state, 1)).toBe(false)
+    expect(canManagePlayerTeam(fixture.state, 2)).toBe(false)
+    const markup = renderToStaticMarkup(<DepositScreen playerId={1} />)
+    expect(markup).toContain('concludi il tentativo della Lega prima di cambiare squadra')
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>[\s\S]*?Sposta o scambia<\/button>/)
   })
 })

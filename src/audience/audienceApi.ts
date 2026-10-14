@@ -66,7 +66,7 @@ export function normalizeAudienceDuration(value: number): number {
 
 function parseTrainer(value: unknown): AudienceTrainer {
   const v = object(value)
-  if (!['NPC', 'Capopalestra', 'PVP'].includes(String(v.kind))) throw invalid()
+  if (!['NPC', 'Capopalestra', 'PVP', 'Superquattro', 'Campione'].includes(String(v.kind))) throw invalid()
   return { name: text(v.name, 200), kind: v.kind as AudienceTrainer['kind'] }
 }
 function parsePokemon(value: unknown): AudiencePokemon {
@@ -99,7 +99,8 @@ function parseRound(value: unknown): AudienceRound {
   const options = parseOptions(v.options)
   const winnerIndex = v.winnerIndex === null ? null : index(v.winnerIndex)
   if (!['open', 'closed', 'cancelled'].includes(String(v.status)) || !Array.isArray(v.counts) || v.counts.length !== 3) throw invalid()
-  if (v.resolution !== null && !['majority', 'tie', 'no-votes'].includes(String(v.resolution))) throw invalid()
+  if (v.resolution !== null && !['majority', 'tie', 'no-votes', 'guest'].includes(String(v.resolution))) throw invalid()
+  if ((v.channel === 'npc' && v.resolution === 'guest') || (v.channel === 'boss' && v.status === 'closed' && v.resolution !== 'guest')) throw invalid()
   if (v.status === 'closed' && (winnerIndex === null || !options.some((option) => option.index === winnerIndex) || v.resolution === null)) throw invalid()
   if (v.status !== 'closed' && (winnerIndex !== null || v.resolution !== null)) throw invalid()
   const openedAt = integer(v.openedAt)
@@ -130,10 +131,14 @@ export function parseAudienceHostSnapshot(value: unknown, serviceUrl: string, ex
   if (!/^[a-zA-Z0-9_-]{8,128}$/.test(sessionId) || (expectedId && sessionId !== expectedId)) throw invalid()
   const urls = object(v.joinUrls)
   const participants = object(v.participants)
+  const guest = v.guest === undefined ? undefined : object(v.guest)
+  if (guest && (guest.protocol !== 'private-guest-v1' || typeof guest.claimed !== 'boolean' || typeof guest.revoked !== 'boolean')) throw invalid()
+  if (guest && (integer(participants.boss, 0, 1) !== (guest.claimed ? 1 : 0) || guest.claimed && guest.revoked)) throw invalid()
   return {
     sessionId, serverNow: integer(v.serverNow), expiresAt: integer(v.expiresAt),
     joinUrls: { npc: validateAudienceJoinUrl(urls.npc, serviceUrl, sessionId, 'npc'), boss: validateAudienceJoinUrl(urls.boss, serviceUrl, sessionId, 'boss') },
     participants: { npc: integer(participants.npc), boss: integer(participants.boss) }, round: v.round === null ? null : parseRound(v.round),
+    ...(guest ? { guest: { protocol: 'private-guest-v1' as const, claimed: guest.claimed as boolean, revoked: guest.revoked as boolean, expiresAt: integer(guest.expiresAt), generation: integer(guest.generation) } } : {}),
   }
 }
 
@@ -147,7 +152,8 @@ export function parseAudienceHostSession(value: unknown): AudienceHostSession | 
     const expiresAt = integer(v.expiresAt)
     if (expiresAt <= Date.now()) return null
     const urls = object(v.joinUrls)
-    return { serviceUrl, sessionId, hostToken, expiresAt, joinUrls: {
+    return { serviceUrl, sessionId, hostToken, expiresAt,
+      ...(v.guestProtocol === 'private-guest-v1' ? { guestProtocol: 'private-guest-v1' as const } : {}), joinUrls: {
       npc: validateAudienceJoinUrl(urls.npc, serviceUrl, sessionId, 'npc'), boss: validateAudienceJoinUrl(urls.boss, serviceUrl, sessionId, 'boss'),
     } }
   } catch { return null }
@@ -203,7 +209,7 @@ export async function openAudienceRound(session: AudienceHostSession, request: A
   }, signal), session.serviceUrl, session.sessionId)
 }
 
-export async function controlAudienceSession(session: AudienceHostSession, action: 'close' | 'cancel' | 'end', roundId?: string, signal?: AbortSignal): Promise<AudienceHostSnapshot> {
+export async function controlAudienceSession(session: AudienceHostSession, action: 'close' | 'cancel' | 'end' | 'renew-guest' | 'revoke-guest', roundId?: string, signal?: AbortSignal): Promise<AudienceHostSnapshot> {
   return parseAudienceHostSnapshot(await call(session.serviceUrl, `/${encodeURIComponent(session.sessionId)}/host`, {
     method: 'POST', headers: { Authorization: `Bearer ${session.hostToken}` }, body: JSON.stringify({ action, ...(roundId ? { roundId } : {}) }),
   }, signal), session.serviceUrl, session.sessionId)

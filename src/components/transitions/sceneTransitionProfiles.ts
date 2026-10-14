@@ -18,6 +18,7 @@ export interface SceneTransitionProfile {
 }
 
 const SCENE_LABELS: Record<SceneId, string> = {
+  lega: 'Lega Arkamon',
   titolo: 'Apertura del menu principale',
   laboratorio: 'Ingresso nel laboratorio',
   'mappa-principale': 'Ritorno alla mappa principale',
