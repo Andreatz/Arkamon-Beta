@@ -1,3 +1,5 @@
+import type { UiDesignDocument } from '@/ui-studio/types'
+
 export interface AdminThemeColors {
   primary: string
   primaryHover: string
@@ -146,4 +148,6 @@ export interface AdminTheme {
   assets: AdminThemeAssets
   spriteScales: Record<string, number>
   layouts: AdminThemeLayouts
+  /** Optional for compatibility with historical themes. Contains visual settings only. */
+  design?: UiDesignDocument
 }

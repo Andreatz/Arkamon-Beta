@@ -26,40 +26,6 @@ export const defaultAdminTheme: AdminTheme = {
 }
 
 export function cloneAdminTheme(theme: AdminTheme): AdminTheme {
-  return {
-    ...theme,
-    colors: { ...theme.colors },
-    ui: { ...theme.ui },
-    assets: { ...theme.assets },
-    spriteScales: { ...theme.spriteScales },
-    layouts: {
-      battle: {
-        ...theme.layouts.battle,
-      },
-      mainMapNodes: {
-        ...theme.layouts.mainMapNodes,
-      },
-      mainMapRoads: Object.fromEntries(
-        Object.entries(theme.layouts.mainMapRoads).map(([key, points]) => [
-          key,
-          points.map((point) => ({ ...point })),
-        ])
-      ),
-      mainMapUi: {
-        ...theme.layouts.mainMapUi,
-      },
-      mapGrid: {
-        ...theme.layouts.mapGrid,
-      },
-      luogo: {
-        ...theme.layouts.luogo,
-      },
-      deposit: {
-        ...theme.layouts.deposit,
-      },
-      evolution: {
-        ...theme.layouts.evolution,
-      },
-    },
-  }
+  // Text offsets and the studio document must not share references with undo snapshots.
+  return JSON.parse(JSON.stringify(theme)) as AdminTheme
 }

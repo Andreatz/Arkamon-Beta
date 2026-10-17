@@ -30,6 +30,9 @@ const CittaScene = lazy(() => import('@scenes/CittaScene').then((module) => ({ d
 const DepositoScene = lazy(() => import('@scenes/DepositoScene').then((module) => ({ default: module.DepositoScene })))
 const EvoluzioneScene = lazy(() => import('@scenes/EvoluzioneScene').then((module) => ({ default: module.EvoluzioneScene })))
 const LeagueScene = lazy(() => import('@/league/LeagueScene').then((module) => ({ default: module.LeagueScene })))
+const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
+const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
+const UiDesignRuntime = lazy(() => import('@/ui-studio/UiDesignRuntime').then(module => ({ default: module.UiDesignRuntime })))
 
 /**
  * Router delle scene.
@@ -45,6 +48,13 @@ function App() {
     && !!getLocalMap(String(scenaCorrente.payload?.luogo ?? (scenaCorrente.scena === 'citta' ? 'Venezia' : 'Percorso_1')))
 
   useEffect(() => { preloadSceneTransitionArtwork() }, [])
+
+  if (new URLSearchParams(window.location.search).get('uiStudioPreview') === '1') {
+    return <Suspense fallback={<div role="status">Preparazione anteprima…</div>}><UiStudioPreview /></Suspense>
+  }
+  if (hash === '#ui-studio') {
+    return <Suspense fallback={<div role="status">Caricamento editor interfaccia…</div>}><UiStudioEditor onClose={() => { window.location.hash = '' }} /></Suspense>
+  }
 
   if (hash === '#battle-rules-lab') return <LabShell><BattleRulesLab /></LabShell>
 
@@ -75,6 +85,7 @@ function App() {
   return (
     <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}${scenaCorrente.scena === 'lega' ? ' arka-stage--league' : ''}`}>
       <AdminRuntime />
+      <Suspense fallback={null}><UiDesignRuntime /></Suspense>
       <AdminOverlay />
       <PlayerTools />
       <SaveFailureNotice />
@@ -88,7 +99,7 @@ function App() {
 
 function LabShell({ children }: { children: React.ReactNode }) {
   return <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
-    <AdminRuntime /><AdminOverlay /><PlayerTools /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
+    <AdminRuntime /><Suspense fallback={null}><UiDesignRuntime /></Suspense><AdminOverlay /><PlayerTools /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
   </div>
 }
 

@@ -103,7 +103,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
 
     <nav className="pu-nav" aria-label="Schermate del giocatore">
       <KitFrame id="panel-wide" />
-      {PLAYER_UI_SCREENS.map(id => <KitButton className="pu-nav-button" key={id} active={!visibleTool && screen === id} disabled={!!context && id !== 'partita'}
+      {PLAYER_UI_SCREENS.map(id => <KitButton data-ui-id={`nav.${id === 'partita' ? 'menu' : id}`} className="pu-nav-button" key={id} active={!visibleTool && screen === id} disabled={!!context && id !== 'partita'}
         aria-pressed={!visibleTool && screen === id} onClick={() => navigate(id)}><KitIcon id={screens[id].icon} />{screens[id].label}</KitButton>)}
     </nav>
 
@@ -135,7 +135,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     </main>
 
     <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} azioni disponibili` : ''}</span>
-      <span>Esc · Torna al viaggio</span><KitButton active onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</KitButton>
+      <span>Esc · Torna al viaggio</span><KitButton data-ui-id="resume-journey" active onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</KitButton>
     </footer>
   </div>
 }

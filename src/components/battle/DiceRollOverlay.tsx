@@ -23,21 +23,24 @@ interface DiceRollOverlayProps {
   roll: DiceRollDisplay
   forceFallback?: boolean
   onVisible?: () => void
+  /** Design preview holds the real result artwork without a sound or battle action. */
+  staticPreview?: boolean
 }
 
 export function DiceRollOverlay(props: DiceRollOverlayProps) {
   return <DiceRollPresentation key={props.roll.id} {...props} />
 }
 
-function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRollOverlayProps) {
+function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPreview = false }: DiceRollOverlayProps) {
   const { reducedMotion, speed } = useGameMotionPreferences()
-  const [damageVisible, setDamageVisible] = useState(false)
+  const [damageVisible, setDamageVisible] = useState(staticPreview)
   const revealRef = useRef<ReturnType<typeof createBattleDiceReveal> | null>(null)
   const onVisibleRef = useRef(onVisible)
   onVisibleRef.current = onVisible
   const diceCount = roll.rolls.length
 
   useDiceLayoutEffect(() => {
+    if (staticPreview) return
     const reveal = createBattleDiceReveal({
       diceCount,
       scheduleAfterPaint: (callback) => {
@@ -62,7 +65,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRo
       reveal.cancel()
       if (revealRef.current === reveal) revealRef.current = null
     }
-  }, [diceCount, reducedMotion])
+  }, [diceCount, reducedMotion, staticPreview])
   const total = roll.rolls.reduce((sum, value) => sum + value, 0)
   const gridStyle = {
     '--battle-dice-columns': Math.max(1, Math.min(roll.rolls.length, 6)),
@@ -94,6 +97,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRo
             <BattleDie
               key={`${roll.id}-${index}-${value}`}
               value={value}
+              staticPreview={staticPreview}
               forceFallback={forceFallback}
               onVisible={() => revealRef.current?.dieVisible(index)}
             />
@@ -114,10 +118,11 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible }: DiceRo
   )
 }
 
-export function BattleDie({ value, forceFallback, onVisible }: {
+export function BattleDie({ value, forceFallback, onVisible, staticPreview = false }: {
   value: number
   forceFallback: boolean
   onVisible: () => void
+  staticPreview?: boolean
 }) {
   const [phase, setPhase] = useState<'intro' | 'result'>('intro')
   const [failed, setFailed] = useState(false)
@@ -125,7 +130,7 @@ export function BattleDie({ value, forceFallback, onVisible }: {
   const revealResult = useCallback(() => setPhase('result'), [])
   const showFallback = useCallback(() => setFailed(true), [])
   const sequence = getBattleDiceSequence(value)
-  const showingResult = reducedMotion || phase === 'result'
+  const showingResult = staticPreview || reducedMotion || phase === 'result'
   const segment = sequence && (showingResult ? sequence.result : sequence.intro)
   const showingFallback = failed || forceFallback || !segment
   const onVisibleRef = useRef(onVisible)
@@ -148,6 +153,7 @@ export function BattleDie({ value, forceFallback, onVisible }: {
             key={`${value}-${showingResult ? 'result' : 'intro'}`}
             src={assetUrl(segment.src)}
             {...segment.sprite}
+            {...(staticPreview ? { frameCount: 1, paused: true } : {})}
             width={segment.sprite.frameWidth}
             height={segment.sprite.frameHeight}
             responsive

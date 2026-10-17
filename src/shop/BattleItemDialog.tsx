@@ -12,7 +12,7 @@ export interface BattleItemDialogProps {
 }
 
 export function BattleItemDialog({ squad, inventory, onUse, onClose, disabled = false }: BattleItemDialogProps) {
-  return <GameDialog title="Borsa in battaglia" onClose={onClose}>
+  return <GameDialog title="Borsa in battaglia" className="battle-item-dialog" onClose={onClose}>
     <ItemUsePanel squad={squad} inventory={inventory} disabled={disabled}
       actionNote="Usare un oggetto sostituisce la mossa di questo turno. Puoi curare un compagno in squadra o rianimare un Arkamon KO. L’oggetto viene consumato soltanto se ha effetto."
       onUse={(itemId, instanceId) => {

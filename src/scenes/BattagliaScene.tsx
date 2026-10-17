@@ -19,7 +19,8 @@ import { useAudienceTurn } from '@/audience/useAudienceTurn'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useContext } from 'react'
+import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
 import { teamProgressionLimit } from '@/engine/teamLevelCap'
 import { nextSeededRandom } from '@/challenges/seededRandom'
 import { exitChallenge } from '@/challenges/challengeRuntime'
@@ -119,6 +120,7 @@ type PendingSwitch = {
  * Durante i filmati il checkpoint precedente resta valido e il KO resta nascosto fino ai dadi.
  */
 export function BattagliaScene() {
+  const previewView = useContext(UiPreviewViewContext)
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const battaglia = useGameStore((s) => s.battaglia)
   const challengeContext = useGameStore((s) => s.challengeContext)
@@ -1487,6 +1489,8 @@ export function BattagliaScene() {
       }}
     >
       <BattleLogPanel chronicle={chronicle} busy={azioneInCorso || coinOpen || !!statusRoll} />
+      {previewView === 'dice' && <DiceRollOverlay staticPreview roll={{ id: -1, side: 'A', moveName: 'Attacco di esempio', rolls: [2, 4, 6], increment: 2, damage: 14 }} />}
+      {previewView === 'bag' && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={() => ({ ok: false, message: 'Anteprima del layout: nessun oggetto usato.' })} onClose={() => {}} />}
       {!terminata && <button type="button" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
       {bagOpen && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={eseguiOggetto} onClose={() => setBagOpen(false)} />}
       {audienceChoice && !terminata && <BattleAudienceOverlay

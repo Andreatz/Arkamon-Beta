@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { useAdminStore } from '@store/adminStore'
 import type { AdminTheme } from '@/theme/adminThemeTypes'
 import { cloneAdminTheme, defaultAdminTheme } from '@/theme/defaultAdminTheme'
+import { createDefaultDesign } from '@/ui-studio/designModel'
 
 function resetAdminStore(): void {
   useAdminStore.setState({
@@ -16,6 +17,28 @@ function resetAdminStore(): void {
 describe('adminStore', () => {
   beforeEach(() => {
     resetAdminStore()
+  })
+
+  it('recupera temi precedenti e ignora solo un progetto UI corrotto', () => {
+    const theme = cloneAdminTheme(defaultAdminTheme)
+    theme.colors.primary = '#123456'
+    theme.design = { version: 999 } as never
+    const restored = useAdminStore.persist.getOptions().merge!({ defaultThemeRevision: 'notte-viola-2026-10-05', theme }, useAdminStore.getState()).theme
+    expect(restored.design).toBeUndefined()
+    expect(restored.colors.primary).toBe('#123456')
+    theme.design = createDefaultDesign()
+    expect(useAdminStore.persist.getOptions().merge!({ defaultThemeRevision: 'notte-viola-2026-10-05', theme }, useAdminStore.getState()).theme.design).toEqual(createDefaultDesign())
+  })
+
+  it('clona profondamente rettangoli, offset testo e progetto UI', () => {
+    const theme = cloneAdminTheme(defaultAdminTheme)
+    theme.design = createDefaultDesign()
+    theme.layouts.battle.playerMoves.contentOffsets = { name: { x: 3, y: 4 } }
+    const copy = cloneAdminTheme(theme)
+    copy.layouts.battle.playerMoves.contentOffsets!.name.x = 44
+    copy.design!.typography.heading.family = 'chela'
+    expect(theme.layouts.battle.playerMoves.contentOffsets.name.x).toBe(3)
+    expect(theme.design.typography.heading.family).toBe('norwester')
   })
 
   it('usa il tema default', () => {

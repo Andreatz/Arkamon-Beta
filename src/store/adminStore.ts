@@ -19,6 +19,8 @@ import type {
 import { compactRoadPoints } from '@/utils/mainMapRoadGeometry'
 import { migrateDepositLayout } from '@/theme/depositLayoutMigration'
 import { isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
+import { normalizeDesign } from '@/ui-studio/designModel'
+import type { UiDesignDocument } from '@/ui-studio/types'
 import {
   cloneAdminTheme,
   defaultAdminTheme,
@@ -104,6 +106,7 @@ interface AdminState {
   resetTheme: () => void
   applyVisualTheme: (theme: AdminTheme) => void
   importTheme: (theme: AdminTheme) => void
+  updateDesign: (design: UiDesignDocument) => boolean
 }
 
 function pushLayoutUndo(state: AdminState): AdminTheme['layouts'][] {
@@ -114,6 +117,10 @@ function pushLayoutUndo(state: AdminState): AdminTheme['layouts'][] {
 }
 
 function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
+  let design: UiDesignDocument | undefined
+  if (theme?.design !== undefined) {
+    try { design = normalizeDesign(theme.design) } catch { /* Invalid visual settings cannot prevent boot. */ }
+  }
   const ui = { ...defaultAdminTheme.ui }
   for (const key of Object.keys(ui) as (keyof AdminThemeUi)[]) {
     const value = theme?.ui?.[key]
@@ -149,6 +156,7 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
       ...theme?.assets,
     },
     spriteScales,
+    design,
     layouts: {
       battle: {
         ...defaultBattleLayout,
@@ -422,6 +430,24 @@ export const useAdminStore = create<AdminState>()(
           layoutUndoStack: [],
           theme: cloneAdminTheme(normalizeTheme(theme)),
         }),
+
+      updateDesign: (design) => {
+        let normalized: UiDesignDocument
+        try { normalized = normalizeDesign(design) } catch { return false }
+        let previousTheme: AdminTheme | undefined
+        try {
+          // The durable theme write precedes the in-memory update; campaign data is separate.
+          const current = useAdminStore.getState()
+          previousTheme = current.theme
+          const nextTheme = { ...current.theme, design: normalized }
+          if (typeof localStorage !== 'undefined') localStorage.setItem('arkamon-admin-theme', JSON.stringify({ state: { ...current, theme: nextTheme }, version: 0 }))
+          set({ theme: nextTheme })
+          return true
+        } catch {
+          if (previousTheme) { try { set({ theme: previousTheme }) } catch { /* Restore memory even when storage stays unavailable. */ } }
+          return false
+        }
+      },
     }),
     {
       name: 'arkamon-admin-theme',

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
 import { getPokemon, TABELLA_TIPI } from '@data/index'
 import { calcolaHPMax } from '@engine/battleEngine'
 import { useGameStore } from '@store/gameStore'
@@ -13,10 +14,11 @@ export function AnalysisScreen(props: AnalysisScreenProps) {
 }
 
 function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
+  const previewView = useContext(UiPreviewViewContext)
   const player = useGameStore((state) => playerId === 1 ? state.giocatore1 : state.giocatore2)
   const battle = useGameStore((state) => state.battaglia)
   const [chosenId, setChosenId] = useState(instanceId ?? '')
-  const [tab, setTab] = useState<AnalysisTab>('scheda')
+  const [tab, setTab] = useState<AnalysisTab>(previewView === 'mosse' || previewView === 'status' ? previewView : 'scheda')
   const owned = [...player.squadra, ...Object.values(player.deposito)]
   const selected = owned.find((pokemon) => pokemon.istanzaId === chosenId) ?? owned[0]
   const pokemon = selected ? liveOwnedPokemon(selected, battle) : undefined
@@ -27,7 +29,7 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
   const status = pokemon?.stato
 
   return (
-    <section className="pu-screen pu-analysis-screen" aria-labelledby="pu-analysis-title">
+    <section className="pu-screen pu-analysis-screen" aria-labelledby="pu-analysis-title" data-ui-view={tab}>
       <header className="pu-screen-heading">
         <div><p className="pu-kicker">Scheda del compagno · {player.nome}</p><h1 id="pu-analysis-title">Analisi Arkamon</h1><p>Conosci il tuo compagno. Prepara la prossima mossa.</p></div>
         <label className="pu-analysis-selector">Arkamon da analizzare

@@ -238,6 +238,8 @@ export function AdminLayoutItem({
     <div
       ref={itemRef}
       data-admin-layout-item="true"
+      data-ui-label={label}
+      data-ui-id={`layout.${label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
       data-admin-layout-editing={editing ? 'true' : 'false'}
       onPointerDownCapture={startTextEdit}
       onClickCapture={blockTextClickWhileEditing}

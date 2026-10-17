@@ -47,7 +47,7 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
   const leagueStages = league?.config?.championEnabled ? 5 : 4
 
   return <div className="pu-menu-layout">
-    <div className="pu-menu-grid">{tiles.map((tile, index) => <button type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
+    <div className="pu-menu-grid">{tiles.map((tile, index) => <button data-ui-id={`service.${tile.id}`} type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
       aria-label={`Apri ${tile.title}`} disabled={!!context && tile.id !== 'settings' && tile.id !== 'challenges'}
       onClick={() => onAuxiliary(tile.id)}>
       <KitFrame id={index === 0 ? 'panel-wide' : 'panel-medium'} /><KitIcon id={tile.icon} />

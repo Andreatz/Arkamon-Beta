@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
+import { normalizeDesign } from '@/ui-studio/designModel'
 import { ADMIN_THEME_UI_BOUNDS, isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
 import type {
   AdminTheme,
@@ -347,6 +348,13 @@ export function parseThemeJson(value: string): { theme: AdminTheme; error: null 
     layouts.evolution = evolution.layout as AdminThemeLayouts['evolution']
   }
 
+  let design: AdminTheme['design']
+  if (parsed.design !== undefined) {
+    try { design = normalizeDesign(parsed.design) } catch (error) {
+      return { theme: null, error: error instanceof Error ? error.message : 'Progetto UI non valido.' }
+    }
+  }
+
   return {
     theme: {
       id: parsed.id,
@@ -356,6 +364,7 @@ export function parseThemeJson(value: string): { theme: AdminTheme; error: null 
       assets,
       spriteScales,
       layouts,
+      ...(design ? { design } : {}),
     },
     error: null,
   }
@@ -406,6 +415,7 @@ export function AdminImportExport() {
 
   return (
     <div className="space-y-4">
+      {theme.design?.media.some(entry => entry.source.startsWith('ui-media:')) ? <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">Questo JSON conserva i riferimenti ai file importati nel browser. Per trasferire anche immagini e font su un altro dispositivo, usa Esporta nell’Editor delle schermate.</p> : null}
       <div>
         <div className="mb-2 flex items-center justify-between gap-2">
           <h3 className="text-sm font-black text-[var(--arka-text)]">Tema corrente</h3>
