@@ -45,3 +45,18 @@ Le tre immagini sono state prodotte a 1920×1080; pagina e viewport misurano ent
 - Norwester e Chela One sono inclusi. Azonix richiede un’installazione locale oppure l’importazione del suo file. I glifi mancanti nel font scelto usano i caratteri di riserva.
 
 Per il funzionamento dell’editor e il formato dei pacchetti vedere [la guida dello Studio](ui-studio.md).
+
+## Correzione della sostituzione degli asset — 17 ottobre 2026
+
+Il comando **Scegli asset** raggiunge ora la superficie grafica del componente anche quando si seleziona un gruppo del layout. In particolare, le vecchie cornici HP e la texture statica non vengono più disegnate sopra la nuova grafica. **Originale**, annulla/ripeti e la rimozione della modifica ripristinano gli stili precedenti. Le decorazioni interne dei pannelli Arkamon vengono escluse durante la sostituzione; ritratti, indicatori e comandi restano presenti.
+
+Le due cornici HP del kit Comuni sono adattate ai valori reali: il livello di esempio e il riempimento statico della barra inferiore sono esclusi dalla copia usata a schermo; nome, livello e indicatore HP sono allineati alla nuova cornice. I file SVG di partenza non vengono modificati.
+
+Verifiche locali della correzione:
+
+- 48 test unitari di Studio UI, importazione Admin e pannello dadi passati.
+- 10 flussi browser esistenti dello Studio passati, compresi tour delle schermate e mappe, isolamento della campagna, applicazione, import/export e ripristino di testi e sprite.
+- Quattro regressioni browser dedicate passate, in esecuzioni mirate: cornici HP, messaggi, pulsanti e pannelli Arkamon. Coprono aggiornamenti React, ripristino della geometria, annulla/ripeti e persistenza dopo applicazione e ricaricamento. Per il controllo dei pannelli Arkamon è stato necessario attendere il caricamento della schermata Analisi oltre la prima attesa di 15 secondi; la prova dedicata con attesa di caricamento estesa è passata.
+- TypeScript e bundle di produzione con base `/Arkamon-Beta/` verificati. La prova del bundle esclude la ricopia dei media pubblici pesanti.
+
+Lo screenshot locale `output/ui-studio-asset-replacement.png` mostra il caso segnalato con una sola cornice HP nemica, il nome Darklaw, livello 21 e 36/36 HP. Queste prove non costituiscono una verifica del deploy pubblico.

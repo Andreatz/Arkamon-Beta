@@ -116,6 +116,7 @@ export function InfoBox({
   return (
     <div
       className="arka-battle-font relative h-full w-full text-slate-950 drop-shadow-2xl"
+      data-ui-asset-surface=""
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
@@ -437,6 +438,7 @@ export function HpBar({
       className={`arka-battle-font relative z-20 h-full w-full text-white arka-letter-outline ${className}`}
       data-battle-hp-side={side}
       data-battle-hp={hp}
+      data-ui-asset-surface=""
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
@@ -444,7 +446,7 @@ export function HpBar({
       }}
     >
       {stato && <span className="absolute bottom-full left-0 z-30 -translate-x-1/4 sm:mb-1"><StatusToken stato={stato} compact /></span>}
-      <div className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
+      <div data-ui-hp-labels="" className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
         <span
           data-admin-layout-text-key="pokemon-name"
           title={nome}
@@ -460,7 +462,7 @@ export function HpBar({
           LV. {livello}
         </span>
       </div>
-      <div className="absolute left-[10.25%] top-[66.5%] h-[33.5%] w-[59.7%]">
+      <div data-ui-hp-track="" className="absolute left-[10.25%] top-[66.5%] h-[33.5%] w-[59.7%]">
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 507 40"
@@ -484,6 +486,7 @@ export function HpBar({
         </svg>
         <img
           src={barSrc}
+          data-ui-asset-decoration=""
           alt=""
           className="pointer-events-none absolute inset-0 h-full w-full mix-blend-multiply"
         />
@@ -491,6 +494,7 @@ export function HpBar({
       {(
         <div
           data-admin-layout-text-key={side === 'enemy' ? 'pokemon-enemy-hp' : 'pokemon-hp'}
+          data-ui-hp-value=""
           className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,1vw,17px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
         >
           {hp}/{hpMax}
@@ -516,6 +520,7 @@ export function ActionButton({
       disabled={disabled}
       onClick={onClick}
       className="rounded-md bg-amber-400 px-5 py-2.5 text-sm font-extrabold text-slate-950 shadow-lg transition-colors hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-45"
+      data-ui-asset-surface=""
     >
       {children}
     </motion.button>
@@ -531,6 +536,7 @@ export function SupremeButton({ disabled, recoil, onClick }: {
     <button
       type="button"
       aria-label="Mossa Suprema"
+      data-ui-asset-surface=""
       title={`Scegli un attacco: danno doppio, contraccolpo ${recoil} HP al livello attuale; 50% degli HP massimi dopo eventuale salita di livello`}
       disabled={disabled}
       onClick={onClick}
@@ -570,6 +576,7 @@ export function MoveButton({
       onClick={onClick}
       title={facts.detail}
       className="battle-move-button arka-battle-font relative h-full min-h-0 overflow-hidden px-[8%] py-[7%] text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
+      data-ui-asset-surface=""
       style={{
         backgroundImage: `url(${frameSrc})`,
         backgroundSize: '100% 100%',
