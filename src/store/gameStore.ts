@@ -8,6 +8,7 @@
  */
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { isUiStudioPreview, uiPreviewCampaignStorage } from '@/ui-studio/previewMode'
 import { normalizeChallengeContext, scopedGameStorage, type ChallengeContext } from '@/challenges/challengePersistence'
 import { emptyPlayer as giocatoreVuoto, mainMapPosition, normalizeGameSave, serializeGameState, GAME_SAVE_STORAGE_KEY, type GameSaveState } from '@/save/gamePersistence'
 import { emptyInteractionProgress } from '@/interactions/types'
@@ -316,6 +317,7 @@ export const useGameStore = create<GameState>()(
         if (!retryingWrite && pendingWrite.error && !pendingWrite.local) return false
         const previous = get(), next = { ...previous, ...patch }
         const tracked = next.challengeContext ? next : { ...next, ...trackGameChange(previous, next) }
+        if (isUiStudioPreview()) { publish(tracked, replace); return true }
         const options = useGameStore.persist?.getOptions(), storage = options?.storage
         const previousSave = { ...serializeGameState(previous), ...(previous.challengeContext ? { challengeContext: previous.challengeContext } : {}) }
         const saved = { ...serializeGameState(tracked), ...(tracked.challengeContext ? { challengeContext: tracked.challengeContext } : {}) }
@@ -1115,6 +1117,7 @@ export const useGameStore = create<GameState>()(
     {
       name: GAME_SAVE_STORAGE_KEY,
       storage: createJSONStorage(() => {
+        if (isUiStudioPreview()) return uiPreviewCampaignStorage
         if (typeof localStorage === 'undefined') throw new Error('Storage non disponibile')
         return scopedGameStorage
       }),

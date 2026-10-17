@@ -4,8 +4,18 @@ import { cloneAdminTheme, defaultAdminTheme } from '@/theme/defaultAdminTheme'
 import { adminThemePresets } from '@/theme/adminThemePresets'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { createDefaultDesign } from '@/ui-studio/designModel'
 
 describe('importazione temi Admin', () => {
+  it('preserva il progetto UI e respinge configurazioni eseguibili importate', () => {
+    const theme = cloneAdminTheme(defaultAdminTheme)
+    theme.design = createDefaultDesign()
+    theme.design.screens.menu = { elements: { title: { font: { family: 'norwester', size: 30 }, text: 'Partita' } }, layers: [] }
+    expect(parseThemeJson(JSON.stringify(theme)).theme?.design).toEqual(theme.design)
+    const unsafe = JSON.parse(JSON.stringify(theme))
+    unsafe.design.screens.menu.elements.title.onClick = 'alert(1)'
+    expect(parseThemeJson(JSON.stringify(unsafe)).error).toContain('onClick')
+  })
   it('accetta tutti i preset correnti con identità distinte e asset esistenti', () => {
     expect(new Set(adminThemePresets.map((theme) => theme.id)).size).toBe(adminThemePresets.length)
     for (const theme of adminThemePresets) {

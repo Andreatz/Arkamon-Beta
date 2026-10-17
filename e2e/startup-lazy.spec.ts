@@ -9,6 +9,8 @@ test('the title defers game scenes and loads the laboratory on its first visit',
     expect(requested.some(url => url.includes(`/scenes/${name}.tsx`)), name).toBe(false)
   }
   expect(requested.some(url => url.includes('/admin/AdminPanel.tsx'))).toBe(false)
+  expect(requested.some(url => url.includes('/ui-studio/UiStudioEditor.tsx'))).toBe(false)
+  expect(requested.some(url => url.includes('/ui-studio/UiStudioPreview.tsx'))).toBe(false)
   expect(requested.some(url => url.includes('/vfxCuration.ts'))).toBe(false)
   expect(requested.some(url => url.includes('/vfx-curation-runtime.json'))).toBe(false)
   expect(requested.some(url => url.includes('/arkamon-paged/') || url.includes('/sprites/arkamon/'))).toBe(false)

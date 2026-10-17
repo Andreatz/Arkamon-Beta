@@ -304,7 +304,7 @@ test('the route menu has no shop entry and rejects an incomplete shop request wi
   expect(await campaign(page)).toEqual(before)
 })
 
-test('six match utilities use their main cards, the original fonts and a single journey resume command', async ({ page, isMobile }) => {
+test('six match utilities use their main cards, Norwester and a single journey resume command', async ({ page, isMobile }) => {
   if (!isMobile) await page.setViewportSize({ width: 1920, height: 1080 })
   await seedCampaign(page)
   const before = await campaign(page)
@@ -323,14 +323,14 @@ test('six match utilities use their main cards, the original fonts and a single 
     button: getComputedStyle(element.querySelector('.pu-menu-tile')!).fontFamily,
     title: getComputedStyle(element.querySelector('.pu-shell h1')!).fontFamily,
     text: getComputedStyle(element.querySelector('.pu-shell')!).fontFamily,
-    loaded: document.fonts.check('16px "Chela One"'),
+    loaded: document.fonts.check('16px "Arkamon Norwester"'),
   }))
-  expect(fonts.button).toContain('Segoe UI')
-  expect(fonts.title).toContain('Chela One')
-  expect(fonts.text).toContain('Segoe UI')
+  expect(fonts.button).toContain('Arkamon Norwester')
+  expect(fonts.title).toContain('Arkamon Norwester')
+  expect(fonts.text).toContain('Arkamon Norwester')
   expect(fonts.loaded).toBe(true)
   const screenshot = await page.screenshot({ path: test.info().outputPath(isMobile ? 'menu-phone.png' : 'menu-1920x1080.png') })
-  await test.info().attach('Menù aggiornato con il font originale', { body: screenshot, contentType: 'image/png' })
+  await test.info().attach('Menù aggiornato con Norwester', { body: screenshot, contentType: 'image/png' })
   for (const [label, id, region] of utilities) {
     await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
     await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)

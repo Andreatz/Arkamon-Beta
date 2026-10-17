@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @font-face {
+  font-family: 'Arkamon Norwester';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/ui/studio/fonts/norwester.woff2') format('woff2');
+}
+
+@font-face {
   font-family: 'Chela One';
   font-style: normal;
   font-weight: 400;
@@ -41,6 +49,9 @@
   --arka-stage-scale: 1;
   --arka-font-scale: 1;
   --arka-panel-texture: none;
+  --arka-font-body: 'Arkamon Norwester', 'Arial Narrow', Arial, sans-serif;
+  --arka-font-heading: 'Arkamon Norwester', 'Arial Narrow', Arial, sans-serif;
+  --arka-font-button: 'Arkamon Norwester', 'Arial Narrow', Arial, sans-serif;
 
   /* Spaziature */
   --spacing-game: 1rem;
@@ -61,9 +72,14 @@ html, body {
   height: 100%;
   background: var(--arka-bg);
   color: var(--arka-text);
-  font-family: 'Azonix', 'Inter', system-ui, sans-serif;
+  font-family: var(--arka-font-body);
   overflow: hidden;
 }
+
+button, input, select, textarea { font-family: var(--arka-font-body); }
+button { font-family: var(--arka-font-button); }
+h1, h2, h3 { font-family: var(--arka-font-heading); }
+.pu-shell button { font-family: var(--arka-font-button); }
 
 #root {
   width: 100vw;
@@ -137,7 +153,7 @@ html, body {
   }
 
   .arka-battle-font {
-    font-family: 'Chela One', cursive;
+    font-family: var(--arka-font-heading);
   }
 
   [data-admin-layout-editing='true'] .arka-layout-content {

@@ -109,6 +109,8 @@ La configurazione viene salvata separatamente dalla partita.
 
 Vedi: [docs/ADMIN_MODE.md](./docs/ADMIN_MODE.md)
 
+**Studio interfaccia**: dal pannello Admin aprire “Editor completo dell’interfaccia”, oppure usare `#ui-studio`. L’editor visuale include le schermate reali su tela 1920×1080, libreria dei kit Scuro/Blu/Comuni, trascinamento, dimensioni, livelli, font (Norwester predefinito), sfondi e comandi. Bozza, cronologia e import/export con immagini e font restano separati dalla campagna. [Guida dello Studio UI](./docs/ui-studio.md).
+
 ## Roadmap Breve
 
 - [x] Fase A: parita VBA core

@@ -52,14 +52,14 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
   await expect(page.locator(`[data-presented-scene="${scene}"]`)).toHaveAttribute('aria-busy', 'false')
   await page.evaluate(async () => {
     await document.fonts.ready
-    await document.fonts.load('400 18px "Chela One"')
+    await document.fonts.load('400 18px "Arkamon Norwester"')
   })
   const fonts = await page.evaluate(() => ({
     body: getComputedStyle(document.body).fontFamily,
     loaded: Array.from(document.fonts).filter(face => face.status === 'loaded').map(face => face.family.replace(/["']/g, '')),
   }))
-  expect(fonts.body).toContain('Azonix')
-  expect(fonts.loaded).toContain('Chela One')
+  expect(fonts.body).toContain('Arkamon Norwester')
+  expect(fonts.loaded).toContain('Arkamon Norwester')
   expect(fonts.loaded).not.toEqual(expect.arrayContaining(['Oxanium']))
   expect(fonts.loaded).not.toEqual(expect.arrayContaining(['Sora']))
   return svgResponses
@@ -91,7 +91,7 @@ async function assertSvgButton(button: Locator, responses: SvgResponses, tone: '
   expect(proof.slice).toContain(tone === 'primary' ? '44' : '48')
   expect(proof.slice).toContain('fill')
   expect(proof.repeat).toBe('stretch')
-  expect(proof.font).toContain('Azonix')
+  expect(proof.font).toContain('Arkamon Norwester')
   expect(proof.disabled).toBe(disabled)
   expect(proof.bound.width).toBeGreaterThan(0)
   expect(proof.bound.height).toBeGreaterThan(0)
@@ -183,7 +183,7 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   const move = page.getByRole('button').filter({ has: page.getByText('Soffio', { exact: true }) })
   await expect(move).toBeEnabled()
   expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toContain('/ui/move_button.png')
-  expect(await move.evaluate(element => getComputedStyle(element).fontFamily)).toContain('Chela One')
+  expect(await move.evaluate(element => getComputedStyle(element).fontFamily)).toContain('Arkamon Norwester')
   for (const control of [move,
     page.getByRole('button', { name: 'Mossa Suprema', exact: true }),
     page.getByRole('button', { name: 'Cattura', exact: true }),

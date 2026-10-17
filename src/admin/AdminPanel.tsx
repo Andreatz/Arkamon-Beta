@@ -63,6 +63,9 @@ export function AdminPanel() {
       </header>
 
       <div className="flex flex-wrap items-center gap-3 border-b border-[var(--arka-border)] p-3">
+        <a href="#ui-studio" onClick={() => setPanelOpen(false)} className="w-full rounded-md border border-[var(--arka-primary)] bg-[var(--arka-primary)] px-3 py-3 text-center font-bold text-[var(--arka-bg)]">
+          Apri editor completo dell’interfaccia
+        </a>
         <label className="flex items-center gap-2 text-xs">Larghezza pannello <input aria-label="Larghezza pannello Admin" type="range" min="360" max="1200" step="20" value={width} onChange={(e) => setWidth(Number(e.target.value))} /> {width}px</label>
         <button type="button" className="rounded border px-3 py-2" onClick={() => setExpanded(!expanded)}>{expanded ? 'Riduci pannello' : 'Espandi pannello'}</button>
         <details className="w-full"><summary className="cursor-pointer font-bold">Apri un laboratorio</summary><div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">{[

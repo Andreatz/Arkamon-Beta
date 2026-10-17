@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useContext, useEffect, useMemo, useState } from 'react'
+import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
 import { getPokemon, POKEMON_BASE, TABELLA_TIPI } from '@/data'
 import { calcolaHPMax } from '@/engine/battleEngine'
 import { getArkamonAnimationAsset } from '@/components/arkamon/arkamonAnimationManifest'
@@ -42,6 +43,7 @@ function evolutionChain(species: PokemonSpecie): PokemonSpecie[] {
 
 /** Discovery and specimen data come from the campaign; unknown forms never request artwork. */
 export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) {
+  const previewView = useContext(UiPreviewViewContext)
   const state = useGameStore()
   const [viewPlayerId, setViewPlayerId] = useState<1 | 2>(playerId)
   const [search, setSearch] = useState('')
@@ -51,13 +53,13 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null)
   const [animatedSpeciesId, setAnimatedSpeciesId] = useState<number | null>(null)
   const [page, setPage] = useState(0)
-  const [detailTab, setDetailTab] = useState<ArkadexDetailTab>('information')
+  const [detailTab, setDetailTab] = useState<ArkadexDetailTab>(previewView === 'moves' || previewView === 'evolution' ? previewView : 'information')
   useEffect(() => {
     setViewPlayerId(playerId)
     setSearch(''); setStatus('all'); setType('all')
     setSelectedId(null); setSelectedInstanceId(null); setAnimatedSpeciesId(null)
-    setPage(0); setDetailTab('information')
-  }, [playerId, state.campaignRevision])
+    setPage(0); setDetailTab(previewView === 'moves' || previewView === 'evolution' ? previewView : 'information')
+  }, [playerId, state.campaignRevision, previewView])
   const snapshot: ArkadexSnapshot = useMemo(() => ({
     giocatore1: state.giocatore1, giocatore2: state.giocatore2,
     giocatoreAttivo: state.giocatoreAttivo, battaglia: state.battaglia,
@@ -92,7 +94,7 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
     setPage(0); setDetailTab('information')
   }
 
-  return <section className="pu-dex-screen" aria-label="Arkadex">
+  return <section className="pu-dex-screen" aria-label="Arkadex" data-ui-view={detailTab}>
     <div className="pu-screen-toolbar">
       <label className="pu-player-picker">Giocatore dell’Arkadex
         <select value={viewPlayerId} onChange={(event) => {
