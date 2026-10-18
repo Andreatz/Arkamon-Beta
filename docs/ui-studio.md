@@ -25,6 +25,10 @@ Il selettore **Vista interna** permette di modificare separatamente le schede di
 
 Sono disponibili i kit Scuro, Blu e Comuni, i componenti separati dalle tavole e gli asset già presenti nel gioco. La selezione di un componente non modifica il file originale.
 
+**Scegli asset** sostituisce la grafica dell’elemento selezionato. Nei gruppi della battaglia come **HP nemico**, **HP giocatore** e **Box messaggi**, la modifica raggiunge la cornice del componente interno: non aggiunge uno sfondo dietro la vecchia cornice. Le texture decorative originali sono escluse quando si cambia la cornice; nome, livello, HP, riempimento animato, status e comandi continuano ad aggiornarsi. **Originale** e **Annulla** ripristinano anche le decorazioni. Per aggiungere un’immagine indipendente sopra la schermata, usare **+ Immagine**.
+
+Le due cornici HP del kit Comuni hanno un adattamento dedicato: il livello di esempio è escluso e il riempimento e i valori reali sono allineati alla nuova cornice, anche cambiando l’adattamento dell’immagine. I file SVG originali restano intatti. Negli altri asset, eventuali valori, barre o etichette già disegnati nel file restano parte dell’illustrazione: l’adattamento e il layout vanno verificati nell’anteprima.
+
 Le frecce spostano l’elemento di 1 pixel; Maiusc aumenta il passo a 8 pixel. Alt disattiva temporaneamente l’aggancio durante il trascinamento. Ctrl+Z annulla; Ctrl+Maiusc+Z o Ctrl+Y ripete.
 
 ## Livelli aggiunti e menù
