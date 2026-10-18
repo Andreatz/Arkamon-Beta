@@ -4,7 +4,7 @@ import { getPokemon, TABELLA_TIPI } from '@data/index'
 import { calcolaHPMax } from '@engine/battleEngine'
 import { useGameStore } from '@store/gameStore'
 import { HealthBar, KitButton, KitIcon, KitPanel, PokemonHero, PokemonMoves, TypeBadge } from './kit'
-import { liveOwnedPokemon } from './TeamScreen'
+import { liveOwnedPokemon } from './currentRoster'
 
 export interface AnalysisScreenProps { playerId: 1 | 2; instanceId?: string }
 type AnalysisTab = 'scheda' | 'mosse' | 'status'

@@ -29,7 +29,7 @@ describe('player menu navigation and progression facts', () => {
     const before = structuredClone(runtime.state.giocatore1)
     const markup = renderToStaticMarkup(<MenuScreen playerId={1} onAuxiliary={onAuxiliary} />)
     expect([...markup.matchAll(/aria-label="Apri ([^"]+)"/g)].map(([, name]) => name)).toEqual([
-      'Diario', 'Backup', 'Impostazioni', 'Cronache', 'Registro del match', 'Sfide',
+      'Registro', 'Backup', 'Impostazioni', 'Gara', 'Ripresa', 'Sfide',
     ])
     expect(markup).not.toContain('Apri Squadra')
     expect(markup).not.toContain('Apri Negozio')

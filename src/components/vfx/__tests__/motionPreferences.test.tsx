@@ -38,6 +38,7 @@ vi.mock('react', async importOriginal => ({
   useLayoutEffect: (callback: () => void | (() => void), dependencies?: unknown[]) => runtime.effects.push({ callback, dependencies }),
   useCallback: (callback: unknown) => callback,
   useId: () => 'motion-test',
+  useContext: (context: { _currentValue: unknown }) => context._currentValue,
 }))
 vi.mock('framer-motion', () => ({
   motion: { div: 'motion-div', span: 'motion-span', img: 'motion-img' },
@@ -122,6 +123,13 @@ describe('game motion preference across native frames and VFX', () => {
     const visual = layer.props.children as ReactElement<{ transition: { duration: number }; children: ReactElement<{ durationMs: number }> }>
     expect(visual.props.transition.duration).toBe(0.6)
     expect(visual.props.children.props.durationMs).toBe(1200)
+  })
+
+  it('covers the viewport without width-relative vertical margins for screen effects', () => {
+    const layer = MoveVfxLayer({ asset: { ...asset, anchor: 'screen' }, effectId: 7, side: 'A' })
+    const visual = layer.props.children as ReactElement<{ style: { marginTop: number; marginLeft: number; width: string; height: string }; animate: { left: string; top: string } }>
+    expect(visual.props.style).toMatchObject({ width: '100%', height: '100%', marginTop: 0, marginLeft: 0 })
+    expect(visual.props.animate).toMatchObject({ left: '0%', top: '0%' })
   })
 
   it.each([1, 2])('schedules the visible impact and completion on the same clock at speed %i', async speed => {

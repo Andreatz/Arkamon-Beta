@@ -6,6 +6,7 @@ import { createDefaultDesign } from './designModel'
 import { resolveUiMediaSource } from './mediaStorage'
 import { getUiFontFamily } from './assetCatalog'
 import { resolvedScreenDesign } from './runtimeDesign'
+import { getUiSkinDependents, getUiSkinSurface } from './skinSlots'
 import { collectUiElements, findUiScreenRoot, uiRect, type RegisteredUiElement } from './screenRegistry'
 import type { UiDesignDocument, UiElementDesign, UiPreviewMessage, UiScreenSnapshot, UiTypography } from './types'
 
@@ -90,6 +91,8 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
     }
     const geometry = (element: HTMLElement | SVGElement, config: UiElementDesign, root: HTMLElement) => {
       if (!config.rect) return
+      // Battle rectangles are resolved before rendering, including the VFX anchors.
+      if (element.getAttribute('data-ui-layout-owner') === 'battle') return
       const bounds = root.getBoundingClientRect(), rect = config.rect
       const html = element as HTMLElement
       const computed = getComputedStyle(element)
@@ -130,9 +133,9 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
       }
       const image = element.matches('.pu-kit-icon') ? element.querySelector<HTMLImageElement>('img') : null
       if (image) { if (!sources.has(image)) sources.set(image, image.getAttribute('src')); image.src = url; set(image, 'object-fit', config.fit ?? 'contain'); return }
-      const frame = element.querySelector<HTMLElement>(':scope>.pu-frame,:scope>.game-button-frame')
-      const target = frame ?? element
-      if (frame) { set(frame, 'border', '0'); set(frame, 'border-image-source', 'none') }
+      const target = getUiSkinSurface(element)
+      if (target.matches('.pu-frame,.game-button-frame')) { set(target, 'border', '0'); set(target, 'border-image-source', 'none') }
+      for (const decoration of getUiSkinDependents(target)) set(decoration, 'visibility', 'hidden')
       set(target, 'background-image', `url("${url}")`); set(target, 'background-size', config.fit === 'fill' ? '100% 100%' : config.fit ?? 'contain'); set(target, 'background-position', 'center'); set(target, 'background-repeat', 'no-repeat')
     }
     const apply = (entry: RegisteredUiElement, config: UiElementDesign, root: HTMLElement) => {

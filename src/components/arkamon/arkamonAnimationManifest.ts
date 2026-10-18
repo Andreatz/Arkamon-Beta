@@ -1,5 +1,5 @@
 import type { SpriteSheetMeta } from '@/components/vfx/types'
-import pagedManifest from '@/data/arkamon-paged.json'
+import { getNativeRuntimeClip } from './nativeRuntimePages'
 import type { SpritePage } from '@/components/vfx/spritePages'
 
 export type ArkamonBattleAnimation =
@@ -142,10 +142,9 @@ export interface ResolvedArkamonAnimation {
   isIdleFallback: boolean
 }
 
-interface PagedClip { frameWidth: number; frameHeight: number; frameCount: number; fps: number; pages: SpritePage[] }
 /** Runtime pages are derived from the authoritative native atlas, never a second animation spec. */
 export function getArkamonRuntimeAsset(asset: ArkamonAnimationAsset): ArkamonAnimationAsset {
-  const clip = (pagedManifest.clips as Record<string, PagedClip>)[asset.src]
+  const clip = getNativeRuntimeClip(asset.src)
   return clip && clip.frameWidth === asset.frameWidth && clip.frameHeight === asset.frameHeight
     && clip.frameCount === asset.frameCount && clip.fps === asset.fps
     ? { ...asset, pages: clip.pages } : asset

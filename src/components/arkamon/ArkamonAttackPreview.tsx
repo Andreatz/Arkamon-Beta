@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from 're
 import { getMossa, getPokemon } from '@/data'
 import type { MossaDef } from '@/types'
 import { MoveVfx, type MoveVfxEvent } from '@/components/MoveVfx'
-import { useAdminStore } from '@/store/adminStore'
+import { useResolvedBattleLayout } from '@/ui-studio/battleLayout'
 import {
   createBattleAnimationPlayback,
   createBattleVisualSequence,
@@ -57,7 +57,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusy
   const generation = useRef(0)
   const starting = useRef(false)
   const runtime = useRef<PreviewRuntime | null>(null)
-  const battleLayout = useAdminStore((state) => state.theme.layouts.battle)
+  const battleLayout = useResolvedBattleLayout()
   const attackerName = getPokemon(speciesId)?.nome ?? `Arkamon #${speciesId}`
   const targetName = getPokemon(targetId)?.nome ?? `Arkamon #${targetId}`
   const busy = phase === 'preparing' || phase === 'playing' || phase === 'effect' || phase === 'impact'

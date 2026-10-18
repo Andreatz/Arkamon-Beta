@@ -5,7 +5,7 @@ import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from './AnimatedSprite'
 import { FallbackVfx } from './FallbackVfx'
 import { GifVfx } from './GifVfx'
-import { useAdminStore } from '@store/adminStore'
+import { useResolvedBattleLayout } from '@/ui-studio/battleLayout'
 import {
   getBattleVfxAnchorPosition,
 } from './battleVfxPosition'
@@ -89,9 +89,7 @@ export function MoveVfxLayer({
 }) {
   const { reducedMotion: reduceMotion, speed: preferenceSpeed } = useVfxPlaybackPreferences(`${effectId}:${asset.id}`)
   const speed = playbackSpeed ?? preferenceSpeed
-  const battleLayout = useAdminStore(
-    (state) => state.theme.layouts.battle
-  )
+  const battleLayout = useResolvedBattleLayout()
   const [assetFailed, setAssetFailed] = useState(false)
   const [compact, setCompact] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(COMPACT_VFX_QUERY).matches
@@ -172,16 +170,17 @@ export function MoveVfxLayer({
       aria-hidden="true"
     >
       <motion.div
+        data-vfx-anchor={anchor}
         className="absolute flex items-center justify-center overflow-visible"
         initial={{
-          left: `${projectile ? attacker.x : destination.x}%`,
-          top: `${projectile ? attacker.y : destination.y}%`,
+          left: `${isScreen ? 0 : projectile ? attacker.x : destination.x}%`,
+          top: `${isScreen ? 0 : projectile ? attacker.y : destination.y}%`,
           opacity: 0,
           scale: projectile ? 0.7 : 0.9,
         }}
         animate={{
-          left: `${destination.x}%`,
-          top: `${destination.y}%`,
+          left: `${isScreen ? 0 : destination.x}%`,
+          top: `${isScreen ? 0 : destination.y}%`,
           opacity: [0, 1, 1, 0],
           scale: projectile ? [0.7, 1.1, 1] : [0.9, 1.04, 1],
         }}
@@ -190,10 +189,10 @@ export function MoveVfxLayer({
           width: isScreen ? '100%' : asset.width,
           height: isScreen ? '100%' : asset.height,
           marginLeft: isScreen
-            ? '-50%'
+            ? 0
             : -(asset.width / 2) + (asset.offsetX ?? 0) + offsetX,
           marginTop: isScreen
-            ? '-50%'
+            ? 0
             : -(asset.height / 2) + (asset.offsetY ?? 0) + offsetY,
           willChange: 'left, top, transform, opacity',
         }}

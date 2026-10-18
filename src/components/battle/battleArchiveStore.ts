@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { isCampaignWritable, sessionOwnershipMessage, readCampaignCheckpoint, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
 import type { BattleChronicle, StatoBattaglia } from '@/types'
 import { normalizeBattleChronicle } from './battleChronicle'
 
@@ -61,6 +62,7 @@ function publishArchive(archive: BattleArchive, storageWarning: string | null) {
 
 /** The configured browser localStorage writer is synchronous and atomic per key. */
 function writeArchive(archive: BattleArchive, failure: string, retainOnFailure = false): BattleArchiveWriteResult {
+  if (!isCampaignWritable()) return { ok: false, error: sessionOwnershipMessage() }
   try {
     const storage = useBattleArchiveStore.persist.getOptions().storage
     if (!storage) throw new Error('Storage unavailable')
@@ -95,10 +97,15 @@ export const useBattleArchiveStore = create<BattleArchiveStore>()(persist((_set,
   // Resolve browser storage at operation time so disabled storage cannot remove
   // the persist API needed by safe writes and atomic campaign restore.
   storage: createJSONStorage(() => ({
-    getItem: (key) => { try { return localStorage.getItem(key) } catch { return null } },
-    setItem: (key, value) => localStorage.setItem(key, value),
-    removeItem: (key) => localStorage.removeItem(key),
+    getItem: (key) => { try { return readCampaignCheckpoint(key) } catch { return null } },
+    setItem: (key, value) => writeCampaignCheckpoint(key, value),
+    removeItem: (key) => removeCampaignCheckpoint(key),
   })),
   partialize: (state) => ({ version: 1, matches: state.matches }),
   merge: (saved, current) => ({ ...current, ...normalizeBattleArchive(saved) }),
 }))
+
+const setArchiveState = useBattleArchiveStore.setState
+useBattleArchiveStore.setState = ((...args: Parameters<typeof setArchiveState>) => {
+  if (isCampaignWritable()) setArchiveState(...args)
+}) as typeof useBattleArchiveStore.setState

@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { InteractionDefinition } from './types'
 import { validateCatalog, validateInteraction } from './schema'
+import { isCampaignWritable, readCampaignCheckpoint, removeCampaignCheckpoint, sessionOwnershipMessage, writeCampaignCheckpoint } from '@/session/sessionOwnership'
 
 export const INTERACTION_STORAGE_KEY = 'arkamon-interactions-v1'
 interface InteractionState {
@@ -13,6 +14,7 @@ interface InteractionState {
 }
 /** Write the validated catalog before publishing it to subscribers. Quota errors leave both copies unchanged. */
 function commitCatalog(interactions: InteractionDefinition[], set: (patch: Pick<InteractionState, 'interactions'>) => void): string | null {
+  if (!isCampaignWritable()) return sessionOwnershipMessage()
   const options = useInteractionStore.persist.getOptions()
   const storage = options.storage
   if (!storage) return 'Il salvataggio delle interazioni non è disponibile in questo browser. La configurazione precedente è stata conservata.'
@@ -56,7 +58,7 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
   exportCatalog: () => JSON.stringify({ version: 1, interactions: get().interactions }, null, 2),
 }), {
   name: INTERACTION_STORAGE_KEY,
-  storage: createJSONStorage(() => localStorage),
+  storage: createJSONStorage(() => ({ getItem: readCampaignCheckpoint, setItem: writeCampaignCheckpoint, removeItem: removeCampaignCheckpoint })),
   partialize: (state) => ({ interactions: state.interactions }),
   merge: (saved, current) => {
     const interactions = saved && typeof saved === 'object' && 'interactions' in saved ? saved.interactions : []

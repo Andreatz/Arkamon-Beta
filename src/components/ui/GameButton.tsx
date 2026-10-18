@@ -21,7 +21,7 @@ export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(functio
     borderImageSlice: `${frame.slice} fill`,
   }
   return <button {...props} ref={ref} type={type} className={`game-button ${className}`} data-game-button={tone}>
-    <span className="game-button-frame" style={style} data-kit={frame.asset} aria-hidden="true" />
+    <span className="game-button-frame" style={style} data-kit={frame.asset} data-ui-skin-slot="frame" aria-hidden="true" />
     {children}
   </button>
 })

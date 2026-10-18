@@ -7,6 +7,7 @@ import { createSceneTransitionState, getSceneKey, sceneTransitionReducer } from 
 import { getSceneTransitionProfile } from './sceneTransitionProfiles'
 import { playSelectedAudio } from '@/utils/soundManager'
 import './sceneTransitions.css'
+import { useRegiaStore } from '@/regia/regiaStore'
 
 interface SceneTransitionProps {
   navigation: NavigazioneScena
@@ -31,6 +32,10 @@ export function SceneTransition({ navigation, renderScene, children }: SceneTran
   const wasTransitioning = useRef(false)
   const previousTransition = useRef({ revision: state.revision, phase: state.phase })
   const transitioning = state.phase !== 'idle'
+  useLayoutEffect(() => {
+    useRegiaStore.getState().setBusy(transitioning, 'Cambio scena', 'transition')
+    return () => useRegiaStore.getState().setBusy(false, '', 'transition')
+  }, [transitioning])
   const baseProfile = getSceneTransitionProfile(state.target)
   const profile = { ...baseProfile, coverMs: baseProfile.coverMs / speed, blendMs: baseProfile.blendMs / speed,
     durationMs: baseProfile.durationMs / speed, playbackRate: baseProfile.playbackRate * speed }

@@ -29,7 +29,7 @@ export function createPreviewFixture(screenKey: string): GameSaveState {
   state.posizioniLocali1 = { Venezia: getLocalMap('Venezia')!.startNode, Percorso_1: getLocalMap('Percorso_1')!.startNode }
   state.arkadex = { seen1: Array.from({ length: 110 }, (_, i) => i + 1), caught1: Array.from({ length: 48 }, (_, i) => i + 1), seen2: [1, 5, 9, 17, 26, 33, 40], caught2: [5, 9, 17, 26, 33, 40] }
   state.matchLog = appendMatchEvent(state.matchLog, { kind: 'move', title: 'Esplorazione di Venezia', message: 'Esempio di registro per la composizione della schermata.', place: 'Venezia', playerId: 1 }, Date.UTC(2026, 9, 17, 12))
-  const isManagement = ['menu', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa', 'negozio', 'journal', 'backup', 'settings', 'chronicles', 'match', 'challenges'].includes(screen)
+  const isManagement = ['menu', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa', 'negozio', 'register', 'race', 'recap', 'journal', 'backup', 'settings', 'chronicles', 'match', 'challenges'].includes(screen)
   state.scenaCorrente = { scena: isManagement ? 'citta' : screen as SceneId, ...(screen === 'percorso' ? { payload: { luogo: 'Percorso_1' } } : screen === 'citta' || isManagement ? { payload: { luogo: 'Venezia' } } : {}) }
   if (screen === 'percorso') state.posizione1 = mainMapPosition('Percorso_1')
   if ((screen === 'citta' || screen === 'percorso') && view && getLocalMap(view)) {

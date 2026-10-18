@@ -4,6 +4,8 @@ import path from 'path'
 import mediaRelease from './src/data/media-release.json'
 // @ts-expect-error The packaging utility also runs as a standalone Node ES module.
 import { webAssetsPlugin } from './scripts/package-web-assets.mjs'
+// @ts-expect-error Shared Node build utility; emitted runtime data has a typed virtual module.
+import { nativeRuntimeManifestPlugin } from './scripts/native-runtime-manifest.mjs'
 
 const web = process.env.GITHUB_PAGES === 'true'
 const mediaRevision = web ? process.env.VITE_MEDIA_REVISION ?? mediaRelease.revision : ''
@@ -11,7 +13,7 @@ const mediaRevision = web ? process.env.VITE_MEDIA_REVISION ?? mediaRelease.revi
 // Cambia base se pubblichi su GitHub Pages sotto /Arkamon-Beta/.
 // Il workflow .github/workflows/deploy.yml setta GITHUB_PAGES=true al build.
 export default defineConfig({
-  plugins: [react(), ...(web ? [webAssetsPlugin(__dirname, mediaRevision)] : [])],
+  plugins: [react(), nativeRuntimeManifestPlugin(__dirname), ...(web ? [webAssetsPlugin(__dirname, mediaRevision)] : [])],
   publicDir: 'public',
   define: { 'import.meta.env.VITE_MEDIA_REVISION': JSON.stringify(mediaRevision), 'import.meta.env.VITE_SPLIT_MEDIA': JSON.stringify(web) },
   base: process.env.GITHUB_PAGES === 'true' ? '/Arkamon-Beta/' : '/',
@@ -29,6 +31,9 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    // Browser traces contain HTML snapshots. They must never trigger a live
+    // reload of a game while the same browser run is collecting evidence.
+    watch: { ignored: ['**/output/**', '**/test-results/**', '**/playwright-report/**'] },
   },
   build: {
     copyPublicDir: !web,

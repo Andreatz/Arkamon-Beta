@@ -6,7 +6,7 @@
  * - Mod_Utilities.ScegliIndicePesato
  */
 import type { IncontroSelvatico, Probabilita, PokemonIstanza } from '@/types'
-import { creaIstanza } from '@store/gameStore'
+import { creaIstanza } from './pokemonFactory'
 
 // Porting di: PesoCategoria da old_files/Mod_Utilities.txt
 export function pesoCategoria(categoria: Probabilita): number {

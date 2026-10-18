@@ -1,7 +1,8 @@
 /** Lightweight entry points shared by scenes without loading the tools interface. */
 export const PLAYER_UI_SCREENS = ['partita', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa'] as const
 export type PlayerUiScreen = typeof PLAYER_UI_SCREENS[number] | 'negozio'
-export type PlayerUiAuxiliary = 'journal' | 'backup' | 'settings' | 'chronicles' | 'match' | 'challenges'
+/** Historical entry points remain valid and open the corresponding Register tab. */
+export type PlayerUiAuxiliary = 'register' | 'race' | 'recap' | 'journal' | 'backup' | 'settings' | 'chronicles' | 'match' | 'challenges'
 export interface PlayerUiOpenRequest { screen: PlayerUiScreen; playerId?: 1 | 2; instanceId?: string; shopInteractionId?: string }
 export const PLAYER_UI_OPEN_EVENT = 'arkamon:open-player-ui'
 

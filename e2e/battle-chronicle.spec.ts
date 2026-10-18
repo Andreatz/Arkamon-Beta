@@ -91,7 +91,8 @@ test('Suprema reveals KO after dice, preserves XP/recoil order on reload and arc
 
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const tools = page.getByRole('dialog', { name: 'La tua partita' })
-  await tools.getByRole('button', { name: 'Apri Cronache', exact: true }).click()
+  await tools.getByRole('button', { name: 'Apri Registro', exact: true }).click()
+  await tools.getByRole('navigation', { name: 'Archivi del registro', exact: true }).getByRole('button', { name: 'Cronache delle battaglie', exact: true }).click()
   await tools.getByRole('button', { name: 'Rivedi cronaca e dadi', exact: true }).click()
   const replay = page.getByRole('dialog', { name: 'Cronaca della battaglia', exact: true })
   await expect(replay).toBeVisible()

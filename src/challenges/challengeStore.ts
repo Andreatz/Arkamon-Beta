@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { isCampaignWritable, sessionOwnershipMessage, readCampaignCheckpoint, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
 import { getPokemon } from '@/data'
 import { CHALLENGE_RULES_VERSION, isChallengeRulesVersion, validateFantaTeam } from './challengeRules'
 import { validateChallengeSeed } from './seededRandom'
@@ -85,6 +86,7 @@ function publish(collection: ChallengeCollection, storageWarning: string | null)
 }
 
 function write(collection: ChallengeCollection, keepResultInMemory = false): WriteResult {
+  if (!isCampaignWritable()) return { ok: false, error: sessionOwnershipMessage() }
   try {
     const storage = useChallengeStore.persist.getOptions().storage
     if (!storage) throw new Error('Storage unavailable')
@@ -127,9 +129,9 @@ export const useChallengeStore = create<ChallengeStore>()(persist((_set, get) =>
 }), {
   name: CHALLENGE_STORAGE_KEY, version: 1,
   storage: createJSONStorage(() => ({
-    getItem: (key) => { try { return localStorage.getItem(key) } catch { return null } },
-    setItem: (key, value) => localStorage.setItem(key, value),
-    removeItem: (key) => localStorage.removeItem(key),
+    getItem: (key) => { try { return readCampaignCheckpoint(key) } catch { return null } },
+    setItem: (key, value) => writeCampaignCheckpoint(key, value),
+    removeItem: (key) => removeCampaignCheckpoint(key),
   })),
   partialize: (state) => ({ version: 1, draft: state.draft, results: state.results }),
   merge: (saved, current) => ({ ...current, ...normalizeChallengeCollection(saved) }),
@@ -140,3 +142,8 @@ export const useChallengeStore = create<ChallengeStore>()(persist((_set, get) =>
     })
   },
 }))
+
+const setChallengeState = useChallengeStore.setState
+useChallengeStore.setState = ((...args: Parameters<typeof setChallengeState>) => {
+  if (isCampaignWritable()) setChallengeState(...args)
+}) as typeof useChallengeStore.setState

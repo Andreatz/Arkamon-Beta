@@ -2,6 +2,7 @@
 .battle-move-button:focus-visible { outline: 3px solid var(--arka-text); outline-offset: 3px; }
 .battle-move-button:is(:focus-visible,:hover):enabled .battle-command-cursor { opacity: 1; }
 .battle-move-button { touch-action: manipulation; }
+.battle-turn-label { font-size: clamp(17px, 1.35vw, 26px); line-height: 1.15; }
 .battle-message-lines { font-size: clamp(15px, 1.55vw, 27px); line-height: 1.2; }
 .battle-message-lines p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .battle-result-card { position: absolute; top: 28%; left: 32%; right: 27%; z-index: 25; padding: 18px 24px; border: 3px double var(--arka-text-muted); border-radius: 5px; background: color-mix(in srgb, var(--arka-bg) 94%, transparent); color: var(--arka-text); box-shadow: 0 8px 32px #0008; }

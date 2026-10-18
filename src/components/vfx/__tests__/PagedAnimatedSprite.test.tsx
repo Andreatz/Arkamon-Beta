@@ -86,7 +86,7 @@ describe('paged native playback keeps source clocks and visible ownership', () =
       const page = pages.find(entry => entry.src === call[0].src)!
       return page.firstFrame + call[2] / 576 * page.columns + call[1] / 576
     })
-    expect(frames).toEqual([...Array.from({ length: 96 }, (_, frame) => frame), 95])
+    expect(frames).toEqual(Array.from({ length: 96 }, (_, frame) => frame))
     expect(onStart).toHaveBeenCalledOnce(); expect(onReady).toHaveBeenCalledOnce(); expect(onCue).toHaveBeenCalledOnce(); expect(onComplete).toHaveBeenCalledOnce()
     expect(runtime.prepared).toEqual(pages.slice(1).map(page => page.src))
     expect(Number(canvas.dataset.spriteDecodedBytes)).toBeLessThanOrEqual(Number(canvas.dataset.spriteDecodedBudget))
@@ -125,6 +125,27 @@ describe('paged native playback keeps source clocks and visible ownership', () =
     expect(canvas.dataset.spriteFrame).toBe('95'); expect(onReady).toHaveBeenCalledOnce()
     expect(context.clearRect).toHaveBeenCalledOnce(); expect(context.drawImage).toHaveBeenCalledOnce()
     expect(runtime.prepared).toEqual([])
+  })
+
+  it('does not repaint duplicate frames at a refresh rate above the native fps', async () => {
+    render({ ...props, loop: true }); finishPage(0); await flush(); tick(0)
+    tick(8); tick(16); tick(24); tick(32)
+    expect(context.drawImage).toHaveBeenCalledOnce()
+    tick(frameMs + 0.01)
+    expect(context.drawImage).toHaveBeenCalledTimes(2)
+  })
+
+  it('stops scheduling while paused and resumes its original clock without a jump', async () => {
+    render({ ...props, loop: true }); finishPage(0); await flush(); tick(0); tick(frameMs + 0.01)
+    render({ ...props, loop: true, paused: true }); tick(80)
+    const painted = context.drawImage.mock.calls.length
+    expect(runtime.raf.size).toBe(0)
+    tick(5000)
+    expect(context.drawImage).toHaveBeenCalledTimes(painted)
+    render({ ...props, loop: true, paused: false }); tick(5080)
+    expect(canvas.dataset.spriteFrame).toBe('1')
+    tick(5080 + frameMs)
+    expect(canvas.dataset.spriteFrame).toBe('2')
   })
 
   it('reports a missing page once and releases it without clearing the creature raster', async () => {

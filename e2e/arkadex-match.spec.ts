@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises'
 async function openTools(page: Page, tab: 'Arkadex' | 'Registro del match') {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  await dialog.getByRole('button', { name: tab === 'Registro del match' ? 'Apri Registro del match' : tab, exact: true }).click()
+  await dialog.getByRole('button', { name: tab === 'Registro del match' ? 'Apri Registro' : tab, exact: true }).click()
   return dialog
 }
 
@@ -72,7 +72,7 @@ test('Arkadex keeps starter discoveries personal, locks unknown search and is ac
   await expect(dex.getByRole('article', { name: 'Scheda da scoprire', exact: true })).toContainText('Specie da scoprire')
   await expect(dex).not.toContainText('Voider')
   await dex.getByLabel('Cerca specie scoperta o numero').fill('')
-  await dex.getByLabel('Giocatore dell’Arkadex').selectOption('2')
+  await page.getByRole('group', { name: 'Giocatore degli strumenti', exact: true }).getByRole('button').nth(1).click()
   await expect(dex.getByRole('button', { name: 'Numero 5: Darklaw · Ottenuto', exact: true })).toBeVisible()
   await expect(dex.getByRole('button', { name: 'Numero 1: specie da scoprire · Da scoprire', exact: true })).toBeVisible()
   await dex.getByLabel('Cerca specie scoperta o numero').fill('Darklaw')
@@ -143,12 +143,12 @@ test('Masterball capture records one event, persists discovered species and leav
   await dex.getByLabel('Cerca specie scoperta o numero').fill('#13')
   await expect(dex.getByRole('button', { name: 'Numero 13: Wormaren · Ottenuto', exact: true })).toBeVisible()
   await expect(dex.getByRole('article', { name: 'Scheda di Wormaren', exact: true })).toContainText('livello 5')
-  await dex.getByLabel('Giocatore dell’Arkadex').selectOption('2')
+  await page.getByRole('group', { name: 'Giocatore degli strumenti', exact: true }).getByRole('button').nth(1).click()
   await expect(dex).toContainText('1 / 110 viste · 1 / 110 ottenute')
   await dex.getByLabel('Cerca specie scoperta o numero').fill('#13')
   await expect(dex.getByRole('button', { name: 'Numero 13: specie da scoprire · Da scoprire', exact: true })).toBeVisible()
   await dialog.getByRole('button', { name: 'Menù Partita', exact: true }).click()
-  await dialog.getByRole('button', { name: 'Apri Registro del match', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Apri Registro', exact: true }).click()
   const register = dialog.getByRole('region', { name: 'Registro del match', exact: true })
   await expect(register.getByRole('combobox', { name: 'Giocatore del registro', exact: true })).toHaveValue('2')
   await register.getByLabel('Tipo di evento').selectOption('capture')
@@ -221,7 +221,7 @@ test('the evolution tab conceals all thresholds and artwork of undiscovered ance
   for (let index = 1; index < 4; index++) await expect(steps.nth(index).locator('small')).toHaveText('Da scoprire')
   await expect(dex.locator('.pu-evolution')).not.toContainText('Lv.')
   await expect(dex.locator('.pu-evolution-step.is-current')).toHaveCount(1)
-  await dex.getByLabel('Giocatore dell’Arkadex').selectOption('2')
+  await page.getByRole('group', { name: 'Giocatore degli strumenti', exact: true }).getByRole('button').nth(1).click()
   await dex.getByRole('button', { name: 'Numero 4: specie da scoprire · Da scoprire', exact: true }).click()
   await expect(dex.getByRole('article', { name: 'Scheda da scoprire', exact: true })).toBeVisible()
   await expect(dex.locator('.pu-evolution')).toHaveCount(0)

@@ -14,10 +14,12 @@ import './adminPanel.css'
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 const AdminInteractionEditor = lazy(() => import('@/interactions/AdminInteractionEditor').then((module) => ({ default: module.AdminInteractionEditor })))
 const AdminLeaguePanel = lazy(() => import('@/league/AdminLeaguePanel').then((module) => ({ default: module.AdminLeaguePanel })))
+const AdminSessionPanel = lazy(() => import('@/readiness/AdminSessionPanel').then((module) => ({ default: module.AdminSessionPanel })))
 
-type AdminTab = 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience' | 'interactions' | 'league'
+type AdminTab = 'session' | 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience' | 'interactions' | 'league'
 
 const tabs: { id: AdminTab; label: string }[] = [
+  { id: 'session', label: 'Regia' },
   { id: 'colors', label: 'Colori' },
   { id: 'ui', label: 'UI' },
   { id: 'layout', label: 'Layout' },
@@ -35,7 +37,7 @@ export function AdminPanel() {
   const [width, setWidth] = useState(() => { try { return Math.max(360, Math.min(1200, Number(localStorage.getItem('arkamon-admin-width')) || 720)) } catch { return 720 } })
   const [expanded, setExpanded] = useState(false)
   useEffect(() => { try { localStorage.setItem('arkamon-admin-width', String(width)) } catch { /* Optional preference. */ } }, [width])
-  const [activeTab, setActiveTab] = useState<AdminTab>('colors')
+  const [activeTab, setActiveTab] = useState<AdminTab>('session')
   const setPanelOpen = useAdminStore((state) => state.setPanelOpen)
 
   return (
@@ -91,6 +93,7 @@ export function AdminPanel() {
       </nav>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
+        {activeTab === 'session' ? <Suspense fallback={<p role="status">Caricamento regia…</p>}><AdminSessionPanel onNavigate={setActiveTab} /></Suspense> : null}
         {activeTab === 'colors' ? <AdminColorEditor /> : null}
         {activeTab === 'ui' ? <AdminUiEditor /> : null}
         {activeTab === 'layout' ? <AdminLayoutEditor /> : null}

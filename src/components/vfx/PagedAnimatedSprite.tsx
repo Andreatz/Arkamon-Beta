@@ -18,7 +18,7 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
   callbacks.current = props
   const pauseRef = useRef(paused), reducedRef = useRef(preferences.reducedMotion), gateRef = useRef(holdBeforeFrame)
   pauseRef.current = paused; reducedRef.current = preferences.reducedMotion; gateRef.current = holdBeforeFrame
-  const playback = useRef<{ releaseGate: (marker: number) => void } | null>(null)
+  const playback = useRef<{ releaseGate: (marker: number) => void; wake: () => void } | null>(null)
   const previousGate = useRef({ src, replayKey, marker: holdBeforeFrame })
   const [ready, setReady] = useState(false)
 
@@ -39,6 +39,8 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
     }
   }, [src, replayKey, holdBeforeFrame])
 
+  useLayoutEffect(() => { playback.current?.wake() }, [paused, preferences.reducedMotion])
+
   useLayoutEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -50,6 +52,8 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
     let currentLease: SpritePageLease | null = null, currentPage = -1, pixels: SpritePagePixels | undefined
     let stalledAt: number | undefined, pausedAt: number | undefined, nextPrepared = -1
     let frame = 0
+    let painted: { frame: number; pixels: SpritePagePixels } | undefined
+    const wake = () => { if (active && !raf) raf = requestAnimationFrame(tick) }
     const totalFrames = pages.reduce((sum, page) => sum + page.frameCount, 0)
     const safeStart = Math.max(0, Math.min(startFrame, totalFrames - 1))
     const count = Math.max(1, Math.min(frameCount, totalFrames - safeStart))
@@ -85,6 +89,7 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
         void currentLease.ready.then(resource => {
           if (!active || requestedPage !== currentPage) return
           pixels = resource
+          wake()
         }, fail)
       }
       return located
@@ -93,12 +98,14 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
       const absolute = safeStart + candidate
       const located = ensurePage(absolute)
       if (!pixels) return false
+      if (painted?.frame === absolute && painted.pixels === pixels) return true
       const startedAt = performance.now()
       try {
         context.clearRect(0, 0, frameWidth, frameHeight)
         context.drawImage(pixels.image, located.col * frameWidth, located.row * frameHeight, frameWidth, frameHeight, 0, 0, frameWidth, frameHeight)
       } catch { fail(); return false }
       frame = candidate
+      painted = { frame: absolute, pixels }
       canvas.dataset.spriteDrawSource = pixels.kind
       canvas.dataset.spriteDrawSrc = located.page.src
       canvas.dataset.spriteDrawMs = (performance.now() - startedAt).toFixed(2)
@@ -124,6 +131,7 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
     }
     const onStart = () => { if (started) return; started = true; clock.hasStarted = true; clock.startedAt = performance.now(); callbacks.current.onStart?.() }
     const tick = () => {
+      raf = 0
       if (!active) return
       const timestamp = performance.now()
       const resting = pauseRef.current || reducedRef.current
@@ -131,17 +139,17 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
         pausedAt ??= timestamp
         const target = reducedRef.current && !loop && !pauseRef.current ? count - 1 : frame
         if (draw(target) && reducedRef.current && !pauseRef.current) { onStart(); notifyCue(target); complete() }
-        raf = requestAnimationFrame(tick); return
+        return
       }
       if (pausedAt !== undefined) { if (clock.hasStarted) clock.startedAt += timestamp - pausedAt; pausedAt = undefined }
-      if (completed) { raf = requestAnimationFrame(tick); return }
+      if (completed) return
       if (!started) {
-        if (!draw(0)) { raf = requestAnimationFrame(tick); return }
+        if (!draw(0)) return
         onStart()
         // The first draw can be slow; do not sample an older timestamp against its later start clock.
         raf = requestAnimationFrame(tick); return
       }
-      if (stalledAt !== undefined && !pixels) { raf = requestAnimationFrame(tick); return }
+      if (stalledAt !== undefined && !pixels) return
       if (stalledAt !== undefined && pixels) {
         const delay = timestamp - stalledAt
         clock.startedAt += delay
@@ -151,14 +159,14 @@ export function PagedAnimatedSprite(props: AnimatedSpriteProps & { pages: readon
       const gate = gateRef.current === undefined ? undefined : Math.max(0, Math.min(gateRef.current, count - 1))
       const sample = getSpritePlaybackSample(clock, timestamp, frameMs, gate)
       const candidate = loop ? sample.rawFrame % count : Math.min(count - 1, sample.rawFrame)
-      if (!draw(candidate)) { stalledAt ??= timestamp; raf = requestAnimationFrame(tick); return }
+      if (!draw(candidate)) { stalledAt ??= timestamp; return }
       canvas.dataset.spriteHeld = String(sample.held)
       if (canvas.parentElement) canvas.parentElement.dataset.spriteHeld = String(sample.held)
       notifyCue(candidate)
       if (!loop && !sample.held && (sample.elapsed >= durationMs || sample.rawFrame >= count)) { complete(); return }
       raf = requestAnimationFrame(tick)
     }
-    const state = { releaseGate: (marker: number) => {
+    const state = { wake, releaseGate: (marker: number) => {
       const reaction = releaseSpriteReactionGate(clock, performance.now(), frameMs, marker)
       if (reaction !== undefined && draw(reaction)) { canvas.dataset.spriteHeld = 'false'; notifyCue(reaction) }
     } }

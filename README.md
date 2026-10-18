@@ -18,7 +18,13 @@ npm run preview
 npm test
 ```
 
-## Stato Attuale
+## Stato attuale e regole definitive
+
+La specifica vigente è [Format e comportamento del gioco](./docs/current-game-spec.md). I rapporti datati sotto riportano verifiche storiche, non una certificazione del checkout corrente o del sito pubblicato.
+
+Consolidamento del **18 ottobre 2026**: [roadmap e stato di implementazione](./docs/audit-roadmap-2026-10-18.md), [QA conclusivo](./docs/audit-qa-2026-10-18.md), [verifica locale dei controller](./docs/audit-controller-qa-2026-10-18.md). La console include **Admin → Regia**, vista pubblica passiva, protezione contro finestre concorrenti, importazione della sola configurazione, Registro unico, Gara e Ripresa.
+
+## Rapporti precedenti
 
 - Revisione del **12 ottobre 2026**: [menù senza duplicati, Arkastore esclusivo dei pallini, EXP senza accumulo e cornici SVG nei comandi del titolo, delle mappe e nello stato del lancio dei dadi](./docs/game-ui-revision-2026-10-12.md).
 - Nuove animazioni frontali verificate il **12 ottobre 2026**: **45 video per nove forme (25–33)**, con attesa, attacco, colpito, vittoria e KO. Il totale passa a **32 forme e 160 animazioni**, con tutti i fotogrammi nativi a 24 FPS. [Importazione, profili di trasparenza e verifiche](./docs/front-animation-import-2026-10-11.md).
@@ -49,12 +55,12 @@ npm test
 - Sette viste degli strumenti dell’allenatore con kit SVG, navigazione comune G1/G2, layout desktop/telefono e condizioni reali degli Arkamon. Consultare l’altro giocatore non cambia il turno attivo; scambi, cure e acquisti rispettano i controlli della campagna.
 - Evoluzione post-battaglia con animazione.
 - Mappa principale con movimento a turni, percorsi e citta interattivi.
-- [Mappe locali di città e percorsi](./docs/local-maps.md): 16 immagini con pallini e strade percorribili, posizioni separate per G1/G2, curve e ponti, salvataggi e comandi accessibili. Budget condiviso con la mappa principale: due movimenti oppure un movimento e un'interazione. I nuovi punti attendono l'assegnazione delle loro interazioni; le attività esistenti restano in un pannello dedicato.
+- [Mappe locali di città e percorsi](./docs/local-maps.md): 16 immagini con pallini e strade percorribili, posizioni separate per G1/G2, curve e ponti, salvataggi e comandi accessibili. Budget condiviso con la mappa principale: due movimenti oppure un movimento e un'interazione. I nuovi punti attendono l'assegnazione delle loro interazioni; le eccezioni sono accessibili esplicitamente da Admin → Regia → Scorciatoie del Game Master.
 - Bilanciamento codificato: progressione mappe, range livelli, economia, incontri e soglie stati/cure/Supreme.
 - Audio da file per mosse, eventi, dadi e transizioni; musica generativa Web Audio per scene, effetti generativi di riserva e toggle muto persistito.
 - Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
-- Votazioni del pubblico con QR separati per NPC e Capipalestra/PvP; [configurazione e utilizzo](./docs/audienceVoting.md).
-- Menu **Partita**: diario individuale e riepilogo del turno, backup versionato con anteprima/ripristino/copia precedente, archivio delle ultime 20 battaglie e preferenze separate per musica, effetti, velocità e movimento ridotto.
+- Pubblico con QR esclusivamente per le mosse degli NPC normali; ospiti privati con invito per capipalestra, rivale, Superquattro e campione; [configurazione e utilizzo](./docs/audienceVoting.md).
+- Menu **Partita**: Registro unico con Diario, Eventi del match e Cronache delle ultime 20 battaglie; Gara e Ripresa basate sui progressi reali; backup versionato con anteprima/ripristino/copia precedente e preferenze separate per musica, effetti, velocità e movimento ridotto.
 - **Admin → Interazioni**: dialoghi, cure, incontri, requisiti e ricompense sui pallini; completamento individuale/condiviso, tappe collegate, import/export JSON e adattatore Tiled. Strade, ID e regole di accesso conservati.
 - Cronaca esplicativa e consultazione dei risultati già rivelati, esportabili senza nuovi dadi; test browser desktop/mobile e controlli di accessibilità in CI.
 - Arkadex individuale con specie viste/ottenute, informazioni nascoste prima della scoperta e animazioni su richiesta; registro complessivo della campagna esportabile.
@@ -72,10 +78,14 @@ src/
   engine/               Logica pura testabile
   store/                Stato globale Zustand + localStorage
   save/                 Recupero, serializzazione e ripristino della campagna
+  session/              Finestra proprietaria, revisioni e conflitti di scrittura
+  regia/                Pausa sicura e presentazione pubblica passiva
+  readiness/            Preparazione della live e configurazione portabile
   interactions/         Catalogo, editor e risoluzione delle attività dei pallini
   journal/              Diario individuale e riepilogo del turno
   settings/             Menu partita, preferenze audio e animazioni
   player-ui/            Sette viste SVG collegate alla campagna reale
+  ui-studio/            Editor visuale, slot grafici e risoluzione del layout
   scenes/               Schermate React
   types/                Tipi dominio condivisi
   utils/                Helper runtime asset
@@ -123,7 +133,7 @@ Vedi: [docs/ADMIN_MODE.md](./docs/ADMIN_MODE.md)
 - [x] Fase D desktop: scaffold Tauri
 - [ ] Verifica di un nuovo installer Windows con le correzioni correnti (le verifiche precedenti sono storiche).
 
-Per il piano completo vedi [ROADMAP.md](./ROADMAP.md).
+Il piano di consolidamento corrente è nella [roadmap del 18 ottobre 2026](./docs/audit-roadmap-2026-10-18.md). [ROADMAP.md](./ROADMAP.md) conserva il piano generale e la cronologia delle fasi precedenti.
 
 ## Deploy
 

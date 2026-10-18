@@ -3,18 +3,20 @@ import { useGameStore } from '@/store/gameStore'
 import { ItemUsePanel } from '@/shop/ItemUsePanel'
 import { SHOP_ITEMS, type ShopItemId } from '@/shop/catalog'
 import { ITEM_ICONS, CreaturePortrait, HealthBar, KitButton, KitIcon, KitPanel, kitAsset } from './kit'
+import { currentRoster } from './currentRoster'
 
 type BagCategory = 'all' | 'heal' | 'status' | 'capture'
-export interface BagScreenProps { playerId: 1 | 2; onPlayerChange?: (playerId: 1 | 2) => void }
+export interface BagScreenProps { playerId: 1 | 2; onPlayerChange?: (playerId: 1 | 2) => void; showPlayerPicker?: boolean }
 
 /** The existing use panel remains the single target/effect flow for real inventory items. */
-export function BagScreen({ playerId, onPlayerChange }: BagScreenProps) {
+export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }: BagScreenProps) {
   const state = useGameStore()
   const [viewPlayerId, setViewPlayerId] = useState<1 | 2>(playerId)
   const [category, setCategory] = useState<BagCategory>('all')
   const [selectedId, setSelectedId] = useState<ShopItemId | null>(null)
   useEffect(() => { setViewPlayerId(playerId); setSelectedId(null); setCategory('all') }, [playerId, state.campaignRevision])
   const player = state[viewPlayerId === 1 ? 'giocatore1' : 'giocatore2']
+  const squad = currentRoster(player.squadra, state.battaglia)
   const owned = SHOP_ITEMS.filter((item) => (player.inventario[item.id] ?? 0) > 0)
   const filtered = owned.filter((item) => category === 'all' || (category === 'heal' ? item.effect.kind === 'heal' || item.effect.kind === 'revive' : item.effect.kind === category))
   const selected = filtered.find((item) => item.id === selectedId) ?? filtered[0]
@@ -30,10 +32,10 @@ export function BagScreen({ playerId, onPlayerChange }: BagScreenProps) {
 
   return <section className="pu-bag-screen arka-item-bag" aria-label="Borsa degli oggetti">
     <div className="pu-screen-toolbar">
-      <label className="pu-player-picker">Giocatore della borsa<select value={viewPlayerId} onChange={(event) => {
+      {showPlayerPicker && <label className="pu-player-picker">Giocatore della borsa<select value={viewPlayerId} onChange={(event) => {
         const id = Number(event.target.value) as 1 | 2
         setViewPlayerId(id); onPlayerChange?.(id); setSelectedId(null)
-      }}><option value={1}>{state.giocatore1.nome || 'Giocatore 1'}</option><option value={2}>{state.giocatore2.nome || 'Giocatore 2'}</option></select></label>
+      }}><option value={1}>{state.giocatore1.nome || 'Giocatore 1'}</option><option value={2}>{state.giocatore2.nome || 'Giocatore 2'}</option></select></label>}
       <p className="pu-inventory-count"><strong>{total} oggetti</strong><span>Scorte di {player.nome || `Giocatore ${viewPlayerId}`}</span></p>
     </div>
     <div className="pu-bag-layout">
@@ -54,7 +56,7 @@ export function BagScreen({ playerId, onPlayerChange }: BagScreenProps) {
           <h2>{selected.name}</h2><p className="pu-description">{selected.description}</p><p className="pu-item-held">In borsa: <strong>{player.inventario[selected.id] ?? 0}</strong></p>
         </> : <div className="pu-empty"><KitIcon id="icon-bag" /><h2>Pronto per il viaggio</h2><p>Le scorte acquistate e raccolte compariranno nella borsa di questo giocatore.</p></div>}
         {selected && <div className="pu-item-use pu-item-use-single" style={{ '--pu-action-frame': `url("${kitAsset('button-primary')}")` } as CSSProperties}>
-          <ItemUsePanel key={`${viewPlayerId}:${state.campaignRevision}`} squad={player.squadra} inventory={player.inventario} unavailableMessage={unavailable}
+          <ItemUsePanel key={`${viewPlayerId}:${state.campaignRevision}`} squad={squad} inventory={player.inventario} unavailableMessage={unavailable}
             visibleItemIds={[selected.id]}
             renderItemIcon={itemId => <KitIcon id={ITEM_ICONS[itemId]} />}
             renderEffectPreview={(target, _itemId, result) => <div className="pu-cure-preview" aria-label={`Anteprima su ${target.nome}`}>
