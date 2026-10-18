@@ -22,6 +22,7 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     const hp = group.locator('[data-battle-hp-side="enemy"]')
     const oldDecoration = hp.locator('[data-ui-skin-dependent="frame"]')
     const text = await hp.innerText()
+    const selectedSkin = () => hp.evaluate(element => decodeURIComponent(getComputedStyle(element).backgroundImage))
     const selectSkin = async () => {
       await page.getByRole('button', { name: 'Scegli asset', exact: true }).click()
       await page.getByLabel('Cerca asset', { exact: true }).fill('hp bar enemy')
@@ -29,7 +30,7 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     }
     await expect(hp).toHaveCSS('background-image', /\/ui\/hp_bar_enemy\.png/)
     await selectSkin()
-    await expect(hp).toHaveCSS('background-image', /\/ui\/studio\/Comuni\/hp-bar-enemy\.svg/)
+    await expect.poll(selectedSkin).toContain('/ui/studio/Comuni/hp-bar-enemy.svg')
     await expect(group).toHaveCSS('background-image', 'none')
     await expect(oldDecoration).toHaveCSS('visibility', 'hidden')
     expect(await hp.innerText()).toBe(text)
@@ -37,7 +38,7 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     await page.getByRole('button', { name: 'Applica al gioco', exact: true }).click()
     await page.reload()
     await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('battaglia')
-    await expect(hp).toHaveCSS('background-image', /\/ui\/studio\/Comuni\/hp-bar-enemy\.svg/)
+    await expect.poll(selectedSkin).toContain('/ui/studio/Comuni/hp-bar-enemy.svg')
     await selectLayer(page, 'HP nemico')
     await page.getByRole('button', { name: 'Originale', exact: true }).click()
     await expect(hp).toHaveCSS('background-image', /\/ui\/hp_bar_enemy\.png/)

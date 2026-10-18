@@ -7,6 +7,8 @@ import { resolveUiMediaSource } from './mediaStorage'
 import { getUiFontFamily } from './assetCatalog'
 import { resolvedScreenDesign } from './runtimeDesign'
 import { getUiSkinDependents, getUiSkinSurface } from './skinSlots'
+import { uiAssetSurface } from './assetSurface'
+import { hpAssetArea, hpAssetSkin } from './hpAssetSkin'
 import { collectUiElements, findUiScreenRoot, uiRect, type RegisteredUiElement } from './screenRegistry'
 import type { UiDesignDocument, UiElementDesign, UiPreviewMessage, UiScreenSnapshot, UiTypography } from './types'
 
@@ -40,7 +42,7 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
     const changed = new Map<HTMLElement | SVGElement, Map<string, SavedProperty>>()
     const texts = new Map<Text, { original: string; applied: string }>(), sources = new Map<HTMLImageElement, string | null>()
     const svgSources = new Map<SVGImageElement, Record<string, string | null>>()
-    const owned = new Set<HTMLElement>(), urls = new Map<string, string>(), fonts = new Map<string, FontFace>()
+    const owned = new Set<HTMLElement | SVGElement>(), urls = new Map<string, string>(), fonts = new Map<string, FontFace>()
     let currentRoot: HTMLElement | null = null, currentScreen = '', entries: RegisteredUiElement[] = []
     let frame = 0, stopped = false, running = false
     const set = (element: HTMLElement | SVGElement, property: string, value: string) => {
@@ -114,29 +116,63 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
       set(element, 'width', `${bounds.width * rect.w / 100 / (sx || 1)}px`); set(element, 'height', `${bounds.height * rect.h / 100 / (sy || 1)}px`)
       set(element, 'min-width', '0'); set(element, 'min-height', '0'); set(element, 'max-width', 'none'); set(element, 'max-height', 'none'); set(element, 'box-sizing', 'border-box')
     }
-    const replaceAsset = (element: HTMLElement | SVGElement, config: UiElementDesign) => {
+    const replaceAsset = (selected: HTMLElement | SVGElement, config: UiElementDesign) => {
       if (!config.asset) return
-      const url = mediaUrl(config.asset)
+      const element = getUiSkinSurface(uiAssetSurface(selected))
+      const hpSkin = element.matches('[data-battle-hp-side]') ? hpAssetSkin(config.asset) : undefined
+      const url = hpSkin ?? mediaUrl(config.asset)
       if (!url) return
       if (element instanceof HTMLImageElement) {
         if (!sources.has(element)) sources.set(element, element.getAttribute('src'))
         element.src = url; set(element, 'object-fit', config.fit ?? 'contain'); return
       }
       if (element instanceof SVGSVGElement) {
-        const image = element.querySelector('image')
-        if (image) {
-          if (!svgSources.has(image)) svgSources.set(image, Object.fromEntries(['href', 'x', 'y', 'width', 'height', 'preserveAspectRatio'].map(name => [name, image.getAttribute(name)])))
-          const viewBox = element.viewBox.baseVal
-          image.setAttribute('href', url); image.setAttribute('x', String(viewBox.x)); image.setAttribute('y', String(viewBox.y)); image.setAttribute('width', String(viewBox.width)); image.setAttribute('height', String(viewBox.height)); image.setAttribute('preserveAspectRatio', config.fit === 'fill' ? 'none' : config.fit === 'cover' ? 'xMidYMid slice' : 'xMidYMid meet')
-          return
+        let image = element.querySelector('image')
+        if (!image) {
+          image = window.document.createElementNS('http://www.w3.org/2000/svg', 'image')
+          image.dataset.uiRuntimeOwned = 'asset'; element.append(image); owned.add(image)
+        } else {
+          const originalImage = image
+          if (!svgSources.has(originalImage)) svgSources.set(originalImage, Object.fromEntries(['href', 'x', 'y', 'width', 'height', 'preserveAspectRatio'].map(name => [name, originalImage.getAttribute(name)])))
         }
+        // Native SVG primitives paint above a CSS background too; replace their artwork.
+        for (const primitive of element.querySelectorAll<SVGElement>('path,rect,circle,ellipse,line,polygon,polyline,text,use,image,foreignObject')) {
+          if (primitive !== image && !primitive.closest('defs,clipPath,mask,pattern,marker,symbol')) set(primitive, 'visibility', 'hidden')
+        }
+        const viewBox = element.viewBox.baseVal
+        image.setAttribute('href', url); image.setAttribute('x', String(viewBox.x)); image.setAttribute('y', String(viewBox.y)); image.setAttribute('width', String(viewBox.width || element.clientWidth)); image.setAttribute('height', String(viewBox.height || element.clientHeight)); image.setAttribute('preserveAspectRatio', config.fit === 'fill' ? 'none' : config.fit === 'cover' ? 'xMidYMid slice' : 'xMidYMid meet')
+        return
       }
       const image = element.matches('.pu-kit-icon') ? element.querySelector<HTMLImageElement>('img') : null
       if (image) { if (!sources.has(image)) sources.set(image, image.getAttribute('src')); image.src = url; set(image, 'object-fit', config.fit ?? 'contain'); return }
-      const target = getUiSkinSurface(element)
-      if (target.matches('.pu-frame,.game-button-frame')) { set(target, 'border', '0'); set(target, 'border-image-source', 'none') }
-      for (const decoration of getUiSkinDependents(target)) set(decoration, 'visibility', 'hidden')
-      set(target, 'background-image', `url("${url}")`); set(target, 'background-size', config.fit === 'fill' ? '100% 100%' : config.fit ?? 'contain'); set(target, 'background-position', 'center'); set(target, 'background-repeat', 'no-repeat')
+      // The border shorthand would also erase border-image-source before it is saved.
+      if (element.matches('.pu-frame,.game-button-frame')) set(element, 'border-width', '0')
+      set(element, 'border-image-source', 'none'); set(element, 'border-color', 'transparent'); set(element, 'box-shadow', 'none'); set(element, 'background-color', 'transparent')
+      if (element.matches('.pu-hero-column,.pu-dex-hero') && element.dataset.uiId) {
+        const style = window.document.createElement('style'); style.dataset.uiRuntimeOwned = 'asset-decoration'
+        style.textContent = `[data-ui-runtime-root="active"] [data-ui-id="${CSS.escape(element.dataset.uiId)}"]::before{visibility:hidden!important}`
+        window.document.head.append(style); owned.add(style)
+      }
+      // Only explicitly decorative overlays belong to the skin. Live fills, icons,
+      // names, status and nested commands remain mounted and keep updating normally.
+      for (const decoration of getUiSkinDependents(element)) set(decoration, 'visibility', 'hidden')
+      element.querySelectorAll<HTMLElement>('[data-ui-asset-decoration]').forEach(decoration => {
+        if (decoration.closest('[data-ui-asset-surface]') === element) set(decoration, 'visibility', 'hidden')
+      })
+      if (hpSkin) {
+        const area = hpAssetArea(element.clientWidth, element.clientHeight, config.fit)
+        const position = (selector: string, x: number, y: number, w: number, h?: number) => {
+          const content = element.querySelector<HTMLElement>(selector)
+          if (!content) return
+          set(content, 'left', `${area.x + area.w * x / 100}%`); set(content, 'top', `${area.y + area.h * y / 100}%`)
+          set(content, 'right', 'auto'); set(content, 'width', `${area.w * w / 100}%`)
+          if (h !== undefined) set(content, 'height', `${area.h * h / 100}%`)
+        }
+        position('[data-ui-hp-labels]', 16, 35.5, 76.5)
+        position('[data-ui-hp-track]', 12.35, 66.8, 57.65, 15.45)
+        position('[data-ui-hp-value]', 12.35, 66.8, 57.65, 15.45)
+      }
+      set(element, 'background-image', `url("${url}")`); set(element, 'background-size', config.fit === 'fill' ? '100% 100%' : config.fit ?? 'contain'); set(element, 'background-position', 'center'); set(element, 'background-repeat', 'no-repeat')
     }
     const apply = (entry: RegisteredUiElement, config: UiElementDesign, root: HTMLElement) => {
       const { element } = entry
