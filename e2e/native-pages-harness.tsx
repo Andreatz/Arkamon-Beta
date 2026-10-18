@@ -16,6 +16,7 @@ export function mountNativePages(speciesId: number, animation: ArkamonBattleAnim
   const record = (kind: string, value: string) => events.push({ kind, animation: value, frame: Number(element.querySelector('[data-sprite-frame]')?.getAttribute('data-sprite-frame')), time: performance.now() })
   const render = () => root.render(<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: '100vh', overflow: 'auto' }}><div style={{ width: controls ? 'min(32vh,384px)' : 384, height: controls ? 'min(32vh,384px)' : 384 }}>
     <ArkamonBattleSprite speciesId={speciesId} name={`Paged native ${speciesId}`} side="front" animation={currentAnimation} replayKey={replayKey}
+      onError={() => record('error', currentAnimation)}
       holdReactionUntilImpact={held} onAnimationReady={value => record('ready', value)} onAnimationStart={value => record('start', value)}
       onAnimationCue={(value, _, cue) => record(cue, value)} onAnimationComplete={value => record('complete', value)} />
   </div>{controls && <div style={{ width: 'min(90vw,460px)' }}><GameSettingsPanel /></div>}</div>)
