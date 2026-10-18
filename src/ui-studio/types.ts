@@ -96,7 +96,7 @@ export const UI_STUDIO_SCREENS = [
   ['battaglia', 'Battaglia'], ['lega', 'Lega'], ['evoluzione', 'Evoluzione'],
   ['menu', 'Menù Partita'], ['squadra', 'Squadra'], ['deposito', 'Deposito'],
   ['arkadex', 'Arkadex'], ['analisi', 'Analisi'], ['borsa', 'Borsa'],
-  ['negozio', 'Negozio · anteprima'], ['journal', 'Diario'], ['backup', 'Backup'],
+  ['negozio', 'Negozio · anteprima'], ['register', 'Registro'], ['race', 'Gara'], ['recap', 'Ripresa'], ['journal', 'Diario'], ['backup', 'Backup'],
   ['settings', 'Impostazioni'], ['chronicles', 'Cronache'], ['match', 'Registro del match'],
   ['challenges', 'Sfide'],
 ] as const

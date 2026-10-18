@@ -13,6 +13,9 @@ import { MotionConfig } from 'framer-motion'
 import { useGamePreferences } from '@/settings/gamePreferences'
 import { ChallengeBanner } from '@/challenges/ChallengeBanner'
 import { SaveFailureNotice } from '@/save/SaveFailureNotice'
+import { SessionGate } from '@/session/SessionGate'
+import { PublicPresentationBridge } from '@/regia/PublicPresentationBridge'
+import { RegiaPause } from '@/regia/RegiaPause'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
@@ -87,6 +90,8 @@ function App() {
       <AdminRuntime />
       <Suspense fallback={null}><UiDesignRuntime /></Suspense>
       <AdminOverlay />
+      <PublicPresentationBridge />
+      <RegiaPause />
       <PlayerTools />
       <SaveFailureNotice />
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
@@ -142,6 +147,6 @@ function renderScena(scena: SceneId) {
 
 function GameApp() {
   const motion = useGamePreferences((state) => state.reducedMotion)
-  return <MotionConfig reducedMotion={motion === 'system' ? 'user' : motion === 'on' ? 'always' : 'never'}><App /></MotionConfig>
+  return <MotionConfig reducedMotion={motion === 'system' ? 'user' : motion === 'on' ? 'always' : 'never'}><SessionGate><App /></SessionGate></MotionConfig>
 }
 export default GameApp

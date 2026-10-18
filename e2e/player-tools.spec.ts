@@ -5,7 +5,8 @@ import { readFile } from 'node:fs/promises'
 async function tools(page: Page, tab: string) {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita' })
-  await dialog.getByRole('button', { name: `Apri ${tab}`, exact: true }).click()
+  await dialog.getByRole('button', { name: `Apri ${tab === 'Diario' ? 'Registro' : tab}`, exact: true }).click()
+  if (tab === 'Diario') await dialog.getByRole('navigation', { name: 'Archivi del registro', exact: true }).getByRole('button', { name: 'Diario', exact: true }).click()
   return dialog
 }
 test('preferences persist independently and dialog is keyboard accessible', async ({ page }) => {

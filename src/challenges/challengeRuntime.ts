@@ -4,6 +4,7 @@ import { determinaIniziativa, calcolaHPMax } from '@/engine/battleEngine'
 import { createSeededRandomState, nextSeededRandom } from './seededRandom'
 import { useChallengeStore } from './challengeStore'
 import type { ChallengeSession } from './types'
+import { isCampaignWritable, sessionOwnershipMessage, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
 
 import { ACTIVE_CHALLENGE_STORAGE_KEY, canonicalChallengeSession, type ChallengeContext } from './challengePersistence'
 
@@ -13,6 +14,7 @@ function publishWithoutSecondWrite(patch: Partial<GameState>) {
   try { useGameStore.setState(patch) } finally { if (storage) useGameStore.persist.setOptions({ storage }) }
 }
 export function launchChallenge(value: ChallengeSession): { ok: boolean; message: string } {
+  if (!isCampaignWritable()) return { ok: false, message: sessionOwnershipMessage() }
   const previous = useGameStore.getState()
   if (previous.challengeContext) return { ok: false, message: 'Concludi o abbandona la sfida in corso.' }
   if (previous.league.players[1].status === 'running' || previous.league.players[2].status === 'running') return { ok: false, message: 'Concludi il tentativo della Lega prima di una sfida separata.' }
@@ -31,7 +33,7 @@ export function launchChallenge(value: ChallengeSession): { ok: boolean; message
       hpMaxA: calcolaHPMax(attacker), hpMaxB: calcolaHPMax(opponent), turnoCorrente: turn, luogoRitorno: 'mappa-principale',
       log: [`${session.mode === 'fanta' ? 'Fanta-Team' : 'Sfida'} · seed ${session.seed}.`], evoluzioneInAttesa: null, seeded: rng },
   }
-  try { localStorage.setItem(ACTIVE_CHALLENGE_STORAGE_KEY, JSON.stringify({ version: 0, state: { ...serializeGameState(game), challengeContext: context } })) }
+  try { writeCampaignCheckpoint(ACTIVE_CHALLENGE_STORAGE_KEY, JSON.stringify({ version: 0, state: { ...serializeGameState(game), challengeContext: context } })) }
   catch { return { ok: false, message: 'Non posso salvare la sfida sul dispositivo. La campagna resta intatta; libera spazio e riprova.' } }
   publishWithoutSecondWrite({ ...game, challengeContext: context, campaignRevision: previous.campaignRevision + 1, saveRecoveryWarnings: [], teamRuleMessage: null })
   useChallengeStore.getState().rememberSession(session)
@@ -39,6 +41,7 @@ export function launchChallenge(value: ChallengeSession): { ok: boolean; message
 }
 /** Returning is durable before UI publication. An abandoned match never becomes a competitive result. */
 export function exitChallenge(completed = false): { ok: boolean; message: string } {
+  if (!isCampaignWritable()) return { ok: false, message: sessionOwnershipMessage() }
   const previous = useGameStore.getState(), context = previous.challengeContext
   if (!context) return { ok: false, message: 'Non c’è una sfida in corso.' }
   const battle = previous.battaglia
@@ -54,8 +57,8 @@ export function exitChallenge(completed = false): { ok: boolean; message: string
     if (!result.ok) return { ok: false, message: 'Il risultato resta nello scontro concluso: libera spazio e premi di nuovo Prosegui per salvarlo.' }
   }
   try {
-    localStorage.setItem(GAME_SAVE_STORAGE_KEY, JSON.stringify({ version: 0, state: serializeGameState(campaign) }))
-    localStorage.removeItem(ACTIVE_CHALLENGE_STORAGE_KEY)
+    writeCampaignCheckpoint(GAME_SAVE_STORAGE_KEY, JSON.stringify({ version: 0, state: serializeGameState(campaign) }))
+    removeCampaignCheckpoint(ACTIVE_CHALLENGE_STORAGE_KEY)
   } catch { return { ok: false, message: 'Non posso chiudere il salvataggio della sfida. La campagna resta conservata; libera spazio e riprova.' } }
   publishWithoutSecondWrite({ ...campaign, challengeContext: null, campaignRevision: previous.campaignRevision + 1, teamRuleMessage: null, saveRecoveryWarnings: [] })
   return { ok: true, message: completed ? 'Risultato registrato. Campagna ripristinata.' : 'Sfida chiusa. Campagna ripristinata.' }

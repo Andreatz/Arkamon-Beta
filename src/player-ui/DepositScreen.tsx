@@ -4,7 +4,8 @@ import { BOX_COUNT, SLOT_PER_BOX, SQUADRA_MAX, chiaveDeposito, getInSlot, type S
 import { isTeamWithinLevelCap, teamLevelRange } from '@/engine/teamLevelCap'
 import { useGameStore } from '@store/gameStore'
 import { CreaturePortrait, HealthBar, KitButton, KitFrame, KitIcon, KitPanel, PokemonHero } from './kit'
-import { canManagePlayerTeam, liveOwnedPokemon } from './TeamScreen'
+import { canManagePlayerTeam } from './TeamScreen'
+import { liveOwnedPokemon } from './currentRoster'
 import { EMPTY_DEPOSIT_FILTERS, matchesDepositFilters, previewDepositSwap, type DepositFilters } from './depositTools'
 
 export interface DepositScreenProps { playerId: 1 | 2; onAnalyse?: (instanceId: string) => void }

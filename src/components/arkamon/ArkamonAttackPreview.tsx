@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from 're
 import { getMossa, getPokemon } from '@/data'
 import type { MossaDef } from '@/types'
 import { MoveVfx, type MoveVfxEvent } from '@/components/MoveVfx'
-import { useAdminStore } from '@/store/adminStore'
+import { useResolvedBattleLayout } from '@/ui-studio/battleLayout'
 import {
   createBattleAnimationPlayback,
   createBattleVisualSequence,
@@ -37,7 +37,7 @@ type PreviewRuntime = {
 const SPECIES_IDS = Object.keys(ARKAMON_ANIMATION_MANIFEST).map(Number).sort((a, b) => a - b)
 
 /** Exercise the battle's real animation coordinator without changing a saved game. */
-export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { speciesId: number; stageStyle?: CSSProperties; background: string }) {
+export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusyChange }: { speciesId: number; stageStyle?: CSSProperties; background: string; onBusyChange?: (busy: boolean) => void }) {
   const moves = (getPokemon(speciesId)?.mosse ?? [])
     .map(getMossa)
     .filter((move): move is MossaDef => !!move && move.id > 0)
@@ -57,7 +57,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { sp
   const generation = useRef(0)
   const starting = useRef(false)
   const runtime = useRef<PreviewRuntime | null>(null)
-  const battleLayout = useAdminStore((state) => state.theme.layouts.battle)
+  const battleLayout = useResolvedBattleLayout()
   const attackerName = getPokemon(speciesId)?.nome ?? `Arkamon #${speciesId}`
   const targetName = getPokemon(targetId)?.nome ?? `Arkamon #${targetId}`
   const busy = phase === 'preparing' || phase === 'playing' || phase === 'effect' || phase === 'impact'
@@ -75,7 +75,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { sp
     runtime.current = null
   }, [])
 
-  useEffect(() => stopRuntime, [stopRuntime])
+  useEffect(() => () => { stopRuntime(); onBusyChange?.(false) }, [stopRuntime, onBusyChange])
 
   const resetPreview = () => {
     stopRuntime()
@@ -90,6 +90,19 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { sp
     setAttackerPlaying(false)
     setTargetPlaying(false)
     setHoldHitReaction(false)
+    onBusyChange?.(false)
+  }
+
+  const failPreview = () => {
+    stopRuntime()
+    starting.current = false
+    setEffect(null)
+    setPhase('error')
+    setClipsPrepared(false)
+    setAttackerPlaying(false)
+    setTargetPlaying(false)
+    setHoldHitReaction(false)
+    onBusyChange?.(false)
   }
 
   const play = async () => {
@@ -114,8 +127,13 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { sp
     setAttackerAnimation('idle')
     setTargetAnimation('idle')
     setReplayKey(id)
+    onBusyChange?.(true)
 
     try {
+      // Release the comparison reader before warming the two battle readers.
+      // Three distinct pages cannot fit the 32 MiB mobile budget.
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
+      if (!active()) return
       await Promise.all([
         prepareArkamonAnimationPlayback(speciesId, attackerSide, 'attack'),
         prepareArkamonAnimationPlayback(targetId, 'front', 'hit'),
@@ -154,6 +172,13 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { sp
           setEffect(null)
           setPhase('complete')
           setHoldHitReaction(false)
+          // Return ownership to the comparison before its action buttons unlock.
+          setClipsPrepared(false)
+          setAttackerPlaying(false)
+          setTargetPlaying(false)
+          setAttackerAnimation('idle')
+          setTargetAnimation('idle')
+          onBusyChange?.(false)
         },
       })
       const playback = createBattleAnimationPlayback({
@@ -212,11 +237,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { sp
       setPhase('playing')
       playback.start()
     } catch {
-      if (active()) {
-        starting.current = false
-        setPhase('error')
-        setHoldHitReaction(false)
-      }
+      if (active()) failPreview()
     }
   }
 
@@ -294,10 +315,10 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background }: { sp
       <div className={`darklaw-lab__attack-stage darklaw-lab__stage--${background}`} style={stageStyle} data-preview-sync-phase={phase} data-preview-sync-events={JSON.stringify(events)} data-preview-sync-attacker={speciesId} data-preview-sync-target={targetId} data-preview-sync-attacker-view={attackerSide}>
         <span className="darklaw-lab__stage-caption">{attackerName} <span aria-hidden="true">→</span> {targetName}</span>
         <div className="darklaw-lab__attack-sprite" style={spriteStyle('A')} data-preview-sync-side="A">
-          <ArkamonBattleSprite speciesId={speciesId} name={attackerName} className="darklaw-lab__sprite" side={attackerSide} animation={attackerAnimation} playbackPaused={!attackerPlaying && phase !== 'complete'} animationEnabled={animated && (attackerAnimation !== 'idle' || phase === 'complete')} replayKey={replayKey} finishActionBeforeIdle={false} onAnimationReady={(animation, key) => onNativeReady('A', animation, key)} onAnimationStart={onAttackerStart} onAnimationCue={(animation, key, cue) => { const current = runtime.current; if (current?.id === key && animation === 'attack' && cue === 'release') current.playback.release() }} onAnimationComplete={onAttackerComplete} />
+          <ArkamonBattleSprite speciesId={speciesId} name={attackerName} className="darklaw-lab__sprite" side={attackerSide} animation={attackerAnimation} playbackPaused={!attackerPlaying && phase !== 'complete'} animationEnabled={animated && (attackerAnimation !== 'idle' || phase === 'complete')} replayKey={replayKey} finishActionBeforeIdle={false} onError={failPreview} onAnimationReady={(animation, key) => onNativeReady('A', animation, key)} onAnimationStart={onAttackerStart} onAnimationCue={(animation, key, cue) => { const current = runtime.current; if (current?.id === key && animation === 'attack' && cue === 'release') current.playback.release() }} onAnimationComplete={onAttackerComplete} />
         </div>
         <div className="darklaw-lab__attack-sprite" style={spriteStyle('B')} data-preview-sync-side="B">
-          <ArkamonBattleSprite speciesId={targetId} name={targetName} className="darklaw-lab__sprite" side="front" animation={targetAnimation} playbackPaused={!targetPlaying && phase !== 'complete'} holdReactionUntilImpact={holdHitReaction} animationEnabled={animated && (targetAnimation !== 'idle' || phase === 'complete')} replayKey={replayKey} finishActionBeforeIdle={false} onAnimationReady={(animation, key) => onNativeReady('B', animation, key)} onAnimationStart={onTargetStart} onAnimationCue={(animation, key, cue) => { const current = runtime.current; if (current?.id === key && generation.current === key && animation === 'hit' && cue === 'reaction') markEvent('target-reaction') }} onAnimationComplete={onTargetComplete} />
+          <ArkamonBattleSprite speciesId={targetId} name={targetName} className="darklaw-lab__sprite" side="front" animation={targetAnimation} playbackPaused={!targetPlaying && phase !== 'complete'} holdReactionUntilImpact={holdHitReaction} animationEnabled={animated && (targetAnimation !== 'idle' || phase === 'complete')} replayKey={replayKey} finishActionBeforeIdle={false} onError={failPreview} onAnimationReady={(animation, key) => onNativeReady('B', animation, key)} onAnimationStart={onTargetStart} onAnimationCue={(animation, key, cue) => { const current = runtime.current; if (current?.id === key && generation.current === key && animation === 'hit' && cue === 'reaction') markEvent('target-reaction') }} onAnimationComplete={onTargetComplete} />
         </div>
         {effect ? <MoveVfx key={effect.id} effect={effect} onStart={() => { const current = runtime.current; if (current?.id === effect.id) { markEvent('vfx-start'); current.playback.vfxStart() } }} onImpact={() => { const current = runtime.current; if (current?.id === effect.id) current.sequence.impact() }} onComplete={() => { const current = runtime.current; if (current?.id === effect.id) { markEvent('vfx-complete'); setEffect(null); current.sequence.vfxComplete() } }} /> : null}
       </div>

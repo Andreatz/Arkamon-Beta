@@ -10,6 +10,7 @@ import { makeDialogBackgroundInert } from '@/components/battle/modalFocus'
 import { useInteractionStore } from '@/interactions/interactionStore'
 import { ConfiguredInteractionPanel } from '@/interactions/ConfiguredInteractionPanel'
 import { TurnSummary } from '@/journal/TurnSummary'
+import { useAdminStore } from '@/store/adminStore'
 import './localMapScene.css'
 
 function ActivityDialog({ open, onClose, children, title = 'Attività del luogo' }: { open: boolean; onClose: () => void; children: ReactNode; title?: string }) {
@@ -58,6 +59,11 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const blocked = useSceneInputBlocked()
   const [activitiesOpen, setActivitiesOpen] = useState(false)
   const closeActivities = useCallback(() => setActivitiesOpen(false), [])
+  useEffect(() => {
+    const openGmActivities = () => { if (useAdminStore.getState().enabled && !blocked) setActivitiesOpen(true) }
+    window.addEventListener('arkamon:gm-activities', openGmActivities)
+    return () => window.removeEventListener('arkamon:gm-activities', openGmActivities)
+  }, [blocked])
   const [selected, setSelected] = useState<string | null>(null)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const closeInteraction = useCallback(() => setInteractionOpen(false), [])
@@ -118,7 +124,6 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       <GameButton disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</GameButton>
       <div className="local-map-heading"><h1>{map.id.replace(/_/g, ' ')}</h1><span>G{actor} · {player.nome}</span></div>
       <span className="local-map-budget" role="status">{remaining} {remaining === 1 ? 'azione' : 'azioni'}</span>
-      <GameButton disabled={blocked} onClick={() => setActivitiesOpen(true)}>Attività</GameButton>
       {(secretPassageVisible || secret) && <GameButton
         disabled={!canMove || activitiesOpen || interactionOpen} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
         {secret ? 'Torna a Roma' : 'Passaggio segreto'} · 1 movimento
@@ -143,7 +148,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       <p>{remaining > 0 ? 'Due movimenti, oppure un movimento e un’interazione.' : 'Turno concluso. Passa il controllo all’altro giocatore.'}</p>
       <TurnSummary />
     </footer>
-    <ActivityDialog open={activitiesOpen} onClose={closeActivities}>{activities}</ActivityDialog>
+    <ActivityDialog open={activitiesOpen} onClose={closeActivities} title="Scorciatoie del Game Master">{activities}</ActivityDialog>
     {currentNode && <ActivityDialog open={interactionOpen} onClose={closeInteraction} title="Interazioni del punto">
       <ConfiguredInteractionPanel mapId={map.id} nodeId={currentNode.id} inputBlocked={blocked} onShopOpened={closeInteraction} />
     </ActivityDialog>}

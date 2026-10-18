@@ -23,7 +23,7 @@ const slices: Record<string, number> = { 'panel-wide': 163, 'panel-medium': 97, 
   'slot-default': 62, 'slot-selected': 60, 'slot-cyan': 62, 'card-portrait': 99 }
 export function KitFrame({ id = 'panel-medium' }: { id?: string }) {
   const style: CSSProperties = { borderImageSource: `url("${kitAsset(id)}")`, borderImageSlice: `${slices[id] ?? 61} fill` }
-  return <span className="pu-frame" style={style} data-kit={id} aria-hidden="true" />
+  return <span className="pu-frame" style={style} data-kit={id} data-ui-skin-slot="frame" aria-hidden="true" />
 }
 export function KitPanel({ children, className = '', asset = 'panel-medium', ...props }: HTMLAttributes<HTMLDivElement> & { asset?: string }) {
   return <div {...props} className={`pu-panel ${className}`}><KitFrame id={asset} />{children}</div>

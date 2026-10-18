@@ -18,9 +18,8 @@ const ArkadexScreen = lazy(() => import('./ArkadexScreen').then(module => ({ def
 const BagScreen = lazy(() => import('./BagScreen').then(module => ({ default: module.BagScreen })))
 const StoreScreen = lazy(() => import('./StoreScreen').then(module => ({ default: module.StoreScreen })))
 const BackupPanel = lazy(() => import('@/save/BackupPanel').then(module => ({ default: module.BackupPanel })))
-const PlayerJournalPanel = lazy(() => import('@/journal/PlayerJournalPanel').then(module => ({ default: module.PlayerJournalPanel })))
-const BattleArchivePanel = lazy(() => import('@/components/battle/BattleArchivePanel').then(module => ({ default: module.BattleArchivePanel })))
-const MatchRegisterPanel = lazy(() => import('@/match/MatchRegisterPanel').then(module => ({ default: module.MatchRegisterPanel })))
+const RegisterScreen = lazy(() => import('./RegisterScreen').then(module => ({ default: module.RegisterScreen })))
+const RaceScreen = lazy(() => import('./RaceScreen').then(module => ({ default: module.RaceScreen })))
 const ChallengePanel = lazy(() => import('@/challenges/ChallengePanel').then(module => ({ default: module.ChallengePanel })))
 
 const screens: Record<PlayerUiScreen, { label: string; title: string; kicker: string; description: string; icon: string }> = {
@@ -34,6 +33,9 @@ const screens: Record<PlayerUiScreen, { label: string; title: string; kicker: st
 }
 
 const auxiliary: { id: PlayerUiAuxiliary; label: string; icon: string }[] = [
+  { id: 'register', label: 'Registro', icon: 'icon-book' },
+  { id: 'race', label: 'Gara', icon: 'icon-activity' },
+  { id: 'recap', label: 'Ripresa', icon: 'icon-activity' },
   { id: 'journal', label: 'Diario', icon: 'icon-book' },
   { id: 'backup', label: 'Backup', icon: 'icon-box' },
   { id: 'settings', label: 'Impostazioni', icon: 'icon-options' },
@@ -119,17 +121,17 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
       <Suspense fallback={<p role="status" className="pu-loading">Caricamento…</p>}>
         {visibleTool === 'settings' ? <GameSettingsPanel />
           : visibleTool === 'challenges' ? <ChallengePanel activeSession={context?.session} onLaunch={session => { const result = launchChallenge(session); if (result.ok) onClose(); return result }} />
-          : visibleTool === 'journal' ? <PlayerJournalPanel key={`journal-${playerId}`} initialPlayerId={playerId} />
+          : visibleTool === 'race' || visibleTool === 'recap' ? <RaceScreen recap={visibleTool === 'recap'} />
+          : visibleTool === 'register' || visibleTool === 'journal' || visibleTool === 'match' || visibleTool === 'chronicles'
+            ? <RegisterScreen key={`${visibleTool}-${playerId}`} playerId={playerId} initialTab={visibleTool === 'register' ? 'match' : visibleTool} />
           : visibleTool === 'backup' ? <BackupPanel />
-          : visibleTool === 'chronicles' ? <BattleArchivePanel />
-          : visibleTool === 'match' ? <MatchRegisterPanel key={`match-${playerId}`} initialPlayerId={playerId} />
           : blockedScreen ? <p role="status">Questa funzione torna disponibile dopo la sfida.</p>
           : screen === 'partita' ? <MenuScreen playerId={playerId} onAuxiliary={openTool} />
           : screen === 'squadra' ? <TeamScreen playerId={playerId} onAnalyse={analyse} onBag={() => navigate('borsa')} onDeposit={() => navigate('deposito')} />
           : screen === 'deposito' ? <DepositScreen playerId={playerId} onAnalyse={analyse} />
-          : screen === 'arkadex' ? <ArkadexScreen playerId={playerId} onPlayerChange={changePlayer} />
+          : screen === 'arkadex' ? <ArkadexScreen playerId={playerId} showPlayerPicker={false} />
           : screen === 'analisi' ? <AnalysisScreen playerId={playerId} instanceId={instanceId} />
-          : screen === 'borsa' ? <BagScreen playerId={playerId} onPlayerChange={changePlayer} />
+          : screen === 'borsa' ? <BagScreen playerId={playerId} showPlayerPicker={false} />
           : <StoreScreen playerId={playerId} shopInteractionId={initialShopInteractionId} />}
       </Suspense>
     </main>

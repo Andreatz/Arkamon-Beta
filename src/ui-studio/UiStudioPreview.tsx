@@ -10,6 +10,7 @@ import { UiDesignRuntime } from './UiDesignRuntime'
 import { UI_STUDIO_SCREENS, UI_STUDIO_SCREEN_VIEWS, type UiDesignDocument, type UiStudioMessage } from './types'
 import { isUiStudioPreview } from './previewMode'
 import { UiPreviewViewContext } from './UiPreviewViewContext'
+import { UiDesignPreviewContext } from './battleLayout'
 
 const Titolo = lazy(() => import('@/scenes/TitoloScene').then(module => ({ default: module.TitoloScene })))
 const Laboratorio = lazy(() => import('@/scenes/LaboratorioScene').then(module => ({ default: module.LaboratorioScene })))
@@ -20,7 +21,7 @@ const Grid = lazy(() => import('@/scenes/MappaGrigliaScene').then(module => ({ d
 const Battle = lazy(() => import('@/scenes/BattagliaScene').then(module => ({ default: module.BattagliaScene })))
 const League = lazy(() => import('@/league/LeagueScene').then(module => ({ default: module.LeagueScene })))
 const Evolution = lazy(() => import('@/scenes/EvoluzioneScene').then(module => ({ default: module.EvoluzioneScene })))
-const auxiliaries = ['journal', 'backup', 'settings', 'chronicles', 'match', 'challenges']
+const auxiliaries = ['register', 'race', 'recap', 'journal', 'backup', 'settings', 'chronicles', 'match', 'challenges']
 const management = ['menu', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa', 'negozio', ...auxiliaries]
 function Scene({ screen }: { screen: string }) {
   if (management.includes(screen)) return <PlayerUi key={screen} initialScreen={(screen === 'menu' || auxiliaries.includes(screen) ? 'partita' : screen) as PlayerUiScreen} initialPlayerId={1} initialAuxiliary={auxiliaries.includes(screen) ? screen as PlayerUiAuxiliary : undefined} initialShopInteractionId={screen === 'negozio' ? 'ui-studio-demo' : undefined} onClose={() => {}} />
@@ -65,7 +66,7 @@ export function UiStudioPreview() {
   if (!isUiStudioPreview()) return <p>Questa anteprima è disponibile soltanto nello Studio UI.</p>
   const navigation = useGameStore.getState().scenaCorrente
   return <MotionConfig reducedMotion="always"><div data-ui-studio-preview-screen={screen} className="ui-studio-preview-stage" style={{ position: 'relative', width: '1920px', height: '1080px', overflow: 'hidden', background: '#0b1728' }}>
-    {prepared === screen && <UiPreviewViewContext.Provider value={screen.split(':')[1] ?? null}><SceneNavigationContext.Provider value={navigation}><SceneInputContext.Provider value={true}><Suspense fallback={<p role="status">Caricamento schermata…</p>}><Scene key={screen} screen={screen.split(':')[0]} /></Suspense></SceneInputContext.Provider></SceneNavigationContext.Provider></UiPreviewViewContext.Provider>}
+    {prepared === screen && <UiDesignPreviewContext.Provider value={{ design, screen }}><UiPreviewViewContext.Provider value={screen.split(':')[1] ?? null}><SceneNavigationContext.Provider value={navigation}><SceneInputContext.Provider value={true}><Suspense fallback={<p role="status">Caricamento schermata…</p>}><Scene key={screen} screen={screen.split(':')[0]} /></Suspense></SceneInputContext.Provider></SceneNavigationContext.Provider></UiPreviewViewContext.Provider></UiDesignPreviewContext.Provider>}
     <UiDesignRuntime preview design={design} screen={screen} key={`runtime-${snapshotRevision}`} />
   </div></MotionConfig>
 }

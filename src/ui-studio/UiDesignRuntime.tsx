@@ -6,6 +6,7 @@ import { createDefaultDesign } from './designModel'
 import { resolveUiMediaSource } from './mediaStorage'
 import { getUiFontFamily } from './assetCatalog'
 import { resolvedScreenDesign } from './runtimeDesign'
+import { getUiSkinDependents, getUiSkinSurface } from './skinSlots'
 import { uiAssetSurface } from './assetSurface'
 import { hpAssetArea, hpAssetSkin } from './hpAssetSkin'
 import { collectUiElements, findUiScreenRoot, uiRect, type RegisteredUiElement } from './screenRegistry'
@@ -92,6 +93,8 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
     }
     const geometry = (element: HTMLElement | SVGElement, config: UiElementDesign, root: HTMLElement) => {
       if (!config.rect) return
+      // Battle rectangles are resolved before rendering, including the VFX anchors.
+      if (element.getAttribute('data-ui-layout-owner') === 'battle') return
       const bounds = root.getBoundingClientRect(), rect = config.rect
       const html = element as HTMLElement
       const computed = getComputedStyle(element)
@@ -115,7 +118,7 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
     }
     const replaceAsset = (selected: HTMLElement | SVGElement, config: UiElementDesign) => {
       if (!config.asset) return
-      const element = uiAssetSurface(selected)
+      const element = getUiSkinSurface(uiAssetSurface(selected))
       const hpSkin = element.matches('[data-battle-hp-side]') ? hpAssetSkin(config.asset) : undefined
       const url = hpSkin ?? mediaUrl(config.asset)
       if (!url) return
@@ -152,6 +155,7 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
       }
       // Only explicitly decorative overlays belong to the skin. Live fills, icons,
       // names, status and nested commands remain mounted and keep updating normally.
+      for (const decoration of getUiSkinDependents(element)) set(decoration, 'visibility', 'hidden')
       element.querySelectorAll<HTMLElement>('[data-ui-asset-decoration]').forEach(decoration => {
         if (decoration.closest('[data-ui-asset-surface]') === element) set(decoration, 'visibility', 'hidden')
       })

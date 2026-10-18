@@ -8,7 +8,7 @@ const configurationDirectory = dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   ...gameTests,
   testDir: configurationDirectory,
-  testMatch: 'native-pages.spec.ts',
+  testMatch: ['native-pages.spec.ts', 'native-import-39-60.spec.ts'],
   outputDir: resolve(configurationDirectory, '../../native-pages-test-results'),
   reporter: 'list',
   use: { ...gameTests.use, baseURL: 'http://127.0.0.1:3016' },

@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
-import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
+import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]
+const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 56, 57, 58, 59, 60]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -107,15 +107,22 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
   })
 
   it('makes the opening frame transparent while retaining the original opaque artwork', async () => {
-    const { data, info } = await sharp(assetPath)
+    // Inspect the actual first runtime page; decoding every giant atlas only to
+    // crop its opening cell needlessly expands hundreds of megabytes per test.
+    const firstPage = getArkamonRuntimeAsset(asset).pages?.[0]
+    expect(firstPage?.firstFrame).toBe(0)
+    const { data, info } = await sharp(resolve('public', firstPage!.src.slice(1)))
       .extract({ left: 0, top: 0, width: asset.frameWidth, height: asset.frameHeight })
       .ensureAlpha().raw().toBuffer({ resolveWithObject: true })
     const conversion = readConversion(speciesId, animation)
+    const poster = await sharp(resolve(`public/sprites/arkamon/${speciesId}/front/${conversion.poster.file}`)).ensureAlpha().raw().toBuffer()
     const blueScreen = conversion.key.screenColour === 'blue'
     const nativeGreenAllowed = conversion.qa.nativeGreenPixelsAllowed === true
     let transparent = 0, opaqueArtwork = 0, darkFur = 0, redDetails = 0, greenSpill = 0, blueSpill = 0, opaqueGreen = 0
+    let visiblePixelsDiffer = false
     for (let i = 0; i < data.length; i += info.channels) {
       const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3]
+      if (a !== poster[i + 3] || a > 0 && (r !== poster[i] || g !== poster[i + 1] || b !== poster[i + 2])) visiblePixelsDiffer = true
       if (a === 0) transparent++
       if (a > 240) opaqueArtwork++
       if (a > 240 && r < 100 && g < 100 && b < 100) darkFur++
@@ -124,6 +131,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
       if (a > 16 && b > Math.max(r, g) + 8) blueSpill++
       if (a > 240 && g > Math.max(r, b) + 8) opaqueGreen++
     }
+    expect(visiblePixelsDiffer).toBe(false)
     expect(transparent).toBeGreaterThan(info.width * info.height * 0.25)
     expect(opaqueArtwork).toBeGreaterThan(1000)
     if (speciesId === 5) {
@@ -133,16 +141,21 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)
-      expect([28, 29]).toContain(speciesId)
+      expect([28, 29, 52, 53]).toContain(speciesId)
       expect(opaqueGreen).toBeGreaterThan(1000)
     } else if (nativeGreenAllowed) {
-      expect([26, 27]).toContain(speciesId)
+      expect([26, 27, 45]).toContain(speciesId)
       expect(conversion.key.preserveGreenBody.screenPocketsExcluded).toBe(true)
-      expect(opaqueGreen).toBeGreaterThan(1000)
+      if (speciesId === 26 || speciesId === 27) {
+        expect(opaqueGreen).toBeGreaterThan(1000)
+      } else {
+        // Ghost forms have dark bodies and sparse native wisps, rather than leaves.
+        expect(darkFur).toBeGreaterThan(1000)
+        expect(opaqueGreen).toBeLessThan(opaqueArtwork * 0.01)
+      }
     } else {
       expect(greenSpill).toBe(0)
     }
     expect(data[3]).toBe(0)
-    // A 7680-pixel lossless atlas decodes about 236 MB before cropping the cell.
   }, 15_000)
 })

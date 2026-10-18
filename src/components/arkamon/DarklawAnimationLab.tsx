@@ -37,6 +37,11 @@ export function DarklawAnimationLab() {
   const [scale, setScale] = useState(1)
   const [side, setSide] = useState<ArkamonSpriteSide>('front')
   const [run, setRun] = useState<PreviewRun>({ animation: 'idle', id: 0, sequenceIndex: null })
+  const [attackPreviewBusy, setAttackPreviewBusy] = useState(false)
+  const onAttackPreviewBusy = useCallback((busy: boolean) => {
+    setAttackPreviewBusy(busy)
+    if (busy) setRun(current => ({ animation: 'idle', id: current.id + 1, sequenceIndex: null }))
+  }, [])
   const playingSequence = run.sequenceIndex !== null
   const currentAction = ACTIONS.find((action) => action.animation === run.animation) ?? ACTIONS[0]
   const previewAsset = getArkamonAnimationAsset(speciesId, 'front', run.animation)
@@ -174,7 +179,7 @@ export function DarklawAnimationLab() {
             <div className={`darklaw-lab__stage darklaw-lab__stage--${background}`} style={stageStyle} data-preview-card="animated" data-preview-animation={run.animation}>
               <span className="darklaw-lab__stage-caption">{speciesName} <span aria-hidden="true">/</span> {side === 'front' ? 'Frontale' : 'Retro'}</span>
               <div className="darklaw-lab__sprite-slot" role="img" aria-label={`${speciesName} ${side === 'front' ? `animato, ${currentAction.label}` : 'di retro, sprite statico esistente'}`}>
-                <ArkamonBattleSprite key={`${speciesId}-${side}`} speciesId={speciesId} name={speciesName} side={side} animation={run.animation} animationEnabled={side === 'front'} replayKey={run.id} finishActionBeforeIdle={false} onAnimationComplete={onAnimationComplete} scale={scale} className="darklaw-lab__sprite" />
+                <ArkamonBattleSprite key={`${speciesId}-${side}`} speciesId={speciesId} name={speciesName} side={side} animation={run.animation} animationEnabled={side === 'front' && !attackPreviewBusy} replayKey={run.id} finishActionBeforeIdle={false} onAnimationComplete={onAnimationComplete} scale={scale} className="darklaw-lab__sprite" />
               </div>
             </div>
             <p className="darklaw-lab__card-note">{side === 'front' ? 'Ogni azione riproduce il filmato completo. Il KO mantiene l’esito della dissoluzione.' : 'Questa prova riguarda il frontale. Il retro conserva la posa originale.'}</p>
@@ -184,13 +189,13 @@ export function DarklawAnimationLab() {
         <section className="darklaw-lab__actions" aria-labelledby="darklaw-actions-title">
           <div className="darklaw-lab__actions-heading">
             <div><p className="darklaw-lab__card-kicker">Prova il movimento</p><h2 id="darklaw-actions-title">Azioni di battaglia</h2></div>
-            <button type="button" className="darklaw-lab__play" onClick={playSequence} disabled={side === 'back'}>
+            <button type="button" className="darklaw-lab__play" onClick={playSequence} disabled={side === 'back' || attackPreviewBusy}>
               <span aria-hidden="true">▶</span> {playingSequence ? 'Ricomincia la sequenza' : 'Prova la sequenza'}
             </button>
           </div>
           <div className="darklaw-lab__action-buttons" aria-label="Scegli un’azione">
             {ACTIONS.map((action) => (
-              <button key={action.animation} type="button" aria-pressed={run.animation === action.animation} disabled={side === 'back' && action.animation !== 'idle'} onClick={() => playAction(action.animation)}>
+              <button key={action.animation} type="button" aria-pressed={run.animation === action.animation} disabled={attackPreviewBusy || side === 'back' && action.animation !== 'idle'} onClick={() => playAction(action.animation)}>
                 {action.label}
               </button>
             ))}
@@ -200,7 +205,7 @@ export function DarklawAnimationLab() {
           </p>
         </section>
 
-        <ArkamonAttackPreview key={speciesId} speciesId={speciesId} stageStyle={stageStyle} background={background} />
+        <ArkamonAttackPreview key={speciesId} speciesId={speciesId} stageStyle={stageStyle} background={background} onBusyChange={onAttackPreviewBusy} />
 
         <footer className="darklaw-lab__footer"><span className="darklaw-lab__prototype">Prototipo</span><p>Anteprima delle animazioni. I comandi di questa pagina non modificano la partita.</p></footer>
       </div>

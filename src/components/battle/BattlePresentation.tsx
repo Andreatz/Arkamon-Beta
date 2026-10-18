@@ -11,6 +11,8 @@ import { getBattleSideCenter } from '@/components/vfx/battleVfxPosition'
 import { StatusToken } from './StatusToken'
 import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gamePreferences'
 import { battleMoveFacts } from './battleMoveFacts'
+import { BATTLE_LAYOUT_IDS } from '@/ui-studio/battleLayout'
+import { GameButton } from '@/components/ui/GameButton'
 import './battleRpg.css'
 import type { AdminBattleLayoutKey, AdminLayoutRect, AdminBattleLayout } from '@/theme/adminThemeTypes'
 import type { PokemonIstanza, MossaDef, Stato, TipoPokemon } from '@/types'
@@ -39,6 +41,8 @@ export function BattleLayoutItem({
       editing={editing}
       onChange={(nextRect) => onChange(layoutKey, nextRect)}
       zIndex={20}
+      uiId={BATTLE_LAYOUT_IDS[layoutKey]}
+      layoutOwner="battle"
     >
       {children}
     </AdminLayoutItem>
@@ -113,9 +117,19 @@ export function InfoBox({
   const righe = messaggi.slice(-3)
   const frameSrc = assetUrl('/ui/infobox.png')
 
+  if (!righe.length) return showOpponentButton ? (
+    <div className="flex h-full w-full items-center justify-center">
+      <GameButton tone="primary" aria-label="AVVERSARIO" onClick={onOpponentTurn}
+        className="battle-opponent-command min-h-14 w-[min(92%,620px)] px-7 py-4 text-[clamp(18px,1.8vw,30px)]">
+        Turno dell’avversario <span aria-hidden="true">▶</span>
+      </GameButton>
+    </div>
+  ) : null
+
   return (
     <div
       className="arka-battle-font relative h-full w-full text-slate-950 drop-shadow-2xl"
+      data-ui-skin-slot="frame"
       data-ui-asset-surface=""
       style={{
         backgroundImage: `url(${frameSrc})`,
@@ -140,12 +154,14 @@ export function InfoBox({
       </div>
 
       {showOpponentButton && (
-        <button
-          className="absolute bottom-[13%] right-[10%] rounded-md bg-blue-400 px-4 py-2 text-m text-white text-slate-950 shadow-lg hover:bg-blue-300 active:scale-95 [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+        <GameButton
+          tone="primary"
+          aria-label="AVVERSARIO"
+          className="battle-opponent-command absolute bottom-[13%] right-[6%] min-h-12 w-[22%] px-4 py-3 text-[clamp(16px,1.35vw,24px)]"
           onClick={onOpponentTurn}
         >
           AVVERSARIO
-        </button>
+        </GameButton>
       )}
     </div>
   )
@@ -416,6 +432,9 @@ export function HpBar({
   stato,
   side,
   className = '',
+  frameSource,
+  frameFit = 'fill',
+  hpColorsOverride,
 }: {
   nome: string
   livello: number
@@ -424,11 +443,15 @@ export function HpBar({
   stato?: Stato
   side: 'player' | 'enemy'
   className?: string
+  frameSource?: string
+  frameFit?: 'fill' | 'contain' | 'cover'
+  hpColorsOverride?: { hpHigh: string; hpMid: string; hpLow: string }
 }) {
-  const hpColors = useAdminStore((state) => state.theme.colors)
+  const savedColors = useAdminStore((state) => state.theme.colors)
+  const hpColors = hpColorsOverride ?? savedColors
   const pct = Math.max(0, Math.min(100, (hp / hpMax) * 100))
   const colore = pct > 60 ? hpColors.hpHigh : pct > 25 ? hpColors.hpMid : hpColors.hpLow
-  const frameSrc = assetUrl(`/ui/hp_bar_${side}.png`)
+  const frameSrc = frameSource ?? assetUrl(`/ui/hp_bar_${side}.png`)
   const barSrc = assetUrl('/ui/hp_bar.png')
   const barClipId = `hp-bar-inner-${side}`
   const fillWidth = pct === 0 ? 0 : 23 + pct * 5
@@ -438,10 +461,12 @@ export function HpBar({
       className={`arka-battle-font relative z-20 h-full w-full text-white arka-letter-outline ${className}`}
       data-battle-hp-side={side}
       data-battle-hp={hp}
+      data-ui-skin-slot="frame"
       data-ui-asset-surface=""
       style={{
         backgroundImage: `url(${frameSrc})`,
-        backgroundSize: '100% 100%',
+        backgroundSize: frameSource && frameFit !== 'fill' ? frameFit : '100% 100%',
+        backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
     >
@@ -486,6 +511,8 @@ export function HpBar({
         </svg>
         <img
           src={barSrc}
+          data-ui-skin-dependent="frame"
+          style={{ visibility: frameSource ? 'hidden' : undefined }}
           data-ui-asset-decoration=""
           alt=""
           className="pointer-events-none absolute inset-0 h-full w-full mix-blend-multiply"
@@ -576,6 +603,7 @@ export function MoveButton({
       onClick={onClick}
       title={facts.detail}
       className="battle-move-button arka-battle-font relative h-full min-h-0 overflow-hidden px-[8%] py-[7%] text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
+      data-ui-skin-slot="frame"
       data-ui-asset-surface=""
       style={{
         backgroundImage: `url(${frameSrc})`,

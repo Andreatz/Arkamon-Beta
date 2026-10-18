@@ -2,6 +2,7 @@ import { normalizeGameSave, serializeGameState } from '@/save/gamePersistence'
 import { createSeededRandomState } from './seededRandom'
 import { createChallengeSession, isChallengeRulesVersion } from './challengeRules'
 import type { ChallengeSession } from './types'
+import { canRecoverCampaignCheckpoint, recoverCampaignCheckpoint, retireRecoveredCampaignCheckpoint, readCampaignCheckpoint, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
 
 export const ACTIVE_CHALLENGE_STORAGE_KEY = 'arkamon-active-challenge-v1'
 export interface ChallengeContext { version: 1; attemptId: string; session: ChallengeSession; campaign: Record<string, unknown> }
@@ -22,7 +23,8 @@ export function normalizeChallengeContext(value: unknown): ChallengeContext | nu
 /** Challenge writes never touch the campaign key. A valid active envelope resumes after reload. */
 export const scopedGameStorage = {
   getItem(name: string): string | null {
-    const active = localStorage.getItem(ACTIVE_CHALLENGE_STORAGE_KEY)
+    const campaign = readCampaignCheckpoint(name)
+    const active = readCampaignCheckpoint(ACTIVE_CHALLENGE_STORAGE_KEY)
     if (active) {
       try {
         const state = JSON.parse(active)?.state
@@ -38,20 +40,22 @@ export const scopedGameStorage = {
             // Persist the recovered campaign before retiring this envelope; otherwise
             // each reload would resurrect its stale snapshot and discard new progress.
             const recovered = JSON.stringify({ version: 0, state: context.campaign })
-            localStorage.setItem(name, recovered)
-            localStorage.removeItem(ACTIVE_CHALLENGE_STORAGE_KEY)
+            if (canRecoverCampaignCheckpoint()) {
+              recoverCampaignCheckpoint(name, recovered)
+              retireRecoveredCampaignCheckpoint(ACTIVE_CHALLENGE_STORAGE_KEY)
+            }
             return recovered
           }
         }
       }
       catch { /* Keep unreadable data available; resume the campaign instead. */ }
     }
-    return localStorage.getItem(name)
+    return campaign
   },
   setItem(name: string, text: string) {
     const envelope = JSON.parse(text)
-    if (envelope?.state?.challengeContext) localStorage.setItem(ACTIVE_CHALLENGE_STORAGE_KEY, text)
-    else localStorage.setItem(name, text)
+    if (envelope?.state?.challengeContext) writeCampaignCheckpoint(ACTIVE_CHALLENGE_STORAGE_KEY, text)
+    else writeCampaignCheckpoint(name, text)
   },
-  removeItem(name: string) { localStorage.removeItem(name) },
+  removeItem(name: string) { removeCampaignCheckpoint(name) },
 }

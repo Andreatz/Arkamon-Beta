@@ -1,4 +1,4 @@
-import { useAdminStore } from '@store/adminStore'
+import { useResolvedBattleLayout } from '@/ui-studio/battleLayout'
 import { assetUrl } from '@/utils/assetUrl'
 import { getBattleSideCenter } from './battleVfxPosition'
 import { MoveVfxLayer } from './MoveVfxLayer'
@@ -26,7 +26,7 @@ export function VfxPreviewPanel({
   scale: number | 'default'
   background: VfxPreviewBackground
 }) {
-  const layout = useAdminStore((state) => state.theme.layouts.battle)
+  const layout = useResolvedBattleLayout()
   const curation = getVfxCuration(asset.id)
   const previewAsset = getVfxCurationPreviewAsset(asset, { anchor, scale })
 

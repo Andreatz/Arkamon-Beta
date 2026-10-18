@@ -143,7 +143,8 @@ test('Escape closes an archived replay above the direct deposit without closing 
   const beforeArchive = await page.evaluate(() => localStorage.getItem('arkamon-battle-archive-v1'))
   const scene = page.locator('.pu-scene-host')
   await scene.getByRole('button', { name: 'Menù Partita', exact: true }).click()
-  await scene.getByRole('button', { name: 'Apri Cronache', exact: true }).click()
+  await scene.getByRole('button', { name: 'Apri Registro', exact: true }).click()
+  await scene.getByRole('navigation', { name: 'Archivi del registro', exact: true }).getByRole('button', { name: 'Cronache delle battaglie', exact: true }).click()
   const review = scene.getByRole('button', { name: 'Rivedi cronaca e dadi', exact: true })
   await review.click()
   const replay = page.getByRole('dialog', { name: 'Cronaca della battaglia', exact: true })
@@ -310,11 +311,11 @@ test('six match utilities use their main cards, Norwester and a single journey r
   const before = await campaign(page)
   const dialog = await openTools(page, 'Menù Partita')
   const utilities = [
-    ['Diario', 'journal', 'Diario dei giocatori'],
+    ['Registro', 'register', 'Registro della partita'],
     ['Backup', 'backup', 'Backup della partita'],
     ['Impostazioni', 'settings', 'Impostazioni del gioco'],
-    ['Cronache', 'chronicles', 'Cronache delle battaglie'],
-    ['Registro del match', 'match', 'Registro del match'],
+    ['Gara', 'race', 'Situazione della gara'],
+    ['Ripresa', 'recap', 'Ripresa della sessione'],
     ['Sfide', 'challenges', 'Sfide a seed e Fanta-Team Builder'],
   ] as const
   await expect(dialog.locator('.pu-menu-tile')).toHaveCount(6)

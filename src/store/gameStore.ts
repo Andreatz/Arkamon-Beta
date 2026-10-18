@@ -8,8 +8,11 @@
  */
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { configureSessionHydration, isCampaignWritable, isCampaignCheckpointCurrent } from '@/session/sessionOwnership'
+import { SessionWriteDenied } from '@/session/sessionCoordinator'
+import { creaIstanza } from '@/engine/pokemonFactory'
 import { isUiStudioPreview, uiPreviewCampaignStorage } from '@/ui-studio/previewMode'
-import { normalizeChallengeContext, scopedGameStorage, type ChallengeContext } from '@/challenges/challengePersistence'
+import { normalizeChallengeContext, scopedGameStorage, ACTIVE_CHALLENGE_STORAGE_KEY, type ChallengeContext } from '@/challenges/challengePersistence'
 import { emptyPlayer as giocatoreVuoto, mainMapPosition, normalizeGameSave, serializeGameState, GAME_SAVE_STORAGE_KEY, type GameSaveState } from '@/save/gamePersistence'
 import { emptyInteractionProgress } from '@/interactions/types'
 import { useInteractionStore } from '@/interactions/interactionStore'
@@ -299,6 +302,7 @@ export const useGameStore = create<GameState>()(
       let retryingWrite = false
       const get = (): GameState => staged ?? getRaw()
       const set = (update: Parameters<typeof rawSet>[0], replace?: boolean): boolean => {
+        if (!isCampaignWritable()) return false
         const previous = get()
         const patch = typeof update === 'function' ? update(previous) : update
         if (patch === previous) return true
@@ -311,6 +315,7 @@ export const useGameStore = create<GameState>()(
         try { rawSet(state, replace) } finally { if (storage) useGameStore.persist.setOptions({ storage }) }
       }
       const commitDurable = (patch: Partial<GameState>, local = false, replace?: boolean): boolean => {
+        if (!isCampaignWritable()) return false
         if (staged) { staged = { ...staged, ...patch }; return true }
         const pendingWrite = useSaveWriteStatus.getState()
         // Background checkpoint effects must not replace an unsaved action.
@@ -344,11 +349,12 @@ export const useGameStore = create<GameState>()(
             ? { ...tracked, campaignRevision: tracked.campaignRevision + 1 } : tracked, replace)
           useSaveWriteStatus.getState().clear()
           return true
-        } catch { return failed() }
+        } catch (error) { return error instanceof SessionWriteDenied ? false : failed() }
       }
       return ({
       aggiornaStato: (patch) => set(patch),
       eseguiTransazione: (operation) => {
+        if (!isCampaignWritable()) return false
         if (staged) { operation(get); return true }
         const previous = getRaw()
         staged = previous
@@ -1136,9 +1142,11 @@ export const useGameStore = create<GameState>()(
           const storage = useGameStore.persist?.getOptions().storage
           if (storage) useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
           try {
-            useGameStore.setState({ saveRecoveryWarnings: [
+            const warning = { saveRecoveryWarnings: [
               'Il salvataggio non è leggibile. Importa un backup per recuperare i progressi, oppure avvia una nuova partita.',
-            ] })
+            ] }
+            if (isCampaignWritable()) useGameStore.setState(warning)
+            else publishReadonlyGameSnapshot(warning)
           } finally {
             if (storage) useGameStore.persist.setOptions({ storage })
           }
@@ -1155,18 +1163,44 @@ export const useGameStore = create<GameState>()(
 // HELPER per creare istanze
 // =====================================================
 
-let istanzaCounter = 0
-export function creaIstanza(specieId: number, livello: number): PokemonIstanza | null {
-  const specie = getPokemon(specieId)
-  if (!specie) return null
-  const istanza: PokemonIstanza = {
-    istanzaId: `pkmn-${Date.now()}-${++istanzaCounter}`,
-    specieId,
-    nome: specie.nome,
-    livello,
-    hp: 0, // popolato sotto
-    xp: 0,
+export { creaIstanza } from '@/engine/pokemonFactory'
+
+// Public direct writes (imports and integrations) must pass the same owner gate
+// as normal actions. Middleware hydration remains internal and read-only.
+const setGameState = useGameStore.setState
+let publishingReplica = false
+useGameStore.setState = ((...args: Parameters<typeof setGameState>) => {
+  const key = useGameStore.getState().challengeContext ? ACTIVE_CHALLENGE_STORAGE_KEY : GAME_SAVE_STORAGE_KEY
+  if (publishingReplica || isCampaignCheckpointCurrent(key)) setGameState(...args)
+}) as typeof useGameStore.setState
+
+/** Replicas are volatile and cannot write back to campaign storage. */
+export function publishReadonlyGameSnapshot(patch: Partial<GameState>): boolean {
+  if (isCampaignWritable()) return false
+  const storage = useGameStore.persist.getOptions().storage
+  if (storage) useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
+  publishingReplica = true
+  try { setGameState(patch); return true }
+  finally {
+    publishingReplica = false
+    if (storage) useGameStore.persist.setOptions({ storage })
   }
-  istanza.hp = calcolaHPMax(istanza)
-  return istanza
 }
+
+configureSessionHydration(async () => {
+  // A pending command belongs to the previous checkpoint. Explicitly rereading
+  // the campaign must never leave a retry capable of publishing that old state.
+  useSaveWriteStatus.getState().clear()
+  await useGameStore.persist.rehydrate()
+  await useInteractionStore.persist.rehydrate()
+  const [{ useBattleArchiveStore }, { useChallengeStore }] = await Promise.all([
+    import('@/components/battle/battleArchiveStore'), import('@/challenges/challengeStore'),
+  ])
+  await useBattleArchiveStore.persist.rehydrate()
+  await useChallengeStore.persist.rehydrate()
+  const state = useGameStore.getState()
+  const storage = useGameStore.persist.getOptions().storage
+  if (storage) useGameStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
+  try { setGameState({ campaignRevision: state.campaignRevision + 1 }) }
+  finally { if (storage) useGameStore.persist.setOptions({ storage }) }
+})

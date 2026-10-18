@@ -103,6 +103,8 @@ export function AdminLayoutItem({
   onChange,
   children,
   zIndex = 20,
+  uiId,
+  layoutOwner,
 }: {
   rootSelector: string
   label: string
@@ -111,6 +113,8 @@ export function AdminLayoutItem({
   onChange: (rect: AdminLayoutRect) => void
   children: ReactNode
   zIndex?: number
+  uiId?: string
+  layoutOwner?: string
 }) {
   const beginLayoutChange = useAdminStore((state) => state.beginLayoutChange)
   const itemRef = useRef<HTMLDivElement>(null)
@@ -239,7 +243,8 @@ export function AdminLayoutItem({
       ref={itemRef}
       data-admin-layout-item="true"
       data-ui-label={label}
-      data-ui-id={`layout.${label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
+      data-ui-id={uiId ?? `layout.${label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
+      data-ui-layout-owner={layoutOwner}
       data-admin-layout-editing={editing ? 'true' : 'false'}
       onPointerDownCapture={startTextEdit}
       onClickCapture={blockTextClickWhileEditing}

@@ -3,12 +3,14 @@ import { stateFromValidatedBackup, serializeGameBackup, validateGameBackup, type
 import { GAME_SAVE_STORAGE_KEY, PREVIOUS_BACKUP_STORAGE_KEY, serializeGameState } from './gamePersistence'
 import { INTERACTION_STORAGE_KEY, useInteractionStore } from '@/interactions/interactionStore'
 import { BATTLE_ARCHIVE_STORAGE_KEY, useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
+import { isCampaignWritable, sessionOwnershipMessage, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
 
 type BackupStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 export type GameBackupRestoreResult = { ok: true; previousBackup: string } | { ok: false; error: string }
 
 /** Write durable data first, then publish one in-memory state update. Failed writes leave the game untouched. */
 export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupStorage): GameBackupRestoreResult {
+  if (!isCampaignWritable()) return { ok: false, error: sessionOwnershipMessage() }
   if (useGameStore.getState().challengeContext) return { ok: false, error: 'Torna alla campagna prima di ripristinare un backup.' }
   const restored = stateFromValidatedBackup(preview)
   if (!restored) return { ok: false, error: 'Il backup non è più valido. Riapri il file e controlla l’anteprima.' }
@@ -31,20 +33,29 @@ export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupSt
     target.setItem(PREVIOUS_BACKUP_STORAGE_KEY, previousBackup)
     written.push(PREVIOUS_BACKUP_STORAGE_KEY)
     if (catalog) {
-      target.setItem(INTERACTION_STORAGE_KEY, JSON.stringify({ state: { interactions: catalog.interactions }, version: 0 }))
+      const text = JSON.stringify({ state: { interactions: catalog.interactions }, version: 0 })
+      if (storage) target.setItem(INTERACTION_STORAGE_KEY, text)
+      else writeCampaignCheckpoint(INTERACTION_STORAGE_KEY, text)
       written.push(INTERACTION_STORAGE_KEY)
     }
     if (archive) {
-      target.setItem(BATTLE_ARCHIVE_STORAGE_KEY, JSON.stringify({ state: archive, version: 1 }))
+      const text = JSON.stringify({ state: archive, version: 1 })
+      if (storage) target.setItem(BATTLE_ARCHIVE_STORAGE_KEY, text)
+      else writeCampaignCheckpoint(BATTLE_ARCHIVE_STORAGE_KEY, text)
       written.push(BATTLE_ARCHIVE_STORAGE_KEY)
     }
-    target.setItem(GAME_SAVE_STORAGE_KEY, JSON.stringify({ state: serializeGameState(restored), version: 0 }))
+    const text = JSON.stringify({ state: serializeGameState(restored), version: 0 })
+    if (storage) target.setItem(GAME_SAVE_STORAGE_KEY, text)
+    else writeCampaignCheckpoint(GAME_SAVE_STORAGE_KEY, text)
   } catch {
     // localStorage writes are atomic per key. Undo preceding keys if the final campaign write fails.
     for (const key of written.reverse()) {
       try {
         const value = previousValues.get(key)
-        if (value === null || value === undefined) (storage ?? localStorage).removeItem(key)
+        if (!storage && key !== PREVIOUS_BACKUP_STORAGE_KEY) {
+          if (value === null || value === undefined) removeCampaignCheckpoint(key)
+          else writeCampaignCheckpoint(key, value)
+        } else if (value === null || value === undefined) (storage ?? localStorage).removeItem(key)
         else (storage ?? localStorage).setItem(key, value)
       } catch { /* The unchanged in-memory campaign remains available for export if storage became unavailable. */ }
     }

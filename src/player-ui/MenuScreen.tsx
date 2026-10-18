@@ -11,11 +11,11 @@ interface MenuScreenProps {
   onAuxiliary: (tool: PlayerUiAuxiliary) => void
 }
 const tiles: { id: PlayerUiAuxiliary; title: string; description: string; icon: string }[] = [
-  { id: 'journal', title: 'Diario', description: 'Luoghi, incontri e progressi', icon: 'icon-book' },
+  { id: 'register', title: 'Registro', description: 'Diario, eventi e cronache delle battaglie', icon: 'icon-book' },
   { id: 'backup', title: 'Backup', description: 'Salva e importa la tua partita', icon: 'icon-box' },
   { id: 'settings', title: 'Impostazioni', description: 'Audio, animazioni e preferenze', icon: 'icon-options' },
-  { id: 'chronicles', title: 'Cronache', description: 'Rivivi le battaglie concluse', icon: 'icon-activity' },
-  { id: 'match', title: 'Registro del match', description: 'Ripercorri gli eventi dell’avventura', icon: 'icon-activity' },
+  { id: 'race', title: 'Gara', description: 'Posizioni, medaglie e corsa alla Lega', icon: 'icon-activity' },
+  { id: 'recap', title: 'Ripresa', description: 'Situazione corrente e ultimi eventi', icon: 'icon-activity' },
   { id: 'challenges', title: 'Sfide', description: 'Seed e Fanta-Team Builder', icon: 'icon-activity' },
 ]
 const sceneNames: Record<string, string> = { titolo: 'Titolo', laboratorio: 'Laboratorio', 'mappa-principale': 'Mappa principale', 'mappa-griglia': 'Mappa locale', citta: 'Città', percorso: 'Percorso', palestra: 'Palestra', 'centro-pokemon': 'Centro Pokémon', battaglia: 'Battaglia', deposito: 'Deposito', squadra: 'Squadra', evoluzione: 'Evoluzione', lega: 'Lega' }

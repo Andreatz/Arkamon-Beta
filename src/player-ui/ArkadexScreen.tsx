@@ -10,7 +10,7 @@ import {
 import { useGameStore } from '@/store/gameStore'
 import type { PokemonIstanza, PokemonSpecie, TipoPokemon } from '@/types'
 import { KitButton, KitIcon, KitPanel, PokemonMoves, SpeciesPortrait, TypeBadge } from './kit'
-import { liveOwnedPokemon } from './TeamScreen'
+import { liveOwnedPokemon } from './currentRoster'
 
 const AnimatedArkamon = lazy(async () => ({ default: (await import('@/components/arkamon/ArkamonBattleSprite')).ArkamonBattleSprite }))
 const statusLabels = { unknown: 'Da scoprire', seen: 'Visto', caught: 'Ottenuto' } as const
@@ -20,6 +20,7 @@ type ArkadexDetailTab = 'information' | 'moves' | 'evolution'
 export interface ArkadexScreenProps {
   playerId: 1 | 2
   onPlayerChange?: (playerId: 1 | 2) => void
+  showPlayerPicker?: boolean
 }
 
 function evolutionChain(species: PokemonSpecie): PokemonSpecie[] {
@@ -42,7 +43,7 @@ function evolutionChain(species: PokemonSpecie): PokemonSpecie[] {
 }
 
 /** Discovery and specimen data come from the campaign; unknown forms never request artwork. */
-export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) {
+export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = true }: ArkadexScreenProps) {
   const previewView = useContext(UiPreviewViewContext)
   const state = useGameStore()
   const [viewPlayerId, setViewPlayerId] = useState<1 | 2>(playerId)
@@ -96,14 +97,14 @@ export function ArkadexScreen({ playerId, onPlayerChange }: ArkadexScreenProps) 
 
   return <section className="pu-dex-screen" aria-label="Arkadex" data-ui-view={detailTab}>
     <div className="pu-screen-toolbar">
-      <label className="pu-player-picker">Giocatore dell’Arkadex
+      {showPlayerPicker && <label className="pu-player-picker">Giocatore dell’Arkadex
         <select value={viewPlayerId} onChange={(event) => {
           const id = Number(event.target.value) as 1 | 2
           setViewPlayerId(id); onPlayerChange?.(id)
           setSelectedId(null); setSelectedInstanceId(null); setAnimatedSpeciesId(null)
           resetFilters()
         }}><option value={1}>G1 · {state.giocatore1.nome || 'Giocatore 1'}</option><option value={2}>G2 · {state.giocatore2.nome || 'Giocatore 2'}</option></select>
-      </label>
+      </label>}
       <p className="pu-discovery-count"><strong>{player.nome || `Giocatore ${viewPlayerId}`}</strong><span>{seenIds.length} / {POKEMON_BASE.length} viste · {caughtIds.length} / {POKEMON_BASE.length} ottenute</span></p>
     </div>
     <div className="pu-dex-layout">

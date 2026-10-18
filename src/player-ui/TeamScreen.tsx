@@ -3,7 +3,8 @@ import { getPokemon } from '@data/index'
 import { SQUADRA_MAX } from '@engine/deposito'
 import { isTeamWithinLevelCap, teamLevelRange, TEAM_LEVEL_GAP } from '@/engine/teamLevelCap'
 import { useGameStore, type GameState } from '@store/gameStore'
-import type { PokemonIstanza, StatoBattaglia } from '@/types'
+import { liveOwnedPokemon } from './currentRoster'
+export { liveOwnedPokemon } from './currentRoster'
 import { CreaturePortrait, HealthBar, KitButton, KitFrame, KitIcon, KitPanel, PokemonHero, PokemonMoves, TypeBadge } from './kit'
 
 export interface TeamScreenProps {
@@ -24,13 +25,6 @@ export function canManagePlayerTeam(
     && state.giocatoreAttivo === playerId
     && state.turnoOverworld.giocatoreAttivo === playerId
     && state.turnoOverworld.azioniRimaste > 0
-}
-
-/** During a fight, the settled battle instance contains the latest HP and status. */
-export function liveOwnedPokemon(pokemon: PokemonIstanza, battle: StatoBattaglia | null): PokemonIstanza {
-  if (!battle) return pokemon
-  return [battle.pokemonA, battle.pokemonB, ...(battle.squadraA ?? []), ...(battle.squadraB ?? [])]
-    .find((entry) => entry.istanzaId === pokemon.istanzaId) ?? pokemon
 }
 
 export function TeamScreen(props: TeamScreenProps) {

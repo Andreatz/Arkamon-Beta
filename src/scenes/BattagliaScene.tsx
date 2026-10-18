@@ -21,6 +21,9 @@ import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
 import { useState, useEffect, useRef, useCallback, useContext } from 'react'
 import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
+import { BattleLayoutProvider, useResolvedBattleLayout } from '@/ui-studio/battleLayout'
+import { useRegiaStore } from '@/regia/regiaStore'
+import { usePublicPresentation } from '@/regia/publicPresentation'
 import { teamProgressionLimit } from '@/engine/teamLevelCap'
 import { nextSeededRandom } from '@/challenges/seededRandom'
 import { exitChallenge } from '@/challenges/challengeRuntime'
@@ -143,7 +146,6 @@ export function BattagliaScene() {
     s.giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
   )
   const risolviBattagliaNPC = useGameStore((s) => s.risolviBattagliaNPC)
-  const battleLayout = useAdminStore((s) => s.theme.layouts.battle)
   const customBattleBackground = useAdminStore((s) => s.theme.assets.battleBackground)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const updateBattleLayout = useAdminStore((s) => s.updateBattleLayout)
@@ -176,6 +178,7 @@ export function BattagliaScene() {
   const [squadraB, setSquadraB] = useState<PokemonIstanza[]>([])
   const [infoBoxMessaggi, setInfoBoxMessaggi] = useState<string[]>([])
   const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
+  const [publicDiceId, setPublicDiceId] = useState<number | null>(null)
   const [pendingHealth, setPendingHealth] = useState<{
     side: 'A' | 'B'
     instanceId: string
@@ -224,6 +227,7 @@ export function BattagliaScene() {
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [supremaSide, setSupremaSide] = useState<'A' | 'B' | null>(null)
   const [bagOpen, setBagOpen] = useState(false)
+  const battleLayout = useResolvedBattleLayout(bagOpen ? 'bag' : diceRoll ? 'dice' : previewView)
   const [pendingCaptureSave, setPendingCaptureSave] = useState<{ masterball: boolean } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
@@ -282,6 +286,36 @@ export function BattagliaScene() {
     { istanzaId: string; oldSpecieId: number; newSpecieId: number }[]
   >(initialCheckpoint?.evolutions ?? [])
   const luogoRitornoRef = useRef(battaglia?.luogoRitorno ?? 'mappa-principale')
+  const paused = useRegiaStore(state => state.paused)
+  const rivalDisplayName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? 'Rivale'
+  const controlStatus = paused ? 'Pausa di regia' : terminata ? 'Battaglia finita'
+    : pendingCaptureSave ? 'Cattura in attesa di salvataggio'
+    : audienceChoice ? audienceChoice.request.channel === 'boss' ? `Ospite · ${audienceChoice.request.trainer.name} · sceglie la mossa` : 'Pubblico NPC · votazione in corso'
+    : diceRoll ? 'Lancio dei dadi...' : moveVfx ? 'Animazione mossa...'
+    : attesaAvversario ? `Tocca a ${rivalDisplayName} · avvia il turno avversario`
+    : attesaPassaggio ? `Passa il controllo a ${attesaPassaggio.direzione === 'A→B' ? rivalDisplayName : giocatore.nome}`
+    : mostraMoseB ? `${rivalDisplayName} · scegli una mossa`
+    : turnoA ? `Turno di ${giocatore.nome} · scegli una mossa` : `Turno di ${rivalDisplayName}...`
+  useEffect(() => {
+    const busy = coinOpen || !!statusRoll || azioneInCorso || !!moveVfx || !!diceRoll || !!pendingHealth || !!audienceChoice || !!scambioRichiesto
+    useRegiaStore.getState().setBusy(busy, controlStatus, 'battle')
+    return () => useRegiaStore.getState().setBusy(false, '', 'battle')
+  }, [coinOpen, statusRoll, azioneInCorso, moveVfx, diceRoll, pendingHealth, audienceChoice, scambioRichiesto, controlStatus])
+  useEffect(() => {
+    const publicView = usePublicPresentation.getState()
+    if (!pkmnA || !pkmnB || previewView) return
+    const animation = (side: 'A' | 'B'): ArkamonBattleAnimation => spriteActions[side]?.animation
+      ?? (terminata && esito === (side === 'A' ? 'vittoria' : 'sconfitta') ? 'victory' : 'idle')
+    publicView.setBattle({
+      pokemonA: pendingHealth?.side === 'A' && pendingHealth.instanceId === pkmnA.istanzaId ? { ...pkmnA, hp: pendingHealth.hp } : pkmnA,
+      pokemonB: pendingHealth?.side === 'B' && pendingHealth.instanceId === pkmnB.istanzaId ? { ...pkmnB, hp: pendingHealth.hp } : pkmnB,
+      hpMaxA: calcolaHPMax(pkmnA), hpMaxB: calcolaHPMax(pkmnB), background: customBattleBackground ? assetUrl(customBattleBackground) : getBackground(luogoRitornoRef.current) ?? BATTLE_BG_DEFAULT,
+      layout: battleLayout, animationA: animation('A'), animationB: animation('B'), replayA: spriteActions.A?.replayKey ?? 0, replayB: spriteActions.B?.replayKey ?? 0,
+      status: controlStatus, messages: infoBoxMessaggi, effect: moveVfx,
+      dice: diceRoll && publicDiceId === diceRoll.id ? diceRoll : null,
+    })
+  }, [pkmnA, pkmnB, pendingHealth, customBattleBackground, battleLayout, spriteActions, controlStatus, infoBoxMessaggi, moveVfx, diceRoll, publicDiceId, terminata, esito, previewView])
+  useEffect(() => () => { usePublicPresentation.getState().setBattle(null) }, [])
 
   useEffect(() => {
     preloadVfxAssets([...DEFAULT_PRELOAD_VFX_ASSET_IDS, ...BATTLE_DICE_ASSET_IDS])
@@ -503,6 +537,7 @@ export function BattagliaScene() {
   const revealLancioDadi = (id: number) => {
     const callbacks = diceRollCallbacksRef.current
     if (!callbacks || callbacks.id !== id || diceRollTimerRef.current !== null) return
+    setPublicDiceId(id)
     callbacks.onVisible()
     diceRollTimerRef.current = window.setTimeout(() => {
       if (diceRollCallbacksRef.current !== callbacks) return
@@ -834,7 +869,6 @@ export function BattagliaScene() {
   if (!pkmnA || !pkmnB) return <div className="text-white p-8">Caricamento...</div>
 
   const specieB = getPokemon(pkmnB.specieId)!
-  const rivalTrainerName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? 'Rivale'
 
   const eseguiMossaPvP_B = (numeroMossa: 0 | 1 | 2, suprema = false) => {
     if (terminata || turnoA || !mostraMoseB || azioneInCorso || actionInProgressRef.current) return
@@ -1471,7 +1505,7 @@ export function BattagliaScene() {
       : undefined
 
   return (
-    <motion.div
+    <BattleLayoutProvider value={battleLayout}><motion.div
       data-battle-layout-root
       className="w-full h-full relative bg-cover bg-center"
       style={{ backgroundImage: `url(${bgBattaglia})` }}
@@ -1852,30 +1886,8 @@ export function BattagliaScene() {
         {diceRoll && <span className="game-button-frame" data-kit="button-primary" aria-hidden="true" style={{
           borderImageSource: `url("${assetUrl('/ui/player-kit/button-primary.svg')}")`, borderImageSlice: '44 fill',
         }} />}
-        <span className="arka-layout-content text-sm text-center">
-          {terminata
-            ? 'Battaglia finita'
-            : pendingCaptureSave
-            ? 'Cattura in attesa di salvataggio'
-            : audienceChoice
-            ? audienceChoice.request.channel === 'boss'
-              ? `Ospite · ${audienceChoice.request.trainer.name} · sceglie la mossa`
-              : 'Pubblico NPC · votazione in corso'
-            : moveVfx
-            ? 'Animazione mossa...'
-            : diceRoll
-            ? 'Lancio dei dadi...'
-            : attesaAvversario
-            ? 'Premi Avversario... per continuare'
-            : isPvP && attesaPassaggio
-            ? attesaPassaggio.direzione === 'A→B'
-              ? `Passa il controllo a ${rivalTrainerName}`
-              : `Passa il controllo a ${giocatore.nome}`
-            : mostraMoseB
-            ? `${rivalTrainerName} · scegli una mossa`
-            : turnoA
-            ? `Turno di ${giocatore.nome} · scegli una mossa`
-            : `Turno di ${rivalTrainerName}...`}
+        <span className="arka-layout-content battle-turn-label text-center">
+          {controlStatus}
         </span>
         </div>
       </BattleLayoutItem>
@@ -1888,6 +1900,6 @@ export function BattagliaScene() {
           onSelect={scegliPokemonCambio}
         />
       )}
-    </motion.div>
+    </motion.div></BattleLayoutProvider>
   )
 }

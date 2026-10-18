@@ -167,12 +167,12 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
 
   test('KitFrame and GameButton replacements still suppress and restore their original border image', async ({ page }) => {
     await openStudio(page, 'menu')
-    const diary = preview(page).locator('[data-ui-id="service.journal"]')
+    const diary = preview(page).locator('[data-ui-id="service.register"]')
     const kitFrame = diary.locator(':scope>.pu-frame')
     await expect(kitFrame).toBeVisible()
     const kitBorder = await kitFrame.evaluate(element => getComputedStyle(element).borderImageSource)
     const diaryText = (await diary.textContent())!.trim()
-    await selectLayer(page, 'Apri Diario')
+    await selectLayer(page, 'Apri Registro')
     await chooseAsset(page, 'infobox')
     await assertBackground(kitFrame, '/ui/studio/Comuni/infobox.svg')
     await expect(kitFrame).toHaveCSS('border-image-source', 'none')

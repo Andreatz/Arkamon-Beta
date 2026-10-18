@@ -11,6 +11,9 @@ const shared: Rule[] = [
 ]
 const rules: Record<string, Rule[]> = {
   menu: [['.pu-menu-grid', 'services', 'Menù servizi'], ['.pu-journey', 'journey', 'Carta allenatore']],
+  register: [['.pu-register-tabs', 'archives', 'Selettore archivio'], ['#pu-register-content', 'archive-content', 'Archivio selezionato']],
+  race: [['.pu-race-cards', 'race', 'Gara'], ['.pu-race-cards>.pu-panel', 'race.player', 'Giocatrice', true]],
+  recap: [['.pu-race-cards', 'race', 'Situazione corrente'], ['.pu-recap-events', 'recent-events', 'Eventi recenti']],
   battaglia: [['.battle-dice-panel', 'dice.panel', 'Pannello lancio dadi'], ['.battle-dice-grid', 'dice.results', 'Risultati dei dadi'], ['.battle-die', 'dice.result', 'Dado', true], ['.battle-item-dialog', 'battle-bag.dialog', 'Borsa in battaglia'], ['.battle-item-dialog>header', 'battle-bag.header', 'Intestazione borsa'], ['.battle-item-dialog>div', 'battle-bag.content', 'Oggetti e compagni']],
   squadra: [['.pu-team-layout', 'layout', 'Colonne squadra'], ['.pu-team-list', 'team', 'Squadra'], ['.pu-team-slot', 'team.slot', 'Posto squadra', true], ['.pu-team-cap', 'team.cap', 'Fascia livelli'], ['.pu-hero-column', 'hero', 'Arkamon selezionato'], ['.pu-detail-panel', 'detail', 'Scheda e azioni']],
   deposito: [['.pu-box-toolbar', 'box-navigation', 'Selettore box'], ['.pu-deposit-grid-panel', 'box', 'Pannello deposito'], ['.pu-deposit-filters', 'filters', 'Filtri'], ['.pu-box-grid', 'box.grid', 'Griglia box'], ['.pu-box-grid>.pu-box-slot', 'box.slot', 'Posto deposito', true], ['.pu-deposit-team', 'team', 'Squadra'], ['.pu-deposit-team-slot', 'team.slot', 'Posto squadra', true], ['.pu-deposit-detail', 'detail', 'Arkamon e scambio']],

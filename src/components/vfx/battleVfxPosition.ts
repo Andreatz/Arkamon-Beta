@@ -37,7 +37,8 @@ export function getBattleVfxAnchorPosition(
   attackingSide: 'A' | 'B',
   anchor: VfxAnchor
 ): BattleVfxPosition {
-  if (anchor === 'center' || anchor === 'screen') {
+  if (anchor === 'screen') return { x: 50, y: 50 }
+  if (anchor === 'center') {
     return { x: 50, y: 48 }
   }
 
