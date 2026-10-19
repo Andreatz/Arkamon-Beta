@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import type { SceneId } from '@/types'
 import { SceneTransitionOverlay } from './SceneTransitionOverlay'
@@ -22,7 +22,7 @@ interface PreviewRun {
 
 /** A development preview that never creates or changes a game session. */
 export function SceneTransitionLab() {
-  const reducedMotion = Boolean(useReducedMotion())
+  const { reducedMotion, speed } = useGameMotionPreferences()
   const [choice, setChoice] = useState<PreviewChoice>('ordinary')
   const [revision, setRevision] = useState(0)
   const [run, setRun] = useState<PreviewRun | null>(null)
@@ -55,7 +55,7 @@ export function SceneTransitionLab() {
           <div className="max-w-2xl space-y-2">
             <p className="text-xs font-bold uppercase tracking-widest text-red-300">Arkamon</p>
             <h1 className="text-2xl font-black sm:text-3xl">Anteprima transizioni</h1>
-            <p className="text-sm leading-relaxed text-slate-300">Il dado apre il mondo: un D6 cremisi, la forza custodita al suo interno e una nuova tappa dell’avventura.</p>
+            <p className="text-sm leading-relaxed text-slate-300">Passaggi rapidi per il viaggio, D6 cremisi per l’evoluzione e video VS per la battaglia.</p>
           </div>
           <a href="#" className="rounded-lg border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-300">Torna al gioco</a>
         </header>
@@ -119,7 +119,7 @@ export function SceneTransitionLab() {
               key={run.revision}
               phase={run.phase}
               startCovered={false}
-              profile={getSceneTransitionProfile({ scena: SCENARIOS[run.choice].scena })}
+              profile={(() => { const profile = getSceneTransitionProfile({ scena: SCENARIOS[run.choice].scena }); return { ...profile, coverMs: profile.coverMs / speed, blendMs: profile.blendMs / speed, durationMs: profile.durationMs / speed, playbackRate: profile.playbackRate * speed } })()}
               onCovered={() => {
                 setShowDestination(true)
                 setRun((current) => current?.revision === run.revision ? { ...current, phase: 'reveal' } : current)
@@ -129,7 +129,7 @@ export function SceneTransitionLab() {
           ) : null}
         </div>
 
-        <p className="text-xs leading-relaxed text-slate-400">Il D6 custodisce la forza degli Arkamon e accompagna le mappe e le schermate. L’ingresso in battaglia usa esclusivamente il video VS dedicato, con una breve copertura scura durante il caricamento. L’anteprima non avvia una partita.</p>
+        <p className="text-xs leading-relaxed text-slate-400">Il D6 custodisce la forza degli Arkamon e accompagna i momenti speciali. La navigazione ordinaria usa una dissolvenza breve. L’ingresso in battaglia usa esclusivamente il video VS dedicato, con una breve copertura scura durante il caricamento. L’anteprima non avvia una partita.</p>
       </div>
     </main>
   )

@@ -147,6 +147,7 @@ export function ArkamonBattleSprite({
   scale = 1,
   animationEnabled = true,
   playbackPaused = false,
+  reviewFrame,
   holdReactionUntilImpact = false,
   finishActionBeforeIdle = true,
   replayKey = 0,
@@ -165,6 +166,8 @@ export function ArkamonBattleSprite({
   animationEnabled?: boolean
   /** Mount and paint the native first frame while keeping its action clock stopped. */
   playbackPaused?: boolean
+  /** Laboratory only: show a source frame without altering its pixels, order or duration. */
+  reviewFrame?: number
   /** Keep the native hit immediately before its reaction until the VFX impact arrives. */
   holdReactionUntilImpact?: boolean
   /** Battle feedback can request idle early; a manual preview may interrupt it. */
@@ -209,7 +212,8 @@ export function ArkamonBattleSprite({
           side={side}
           animation={animation}
           animationEnabled={animationEnabled}
-          playbackPaused={playbackPaused}
+          playbackPaused={playbackPaused || reviewFrame !== undefined}
+          reviewFrame={reviewFrame}
           holdReactionUntilImpact={holdReactionUntilImpact}
           finishActionBeforeIdle={finishActionBeforeIdle}
           replayKey={replayKey}
@@ -255,6 +259,7 @@ function AnimatedArkamonVisual({
   animation,
   animationEnabled,
   playbackPaused,
+  reviewFrame,
   holdReactionUntilImpact,
   finishActionBeforeIdle,
   replayKey,
@@ -270,6 +275,7 @@ function AnimatedArkamonVisual({
   animation: ArkamonBattleAnimation
   animationEnabled: boolean
   playbackPaused: boolean
+  reviewFrame?: number
   holdReactionUntilImpact: boolean
   finishActionBeforeIdle: boolean
   replayKey: number
@@ -464,15 +470,15 @@ function AnimatedArkamonVisual({
           frameHeight={animated.frameHeight}
           columns={animated.columns}
           rows={animated.rows}
-          frameCount={reduceMotion && run.animation === 'ko' ? 1 : animated.frameCount}
-          startFrame={reduceMotion && run.animation === 'ko'
+          frameCount={reviewFrame !== undefined || reduceMotion && run.animation === 'ko' ? 1 : animated.frameCount}
+          startFrame={reviewFrame !== undefined ? (animated.startFrame ?? 0) + Math.max(0, Math.min(animated.frameCount - 1, reviewFrame)) : reduceMotion && run.animation === 'ko'
             ? (animated.startFrame ?? 0) + animated.frameCount - 1
             : animated.startFrame}
           fps={animated.fps}
           width={animated.width}
           height={animated.height}
           durationMs={animated.durationMs}
-          loop={animated.loop ?? resolved.animation === 'idle'}
+          loop={reviewFrame === undefined && (animated.loop ?? resolved.animation === 'idle')}
           responsive
           paused={paused}
           holdBeforeFrame={run.animation === 'hit' && holdReactionUntilImpact ? animated.reactionFrame : undefined}

@@ -229,7 +229,15 @@ test('Register keeps the three archives; Race and Recap fit one 1080p screen wit
     expect(metrics.content).toBeLessThanOrEqual(metrics.height+2)
     expect(metrics.bottom).toBeLessThanOrEqual(metrics.viewport)
     if (label === 'Ripresa') {
-      await expect(dialog.locator('.pu-recap-events li')).toHaveCount(6)
+      await expect(dialog.locator('.pu-recap-events li')).toHaveCount(2)
+      const titles: string[] = []
+      const pages = dialog.getByRole('navigation', { name: 'Pagine degli ultimi eventi' })
+      for (let index = 0; index < 3; index++) {
+        titles.push(...await dialog.locator('.pu-recap-events li strong').allTextContents())
+        if (index < 2) await pages.getByRole('button', { name: 'Successivi', exact: true }).click()
+      }
+      expect(new Set(titles).size).toBe(6)
+      await expect(pages.getByRole('button', { name: 'Successivi', exact: true })).toBeDisabled()
       await test.info().attach('Ripresa · 1920×1080',{body:await page.screenshot(),contentType:'image/png'})
     }
     await dialog.getByRole('button',{name:'Menù Partita',exact:true}).click()

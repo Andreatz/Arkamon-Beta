@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { normalizeVfxOverrides } from '@/presentation/vfxValidation'
 import type { MoveVfxAssetId } from '@/components/vfx/vfxManifest'
 import type {
   VfxAnchor,
@@ -21,13 +22,38 @@ export interface AdminMoveVfxOverride {
 
 interface VfxAdminState {
   overrides: Record<number, AdminMoveVfxOverride>
+  draftOverrides: Record<number, AdminMoveVfxOverride>
+  error: string | null
+  setDraftOverride: (override: AdminMoveVfxOverride) => void
+  removeDraftOverride: (moveId: number) => void
+  resetDraftOverrides: () => void
+  replaceOverrides: (overrides: Record<number, AdminMoveVfxOverride>) => boolean
   setOverride: (override: AdminMoveVfxOverride) => void
   removeOverride: (moveId: number) => void
   resetOverrides: () => void
 }
 
-export const useVfxAdminStore = create<VfxAdminState>((set) => ({
-  overrides: {},
+const VFX_KEY = 'arkamon-vfx-authoring-v1'
+function readSaved() {
+  try { const raw = typeof localStorage === 'undefined' ? null : localStorage.getItem(VFX_KEY); if (raw) { const data = JSON.parse(raw); if (data.version === 1) return { overrides: normalizeVfxOverrides(data.overrides), draftOverrides: normalizeVfxOverrides(data.draftOverrides ?? data.overrides) } } } catch { /* Invalid preferences never prevent the campaign opening. */ }
+  return { overrides: {}, draftOverrides: {} }
+}
+export const useVfxAdminStore = create<VfxAdminState>((set, get) => ({
+  ...readSaved(), error: null,
+  setDraftOverride: override => {
+    try { const draftOverrides = normalizeVfxOverrides({ ...get().draftOverrides, [override.moveId]: override }); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides })); set({ draftOverrides, error: null }) }
+    catch (e) { set({ error: e instanceof Error ? e.message : 'Salvataggio bozza VFX non riuscito.' }) }
+  },
+  removeDraftOverride: moveId => {
+    const draftOverrides = { ...get().draftOverrides }; delete draftOverrides[moveId]
+    try { if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides })); set({ draftOverrides, error: null }) }
+    catch { set({ error: 'Spazio del browser non disponibile: bozza non modificata.' }) }
+  },
+  resetDraftOverrides: () => { try { if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides: {} })); set({ draftOverrides: {}, error: null }) } catch { set({ error: 'Impossibile salvare la bozza.' }) } },
+  replaceOverrides: value => {
+    try { const overrides = normalizeVfxOverrides(value); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides, draftOverrides: overrides })); set({ overrides, draftOverrides: overrides, error: null }); return true }
+    catch (e) { set({ error: e instanceof Error ? e.message : 'Applicazione VFX non riuscita.' }); return false }
+  },
   setOverride: (override) =>
     set((state) => ({
       overrides: {

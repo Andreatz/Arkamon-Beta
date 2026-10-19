@@ -1,3 +1,5 @@
+import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
+import { usePlayerUiMemory, usePublishPlayerUiSelection, usePlayerUiSession } from './playerUiSession'
 import { useEffect, useState, type CSSProperties } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { ItemUsePanel } from '@/shop/ItemUsePanel'
@@ -12,14 +14,16 @@ export interface BagScreenProps { playerId: 1 | 2; onPlayerChange?: (playerId: 1
 export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }: BagScreenProps) {
   const state = useGameStore()
   const [viewPlayerId, setViewPlayerId] = useState<1 | 2>(playerId)
-  const [category, setCategory] = useState<BagCategory>('all')
-  const [selectedId, setSelectedId] = useState<ShopItemId | null>(null)
-  useEffect(() => { setViewPlayerId(playerId); setSelectedId(null); setCategory('all') }, [playerId, state.campaignRevision])
+  const [category, setCategory] = usePlayerUiMemory<BagCategory>(viewPlayerId, 'bag.category', 'all')
+  const [selectedId, setSelectedId] = usePlayerUiMemory<ShopItemId | null>(viewPlayerId, 'bag.item', null)
+  useEffect(() => { setViewPlayerId(playerId) }, [playerId])
   const player = state[viewPlayerId === 1 ? 'giocatore1' : 'giocatore2']
   const squad = currentRoster(player.squadra, state.battaglia)
   const owned = SHOP_ITEMS.filter((item) => (player.inventario[item.id] ?? 0) > 0)
   const filtered = owned.filter((item) => category === 'all' || (category === 'heal' ? item.effect.kind === 'heal' || item.effect.kind === 'revive' : item.effect.kind === category))
   const selected = filtered.find((item) => item.id === selectedId) ?? filtered[0]
+  const [targetId, setTargetId] = usePlayerUiMemory<string>(viewPlayerId, 'bag.target', () => usePlayerUiSession.getState().selection[viewPlayerId]?.instanceId ?? player.squadra[0]?.istanzaId ?? '')
+  usePublishPlayerUiSelection(viewPlayerId, { instanceId: targetId, itemId: selected?.id })
   const leagueRunning = state.league?.players[viewPlayerId].status === 'running'
   const unavailable = state.battaglia || state.interactionProgress.pendingBattle
     ? 'Durante la battaglia usa la borsa della pulsantiera di combattimento.'
@@ -34,7 +38,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
     <div className="pu-screen-toolbar">
       {showPlayerPicker && <label className="pu-player-picker">Giocatore della borsa<select value={viewPlayerId} onChange={(event) => {
         const id = Number(event.target.value) as 1 | 2
-        setViewPlayerId(id); onPlayerChange?.(id); setSelectedId(null)
+        setViewPlayerId(id); onPlayerChange?.(id)
       }}><option value={1}>{state.giocatore1.nome || 'Giocatore 1'}</option><option value={2}>{state.giocatore2.nome || 'Giocatore 2'}</option></select></label>}
       <p className="pu-inventory-count"><strong>{total} oggetti</strong><span>Scorte di {player.nome || `Giocatore ${viewPlayerId}`}</span></p>
     </div>
@@ -44,10 +48,10 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
           ['all', 'Tutti'], ['heal', 'Cure'], ['status', 'Status'], ['capture', 'Cattura'],
         ] as const).map(([id, label]) => <KitButton key={id} active={category === id} aria-pressed={category === id} onClick={() => { setCategory(id); setSelectedId(null) }}>{label}</KitButton>)}</div>
         <h2>Le tue scorte</h2>
-        <div className="pu-item-grid">{filtered.map((item) => <KitButton key={item.id} className="pu-item-slot" active={selected?.id === item.id} aria-pressed={selected?.id === item.id}
+        <SpatialNavigation columns={4} className="pu-item-grid">{filtered.map((item) => <KitButton data-rpg-item key={item.id} className="pu-item-slot" active={selected?.id === item.id} aria-pressed={selected?.id === item.id}
           aria-label={`${item.name}: ${player.inventario[item.id]} disponibili`} onClick={() => setSelectedId(item.id)}>
           <KitIcon id={ITEM_ICONS[item.id]} className="pu-item-art" /><strong>{item.name}</strong><span className="pu-item-quantity">×{player.inventario[item.id]}</span>
-        </KitButton>)}</div>
+        </KitButton>)}</SpatialNavigation>
         {!filtered.length && <p className="pu-empty">{owned.length ? 'Nessun oggetto in questa categoria.' : 'La borsa è vuota. Trovi gli oggetti negli Arkastore delle città.'}</p>}
       </KitPanel>
       <KitPanel className="pu-bag-detail">
@@ -56,7 +60,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
           <h2>{selected.name}</h2><p className="pu-description">{selected.description}</p><p className="pu-item-held">In borsa: <strong>{player.inventario[selected.id] ?? 0}</strong></p>
         </> : <div className="pu-empty"><KitIcon id="icon-bag" /><h2>Pronto per il viaggio</h2><p>Le scorte acquistate e raccolte compariranno nella borsa di questo giocatore.</p></div>}
         {selected && <div className="pu-item-use pu-item-use-single" style={{ '--pu-action-frame': `url("${kitAsset('button-primary')}")` } as CSSProperties}>
-          <ItemUsePanel key={`${viewPlayerId}:${state.campaignRevision}`} squad={squad} inventory={player.inventario} unavailableMessage={unavailable}
+          <ItemUsePanel key={`${viewPlayerId}:${state.campaignRevision}`} squad={squad} inventory={player.inventario} selectedInstanceId={targetId} onTargetChange={setTargetId} unavailableMessage={unavailable}
             visibleItemIds={[selected.id]}
             renderItemIcon={itemId => <KitIcon id={ITEM_ICONS[itemId]} />}
             renderEffectPreview={(target, _itemId, result) => <div className="pu-cure-preview" aria-label={`Anteprima su ${target.nome}`}>

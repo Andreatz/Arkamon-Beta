@@ -10,16 +10,18 @@ import { AdminSpriteScaleEditor } from './AdminSpriteScaleEditor'
 import { AdminUiEditor } from './AdminUiEditor'
 import { AdminVfxEditor } from './AdminVfxEditor'
 import './adminPanel.css'
+import { PresentationProjectPanel } from '@/presentation/PresentationProjectPanel'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 const AdminInteractionEditor = lazy(() => import('@/interactions/AdminInteractionEditor').then((module) => ({ default: module.AdminInteractionEditor })))
 const AdminLeaguePanel = lazy(() => import('@/league/AdminLeaguePanel').then((module) => ({ default: module.AdminLeaguePanel })))
 const AdminSessionPanel = lazy(() => import('@/readiness/AdminSessionPanel').then((module) => ({ default: module.AdminSessionPanel })))
 
-type AdminTab = 'session' | 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience' | 'interactions' | 'league'
+type AdminTab = 'session' | 'project' | 'colors' | 'ui' | 'layout' | 'assets' | 'sprites' | 'vfx' | 'presets' | 'json' | 'audience' | 'interactions' | 'league'
 
 const tabs: { id: AdminTab; label: string }[] = [
   { id: 'session', label: 'Regia' },
+  { id: 'project', label: 'Progetto visivo' },
   { id: 'colors', label: 'Colori' },
   { id: 'ui', label: 'UI' },
   { id: 'layout', label: 'Layout' },
@@ -52,7 +54,7 @@ export function AdminPanel() {
         <div className="min-w-0">
           <h2 className="text-base font-black leading-tight">Modalita Admin</h2>
           <span className="mt-1 inline-flex rounded-full border border-[var(--arka-primary)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-normal text-[var(--arka-primary-hover)]">
-            Theme Editor V1
+            Console della regia
           </span>
         </div>
         <button
@@ -94,6 +96,7 @@ export function AdminPanel() {
 
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
         {activeTab === 'session' ? <Suspense fallback={<p role="status">Caricamento regia…</p>}><AdminSessionPanel onNavigate={setActiveTab} /></Suspense> : null}
+        {activeTab === 'project' ? <PresentationProjectPanel /> : null}
         {activeTab === 'colors' ? <AdminColorEditor /> : null}
         {activeTab === 'ui' ? <AdminUiEditor /> : null}
         {activeTab === 'layout' ? <AdminLayoutEditor /> : null}

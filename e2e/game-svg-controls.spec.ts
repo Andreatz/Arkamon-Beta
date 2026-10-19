@@ -12,7 +12,7 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
   const svgResponses: SvgResponses = new Map()
   page.on('response', response => {
     const url = new URL(response.url())
-    if (url.pathname.includes('/ui/player-kit/') && url.pathname.endsWith('.svg')) {
+    if ((url.pathname.includes('/ui/player-kit/') || url.pathname.includes('/ui/studio/runtime/')) && url.pathname.endsWith('.svg')) {
       svgResponses.set(url.pathname, response.status())
     }
   })
@@ -71,9 +71,9 @@ async function assertSvgButton(button: Locator, responses: SvgResponses, tone: '
   await expect(button).toHaveAttribute('data-game-button', tone)
   if (disabled) await expect(button).toBeDisabled()
   else await expect(button).toBeEnabled()
-  const id = tone === 'primary' ? 'button-primary' : 'button-default'
+  const id = tone === 'primary' ? 'selected' : 'command'
   const proof = await button.evaluate(element => {
-    const frame = element.querySelector<HTMLElement>('.game-button-frame')!
+    const frame = element.querySelector<HTMLElement>('.game-button-frame,.rpg-frame')!
     const frameStyle = getComputedStyle(frame), style = getComputedStyle(element), bound = element.getBoundingClientRect()
     const frameBound = frame.getBoundingClientRect()
     return { tag: element.tagName, label: element.textContent?.trim(), source: frameStyle.borderImageSource,
@@ -87,8 +87,8 @@ async function assertSvgButton(button: Locator, responses: SvgResponses, tone: '
   expect(proof.tag).toBe('BUTTON')
   expect(proof.label).toBeTruthy()
   expect(proof.decorative).toBe('true')
-  expect(proof.source).toContain(`/ui/player-kit/${id}.svg`)
-  expect(proof.slice).toContain(tone === 'primary' ? '44' : '48')
+  expect(proof.source).toContain(`/ui/studio/runtime/${id}.svg`)
+  expect(proof.slice).toContain('70 160')
   expect(proof.slice).toContain('fill')
   expect(proof.repeat).toBe('stretch')
   expect(proof.font).toContain('Arkamon Norwester')
@@ -102,7 +102,7 @@ async function assertSvgButton(button: Locator, responses: SvgResponses, tone: '
   for (const edge of ['left', 'top', 'right', 'bottom'] as const) {
     expect(Math.abs(proof.bound[edge] - proof.frameBound[edge])).toBeLessThanOrEqual(2)
   }
-  await expect.poll(() => [...responses.entries()].find(([path]) => path.endsWith(`/ui/player-kit/${id}.svg`))?.[1]).toBe(200)
+  await expect.poll(() => [...responses.entries()].find(([path]) => path.endsWith(`/ui/studio/runtime/${id}.svg`))?.[1]).toBe(200)
   return proof
 }
 

@@ -3,7 +3,9 @@ import { stateFromValidatedBackup, serializeGameBackup, validateGameBackup, type
 import { GAME_SAVE_STORAGE_KEY, PREVIOUS_BACKUP_STORAGE_KEY, serializeGameState } from './gamePersistence'
 import { INTERACTION_STORAGE_KEY, useInteractionStore } from '@/interactions/interactionStore'
 import { BATTLE_ARCHIVE_STORAGE_KEY, useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
-import { isCampaignWritable, sessionOwnershipMessage, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
+import { isCampaignWritable, sessionOwnershipMessage } from '@/session/sessionOwnership'
+import { backupRestoreStorage, prepareBackupRestore, finishBackupRestore, rollbackBackupRestore, useBackupRestoreRecoveryStatus, type RestoreEntry } from './restoreJournal'
+import { cancelPendingRecoveryCopy } from './durableWrites'
 
 type BackupStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 export type GameBackupRestoreResult = { ok: true; previousBackup: string } | { ok: false; error: string }
@@ -21,45 +23,27 @@ export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupSt
   const state = useGameStore.getState()
   restored.audioMuted = state.audioMuted
   const previousBackup = serializeGameBackup(state, new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState())
-  let target: BackupStorage
-  const previousValues = new Map<string, string | null>()
-  const written: string[] = []
+  const target = backupRestoreStorage(storage)
+  let entries: RestoreEntry[] | null = null
+  cancelPendingRecoveryCopy()
   try {
-    target = storage ?? localStorage
-    for (const key of [PREVIOUS_BACKUP_STORAGE_KEY, GAME_SAVE_STORAGE_KEY, ...(catalog ? [INTERACTION_STORAGE_KEY] : []), ...(archive ? [BATTLE_ARCHIVE_STORAGE_KEY] : [])]) {
-      previousValues.set(key, target.getItem(key))
-    }
-    // Keep a downloadable copy of the displaced campaign before overwriting it.
-    target.setItem(PREVIOUS_BACKUP_STORAGE_KEY, previousBackup)
-    written.push(PREVIOUS_BACKUP_STORAGE_KEY)
-    if (catalog) {
-      const text = JSON.stringify({ state: { interactions: catalog.interactions }, version: 0 })
-      if (storage) target.setItem(INTERACTION_STORAGE_KEY, text)
-      else writeCampaignCheckpoint(INTERACTION_STORAGE_KEY, text)
-      written.push(INTERACTION_STORAGE_KEY)
-    }
-    if (archive) {
-      const text = JSON.stringify({ state: archive, version: 1 })
-      if (storage) target.setItem(BATTLE_ARCHIVE_STORAGE_KEY, text)
-      else writeCampaignCheckpoint(BATTLE_ARCHIVE_STORAGE_KEY, text)
-      written.push(BATTLE_ARCHIVE_STORAGE_KEY)
-    }
-    const text = JSON.stringify({ state: serializeGameState(restored), version: 0 })
-    if (storage) target.setItem(GAME_SAVE_STORAGE_KEY, text)
-    else writeCampaignCheckpoint(GAME_SAVE_STORAGE_KEY, text)
+    entries = prepareBackupRestore(target, [
+      { key: PREVIOUS_BACKUP_STORAGE_KEY, after: previousBackup },
+      ...(catalog ? [{ key: INTERACTION_STORAGE_KEY, after: JSON.stringify({ state: { interactions: catalog.interactions }, version: 0 }) }] : []),
+      ...(archive ? [{ key: BATTLE_ARCHIVE_STORAGE_KEY, after: JSON.stringify({ state: archive, version: 1 }) }] : []),
+      { key: GAME_SAVE_STORAGE_KEY, after: JSON.stringify({ state: serializeGameState(restored), version: 0 }) },
+    ])
+    for (const entry of entries) target.setItem(entry.key, entry.after)
   } catch {
-    // localStorage writes are atomic per key. Undo preceding keys if the final campaign write fails.
-    for (const key of written.reverse()) {
-      try {
-        const value = previousValues.get(key)
-        if (!storage && key !== PREVIOUS_BACKUP_STORAGE_KEY) {
-          if (value === null || value === undefined) removeCampaignCheckpoint(key)
-          else writeCampaignCheckpoint(key, value)
-        } else if (value === null || value === undefined) (storage ?? localStorage).removeItem(key)
-        else (storage ?? localStorage).setItem(key, value)
-      } catch { /* The unchanged in-memory campaign remains available for export if storage became unavailable. */ }
+    try { if (entries) rollbackBackupRestore(target, entries) } catch {
+      useBackupRestoreRecoveryStatus.setState({ error: 'Ripristino interrotto: rileggi la sessione per recuperare il journal prima di proseguire.' })
     }
     return { ok: false, error: 'Spazio di salvataggio non disponibile. La partita attuale non è stata sostituita; libera spazio o scarica prima un backup.' }
+  }
+  try { finishBackupRestore(target, entries) } catch {
+    // The restored campaign is complete, but no later action may make the
+    // still-pending journal ambiguous before recovery clears it.
+    useBackupRestoreRecoveryStatus.setState({ error: 'La partita è stata ripristinata. Rileggi la sessione per completare la pulizia del journal prima di proseguire.' })
   }
   const options = useGameStore.persist.getOptions()
   const persistence = options.storage

@@ -11,6 +11,7 @@ import { uiAssetSurface } from './assetSurface'
 import { hpAssetArea, hpAssetSkin } from './hpAssetSkin'
 import { collectUiElements, findUiScreenRoot, uiRect, type RegisteredUiElement } from './screenRegistry'
 import type { UiDesignDocument, UiElementDesign, UiPreviewMessage, UiScreenSnapshot, UiTypography } from './types'
+import { hasRuntimeDesign, requiresElementPass } from './runtimePolicy'
 
 const defaults = createDefaultDesign()
 const send = (message: UiPreviewMessage) => { if (window.parent !== window) window.parent.postMessage(message, window.location.origin) }
@@ -34,11 +35,13 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
   const savedDesign = useAdminStore(state => state.theme.design)
   const gameScene = useGameStore(state => state.scenaCorrente.scena)
   const design = suppliedDesign ?? savedDesign ?? defaults
+  const enabled = preview || hasRuntimeDesign(design)
   const latest = useRef({ design, screen: suppliedScreen ?? gameScene, onSnapshot, onSelect })
   latest.current = { design, screen: suppliedScreen ?? gameScene, onSnapshot, onSelect }
   const queueRef = useRef<(() => void) | null>(null)
   useEffect(() => { queueRef.current?.() }, [design, suppliedScreen, gameScene])
   useEffect(() => {
+    if (!enabled) return
     const changed = new Map<HTMLElement | SVGElement, Map<string, SavedProperty>>()
     const texts = new Map<Text, { original: string; applied: string }>(), sources = new Map<HTMLImageElement, string | null>()
     const svgSources = new Map<SVGImageElement, Record<string, string | null>>()
@@ -215,7 +218,7 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
         currentRoot = found.root; currentScreen = found.screen
         const root = found.root, document = latest.current.design, configuration = resolvedScreenDesign(document, currentScreen)
         typography(root, document, currentScreen)
-        entries = collectUiElements(root, currentScreen)
+        entries = preview || requiresElementPass(configuration) ? collectUiElements(root, currentScreen) : []
         if (configuration?.background) {
           const background = configuration.background
           set(root, 'position', getComputedStyle(root).position === 'static' ? 'relative' : getComputedStyle(root).position)
@@ -244,10 +247,12 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
           const entry: RegisteredUiElement = { id: layer.id, label: layer.label, kind: layer.kind === 'text' ? 'text' : layer.kind === 'button' ? 'button' : layer.kind === 'image' ? 'image' : 'group', element }
           apply(entry, layer, root); entries.push(entry)
         }
-        snapshot(root, currentScreen)
+        if (preview || latest.current.onSnapshot) snapshot(root, currentScreen)
       }
       running = false
-      observer.observe(window.document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['src', 'href', 'style'] })
+      if (currentRoot) observer.observe(currentRoot, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['src', 'href', 'style', 'data-ui-view'] })
+      // Top-level portalled tools change the active root. Other subtrees are ignored.
+      observer.observe(window.document.body, { childList: true })
     }
     function queue() { if (!stopped && !frame) frame = requestAnimationFrame(update) }
     const observer = new MutationObserver(records => {
@@ -305,6 +310,6 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
       window.document.removeEventListener('load', imageLoaded, true)
       queueRef.current = null
     }
-  }, [preview])
+  }, [preview, enabled])
   return null
 }

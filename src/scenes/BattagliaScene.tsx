@@ -1,3 +1,5 @@
+import { useBattleAssetReadiness } from '@/components/battle/useBattleAssetReadiness'
+import { ChallengeBanner } from '@/challenges/ChallengeBanner'
 import { useSettledBattleCheckpoint } from '@/components/battle/useSettledBattleCheckpoint'
 import { BattleLayoutItem, ImpactPulseOverlay, InfoBox, ScambioModal, SquadIndicator, PokemonBattleSlot, HpBar, ActionButton, SupremeButton, MoveButton, type ImpactPulseDisplay } from '@/components/battle/BattlePresentation'
 import '@/components/ui/gameButton.css'
@@ -76,7 +78,6 @@ import {
   type MoveVfxTarget,
 } from '@/components/MoveVfx'
 import {
-  preloadMoveVfxForPokemon,
   preloadVfxAssets,
   prepareMoveVfxPlayback,
 } from '@/components/vfx/preloadVfxAssets'
@@ -91,7 +92,6 @@ import {
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
 
-const INFOBOX_VISIBLE_MS = 2000
 
 const VFX_TYPE_COLORS: Record<TipoPokemon, string> = {
   Normale: '#f8fafc',
@@ -227,6 +227,7 @@ export function BattagliaScene() {
   const [azioneInCorso, setAzioneInCorso] = useState(false)
   const [supremaSide, setSupremaSide] = useState<'A' | 'B' | null>(null)
   const [bagOpen, setBagOpen] = useState(false)
+  const assetReadiness = useBattleAssetReadiness([pkmnA?.specieId ?? 1, pkmnB?.specieId ?? 13], [...squadraA, ...squadraB].map(pokemon => pokemon.specieId))
   const battleLayout = useResolvedBattleLayout(bagOpen ? 'bag' : diceRoll ? 'dice' : previewView)
   const [pendingCaptureSave, setPendingCaptureSave] = useState<{ masterball: boolean } | null>(null)
   const actionInProgressRef = useRef(false)
@@ -268,6 +269,7 @@ export function BattagliaScene() {
   const [impactFlash, setImpactFlash] = useState<'A' | 'B' | null>(null)
   const [shakeStrengthPx, setShakeStrengthPx] = useState(8)
   const [shakeDurationMs, setShakeDurationMs] = useState(260)
+  const [presentationPaused, setPresentationPaused] = useState(false)
   const [cameraShake, setCameraShake] = useState<{ px: number; ms: number } | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
   const [mostraMoseB, setMostraMoseB] = useState(false)
@@ -319,16 +321,6 @@ export function BattagliaScene() {
 
   useEffect(() => {
     preloadVfxAssets([...DEFAULT_PRELOAD_VFX_ASSET_IDS, ...BATTLE_DICE_ASSET_IDS])
-    preloadMoveVfxForPokemon(
-      battaglia
-        ? [
-            battaglia.pokemonA.specieId,
-            battaglia.pokemonB.specieId,
-            ...(battaglia.squadraA ?? []).map((pokemon) => pokemon.specieId),
-            ...(battaglia.squadraB ?? []).map((pokemon) => pokemon.specieId),
-          ]
-        : [1, 13]
-    )
     if (!initialCheckpoint?.openingComplete && !initialCheckpoint?.outcome) playSound('battle-start')
     if (battaglia) {
       const turnoInizialeA = battaglia.turnoCorrente === 'A'
@@ -467,15 +459,7 @@ export function BattagliaScene() {
   }, [mostraMoseB, audienceEnabled, audienceSession?.sessionId, audienceChoice,
     pkmnA, pkmnB, terminata, coinOpen, statusRoll, azioneInCorso])
 
-  useEffect(() => {
-    if (infoBoxMessaggi.length === 0) return
 
-    const timeout = window.setTimeout(() => {
-      setInfoBoxMessaggi([])
-    }, INFOBOX_VISIBLE_MS)
-
-    return () => window.clearTimeout(timeout)
-  }, [infoBoxMessaggi])
 
   useEffect(() => {
     return () => {
@@ -633,6 +617,10 @@ export function BattagliaScene() {
     playHitAnimation = true
   ) => {
     const feedback = getMoveVfxFeedback(move)
+    if (!reducedMotion && feedback.hitStopMs > 0) {
+      setPresentationPaused(true)
+      scheduleFeedbackTimer(() => setPresentationPaused(false), feedback.hitStopMs)
+    }
 
     if (playHitAnimation) playSpriteAction(side, 'hit', Math.max(240, feedback.targetShakeMs))
     if (!reducedMotion && feedback.targetShakeMs > 0 && feedback.targetShakePx > 0) {
@@ -678,7 +666,7 @@ export function BattagliaScene() {
     const plan = planBattleAnimationPlayback(
       attackAsset ? (attackAsset.releaseFrame ?? 0) / attackAsset.fps * 1000 : 0,
       dedicatedHit && targetAsset ? (targetAsset.reactionFrame ?? 0) / targetAsset.fps * 1000 : 0,
-      getMoveVfxImpactDelayMs(move)
+      getMoveVfxImpactDelayMs(move), reducedMotion
     )
     const effectId = ++moveVfxIdRef.current
     const sequence = createBattleVisualSequence({
@@ -1505,23 +1493,15 @@ export function BattagliaScene() {
       : undefined
 
   return (
-    <BattleLayoutProvider value={battleLayout}><motion.div
+    <BattleLayoutProvider value={battleLayout}><div
       data-battle-layout-root
-      className="w-full h-full relative bg-cover bg-center"
-      style={{ backgroundImage: `url(${bgBattaglia})` }}
-      animate={
-        cameraShake
-          ? {
-              x: [0, -cameraShake.px, cameraShake.px, -cameraShake.px * 0.6, cameraShake.px * 0.4, 0],
-              y: [0, cameraShake.px * 0.25, -cameraShake.px * 0.2, cameraShake.px * 0.15, 0],
-            }
-          : { x: 0, y: 0 }
-      }
-      transition={{
-        duration: cameraShake ? cameraShake.ms / 1000 : 0.08 / animationSpeed,
-        ease: 'easeOut',
-      }}
+      className="battle-stage w-full h-full relative overflow-hidden"
+      data-battle-impact-held={presentationPaused}
+      data-battle-assets-ready={assetReadiness.ready}
+      data-battle-decoded-vfx-bytes={assetReadiness.metrics.images.decodedBytes}
+      data-battle-decoded-native-bytes={assetReadiness.metrics.pages.decodedBytes}
     >
+      <ChallengeBanner embedded />
       <BattleLogPanel chronicle={chronicle} busy={azioneInCorso || coinOpen || !!statusRoll} />
       {previewView === 'dice' && <DiceRollOverlay staticPreview roll={{ id: -1, side: 'A', moveName: 'Attacco di esempio', rolls: [2, 4, 6], increment: 2, damage: 14 }} />}
       {previewView === 'bag' && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={() => ({ ok: false, message: 'Anteprima del layout: nessun oggetto usato.' })} onClose={() => {}} />}
@@ -1550,22 +1530,6 @@ export function BattagliaScene() {
           }}
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
-
-      <AnimatePresence>
-        {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} soundEnabled
-          onStart={() => notifyMoveVfx(moveVfx.id, 'onStart')}
-          onImpact={() => notifyMoveVfx(moveVfx.id, 'onImpact')}
-          onComplete={() => notifyMoveVfx(moveVfx.id, 'onComplete')}
-        />}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {impactPulse && (
-          <ImpactPulseOverlay key={impactPulse.id} pulse={impactPulse} layout={battleLayout} />
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {diceRoll && (
@@ -1596,6 +1560,37 @@ export function BattagliaScene() {
         </>
       )}
 
+      <motion.div data-battle-world className="battle-world absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgBattaglia})` }}
+      animate={
+        cameraShake
+          ? {
+              x: [0, -cameraShake.px, cameraShake.px, -cameraShake.px * 0.6, cameraShake.px * 0.4, 0],
+              y: [0, cameraShake.px * 0.25, -cameraShake.px * 0.2, cameraShake.px * 0.15, 0],
+            }
+          : { x: 0, y: 0 }
+      }
+      transition={{
+        duration: cameraShake ? cameraShake.ms / 1000 : 0.08 / animationSpeed,
+        ease: 'easeOut',
+      }}
+      >
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+
+      <AnimatePresence>
+        {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} soundEnabled
+          onStart={() => notifyMoveVfx(moveVfx.id, 'onStart')}
+          onImpact={() => notifyMoveVfx(moveVfx.id, 'onImpact')}
+          onComplete={() => notifyMoveVfx(moveVfx.id, 'onComplete')}
+        />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {impactPulse && (
+          <ImpactPulseOverlay key={impactPulse.id} pulse={impactPulse} layout={battleLayout} />
+        )}
+      </AnimatePresence>
       <AnimatePresence mode="popLayout">
         <BattleLayoutItem
           key={pkmnB.istanzaId}
@@ -1606,6 +1601,7 @@ export function BattagliaScene() {
           onChange={updateBattleLayout}
         >
           <PokemonBattleSlot
+            presentationPaused={presentationPaused}
             istanza={pkmnB}
             position="top-right"
             shaking={shaking === 'B'}
@@ -1633,6 +1629,7 @@ export function BattagliaScene() {
           onChange={updateBattleLayout}
         >
           <PokemonBattleSlot
+            presentationPaused={presentationPaused}
             istanza={pkmnA}
             position="bottom-left"
             shaking={shaking === 'A'}
@@ -1649,6 +1646,8 @@ export function BattagliaScene() {
           />
         </BattleLayoutItem>
       </AnimatePresence>
+
+      </motion.div>
 
       <BattleLayoutItem
         layoutKey="enemyHp"
@@ -1900,6 +1899,6 @@ export function BattagliaScene() {
           onSelect={scegliPokemonCambio}
         />
       )}
-    </motion.div></BattleLayoutProvider>
+    </div></BattleLayoutProvider>
   )
 }

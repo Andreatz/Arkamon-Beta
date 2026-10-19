@@ -33,6 +33,14 @@ SCREEN_COLOUR = 'green'
 SCREEN_BACKGROUND_FALLBACK = None
 PRESERVE_GREEN_BODY = False
 SOFT_BLUE_SCREEN_REJECTION = False
+WEBP_METHOD = 1
+
+
+def save_lossless_webp(image: Image.Image, destination: Path, method: int = 1) -> None:
+    """Compression effort changes encoded size/time, never native RGBA pixels."""
+    if not 0 <= method <= 6:
+        raise ValueError('WebP method must be in 0..6.')
+    image.save(destination, format='WEBP', lossless=True, quality=100, method=method, exact=True)
 
 
 def action_key_options(action: str) -> dict:
@@ -507,8 +515,8 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
         atlas.paste(frame,(index%columns*cell,index//columns*cell))
     atlas_path,poster_path = output/f'{action}.webp',output/f'{action}-poster.webp'
     # Method controls compression effort only; every RGBA pixel remains lossless.
-    atlas.save(atlas_path,format='WEBP',lossless=True,quality=100,method=4,exact=True)
-    frames[0].save(poster_path,format='WEBP',lossless=True,quality=100,method=4,exact=True)
+    save_lossless_webp(atlas,atlas_path,WEBP_METHOD)
+    save_lossless_webp(frames[0],poster_path,WEBP_METHOD)
     with Image.open(atlas_path) as loaded:
         if loaded.size != atlas.size or getattr(loaded,'n_frames',1) != 1:
             raise RuntimeError('The atlas must be a static image with the declared dimensions.')
@@ -544,7 +552,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
                             'allSourceFramesPreserved':True,'sourceFrameIndices':list(range(count)),
                             'sampleTimesSeconds':[round(i/fps,6) for i in range(count)],
                             'firstSampleSeconds':0,'lastSampleSeconds':(count-1)/fps},
-                'sheet':{'file':atlas_path.name,'format':'static lossless WebP RGBA','animated':False,
+                'sheet':{'file':atlas_path.name,'format':'static lossless WebP RGBA','animated':False,'compressionMethod':WEBP_METHOD,
                          'cellWidth':cell,'cellHeight':cell,'columns':columns,'rows':rows,
                          'frameCount':count,'fps':fps,'durationSeconds':count/fps,'durationMs':round(1000*count/fps),
                          'width':atlas.width,'height':atlas.height,'sizeBytes':atlas_path.stat().st_size,
@@ -626,7 +634,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
 
 
 def main() -> None:
-    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, WARM_DUST_DESPILL, SCREEN_COLOUR, SCREEN_BACKGROUND_FALLBACK, PRESERVE_GREEN_BODY, SOFT_BLUE_SCREEN_REJECTION
+    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, WARM_DUST_DESPILL, SCREEN_COLOUR, SCREEN_BACKGROUND_FALLBACK, PRESERVE_GREEN_BODY, SOFT_BLUE_SCREEN_REJECTION, WEBP_METHOD
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--species-id',type=int,default=5)
     parser.add_argument('--source-dir',type=Path)
@@ -637,6 +645,8 @@ def main() -> None:
     parser.add_argument('--reference',type=Path)
     parser.add_argument('--battle-background',type=Path)
     parser.add_argument('--ffmpeg')
+    parser.add_argument('--webp-method',type=int,choices=range(7),default=1,
+                        help='Lossless WebP compression effort 0..6; 1 reduces import time. Use 4 for the historical compression effort; RGBA pixels are identical.')
     parser.add_argument('--base-cell',type=int,default=384)
     parser.add_argument('--columns',type=int,default=0)
     parser.add_argument('--max-texture',type=int,default=8192)
@@ -666,6 +676,7 @@ def main() -> None:
                         help='Reuse source-verified geometry, crops, camera calibration and timing markers from an existing asset directory.')
     parser.add_argument('--analyze-only',action='store_true')
     args = parser.parse_args()
+    WEBP_METHOD = args.webp_method
     SCREEN_COLOUR = args.screen_colour
     SCREEN_BACKGROUND_FALLBACK = args.screen_background_fallback
     PRESERVE_GREEN_BODY = args.preserve_green_body

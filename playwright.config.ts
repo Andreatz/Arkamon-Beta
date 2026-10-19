@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
-  testDir: './e2e', timeout: 60_000, globalTimeout: 15 * 60_000,
+  // Native playback checks now run alongside the full UI suite. Keep each
+  // test's timeout unchanged while allowing the combined source inventory.
+  testDir: './e2e', timeout: 60_000, globalTimeout: 45 * 60_000,
   expect: { timeout: 15_000 }, fullyParallel: false,
   forbidOnly: Boolean(process.env.CI), retries: process.env.CI ? 1 : 0,
   workers: 1, reporter: [['list'], ['html', { open: 'never' }]],

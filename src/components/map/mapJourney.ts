@@ -23,6 +23,6 @@ export function mapJourneyTiming(points: AdminMapRoadPoint[], width: number, hei
   const total = distances[distances.length - 1]
   return {
     times: distances.map((distance, index) => total > 0 ? distance / total : index / Math.max(1, points.length - 1)),
-    duration: Math.max(0.45, Math.min(2.2, total / 400)),
+    duration: Math.max(0.35, Math.min(0.65, total / 650)),
   }
 }

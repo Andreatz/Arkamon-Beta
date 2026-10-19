@@ -74,8 +74,8 @@ describe('prepareImageAsset', () => {
     for (let index = 0; index < 3; index++) {
       const request = prepareImageAsset(`/test/large-${index}.webp`)
       const image = PendingImage.instances[index]
-      image.naturalWidth = 8000
-      image.naturalHeight = 8000
+      image.naturalWidth = 4096
+      image.naturalHeight = 4096
       image.onload?.()
       await request
     }
@@ -83,6 +83,17 @@ describe('prepareImageAsset', () => {
     expect(isImageAssetPrepared('/test/large-1.webp')).toBe(true)
     expect(isImageAssetPrepared('/test/large-2.webp')).toBe(true)
     expect(vi.getTimerCount()).toBe(2)
+  })
+
+  it('does not retain an atlas larger than the decoded image budget', async () => {
+    const request = prepareImageAsset('/test/oversized.webp')
+    const image = PendingImage.instances[0]
+    image.naturalWidth = 8000
+    image.naturalHeight = 8000
+    image.onload?.()
+    await request
+    expect(isImageAssetPrepared('/test/oversized.webp')).toBe(false)
+    expect(vi.getTimerCount()).toBe(0)
   })
 
   it('lets a failed image use the visual fallback instead of trapping an action', async () => {

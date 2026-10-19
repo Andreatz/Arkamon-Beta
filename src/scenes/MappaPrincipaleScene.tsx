@@ -1,3 +1,6 @@
+import { resolveWorldMapHudLayout } from '@/components/map/worldMapHudLayout'
+import { RpgWindow } from '@/components/rpg'
+import './worldMapRpg.css'
 import { GameButton } from '@/components/ui/GameButton'
 import { useGameStore } from '@store/gameStore'
 import { TurnSummary } from '@/journal/TurnSummary'
@@ -19,7 +22,7 @@ import {
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { MainMapAvatar } from '@/components/map/MainMapAvatar'
 import { getMainMapJourney } from '@/components/map/mapJourney'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react'
 import type {
   AdminLayoutRect,
@@ -230,7 +233,9 @@ function getMapNodeIconSize(nome: string, tipo: Tipo): number {
 }
 
 export function MappaPrincipaleScene() {
-  const [previewDestination, setPreviewDestination] = useState<string | null>(null)
+  const [hoverDestination, setPreviewDestination] = useState<string | null>(null)
+  const [selectedDestination, setSelectedDestination] = useState<string | null>(null)
+  const previewDestination = selectedDestination ?? hoverDestination
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const turnoOverworld = useGameStore((s) => s.turnoOverworld)
   const posizione1 = useGameStore((s) => s.posizione1)
@@ -247,7 +252,8 @@ export function MappaPrincipaleScene() {
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const nodePositions = useAdminStore((s) => s.theme.layouts.mainMapNodes)
   const roadLayouts = useAdminStore((s) => s.theme.layouts.mainMapRoads)
-  const mainMapUiLayout = useAdminStore((s) => s.theme.layouts.mainMapUi)
+  const legacyMainMapUiLayout = useAdminStore((s) => s.theme.layouts.mainMapUi)
+  const { layout: mainMapUiLayout, combined: combinedHud } = resolveWorldMapHudLayout(legacyMainMapUiLayout)
   const roadOpacity = useAdminStore((s) => s.theme.ui.mainMapRoadOpacity)
   const beginLayoutChange = useAdminStore((s) => s.beginLayoutChange)
   const updateMainMapNodePosition = useAdminStore((s) => s.updateMainMapNodePosition)
@@ -268,8 +274,13 @@ export function MappaPrincipaleScene() {
     rect: AdminLayoutRect
   ) => updateSceneLayout({ scene: 'mainMapUi', key, rect })
 
+  useEffect(() => { setSelectedDestination(null); setPreviewDestination(null) }, [activeNodeName, giocatoreAttivo])
   const interactWithCurrentNode = () => {
     if (layoutEditing) return
+    if (activeNodeName === MAIN_MAP_START_NODE && !getLocalMap(activeNodeName)) {
+      setSelectedDestination(reachableNodeNames[0] ?? null)
+      return
+    }
     if (getLocalMap(activeNodeName)) {
       useGameStore.getState().eseguiTransazione(() => {
         if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, activeNodeName)) {
@@ -302,7 +313,7 @@ export function MappaPrincipaleScene() {
     }
 
     if (movimentoDisponibile && reachableNodeNames.includes(nome)) {
-      muoviAvatarMappaPrincipale(giocatoreAttivo, nome)
+      setSelectedDestination(nome)
     }
 
     void tipo
@@ -518,10 +529,13 @@ export function MappaPrincipaleScene() {
   return (
     <div
       data-main-map-root
+      data-world-rpg-map
+      data-combined-hud={combinedHud}
       className="relative w-full h-full bg-cover bg-center overflow-hidden"
       style={{ backgroundImage: `url(${assetUrl('/maps/Mappa-Finale.jpg')})` }}
     >
       <div className="absolute inset-0 bg-black/20" />
+      {combinedHud && <RpgWindow className="world-map-unified-hud" aria-hidden="true" />}
 
       <svg
         className={`absolute inset-0 z-10 h-full w-full ${
@@ -635,7 +649,7 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('turnPanel', rect)}
         zIndex={35}
       >
-        <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
+        <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Turno di:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-arka-accent">
             {giocatore.nome}
@@ -651,7 +665,7 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('coinsPanel', rect)}
         zIndex={35}
       >
-        <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
+        <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Monete:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-yellow-300">
             ₳ {giocatore.monete}
@@ -667,7 +681,7 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('positionPanel', rect)}
         zIndex={35}
       >
-        <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
+        <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Posizione:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-white">
             {activeNodeName.replace('_', ' ')}
@@ -683,7 +697,7 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('actionsPanel', rect)}
         zIndex={35}
       >
-        <div className="arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
+        <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Azioni:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-white">
             {turnoOverworld.azioniRimaste} azioni · {movimentoDisponibile ? 'Muovi o interagisci' : 'Turno concluso'}
@@ -704,7 +718,7 @@ export function MappaPrincipaleScene() {
           disabled={!aperturaDisponibile}
           tone="primary" className="h-full w-full overflow-hidden px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-45"
         >
-          <span className="arka-layout-content block truncate">{getLocalMap(activeNodeName) ? 'Apri mappa di' : 'Entra in'} {activeNodeName.replace('_', ' ')}</span>
+          <span className="arka-layout-content block truncate">{activeNodeName === MAIN_MAP_START_NODE ? 'Prosegui il viaggio' : `${getLocalMap(activeNodeName) ? 'Apri mappa di' : 'Entra in'} ${activeNodeName.replace('_', ' ')}`}</span>
         </GameButton>
       </AdminLayoutItem>
 
@@ -760,6 +774,12 @@ export function MappaPrincipaleScene() {
         className="absolute right-3 top-[42%] z-[35] min-w-36 px-4 py-3" tone="primary"
         onClick={() => vaiAScena('lega')}>Lega Arkamon</GameButton>}
 
+      {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <aside className="world-map-destination" aria-label="Destinazione selezionata">
+        <p>Prossima destinazione</p><h2>{previewDestination.replace(/_/g, ' ')}</h2>
+        <p>Da {activeNodeName.replace(/_/g, ' ')} · 1 movimento</p>
+        <GameButton tone="primary" onClick={() => { muoviAvatarMappaPrincipale(giocatoreAttivo, previewDestination); setSelectedDestination(null); setPreviewDestination(null) }}>Conferma movimento</GameButton>
+        {selectedDestination && <GameButton onClick={() => setSelectedDestination(null)}>Annulla destinazione</GameButton>}
+      </aside>}
       {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <svg
         className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"
         data-main-map-road-preview={previewDestination}>
@@ -802,7 +822,7 @@ export function MappaPrincipaleScene() {
             style={{
               left: `${position.x}%`,
               top: `${position.y}%`,
-              transform: `translate(-50%, -${iconSize / 2}px)`,
+              transform: 'translate(-50%, -22px)',
             }}
             onPointerDown={(event) => startNodeDrag(event, luogo.nome)}
           >
@@ -816,8 +836,9 @@ export function MappaPrincipaleScene() {
               onMouseLeave={() => setPreviewDestination(null)}
               onFocus={() => setPreviewDestination(isReachable ? luogo.nome : null)}
               onBlur={() => setPreviewDestination(null)}
+              aria-pressed={selectedDestination === luogo.nome}
               aria-label={`${luogo.nome.replace('_', ' ')}${isCurrent ? ', posizione attuale' : isReachable ? ', 1 movimento' : ', non raggiungibile'}`}
-              className={`flex flex-col items-center gap-0.5 ${
+              className={`world-map-node flex flex-col items-center justify-center gap-0.5 ${
                 !layoutEditing && !isActionable ? 'cursor-default' : ''
               }`}
             >
@@ -828,6 +849,7 @@ export function MappaPrincipaleScene() {
                   isReachable && !layoutEditing ? 'ring-4 ring-sky-300 ring-offset-2 ring-offset-black' : ''
                 }`}
                 style={{ width: iconSize, height: iconSize }}
+                data-world-map-marker
               >
                 <img
                   src={assetUrl(getMapNodeIcon(luogo.nome, coord.tipo))}
@@ -836,7 +858,7 @@ export function MappaPrincipaleScene() {
                   draggable={false}
                 />
               </div>
-              <span className="arka-layout-content arka-readable-text text-white text-[10px] font-bold whitespace-nowrap leading-tight">
+              <span className={`world-map-node-label arka-layout-content arka-readable-text text-white font-bold whitespace-nowrap leading-tight ${isCurrent || isReachable ? 'is-important' : ''}`}>
                 {luogo.nome.replace('_', ' ')}
               </span>
             </motion.button>
@@ -852,7 +874,7 @@ export function MappaPrincipaleScene() {
         onChange={(rect) => updateMainMapUiLayout('legend', rect)}
         zIndex={35}
       >
-        <div className="arka-panel flex h-full w-full flex-col justify-center overflow-hidden px-3 py-2 text-xs">
+        <div className="world-map-legend arka-panel flex h-full w-full flex-col justify-center overflow-hidden px-3 py-2 text-xs">
           <div className="arka-layout-content mb-1 flex items-center gap-2">
             <img src={assetUrl('/ui/start_location.png')} alt="" className="h-4 w-4 object-contain" /> Start
           </div>

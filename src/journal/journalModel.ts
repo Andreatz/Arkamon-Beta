@@ -3,6 +3,7 @@ import { getAdjacentMainMapNodes } from '@/data/mainMapRoads'
 import { hasUnlockedSecretLocation, SECRET_LOCATION_ID } from '@/data/secretLocation'
 import { interactionRequirementMessage, isInteractionComplete, type InteractionRuntimeState } from '@/interactions/runtime'
 import type { InteractionDefinition } from '@/interactions/types'
+import type { LeagueState } from '@/league/leagueModel'
 
 export interface JournalObjective { title: string; detail: string; mapId?: string; nextStep?: string }
 export function routeToLocation(from: string, target: string): string[] | null {
@@ -19,13 +20,21 @@ export function routeToLocation(from: string, target: string): string[] | null {
   }
   return null
 }
-export function nextJournalObjective(state: InteractionRuntimeState, playerId: 1 | 2, definitions: InteractionDefinition[]): JournalObjective {
+export function nextJournalObjective(state: InteractionRuntimeState & { league?: LeagueState }, playerId: 1 | 2, definitions: InteractionDefinition[]): JournalObjective {
   const player = state[playerId === 1 ? 'giocatore1' : 'giocatore2']
   const world = state[playerId === 1 ? 'posizione1' : 'posizione2']
   const here = world.luogo ?? 'Pordenone'
-  if (!player.squadra.length) return { title: 'Scegli il tuo starter', detail: 'Il laboratorio assegna uno starter diverso a ciascun giocatore.' }
   if (state.battaglia && state.giocatoreAttivo === playerId) return { title: 'Completa la battaglia in corso', detail: 'Il movimento torna disponibile dopo lo scontro.' }
+  const league = state.league
+  if (league?.winner) return { title: 'La Lega è conclusa', mapId: 'Roma', detail: `${league.winner.name} ha vinto la Lega. Consulta il risultato nella schermata della Lega.` }
+  if (league?.players[playerId].status === 'running') return { title: 'Prosegui la Lega', mapId: 'Roma',
+    detail: `Tentativo in corso: incontro ${league.players[playerId].nextStage + 1}. Le quattro battaglie proseguono nello stesso turno dalla schermata della Lega.` }
+  if (!player.squadra.length) return Object.keys(player.deposito).length
+    ? { title: 'Ritira un Arkamon dal deposito', detail: 'Hai già dei compagni in riserva. Spostane almeno uno in squadra per proseguire il viaggio.' }
+    : { title: 'Scegli il tuo starter', detail: 'Il laboratorio assegna uno starter diverso a ciascun giocatore.' }
   if (!player.squadra.some((pokemon) => pokemon.hp > 0)) return { title: 'Cura la squadra', detail: 'Visita il Centro Pokémon di una città prima di affrontare un incontro.' }
+  if (hasUnlockedSecretLocation(player)) return { title: league?.players[playerId].status === 'defeated' ? 'Riprova la Lega a Roma' : 'Affronta la Lega a Roma', mapId: 'Roma',
+    detail: `Hai completato le otto palestre. ${here === 'Roma' ? 'Apri la Lega dalla città.' : 'Raggiungi Roma per affrontare i Superquattro.'} Il passaggio segreto resta un’opportunità facoltativa.`, nextStep: routeToLocation(here, 'Roma')?.[1] }
   const candidates = definitions.filter((definition) => definition.enabled && !definition.repeatable
     && !isInteractionComplete(state.interactionProgress, definition, playerId)
     && !interactionRequirementMessage(state, definition, playerId)
@@ -44,8 +53,6 @@ export function nextJournalObjective(state: InteractionRuntimeState, playerId: 1
     .sort((a, b) => a.route!.length - b.route!.length || a.trainer.id - b.trainer.id)[0]
   if (gym) return { title: `Palestra di ${gym.trainer.luogo}`, mapId: gym.trainer.luogo,
     detail: gym.trainer.luogo === here ? `${gym.trainer.nome} non è ancora stato sconfitto.` : 'La palestra più vicina fra quelle ancora da completare.', nextStep: gym.route?.[1] }
-  if (hasUnlockedSecretLocation(player)) return { title: here === SECRET_LOCATION_ID ? 'Esplora il luogo segreto' : 'Il passaggio segreto è disponibile a Roma',
-    mapId: here === SECRET_LOCATION_ID ? SECRET_LOCATION_ID : 'Roma', detail: 'Hai completato tutte le palestre. Le attività del luogo dipendono dai contenuti definiti dalla regia.', nextStep: routeToLocation(here, 'Roma')?.[1] }
   return { title: 'Esplora i luoghi disponibili', detail: 'Consulta nel diario gli incontri e gli allenatori ancora da affrontare.' }
 }
 export function journalLocations(state: InteractionRuntimeState, playerId: 1 | 2, definitions: InteractionDefinition[]) {

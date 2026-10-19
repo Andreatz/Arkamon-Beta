@@ -5,6 +5,7 @@ import type { PublicBattlePresentation } from './publicPresentation'
 import { MAIN_MAP_ROAD_CONNECTIONS } from '@/data/mainMapRoads'
 import { resolvedScreenDesign } from '@/ui-studio/runtimeDesign'
 import type { UiElementDesign } from '@/ui-studio/types'
+import { buildPublicManagement, type ManagementRequest, type PublicManagement } from './managementPresentation'
 
 export const PUBLIC_CHANNEL = 'arkamon-public-presentation-v1'
 const publicWorldNodes = new Set(MAIN_MAP_ROAD_CONNECTIONS.flat())
@@ -16,6 +17,7 @@ export interface PublicSnapshot {
   nodes: AdminTheme['layouts']['mainMapNodes']; roads: AdminTheme['layouts']['mainMapRoads']
   winner: string | null
   leagueTotal: number
+  management?: PublicManagement | null
 }
 const publicCreature = ({ specieId, nome, livello, hp, stato }: PublicBattlePresentation['pokemonA']) => ({ specieId, nome, livello, hp, ...(stato ? { stato: { ...stato } } : {}) })
 function visibleBattle(battle: PublicBattlePresentation | null, theme: AdminTheme): PublicBattlePresentation | null {
@@ -31,7 +33,7 @@ function visibleBattle(battle: PublicBattlePresentation | null, theme: AdminThem
       background: design?.background?.asset, hpColors: { hpHigh: theme.colors.hpHigh, hpMid: theme.colors.hpMid, hpLow: theme.colors.hpLow } } }
 }
 /** Only public progress is copied: no bags, unrevealed roster, authoring text, saves or credentials. */
-export function makePublicSnapshot(game: GameState, theme: AdminTheme, battle: PublicBattlePresentation | null, paused: boolean, at = Date.now()): PublicSnapshot {
+export function makePublicSnapshot(game: GameState, theme: AdminTheme, battle: PublicBattlePresentation | null, paused: boolean, at = Date.now(), management: ManagementRequest | null = null): PublicSnapshot {
   const place = String(game.scenaCorrente.payload?.luogo ?? game[game.giocatoreAttivo === 1 ? 'posizione1' : 'posizione2'].luogo ?? '')
   return { version: 1, at, scene: game.scenaCorrente.scena, place, active: game.giocatoreAttivo,
     actions: game.turnoOverworld.azioniRimaste, paused,
@@ -49,5 +51,6 @@ export function makePublicSnapshot(game: GameState, theme: AdminTheme, battle: P
     roads: Object.fromEntries(Object.entries(theme.layouts.mainMapRoads).filter(([id]) => publicWorldRoads.has(id))),
     winner: game.league.winner?.name ?? null,
     leagueTotal: game.league.config?.championEnabled ? 5 : 4,
+    management: buildPublicManagement(game, management),
   }
 }

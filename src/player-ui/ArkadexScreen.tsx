@@ -1,3 +1,5 @@
+import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
+import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
 import { lazy, Suspense, useContext, useEffect, useMemo, useState } from 'react'
 import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
 import { getPokemon, POKEMON_BASE, TABELLA_TIPI } from '@/data'
@@ -47,20 +49,16 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
   const previewView = useContext(UiPreviewViewContext)
   const state = useGameStore()
   const [viewPlayerId, setViewPlayerId] = useState<1 | 2>(playerId)
-  const [search, setSearch] = useState('')
-  const [status, setStatus] = useState<ArkadexFilter>('all')
-  const [type, setType] = useState<TipoPokemon | 'all'>('all')
-  const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null)
+  const [search, setSearch] = usePlayerUiMemory(viewPlayerId, 'dex.search', '')
+  const [status, setStatus] = usePlayerUiMemory<ArkadexFilter>(viewPlayerId, 'dex.status', 'all')
+  const [type, setType] = usePlayerUiMemory<TipoPokemon | 'all'>(viewPlayerId, 'dex.type', 'all')
+  const [selectedId, setSelectedId] = usePlayerUiMemory<number | null>(viewPlayerId, 'dex.species', null)
+  const [selectedInstanceId, setSelectedInstanceId] = usePlayerUiMemory<string | null>(viewPlayerId, 'dex.instance', null)
   const [animatedSpeciesId, setAnimatedSpeciesId] = useState<number | null>(null)
-  const [page, setPage] = useState(0)
-  const [detailTab, setDetailTab] = useState<ArkadexDetailTab>(previewView === 'moves' || previewView === 'evolution' ? previewView : 'information')
-  useEffect(() => {
-    setViewPlayerId(playerId)
-    setSearch(''); setStatus('all'); setType('all')
-    setSelectedId(null); setSelectedInstanceId(null); setAnimatedSpeciesId(null)
-    setPage(0); setDetailTab(previewView === 'moves' || previewView === 'evolution' ? previewView : 'information')
-  }, [playerId, state.campaignRevision, previewView])
+  const [page, setPage] = usePlayerUiMemory(viewPlayerId, 'dex.page', 0)
+  const [detailTab, setDetailTab] = usePlayerUiMemory<ArkadexDetailTab>(viewPlayerId, 'dex.tab', previewView === 'moves' || previewView === 'evolution' ? previewView : 'information')
+  useEffect(() => { setViewPlayerId(playerId); setAnimatedSpeciesId(null) }, [playerId, state.campaignRevision])
+  useEffect(() => { if (previewView === 'moves' || previewView === 'evolution') setDetailTab(previewView) }, [previewView, setDetailTab])
   const snapshot: ArkadexSnapshot = useMemo(() => ({
     giocatore1: state.giocatore1, giocatore2: state.giocatore2,
     giocatoreAttivo: state.giocatoreAttivo, battaglia: state.battaglia,
@@ -88,6 +86,7 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
   const seen = new Set(seenIds)
   const chain = species ? evolutionChain(species) : []
   const canAnimate = !!species && !!getArkamonAnimationAsset(species.id, 'front', 'idle')
+  usePublishPlayerUiSelection(viewPlayerId, { speciesId: species?.id, instanceId: specimen?.pokemon.istanzaId })
   const animated = canAnimate && animatedSpeciesId === species?.id
 
   function resetFilters() {
@@ -101,8 +100,7 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
         <select value={viewPlayerId} onChange={(event) => {
           const id = Number(event.target.value) as 1 | 2
           setViewPlayerId(id); onPlayerChange?.(id)
-          setSelectedId(null); setSelectedInstanceId(null); setAnimatedSpeciesId(null)
-          resetFilters()
+          setAnimatedSpeciesId(null)
         }}><option value={1}>G1 · {state.giocatore1.nome || 'Giocatore 1'}</option><option value={2}>G2 · {state.giocatore2.nome || 'Giocatore 2'}</option></select>
       </label>}
       <p className="pu-discovery-count"><strong>{player.nome || `Giocatore ${viewPlayerId}`}</strong><span>{seenIds.length} / {POKEMON_BASE.length} viste · {caughtIds.length} / {POKEMON_BASE.length} ottenute</span></p>
@@ -110,18 +108,18 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
     <div className="pu-dex-layout">
       <KitPanel className="pu-dex-index">
         <div className="pu-filter-grid">
-          <label>Cerca specie scoperta o numero<input type="search" value={search} onChange={(event) => { setSearch(event.target.value); setPage(0); setDetailTab('information') }} placeholder="Nome o numero" /></label>
+          <label>Ricerca<input aria-label="Cerca specie scoperta o numero" type="search" value={search} onChange={(event) => { setSearch(event.target.value); setPage(0); setDetailTab('information') }} placeholder="Nome o numero" /></label>
           <label>Scoperta<select value={status} onChange={(event) => { setStatus(event.target.value as ArkadexFilter); setPage(0); setDetailTab('information') }}>
             <option value="all">Tutte</option><option value="unknown">Da scoprire</option><option value="seen">Viste, ancora da ottenere</option><option value="caught">Ottenute</option>
           </select></label>
-          <label>Tipo conosciuto<select value={type} onChange={(event) => { setType(event.target.value as TipoPokemon | 'all'); setPage(0); setDetailTab('information') }}>
+          <label>Tipo<select aria-label="Tipo conosciuto" value={type} onChange={(event) => { setType(event.target.value as TipoPokemon | 'all'); setPage(0); setDetailTab('information') }}>
             <option value="all">Tutti i tipi</option>{TABELLA_TIPI.tipi.map((name) => <option key={name} value={name}>{name}</option>)}
           </select></label>
           <KitButton className="pu-filter-reset" disabled={!search && status === 'all' && type === 'all'} onClick={resetFilters}>Azzera filtri</KitButton>
         </div>
         <p role="status" className="pu-result-count">{entries.length} schede corrispondenti. Nome e tipo sono ricercabili soltanto dopo la scoperta.</p>
-        <div className="pu-dex-list" aria-label="Specie dell’Arkadex">
-          {pageEntries.map((entry) => <KitButton key={entry.id} active={selected?.id === entry.id} className="pu-dex-row"
+        <SpatialNavigation className="pu-dex-list" aria-label="Specie dell’Arkadex">
+          {pageEntries.map((entry) => <KitButton data-rpg-item key={entry.id} active={selected?.id === entry.id} className="pu-dex-row"
             aria-pressed={selected?.id === entry.id}
             aria-label={`Numero ${entry.id}: ${entry.species?.nome ?? 'specie da scoprire'} · ${statusLabels[entry.status]}`}
             onClick={() => { setSelectedId(entry.id); setSelectedInstanceId(null); setAnimatedSpeciesId(null); setDetailTab('information') }}>
@@ -130,7 +128,7 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
             <span className={`pu-discovery-mark is-${entry.status}`} aria-hidden="true">{entry.status === 'caught' ? '●' : entry.status === 'seen' ? '◐' : '?'}</span>
           </KitButton>)}
           {!entries.length && <p className="pu-empty">Nessuna specie corrisponde ai filtri scelti.</p>}
-        </div>
+        </SpatialNavigation>
         <nav className="pu-pagination pu-dex-pagination" aria-label="Pagine dell’Arkadex">
           <KitButton aria-label="Pagina precedente dell’Arkadex" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>←</KitButton>
           <span aria-live="polite">Pagina {currentPage + 1} / {pageCount}<small>{entries.length ? `${firstEntry + 1}–${firstEntry + pageEntries.length} di ${entries.length}` : '0 specie'}</small></span>

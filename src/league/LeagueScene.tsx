@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useGameStore } from '@/store/gameStore'
-import { GameButton } from '@/components/ui/GameButton'
+import { RpgCommand as GameButton } from '@/components/rpg'
+import { assetUrl } from '@/utils/assetUrl'
+import '@/scenes/rpgScenes.css'
 import { CreaturePortrait, HealthBar, KitIcon, KitPanel } from '@/player-ui/kit'
 import { getShopItem } from '@/shop/catalog'
 import { hasUnlockedSecretLocation } from '@/data/secretLocation'
@@ -40,7 +42,7 @@ export function LeagueScene() {
         <ol className="league-stages">{Array.from({ length: Math.max(4, opponents.length) }, (_, index) => {
           const opponent = opponents[index], complete = progress.completedStages.includes(index), active = running && progress.nextStage === index
           return <li key={index} className={`${complete ? 'is-completed' : ''} ${active ? 'is-current' : ''}`} aria-current={active ? 'step' : undefined}>
-            <span className="league-stage-number">{complete ? '✓' : String(index + 1).padStart(2, '0')}</span><div><strong>{opponent?.name || `Superquattro ${index + 1}`}</strong><small>{complete ? 'Sconfitto' : active ? 'Prossimo incontro' : opponent?.team.length ? `${opponent.team.length} Arkamon` : 'Da configurare'}</small></div>
+            <img className="league-stage-emblem" src={assetUrl(`/ui/studio/progression/league-${index + 1}.svg`)} alt="" /><span className="league-stage-number">{complete ? '✓' : String(index + 1).padStart(2, '0')}</span><div><strong>{opponent?.name || `Superquattro ${index + 1}`}</strong><small>{complete ? 'Sconfitto' : active ? 'Prossimo incontro' : opponent?.team.length ? `${opponent.team.length} Arkamon` : 'Da configurare'}</small></div>
           </li>
         })}</ol>
         <p className="league-rule-note">{league.config?.defeat === 'restart' ? 'Una sconfitta richiede un nuovo tentativo dal primo incontro.' : league.config?.defeat === 'retry-stage' ? 'Dopo una sconfitta puoi riprendere dall’incontro raggiunto.' : 'Regola della sconfitta da confermare.'}</p>

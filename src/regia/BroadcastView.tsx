@@ -13,6 +13,7 @@ import type { AdminLayoutRect } from '@/theme/adminThemeTypes'
 import './regia.css'
 import { PublicMap } from './PublicMap'
 import { resolveUiMediaSource } from '@/ui-studio/mediaStorage'
+import { PublicManagementView } from './PublicManagementView'
 
 const position = (rect: AdminLayoutRect): CSSProperties => ({ position: 'absolute', left: `${rect.x}%`, top: `${rect.y}%`, width: `${rect.w}%`, height: `${rect.h}%` })
 function usePublicAsset(source?: string): string | undefined {
@@ -54,7 +55,7 @@ export function BroadcastView({ publicOnly = false }: { publicOnly?: boolean }) 
     ? assetUrl('/maps/Mappa-Finale.jpg') : getBackground(snapshot?.place ?? '') ?? assetUrl('/backgrounds/battle_forest.jpg'))
   return <main className="arka-broadcast" data-broadcast-view data-broadcast-connected={connected} style={{ backgroundImage: `url("${background}")` }}>
     {snapshot ? <>
-      {battle ? <BattleLayoutProvider value={battle.layout}>
+      {snapshot.management ? <PublicManagementView view={snapshot.management} /> : battle ? <BattleLayoutProvider value={battle.layout}>
         <div style={position(battle.layout.enemySprite)}><ArkamonBattleSprite speciesId={battle.pokemonB.specieId} name={battle.pokemonB.nome} side="front" animation={battle.animationB} replayKey={battle.replayB} playbackPaused={snapshot.paused} className="w-full h-full" /></div>
         <div style={position(battle.layout.playerSprite)}><ArkamonBattleSprite speciesId={battle.pokemonA.specieId} name={battle.pokemonA.nome} side="back" animation={battle.animationA} replayKey={battle.replayA} playbackPaused={snapshot.paused} className="w-full h-full" /></div>
         <div style={position(battle.layout.enemyHp)}><HpBar nome={battle.pokemonB.nome} livello={battle.pokemonB.livello} hp={battle.pokemonB.hp} hpMax={battle.hpMaxB} stato={battle.pokemonB.stato} side="enemy" frameSource={enemyFrame} frameFit={battle.appearance?.enemyFrame?.fit} hpColorsOverride={battle.appearance?.hpColors} /></div>

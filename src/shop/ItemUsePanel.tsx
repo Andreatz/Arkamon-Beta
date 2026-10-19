@@ -3,6 +3,7 @@ import { calcolaHPMax } from '@/engine/battleEngine'
 import type { PokemonIstanza } from '@/types'
 import { SHOP_ITEMS, type ShopInventory, type ShopItemId } from './catalog'
 import { resolveItemEffect, type ItemEffectResult } from './itemEffects'
+import { GameButton } from '@/components/ui/GameButton'
 import './shop.css'
 
 export interface ItemUsePanelProps {
@@ -17,23 +18,26 @@ export interface ItemUsePanelProps {
   visibleItemIds?: readonly ShopItemId[]
   /** Player tools can show a visual preview; the battle bag keeps its current presentation. */
   renderEffectPreview?: (target: PokemonIstanza, itemId: ShopItemId, result: ItemEffectResult) => ReactNode
+  /** Optional presentation selection shared with Team/Analysis. Domain state stays local to onUse. */
+  selectedInstanceId?: string
+  onTargetChange?: (instanceId: string) => void
 }
 
 /** La stessa selezione di oggetto e bersaglio serve per la borsa e per il turno di battaglia. */
-export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavailableMessage, actionNote, renderItemIcon, visibleItemIds, renderEffectPreview }: ItemUsePanelProps) {
+export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavailableMessage, actionNote, renderItemIcon, visibleItemIds, renderEffectPreview, selectedInstanceId, onTargetChange }: ItemUsePanelProps) {
   const [selectedId, setSelectedId] = useState(squad[0]?.istanzaId ?? '')
   const [message, setMessage] = useState('')
   useEffect(() => {
     if (!squad.some((pokemon) => pokemon.istanzaId === selectedId)) setSelectedId(squad[0]?.istanzaId ?? '')
   }, [squad, selectedId])
-  const target = squad.find((pokemon) => pokemon.istanzaId === selectedId) ?? squad[0]
+  const target = squad.find((pokemon) => pokemon.istanzaId === (selectedInstanceId ?? selectedId)) ?? squad[0]
   const owned = SHOP_ITEMS.filter((item) => (inventory[item.id] ?? 0) > 0 && (!visibleItemIds || visibleItemIds.includes(item.id)))
   const singleItem = visibleItemIds?.length === 1
   return <div className={`arka-item-bag${singleItem ? ' is-single-item' : ''}`}>
     <p className="arka-store-note">{actionNote}</p>
     {unavailableMessage && <p role="status" className="arka-store-warning">{unavailableMessage}</p>}
     {target ? <label className="arka-item-target">Arkamon da curare
-      <select value={target.istanzaId} onChange={(event) => { setSelectedId(event.target.value); setMessage('') }}>
+      <select value={target.istanzaId} onChange={(event) => { setSelectedId(event.target.value); onTargetChange?.(event.target.value); setMessage('') }}>
         {squad.map((pokemon) => <option key={pokemon.istanzaId} value={pokemon.istanzaId}>{pokemon.nome} · Lv {pokemon.livello} · HP {pokemon.hp}/{calcolaHPMax(pokemon)}{pokemon.hp === 0 ? ' · KO' : ''}{pokemon.stato ? ` · ${pokemon.stato.tipo}` : ''}</option>)}
       </select>
     </label> : <p>Scegli prima il tuo starter per usare gli oggetti.</p>}
@@ -48,9 +52,9 @@ export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavai
             <p>{item.description}</p></>}
           {disabledReason && <small>{disabledReason}</small>}
           {target && preview && renderEffectPreview?.(target, item.id, preview)}
-          <button type="button" className="arka-button" disabled={disabled || !!unavailableMessage || !target || !!disabledReason} onClick={() => {
+          <GameButton type="button" tone="primary" className="arka-button" style={{ border: 0, borderImage: 'none', background: 'none' }} disabled={disabled || !!unavailableMessage || !target || !!disabledReason} onClick={() => {
             if (target) setMessage(onUse(item.id, target.istanzaId).message)
-          }}>Usa {item.name}</button>
+          }}>Usa {item.name}</GameButton>
         </article>
       })}
     </div>

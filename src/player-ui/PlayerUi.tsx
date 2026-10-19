@@ -1,4 +1,5 @@
-import { lazy, Suspense, useState, type CSSProperties } from 'react'
+import { lazy, Suspense, useState, useContext, useEffect, useRef, type CSSProperties } from 'react'
+import { DialogNavigationContext } from '@/components/ui/DialogNavigation'
 import { useGameStore } from '@/store/gameStore'
 import { GameSettingsPanel } from '@/settings/GameSettingsPanel'
 import { launchChallenge } from '@/challenges/challengeRuntime'
@@ -6,6 +7,8 @@ import { assetUrl } from '@/utils/assetUrl'
 import { BATTLE_BG_DEFAULT, DEPOSIT_BG } from '@/data/backgrounds'
 import { CreaturePortrait, KitButton, KitFrame, KitIcon, formatNumber } from './kit'
 import { MenuScreen } from './MenuScreen'
+import { usePlayerUiSession } from './playerUiSession'
+import { PresentManagementControl } from '@/regia/PresentManagementControl'
 import { PLAYER_UI_SCREENS, type PlayerUiAuxiliary, type PlayerUiScreen } from './navigation'
 
 export { PLAYER_UI_SCREENS, PLAYER_UI_OPEN_EVENT, isPlayerUiScreen, openPlayerUi } from './navigation'
@@ -59,6 +62,10 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   const [playerId, setPlayerId] = useState<1 | 2>(() => initialPlayerId ?? useGameStore.getState().giocatoreAttivo)
   const [instanceId, setInstanceId] = useState(initialInstanceId)
   const [tool, setTool] = useState<PlayerUiAuxiliary | null>(() => initialAuxiliary ?? (useGameStore.getState().challengeContext ? 'challenges' : null))
+  const registerBack = useContext(DialogNavigationContext)
+  const shell = useRef<HTMLDivElement>(null)
+  const [history, setHistory] = useState<{ screen: PlayerUiScreen; tool: PlayerUiAuxiliary | null; instanceId?: string; focus?: string }[]>([])
+  const restoreFocus = useRef<string>()
   const player1 = useGameStore(state => state.giocatore1)
   const player2 = useGameStore(state => state.giocatore2)
   const position1 = useGameStore(state => state.posizione1)
@@ -78,16 +85,49 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   function navigate(next: PlayerUiScreen) {
     if (next === 'negozio') return
     if (context && next !== 'partita') return
+    setHistory([])
+    if (next !== 'analisi') setInstanceId(undefined)
     setScreen(next); setTool(null)
   }
-  function changePlayer(next: 1 | 2) { setPlayerId(next); setInstanceId(undefined) }
-  function analyse(id: string) { setInstanceId(id); navigate('analisi') }
+  function changePlayer(next: 1 | 2) { setHistory([]); setPlayerId(next); setInstanceId(undefined) }
+  function rememberOrigin() {
+    const focused = typeof document !== 'undefined' && document.activeElement instanceof HTMLElement ? document.activeElement : null
+    setHistory(previous => [...previous, { screen, tool, instanceId, focus: focused?.getAttribute('aria-label') ?? focused?.textContent?.trim() }].slice(-12))
+  }
+  function analyse(id: string) { if (context) return; rememberOrigin(); setInstanceId(id); setScreen('analisi'); setTool(null) }
+  function contextualScreen(next: PlayerUiScreen) { if (context) return; rememberOrigin(); setScreen(next); setInstanceId(undefined); setTool(null) }
+  function openBag() {
+    const selected = usePlayerUiSession.getState().selection[playerId]?.instanceId
+    if (selected) usePlayerUiSession.getState().remember(`${useGameStore.getState().campaignRevision}:${playerId}:bag.target`, selected)
+    contextualScreen('borsa')
+  }
   function openTool(next: PlayerUiAuxiliary) {
     if (context && next !== 'settings' && next !== 'challenges') return
-    setTool(next)
+    setHistory([]); setTool(next)
   }
+  function goBack(event: KeyboardEvent): boolean {
+    const previous = history[history.length - 1]
+    if (!previous) return false
+    if (event.target instanceof Element && event.target.closest('input,select,textarea,[contenteditable="true"]')) return true
+    event.preventDefault()
+    setHistory(history.slice(0, -1)); setScreen(previous.screen); setTool(previous.tool); setInstanceId(previous.instanceId)
+    restoreFocus.current = previous.focus
+    return true
+  }
+  useEffect(() => registerBack?.(goBack), [registerBack, history])
+  useEffect(() => {
+    if (!restoreFocus.current) return
+    let frame = 0, attempts = 0
+    const restore = () => {
+      const target = [...(shell.current?.querySelectorAll<HTMLElement>('button,input,select,a[href]') ?? [])].find(element => (element.getAttribute('aria-label') ?? element.textContent?.trim()) === restoreFocus.current)
+      if (target) { target.focus(); restoreFocus.current = undefined }
+      else if (++attempts < 30) frame = requestAnimationFrame(restore)
+    }
+    frame = requestAnimationFrame(restore)
+    return () => cancelAnimationFrame(frame)
+  }, [screen, tool])
 
-  return <div className="pu-shell" style={{ '--pu-background': `url("${screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")` } as CSSProperties}
+  return <div ref={shell} className="pu-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ '--pu-background': `url("${screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")` } as CSSProperties}
     data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId}>
     <div className="pu-topbar">
       <KitFrame id="panel-wide" />
@@ -127,7 +167,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
           : visibleTool === 'backup' ? <BackupPanel />
           : blockedScreen ? <p role="status">Questa funzione torna disponibile dopo la sfida.</p>
           : screen === 'partita' ? <MenuScreen playerId={playerId} onAuxiliary={openTool} />
-          : screen === 'squadra' ? <TeamScreen playerId={playerId} onAnalyse={analyse} onBag={() => navigate('borsa')} onDeposit={() => navigate('deposito')} />
+          : screen === 'squadra' ? <TeamScreen playerId={playerId} onAnalyse={analyse} onBag={openBag} onDeposit={() => contextualScreen('deposito')} />
           : screen === 'deposito' ? <DepositScreen playerId={playerId} onAnalyse={analyse} />
           : screen === 'arkadex' ? <ArkadexScreen playerId={playerId} showPlayerPicker={false} />
           : screen === 'analisi' ? <AnalysisScreen playerId={playerId} instanceId={instanceId} />
@@ -137,7 +177,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     </main>
 
     <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} azioni disponibili` : ''}</span>
-      <span>Esc · Torna al viaggio</span><KitButton data-ui-id="resume-journey" active onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</KitButton>
+      <span className="pu-keyboard-hint">↑ ↓ Seleziona · Invio Conferma · Esc Indietro</span><PresentManagementControl screen={visibleTool ?? screen} playerId={playerId} instanceId={instanceId} /><KitButton data-ui-id="resume-journey" active onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</KitButton>
     </footer>
   </div>
 }

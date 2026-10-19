@@ -128,6 +128,7 @@ export function InfoBox({
 
   return (
     <div
+      role="status" aria-live="polite"
       className="arka-battle-font relative h-full w-full text-slate-950 drop-shadow-2xl"
       data-ui-skin-slot="frame"
       data-ui-asset-surface=""
@@ -261,6 +262,7 @@ export function SquadIndicator({
 
 export function PokemonBattleSlot({
   istanza,
+  presentationPaused = false,
   position,
   shaking,
   shakePx,
@@ -275,6 +277,7 @@ export function PokemonBattleSlot({
   onAnimationComplete,
 }: {
   istanza: PokemonIstanza
+  presentationPaused?: boolean
   position: 'top-right' | 'bottom-left'
   shaking: boolean
   shakePx: number
@@ -397,10 +400,12 @@ export function PokemonBattleSlot({
             : 'brightness(1)',
         }}
         transition={{ duration: reducedMotion ? 0 : innerDuration, ease: 'easeOut' }}
-        className="flex h-full w-full items-center justify-center drop-shadow-2xl"
+        className="relative flex h-full w-full items-center justify-center drop-shadow-2xl"
       >
+        <span className="battle-ground-shadow" aria-hidden="true" />
         {!spriteFailed ? (
           <ArkamonBattleSprite
+            playbackPaused={presentationPaused}
             speciesId={istanza.specieId}
             name={istanza.nome}
             side={side}

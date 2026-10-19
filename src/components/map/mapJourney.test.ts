@@ -15,7 +15,9 @@ describe('main map journeys', () => {
   it('uses screen distance rather than percentage distance for even speed', () => {
     const timing = mapJourneyTiming(roads[0].points, 1920, 1080)
     expect(timing.times).toEqual([0, 192 / 300, 1])
-    expect(timing.duration).toBe(.75)
+    expect(timing.duration).toBeCloseTo(300 / 650)
+    expect(mapJourneyTiming([{ x: 0, y: 0 }, { x: 1, y: 0 }], 1920, 1080).duration).toBe(.35)
+    expect(mapJourneyTiming([{ x: 0, y: 0 }, { x: 100, y: 100 }], 1920, 1080).duration).toBe(.65)
     expect(mapJourneyTiming([{ x: 0, y: 0 }, { x: 0, y: 0 }], 0, 0).times).toEqual([0, 1])
   })
 })

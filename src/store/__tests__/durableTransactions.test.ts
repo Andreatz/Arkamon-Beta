@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ALLENATORI } from '@/data'
 import { getLocalMap } from '@/data/localMaps'
 import { initialGameSave, GAME_SAVE_STORAGE_KEY, serializeGameState } from '@/save/gamePersistence'
-import { AUTO_BACKUP_STORAGE_KEY, readRecoveryCopies, useSaveWriteStatus } from '@/save/durableWrites'
+import { AUTO_BACKUP_STORAGE_KEY, cancelPendingRecoveryCopy, flushPendingRecoveryCopy, readRecoveryCopies, useSaveWriteStatus } from '@/save/durableWrites'
 import { newInteractionDefinition } from '@/interactions/types'
 import { useInteractionStore } from '@/interactions/interactionStore'
 import { useGameStore } from '../gameStore'
@@ -39,13 +39,14 @@ function campaign() {
 
 describe('durable compound gameplay transactions', () => {
   beforeEach(() => {
+    cancelPendingRecoveryCopy()
     disk.blocked.clear(); disk.values.clear(); disk.writes.length = 0
     useSaveWriteStatus.getState().clear()
     useSaveWriteStatus.setState({ backupWarning: null })
     useInteractionStore.setState({ interactions: [] })
     campaign()
   })
-  afterEach(() => { disk.blocked.clear(); vi.restoreAllMocks() })
+  afterEach(() => { cancelPendingRecoveryCopy(); disk.blocked.clear(); vi.restoreAllMocks() })
 
   it('retries NPC reward, updated roster, configured prize, cleanup and navigation as one write and one publication', () => {
     const trainer = ALLENATORI.find(entry => entry.tipo === 'NPC')!
@@ -317,6 +318,7 @@ describe('durable compound gameplay transactions', () => {
     expect(useGameStore.getState().posizione1.luogo).toBe('Venezia')
     expect(JSON.parse(localStorage.getItem(GAME_SAVE_STORAGE_KEY)!).state.posizione1.luogo).toBe('Venezia')
     expect(useSaveWriteStatus.getState().error).toBeNull()
+    flushPendingRecoveryCopy()
     expect(useSaveWriteStatus.getState().backupWarning).toContain('copia automatica')
     expect(readRecoveryCopies()).toEqual([])
   })

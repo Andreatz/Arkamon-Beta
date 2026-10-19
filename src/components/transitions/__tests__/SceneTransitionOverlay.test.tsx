@@ -18,6 +18,12 @@ function overlayMarkup(scena: SceneId, phase: 'cover' | 'reveal', startCovered =
 }
 
 describe('scene transition artwork selection', () => {
+  it('does not hide ordinary navigation behind the special D6 sequence', () => {
+    const markup = overlayMarkup('mappa-principale', 'cover')
+    expect(markup).toContain('data-transition-mode="fade"')
+    expect(markup).not.toContain('data-transition-artwork')
+    expect(markup).not.toContain('<video')
+  })
   it.each(['cover', 'reveal'] as const)('never mounts a die at battle entry during %s', (phase) => {
     for (const startCovered of [false, true]) {
       const markup = overlayMarkup('battaglia', phase, startCovered)
@@ -34,7 +40,7 @@ describe('scene transition artwork selection', () => {
     }
   })
 
-  it.each(['mappa-principale', 'evoluzione'] as const)('retains both D6 poses for %s', (scena) => {
+  it.each(['evoluzione'] as const)('retains both D6 poses for %s', (scena) => {
     const markup = overlayMarkup(scena, 'cover')
     expect(markup).toContain('data-transition-mode="arkamon-dice"')
     expect(markup).toContain('data-transition-artwork="arkamon-d6"')

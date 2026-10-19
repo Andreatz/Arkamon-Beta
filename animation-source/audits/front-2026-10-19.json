@@ -1,0 +1,4346 @@
+{
+  "schemaVersion": 1,
+  "importDate": "2026-10-19",
+  "createdAt": "2026-10-19T13:20:05.970282+00:00",
+  "speciesCount": 24,
+  "clipCount": 120,
+  "nativeFrameCount": 11519,
+  "shortClipPolicy": "Preserve the original 95-frame victory clip of species79, as previously authorized; no padding or interpolation.",
+  "allProvenanceChecksPassed": true,
+  "allPosterAndUnusedCellChecksPassed": true,
+  "allConverterLosslessRgbaChecksPassed": true,
+  "species": [
+    {
+      "speciesId": 22,
+      "name": "Voltrake",
+      "cellWidth": 512,
+      "cellHeight": 512,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 160,
+        "top": 157
+      },
+      "sharedScale": 0.24736607142857142,
+      "groundPivot": [
+        256.0,
+        342
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 51,
+          "releaseMs": 2125.0,
+          "evidence": "Frames 50-52: frame50 concentrates the white-blue mouth charge; frame51 first extends the released bolt to the left; frame52 expands that forward discharge.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 26,
+          "reactionMs": 1083.3333333333333,
+          "evidence": "Frames25-27: frame25 holds the raised head; frame26 introduces the white chest impact flash and recoil; frame27 sustains the flash.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "22 idle.mp4",
+          "sourceSha256": "f4d8a90ccc487866b0b996d98b5d32fd19006d832e81963226b5886defb87a23",
+          "sourceBytes": 3071564,
+          "sheetSha256": "211fc17a9320d3d81319f5b80faec6c3165d8fc30954a183b24afeba4abb3158",
+          "sheetBytes": 4796698,
+          "posterSha256": "e20ab56e4ba013ced0b853b5b8a6e1148fcd5285e4a2933c3ce2b5f3e44dddab",
+          "posterBytes": 54494,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "22 attack.mp4",
+          "sourceSha256": "3ad2ebc121e1dcc05682534d4133c274073ca75b9be4fb7e23d084c6fd3438ef",
+          "sourceBytes": 4589398,
+          "sheetSha256": "95580a9ca6c3893795d551a49a361a36b62d1f43f56fa77652b975ba160fe953",
+          "sheetBytes": 8057598,
+          "posterSha256": "77ea940963c934aae030d19ab6c652be0c5f4050291088077f513c31d7ae857a",
+          "posterBytes": 54992,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "22 hit.mp4",
+          "sourceSha256": "6516857cb32550403e14db6ade165e2a28f3355940a425baaf6fe04c91062a0b",
+          "sourceBytes": 3255635,
+          "sheetSha256": "fe05e901375dca22511f94dc31544c206cdd48e7884ec8ab3ef684c4f13c2ec8",
+          "sheetBytes": 5478130,
+          "posterSha256": "99debeab65fff31bed4c0bcfdff6230b0fd7ea000cb8a1a4d054e5a4339372c6",
+          "posterBytes": 54558,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "22 victory.mp4",
+          "sourceSha256": "39a130f377ba140c5a3abda5504c18c102f794734a33b0fc867b15965118508f",
+          "sourceBytes": 3884860,
+          "sheetSha256": "d0e664457b1c80426cfeeefa6dddfd6ee28384ddf317baaebf1d33ffecb3fc24",
+          "sheetBytes": 7330292,
+          "posterSha256": "a4d514d3fae977bfa0c8b2bb10e6ab019776157bc698c031c11291124d2b17f5",
+          "posterBytes": 55060,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              21
+            ],
+            "screenBackgroundFallbackFrames": [
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74
+            ]
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "22 ko.mp4",
+          "sourceSha256": "7e3ebaa2aba4840626d114596571dbbc78e8581caa3d77ff864547c49227fcf5",
+          "sourceBytes": 3800123,
+          "sheetSha256": "b7b51cd11b73c77ee1d33d2c35e6eb66a943160dcf58e43b6dc95a3f84635499",
+          "sheetBytes": 6963632,
+          "posterSha256": "f0bd678d66e6b0087f2c71193296b67961648345e23d21e08074f55f96a2ac3d",
+          "posterBytes": 55348,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "0d03b7bdf21941357f332a6cad2c4e82c2ee7486a0a7f690bcce4d283a92f04b",
+      "normalizationSha256": "f5449134046f3e12c99409950d57f6a0ca643f4a9bcd683050161558b8c25ece"
+    },
+    {
+      "speciesId": 54,
+      "name": "Leafrex",
+      "cellWidth": 448,
+      "cellHeight": 448,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 135,
+        "top": 127
+      },
+      "sharedScale": 0.1996657381615599,
+      "groundPivot": [
+        231.0,
+        295
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 39,
+          "releaseMs": 1625.0,
+          "evidence": "Frames38-40: frame38 opens the mouth with the vine held near the body; frame39 first casts the vine outward to the left; frame40 extends it further.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 25,
+          "reactionMs": 1041.6666666666667,
+          "evidence": "Frames24-26: frame24 shows the incoming projectile before contact; frame25 creates the white contact burst and backwards body tilt; frame26 continues recoil.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "54 idle.mp4",
+          "sourceSha256": "1592f965a8acd29043e5ca35ccbc1b2503a201fb012f1b2799252b74c188c823",
+          "sourceBytes": 1854362,
+          "sheetSha256": "c7815da5cc3884f9103ce306f05e7a5ff8bdcd67867c801b0f842f28357f2502",
+          "sheetBytes": 3292688,
+          "posterSha256": "3a216108484cef2ce64190574616c10dea683b7d247a056c48597c1d3acb855a",
+          "posterBytes": 36558,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              25,
+              7,
+              241
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "54 attack.mp4",
+          "sourceSha256": "e8e92c7151999906983a8b3fa3fdb54ab7d495c60ae9a88998b1a1a4db9a4e8f",
+          "sourceBytes": 2923364,
+          "sheetSha256": "e2dd261fe9f34cbe14649ce9ac2e43d7669893577ccafc351ff505af625da8ec",
+          "sheetBytes": 3556302,
+          "posterSha256": "b5d7883d96817cdbf347a3d8eed93a1fb37051ec6fc5015cddf20a84ca94874c",
+          "posterBytes": 36854,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              25,
+              7,
+              241
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "54 hit.mp4",
+          "sourceSha256": "a69725ad048cf9f305b510bad31b779d249acdfd9f47bda0297f98b4e43a58e4",
+          "sourceBytes": 2994563,
+          "sheetSha256": "c38083ac67b880b3767be34074ecb9f949258495b476b8d738950167d709db48",
+          "sheetBytes": 3526104,
+          "posterSha256": "0d03bd98ae031b625fd639a948770666aab9fad02ac4928ed89865b5a26c3a30",
+          "posterBytes": 36816,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              25,
+              7,
+              241
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "54 victory.mp4",
+          "sourceSha256": "5ac2f90442f985ccd2f57824104458befab019190e2b90683af2ea84df40983d",
+          "sourceBytes": 3659056,
+          "sheetSha256": "cb22bab866ec20f883bf40dc2bb6f344e89e70203e40e497d3a6eafe324b9040",
+          "sheetBytes": 5387184,
+          "posterSha256": "fe996955561be5d22b5a8e94cdc97cde38a1772045556ca8fbb7fd54bd7e5373",
+          "posterBytes": 36830,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              25,
+              7,
+              241
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "54 ko.mp4",
+          "sourceSha256": "999341c7f77261eff2d554714b7548b92cef388784a162ae8672f6eab10ee2e2",
+          "sourceBytes": 3001552,
+          "sheetSha256": "90eb65b539bad9d7d70173c714e1c44a2698b5fbb2287124a4f3af3b658f0557",
+          "sheetBytes": 3812240,
+          "posterSha256": "1d3b017ee9f814a0b949028b6bb3b51f1178bdb07c56bce027dff6ca802da704",
+          "posterBytes": 36758,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              25,
+              7,
+              241
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "b2242c46d27e3115791a1015a8715844ea1cebdb1757542f494c7a869d80b056",
+      "normalizationSha256": "6278a0b565fa55cd50e5b945d7fc05bfd74c702338b7c834e7435fcaaa0b1006"
+    },
+    {
+      "speciesId": 55,
+      "name": "Peek-a-buu",
+      "cellWidth": 768,
+      "cellHeight": 768,
+      "viewport": {
+        "width": 256,
+        "height": 256,
+        "left": 256,
+        "top": 258
+      },
+      "sharedScale": 0.3557260479041916,
+      "groundPivot": [
+        384.0,
+        502
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 25,
+          "releaseMs": 1041.6666666666667,
+          "evidence": "Frames24-26: frame24 finishes the arm wind-up; frame25 first draws the white claw slash; frame26 widens the released arc.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 12,
+          "reactionMs": 500.0,
+          "evidence": "Frames11-13: frame11 retains the compact body; frame12 jerks backwards and opens the arms; frame13 increases that recoil.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "55 idle.mp4",
+          "sourceSha256": "29e5ac4820234b24b3967ce1e4f36e266b07135587758268e718aff88fd497b2",
+          "sourceBytes": 1196232,
+          "sheetSha256": "3fb00fcc970eac7496fa8c4c9f1dd281fb131d539eecdb206ea8ebd979c9ff80",
+          "sheetBytes": 4623222,
+          "posterSha256": "77ddbba8e8583ccc4803769dc4f458ded7380579da96837eae468379cb6d33d0",
+          "posterBytes": 43882,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "55 attack.mp4",
+          "sourceSha256": "e1d9d250506415e50e2f8cccccd4df97b54a4723826fcb68ac7167513db96337",
+          "sourceBytes": 2164297,
+          "sheetSha256": "4afe0f62fc059f7c99468265792a795fc1e337eae59f1094add879a59565add0",
+          "sheetBytes": 6128068,
+          "posterSha256": "4c1ac00fd8113264c92551915585d569092e8426f65f9bb961ed9da7f0949248",
+          "posterBytes": 43122,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "55 hit.mp4",
+          "sourceSha256": "1cfd4eb1a2cacdbcc06b41de7f8bf507b5d87ef181e0a347070fcc952a789110",
+          "sourceBytes": 1834290,
+          "sheetSha256": "04abcd67abf7f999994244812dcdce71dbd7f56b7dbd38c4a6664908e6ad7829",
+          "sheetBytes": 4947038,
+          "posterSha256": "bb28fe925569b767845fdf383b9a0ca477a5ce5e7f2014fa50fc920715b9223e",
+          "posterBytes": 43300,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "55 victory.mp4",
+          "sourceSha256": "02fa04eb232a0b8adf84b5779e0bae5cb99845756756c85f8207ee9529f308cc",
+          "sourceBytes": 1696255,
+          "sheetSha256": "1427c753d68b1964d78e995e57c790fdace764a968b046ec4fd922b12d3f64da",
+          "sheetBytes": 4550996,
+          "posterSha256": "41e2b657163a3202d9a1cefe52c3b080366aaa09becedba60e5141dbc17ad9f1",
+          "posterBytes": 43964,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "55 ko.mp4",
+          "sourceSha256": "2308906aff2b5a8e7cfde445b76be7c20852ab5f49dd47f2607addc0a52cfced",
+          "sourceBytes": 2138464,
+          "sheetSha256": "430439552ee2d8765d73d2d774e6c5974e01e814aacb68795bca631cd2bc7390",
+          "sheetBytes": 7761574,
+          "posterSha256": "f0b064a17d7cf12c7c49d2b9bd0fe3bbacf7b167fd98ce822f14824437a931d4",
+          "posterBytes": 44502,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "451b60245a42f6f24c5248a5af8ba5a2af69cbaf2c5275d78dd814609c0cc0bb",
+      "normalizationSha256": "9fae2392c698fe1f13492b90a26435182c100134a35d26574374331868446c0b"
+    },
+    {
+      "speciesId": 61,
+      "name": "Wailoom",
+      "cellWidth": 768,
+      "cellHeight": 768,
+      "viewport": {
+        "width": 256,
+        "height": 256,
+        "left": 255,
+        "top": 258
+      },
+      "sharedScale": 0.3498764415156507,
+      "groundPivot": [
+        383.0,
+        489
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 30,
+          "releaseMs": 1250.0,
+          "evidence": "Frames29-31: frame29 retains the charged water around the upright body; frame30 starts the forward horizontal burst and water streak; frame31 extends the acceleration.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 16,
+          "reactionMs": 666.6666666666666,
+          "evidence": "Frames15-17: frame15 retains the unstruck pose; frame16 introduces the white flank impact; frame17 expands the burst and turns the body.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "61 idle.mp4",
+          "sourceSha256": "11b5500343f0e7c692232dc57f408d812862782a8596088f95b008356e6a0e8b",
+          "sourceBytes": 2268806,
+          "sheetSha256": "bd7f29daa13bc07e05178e0e776113de747ece09bf9dc608ae52bcc1e75bc75b",
+          "sheetBytes": 7723874,
+          "posterSha256": "d935643be956c18ed490da1c725b823227ade596973f2c56f94c7efbc92d4038",
+          "posterBytes": 77428,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "61 attack.mp4",
+          "sourceSha256": "162828b43d761da92b69b068d90f497cd06830c56317c02b735be7b6e6130d68",
+          "sourceBytes": 3482148,
+          "sheetSha256": "5b589aa70a547c7450d7dba67d1c2afd13e1ab4c4646108ab2ba801be36fbb66",
+          "sheetBytes": 12548140,
+          "posterSha256": "5ca2aa64c8b1fac8f0c4515956ab5619e0a54515aa1135f0564c2309bfef9c8d",
+          "posterBytes": 77422,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "61 hit.mp4",
+          "sourceSha256": "eee1aa4fca3ebbc548445a877dd9d25f962d476f1d848d855408a72617539092",
+          "sourceBytes": 2843944,
+          "sheetSha256": "97b1d5d26c72d0d2272d4f9fa5e426132e47f4685b09d9170252af08422a291a",
+          "sheetBytes": 8798442,
+          "posterSha256": "f4ee04b64dc00e610fdf029f6d28f0cf57c6c95a13dbb344865d25c04cd8dcc0",
+          "posterBytes": 77856,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "61 victory.mp4",
+          "sourceSha256": "e808699568a127826963a9deee93525c31b7542bf5b09f3270980d5865e9ff6e",
+          "sourceBytes": 3303861,
+          "sheetSha256": "3f14244eb610f6c5c5e33b728ee96c40563e7b7e224f7ba31721183322c25dd8",
+          "sheetBytes": 11725566,
+          "posterSha256": "e4104a8869f24bda4d18e252b0bda861f4b330f38ffbce9f6e24ed1c0d8b1528",
+          "posterBytes": 77588,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "61 ko.mp4",
+          "sourceSha256": "bdfd1d0c65f0340064cd6cb772efaac0f60ececaeefad574cc835def087383c8",
+          "sourceBytes": 3307698,
+          "sheetSha256": "1bd38d7d7d877e9f7e9ea771ffcdc2417bdf2ed6701bf075dcc0e574b48d978e",
+          "sheetBytes": 11093568,
+          "posterSha256": "3b8a2f8486732c50044821cf998cfa0e8f62a63b478e73404e72817575c29ffd",
+          "posterBytes": 78126,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "dd1140b31859c594bfa27a9e637b94b9db8b64a79b695b5b7d0e9d94b6881cff",
+      "normalizationSha256": "8fb80362dfc508f4d1b6056f566baf5c5f703c4774d38a48dc16f05519ceaaff"
+    },
+    {
+      "speciesId": 62,
+      "name": "Fluffet",
+      "cellWidth": 640,
+      "cellHeight": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 178,
+        "top": 232
+      },
+      "sharedScale": 0.3621961805555556,
+      "groundPivot": [
+        274.0,
+        398
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 26,
+          "releaseMs": 1083.3333333333333,
+          "evidence": "Frames25-27: frame25 holds the compact preparation; frame26 launches the body left with the first white acceleration trail; frame27 lengthens that trail.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 22,
+          "reactionMs": 916.6666666666666,
+          "evidence": "Frames21-23: frame21 remains upright; frame22 visibly compresses the body with the first white floor impact; frame23 increases that compression.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "62 idle.mp4",
+          "sourceSha256": "9a2c5c0c432f81148b039b247990f33b0511addab917ef730b44d7a724ed11f5",
+          "sourceBytes": 1161353,
+          "sheetSha256": "416544befcd299f73bf0cd7a28d9d7a8a5df1d472fee14c3090c2ade4c50e420",
+          "sheetBytes": 3660690,
+          "posterSha256": "f728b6a1585d2bf377f9ac16db3ef3906ae15afc8c86e0ca461eddb8dfbb3d2f",
+          "posterBytes": 36230,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "62 attack.mp4",
+          "sourceSha256": "a465d9e9f73182eaec9e604de6583e41dba483a8624b59639f5df18d0e2aa041",
+          "sourceBytes": 1948950,
+          "sheetSha256": "99ba7cc01ccbd1fa809ec6bfd21240127d6237945b450c78bb9ebb1484643b40",
+          "sheetBytes": 5668698,
+          "posterSha256": "4642a7851b66f87603885fbecab51ced11a8a568aea04f5d5dced659aee3797e",
+          "posterBytes": 36226,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "62 hit.mp4",
+          "sourceSha256": "21437c1ea4625a1ed58f786106b32c1a1d3f99a8177b527c9804f494675863bf",
+          "sourceBytes": 1314692,
+          "sheetSha256": "ebc49482fd864bbc9d0c7d84bedf85e8bd606d55eb30e4fef4394ec71725f417",
+          "sheetBytes": 3854356,
+          "posterSha256": "ec7baefa33d321be258641efda12184e6883f37ddefd388966d2e84ca00f305d",
+          "posterBytes": 36070,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "62 victory.mp4",
+          "sourceSha256": "8f8553ace2aaec4d06fd2005431809a812c8581f1d655c536388f613984deacb",
+          "sourceBytes": 1381972,
+          "sheetSha256": "32322d146982b2f05cd5c1c798621f4fd3df51d7d8112a53047bd0b20aedd63e",
+          "sheetBytes": 3800472,
+          "posterSha256": "ddf3374678f9bfe0a8634929c5cb8b353c478523f8e572c60758d38b60209eb7",
+          "posterBytes": 36564,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "62 ko.mp4",
+          "sourceSha256": "915a4e38e27f7ef4d2a75122817e810a55a2d934d2d1e52459f06c1f6e1d9bab",
+          "sourceBytes": 2011160,
+          "sheetSha256": "ceedc4f19d7a53b1c9ceebc1224831922a157d75e51d62f140352ed940f583d7",
+          "sheetBytes": 6364874,
+          "posterSha256": "ed36c0cf77b2033399b36deaee9448622607bb4b2c27febf50a512b971c439ac",
+          "posterBytes": 36674,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "59cc3d27e31493115815dd1ebf2efbec68a49d78710c009de87e30bdf7dad225",
+      "normalizationSha256": "7c2326abcd5a628be273c2e555292a55d0116747b112b21c22c558733ec60fa5"
+    },
+    {
+      "speciesId": 63,
+      "name": "Fluffet",
+      "cellWidth": 640,
+      "cellHeight": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 225,
+        "top": 223
+      },
+      "sharedScale": 0.31244125939849626,
+      "groundPivot": [
+        321.0,
+        403
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 53,
+          "releaseMs": 2208.3333333333335,
+          "evidence": "Frames52-54: frame52 raises the casting hand; frame53 first forms a separate expanding ring ahead of the hand; frame54 enlarges the released ring.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 26,
+          "reactionMs": 1083.3333333333333,
+          "evidence": "Frames25-27: frame25 is the unstruck pose; frame26 introduces a white impact burst at the left side and body recoil; frame27 expands the burst.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "63 idle.mp4",
+          "sourceSha256": "d8d037b168b8ed2d1c3ed92a9876deaef74924d2d26effb7a382e598416e1f11",
+          "sourceBytes": 1514286,
+          "sheetSha256": "6ff6808bde9ac0034c9bb3974008173aa4fa378470badb3c532abcc333272cdc",
+          "sheetBytes": 3934850,
+          "posterSha256": "d97dbdb7f2017d016082c3c698edbad60f0dff12aae4c159e724ad228a0adeef",
+          "posterBytes": 46658,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              207,
+              14
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "63 attack.mp4",
+          "sourceSha256": "e57fcdb54fcc285bc8268dd424cf154836f5cb977be4006a878464efb631a1ba",
+          "sourceBytes": 1698914,
+          "sheetSha256": "6063f68ff1bf4f0b3b492cfe77ed125331ebb7cd8fcfb67ae5d2d71b1e3e0ed7",
+          "sheetBytes": 4699946,
+          "posterSha256": "6ec30248686e76d5a79e760661b1b5d20c485b38fbbe7dfca35081f6b9838859",
+          "posterBytes": 46264,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              207,
+              14
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "63 hit.mp4",
+          "sourceSha256": "f4562d8f884c2e3f5e5e2e0c3d9748c363c6d9edfe504bc7466a5de78f149970",
+          "sourceBytes": 1715249,
+          "sheetSha256": "1a906a6825b021f63b30be3c3c6ebe622e9a391cc18af87e74741ce2fa0cc377",
+          "sheetBytes": 4100376,
+          "posterSha256": "2d4ea45fbf7e061df97b4464acf26d8f772c24dacf4265319599609c87b60f10",
+          "posterBytes": 46602,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              207,
+              14
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "63 victory.mp4",
+          "sourceSha256": "c8c5b08bbfdf2ae74f252c61ef8b190e3f09622eb0e9ddba7b1acc3bd1f4ac4e",
+          "sourceBytes": 1899996,
+          "sheetSha256": "99ad95091e23564b4fbb0228f662b8e015db3e1fdd8d8c03207e7c11f9c27637",
+          "sheetBytes": 4690942,
+          "posterSha256": "719292ac1aebfc3aea63d30464a518e588df772f84b834eebce6521d20f3cddc",
+          "posterBytes": 46752,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              207,
+              14
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "63 ko.mp4",
+          "sourceSha256": "311c8dec32ea2cd7943a9b8ec5e493ae2503a64fc20977a431e039d94215aa6c",
+          "sourceBytes": 3299058,
+          "sheetSha256": "d08ab6c5fc843a563378f6b14b9edb06a2bc4388c31b7de38bc05ee385aa2fba",
+          "sheetBytes": 10792498,
+          "posterSha256": "036dec995420a3d9abc55b404b8dd03da4b70e40187c566a97d82435060575ec",
+          "posterBytes": 45078,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              207,
+              14
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "5a5382d4146682770f6fc4cb935a5662dbb9f60145656863e0d0efca23775dd4",
+      "normalizationSha256": "169b501617be083c5b091643fce0edd7f562e5cff437382e906df515b05fa703"
+    },
+    {
+      "speciesId": 64,
+      "name": "Hopz",
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 266,
+        "top": 191
+      },
+      "sharedScale": 0.34213147410358563,
+      "groundPivot": [
+        362.0,
+        375
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 22,
+          "releaseMs": 916.6666666666666,
+          "evidence": "Frames21-23: frame21 begins the arm extension; frame22 thrusts the punch forwards to the left; frame23 reaches full extension, followed by the white contact flare at24.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 25,
+          "reactionMs": 1041.6666666666667,
+          "evidence": "Frames24-26: frame24 retains the guarded stance; frame25 opens the mouth and jerks the torso backwards; frame26 lifts the body into the recoil before the later contact flash.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "64 idle.mp4",
+          "sourceSha256": "857a3eafebdff8fbbc8d311c8ae3dff1f1ece6b27deb3777301fe35e70bdbb26",
+          "sourceBytes": 1417292,
+          "sheetSha256": "aa3fdd8abfe1bedb78023c6ab8769ee212a464976ae022a4cc52fee8da20c183",
+          "sheetBytes": 4387340,
+          "posterSha256": "642ae8a20907b4bf0986e84f33594e1498f933ca967e5828ded1ee437429a584",
+          "posterBytes": 45244,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              60,
+              210,
+              20
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "64 attack.mp4",
+          "sourceSha256": "f8c9cbcef75e6acffa84f7ff5eb01f60b257fd85c1c0b547559e6c63fd4ce909",
+          "sourceBytes": 1629321,
+          "sheetSha256": "474510ab71a6aa7d6ecf65b94d97eb8ed5d9c3eb2222d74f5b8246a921b660b3",
+          "sheetBytes": 4437208,
+          "posterSha256": "614894d1ffff5dc1e57ecb88add038985752ceba574a7347fadfc669b14fb02f",
+          "posterBytes": 45966,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              60,
+              210,
+              20
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "64 hit.mp4",
+          "sourceSha256": "570b88c35af0c4e8983a81c7a8038b16fe351c2deed1c5009649156d651690f6",
+          "sourceBytes": 1497171,
+          "sheetSha256": "974758884cf243095ac2aabdca9160a79be6f6634a71d87560d53657cad6293c",
+          "sheetBytes": 4190784,
+          "posterSha256": "6fbbdb2da699757ee20e8590ce2374917fde1ecce213b93f7a148802f0db12b3",
+          "posterBytes": 45558,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              60,
+              210,
+              20
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "64 victory.mp4",
+          "sourceSha256": "e17e56e187bf899b0730f99cc1a98fcdf2615bad5e308e570aeda8cbf46c7c61",
+          "sourceBytes": 1967002,
+          "sheetSha256": "6be8ddc009bb4820791d86be0d0ac8e811d48a48691d460aedcfcc04061cb872",
+          "sheetBytes": 4242960,
+          "posterSha256": "86d34805d1e2f1ae5c26bb9006f7e3d84c903ff4302c4fc769852ca4480319b4",
+          "posterBytes": 45550,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              60,
+              210,
+              20
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "64 ko.mp4",
+          "sourceSha256": "6065e5f10047eca96ef8d48d14c0bb49967097083a7e3c40bd34e15cc8d29476",
+          "sourceBytes": 1764631,
+          "sheetSha256": "d80377b2bcab11907e3a6112ee2be3730c2d7e9add4d48d2f8d662b1b176354f",
+          "sheetBytes": 4588138,
+          "posterSha256": "f0ae0b734dfaee128e9422fbe1777dc62fa24d8c3505aefdf4162201070edad2",
+          "posterBytes": 45824,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              60,
+              210,
+              20
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "37b3e197918d9b7b5866e9a0a03842e33803446a7abb9686835de11755888019",
+      "normalizationSha256": "5982d4858406ff9ddc73708039e9eda16ca18e1616b28b97caad20277a4dcef0"
+    },
+    {
+      "speciesId": 65,
+      "name": "Piox",
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 255,
+        "top": 256
+      },
+      "sharedScale": 0.31632194244604317,
+      "groundPivot": [
+        351.0,
+        439
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 35,
+          "releaseMs": 1458.3333333333333,
+          "evidence": "Frames34-36: frame34 is the forward lunge without an arc; frame35 first releases the white wing slash; frame36 expands the arc above the tail.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 20,
+          "reactionMs": 833.3333333333334,
+          "evidence": "Frames19-21: frame19 shows the approaching white projectile; frame20 turns it into a torso impact flash and recoil; frame21 enlarges that flash.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "65 idle.mp4",
+          "sourceSha256": "4f8a3f2ce4640c8f6da517c664090b6347d23d8ce76758a59882541f2d9cfdfb",
+          "sourceBytes": 1753286,
+          "sheetSha256": "cd25ec67f30109e72893af7cd0477cce8364ef58523e77d7192d01b7307d473c",
+          "sheetBytes": 4113938,
+          "posterSha256": "38a61ca5b7c53cd6b256a16317a452f7f65ba23b3d1b8dd06768f852d79f126c",
+          "posterBytes": 42732,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              57,
+              202,
+              18
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "65 attack.mp4",
+          "sourceSha256": "098974a5e365c3a1823d4328898ee8f1f51e7e1bd8b95d56e2ab7375282cff10",
+          "sourceBytes": 2882065,
+          "sheetSha256": "7cdd5b8ef2a0c1ee1fe55145ee309f65d6d0c030bb978833f8e94d8a54ac773e",
+          "sheetBytes": 5907216,
+          "posterSha256": "dc96fc561bc4c854b9ea82988c7e28a34b7fa820e3e2572ef14a0165c86f8af4",
+          "posterBytes": 43218,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              57,
+              202,
+              18
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "65 hit.mp4",
+          "sourceSha256": "d8f566f26d9214592035b3e37cd3e7fec4f597b8c20c35e7d356818a4b23b5f2",
+          "sourceBytes": 2565724,
+          "sheetSha256": "f6990fa91d1ae86839e9b9bf0ebcfe8c1bbec872f3a5676bf3f2a3ea89d2d89f",
+          "sheetBytes": 4857956,
+          "posterSha256": "c1277e30083c9d4e8718c418b206a7bcee60e25191e7d011453ec48db4b0bef4",
+          "posterBytes": 43226,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              57,
+              202,
+              18
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "65 victory.mp4",
+          "sourceSha256": "f2cdd51d85b651234dbe0c245fb51813f4349bc1e6e547f9056db053bf5026b6",
+          "sourceBytes": 2061360,
+          "sheetSha256": "010db69d7cd1b444049e5dbfe2b44306d6108116784e634d439005d618862cfa",
+          "sheetBytes": 4365770,
+          "posterSha256": "7267f3d35f7fb333564972fe6a1d150f95ccc9f6f70a92405b084528b5b0bb78",
+          "posterBytes": 43172,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              57,
+              202,
+              18
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "65 ko.mp4",
+          "sourceSha256": "6d9a20ef0c09e55296ed4685b4fc0a18cb74380135da7d07414413cfe4f1ed88",
+          "sourceBytes": 2144575,
+          "sheetSha256": "a636fc5c2496e5e6139fc0b1b5c4f65c7126917bfb6408a7cd8ddde2323ae13c",
+          "sheetBytes": 4784084,
+          "posterSha256": "464bfae6f490be555f608f17ebc685ca2b64a2674ed17415e1ccdc8bad183b6c",
+          "posterBytes": 43678,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              57,
+              202,
+              18
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "ccc42c3ad140ba01a6e271a21874405981acb5258dc87ed43b43df5668244f5d",
+      "normalizationSha256": "60479178e81af1945e32656cc6794da5c5d4b887bf59bc9165ec6dc99425df4f"
+    },
+    {
+      "speciesId": 66,
+      "name": "Hoppiox",
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 190
+      },
+      "sharedScale": 0.2644028776978417,
+      "groundPivot": [
+        288.0,
+        381
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 21,
+          "releaseMs": 875.0,
+          "evidence": "Frames20-22: frame20 holds the raised tail without a slash; frame21 first draws the released white arc; frame22 extends that arc around the rider.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 15,
+          "reactionMs": 625.0,
+          "evidence": "Frames14-16: frame14 shows the incoming strike before contact; frame15 creates the yellow-white chest impact; frame16 expands the flash.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "66 idle.mp4",
+          "sourceSha256": "08582ff4c9cd2ad414bdbf2fa31204eb85663ca60b8cce3baa4bdb695f69acec",
+          "sourceBytes": 1986067,
+          "sheetSha256": "319ea666c1cbb30e4bbc2a31f21d9db228727cfce7dc9620eb645f08297590bc",
+          "sheetBytes": 3510076,
+          "posterSha256": "18dc1543f141fd02a785b7ac9a5a0710b731f4957a10d1d71567d49c58f3ecc8",
+          "posterBytes": 37954,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              210,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "66 attack.mp4",
+          "sourceSha256": "5a915a20bb0f3dc13408f821f26e2ec43c434a73e8dbc26bda8adfc3aa43720c",
+          "sourceBytes": 2154017,
+          "sheetSha256": "f26bcd2b7da896a4ce3338b7ef64163e0351a2fe1cc75383779238fd7fcce0b8",
+          "sheetBytes": 3596480,
+          "posterSha256": "7820f3df15bcb5f31665960adb47f4ac796e7073c49416d9af075f105e52d462",
+          "posterBytes": 37788,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              210,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "66 hit.mp4",
+          "sourceSha256": "2ed0d85001b4f964953548c92995e7512cac8135e37f0476d7bed3313339c459",
+          "sourceBytes": 2117950,
+          "sheetSha256": "8915862c5e5b87a4507a046bd7271ff69fa9a8fdfcaefbe9b3a368b61d6c6262",
+          "sheetBytes": 3564984,
+          "posterSha256": "2133f2e998c1d04d3c8d495f57f53cb8a70c8fac9972beeae14442e5ef5853a0",
+          "posterBytes": 38168,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              210,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "66 victory.mp4",
+          "sourceSha256": "116b3e6511f90d8138541d2d77c16e5138216f1d5dd1f22499cf9225be944a6d",
+          "sourceBytes": 2588647,
+          "sheetSha256": "7e28b0e87439d09026a5d730fc1aaf0cc33c14139783c28deb38d04a2ee9e8d6",
+          "sheetBytes": 4311776,
+          "posterSha256": "0b0c1bad27e35865973461534165d2d5f8606c9a7af09ddd0bade53b19b28cbd",
+          "posterBytes": 37960,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              210,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "66 ko.mp4",
+          "sourceSha256": "ae5eb27487df84845db318fcfcf1d8a4325a53e221e379816b8e1e003dd6651f",
+          "sourceBytes": 2117545,
+          "sheetSha256": "8a928fee3fbbde126a53d07a4b5cabfbdfa031aa6d42959ac8019fd197230717",
+          "sheetBytes": 4048136,
+          "posterSha256": "24ae0c4be324ec0e807d99cdafe298e5187df3f48cbad2acf0bf4f0cf9a8fb3b",
+          "posterBytes": 38306,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              58,
+              210,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "3e25f5091bea31160050278dfe52b2c6e20d05645702f12c36572c4c27168b64",
+      "normalizationSha256": "f872714bda67e2fffd0bcdbfd4dc01e85a27d1d969c919c358020b9290c84465"
+    },
+    {
+      "speciesId": 67,
+      "name": "Fearstraw",
+      "cellWidth": 640,
+      "cellHeight": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 224,
+        "top": 225
+      },
+      "sharedScale": 0.29909274193548385,
+      "groundPivot": [
+        320.0,
+        413
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 50,
+          "releaseMs": 2083.3333333333335,
+          "evidence": "Frames49-51: frame49 raises the hand; frame50 first releases the thin white slash above the hand; frame51 widens the arc into the forward swing.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 25,
+          "reactionMs": 1041.6666666666667,
+          "evidence": "Frames24-26: frame24 shows the incoming straw projectile against the torso; frame25 creates the first white impact flash; frame26 expands it while the arms recoil.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "67 idle.mp4",
+          "sourceSha256": "9f9aa6fb5539a44c7a40f184aa598501e213167ace95cdb3d9cf272a7b4241ab",
+          "sourceBytes": 1941687,
+          "sheetSha256": "479f081c865394662e4c828641b1729a2bf6839027bf85dcfb28ea5368162d75",
+          "sheetBytes": 3648646,
+          "posterSha256": "587b8d7310279c011062e86aab16a1df94ed4f2616c9fc8c5cc85926ae54fd35",
+          "posterBytes": 40862,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "67 attack.mp4",
+          "sourceSha256": "4069274f77105c33f96eacac32907bd61524909afec47fe81450311bd5741d13",
+          "sourceBytes": 1881881,
+          "sheetSha256": "a99aa7705f6d7f1343fa11ba93248f9a9743b285b1c233feb2abb10d6066ce2a",
+          "sheetBytes": 3647508,
+          "posterSha256": "9d6ce239da2d836f253fec0d0f567965215a45d48d63027667d53b9bbae202b9",
+          "posterBytes": 40816,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "67 hit.mp4",
+          "sourceSha256": "3c4864b4debbb96c5b18604c0464fd7f8a63a098011b146a321e49adf83dbf80",
+          "sourceBytes": 2199189,
+          "sheetSha256": "54db0b8e0f01e667aa39abfb1a7b12a9564db3853a7882da13f615863b0f9099",
+          "sheetBytes": 3783234,
+          "posterSha256": "044398d998700944306d6b6aa7379d3eda9fc764a0ebc3ea04daa809e5a8dae7",
+          "posterBytes": 41178,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "67 victory.mp4",
+          "sourceSha256": "c181da575f0fc634b60a96004835dad0aa7b9e936441aca0ff1218a902df0610",
+          "sourceBytes": 2391209,
+          "sheetSha256": "9fdb8707b3fb15b8ff4b22158dfebb4210fe52afa195aae500c46e63a4edbc0a",
+          "sheetBytes": 4182062,
+          "posterSha256": "c534f159c5538c17d77149d1e0698d776ab9b1076f1a9453b90c701ef7944358",
+          "posterBytes": 40876,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "67 ko.mp4",
+          "sourceSha256": "7f95077c8154e4ea96af413fbcc4f07e3812e89e13f36c6e04dc23fc21258020",
+          "sourceBytes": 2219947,
+          "sheetSha256": "6cdf9f95988caa1494d55483fbdacd4be4d943124ee282c78c875381dc80aaab",
+          "sheetBytes": 4304460,
+          "posterSha256": "28a77cf3a62b5ec15bccfd3ad05c26e31622fc137fb04a93b564fa9da43798e4",
+          "posterBytes": 41012,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              209,
+              17
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "797bff4b12cba3f9658deaf8e5dd9dcff4ae92e858fdbb17a38f4965681aafa7",
+      "normalizationSha256": "0d8c18526ae193a84faa63b44e9d0eed039fb3a9f40f726c496cf822eebed65d"
+    },
+    {
+      "speciesId": 68,
+      "name": "Fearstraw",
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 189
+      },
+      "sharedScale": 0.25025,
+      "groundPivot": [
+        288.0,
+        381
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 35,
+          "releaseMs": 1458.3333333333333,
+          "evidence": "Frames34-36: frame34 finishes the open-arm preparation; frame35 first emits the white-purple hand arc; frame36 swings it across the torso.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 17,
+          "reactionMs": 708.3333333333334,
+          "evidence": "Frames16-18: frame16 shows the approaching light streak; frame17 introduces the white contact burst and torso recoil; frame18 expands the flash.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "68 idle.mp4",
+          "sourceSha256": "a61257d671a1df0a044f51efa04ea69aec4c5f2dba8baac08277a3a4faf9dee2",
+          "sourceBytes": 1831907,
+          "sheetSha256": "6e3c198bfbabd9f3d0c069ce461d2f4f3989d1fa2bc3319e08eb4f5ee244ab09",
+          "sheetBytes": 3618740,
+          "posterSha256": "5c22024ce3a7492c4103b84bbbe7eda733ccf20c6bc15290a998f82db5b98d56",
+          "posterBytes": 39202,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              211,
+              16
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "68 attack.mp4",
+          "sourceSha256": "a8b0a2940f0756d88fb74d24fdadfdfbc51dc268fde9fa5f8ca8e3502f850502",
+          "sourceBytes": 2336535,
+          "sheetSha256": "11111fdd6406cfc45ab4aab3173daa907bdc94d12ce1f81479f45ecdc6209d8a",
+          "sheetBytes": 3625330,
+          "posterSha256": "eacfeb62995f3416e8d6034e176e6cee12fed30633d67f981415625186cad576",
+          "posterBytes": 39046,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              211,
+              16
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "68 hit.mp4",
+          "sourceSha256": "872b1ff0e3290b790ff94a28ae72e184c7eac954f441f6915c7f784e0d2b4751",
+          "sourceBytes": 2628856,
+          "sheetSha256": "eef6877dfa69b6552f4f79ae64dab3ffe3406b39f9b1c8179993e5c51943897c",
+          "sheetBytes": 3831208,
+          "posterSha256": "ea0f516d60f317597e81814ff28a43c55bd83f0b8dbd8c66afc47fd6935904b1",
+          "posterBytes": 39262,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              211,
+              16
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "68 victory.mp4",
+          "sourceSha256": "72894b7b36cf2de00989879cc71899d569048d76eeef786fe522d2e45352684e",
+          "sourceBytes": 2598114,
+          "sheetSha256": "5ba07dacf24a4bc871710dbbc1be2a6b412a76aa71e8c159eab2e6e0fb6ce980",
+          "sheetBytes": 3658652,
+          "posterSha256": "233f888822fb9467061b6f244a479143c1bf28d92071e86723b94bb1484cc270",
+          "posterBytes": 39280,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              211,
+              16
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "68 ko.mp4",
+          "sourceSha256": "f472fd815bb3109699afc70ecc76002a5fef583d864841b098dd3f730cf7ce4b",
+          "sourceBytes": 2798170,
+          "sheetSha256": "dada9ef66486dece42bb43b1abcd3c504a205cc35ba5aed019c98618089915a5",
+          "sheetBytes": 4321880,
+          "posterSha256": "e36873398b0fa4db4c740c5932c003628d33597845116ee0d2095b76f537db0d",
+          "posterBytes": 39050,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              59,
+              211,
+              16
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "34b29de0c0e37038df085d74f50675b11d6f3a4374dede2496301ab44c28914f",
+      "normalizationSha256": "5f89fb87cbd9e9fc385248ecbf62bcef4f1bf90ec24dd22748f3a04dc2fa5315"
+    },
+    {
+      "speciesId": 69,
+      "name": "Lickard",
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 332,
+        "top": 256
+      },
+      "sharedScale": 0.39671052631578946,
+      "groundPivot": [
+        428.0,
+        426
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 38,
+          "releaseMs": 1583.3333333333333,
+          "evidence": "Frames37-39: frame37 raises the head with the tongue still curled; frame38 fires the tongue straight forwards to the left; frame39 extends the tongue and body into the lunge.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        },
+        "hit": {
+          "reactionFrame": 26,
+          "reactionMs": 1083.3333333333333,
+          "evidence": "Frames25-27: frame25 shows the incoming strike just before impact; frame26 introduces a white flank flash and recoil; frame27 expands it.",
+          "inspection": "Consecutive original frames, zero-based indices; all96 originals retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "69 idle.mp4",
+          "sourceSha256": "6c1906c95e39962c5961a090446c7d3ae49806495a3e74a54d5f3ee20857027a",
+          "sourceBytes": 1009307,
+          "sheetSha256": "a18ce6faab8d70d7b1c179c00d60dad9f4f9d656fc50fe9c45223f3c6bbb15d6",
+          "sheetBytes": 4423746,
+          "posterSha256": "7a62b878fbe381ad6ac9e99d58531184bd2a8f75bf2a055d928a24572d6e708c",
+          "posterBytes": 50378,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              52,
+              247
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "69 attack.mp4",
+          "sourceSha256": "871ce7abb42d5eb2ec26b8cb82cccca85b740d484d69259088d787ba539e3c12",
+          "sourceBytes": 1472778,
+          "sheetSha256": "2d61f5d3abfe730a0abc1235e4438dcd65984ed5761cda6042a03e79ede6c1ec",
+          "sheetBytes": 4522904,
+          "posterSha256": "da1919db8498f0466c3e03f53fa12a528a80a194bcaea4913e5f63c9b486c16d",
+          "posterBytes": 50534,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              52,
+              247
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "69 hiy.mp4",
+          "sourceSha256": "126642c851fcb7a2f2dddff492e9ef0d437660fe5f922777cf698d70862d888a",
+          "sourceBytes": 1423023,
+          "sheetSha256": "a0667fb58bb9382c2c11fc55b4199f6fba6c2383d9fd5c88369187e137ecac8b",
+          "sheetBytes": 4921522,
+          "posterSha256": "40d2d705abc4a97fe9ce6577b0eb8f7e37c8d7bfb24612d1283c9a5028abb5e3",
+          "posterBytes": 50932,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              52,
+              247
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "69 victory.mp4",
+          "sourceSha256": "102a50933b5109a08acef8d8ec3ae6459243d38e711cc994b896a39dadbde5a7",
+          "sourceBytes": 1703180,
+          "sheetSha256": "1bd19c079b5b9b02097b4ba4561b36a063ecf10f2adbcce15a4099494d7be818",
+          "sheetBytes": 4434182,
+          "posterSha256": "bb21c647d9588d8002b8a39318a76c09cc029d81127f96d29cb1d75ee959a6c3",
+          "posterBytes": 50038,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              52,
+              247
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "69 ko.mp4",
+          "sourceSha256": "a6ba212584d9ae150e056cd217207bf1924bd6dd5097583f96ed2426770cc49e",
+          "sourceBytes": 1993228,
+          "sheetSha256": "a7e5e9d9b8afa94296d7565655d95fc60af5c7e3676a13618284739111b43d37",
+          "sheetBytes": 6185434,
+          "posterSha256": "75735590b2012c00a728f0e29f39a9bc1d9d82ead542a392190aa8ef9328010e",
+          "posterBytes": 50212,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              52,
+              247
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "fe56c7fef4bd9905426ba2116b78e32b121c7b60e4bae70c3e5aa3740e385d5d",
+      "normalizationSha256": "449d081d3526d3c1c043e9586a2ba0f15f29117e8a4fa125d86158c990550314"
+    },
+    {
+      "speciesId": 70,
+      "name": "Lickard",
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 255,
+        "top": 257
+      },
+      "sharedScale": 0.33329372623574144,
+      "groundPivot": [
+        351.0,
+        439
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 50,
+          "releaseMs": 2083.3333333333335,
+          "evidence": "Frames48–51: the tongue uncoils and extends forward; frame50 starts the broad blue streak along the extended tongue.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 14,
+          "reactionMs": 583.3333333333334,
+          "evidence": "Frames12–15: steady stance before frame14, then pale impact across cheek and visible recoil.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "70 idle.mp4",
+          "sourceSha256": "29217b0251779af1c8851bb35750a96a3c3deba973cd85bb500c82b9c17e8fdc",
+          "sourceBytes": 2468918,
+          "sheetSha256": "46a7965b45b6e33c0035c56e74f4348b98a3fcace70aae9fdddb6b37057ff8c3",
+          "sheetBytes": 7360238,
+          "posterSha256": "4729d8ccf60a6932e3fb4ae446c407cc15fbbf5bad9f4670db41021feaade41c",
+          "posterBytes": 64400,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue"
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "70 attack.mp4",
+          "sourceSha256": "38e804593be767d3c1e2a3914e82d3368d0fd3ee9385da7a1cb744782f8e1f38",
+          "sourceBytes": 2617983,
+          "sheetSha256": "1f4d9e7d5440c9dee74db91b6f8989f4a39810e83e4930cc23acc431c8c41ad7",
+          "sheetBytes": 6380540,
+          "posterSha256": "685e5aa635a0c0f5104e64e47ff59ba6a38987909583002da4a0325c51473136",
+          "posterBytes": 65204,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue"
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "70 hit.mp4",
+          "sourceSha256": "0b49f1393dbd80b8709ffeb281d24e136ad6ef05c2710b298e8030d5f5019dc8",
+          "sourceBytes": 2871446,
+          "sheetSha256": "e404830c57325fe0d0289841daac384863249d0ebf6d2c7853b12d05c7769cbc",
+          "sheetBytes": 7830354,
+          "posterSha256": "6c35b118634a7742575d9f02f03df19f7de264f0a0a54f7888e47ac67443a2d2",
+          "posterBytes": 63868,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue"
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "70 victory.mp4",
+          "sourceSha256": "a17d1da14958ade984ab384c8b0d50466655439f7507b9ce7524815b6786ccdc",
+          "sourceBytes": 3334807,
+          "sheetSha256": "a6ac76826987ab42b9478a62ff3fa3dcd354731b2aff7e85be6db5db9f6f7048",
+          "sheetBytes": 9249284,
+          "posterSha256": "ea8cdc5e5061a4d05afdb381788af62ad8d4552e72156c41078c3305178d865a",
+          "posterBytes": 61740,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue"
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "70 ko.mp4",
+          "sourceSha256": "57a9b1c8573b5e8072fb8af9f5dde6babe527f1f7f29db3d96faaa5ba309dc0a",
+          "sourceBytes": 2994468,
+          "sheetSha256": "d118482a0ab6fc14d2375951ca0722bee5867a59665b9895fc690b21e788b09b",
+          "sheetBytes": 7370180,
+          "posterSha256": "ebde26793e3ae416cd066d5aaf99e2a7175249442eae770092ff7005abcafb33",
+          "posterBytes": 63738,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue"
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "811e87cc2375d7297c3d322239f15afee93df336e39de911d3d679b990f5e84e",
+      "normalizationSha256": "2bff8f72c721cfbc62cc88eca277c0529cefdec1874bf07c3594afdfa3220b95"
+    },
+    {
+      "speciesId": 71,
+      "name": "Blizzaquil",
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 256,
+        "top": 246
+      },
+      "sharedScale": 0.3502030162412993,
+      "groundPivot": [
+        352.0,
+        427
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 19,
+          "releaseMs": 791.6666666666666,
+          "evidence": "Frames17–20: eyes reopen, wings rise into the active flap at frame19; white wind streaks follow at20.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 31,
+          "reactionMs": 1291.6666666666667,
+          "evidence": "Frames29–32: frame31 introduces the starburst and opens the wings in recoil.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "71 idle.mp4",
+          "sourceSha256": "09126d44c17cda19553efe90b6f6729bed927ba56dc1c44c9b9087686b18002d",
+          "sourceBytes": 1415409,
+          "sheetSha256": "7d5bdd8076e8efef0875bbd66217395255031575165674ab30caa0078ccf3dd5",
+          "sheetBytes": 3392568,
+          "posterSha256": "fc01af6a47f8112cbb19b1f43982d22cb5c660c2d39bbc81e5a1ad1baaee055d",
+          "posterBytes": 36404,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "71 attack.mp4",
+          "sourceSha256": "4b9bf82c2f29fe3d8e2a2bb287fb5aac2de649c5ad40de979c7ccd47adec9cb7",
+          "sourceBytes": 2178901,
+          "sheetSha256": "e5ff655af87d48f295732a97d90927cd38fe11d2db32b66607b8789ae2389fd7",
+          "sheetBytes": 5420562,
+          "posterSha256": "3c66f2c59874c7a18416482403ce5adde72f73278c895a312727507e8982b694",
+          "posterBytes": 36068,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "71 hit.mp4",
+          "sourceSha256": "f4be823e6eb90960e3bca76cb24a9b5851a5db4523179c8025754cc8cde09fa1",
+          "sourceBytes": 1741059,
+          "sheetSha256": "8f1620509812a3da5615dc794f7e0a0823ce09001eaf3caf8373cc0f1f44b1d9",
+          "sheetBytes": 4210474,
+          "posterSha256": "6993da22524a5fcc0c1593fb41d7bad2c4c08232ac16f42eed98281d60f24b64",
+          "posterBytes": 36520,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "71 victory.mp4",
+          "sourceSha256": "60c732c134134448df0beeb19d6c2910fe798de7fb08a8b9a096a4c44e1a0e86",
+          "sourceBytes": 2553578,
+          "sheetSha256": "d6f5e32317f2f7ec8f8b7239f107893a4e7f4bd09fd37b00812d201d518d6956",
+          "sheetBytes": 7400716,
+          "posterSha256": "7c7d4e3eaa8157180814a3e56255e7c9673dae2fa60c05ab103339b27a23b9bc",
+          "posterBytes": 36890,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "71 ko.mp4",
+          "sourceSha256": "00fc54eab610078a6f3114061c2ceb4fdb84f134ff9af2b727799108a7c07787",
+          "sourceBytes": 2179483,
+          "sheetSha256": "624426a82b79157e95c97f8802ce5a319288e59dbc8a0c70af7993dc05caefe0",
+          "sheetBytes": 5714516,
+          "posterSha256": "8c96166d5a424a6dfac45a17069f72b9322499248e2cefec23df3695c59c4c0c",
+          "posterBytes": 36556,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "555a86b58bfaa52ef147ad3ffc3b7cf037af9a86811a8936f8c8509dcc45aa01",
+      "normalizationSha256": "4580707eec3a136588a5219c63a8025ad83f06c9a7e26700316ae053852bb223"
+    },
+    {
+      "speciesId": 72,
+      "name": "Blizzaquil",
+      "cellWidth": 640,
+      "cellHeight": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 224,
+        "top": 225
+      },
+      "sharedScale": 0.3002981448763251,
+      "groundPivot": [
+        320.0,
+        405
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 49,
+          "releaseMs": 2041.6666666666665,
+          "evidence": "Frames47–50: wings held high before49; frame49 emits the first long white wind trails during the downsweep.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 26,
+          "reactionMs": 1083.3333333333333,
+          "evidence": "Frames24–27: eyes close and posture tightens at25; frame26 is the first broad central impact flash and recoil.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "72 idle.mp4",
+          "sourceSha256": "75450bb3c43e4cca7600005e2880141383b6b194a165fd918aa19029b7e74020",
+          "sourceBytes": 2814897,
+          "sheetSha256": "0c8e7052db165ee17ad7ddb1ab786bcabf908750064161a2938c73b3f4a953fa",
+          "sheetBytes": 5226232,
+          "posterSha256": "725fa3a2ea5710344b4b3cca1dc52ecf32759eb58e08f21d87b084e82fade913",
+          "posterBytes": 44994,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "72 attack.mp4",
+          "sourceSha256": "d95b031e1b87299af5eaa710f512e47fcc50f3ff7b4f973fedaa86c5cab1eeba",
+          "sourceBytes": 2496997,
+          "sheetSha256": "15887cf1ae720eb4b7770d9a49183f02fe9d88a99eea02be71c7097bbe9c1b46",
+          "sheetBytes": 4254494,
+          "posterSha256": "6d39d245f2c5901749156a3ae0f7270fe04390d36ee398eb84abc97a3a21f380",
+          "posterBytes": 44958,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "72 hit.mp4",
+          "sourceSha256": "98a9dcbe7e568fc88b3d8f9f45f43b7858020637ae54cabda9bf09aa4d8eff40",
+          "sourceBytes": 2451308,
+          "sheetSha256": "ca09107ef1424012670d3edcc928857e249e893e85665ef3eaa89076d8262cd1",
+          "sheetBytes": 3985164,
+          "posterSha256": "a08a9bb69abf4debc2b106e161afcbbeaf420c5c4c3abd264440cb801a60c38e",
+          "posterBytes": 45572,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "72 victory.mp4",
+          "sourceSha256": "487a517e364f906bf00a2aa2b45688b5a54e9a8ec6c94ab31ed7fb6574d1e5ac",
+          "sourceBytes": 3165825,
+          "sheetSha256": "960a9b4f36f3e637b9e2cdf5847e8cf6fd8ff2ac7d21da5f6c50066e6567bf67",
+          "sheetBytes": 6072004,
+          "posterSha256": "44663cbc7ef8923f16d6ca53f19f5acc45573604c6b4841ecb97dc34ecc7d93d",
+          "posterBytes": 45502,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "72 ko.mp4",
+          "sourceSha256": "babc8393cce7ffb5db861f8611530de6ec1035a3b1070285b8b08dc8e7773ded",
+          "sourceBytes": 2962167,
+          "sheetSha256": "5e626df05c95b08a514d317536629e80e6d463ff8a136dc3f58a69cb1a632861",
+          "sheetBytes": 7685830,
+          "posterSha256": "8f4e91f8ea21710581b823d4bd1d13b5c762eba5c39fd65c691cd261ae3c13e6",
+          "posterBytes": 46266,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "0aa2d96886e1cab70eb912ec38b4b234e79cdb47d9d8964cf4b755be1af59289",
+      "normalizationSha256": "3d723bcc213b97d066b2f6115cddd185a79f3640c669e16833ad760d5edf2a2c"
+    },
+    {
+      "speciesId": 73,
+      "name": "Blizzaquil",
+      "cellWidth": 512,
+      "cellHeight": 512,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 160,
+        "top": 161
+      },
+      "sharedScale": 0.21954557897618396,
+      "groundPivot": [
+        256.0,
+        317
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 32,
+          "releaseMs": 1333.3333333333333,
+          "evidence": "Frames30–33: frame32 opens the beak and releases the white wind vortices around both wings.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 13,
+          "reactionMs": 541.6666666666666,
+          "evidence": "Frames11–14: frame13 introduces the large chest/face burst with blurred wing recoil.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "73 idle.mp4",
+          "sourceSha256": "b95f572b67bc405652d05655863e2a92204a16db4c8265ed332bc53bcadf2737",
+          "sourceBytes": 3304198,
+          "sheetSha256": "008ce74cd17af8372b10413ae9c846228e53a89f532a431e5605eb6e1804d0d7",
+          "sheetBytes": 3935644,
+          "posterSha256": "14e00ff118afd683a97d19b5bf9b4df3941ccebd825a2f4d7473d4da79713f75",
+          "posterBytes": 36490,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "73 attack.mp4",
+          "sourceSha256": "9c3359d157c1e043cf54676be19f36d5247ef3dd82e096479ca6d0ef537ba7f2",
+          "sourceBytes": 3743185,
+          "sheetSha256": "9a355e7d4a3ded0a8ac14d105dcb3b484d9315b6eba23d83765dcf8ed4a1d106",
+          "sheetBytes": 4658130,
+          "posterSha256": "c20b1869ce5517e229dd7e37dcb948c40369462856328fa58f55e5662865b93c",
+          "posterBytes": 36336,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "73 hit.mp4",
+          "sourceSha256": "9aea88e6aff4f6179f3a2b66ff8a77bec7a01064e27d62a8862f53cc7193a2f4",
+          "sourceBytes": 3730040,
+          "sheetSha256": "5094fd9d58d80ad84e5971c1c2da928e5fb020e75fdc2e537fe8e62f7539409e",
+          "sheetBytes": 5084416,
+          "posterSha256": "f4ef27a6b497d788e1dea13a0e0836512251fa3bb292436d44e1e15544537bc8",
+          "posterBytes": 36400,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "73 victory.mp4",
+          "sourceSha256": "8b99468269089faaff25b02973acf61788e38fe7b076ff32de425c4fa18008b7",
+          "sourceBytes": 3909232,
+          "sheetSha256": "1e14aa2ac81208c41ba208fd5f1ab97b140b78da2f3aa4bffcea896a8b3cb176",
+          "sheetBytes": 5191750,
+          "posterSha256": "3b87a4fb04634c37682875c9d40c7dc05c53e352d56b5336953ae75f4844e337",
+          "posterBytes": 36678,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "73 ko.mp4",
+          "sourceSha256": "c244e7744a2b5e91bf3e42d449a64ae8eb7820eac1db5160c29b58aed25b7f63",
+          "sourceBytes": 4322869,
+          "sheetSha256": "143cb876fa54669746c0324a52c168c9c774ec4c4613cc3a2dfa8668562dc8dc",
+          "sheetBytes": 6544140,
+          "posterSha256": "624a8a01c0f6c746bc92eb90be6f3afa7cfd9f7ab4486cc8f941264a36e89b67",
+          "posterBytes": 37004,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "08c97106dbe9aa31b7e2003c411e63640336e3f5140438875b6a9117228f7e92",
+      "normalizationSha256": "8fe1e003c63a4ce729844db2bd6f0347107d36e0bfa7ceb0c09a65c4d62d6cfc"
+    },
+    {
+      "speciesId": 74,
+      "name": "Impise",
+      "cellWidth": 768,
+      "cellHeight": 768,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 287,
+        "top": 290
+      },
+      "sharedScale": 0.3534375,
+      "groundPivot": [
+        383.0,
+        472
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 34,
+          "releaseMs": 1416.6666666666667,
+          "evidence": "Frames32–35: mouth flame gathers through33; frame34 expands it beyond the snout before forward release.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 14,
+          "reactionMs": 583.3333333333334,
+          "evidence": "Frames12–15: incoming fire reaches the body at14 and becomes the first large starburst.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "74 idle.mp4",
+          "sourceSha256": "6cd7e01d96011ac9214f967204d31baf95616c7bff7187b33b0097fb9c6504ac",
+          "sourceBytes": 954907,
+          "sheetSha256": "1998e53eef1947c5fa1b142325deabe162a2e47f635f859b5480657f3cb9e66c",
+          "sheetBytes": 3018252,
+          "posterSha256": "061af30b3abbaabe3c756482f23f58d487747f40d133830b2477e0a6f637432f",
+          "posterBytes": 32580,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "74 attack.mp4",
+          "sourceSha256": "28a5c55297682f865d78ebaa663de78b7ec035ee6a4ae275023abbb73c5bae5d",
+          "sourceBytes": 1526515,
+          "sheetSha256": "33e21b621d443921a1fc5427241721d96dd3ef9c99589ffdfc742073526080a9",
+          "sheetBytes": 4689400,
+          "posterSha256": "e15e2bcc551618cc5c632d7b2f701f55d122e99eb296adddb14e9cc8d2d8c455",
+          "posterBytes": 32468,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "74 hit.mp4",
+          "sourceSha256": "de82e3016c86c81adced36417a22d06d6062160a7b1cf275c1f808a3a3e1278d",
+          "sourceBytes": 1675333,
+          "sheetSha256": "ebeeb6d5878cc53e18bfd17c50ef3f9e9cb17194e9cfa4a0a153eae45dc699f8",
+          "sheetBytes": 4050082,
+          "posterSha256": "00b542313827776be6c747c980ee326a913d952f089deca4b75e59f5e2958fcb",
+          "posterBytes": 32498,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "74 victory.mp4",
+          "sourceSha256": "d4d6aafc2f454d38266b23425addef3ec829d05611ef3dc2e68601fdc3199920",
+          "sourceBytes": 1568002,
+          "sheetSha256": "d94af62602489ff69553dca2c80e6a496bd347588fba14a657c94d344c5423f6",
+          "sheetBytes": 3889774,
+          "posterSha256": "7e845f9abfa3fff24e02808fdb24a5760867a4f280134d82492b1ad6096adca7",
+          "posterBytes": 32366,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "74 ko.mp4",
+          "sourceSha256": "fccc91cafcd4d65cf9da1fe53f50ca71d0c98552acc294f325753a969d09f809",
+          "sourceBytes": 1269486,
+          "sheetSha256": "59718fdde94234cad21b54622e3dcb5c07e634687e6a1d71ec8c29e681ba5cec",
+          "sheetBytes": 3875368,
+          "posterSha256": "de5d1a8c68ce86305f786a5be83a9e67f76d3c1450fb17328e58371b03fe605b",
+          "posterBytes": 33138,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "2108991ba07fb4b21978f8b6f7ed4e0305eec8b0e519a46c88fc837ca158a6fe",
+      "normalizationSha256": "69c31e152b8080ff085966a0fbc4432b78f72faa5afb1ced96ee7967631bb857"
+    },
+    {
+      "speciesId": 75,
+      "name": "Impise",
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 256,
+        "top": 255
+      },
+      "sharedScale": 0.3400049115913556,
+      "groundPivot": [
+        352.0,
+        438
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 51,
+          "releaseMs": 2125.0,
+          "evidence": "Frames49–52: the mouth flame extends into the forward jet at51; fire and loose pages remain native source effects.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 26,
+          "reactionMs": 1083.3333333333333,
+          "evidence": "Frames24–27: the head dips before26; frame26 sharply spreads and raises the wings in the visible recoil without an invented flash.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "75 idle.mp4",
+          "sourceSha256": "b519d3a6e90df77aeffbb2871a195b3b65ab23501c1c6813d04b94f23becf6a5",
+          "sourceBytes": 1554906,
+          "sheetSha256": "f15c8c29fad81a4de1644e4741d30da1028e69bd009d37ec54d79fd4f1031555",
+          "sheetBytes": 4921272,
+          "posterSha256": "abe91efa9e53b46c5409f955f2684bde6d5aeea27f9bf90a4b7096c8c4c5e2e7",
+          "posterBytes": 51878,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "75 attack.mp4",
+          "sourceSha256": "1549744775e597e67606e0c01bfffa4eb2ea4eb5018caf3a23308d020e1b809c",
+          "sourceBytes": 2917441,
+          "sheetSha256": "2495b9026aa77bd206f007d70e0c8b8c31e63502b365d4dde61154ebc089f02c",
+          "sheetBytes": 8947364,
+          "posterSha256": "a5f1088581c7af8d791d785f18a3a26f11646e9cc050c5ff47933dea5cea5be0",
+          "posterBytes": 52132,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "75 hit.mp4",
+          "sourceSha256": "5244e6a2d3dc991168d06c7a7a979b9e1c810a64ffdf97cf04044e2946242fd6",
+          "sourceBytes": 1741170,
+          "sheetSha256": "e141a093ab441965e60679442a25ba8598b6be2a3fa30f63d6e3a14caac28c12",
+          "sheetBytes": 4809994,
+          "posterSha256": "70818b21549a7d7c7188fd1a0b5e93c0dd6600ae5e1d2f1150b864f28bd27bcd",
+          "posterBytes": 51814,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "75 victory.mp4",
+          "sourceSha256": "4b85b20586c369520960d06b357054069be6077a1c1a726204079f9d97ee7a76",
+          "sourceBytes": 2742177,
+          "sheetSha256": "e90f1711c70f919ec719df69efa3d54a0f552f7cde72079853c364d6e3cd300a",
+          "sheetBytes": 6928150,
+          "posterSha256": "afbba3d9f489fd958bddb3db2e4932ccab1b05d782e2671bac24bfb0e94f9f59",
+          "posterBytes": 51352,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "75 ko.mp4",
+          "sourceSha256": "9cf067da7d685dd5bd457e9c47b4afb6f00706e688199f145757562990f5b2f2",
+          "sourceBytes": 2031692,
+          "sheetSha256": "c07fad2fff1e44b3ff945e2a366f689cd25de613dceae3557c6f3f90356cf944",
+          "sheetBytes": 5644296,
+          "posterSha256": "b70a66a1e577cc6572c7128d4c101e47e7dbb2eb87a36598f886c2110072df5e",
+          "posterBytes": 53022,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "d6f2eb82b5fc4feed9dceeeea51d7bcdb111448ed55cf6e204e59022f42f2cfc",
+      "normalizationSha256": "5ecb3eedfbc11fd5132d2267e867d357823f73cc92c4a168931ebd4c5e1e590c"
+    },
+    {
+      "speciesId": 76,
+      "name": "Impise",
+      "cellWidth": 640,
+      "cellHeight": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 224,
+        "top": 225
+      },
+      "sharedScale": 0.30585548172757476,
+      "groundPivot": [
+        320.0,
+        412
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 39,
+          "releaseMs": 1625.0,
+          "evidence": "Frames37–40: raised claw held until38; frame39 emits the first broad flame sheet behind the claw.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 22,
+          "reactionMs": 916.6666666666666,
+          "evidence": "Frames20–23: a small core appears at21, then frame22 gives the full chest impact and contracted body.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "76 idle.mp4",
+          "sourceSha256": "1d15f5820c87ed0f3d6d68ca97271f40e08e119bab892f3846febbc652db3336",
+          "sourceBytes": 2783278,
+          "sheetSha256": "b64ce8733975d4442d5243d427529076abed363e573a3980553414ae40a2b73b",
+          "sheetBytes": 7328240,
+          "posterSha256": "b2b373a569aa3fddf11fd1ff76941c6e37dcb5e43429974ab18407e0e4a568a7",
+          "posterBytes": 64858,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "76 attack.mp4",
+          "sourceSha256": "e77c0cca815b0457483e8f7fe787b5bfd0d3e9b0abd0b46ed6d443d505278124",
+          "sourceBytes": 2458179,
+          "sheetSha256": "951e46bbde335f6d7dd47c55e0183c9e0102a00a9c8243d52a5f222e1369daad",
+          "sheetBytes": 6500876,
+          "posterSha256": "f9f09a7614c73728b7023495aec6fb82a4e9c841626558758a4f33b2711d2a63",
+          "posterBytes": 64782,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "76 hit.mp4",
+          "sourceSha256": "7d19de0d43e640454297f3d494a855dc1ddada5b17646ef77518a9ecbd35897c",
+          "sourceBytes": 2553011,
+          "sheetSha256": "2883ce81900ccdf495fd658db70702651b058044f4c9365e636a06ace8307947",
+          "sheetBytes": 5888622,
+          "posterSha256": "bf046d7a4691fee7b86eb823d1c7948e9cde20e0476f10a51dfcc99f85aadf03",
+          "posterBytes": 64728,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "76 victory.mp4",
+          "sourceSha256": "6ff44a7f20a8673fd2c136af03fa016bf634ed09c5a5397b93955ddb92aecac3",
+          "sourceBytes": 3150680,
+          "sheetSha256": "e3db26dd78964c33e34e04b17282cb96bb2d660ce68c4af87c3855f1f773c323",
+          "sheetBytes": 7919016,
+          "posterSha256": "56cfa8828edb0be2053102b1eefc7799b32402ca600ba9faf1b79f3d29f27f0f",
+          "posterBytes": 64262,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "76 ko.mp4",
+          "sourceSha256": "a2206045553483f59a52f9b0048a51efc5d3535062eaf2edc9265013aac5ec63",
+          "sourceBytes": 3080275,
+          "sheetSha256": "6faee66ee9c2ba88f412aa6ce321aabd6c5d556487729057a04affb3dc021e3f",
+          "sheetBytes": 7088156,
+          "posterSha256": "0cb11df5b4d8cdf88130f783b494a830e0bd86b41e9fd9e59fd61eea3fcb1aad",
+          "posterBytes": 65094,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "7647facd34223f3299ce13165407b35d364e0eb25db21e2151383be4d161889b",
+      "normalizationSha256": "3fcaebdc0b72cf71128d60778965830390303886a3025c080bb2027a79f2b8ba"
+    },
+    {
+      "speciesId": 77,
+      "name": "Ignitor",
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 195
+      },
+      "sharedScale": 0.26627218934911245,
+      "groundPivot": [
+        288.0,
+        379
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 55,
+          "releaseMs": 2291.6666666666665,
+          "evidence": "Frames53–56: fists open through54; frame55 opens the furnace/mouth into the upward fire plume.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 35,
+          "reactionMs": 1458.3333333333333,
+          "evidence": "Frames33–36: frame35 is the first white body flash with arms and stance knocked apart.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "77 idle.mp4",
+          "sourceSha256": "15c8178152eb3f50ac84f650e0e5b5dad3d5c308b26e348d29ca1b4acd94ff74",
+          "sourceBytes": 1453316,
+          "sheetSha256": "1c355b2de2162d761455cf7d0fc44a322e52221f3fe529e466cc7c34236257ae",
+          "sheetBytes": 2831274,
+          "posterSha256": "b48ad4413b73973ac30e0fce082a09f4a366d3c2ad656a1f0184685102f6e5b4",
+          "posterBytes": 28518,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "77 attack.mp4",
+          "sourceSha256": "d612f3c24613de4bef54be7d6bf2917b7b757802f55888365fbade0e28455a18",
+          "sourceBytes": 1418068,
+          "sheetSha256": "1a1833799b468f20e1e69dd5925da2b08c183358bd8f04cbc1909461023c4610",
+          "sheetBytes": 2852414,
+          "posterSha256": "8a588be017d9d4187850c3dd5b8e48fa7a43c4745c214f51f51a32062cd55c3a",
+          "posterBytes": 28272,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "77 hit.mp4",
+          "sourceSha256": "1d31f1b94b9befb549766f2c0bdc40bf1eccc1a56c11fe33ec98fc415b8c5d36",
+          "sourceBytes": 1797020,
+          "sheetSha256": "39eb683b5159c81f045f35e80ed97ece6ffb7f5f486f4fc125465467a2c975d9",
+          "sheetBytes": 3275260,
+          "posterSha256": "db7e803b55f4c3b4ac34f2dd8aa356d25d365c8e9d6a65dc0466460cf6004997",
+          "posterBytes": 28434,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "77 victory.mp4",
+          "sourceSha256": "0b645e0a7bbc421e01ecebce39b943b36a16574541c025c937c19d34729d8f22",
+          "sourceBytes": 1884895,
+          "sheetSha256": "d7826598ad53717e49e45539193536fdfc465eda47687d12456a8e14f6533890",
+          "sheetBytes": 3543248,
+          "posterSha256": "2298a1f076353f3ed198237a7423f952534694dda340e35775533055ad38907b",
+          "posterBytes": 28226,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "77 ko.mp4",
+          "sourceSha256": "c8426d25fb4c21d8e59a29a071e1fcd9a0a24d2dd1afb14e7f5f3536acb5404e",
+          "sourceBytes": 2058021,
+          "sheetSha256": "62f58c89d11d9b76fec09284753d578e68e6607b391505427d52f4fe75a4a566",
+          "sheetBytes": 4075024,
+          "posterSha256": "5a07aab0f3c209d70c8f63aedbea540a601fe91a3ac9ca2e1703a13b01a311b9",
+          "posterBytes": 28382,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "0dca79584031f68aad6bc3f50fe69762185873f2ba84c55350c7734b0039576c",
+      "normalizationSha256": "02bde3415bacbde29129fed86909268159b5457d02e026e080f60293190f71ef"
+    },
+    {
+      "speciesId": 78,
+      "name": "Trippix",
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 190
+      },
+      "sharedScale": 0.2635732323232323,
+      "groundPivot": [
+        288.0,
+        366
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 26,
+          "releaseMs": 1083.3333333333333,
+          "evidence": "Frames24–27: forearm draws back at25; frame26 begins the red-white slash above the claw.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 9,
+          "reactionMs": 375.0,
+          "evidence": "Frames7–10: small core at8 grows into the white chest impact at9 with the start of body recoil.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "78 idle.mp4",
+          "sourceSha256": "06c0e9c95b0353998a3352f6ff39464d339777d5fc922059e15b0d340b6aa214",
+          "sourceBytes": 1773169,
+          "sheetSha256": "d8d706a9518755ce9aec866b1f998dc64bc3975118a7592af33edd5480d0480e",
+          "sheetBytes": 3253018,
+          "posterSha256": "ed2c98836b543f90df91e5e2d9463d7a51ede8256a44c0affed2a6ca7f4888b0",
+          "posterBytes": 35390,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "78 attack.mp4",
+          "sourceSha256": "9bde81c41cdbb0bf763477839b5873b053c6e28695acdcc3e92b14ae01dcad78",
+          "sourceBytes": 2660010,
+          "sheetSha256": "ee83f94b832b56f61f5cb97aa7b922cdb943fb608af895aeeef09a6a3c696e6a",
+          "sheetBytes": 3862026,
+          "posterSha256": "f3946a206be47f434c53eb5f0f3bf39d7b5d05114689231220c10e08281d9a39",
+          "posterBytes": 35482,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "78 hit.mp4",
+          "sourceSha256": "5c0c9aceaf14d7ad8bf8134069937543ec6501a30305b3d344984876b208d451",
+          "sourceBytes": 2200750,
+          "sheetSha256": "b7f2f5ba8d5c64ed81aa40674f3b99e90809229357b0ce2cc7ebf1e0edf5197b",
+          "sheetBytes": 3221944,
+          "posterSha256": "8bbe26b59926288729c3f996d1e4f39973deac84205a547e4a00d5b80c0ef68f",
+          "posterBytes": 35704,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "78 victory.mp4",
+          "sourceSha256": "554a529ace23d7c8585b0f8506ac53d1d3e849337b5b73b5c4d06c6559174098",
+          "sourceBytes": 2930537,
+          "sheetSha256": "e614ca8310518e046ee0fbecfbc26e2dcd680711919a3225aa8be443267a0c81",
+          "sheetBytes": 5191452,
+          "posterSha256": "2f502e80a8fb0559062b9199a32608a51d940ab2f3b7a98b8bad2e71ae21f8a6",
+          "posterBytes": 35918,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "78 ko.mp4",
+          "sourceSha256": "709dc2e8d4988bf07a82cf55a9f34ce8c327241c607e00217f4828f68d228698",
+          "sourceBytes": 2538049,
+          "sheetSha256": "99f6bf56909175088043e97453b3a34ed0cc0ed74b0b84951b1215133ae994da",
+          "sheetBytes": 3834172,
+          "posterSha256": "7ca31ebd20ab9d2f77e60a694a8140b5937fddc477ef4fdb6de8d6b2c4ff0f09",
+          "posterBytes": 36264,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "7c3e25b6d16bb6f11e288d03d6696b54cdd2625aeac50a62397764e02597a288",
+      "normalizationSha256": "2d3fe76351b400f808561cc4a7711ae2a2066ab2ee55f95583549d8fac76c34e"
+    },
+    {
+      "speciesId": 79,
+      "name": "Cellgon",
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 261,
+        "top": 257
+      },
+      "sharedScale": 0.3468379446640316,
+      "groundPivot": [
+        357.0,
+        440
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 95,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 45,
+          "releaseMs": 1875.0,
+          "evidence": "Frames43–46: raised forearm charges through44; frame45 produces the first broad purple slash.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 14,
+          "reactionMs": 583.3333333333334,
+          "evidence": "Frames12–15: dark projectile enters from the left; frame14 reaches the face and begins the eye-closed recoil.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "79 idle.mp4",
+          "sourceSha256": "c54c94910a291f8589c35b677726bf71df270da16e5fb1455e297250f9d38817",
+          "sourceBytes": 877874,
+          "sheetSha256": "bc381b847a244c5fd3db74f407bfb5b2e9a747c859fd20f3b698880bbdc8c70d",
+          "sheetBytes": 2632724,
+          "posterSha256": "e034fb2a27e9fc8deb3f96737b64ed543f3bf5783ce4fff9d7e18c0e5296b81f",
+          "posterBytes": 24326,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "79 attack.mp4",
+          "sourceSha256": "c3fe6d8f71457fbfe2d7847096e71c9c4727a81f44987e78fdbf1c1e6fc01055",
+          "sourceBytes": 1315350,
+          "sheetSha256": "11da40805fa453dae257f1a133c8d714df442d9eedf679cfb97cf011d6519ca0",
+          "sheetBytes": 3277070,
+          "posterSha256": "557674e333374e2e3f93526516b6134005ad1e60230fd959f89987e78584dd05",
+          "posterBytes": 24224,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "79 hit.mp4",
+          "sourceSha256": "7b5d5c4dc7b945988cd51833f3981fe83885b50989143e71eee7f70aacab2d15",
+          "sourceBytes": 1012536,
+          "sheetSha256": "9bd0d78ffd4ed4ea45e9e0438aee25521c8df8388ba0a72a89200124b79d5813",
+          "sheetBytes": 2343886,
+          "posterSha256": "aa0f7dc286be01b6bf0d9e3895da740c26e5ad0a2d2ed819f439365790073a8f",
+          "posterBytes": 24048,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 95,
+          "fps": 24,
+          "suppliedFilename": "79 victory.mp4",
+          "sourceSha256": "fd15ce69321fef1d2bbd6a9e983e34216320693dfec776a8a5a7b38ace911f69",
+          "sourceBytes": 1123769,
+          "sheetSha256": "431b4859ddee562ea7e63363a497d1db3d0f8d74627fb6667a0cad58ff281f2c",
+          "sheetBytes": 2327970,
+          "posterSha256": "f12b16304116d2b3f022c8c8a4c2c2497a56ecd63a82ab3e44c296f5cf054c82",
+          "posterBytes": 23772,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "79 ko.mp4",
+          "sourceSha256": "4d5ad9b4c03510df86002f9d62eb08bb01d6c06fe9ccb42b32afde185ece4252",
+          "sourceBytes": 1507183,
+          "sheetSha256": "30b80adc5a0710d7d40be369ce88a6c07f923e293c96c7748c38feb991359405",
+          "sheetBytes": 3800940,
+          "posterSha256": "1cfe3fc0ebd72e3de1d8f99febda34cdaa57d16e17f10822f26760c1782970c8",
+          "posterBytes": 24854,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "b633b6539374bf06c732ec2a4b9063afd16cedf654aa8f3c12600bc4b8348d21",
+      "normalizationSha256": "19f9f2b68e9010f763744541c13ed7b114a5c50fa5d17b40a283d8f4e625e112"
+    },
+    {
+      "speciesId": 80,
+      "name": "Cellgon",
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 194,
+        "top": 192
+      },
+      "sharedScale": 0.27709564254062036,
+      "groundPivot": [
+        290.0,
+        382
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 32,
+          "releaseMs": 1333.3333333333333,
+          "evidence": "Frames30–33: small purple sparks precede32; frame32 releases the broad curved slash around the forward claw.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 13,
+          "reactionMs": 541.6666666666666,
+          "evidence": "Frames11–14: small chest core at12 becomes a bright impact burst at13 with the shoulders tightening.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "80 idle.mp4",
+          "sourceSha256": "72c6d42da096d8f6f4f191c8bed38cbdea4b2950bcf6d29ff32dc79849940fc3",
+          "sourceBytes": 1308493,
+          "sheetSha256": "d37e747f4345c7beecc78f902292e826d94b461c8d5f3e62a8be7b48e7f1f090",
+          "sheetBytes": 3421546,
+          "posterSha256": "ac6a66b1a43d57fb9968be8590c0031766225ae0d949b240d678dcd0d3572a70",
+          "posterBytes": 36548,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "80 attack.mp4",
+          "sourceSha256": "b58f18211c3e83ff3382703317849c1908899e439b9cc027dd3f65fb4bd9659b",
+          "sourceBytes": 2379765,
+          "sheetSha256": "8bdc7506d99ef40a220a04eb3af0e2f1695944955107728cd5364a2b94374685",
+          "sheetBytes": 5119126,
+          "posterSha256": "9e73cc13cbff0dd1bf33bd30af24721d0541683ac5602aad5eeec2a6b3359b3f",
+          "posterBytes": 36396,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "80 hit.mp4",
+          "sourceSha256": "56a78c670abbfe06ff823d92952dc14f8cb47a734aa88c3d8032621fc82fd983",
+          "sourceBytes": 1570663,
+          "sheetSha256": "2b0bd3df087fb2b1e9efd24f46f75116752bd13d4c0cd5d8b0306bac2948f7c3",
+          "sheetBytes": 3356308,
+          "posterSha256": "83a55716c4ab7ef527ca263c2f182a470b0bdce95e79d31d28c13d85bdc13c65",
+          "posterBytes": 36780,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "80 victory.mp4",
+          "sourceSha256": "e39111e13d122273b138c7e2f2e02fce08a094802810ec4cef1142840bdc0ead",
+          "sourceBytes": 2589513,
+          "sheetSha256": "045494063c4eed31686211af449fdd83dbfcf19d429fc4d18d49090ccf238197",
+          "sheetBytes": 4198768,
+          "posterSha256": "4bce887f9e0ca68bc1d85481ac7d65a4b7ed549d1656347d955b7ae0f396adac",
+          "posterBytes": 36692,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "80 ko.mp4",
+          "sourceSha256": "a51d6c5161a2335ecb3befb731426217d79ae1dd40d8dd01c05e34aa1512dee2",
+          "sourceBytes": 2224421,
+          "sheetSha256": "9e23eb282eed693deae83a1e3e9b4354e8346f4a9f0be8ca83a95424991eb338",
+          "sheetBytes": 4789808,
+          "posterSha256": "d2c5b40f3afe905c66898c2e65f7218c905ffc9fe3c450a0176891288f0f2f15",
+          "posterBytes": 36570,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "99ee2dd041ca62e18e43d8b26512c3b983fd2505f35157c4c053ae9863d9e61f",
+      "normalizationSha256": "b2644a23d465fdca3ba9e39610929745b5ea37d119b2509835bd4983752de32f"
+    },
+    {
+      "speciesId": 81,
+      "name": "Cellgon",
+      "cellWidth": 512,
+      "cellHeight": 512,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 159,
+        "top": 160
+      },
+      "sharedScale": 0.25831925675675677,
+      "groundPivot": [
+        255.0,
+        352
+      ],
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "timing": {
+        "attack": {
+          "releaseFrame": 27,
+          "releaseMs": 1125.0,
+          "evidence": "Frames25–28: native violet aura surrounds the body; frame27 begins the white-violet cutting arc above the claws.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        },
+        "hit": {
+          "reactionFrame": 35,
+          "reactionMs": 1458.3333333333333,
+          "evidence": "Frames33–36: eyes remain closed; frame35 opens the mouth and pulls the head/back away in the visible recoil without adding a flash.",
+          "inspection": "Observed consecutive original source frames in native-cues/timing-review.jpg. Zero-based indices; original24FPS retained."
+        }
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "81 idle.mp4",
+          "sourceSha256": "86150f551c2abb68396604adbb98ef20f5a98cbf28e99993702cd26d6eb3acaa",
+          "sourceBytes": 1836939,
+          "sheetSha256": "1309fd87ff9ff7565db994701e76d36eea2fabf6931e1610fb995017a93953ac",
+          "sheetBytes": 4392896,
+          "posterSha256": "1a75cc7343ac59ed3f240640f831a67e11b6599a1142ba56cb15c24247182b4a",
+          "posterBytes": 48362,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "81 attack.mp4",
+          "sourceSha256": "ad0d3c28e3d85466d7f4cd9ae3e1c4272a883661afd42c07da3ddb9f81cad68c",
+          "sourceBytes": 2963491,
+          "sheetSha256": "b6911e2512d61960af2bcf93b8d30532056980f0874f3b3a92f8494cf170850a",
+          "sheetBytes": 6921678,
+          "posterSha256": "2abdf420657e5d4c3e35d56d264c7480d1719a721f48ba0316636d4571254c5e",
+          "posterBytes": 48610,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "81 hit.mp4",
+          "sourceSha256": "4aaeb23d0ad679920cffe8d93d0f7b3a12e3f5f76c2ba0c32aecb84293b8fc11",
+          "sourceBytes": 1934218,
+          "sheetSha256": "537352136fb1a80ede9c233526c233f0d6a61be820bd6556f0f845f83a73834e",
+          "sheetBytes": 4044972,
+          "posterSha256": "2e0e90092cb134492dcbae782b548802a2e42d12dfd14cac07a72bcc5ac10013",
+          "posterBytes": 48272,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "81 victory.mp4",
+          "sourceSha256": "036d6aabd2b5c12a07abfe7454818497c9787375a242ba19d30e167ffacbb8b3",
+          "sourceBytes": 3259922,
+          "sheetSha256": "788f2db7007b6d6ab7e7c5014205bb174e9c9f9040b05c660ff40bfb0f3c55b2",
+          "sheetBytes": 6091084,
+          "posterSha256": "8b80bd616bbe76574c01aef34a002fa9cf734899b4cd3dd08d47ca76d5c2eddb",
+          "posterBytes": 48326,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24,
+          "suppliedFilename": "81 ko.mp4",
+          "sourceSha256": "06407747097668ccb13c7edcbba3cfb1306eff0565b31e413c4fb04c632d9c83",
+          "sourceBytes": 2571325,
+          "sheetSha256": "767c95a68ed4e840ff21aca1419514c306fab1963f0a60a8e085dbecdb4796e5",
+          "sheetBytes": 5346724,
+          "posterSha256": "5287919fe9cb03913bab0575fb01059e737a1714e13ada93709a5b46e53196f6",
+          "posterBytes": 48978,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true
+        }
+      ],
+      "combinedMetadataSha256": "4275b39c51a3aeaab492bdfe9e604ac6061c4ee141a354e66b0e066638ac8596",
+      "normalizationSha256": "270efd071ce437443328d967adeae7f0ecf09d1ef88214290811c21d0488575e"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
-import playerTemplate from '../../public/ui/studio/Comuni/hp-bar.svg?raw'
-import enemyTemplate from '../../public/ui/studio/Comuni/hp-bar-enemy.svg?raw'
+import playerTemplate from './templates/hp-bar.svg?raw'
+import enemyTemplate from './templates/hp-bar-enemy.svg?raw'
 import type { UiFit, UiRect } from './types'
 
 const templates: Record<string, string> = {

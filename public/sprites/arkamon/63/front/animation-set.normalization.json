@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "referenceAction": "idle",
+  "referenceFrameIndex": 0,
+  "reference": {
+    "size": [
+      2048,
+      2048
+    ],
+    "alphaBounds": [
+      49,
+      148,
+      1968,
+      1921
+    ],
+    "bodyHeightFraction": 0.86572265625,
+    "groundFraction": 0.93798828125
+  },
+  "idleBodyCoreBounds": [
+    680,
+    274,
+    1250,
+    806
+  ],
+  "idleBodyHeightSourcePixels": 532,
+  "idleBodyHeightOutputPixels": 166.21875,
+  "idleGroundSourcePixels": 806,
+  "sourceCoordinateSystem": [
+    1920,
+    1080
+  ],
+  "sharedScale": 0.31244125939849626,
+  "logicalCanvasOrigin": [
+    -205.5058153195489,
+    -71.82765507518798
+  ],
+  "canonicalUnionAlphaBounds": [
+    -2.6377358490566394,
+    -1.0339622641508868,
+    1924.6075471698114,
+    1083.0415094339623
+  ],
+  "logicalUnionAlphaBounds": [
+    -207,
+    -73,
+    396,
+    267
+  ],
+  "cellWidth": 640,
+  "cellHeight": 640,
+  "viewport": {
+    "width": 192,
+    "height": 192,
+    "left": 225,
+    "top": 223
+  },
+  "groundPivot": [
+    321.0,
+    403
+  ],
+  "paddingPixels": 16,
+  "maxTextureDimension": 8192,
+  "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+  "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+  "cameraCalibrations": {
+    "idle": {
+      "nativeToIdleCoordinateScale": 1.0,
+      "nativeToIdleCoordinateOffset": [
+        0.0,
+        0.0
+      ],
+      "initialBodyCoreBounds": [
+        680,
+        274,
+        1250,
+        806
+      ],
+      "initialBodyHeightInIdleCoordinates": 532,
+      "initialGroundInIdleCoordinates": 806,
+      "constantForEntireClip": true
+    },
+    "attack": {
+      "nativeToIdleCoordinateScale": 1.0,
+      "nativeToIdleCoordinateOffset": [
+        1.0,
+        0.0
+      ],
+      "initialBodyCoreBounds": [
+        680,
+        274,
+        1248,
+        806
+      ],
+      "initialBodyHeightInIdleCoordinates": 532,
+      "initialGroundInIdleCoordinates": 806,
+      "constantForEntireClip": true
+    },
+    "hit": {
+      "nativeToIdleCoordinateScale": 1.0,
+      "nativeToIdleCoordinateOffset": [
+        4.0,
+        0.0
+      ],
+      "initialBodyCoreBounds": [
+        672,
+        274,
+        1250,
+        806
+      ],
+      "initialBodyHeightInIdleCoordinates": 532,
+      "initialGroundInIdleCoordinates": 806,
+      "constantForEntireClip": true
+    },
+    "victory": {
+      "nativeToIdleCoordinateScale": 0.9962546816479401,
+      "nativeToIdleCoordinateOffset": [
+        8.595505617977551,
+        1.0262172284644748
+      ],
+      "initialBodyCoreBounds": [
+        672,
+        274,
+        1248,
+        808
+      ],
+      "initialBodyHeightInIdleCoordinates": 532,
+      "initialGroundInIdleCoordinates": 806,
+      "constantForEntireClip": true
+    },
+    "ko": {
+      "nativeToIdleCoordinateScale": 1.0037735849056604,
+      "nativeToIdleCoordinateOffset": [
+        -2.6377358490566394,
+        -1.0339622641508868
+      ],
+      "initialBodyCoreBounds": [
+        678,
+        274,
+        1250,
+        804
+      ],
+      "initialBodyHeightInIdleCoordinates": 532,
+      "initialGroundInIdleCoordinates": 806,
+      "constantForEntireClip": true
+    }
+  }
+}

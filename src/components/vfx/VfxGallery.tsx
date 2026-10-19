@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
+import { useEffect, useMemo, useState } from 'react'
 import { VfxPreviewPanel, type VfxPreviewBackground } from './VfxPreviewPanel'
 import type { VfxAnchor, VfxPlaybackKind } from './types'
 import { MOVE_VFX_ASSETS, type MoveVfxAssetId } from './vfxManifest'
@@ -15,18 +16,6 @@ type KindFilter = 'all' | VfxPlaybackKind
 const ANCHORS: VfxAnchor[] = ['attacker', 'target', 'self', 'center', 'screen']
 const SCALES = [0.5, 0.75, 1, 1.25, 1.5, 2]
 const CONTROL_CLASS = 'min-w-0 rounded bg-slate-800 px-3 py-2 text-xs text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-amber-300'
-const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
-
-function subscribeReducedMotion(onChange: () => void) {
-  const media = window.matchMedia(REDUCED_MOTION_QUERY)
-  media.addEventListener('change', onChange)
-  return () => media.removeEventListener('change', onChange)
-}
-
-function getReducedMotion() {
-  return window.matchMedia(REDUCED_MOTION_QUERY).matches
-}
-
 export function VfxGallery() {
   const [selectedId, setSelectedId] = useState<MoveVfxAssetId>('generated:direction-img_effect_skill_spark_0-images_nested_sheet')
   const [referenceId, setReferenceId] = useState<MoveVfxAssetId | null>(null)
@@ -41,7 +30,7 @@ export function VfxGallery() {
   const [category, setCategory] = useState<VfxCurationCategory | 'all'>('all')
   const [curatedOnly, setCuratedOnly] = useState(false)
   const [recommendedOnly, setRecommendedOnly] = useState(true)
-  const reduceMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, () => true)
+  const { reducedMotion: reduceMotion, speed } = useGameMotionPreferences()
   const asset = MOVE_VFX_ASSETS[selectedId]
   const reference = referenceId ? MOVE_VFX_ASSETS[referenceId] : undefined
   const visibleAssetIds = useMemo(() => filterVfxAssetIds(MOVE_VFX_ASSETS, {
@@ -52,7 +41,7 @@ export function VfxGallery() {
   }).filter((id) => kindFilter === 'all' || MOVE_VFX_ASSETS[id].kind === kindFilter), [assetSearch, category, curatedOnly, recommendedOnly, kindFilter])
   const selectedIndex = visibleAssetIds.indexOf(selectedId)
   const playbackKey = `${selectedId}-${referenceId}-${replayId}-${side}-${anchor}-${scale}-${background}-${reduceMotion}`
-  const repeatDelay = Math.max(asset.durationMs, reference?.durationMs ?? 0) + 500
+  const repeatDelay = Math.max(asset.durationMs, reference?.durationMs ?? 0) / speed + 500
 
   useEffect(() => {
     if (!repeat || reduceMotion) return

@@ -1,6 +1,6 @@
 const pendingImages = new Map<string, Promise<void>>()
 const readyImages = new Map<string, { image: HTMLImageElement; timeout: number; bytes: number; request: Promise<void> }>()
-const MAX_READY_BYTES = 512 * 1024 * 1024
+let readyBudgetBytes = 128 * 1024 * 1024
 
 /** Keep decoded pixels alive only through the current short battle sequence. */
 export function isImageAssetPrepared(src: string): boolean {
@@ -45,7 +45,7 @@ export function prepareImageAsset(src: string): Promise<void> {
           timeout: window.setTimeout(() => forgetReadyImage(src), 10000),
         })
         let bytes = Array.from(readyImages.values()).reduce((sum, entry) => sum + entry.bytes, 0)
-        while (readyImages.size > 6 || bytes > MAX_READY_BYTES) {
+        while (readyImages.size > 6 || bytes > readyBudgetBytes) {
           const oldest = readyImages.keys().next().value as string | undefined
           if (!oldest) break
           bytes -= readyImages.get(oldest)!.bytes
@@ -71,4 +71,18 @@ export function prepareImageAsset(src: string): Promise<void> {
   pendingImages.set(src, request)
   void request.then(() => pendingImages.delete(src))
   return request
+}
+
+/** Decoded VFX images share a scene budget; native pages expose their own bounded pool. */
+export function setPreparedImageBudget(bytes: number): void {
+  readyBudgetBytes = Number.isFinite(bytes) ? Math.max(16 * 1024 * 1024, bytes) : 128 * 1024 * 1024
+  let used = [...readyImages.values()].reduce((sum, entry) => sum + entry.bytes, 0)
+  for (const [src, entry] of readyImages) {
+    if (used <= readyBudgetBytes) break
+    used -= entry.bytes
+    forgetReadyImage(src)
+  }
+}
+export function getPreparedImageStats() {
+  return { budgetBytes: readyBudgetBytes, decodedBytes: [...readyImages.values()].reduce((sum, entry) => sum + entry.bytes, 0), images: readyImages.size, pending: pendingImages.size }
 }

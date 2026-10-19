@@ -91,13 +91,13 @@ export function PercorsoScene() {
 
   const activities = (
     <div className="flex h-full w-full flex-col gap-4 overflow-y-auto p-1">
-          {secret && !hasDefinedActivities && <p className="arka-panel p-4">Le interazioni di questo luogo saranno definite in seguito.</p>}
-          {!haPokemonVivi && (!secret || hasDefinedActivities) && (
+          {!hasDefinedActivities && <p role="status" className="arka-panel p-6 text-2xl">Nessuna attività configurata qui. Torna alla mappa principale per proseguire il viaggio.</p>}
+          {!haPokemonVivi && hasDefinedActivities && (
             <p role="status" className="arka-panel shrink-0 p-3 text-center text-amber-200">
               La squadra è esausta. Visita un Centro Pokémon prima di affrontare un incontro.
             </p>
           )}
-          {(!secret || hasDefinedActivities) && <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
+          {hasDefinedActivities && <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
           {CESPUGLI.map((c) => {
             const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
             const haIncontri = getIncontri(luogo, c).length > 0
@@ -156,7 +156,7 @@ export function PercorsoScene() {
     <GameButton onClick={() => vaiAScena('mappa-principale')}>Mappa principale</GameButton>
   </section>
 
-  if (localMap && !layoutEditing) return <LocalMapScene key={luogo} map={localMap} activities={activities} />
+  if (localMap) return <LocalMapScene key={luogo} map={localMap} activities={activities} />
 
   return (
     <div
@@ -229,7 +229,7 @@ export function PercorsoScene() {
         onChange={(rect) => updateLuogoLayout('subtitle', rect)}
       >
         <p className="arka-layout-content arka-readable-text flex h-full w-full items-center justify-center text-center italic text-arka-text-muted">
-          Esplora i cespugli: ogni cespuglio è esplorabile una sola volta
+          {hasDefinedActivities ? 'Ogni cespuglio è esplorabile una sola volta.' : 'Luogo di passaggio · scegli la prossima destinazione sulla mappa principale.'}
         </p>
       </AdminLayoutItem>
 

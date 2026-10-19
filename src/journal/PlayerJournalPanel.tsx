@@ -19,9 +19,10 @@ export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 
   const active = useGameStore((s) => s.giocatoreAttivo)
   const battle = useGameStore((s) => s.battaglia)
   const progress = useGameStore((s) => s.interactionProgress)
+  const league = useGameStore((s) => s.league)
   const interactions = useInteractionStore((s) => s.interactions)
   const state = { ...useGameStore.getState(), giocatore1: player1, giocatore2: player2, posizioniLocali1: positions1,
-    posizioniLocali2: positions2, posizione1: world1, posizione2: world2, battaglia: battle, giocatoreAttivo: active, interactionProgress: progress }
+    posizioniLocali2: positions2, posizione1: world1, posizione2: world2, battaglia: battle, giocatoreAttivo: active, interactionProgress: progress, league }
   const player = playerId === 1 ? player1 : player2
   const world = playerId === 1 ? world1 : world2
   const remaining = turn.giocatoreAttivo === playerId && active === playerId ? turn.azioniRimaste : 0

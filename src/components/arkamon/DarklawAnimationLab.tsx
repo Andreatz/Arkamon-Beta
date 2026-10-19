@@ -1,3 +1,5 @@
+import loopReviewQueue from '@/data/animation-loop-review.json'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import { getPokemon } from '@/data'
 import { BATTLE_BG_DEFAULT } from '@/data/backgrounds'
@@ -31,6 +33,9 @@ const ACTION_SEQUENCE: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'vic
 
 /** A comparison using the same sprite renderer as battle. */
 export function DarklawAnimationLab() {
+  const { speed } = useGameMotionPreferences()
+  const [reviewFrame, setReviewFrame] = useState<number | undefined>()
+  const [reviews, setReviews] = useState<Record<string, string>>(() => { try { const value = JSON.parse(localStorage.getItem('arkamon-loop-review-v1') ?? '{}'); return value && typeof value === 'object' && !Array.isArray(value) ? value : {} } catch { return {} } })
   const [speciesId, setSpeciesId] = useState(ANIMATED_SPECIES[0] ?? 5)
   const speciesName = getPokemon(speciesId)?.nome ?? `Arkamon #${speciesId}`
   const [background, setBackground] = useState<PreviewBackground>('battle')
@@ -70,9 +75,9 @@ export function DarklawAnimationLab() {
       setRun((current) => current.id !== run.id ? current : {
         animation: ACTION_SEQUENCE[1], id: current.id + 1, sequenceIndex: 1,
       })
-    }, durationMs)
+    }, durationMs / speed)
     return () => window.clearTimeout(timer)
-  }, [run.animation, run.id, run.sequenceIndex, speciesId])
+  }, [run.animation, run.id, run.sequenceIndex, speciesId, speed])
 
   const onAnimationComplete = useCallback((animation: ArkamonBattleAnimation, replayKey: number) => {
     setRun((current) => {
@@ -88,6 +93,7 @@ export function DarklawAnimationLab() {
   }, [])
 
   const playAction = (animation: ArkamonBattleAnimation) => {
+    setReviewFrame(undefined)
     setRun((current) => ({ animation, id: current.id + 1, sequenceIndex: null }))
   }
 
@@ -102,6 +108,7 @@ export function DarklawAnimationLab() {
   }
 
   const playSequence = () => {
+    setReviewFrame(undefined)
     setRun((current) => ({ animation: 'idle', id: current.id + 1, sequenceIndex: 0 }))
   }
 
@@ -179,7 +186,7 @@ export function DarklawAnimationLab() {
             <div className={`darklaw-lab__stage darklaw-lab__stage--${background}`} style={stageStyle} data-preview-card="animated" data-preview-animation={run.animation}>
               <span className="darklaw-lab__stage-caption">{speciesName} <span aria-hidden="true">/</span> {side === 'front' ? 'Frontale' : 'Retro'}</span>
               <div className="darklaw-lab__sprite-slot" role="img" aria-label={`${speciesName} ${side === 'front' ? `animato, ${currentAction.label}` : 'di retro, sprite statico esistente'}`}>
-                <ArkamonBattleSprite key={`${speciesId}-${side}`} speciesId={speciesId} name={speciesName} side={side} animation={run.animation} animationEnabled={side === 'front' && !attackPreviewBusy} replayKey={run.id} finishActionBeforeIdle={false} onAnimationComplete={onAnimationComplete} scale={scale} className="darklaw-lab__sprite" />
+                <ArkamonBattleSprite key={`${speciesId}-${side}`} speciesId={speciesId} name={speciesName} side={side} animation={run.animation} reviewFrame={reviewFrame} animationEnabled={side === 'front' && !attackPreviewBusy} replayKey={run.id} finishActionBeforeIdle={false} onAnimationComplete={onAnimationComplete} scale={scale} className="darklaw-lab__sprite" />
               </div>
             </div>
             <p className="darklaw-lab__card-note">{side === 'front' ? 'Ogni azione riproduce il filmato completo. Il KO mantiene l’esito della dissoluzione.' : 'Questa prova riguarda il frontale. Il retro conserva la posa originale.'}</p>
@@ -203,6 +210,26 @@ export function DarklawAnimationLab() {
           <p className="darklaw-lab__status" role="status" aria-live="polite">
             {side === 'back' ? 'Vista di retro statica. Scegli Frontale per provare il movimento.' : playingSequence ? `Sequenza in corso: ${currentAction.label}. Scegli un’azione per interromperla.` : currentAction.description}
           </p>
+        </section>
+
+        <section className="darklaw-lab__review" aria-label="Revisione dei fotogrammi sorgente">
+          <h2>Revisione del movimento originale</h2>
+          <p>Le misure di raccordo segnalano una priorità di controllo, non certificano un difetto visivo. Nessun fotogramma viene generato, eliminato o riordinato.</p>
+          <div className="darklaw-lab__action-buttons">
+            <button type="button" disabled={!previewAsset || side !== 'front'} onClick={() => setReviewFrame(value => Math.max(0, (value ?? 1) - 1))}>← Fotogramma</button>
+            <button type="button" disabled={!previewAsset || side !== 'front'} onClick={() => setReviewFrame(value => value === undefined ? 0 : undefined)}>{reviewFrame === undefined ? 'Ferma al primo fotogramma' : 'Riproduci dall’inizio'}</button>
+            <button type="button" disabled={!previewAsset || side !== 'front'} onClick={() => setReviewFrame(value => Math.min((previewAsset?.frameCount ?? 1) - 1, (value ?? 0) + 1))}>Fotogramma →</button>
+            <button type="button" disabled={!previewAsset || side !== 'front'} onClick={() => setReviewFrame((previewAsset?.frameCount ?? 1) - 1)}>Ultimo fotogramma</button>
+          </div>
+          <p role="status">{reviewFrame === undefined ? 'Riproduzione originale' : `Fotogramma sorgente ${reviewFrame + 1} di ${previewAsset?.frameCount}`} · {previewAsset?.fps ?? 24} fps · {previewAsset?.frameCount ?? '—'} fotogrammi</p>
+          <label>Fotogramma sorgente<input aria-label="Fotogramma sorgente" type="range" min="0" max={(previewAsset?.frameCount ?? 1) - 1} value={reviewFrame ?? 0} disabled={!previewAsset || side !== 'front'} onChange={event => setReviewFrame(Number(event.target.value))}/></label>
+          <h3>{loopReviewQueue.length} animazioni d’attesa da rivedere</h3>
+          <div className="darklaw-lab__action-buttons">{loopReviewQueue.map(entry => <button key={entry.speciesId} type="button" aria-pressed={speciesId === entry.speciesId} onClick={() => { selectSpecies(entry.speciesId); setSide('front') }}>#{entry.speciesId} · {getPokemon(entry.speciesId)?.nome} · {entry.ratio}×</button>)}</div>
+          {loopReviewQueue.some(entry => entry.speciesId === speciesId) && <label>Esito della tua revisione
+            <select value={reviews[String(speciesId)] ?? 'pending'} onChange={event => { const next = { ...reviews, [String(speciesId)]: event.target.value }; setReviews(next); try { localStorage.setItem('arkamon-loop-review-v1', JSON.stringify(next)) } catch { /* Local review remains visible in this session. */ } }}>
+              <option value="pending">Da osservare su chiaro, scuro e battaglia</option><option value="accepted">Osservato: raccordo accettabile</option><option value="review">Osservato: richiede revisione artistica</option>
+            </select>
+          </label>}
         </section>
 
         <ArkamonAttackPreview key={speciesId} speciesId={speciesId} stageStyle={stageStyle} background={background} onBusyChange={onAttackPreviewBusy} />

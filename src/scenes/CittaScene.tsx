@@ -140,7 +140,7 @@ export function CittaScene() {
         </div>
   )
 
-  if (localMap && !layoutEditing) return <LocalMapScene key={luogo} map={localMap} activities={activities} />
+  if (localMap) return <LocalMapScene key={luogo} map={localMap} activities={activities} />
 
   return (
     <div

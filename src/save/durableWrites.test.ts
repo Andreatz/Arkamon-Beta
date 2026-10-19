@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AUTO_BACKUP_STORAGE_KEY, readRecoveryCopies, rememberRecoveryCopy, reportSaveFailure, useSaveWriteStatus } from './durableWrites'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { AUTO_BACKUP_STORAGE_KEY, cancelPendingRecoveryCopy, flushPendingRecoveryCopy, scheduleRecoveryCopy, readRecoveryCopies, rememberRecoveryCopy, reportSaveFailure, useSaveWriteStatus } from './durableWrites'
 import { initialGameSave } from './gamePersistence'
 import { stateFromValidatedBackup, validateGameBackup } from './gameBackup'
 
@@ -22,6 +22,51 @@ const restoredCoins = (backup: string) => {
 
 describe('bounded automatic recovery copies and volatile diagnostics', () => {
   beforeEach(() => { useSaveWriteStatus.getState().clear(); useSaveWriteStatus.setState({ backupWarning: null }) })
+  afterEach(() => { cancelPendingRecoveryCopy(); vi.useRealTimers(); vi.unstubAllGlobals() })
+
+  it('coalesces recovery work outside primary writes and cancels stale/ownership-lost work', () => {
+    vi.useFakeTimers()
+    const storage = memoryStorage()
+    vi.stubGlobal('localStorage', storage)
+    scheduleRecoveryCopy(campaign(100), () => true)
+    scheduleRecoveryCopy(campaign(200), () => true)
+    expect(storage.setItem).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(349)
+    expect(storage.setItem).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(1)
+    expect(readRecoveryCopies(storage).map((copy) => restoredCoins(copy.backup))).toEqual([200])
+    scheduleRecoveryCopy(campaign(300), () => false)
+    flushPendingRecoveryCopy()
+    expect(readRecoveryCopies(storage).map((copy) => restoredCoins(copy.backup))).toEqual([200])
+    scheduleRecoveryCopy(campaign(400), () => true)
+    cancelPendingRecoveryCopy()
+    vi.runAllTimers()
+    expect(storage.setItem).toHaveBeenCalledTimes(1)
+  })
+
+  it('protects cached copies from callers and invalidates the cache after an external storage change', () => {
+    const storage = memoryStorage()
+    rememberRecoveryCopy(campaign(100), storage)
+    const original = readRecoveryCopies(storage)[0]
+    readRecoveryCopies(storage)[0].backup = 'mutated UI object'
+    expect(readRecoveryCopies(storage)[0]).toEqual(original)
+    storage.data.set(AUTO_BACKUP_STORAGE_KEY, JSON.stringify({ version: 1, copies: [] }))
+    expect(readRecoveryCopies(storage)).toEqual([])
+    storage.data.set(AUTO_BACKUP_STORAGE_KEY, JSON.stringify({ version: 1, copies: [original] }))
+    expect(readRecoveryCopies(storage)).toEqual([original])
+  })
+  it('waits for a battle or transition cue to finish before running recovery serialization', () => {
+    vi.useFakeTimers()
+    const storage = memoryStorage()
+    vi.stubGlobal('localStorage', storage)
+    let busy = true
+    scheduleRecoveryCopy(campaign(100), () => true, () => !busy)
+    vi.advanceTimersByTime(1000)
+    expect(storage.setItem).not.toHaveBeenCalled()
+    busy = false
+    vi.advanceTimersByTime(250)
+    expect(readRecoveryCopies(storage).map((copy) => restoredCoins(copy.backup))).toEqual([100])
+  })
 
   it('preserves two most recent distinct valid campaigns with original residual HP and status', () => {
     const storage = memoryStorage()

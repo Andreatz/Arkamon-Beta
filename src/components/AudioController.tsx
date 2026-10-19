@@ -8,6 +8,7 @@ import {
   setAudioMuted,
   setChannelVolumes,
   stopMusic,
+  stopSelectedAudio,
   unlockAudio,
 } from '@/utils/soundManager'
 import { useGamePreferences } from '@/settings/gamePreferences'
@@ -23,6 +24,7 @@ export function AudioController() {
   useEffect(() => { setChannelVolumes(musicVolume, effectsVolume) }, [musicVolume, effectsVolume])
 
   useEffect(() => {
+    stopSelectedAudio()
     setAudioMuted(audioMuted)
     if (audioMuted) {
       stopMusic()
@@ -39,13 +41,17 @@ export function AudioController() {
         playSound('click')
       }
     }
-    const onKeyDown = () => unlockAudio()
+    const onKeyDown = (event: KeyboardEvent) => {
+      unlockAudio()
+      if (!event.repeat && (event.key === 'Enter' || event.key === ' ') && event.target instanceof Element && event.target.closest('button')) playSound('click')
+    }
     window.addEventListener('pointerdown', onPointerDown)
     window.addEventListener('keydown', onKeyDown)
     return () => {
       window.removeEventListener('pointerdown', onPointerDown)
       window.removeEventListener('keydown', onKeyDown)
       stopMusic()
+      stopSelectedAudio()
     }
   }, [])
 

@@ -87,10 +87,11 @@ export function AdminVfxEditor() {
   const [assetSearch, setAssetSearch] = useState('')
   const [curationCategory, setCurationCategory] = useState<VfxCurationCategory | 'all'>('all')
   const [curatedOnly, setCuratedOnly] = useState(false)
-  const overrides = useVfxAdminStore((state) => state.overrides)
-  const setOverride = useVfxAdminStore((state) => state.setOverride)
-  const removeOverride = useVfxAdminStore((state) => state.removeOverride)
-  const resetOverrides = useVfxAdminStore((state) => state.resetOverrides)
+  const overrides = useVfxAdminStore((state) => state.draftOverrides)
+  const setOverride = useVfxAdminStore((state) => state.setDraftOverride)
+  const removeOverride = useVfxAdminStore((state) => state.removeDraftOverride)
+  const resetOverrides = useVfxAdminStore((state) => state.resetDraftOverrides)
+  const saveError = useVfxAdminStore(state => state.error)
   const selectedMove = VFX_MOVE_PREVIEWS.find((move) => move.id === selectedMoveId) ?? VFX_MOVE_PREVIEWS[0]
   const assignment = selectedMove ? getMoveVfxAssignment(selectedMove) : undefined
   const resolvedAsset = selectedMove ? resolveMoveVfxAsset(selectedMove) : MOVE_VFX_ASSETS.punch
@@ -122,8 +123,9 @@ export function AdminVfxEditor() {
   return (
     <div className="space-y-4">
       <p className="rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)] px-3 py-2 text-xs text-[var(--arka-text-muted)]">
-        Gli override VFX restano in memoria fino al refresh. Esporta il JSON per conservarli.
+        Bozza VFX salvata su questo browser. La prova qui sotto usa la bozza; per applicarla al gioco o trasferirla usa Admin → Progetto visivo.
       </p>
+      {saveError && <p role="alert">{saveError}</p>}
       <p className="text-xs text-[var(--arka-text-muted)]">
         Moveset: {MOVE_VFX_ASSIGNMENT_COUNTS.total} mosse · {MOVE_VFX_ASSIGNMENT_COUNTS.assigned} VFX distinti riservati
         {' · '}{MOVE_VFX_ASSIGNMENT_COUNTS.missing} da creare · {MOVE_VFX_ASSIGNMENT_COUNTS.needsAdaptation} da adattare.
@@ -162,7 +164,7 @@ export function AdminVfxEditor() {
           <p className="font-bold">
             {assignment.assetId ? assignment.review === 'needs-adaptation' ? 'VFX riservato — da adattare' : 'VFX specifico assegnato'
               : 'VFX specifico mancante — anteprima con effetto generico'}
-            {overrides[selectedMoveId] ? ' · Modifica temporanea attiva' : ''}
+            {overrides[selectedMoveId] ? ' · Bozza salvata, non applicata' : ''}
           </p>
           <p>{assignment.type} · {assignment.tier === 'status' ? 'Status / danno fisso' : { light: 'Leggera', medium: 'Media', heavy: 'Forte' }[assignment.tier]}</p>
           <p>{assignment.notes}</p>
@@ -179,6 +181,7 @@ export function AdminVfxEditor() {
             <SpriteMoveVfx
               key={`${selectedMove.id}-${previewSide}-${replayId}`}
               effect={{ id: replayId, move: selectedMove, side: previewSide }}
+              assetOverride={{ ...MOVE_VFX_ASSETS[draft.assetId], ...draft, id: draft.assetId }}
             />
           ) : null}
           <div className="absolute bottom-3 left-5 h-12 w-12 rounded-full border-2 border-white/60 bg-cyan-400/50" />

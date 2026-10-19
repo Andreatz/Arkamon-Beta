@@ -1,3 +1,6 @@
+import { getAppliedAudioSnapshot } from '@/presentation/presentationRuntime'
+import { audioWorkspaceBaseline } from './audioWorkspaceModel'
+import { scheduleAudioClip } from '@/utils/soundManager'
 import selections from '@/data/audio-selections.json'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { MoveVfx, type MoveVfxEvent } from '../MoveVfx'
@@ -5,7 +8,7 @@ import { MOVE_VFX_ASSIGNMENTS, VFX_MOVE_PREVIEWS } from '../vfx/moveVfxAssignmen
 import { getMoveVfxDurationMs } from '../vfx/resolveMoveVfxAsset'
 import { assetUrl } from '@/utils/assetUrl'
 import {
-  AUDIO_CHOICES_KEY, AUDIO_TAGS, GAME_AUDIO_EVENTS, audioSourceUrl, parseAudioChoices, suggestedAudio,
+  AUDIO_CHOICES_KEY, AUDIO_TAGS, GAME_AUDIO_EVENTS, audioSourceUrl, suggestedAudio,
   type AudioCatalog, type AudioChoice, type AudioChoices, type AudioEntry,
 } from './audioCuration'
 
@@ -30,11 +33,13 @@ export function AudioLab() {
 }
 
 function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
-  const byId = useMemo(() => new Map(catalog.files.map((file) => [file.id, file])), [catalog])
-  const [choices, setChoices] = useState<AudioChoices>(() => {
-    const defaults = selections.choices as AudioChoices
-    try { return { ...defaults, ...parseAudioChoices(localStorage.getItem(AUDIO_CHOICES_KEY), new Set(byId.keys())) } } catch { return defaults }
+  const [baseline] = useState(() => {
+    let draft: string | null = null
+    try { draft = localStorage.getItem(AUDIO_CHOICES_KEY) } catch { /* Applied choices remain usable without storage. */ }
+    return audioWorkspaceBaseline(catalog, getAppliedAudioSnapshot(), draft)
   })
+  const byId = baseline.files
+  const [choices, setChoices] = useState<AudioChoices>(baseline.choices)
   const [target, setTarget] = useState('move:1')
   const [moveSearch, setMoveSearch] = useState('')
   const [query, setQuery] = useState('')
@@ -50,10 +55,10 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
   const [playedIds, setPlayedIds] = useState<Set<string>>(() => new Set())
   const [effect, setEffect] = useState<MoveVfxEvent | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const timer = useRef<number | null>(null)
+  const scheduledAudio = useRef<(() => void) | null>(null)
   const runId = useRef(0)
   const originalSound = byId.get(soundId)
-  const normalized = (selections.sounds as Record<string, { src: string }>)[soundId]
+  const normalized = baseline.sounds[soundId]
   const sound = originalSound && normalized ? { ...originalSound, src: normalized.src } : originalSound
   const assignment = MOVE_VFX_ASSIGNMENTS.find((entry) => `move:${entry.sourceMoveId}` === target)
   const move = assignment ? VFX_MOVE_PREVIEWS[MOVE_VFX_ASSIGNMENTS.indexOf(assignment)] : undefined
@@ -74,14 +79,14 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
 
   useEffect(() => () => {
     runId.current++
-    if (timer.current !== null) window.clearTimeout(timer.current)
+    scheduledAudio.current?.()
     audioRef.current?.pause()
   }, [])
 
   function stop() {
     runId.current++
-    if (timer.current !== null) window.clearTimeout(timer.current)
-    timer.current = null
+    scheduledAudio.current?.()
+    scheduledAudio.current = null
     audioRef.current?.pause()
     setPlaying(false)
     setEffect(null)
@@ -102,11 +107,12 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
     player.currentTime = 0
     const startAudio = () => {
       if (runId.current !== id) return
-      timer.current = window.setTimeout(() => {
-        if (runId.current !== id) return
-        void player.play().then(() => { if (runId.current === id) setMessage('Ascolto in corso.') })
-          .catch(() => { if (runId.current === id) { setPlaying(false); setEffect(null); setMessage('Riproduzione non riuscita: prova il lettore audio oppure un altro formato.') } })
-      }, combined ? delayMs : 0)
+      scheduledAudio.current = scheduleAudioClip({ src: sound.src, volume, channel: 'preview',
+        delayMs: combined ? delayMs : 0,
+        onStart: () => { if (runId.current === id) { setMessage('Ascolto in corso.'); setPlayedIds(ids => new Set([...ids, sound.id])) } },
+        onEnd: () => { if (runId.current === id) { setPlaying(false); setMessage('Ascolto terminato.') } },
+        onError: () => { if (runId.current === id) { setPlaying(false); setEffect(null); setMessage('Riproduzione non riuscita: prova il lettore audio oppure un altro formato.') } },
+      })
     }
     setPlaying(true)
     setMessage(combined && move ? 'Preparazione del VFX…' : 'Preparazione audio…')
@@ -140,7 +146,7 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
   }
   function exportChoices() {
     const blob = new Blob([JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), previewOnly: true, choices,
-      sounds: Object.fromEntries(Object.values(choices).map((choice) => [choice.soundId, (selections.sounds as Record<string, { src: string }>)[choice.soundId]?.src ?? byId.get(choice.soundId)?.src])) }, null, 2)], { type: 'application/json' })
+      sounds: Object.fromEntries(Object.values(choices).map((choice) => [choice.soundId, baseline.sounds[choice.soundId]?.src ?? byId.get(choice.soundId)?.src])) }, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a'); link.href = url; link.download = 'arkamon-audio-scelte.json'
     document.body.appendChild(link)
@@ -160,7 +166,7 @@ function AudioWorkspace({ catalog }: { catalog: AudioCatalog }) {
     <header className="mx-auto mb-6 max-w-7xl space-y-3">
       <p className="text-xs tracking-widest text-amber-300">ARKAMON · AUDIO LAB</p>
       <h1 className="text-3xl font-black">Scegli il suono di ogni effetto</h1>
-      <p className="max-w-4xl text-sm text-slate-300">{catalog.total.toLocaleString('it')} suoni · {catalog.shortlistCount} candidati · 276 mosse. 286 abbinamenti scelti da Codex sono già attivi nel gioco. Scelte semantiche, senza revisione all’ascolto. Qui puoi confrontarle; le tue modifiche restano locali fino all’integrazione.</p>
+      <p className="max-w-4xl text-sm text-slate-300">{catalog.total.toLocaleString('it')} suoni · {catalog.shortlistCount} candidati · 276 mosse. 286 abbinamenti scelti da Codex sono già attivi nel gioco. Scelte semantiche, senza revisione all’ascolto. Qui puoi confrontarle; le tue modifiche restano una bozza. Apri Admin → Progetto visivo per applicarle al gioco.</p>
       <div className="flex flex-wrap gap-3"><a className={CONTROL} href="#">Torna al gioco</a><button className={CONTROL} onClick={exportChoices}>Esporta scelte ({Object.keys(choices).length})</button></div>
     </header>
     <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[300px_minmax(0,1fr)_320px]">

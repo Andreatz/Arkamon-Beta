@@ -1,5 +1,6 @@
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { useEffect, useId, useRef, useState } from 'react'
-import { motion, useAnimationControls, useReducedMotion } from 'framer-motion'
+import { motion, useAnimationControls } from 'framer-motion'
 import type { LocalMapDefinition, LocalMapNode, LocalMapPoint } from '@/data/localMaps'
 import { getAdjacentLocalMapNodes, getLocalRoadPath } from '@/engine/localMapMovement'
 import { assetUrl } from '@/utils/assetUrl'
@@ -46,7 +47,7 @@ function pathTiming(points: LocalMapPoint[], size: BoardSize): { times: number[]
   const total = distances[distances.length - 1]
   return {
     times: distances.map((distance, index) => total > 0 ? distance / total : index / (points.length - 1)),
-    duration: Math.max(0.42, Math.min(1.4, total / 240)),
+    duration: Math.max(0.35, Math.min(0.65, total / 650)),
   }
 }
 
@@ -66,7 +67,7 @@ function LocalMapAvatar({
   size: BoardSize
 }) {
   const controls = useAnimationControls()
-  const reducedMotion = useReducedMotion()
+  const { reducedMotion, speed } = useGameMotionPreferences()
   const previousNode = useRef(node.id)
   const mounted = useRef(false)
   const animationRunning = useRef(false)
@@ -117,14 +118,14 @@ function LocalMapAvatar({
           left: journey.points.map((point) => `${point.x}%`),
           top: journey.points.map((point) => `${point.y}%`),
           marginTop: journey.points.map((point) => topInset(point, journey.size)),
-          transition: { ease: 'linear', times: timing.times, duration: timing.duration },
+          transition: { ease: 'linear', times: timing.times, duration: timing.duration / speed },
         })
       }
       if (version === animationVersion.current) animationRunning.current = false
     }
     void followRoads()
     // Resizing changes the image plane itself; it must not restart a journey.
-  }, [controls, map, node.id, reducedMotion])
+  }, [controls, map, node.id, reducedMotion, speed])
 
   useEffect(() => {
     if (!animationRunning.current) controls.set({ marginTop: topInset(node, size) })

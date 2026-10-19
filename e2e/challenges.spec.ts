@@ -83,6 +83,14 @@ async function generateAndLaunch(page: Page) {
   await expect(dialog).toHaveCount(0)
   await expect(page.locator('[data-presented-scene="battaglia"]')).toHaveAttribute('aria-busy', 'false')
   await expect(page.getByRole('complementary', { name: 'Sfida in corso', exact: true })).toContainText('ROME-42')
+  if ((page.viewportSize()?.width ?? 0) > 1000) {
+    const geometry = await page.evaluate(() => {
+      const banner = document.querySelector('[data-challenge-context]')!.getBoundingClientRect()
+      const turn = document.querySelector('[data-battle-turn-status]')!.getBoundingClientRect()
+      return { overlaps: banner.left < turn.right && banner.right > turn.left && banner.top < turn.bottom && banner.bottom > turn.top }
+    })
+    expect(geometry.overlaps).toBe(false)
+  }
   const started = await battleSave(page)
   expect(started?.squadraA).toHaveLength(6)
   expect(started?.squadraB).toHaveLength(6)
@@ -119,8 +127,10 @@ async function revealFirstAttack(page: Page): Promise<ChallengeBattleSave> {
 
 async function exitToCampaign(page: Page) {
   const banner = page.getByRole('complementary', { name: 'Sfida in corso', exact: true })
-  await banner.getByRole('button', { name: 'Torna alla campagna', exact: true }).click()
-  await banner.getByRole('button', { name: 'Conferma uscita', exact: true }).click()
+  await banner.getByRole('button').click()
+  const details = page.getByRole('dialog', { name: /^(Sfida a seed|Fanta-Team)$/ })
+  await details.getByRole('button', { name: 'Torna alla campagna', exact: true }).click()
+  await details.getByRole('button', { name: 'Conferma uscita', exact: true }).click()
   await expect(banner).toHaveCount(0)
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')
 }
