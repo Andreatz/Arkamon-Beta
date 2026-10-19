@@ -76,7 +76,7 @@ describe('interfaccia del passaggio segreto', () => {
     expect(markup).toContain('/maps/Percorso_15.png')
     expect(markup).toContain('Torna a Roma')
     expect(markup).toContain('Passaggio di ritorno')
-    expect(markup).toContain('Le interazioni di questo luogo saranno definite in seguito.')
+    expect(markup).toContain('Nessuna attività configurata qui.')
     expect(markup).not.toContain('aria-label="Cespuglio')
     expect(markup).not.toContain('aria-label="Sfida')
   })

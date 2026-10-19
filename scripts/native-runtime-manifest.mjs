@@ -17,7 +17,7 @@ export function packNativeRuntimeManifest(manifest) {
     const directory = source.replace('/sprites/arkamon/', '/sprites/arkamon-paged/').replace(/\.webp$/, '/')
     const pages = clip.pages.map(page => {
       const file = page.src.slice(directory.length)
-      if (!page.src.startsWith(directory) || !/^page-\d+\.(webp|png)$/.test(file)) throw new Error(`Native page belongs to another clip: ${page.src}`)
+      if (!page.src.startsWith(directory) || !/^page-\d+(?:-[a-f0-9]{16})?\.(webp|png)$/.test(file)) throw new Error(`Native page belongs to another clip: ${page.src}`)
       return [file, page.firstFrame, page.frameCount, page.columns, page.rows, page.width, page.height, page.decodedBytes]
     })
     return [source, [clip.frameWidth, clip.frameHeight, clip.frameCount, clip.fps, pages]]

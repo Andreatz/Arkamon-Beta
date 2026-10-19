@@ -38,3 +38,17 @@
   .local-map-activities-content .text-xl { font-size:15px; }
   .local-map-activities h2 { font-size:15px; }
 }
+
+/* Keep the photograph dominant, while the current action survives a half-size stream. */
+@container(min-width:1200px) {
+  .local-map-toolbar { min-height:80px; padding:12px 72px 12px 24px; gap:20px; background:linear-gradient(#17273d,#101b2d); border-bottom:1px solid #84a6ca; }
+  .local-map-toolbar button { min-height:50px; font-size:22px; padding:10px 20px; }
+  .local-map-heading h1 { font-size:32px; }
+  .local-map-heading span { font-size:20px; }
+  .local-map-budget { font-size:26px; }
+  .local-map-footer { min-height:96px; padding:12px 100px 12px 24px; gap:16px; }
+  .local-map-point-info { font-size:24px; min-width:180px; }
+  .local-map-point-info span { font-size:18px; }
+  .local-map-neighbours button { min-height:48px; font-size:20px; }
+  .local-map-footer p { font-size:17px; }
+}

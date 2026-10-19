@@ -1,4 +1,5 @@
-import { useContext, useState } from 'react'
+import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
+import { useContext, useEffect } from 'react'
 import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
 import { getPokemon, TABELLA_TIPI } from '@data/index'
 import { calcolaHPMax } from '@engine/battleEngine'
@@ -17,8 +18,10 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
   const previewView = useContext(UiPreviewViewContext)
   const player = useGameStore((state) => playerId === 1 ? state.giocatore1 : state.giocatore2)
   const battle = useGameStore((state) => state.battaglia)
-  const [chosenId, setChosenId] = useState(instanceId ?? '')
-  const [tab, setTab] = useState<AnalysisTab>(previewView === 'mosse' || previewView === 'status' ? previewView : 'scheda')
+  const [chosenId, setChosenId] = usePlayerUiMemory(playerId, 'analysis.instance', () => instanceId ?? '')
+  const [tab, setTab] = usePlayerUiMemory<AnalysisTab>(playerId, 'analysis.tab', previewView === 'mosse' || previewView === 'status' ? previewView : 'scheda')
+  useEffect(() => { if (instanceId) setChosenId(instanceId) }, [instanceId, setChosenId])
+  useEffect(() => { if (previewView === 'mosse' || previewView === 'status') setTab(previewView) }, [previewView, setTab])
   const owned = [...player.squadra, ...Object.values(player.deposito)]
   const selected = owned.find((pokemon) => pokemon.istanzaId === chosenId) ?? owned[0]
   const pokemon = selected ? liveOwnedPokemon(selected, battle) : undefined
@@ -27,6 +30,7 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
   const depositEntry = pokemon ? Object.entries(player.deposito).find(([, entry]) => entry.istanzaId === pokemon.istanzaId) : undefined
   const evolution = species?.evoluzioneId ? getPokemon(species.evoluzioneId) : undefined
   const status = pokemon?.stato
+  usePublishPlayerUiSelection(playerId, { instanceId: pokemon?.istanzaId, speciesId: pokemon?.specieId })
 
   return (
     <section className="pu-screen pu-analysis-screen" aria-labelledby="pu-analysis-title" data-ui-view={tab}>

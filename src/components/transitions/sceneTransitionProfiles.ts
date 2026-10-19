@@ -4,7 +4,7 @@ export const TRANSITION_VIDEO_PATH = '/assets/Transizione Battaglia.mp4'
 export const TRANSITION_VIDEO_START_SECONDS = 5
 export const TRANSITION_VIDEO_SEGMENT_SECONDS = 3
 
-export type SceneTransitionMode = 'arkamon-dice' | 'battle-video'
+export type SceneTransitionMode = 'arkamon-dice' | 'battle-video' | 'fade'
 
 export interface SceneTransitionProfile {
   readonly mode: SceneTransitionMode
@@ -48,12 +48,13 @@ function destinationLabel(destination: NavigazioneScena): string {
 export function getSceneTransitionProfile(destination: NavigazioneScena): SceneTransitionProfile {
   const battle = destination.scena === 'battaglia'
   const evolution = destination.scena === 'evoluzione'
-  const durationMs = battle ? 3000 : evolution ? 1900 : 1600
-  const coverMs = battle ? 180 : 240
-  const blendMs = battle ? 950 : evolution ? 400 : 300
+  const travel = ['mappa-principale', 'citta', 'percorso', 'mappa-griglia'].includes(destination.scena)
+  const durationMs = battle ? 3000 : evolution ? 1900 : travel ? 500 : 120
+  const coverMs = battle ? 180 : evolution ? 240 : travel ? 80 : 20
+  const blendMs = battle ? 950 : evolution ? 400 : travel ? 140 : 70
 
   return {
-    mode: battle ? 'battle-video' : 'arkamon-dice',
+    mode: battle ? 'battle-video' : evolution ? 'arkamon-dice' : 'fade',
     playbackRate: 1,
     durationMs,
     coverMs,

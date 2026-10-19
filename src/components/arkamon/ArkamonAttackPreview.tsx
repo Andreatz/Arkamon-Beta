@@ -1,3 +1,4 @@
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { getMossa, getPokemon } from '@/data'
 import type { MossaDef } from '@/types'
@@ -38,6 +39,7 @@ const SPECIES_IDS = Object.keys(ARKAMON_ANIMATION_MANIFEST).map(Number).sort((a,
 
 /** Exercise the battle's real animation coordinator without changing a saved game. */
 export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusyChange }: { speciesId: number; stageStyle?: CSSProperties; background: string; onBusyChange?: (busy: boolean) => void }) {
+  const { reducedMotion, speed } = useGameMotionPreferences()
   const moves = (getPokemon(speciesId)?.mosse ?? [])
     .map(getMossa)
     .filter((move): move is MossaDef => !!move && move.id > 0)
@@ -145,7 +147,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusy
       const plan = planBattleAnimationPlayback(
         attackAsset ? (attackAsset.releaseFrame ?? 0) / attackAsset.fps * 1000 : 0,
         hitAsset ? (hitAsset.reactionFrame ?? 0) / hitAsset.fps * 1000 : 0,
-        getMoveVfxImpactDelayMs(move),
+        getMoveVfxImpactDelayMs(move), reducedMotion,
       )
       const timers = new Set<number>()
       const frames = new Set<number>()
@@ -196,7 +198,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusy
           const timer = window.setTimeout(() => {
             timers.delete(timer)
             if (active()) callback()
-          }, delayMs)
+          }, delayMs / speed)
           timers.add(timer)
         },
       })

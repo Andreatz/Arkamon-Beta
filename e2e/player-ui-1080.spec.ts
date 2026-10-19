@@ -420,6 +420,7 @@ for (const height of [900, 945, 1080]) {
       expect(returnedCampaign).toEqual({ ...before, scenaCorrente: before.scenaPrecedente, scenaPrecedente: null })
       const dialog = await openConfiguredShop(page)
       for (const [, itemName] of ITEMS) {
+        await dialog.getByRole('button', { name: `Seleziona ${itemName}`, exact: true }).click()
         const quantity = dialog.getByLabel(`Quantità di ${itemName}`, { exact: true })
         await expect(quantity).toBeEnabled()
         await quantity.fill('99')

@@ -31,6 +31,28 @@ def source_patch(colour: tuple[int, int, int]) -> Image.Image:
     return image
 
 
+class LosslessEncodingTests(unittest.TestCase):
+    def test_fast_and_historical_compression_retain_exact_rgba_and_alpha(self) -> None:
+        rng = np.random.default_rng(42)
+        pixels = rng.integers(0,256,(48,64,4),dtype=np.uint8)
+        pixels[:8,:,3]=0
+        pixels[-8:,:,3]=255
+        image=Image.fromarray(pixels)
+        with tempfile.TemporaryDirectory() as temporary:
+            for method in [1,4]:
+                path=Path(temporary)/f'method-{method}.webp'
+                converter.save_lossless_webp(image,path,method)
+                with Image.open(path) as decoded:
+                    np.testing.assert_array_equal(np.asarray(decoded.convert('RGBA')),pixels)
+
+    def test_invalid_compression_effort_fails_before_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path=Path(temporary)/'invalid.webp'
+            with self.assertRaisesRegex(ValueError,'0..6'):
+                converter.save_lossless_webp(Image.new('RGBA',(4,4)),path,7)
+            self.assertFalse(path.exists())
+
+
 class ReusedActionSelectionTests(unittest.TestCase):
     def test_new_set_requires_idle_to_establish_its_geometry(self) -> None:
         with self.assertRaisesRegex(ValueError, 'Include idle'):

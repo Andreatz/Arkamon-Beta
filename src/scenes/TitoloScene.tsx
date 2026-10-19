@@ -1,4 +1,5 @@
-import { GameButton } from '@/components/ui/GameButton'
+import { RpgCommand as GameButton } from '@/components/rpg'
+import './rpgScenes.css'
 import { useEffect, useRef, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
@@ -47,7 +48,7 @@ export function TitoloScene() {
   }, [reducedMotion, backgroundPath])
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950">
+    <div className="rpg-title-scene relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950">
       {hasBackground && hasVideoBackground ? (
         <video
           ref={video}
@@ -78,7 +79,7 @@ export function TitoloScene() {
         key={logoPath}
         src={assetUrl(logoPath)}
         alt="Arkamon"
-        className="relative -top-40 z-10 w-[500px] max-w-[90%] mb-4 drop-shadow-2xl"
+        className="rpg-title-logo relative z-10 drop-shadow-2xl"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: reducedMotion ? 0 : 0.2 / speed, type: 'spring' }}
@@ -94,10 +95,10 @@ export function TitoloScene() {
       <h1 className="sr-only">ARKAMON</h1>
 
       <motion.div
-        className="relative z-10 flex flex-col gap-3 w-72"
+        className="rpg-title-commands relative z-10 flex flex-col"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: reducedMotion ? 0 : 1 / speed }}
+        transition={{ delay: reducedMotion ? 0 : .3 / speed }}
       >
         <GameButton
           tone="primary" className="text-xl"

@@ -16,3 +16,13 @@
   .battle-result-card { top: 24%; left: 12%; right: 12%; padding: 10px 14px; }
   .battle-command-cursor { font-size: 12px; left: 4%; }
 }
+
+/* World motion is confined to creatures, ground and effects; every HUD window is a sibling. */
+.battle-world { isolation:isolate; pointer-events:none; }
+.battle-world [data-admin-layout-item] { pointer-events:auto; }
+.battle-ground-shadow { position:absolute; left:24%; right:24%; bottom:10%; height:9%; border-radius:50%; background:radial-gradient(ellipse,#0008,transparent 72%); filter:blur(4px); pointer-events:none; }
+.battle-challenge-context { position:absolute; left:2%; top:1.5%; width:30%; height:7%; max-width:520px; z-index:32; }
+.battle-challenge-context>button { height:100%; min-height:48px; font-size:clamp(14px,1.3vw,24px); }
+.battle-challenge-context>button>span:last-child { font-size:clamp(10px,.9vw,16px); }
+.battle-stage [data-battle-chronicle-command] { max-width:24%; min-height:44px; font-size:clamp(14px,1.15vw,22px); }
+@media(max-width:800px) { .battle-challenge-context { width:33%; } .battle-challenge-context>button>span:last-child { display:none; } }

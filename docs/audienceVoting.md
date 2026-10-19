@@ -1,6 +1,6 @@
-# Votazione delle mosse del rivale
+# Pubblico NPC e comando privato degli ospiti
 
-Il pubblico può partecipare dal telefono e scegliere la mossa del Pokémon dell’allenatore rivale. La regia continua a gestire dadi, avanzamento dei turni e battaglia. La votazione si applica ad allenatori NPC, capipalestra e rivale PvP; i Pokémon selvatici sono esclusi.
+Il pubblico può partecipare dal telefono e votare **esclusivamente le mosse degli allenatori NPC normali**. Capipalestra, rivale e Superquattro sono interpretati da un solo ospite della community, collegato con un invito privato. La regia continua a gestire dadi, avanzamento dei turni e battaglia. I Pokémon selvatici e tutte le altre attività sono esclusi dal voto pubblico.
 
 ## Avviare il collegamento
 
@@ -8,20 +8,22 @@ Il pubblico può partecipare dal telefono e scegliere la mossa del Pokémon dell
 2. Inserire nel campo **Sito per il collegamento** l’origine del sito Arkanight che ospita il servizio, per esempio `https://arkanight.example`. Usare l’indirizzo completo, senza percorso, parametri, credenziali o frammento.
 3. Inserire la password della regia del sito e premere **Avvia collegamento**. Il campo della password viene svuotato immediatamente; la password non viene salvata nelle preferenze di Arkamon.
 4. Scegliere il **Tempo per votare**: il valore iniziale è 15 secondi, modificabile da 5 a 120. Il tempo di un ballot già aperto resta invariato.
-5. Attivare **Fai scegliere le mosse al pubblico**. L’opzione parte disabilitata.
+5. Attivare **Fai votare il pubblico nelle sole battaglie NPC**. L’opzione parte disabilitata. Il comando degli ospiti è un’opzione separata: **Usa il comando privato degli ospiti**.
 
 Il pannello mostra due inviti distinti:
 
-| Codice QR | Battaglie controllate dal pubblico |
-|---|---|
-| Allenatori NPC | Allenatori NPC |
-| Capipalestra e PvP | Capipalestra e lato rivale delle battaglie PvP |
+| Invito | Controllo consentito | Visibilità |
+|---|---|---|
+| Allenatori NPC | Voto collettivo sulle mosse dei soli NPC normali | Pubblico; può essere mostrato in live |
+| Ospite privato | Un solo controllore per capopalestra, rivale o Superquattro assegnato | Personale; condividere direttamente con l’ospite su Discord, senza mostrarlo in live |
 
-Gli inviti rimangono gli stessi per tutti i turni del collegamento. Si possono mostrare sullo schermo, copiare con **Copia link** o salvare come immagine con **Scarica QR**. La battaglia mostra automaticamente il QR del canale pertinente. Il telefono vede solo la votazione del proprio canale; può aprire anche l’altro invito dallo stesso browser.
+Il QR NPC resta valido per il collegamento. L’invito ospite è nascosto inizialmente, dura un’ora e viene assegnato al primo browser che lo apre: non è un secondo voto pubblico. **Mostra invito privato** permette alla regia di copiarlo o scaricarlo; **Nuovo ospite / rinnova invito** revoca il precedente e assegna un nuovo invito personale, mantenendo il QR NPC. **Revoca ospite** chiude quel controllo. Se il servizio non supporta gli ospiti privati, Arkamon richiede il suo aggiornamento: il vecchio canale boss non viene riattivato.
+
+Disattivando il comando ospite, la regia usa la pulsantiera del rivale. Un problema di connessione o un invito scaduto non trasferisce mai il boss al voto del pubblico.
 
 Un nuovo collegamento sostituisce il precedente e genera nuovi QR. Prima di sostituirlo bisogna concludere l’eventuale votazione in corso. La sessione dura al massimo 24 ore; alla scadenza occorre avviarne una nuova.
 
-## Come si sceglie la mossa
+## Come si vota la mossa di un NPC normale
 
 Ogni browser collegato ha una scelta per turno e può cambiarla fino alla chiusura. Cambiare scelta sposta il voto: non aggiunge un altro votante. Vince la mossa con più voti. In caso di parità il server estrae una delle mosse a pari merito una sola volta e conserva il risultato. Senza voti viene usata la scelta automatica del rivale.
 
@@ -51,7 +53,7 @@ Prima dell’utilizzo online:
 2. Configurare nel server le variabili esistenti `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` e `ADMIN_PASSWORD`. La chiave di servizio e la password non vanno nel frontend Arkamon, nei QR o nel repository.
 3. Impostare `ARKAMON_HOST_ORIGINS` con le origini esatte autorizzate del gioco, separate da virgole. In produzione le origini locali di sviluppo non sono abilitate automaticamente.
 4. Se necessario, impostare `ARKAMON_VOTE_PUBLIC_ORIGIN` con l’origine canonica HTTPS del sito Arkanight. Il valore deve essere una sola origine, senza percorso, query, frammento o credenziali. Usare la stessa origine nel campo **Sito per il collegamento** di Arkamon, perché il frontend verifica che gli inviti restituiti appartengano al servizio configurato.
-5. Pubblicare il servizio e verificarlo con un telefono usando entrambi i QR. Avere il frontend locale o una PR pronta non equivale ad aver configurato il database e pubblicato il servizio.
+5. Pubblicare il servizio e verificare con un telefono il voto NPC e, separatamente, l’invito privato, l’assegnazione a un solo browser, il rinnovo e la revoca. Avere il frontend locale o una PR pronta non equivale ad aver configurato il database e pubblicato il servizio. Backend e pagina telefono appartengono al repository esterno Arkanight e richiedono il proprio collaudo; i test locali di Arkamon non certificano questa integrazione remota.
 
 Solo per prove di sviluppo è disponibile `ARKAMON_VOTE_LOCAL_STORE`, impostata a una directory assoluta privata fuori dal repository e dai file pubblici. In produzione questa opzione viene rifiutata: il servizio non sostituisce automaticamente il database con dati in memoria o file locali. Dettagli su archivio, API e controlli sono in **`docs/backend-arkamon-votes.md` del repository Arkanight**.
 
@@ -61,4 +63,4 @@ Solo per prove di sviluppo è disponibile `ARKAMON_VOTE_LOCAL_STORE`, impostata 
 
 Se il sito non è raggiungibile, Arkamon disattiva il voto e conserva il collegamento per poter riprovare a chiuderlo. Solo dopo questo errore compare **Scollega questo computer**: elimina la capacità locale e permette di impostare un altro sito. Questa operazione non conferma una revoca remota; i vecchi QR restano sul sito fino alla scadenza della sessione.
 
-La capacità di controllo host viene conservata soltanto nelle preferenze locali dell’organizzatore, con verifica di scadenza. Non è inclusa nel checkpoint della battaglia, nelle esportazioni di gioco, nei link o nei QR pubblici. I collegamenti del pubblico contengono soltanto l’invito del canale; la pagina del telefono lo elimina dalla barra dell’indirizzo dopo averlo letto. Il backend gestisce l’identità anonima del browser tramite cookie HttpOnly e mantiene i voti dei due canali separati.
+La capacità di controllo host viene conservata soltanto nelle preferenze locali dell’organizzatore, con verifica di scadenza. Non è inclusa nel checkpoint della battaglia, nelle esportazioni di gioco, nei link o nei QR pubblici. I collegamenti contengono soltanto l’invito del rispettivo ruolo; la pagina del telefono lo elimina dalla barra dell’indirizzo dopo averlo letto. Il backend gestisce l’identità anonima del browser tramite cookie HttpOnly e mantiene separati voto NPC e comando dell’unico ospite assegnato.

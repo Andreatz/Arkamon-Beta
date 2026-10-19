@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { copyNativeFramesToPage, getNativePageGrid, hasSameVisibleRgba, MAX_PAGE_DECODED_BYTES } from '../arkamon-page-packing.mjs'
 
 describe('lossless native source packing', () => {
-  it.each([512, 576, 640, 704, 768])('bounds each %i cell page while preserving its dimensions', size => {
+  it.each([448, 512, 576, 640, 704, 768])('bounds each %i cell page while preserving its dimensions', size => {
     const grid = getNativePageGrid(size, size)
     expect(grid.decodedBytes).toBeLessThanOrEqual(MAX_PAGE_DECODED_BYTES)
     expect(grid.framesPerPage).toBe(grid.columns * grid.rows)

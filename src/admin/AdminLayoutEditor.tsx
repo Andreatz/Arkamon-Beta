@@ -12,11 +12,12 @@ export function AdminLayoutEditor() {
 
   return (
     <div className="space-y-4">
+      <p className="arka-authoring-route">Per l’aspetto delle schermate usa <a href="#ui-studio" onClick={() => useAdminStore.getState().setPanelOpen(false)}>Studio interfaccia</a>. Questi strumenti mantengono la geometria delle strade e i layout storici; non sostituiscono la schermata giocata.</p>
       <section className="rounded-md border border-[var(--arka-border)] bg-[color-mix(in_srgb,var(--arka-surface)_88%,black)] p-3">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-sm font-black text-[var(--arka-text)]">
-              Layout interfaccia
+              Geometria e layout storici
             </h3>
             <p className="mt-1 text-xs leading-snug text-[var(--arka-text-muted)]">
               Trascina le etichette per spostare, R per ridimensionare, T per muovere il testo interno. Gli elementi si agganciano a bordi e centri vicini.

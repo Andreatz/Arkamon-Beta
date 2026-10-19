@@ -1,3 +1,5 @@
+import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
+import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
 import { useState } from 'react'
 import { getPokemon } from '@data/index'
 import { SQUADRA_MAX } from '@engine/deposito'
@@ -37,13 +39,14 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
   const mayManage = useGameStore((state) => canManagePlayerTeam(state, playerId))
   const ruleMessage = useGameStore((state) => state.teamRuleMessage)
   const leagueRunning = useGameStore((state) => Object.values(state.league?.players ?? {}).some(progress => progress.status === 'running'))
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = usePlayerUiMemory<string | null>(playerId, 'team.instance', null)
   const [movingId, setMovingId] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const selected = player.squadra.find((pokemon) => pokemon.istanzaId === selectedId) ?? player.squadra[0]
   const current = selected ? liveOwnedPokemon(selected, battle) : undefined
   const range = teamLevelRange(player.squadra)
   const balanced = isTeamWithinLevelCap(player.squadra)
+  usePublishPlayerUiSelection(playerId, { instanceId: current?.istanzaId, speciesId: current?.specieId })
 
   function chooseSlot(index: number) {
     const state = useGameStore.getState()
@@ -78,13 +81,13 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
         <span className="pu-count"><KitIcon id="icon-team" /> {player.squadra.length} / {SQUADRA_MAX} Arkamon</span>
       </header>
       <div className="pu-team-layout">
-        <div className="pu-team-list" role="group" aria-label={`Squadra di ${player.nome}`}>
+        <SpatialNavigation selectOnFocus={!movingId} className="pu-team-list" role="group" aria-label={`Squadra di ${player.nome}`}>
           {Array.from({ length: SQUADRA_MAX }, (_, index) => {
             const owned = player.squadra[index]
             const pokemon = owned ? liveOwnedPokemon(owned, battle) : undefined
             const species = pokemon ? getPokemon(pokemon.specieId) : undefined
             return (
-              <button key={index} type="button"
+              <button data-rpg-item key={index} type="button"
                 className={`pu-team-slot${pokemon && pokemon.istanzaId === current?.istanzaId ? ' is-selected' : ''}${movingId && mayManage && pokemon ? ' is-move-target' : ''}`}
                 aria-label={`Squadra, posto ${index + 1}: ${pokemon ? `${pokemon.nome}, livello ${pokemon.livello}` : 'vuoto'}`}
                 aria-pressed={!!pokemon && pokemon.istanzaId === current?.istanzaId}
@@ -112,8 +115,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
             <div><strong>{balanced ? 'Squadra in equilibrio' : 'Squadra fuori fascia'} · Δ {range.gap} livelli</strong>
               <p>{player.squadra.length ? `Fascia attuale: Lv. ${range.min}–${range.max}.` : 'Scegli il tuo starter per iniziare.'} Differenza massima: {TEAM_LEVEL_GAP}.</p></div>
           </KitPanel>
-          <KitButton onClick={onDeposit}><KitIcon id="icon-box" /> Apri deposito</KitButton>
-        </div>
+        </SpatialNavigation>
         <div className="pu-hero-column">
           {current ? <PokemonHero pokemon={current} /> : <KitPanel className="pu-empty-state"><KitIcon id="icon-team" /><h2>Il viaggio sta per cominciare</h2><p>La tua squadra apparirà qui dopo la scelta dello starter.</p></KitPanel>}
         </div>
@@ -127,6 +129,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
           <div className="pu-actions">
             <KitButton active disabled={!current} onClick={() => current && onAnalyse(current.istanzaId)}><KitIcon id="icon-analysis" /> Analizza Arkamon</KitButton>
             <KitButton disabled={!current} onClick={onBag}><KitIcon id="icon-bag" /> Apri borsa</KitButton>
+            <KitButton onClick={onDeposit}><KitIcon id="icon-box" /> Apri deposito</KitButton>
             <KitButton disabled={!current || !mayManage} onClick={() => { setMovingId(movingId ? null : current?.istanzaId ?? null); setMessage('') }}>{movingId ? 'Annulla spostamento' : 'Cambia ordine'}</KitButton>
           </div>
         </KitPanel>

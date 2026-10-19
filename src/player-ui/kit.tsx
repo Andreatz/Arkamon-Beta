@@ -4,7 +4,9 @@ import { getMossa, getPokemon } from '@/data'
 import { calcolaHPMax, getMossaAlLivello, èMossaCura, èMossaSoloStato } from '@/engine/battleEngine'
 import { assetUrl } from '@/utils/assetUrl'
 import { getPortraitFraming } from './portraitFraming'
+import { RpgFrame, RPG_SKINS } from '@/components/rpg'
 import './player-ui.css'
+import './rpgPlayerUi.css'
 
 export const TYPE_ICONS: Record<TipoPokemon, string> = {
   Normale: 'type-normal', Elettro: 'type-electric', Fuoco: 'type-fire', Terra: 'type-earth',
@@ -22,6 +24,9 @@ const slices: Record<string, number> = { 'panel-wide': 163, 'panel-medium': 97, 
   'button-default': 48, 'card-default': 61, 'card-selected-violet': 58, 'card-selected-cyan': 56,
   'slot-default': 62, 'slot-selected': 60, 'slot-cyan': 62, 'card-portrait': 99 }
 export function KitFrame({ id = 'panel-medium' }: { id?: string }) {
+  if (['panel-wide', 'panel-medium'].includes(id)) return <RpgFrame />
+  if (['button-default', 'card-default', 'slot-default'].includes(id)) return <RpgFrame kind="command" />
+  if (['button-primary', 'card-selected-violet', 'card-selected-cyan', 'slot-selected', 'slot-cyan'].includes(id)) return <RpgFrame kind="selected" />
   const style: CSSProperties = { borderImageSource: `url("${kitAsset(id)}")`, borderImageSlice: `${slices[id] ?? 61} fill` }
   return <span className="pu-frame" style={style} data-kit={id} data-ui-skin-slot="frame" aria-hidden="true" />
 }
@@ -59,7 +64,7 @@ function CreatureImage({ speciesId }: { speciesId: number }) {
 }
 export function SpeciesPortrait({ speciesId, className = '', large = false, selected = false }: { speciesId: number; className?: string; large?: boolean; selected?: boolean }) {
   return <span className={`pu-creature-portrait ${large ? 'is-large' : ''} ${className}`} aria-hidden="true">
-    <img className="pu-creature-circle" src={kitAsset(selected ? 'circle-selected' : 'circle-default')} alt="" />
+    <img className="pu-creature-circle" src={large ? assetUrl(RPG_SKINS.portrait) : kitAsset(selected ? 'circle-selected' : 'circle-default')} alt="" />
     <CreatureImage key={speciesId} speciesId={speciesId} />
   </span>
 }

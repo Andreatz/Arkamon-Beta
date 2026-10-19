@@ -1,23 +1,67 @@
 import selections from '@/data/audio-selections.json'
+import { getAppliedAudioSelection } from '@/presentation/presentationRuntime'
 import { assetUrl } from './assetUrl'
 
-const activeClips = new Map<HTMLAudioElement, number>()
+const activeClips = new Map<HTMLAudioElement, { volume: number; channel: 'effects' | 'preview' }>()
 let musicVolume = 1
 let effectsVolume = 1
-export function playSelectedAudio(key: string): () => void {
-  const choice = (selections.choices as Record<string, { soundId: string; volume: number }>)[key]
-  const clip = choice && (selections.sounds as Record<string, { src: string }>)[choice.soundId]
-  if (muted || !clip || typeof Audio === 'undefined') return () => {}
-  const player = new Audio(assetUrl(clip.src))
-  player.volume = Math.max(0, Math.min(1, choice.volume * effectsVolume))
-  const stop = () => { player.pause(); activeClips.delete(player) }
-  // Bound overlapping effects during rapid UI input.
-  if (activeClips.size >= 8) { const oldest = activeClips.keys().next().value; oldest?.pause(); if (oldest) activeClips.delete(oldest) }
-  activeClips.set(player, choice.volume)
-  player.onended = stop
-  player.onerror = stop
-  void player.play().catch(stop)
+export interface ScheduledAudioOptions {
+  src: string
+  volume?: number
+  delayMs?: number
+  channel?: 'effects' | 'preview'
+  onStart?: () => void
+  onEnd?: () => void
+  onError?: () => void
+}
+const scheduledClips = new Set<() => void>()
+
+/** One cancellable clock for laboratory and live cues. It never controls game time. */
+export function scheduleAudioClip({ src, volume = 1, delayMs = 0, channel = 'effects', onStart, onEnd, onError }: ScheduledAudioOptions): () => void {
+  if ((muted && channel !== 'preview') || typeof Audio === 'undefined') return () => {}
+  const player = new Audio(assetUrl(src))
+  const baseVolume = Number.isFinite(volume) ? Math.max(0, Math.min(1, volume)) : 1
+  player.volume = baseVolume * (channel === 'preview' ? 1 : effectsVolume)
+  let active = true
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const stop = () => {
+    if (!active) return
+    active = false
+    if (timer !== undefined) clearTimeout(timer)
+    player.pause()
+    activeClips.delete(player)
+    scheduledClips.delete(stop)
+  }
+  if (scheduledClips.size >= 8) scheduledClips.values().next().value?.()
+  scheduledClips.add(stop)
+  activeClips.set(player, { volume: baseVolume, channel })
+  player.onended = () => { if (active) { stop(); onEnd?.() } }
+  player.onerror = () => { if (active) { stop(); onError?.() } }
+  const begin = () => {
+    if (!active || (muted && channel !== 'preview')) return
+    void player.play().then(() => { if (active) onStart?.() }).catch(() => { if (active) { stop(); onError?.() } })
+  }
+  const delay = Number.isFinite(delayMs) ? Math.max(0, Math.min(10000, delayMs)) : 0
+  if (delay > 0) timer = setTimeout(begin, delay)
+  else begin()
   return stop
+}
+
+export function stopSelectedAudio(): void {
+  for (const stop of [...scheduledClips]) stop()
+}
+
+export function getSelectedAudioCue(key: string): 'start' | 'impact' {
+  return getAppliedAudioSelection(key)?.choice.cue
+    ?? (selections.choices as Record<string, { cue?: 'start' | 'impact' }>)[key]?.cue ?? 'impact'
+}
+
+export function playSelectedAudio(key: string): () => void {
+  const applied = getAppliedAudioSelection(key)
+  const choice = applied?.choice ?? (selections.choices as Record<string, { soundId: string; volume: number; delayMs?: number }>)[key]
+  const src = applied?.src ?? (choice && (selections.sounds as Record<string, { src: string }>)[choice.soundId]?.src)
+  if (!choice || !src) return () => {}
+  return scheduleAudioClip({ src, volume: choice.volume, delayMs: choice.delayMs })
 }
 
 export type SoundId =
@@ -122,7 +166,7 @@ export function setChannelVolumes(music: number, effects: number): void {
     musicBus?.gain.setValueAtTime(musicVolume, ctx.currentTime)
     effectsBus?.gain.setValueAtTime(effectsVolume, ctx.currentTime)
   }
-  for (const [clip, baseVolume] of activeClips) clip.volume = Math.max(0, Math.min(1, baseVolume * effectsVolume))
+  for (const [clip, entry] of activeClips) clip.volume = entry.volume * (entry.channel === 'preview' ? 1 : effectsVolume)
 }
 
 function channelBus(audio: AudioContext, music: boolean): GainNode {
@@ -195,7 +239,7 @@ function playTone(step: ToneStep, baseDelay = 0, volumeScale = 1, music = false)
 
 export function setAudioMuted(nextMuted: boolean): void {
   muted = nextMuted
-  if (muted) { stopMusic(); stopTones(); for (const clip of activeClips.keys()) clip.pause(); activeClips.clear() }
+  if (muted) { stopMusic(); stopTones(); stopSelectedAudio() }
 }
 
 export function isAudioMuted(): boolean {
@@ -204,7 +248,7 @@ export function isAudioMuted(): boolean {
 
 export function playSound(sound: SoundId): void {
   if (muted) return
-  if (selections.choices[`event:${sound}`]) { playSelectedAudio(`event:${sound}`); return }
+  if (getAppliedAudioSelection(`event:${sound}`) || selections.choices[`event:${sound}`]) { playSelectedAudio(`event:${sound}`); return }
   for (const step of SOUND_BANK[sound]) playTone(step)
 }
 

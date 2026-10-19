@@ -1,3 +1,5 @@
+import { assetUrl } from '@/utils/assetUrl'
+import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { useMemo } from 'react'
 import { ALLENATORI, POKEMON_BASE } from '@/data'
 import { deriveArkadexProgress } from '@/arkadex/arkadexModel'
@@ -47,13 +49,13 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
   const leagueStages = league?.config?.championEnabled ? 5 : 4
 
   return <div className="pu-menu-layout">
-    <div className="pu-menu-grid">{tiles.map((tile, index) => <button data-ui-id={`service.${tile.id}`} type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
+    <SpatialNavigation selectOnFocus={false} className="pu-menu-grid">{tiles.map((tile, index) => <button data-rpg-item data-ui-id={`service.${tile.id}`} type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
       aria-label={`Apri ${tile.title}`} disabled={!!context && tile.id !== 'settings' && tile.id !== 'challenges'}
       onClick={() => onAuxiliary(tile.id)}>
       <KitFrame id={index === 0 ? 'panel-wide' : 'panel-medium'} /><KitIcon id={tile.icon} />
       <span className="pu-tile-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
       <div><h2>{tile.title}</h2><p>{tile.description}</p></div>
-    </button>)}</div>
+    </button>)}</SpatialNavigation>
 
     <KitPanel className="pu-journey" aria-label={`Riepilogo della partita di G${playerId}`}>
       <span className="pu-kicker">Carta allenatore · G{playerId}</span><h2>{player.nome || `Giocatore ${playerId}`}</h2>
@@ -66,8 +68,8 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
         <div><dt>Deposito</dt><dd>{Object.keys(player.deposito).length} Arkamon</dd></div>
       </dl>
       <div className="pu-gym-progress"><span className="pu-kicker">Medaglie delle palestre · {gymCount} / {gyms.length}</span>
-        <div className="pu-gym-badges" aria-label="Medaglie ottenute">{gyms.map(gym => <span key={gym.id} className={player.allenatoriSconfitti.has(gym.id) ? 'earned' : ''}
-          title={`${gym.luogo} · ${player.allenatoriSconfitti.has(gym.id) ? 'ottenuta' : 'da ottenere'}`} aria-label={`${gym.luogo}: ${player.allenatoriSconfitti.has(gym.id) ? 'medaglia ottenuta' : 'medaglia da ottenere'}`}>✦</span>)}</div>
+        <div className="pu-gym-badges" aria-label="Medaglie ottenute">{gyms.map((gym, index) => <span role="img" key={gym.id} className={player.allenatoriSconfitti.has(gym.id) ? 'earned' : ''}
+          title={`${gym.luogo} · ${player.allenatoriSconfitti.has(gym.id) ? 'ottenuta' : 'da ottenere'}`} aria-label={`${gym.luogo}: ${player.allenatoriSconfitti.has(gym.id) ? 'medaglia ottenuta' : 'medaglia da ottenere'}`}><img src={assetUrl(`/ui/studio/progression/gym-${index + 1}.svg`)} alt="" /></span>)}</div>
       </div>
       <div className="pu-trainer-progress" aria-label={`Progresso della Lega di G${playerId}`}>
         <strong>{league?.winner ? `Campione della regione: ${league.winner.name}` : 'La sfida della Lega'}</strong>

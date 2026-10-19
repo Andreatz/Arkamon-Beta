@@ -12,7 +12,7 @@ import {
 const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
-const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 56, 57, 58, 59, 60]
+const SPECIES_IDS = Array.from({ length: 81 }, (_, index) => index + 1)
 const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
 
@@ -96,8 +96,8 @@ describe('Arkamon animation manifest', () => {
     }
   })
 
-  it('preserves the five newly supplied 95-frame clips without padding and all other new clips at 96 frames', () => {
-    const shortClips = new Set(['41/idle', '41/attack', '47/hit', '52/attack', '52/ko'])
+  it('preserves all short native clips without padding and all other new clips at 96 frames', () => {
+    const shortClips = new Set(['41/idle', '41/attack', '47/hit', '52/attack', '52/ko', '79/victory'])
     for (const speciesId of SPECIES_IDS.filter(id => id >= 39)) for (const animation of ANIMATIONS) {
       const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
       const count = shortClips.has(`${speciesId}/${animation}`) ? 95 : 96
@@ -105,6 +105,6 @@ describe('Arkamon animation manifest', () => {
       expect(asset.fps).toBe(24)
       expect(asset.durationMs).toBeCloseTo(count / 24 * 1000)
     }
-    for (const speciesId of [22, 54, 55]) expect(ARKAMON_ANIMATION_MANIFEST[speciesId]).toBeUndefined()
+    for (const speciesId of Array.from({ length: 29 }, (_, index) => index + 82)) expect(ARKAMON_ANIMATION_MANIFEST[speciesId]).toBeUndefined()
   })
 })

@@ -22,7 +22,9 @@ import { appendMatchEvent, emptyMatchLog } from '@/match/matchLog'
 import { trackGameChange } from '@/match/trackGameChange'
 import { canJoinTeam, isTeamWithinLevelCap, teamCapMessage, teamLevelRange } from '@/engine/teamLevelCap'
 import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
-import { rememberRecoveryCopy, reportSaveFailure, useSaveWriteStatus } from '@/save/durableWrites'
+import { cancelPendingRecoveryCopy, scheduleRecoveryCopy, reportSaveFailure, useSaveWriteStatus } from '@/save/durableWrites'
+import { recoverInterruptedBackupRestore, useBackupRestoreRecoveryStatus } from '@/save/restoreJournal'
+import { useRegiaStore } from '@/regia/regiaStore'
 import { resolveShopPurchase, type ShopPurchaseResult } from '@/shop/purchase'
 import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
 import { resolveItemEffect } from '@/shop/itemEffects'
@@ -48,7 +50,7 @@ import {
   type EsitoBattaglia,
   type TipoAvversario,
 } from '@engine/battleEngine'
-import { getPokemon, getAllenatore } from '@data/index'
+import { getPokemon, getAllenatore, getIncontri } from '@data/index'
 import {
   MAIN_MAP_START_NODE,
   areMainMapNodesConnected,
@@ -316,6 +318,7 @@ export const useGameStore = create<GameState>()(
       }
       const commitDurable = (patch: Partial<GameState>, local = false, replace?: boolean): boolean => {
         if (!isCampaignWritable()) return false
+        if (useBackupRestoreRecoveryStatus.getState().error) return false
         if (staged) { staged = { ...staged, ...patch }; return true }
         const pendingWrite = useSaveWriteStatus.getState()
         // Background checkpoint effects must not replace an unsaved action.
@@ -342,7 +345,11 @@ export const useGameStore = create<GameState>()(
         try {
           const result = storage.setItem(options?.name ?? GAME_SAVE_STORAGE_KEY, { state: saved as unknown as GameState, version: 0 })
           if (result instanceof Promise) { void result.catch(() => {}); return failed() }
-          if (!previous.challengeContext && !tracked.challengeContext && typeof window !== 'undefined' && typeof localStorage !== 'undefined') rememberRecoveryCopy(previous)
+          if (!previous.challengeContext && !tracked.challengeContext && typeof window !== 'undefined') {
+            const revision = tracked.campaignRevision
+            scheduleRecoveryCopy(previous, () => isCampaignWritable() && get().campaignRevision === revision && !get().challengeContext,
+              () => !useRegiaStore.getState().busy)
+          }
           // A retried battle action must rebuild its scene from the checkpoint;
           // the failed action's local HP/messages are not authoritative.
           publish(retryingWrite && !local && tracked.scenaCorrente.scena === 'battaglia'
@@ -899,7 +906,7 @@ export const useGameStore = create<GameState>()(
 
       interagisciCasella: (giocatoreId, mappa, x, y) => {
         const state = get()
-        if (isLeagueTurnLocked(state.league)) return { tipo: 'no-op' }
+        if (state.battaglia || isLeagueTurnLocked(state.league)) return { tipo: 'no-op' }
         if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) {
           return { tipo: 'no-op' }
         }
@@ -927,6 +934,17 @@ export const useGameStore = create<GameState>()(
         )
         if (r.tipo === 'no-op') return r
         if (r.tipo === 'transizione-mappa' && r.versoMappaId === SECRET_LOCATION_ID) return { tipo: 'no-op' }
+
+        // Validate every battle prerequisite before consuming a legacy tile or
+        // swapping the overworld turn. The scene starts it in the same transaction.
+        if (r.tipo === 'battaglia-npc' || r.tipo === 'battaglia-selvatica') {
+          if (!isTeamWithinLevelCap(g.squadra)) { set({ teamRuleMessage: teamCapMessage(g.squadra) }); return { tipo: 'no-op' } }
+          if (!g.squadra.some((pokemon) => pokemon.hp > 0)) return { tipo: 'no-op' }
+          if (r.tipo === 'battaglia-npc') {
+            const trainer = getAllenatore(r.allenatoreId)
+            if (!trainer || !trainer.squadra.some((slot) => !!getPokemon(slot.pokemonId))) return { tipo: 'no-op' }
+          } else if (!getIncontri(mappa.id, r.cespuglioId).length) return { tipo: 'no-op' }
+        }
 
         // Marca la casella come consumata se è un tipo "esauribile".
         // Edifici e uscite restano sempre interagibili.
@@ -1191,6 +1209,9 @@ configureSessionHydration(async () => {
   // A pending command belongs to the previous checkpoint. Explicitly rereading
   // the campaign must never leave a retry capable of publishing that old state.
   useSaveWriteStatus.getState().clear()
+  cancelPendingRecoveryCopy()
+  const recovery = recoverInterruptedBackupRestore()
+  if (!recovery.ok) throw new Error(recovery.message)
   await useGameStore.persist.rehydrate()
   await useInteractionStore.persist.rehydrate()
   const [{ useBattleArchiveStore }, { useChallengeStore }] = await Promise.all([

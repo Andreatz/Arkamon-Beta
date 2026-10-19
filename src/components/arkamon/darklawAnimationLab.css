@@ -125,3 +125,6 @@
   .darklaw-lab__attack-settings .darklaw-lab__play { width: 100%; justify-content: center; }
   .darklaw-lab__attack-stage { min-height: 280px; }
 }
+
+.darklaw-lab__review { border:1px solid #738eab; border-radius:12px; background:#142034; padding:24px; display:grid; gap:16px; color:#dfebf7; }
+.darklaw-lab__review h2 { font-size:28px; }.darklaw-lab__review h3 { font-size:22px; }.darklaw-lab__review p { line-height:1.5; }.darklaw-lab__review label { display:grid; gap:8px; }.darklaw-lab__review select { padding:12px; background:#0c1727; border:1px solid #9dbbda; }

@@ -39,8 +39,8 @@
   position: absolute;
   z-index: 2;
   display: flex;
-  width: clamp(18px, 2.5cqw, 34px);
-  height: clamp(18px, 2.5cqw, 34px);
+  width: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
   padding: 0;
@@ -70,8 +70,8 @@
 .local-map-node-ring {
   position: relative;
   display: block;
-  width: 72%;
-  height: 72%;
+  width: clamp(22px, 2cqw, 30px);
+  height: clamp(22px, 2cqw, 30px);
   border: 2px solid transparent;
   border-radius: 50%;
 }
@@ -145,3 +145,8 @@
   font-size: 14px;
   pointer-events: none;
 }
+
+.local-map-node--reachable .local-map-node-ring { border:3px solid #7dd3fc; box-shadow:0 0 0 2px #15253c,0 0 10px #38bdf888; }
+.local-map-node--current .local-map-node-ring { border:3px double white; box-shadow:0 0 0 3px #c32976,0 0 12px #c3297688; }
+.local-map-node:not(:disabled):is(:focus-visible,:hover) .local-map-node-ring { outline:2px solid white; outline-offset:4px; }
+.local-map-move-preview { font-size:22px; }

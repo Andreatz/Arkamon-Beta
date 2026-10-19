@@ -52,7 +52,7 @@ export function SceneTransitionOverlay({ phase, profile, startCovered, onCovered
   }, [videoFailed, profile.failSafeMs, profile.mode])
 
   useEffect(() => {
-    if (profile.mode !== 'arkamon-dice' || phase !== 'reveal') return
+    if (profile.mode === 'battle-video' || phase !== 'reveal') return
     const timer = window.setTimeout(finish, profile.durationMs - profile.blendMs)
     return () => window.clearTimeout(timer)
   }, [finish, phase, profile.mode, profile.durationMs, profile.blendMs])

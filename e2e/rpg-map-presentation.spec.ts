@@ -40,8 +40,13 @@ test('map previews a real road and queues two rapid movements around its bends w
     requestAnimationFrame(collect)
   })
   await destination.click()
+  const beforeConfirmation = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
+  expect(beforeConfirmation.posizione1.luogo).toBe('Venezia')
+  expect(beforeConfirmation.turnoOverworld.azioniRimaste).toBe(2)
+  await page.getByRole('button', { name: 'Conferma movimento', exact: true }).click()
   // The second command arrives before the first journey completes.
   await page.getByRole('button', { name: 'Venezia, 1 movimento', exact: true }).click()
+  await page.getByRole('button', { name: 'Conferma movimento', exact: true }).click()
   await expect.poll(async () => page.locator('[data-main-map-player="1"]').evaluate((element) => parseFloat((element as HTMLElement).style.left))).toBeCloseTo(points[0].x, 1)
   await page.waitForTimeout(4800)
   const samples = await page.evaluate(() => (window as typeof window & { rpgMapSamples: { x: number; y: number }[] }).rpgMapSamples)
@@ -73,4 +78,25 @@ test('local map focus previews one movement without exposing node numbers on the
   expect(labels.every((label) => label.trim() === '')).toBe(true)
   const state = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   expect(state.turnoOverworld.azioniRimaste).toBe(2)
+})
+
+for (const height of [1080, 945, 900]) test(`default map HUD is one bar and legend rows stay separate at 1920x${height}`, async ({ page, isMobile }) => {
+  test.skip(isMobile)
+  await page.setViewportSize({ width: 1920, height })
+  await seedMap(page)
+  await expect(page.locator('[data-world-rpg-map]')).toHaveAttribute('data-combined-hud', 'true')
+  const geometry = await page.evaluate(() => {
+    const header = document.querySelector('.world-map-unified-hud')!.getBoundingClientRect()
+    const windows = [...document.querySelectorAll('.world-map-status-window')].map(el => el.getBoundingClientRect())
+    const legend = document.querySelector('.world-map-legend')!.getBoundingClientRect()
+    const rows = [...document.querySelectorAll('.world-map-legend .arka-layout-content')].map(el => el.getBoundingClientRect())
+    return { stageWidth: document.querySelector('[data-world-rpg-map]')!.getBoundingClientRect().width, header: { top: header.top, bottom: header.bottom, width: header.width }, windows: windows.map(r => ({ top: r.top, bottom: r.bottom })), legend: { top: legend.top, bottom: legend.bottom }, rows: rows.map(r => ({ top: r.top, bottom: r.bottom })) }
+  })
+  expect(geometry.header.width / geometry.stageWidth).toBeCloseTo(.945, 2)
+  expect(geometry.windows).toHaveLength(4)
+  for (const item of geometry.windows) { expect(item.top).toBeGreaterThanOrEqual(geometry.header.top - 1); expect(item.bottom).toBeLessThanOrEqual(geometry.header.bottom + 1) }
+  for (let index = 1; index < geometry.rows.length; index++) expect(geometry.rows[index].top).toBeGreaterThanOrEqual(geometry.rows[index - 1].bottom - 1)
+  expect(geometry.rows[0].top).toBeGreaterThanOrEqual(geometry.legend.top)
+  expect(geometry.rows.at(-1)!.bottom).toBeLessThanOrEqual(geometry.legend.bottom + 1)
+  await page.screenshot({ path: `output/implementation-2026-10-19/world-map-${height}.png` })
 })

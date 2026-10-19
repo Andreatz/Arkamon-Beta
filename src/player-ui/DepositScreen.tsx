@@ -1,3 +1,5 @@
+import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
+import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
 import { useState } from 'react'
 import { getPokemon, TABELLA_TIPI } from '@data/index'
 import { BOX_COUNT, SLOT_PER_BOX, SQUADRA_MAX, chiaveDeposito, getInSlot, type SlotRef } from '@engine/deposito'
@@ -25,20 +27,21 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
   const battle = useGameStore((state) => state.battaglia)
   const mayManage = useGameStore((state) => canManagePlayerTeam(state, playerId))
   const leagueRunning = useGameStore((state) => Object.values(state.league?.players ?? {}).some(progress => progress.status === 'running'))
-  const [box, setBox] = useState(1)
-  const [selection, setSelection] = useState<SlotRef | null>(() => {
-    const firstKey = Array.from({ length: SLOT_PER_BOX }, (_, index) => chiaveDeposito(1, index + 1))
+  const [box, setBox] = usePlayerUiMemory(playerId, 'deposit.box', 1)
+  const [selection, setSelection] = usePlayerUiMemory<SlotRef | null>(playerId, 'deposit.slot', () => {
+    const firstKey = Array.from({ length: SLOT_PER_BOX }, (_, index) => chiaveDeposito(box, index + 1))
       .find((key) => player.deposito[key])
     return firstKey ? { tipo: 'deposito', chiave: firstKey }
       : player.squadra.length ? { tipo: 'squadra', indice: 0 } : null
   })
   const [moving, setMoving] = useState(false)
   const [message, setMessage] = useState('')
-  const [filters, setFilters] = useState<DepositFilters>(EMPTY_DEPOSIT_FILTERS)
+  const [filters, setFilters] = usePlayerUiMemory<DepositFilters>(playerId, 'deposit.filters', EMPTY_DEPOSIT_FILTERS)
   const [previewTarget, setPreviewTarget] = useState<SlotRef | null>(null)
   const selected = selection ? getInSlot(player.squadra, player.deposito, selection) : undefined
   const pokemon = selected ? liveOwnedPokemon(selected, battle) : undefined
   const species = pokemon ? getPokemon(pokemon.specieId) : undefined
+  usePublishPlayerUiSelection(playerId, { instanceId: pokemon?.istanzaId, speciesId: pokemon?.specieId })
   const previousBox = ((box - 2 + BOX_COUNT) % BOX_COUNT) + 1
   const nextBox = (box % BOX_COUNT) + 1
   const boxCount = Array.from({ length: SLOT_PER_BOX }, (_, index) => !!player.deposito[chiaveDeposito(box, index + 1)]).filter(Boolean).length
@@ -116,7 +119,7 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
             <KitButton disabled={!filtering} onClick={() => setFilters(EMPTY_DEPOSIT_FILTERS)}>Azzera filtri</KitButton>
           </div>
           <p className="pu-deposit-filter-result" role="status">{filtering ? `${matchingInBox} risultati in questo box · ${matchingEntries.length} in tutto il deposito. I posti restano nella loro posizione.` : 'Seleziona un compagno. I posti vuoti restano disponibili per gli spostamenti.'}</p>
-          <div className="pu-box-grid" role="group" aria-label={`Contenuto del box ${box}`}>
+          <SpatialNavigation columns={7} selectOnFocus={!moving} className="pu-box-grid" role="group" aria-label={`Contenuto del box ${box}`}>
             {Array.from({ length: SLOT_PER_BOX }, (_, index) => {
               const slot = index + 1
               const key = chiaveDeposito(box, slot)
@@ -124,7 +127,7 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
               const occupant = owned ? liveOwnedPokemon(owned, battle) : undefined
               const ref: SlotRef = { tipo: 'deposito', chiave: key }
               const matching = !occupant || matchesDepositFilters(occupant, filters)
-              return <button key={key} type="button" className={`pu-box-slot${sameSlot(selection, ref) ? ' is-selected' : ''}${moving && mayManage ? ' is-move-target' : ''}${matching ? '' : ' is-filtered-out'}`}
+              return <button data-rpg-item key={key} type="button" className={`pu-box-slot${sameSlot(selection, ref) ? ' is-selected' : ''}${moving && mayManage ? ' is-move-target' : ''}${matching ? '' : ' is-filtered-out'}`}
                 aria-label={`Box ${box}, posto ${slot}: ${occupant ? `${occupant.nome}, livello ${occupant.livello}` : 'vuoto'}`}
                 aria-pressed={sameSlot(selection, ref)}
                 data-filter-match={matching} title={occupant ? `${occupant.nome} · Lv. ${occupant.livello}${occupant.hp <= 0 ? ' · KO' : occupant.stato ? ` · ${occupant.stato.tipo}` : ''}` : 'Posto libero'}
@@ -134,14 +137,14 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
                 {occupant ? <><CreaturePortrait pokemon={occupant} selected={sameSlot(selection, ref)} /><span className="pu-box-slot-level">Lv. {occupant.livello}</span></> : <span className="pu-empty-slot" aria-hidden="true">{slot}</span>}
               </button>
             })}
-          </div>
+          </SpatialNavigation>
           <h3>La tua squadra · {player.squadra.length} / {SQUADRA_MAX}</h3>
-          <div className="pu-deposit-team" role="group" aria-label="Squadra">
+          <SpatialNavigation columns={6} selectOnFocus={!moving} className="pu-deposit-team" role="group" aria-label="Squadra">
             {Array.from({ length: SQUADRA_MAX }, (_, index) => {
               const owned = player.squadra[index]
               const occupant = owned ? liveOwnedPokemon(owned, battle) : undefined
               const ref: SlotRef = { tipo: 'squadra', indice: index }
-              return <button key={index} type="button" className={`pu-box-slot pu-deposit-team-slot${sameSlot(selection, ref) ? ' is-selected' : ''}${moving && mayManage ? ' is-move-target' : ''}`}
+              return <button data-rpg-item key={index} type="button" className={`pu-box-slot pu-deposit-team-slot${sameSlot(selection, ref) ? ' is-selected' : ''}${moving && mayManage ? ' is-move-target' : ''}`}
                 aria-label={`Squadra, posto ${index + 1}: ${occupant ? `${occupant.nome}, livello ${occupant.livello}` : 'vuoto'}`}
                 aria-pressed={sameSlot(selection, ref)} onClick={() => chooseSlot(ref)}
                 onFocus={() => moving && setPreviewTarget(ref)} onMouseEnter={() => moving && setPreviewTarget(ref)}>
@@ -149,7 +152,7 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
                 {occupant ? <><CreaturePortrait pokemon={occupant} /><span className="pu-box-slot-level">Lv. {occupant.livello}</span><span className="pu-deposit-team-name">{occupant.nome}</span></> : <span className="pu-empty-slot">Posto {index + 1}</span>}
               </button>
             })}
-          </div>
+          </SpatialNavigation>
           <p className="pu-note">{isTeamWithinLevelCap(player.squadra) ? 'Squadra in equilibrio' : 'Squadra fuori fascia'} · Lv. {range.min}–{range.max} · differenza {range.gap} / 5.</p>
         </KitPanel>
         <KitPanel className="pu-detail-panel pu-deposit-detail">

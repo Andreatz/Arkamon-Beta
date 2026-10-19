@@ -139,10 +139,10 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     </div>
     <footer className="local-map-footer">
       <div className="local-map-point-info" role="status">
-        {currentNode ? <><strong>{pointInteractions[0]?.title ?? nodeLabel(selected ?? currentNode.id)}</strong><span>{pointInteractions.length ? `${pointInteractions.length} interazioni disponibili sul punto` : 'Interazione da definire'}</span></> : <span>Questo giocatore si trova in un altro luogo.</span>}
+        {currentNode ? <><strong>{pointInteractions[0]?.title ?? nodeLabel(selected ?? currentNode.id)}</strong><span>{pointInteractions.length ? `${pointInteractions.length} interazioni disponibili sul punto` : 'Nessuna interazione configurata sul punto'}</span></> : <span>Questo giocatore si trova in un altro luogo.</span>}
       </div>
       <nav aria-label="Punti raggiungibili" className="local-map-neighbours">
-        {adjacent.map((id) => <GameButton key={id} disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)}</GameButton>)}
+        {adjacent.map((id) => <GameButton key={id} disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)} · 1 azione</GameButton>)}
       </nav>
       {pointInteractions.length > 0 && <GameButton disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</GameButton>}
       <p>{remaining > 0 ? 'Due movimenti, oppure un movimento e un’interazione.' : 'Turno concluso. Passa il controllo all’altro giocatore.'}</p>

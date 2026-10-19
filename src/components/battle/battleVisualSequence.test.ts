@@ -363,3 +363,9 @@ describe('damage and KO after the visible dice result', () => {
     expect(events).toEqual(['target KO', 'XP then recoil'])
   })
 })
+
+describe('reduced presentation cue planning', () => {
+  it('does not keep native wind-up delays for a static reduced-motion cue', () => {
+    expect(planBattleAnimationPlayback(2000, 1500, 600, true)).toEqual({ attackerAtMs: 0, hitAtMs: 0, vfxAtMs: 0, impactAtMs: 0 })
+  })
+})

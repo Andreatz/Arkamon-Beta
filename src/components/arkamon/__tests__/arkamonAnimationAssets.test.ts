@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 56, 57, 58, 59, 60]
+const SPECIES_IDS = Array.from({ length: 81 }, (_, index) => index + 1)
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -88,7 +88,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     const conversion = readConversion(speciesId, animation)
     expect(conversion.source.file).toBe(`animation-source/raw/${speciesId}/front/${animation}.mp4`)
     const video = readFileSync(resolve(conversion.source.file))
-    const suppliedAction = speciesId === 36 && animation === 'ko' ? 'defeat' : animation
+    const suppliedAction = speciesId === 36 && animation === 'ko' ? 'defeat' : speciesId === 69 && animation === 'hit' ? 'hiy' : animation
     const suppliedVideo = readFileSync(resolve(`public/sprites/animation/Front/${speciesId} ${suppliedAction}.mp4`))
     expect(video.byteLength).toBeGreaterThan(0)
     expect(suppliedVideo.byteLength).toBeGreaterThan(0)
@@ -141,7 +141,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)
-      expect([28, 29, 52, 53]).toContain(speciesId)
+      expect([28, 29, 52, 53, 54, 69, 70]).toContain(speciesId)
       expect(opaqueGreen).toBeGreaterThan(1000)
     } else if (nativeGreenAllowed) {
       expect([26, 27, 45]).toContain(speciesId)

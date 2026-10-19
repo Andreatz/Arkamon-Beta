@@ -1,35 +1,35 @@
 {
-  "generatedAt": "2026-10-18T11:47:30.746829+00:00",
+  "generatedAt": "2026-10-19T13:19:29.944Z",
   "sharp": {
-    "aom": "3.15.1",
-    "archive": "3.8.9",
-    "cairo": "1.18.6",
-    "cgif": "0.5.4",
-    "exif": "0.6.26",
-    "expat": "2.8.5",
-    "ffi": "3.8.0",
-    "fontconfig": "2.18.3",
-    "freetype": "2.14.3",
-    "fribidi": "1.0.17",
-    "glib": "2.90.0",
-    "harfbuzz": "14.5.0",
-    "heif": "1.23.5",
-    "highway": "1.4.0",
+    "aom": "3.13.1",
+    "archive": "3.8.2",
+    "cairo": "1.18.4",
+    "cgif": "0.5.0",
+    "exif": "0.6.25",
+    "expat": "2.7.3",
+    "ffi": "3.5.2",
+    "fontconfig": "2.17.1",
+    "freetype": "2.14.1",
+    "fribidi": "1.0.16",
+    "glib": "2.86.1",
+    "harfbuzz": "12.1.0",
+    "heif": "1.20.2",
+    "highway": "1.3.0",
     "imagequant": "2.4.1",
-    "lcms": "2.19.1",
+    "lcms": "2.17",
     "mozjpeg": "0826579",
-    "pango": "1.58.2",
+    "pango": "1.57.0",
     "pixman": "0.46.4",
-    "png": "1.6.58",
+    "png": "1.6.50",
     "proxy-libintl": "0.5",
-    "rsvg": "2.63.2",
-    "tiff": "4.7.2",
-    "uhdr": "2.0.2",
-    "vips": "8.18.7",
+    "rsvg": "2.61.2",
+    "spng": "0.7.4",
+    "tiff": "4.7.1",
+    "vips": "8.17.3",
     "webp": "1.6.0",
-    "xml2": "2.15.4",
-    "zlib-ng": "2.3.3",
-    "sharp": "0.35.5"
+    "xml2": "2.15.1",
+    "zlib-ng": "2.2.5",
+    "sharp": "0.34.5"
   },
   "clips": [
     {
@@ -1553,126 +1553,6 @@
       "allVisibleRgbaPixelsAndAlphaPreserved": true
     },
     {
-      "source": "/sprites/arkamon/45/front/idle.webp",
-      "sourceSha256": "87fd3cfd57eb1d3ad0dfc7a896dadbffec34fdc8d3fe68a3e97630603ce463e6",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 5389026,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/45/front/attack.webp",
-      "sourceSha256": "c430f809c3228a9599127dd5443283f140fa6afb9102556fcf5cdaeacfa295f5",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 7959198,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/45/front/hit.webp",
-      "sourceSha256": "d245a3baf5148db4b914cb4201fefdf86bc005d0dab3414b1dd3e855c7473eae",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 6480378,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/45/front/victory.webp",
-      "sourceSha256": "eb2f5d33d12abb11dda23f1c61d99d5c44e4d7a2550ef5db41f1b270d8d2ef50",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 6279970,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/45/front/ko.webp",
-      "sourceSha256": "efb50a2dcd9f96cc740d1713079e871268fc7649bd993d02cfa9d27e8ee83693",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 6730314,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/49/front/idle.webp",
-      "sourceSha256": "8b13608b1b2a89d29ce2f3de96ab4319666f548222f39e1db269dd9c0256d4f0",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 5381466,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/49/front/attack.webp",
-      "sourceSha256": "a3f6d0ffed6f571cec14c32eaade9a637798722c236297772d2f1943b21187b0",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 5259196,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/49/front/hit.webp",
-      "sourceSha256": "26b9c9214398e512685eb012bffb0656222361fd2ba9c8ccb4f43c3c7577eece",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 5527226,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/49/front/victory.webp",
-      "sourceSha256": "15be9232226c2a454e21aa7aba2b01568124cb69e45168a85e138b3055584fee",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 5729490,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/49/front/ko.webp",
-      "sourceSha256": "7c443c00f0793b75d55b88efd395c0faf12200b5bd4cd1d8e778f661c7ae613b",
-      "frames": 96,
-      "pages": 12,
-      "runtimeEncodedBytes": 4463944,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/52/front/idle.webp",
-      "sourceSha256": "0a68448d1cda6ac0be002e77ee51ac2307a0c0f7cfcdc11e340ed5fdc6948912",
-      "frames": 96,
-      "pages": 16,
-      "runtimeEncodedBytes": 4029600,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/52/front/attack.webp",
-      "sourceSha256": "4b693fb014996f00d54846e438f25d5289f431a582b5ed6ee3525a6e2aee0757",
-      "frames": 95,
-      "pages": 16,
-      "runtimeEncodedBytes": 7070500,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/52/front/hit.webp",
-      "sourceSha256": "60b78644e75419c017589a477dd19008f4d776577f5802615c2dfb4d85b01c43",
-      "frames": 96,
-      "pages": 16,
-      "runtimeEncodedBytes": 4158806,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/52/front/victory.webp",
-      "sourceSha256": "8d4168000fcfdf0bf74077b7107517539932929348e4f7542be0af9685fdc906",
-      "frames": 96,
-      "pages": 16,
-      "runtimeEncodedBytes": 4390888,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
-      "source": "/sprites/arkamon/52/front/ko.webp",
-      "sourceSha256": "4437f6af2a75526144e607c48fe3fba103820fdf8e3a3263c3cc9d856e62ed75",
-      "frames": 95,
-      "pages": 16,
-      "runtimeEncodedBytes": 4657966,
-      "allVisibleRgbaPixelsAndAlphaPreserved": true
-    },
-    {
       "source": "/sprites/arkamon/40/front/idle.webp",
       "sourceSha256": "f9536b547b9d865364aee3b87cb1951acf0ee980515b30bcd9c89283c77cb786",
       "frames": 96,
@@ -1873,6 +1753,46 @@
       "allVisibleRgbaPixelsAndAlphaPreserved": true
     },
     {
+      "source": "/sprites/arkamon/45/front/idle.webp",
+      "sourceSha256": "87fd3cfd57eb1d3ad0dfc7a896dadbffec34fdc8d3fe68a3e97630603ce463e6",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5389026,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/45/front/attack.webp",
+      "sourceSha256": "c430f809c3228a9599127dd5443283f140fa6afb9102556fcf5cdaeacfa295f5",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 7959198,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/45/front/hit.webp",
+      "sourceSha256": "d245a3baf5148db4b914cb4201fefdf86bc005d0dab3414b1dd3e855c7473eae",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 6480378,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/45/front/victory.webp",
+      "sourceSha256": "eb2f5d33d12abb11dda23f1c61d99d5c44e4d7a2550ef5db41f1b270d8d2ef50",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 6279970,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/45/front/ko.webp",
+      "sourceSha256": "efb50a2dcd9f96cc740d1713079e871268fc7649bd993d02cfa9d27e8ee83693",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 6730314,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
       "source": "/sprites/arkamon/46/front/idle.webp",
       "sourceSha256": "b36775539647b9d0288464e54f0d7002ffe20928d867ed48a19419b7cbf81817",
       "frames": 96,
@@ -1993,6 +1913,46 @@
       "allVisibleRgbaPixelsAndAlphaPreserved": true
     },
     {
+      "source": "/sprites/arkamon/49/front/idle.webp",
+      "sourceSha256": "8b13608b1b2a89d29ce2f3de96ab4319666f548222f39e1db269dd9c0256d4f0",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5381466,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/49/front/attack.webp",
+      "sourceSha256": "a3f6d0ffed6f571cec14c32eaade9a637798722c236297772d2f1943b21187b0",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5259196,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/49/front/hit.webp",
+      "sourceSha256": "26b9c9214398e512685eb012bffb0656222361fd2ba9c8ccb4f43c3c7577eece",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5527226,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/49/front/victory.webp",
+      "sourceSha256": "15be9232226c2a454e21aa7aba2b01568124cb69e45168a85e138b3055584fee",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5729490,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/49/front/ko.webp",
+      "sourceSha256": "7c443c00f0793b75d55b88efd395c0faf12200b5bd4cd1d8e778f661c7ae613b",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4463944,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
       "source": "/sprites/arkamon/50/front/idle.webp",
       "sourceSha256": "a71b49ae01c9af76e5aff4cf5b95da6dc46c6ec33d4141a213acee997554315b",
       "frames": 96,
@@ -2070,6 +2030,46 @@
       "frames": 96,
       "pages": 11,
       "runtimeEncodedBytes": 8818766,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/52/front/idle.webp",
+      "sourceSha256": "0a68448d1cda6ac0be002e77ee51ac2307a0c0f7cfcdc11e340ed5fdc6948912",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4029600,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/52/front/attack.webp",
+      "sourceSha256": "4b693fb014996f00d54846e438f25d5289f431a582b5ed6ee3525a6e2aee0757",
+      "frames": 95,
+      "pages": 16,
+      "runtimeEncodedBytes": 7070500,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/52/front/hit.webp",
+      "sourceSha256": "60b78644e75419c017589a477dd19008f4d776577f5802615c2dfb4d85b01c43",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4158806,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/52/front/victory.webp",
+      "sourceSha256": "8d4168000fcfdf0bf74077b7107517539932929348e4f7542be0af9685fdc906",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4390888,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/52/front/ko.webp",
+      "sourceSha256": "4437f6af2a75526144e607c48fe3fba103820fdf8e3a3263c3cc9d856e62ed75",
+      "frames": 95,
+      "pages": 16,
+      "runtimeEncodedBytes": 4657966,
       "allVisibleRgbaPixelsAndAlphaPreserved": true
     },
     {
@@ -2311,12 +2311,972 @@
       "pages": 16,
       "runtimeEncodedBytes": 8664466,
       "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/55/front/idle.webp",
+      "sourceSha256": "3fb00fcc970eac7496fa8c4c9f1dd281fb131d539eecdb206ea8ebd979c9ff80",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4775936,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/55/front/attack.webp",
+      "sourceSha256": "4afe0f62fc059f7c99468265792a795fc1e337eae59f1094add879a59565add0",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 6133068,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/55/front/hit.webp",
+      "sourceSha256": "04abcd67abf7f999994244812dcdce71dbd7f56b7dbd38c4a6664908e6ad7829",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4929474,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/55/front/victory.webp",
+      "sourceSha256": "1427c753d68b1964d78e995e57c790fdace764a968b046ec4fd922b12d3f64da",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4552202,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/55/front/ko.webp",
+      "sourceSha256": "430439552ee2d8765d73d2d774e6c5974e01e814aacb68795bca631cd2bc7390",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 7684684,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/70/front/idle.webp",
+      "sourceSha256": "46a7965b45b6e33c0035c56e74f4348b98a3fcace70aae9fdddb6b37057ff8c3",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 7345544,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/70/front/attack.webp",
+      "sourceSha256": "1f4d9e7d5440c9dee74db91b6f8989f4a39810e83e4930cc23acc431c8c41ad7",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 6369836,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/70/front/hit.webp",
+      "sourceSha256": "e404830c57325fe0d0289841daac384863249d0ebf6d2c7853b12d05c7769cbc",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 7802570,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/70/front/victory.webp",
+      "sourceSha256": "a6ac76826987ab42b9478a62ff3fa3dcd354731b2aff7e85be6db5db9f6f7048",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 9188748,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/70/front/ko.webp",
+      "sourceSha256": "d118482a0ab6fc14d2375951ca0722bee5867a59665b9895fc690b21e788b09b",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 7295454,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/61/front/idle.webp",
+      "sourceSha256": "bd7f29daa13bc07e05178e0e776113de747ece09bf9dc608ae52bcc1e75bc75b",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 7724732,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/61/front/attack.webp",
+      "sourceSha256": "5b589aa70a547c7450d7dba67d1c2afd13e1ab4c4646108ab2ba801be36fbb66",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 12441290,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/61/front/hit.webp",
+      "sourceSha256": "97b1d5d26c72d0d2272d4f9fa5e426132e47f4685b09d9170252af08422a291a",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 8779858,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/61/front/victory.webp",
+      "sourceSha256": "3f14244eb610f6c5c5e33b728ee96c40563e7b7e224f7ba31721183322c25dd8",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 11643964,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/61/front/ko.webp",
+      "sourceSha256": "1bd38d7d7d877e9f7e9ea771ffcdc2417bdf2ed6701bf075dcc0e574b48d978e",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 10980530,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/71/front/idle.webp",
+      "sourceSha256": "7d5bdd8076e8efef0875bbd66217395255031575165674ab30caa0078ccf3dd5",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 3408110,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/71/front/attack.webp",
+      "sourceSha256": "e5ff655af87d48f295732a97d90927cd38fe11d2db32b66607b8789ae2389fd7",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5361868,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/71/front/hit.webp",
+      "sourceSha256": "8f1620509812a3da5615dc794f7e0a0823ce09001eaf3caf8373cc0f1f44b1d9",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4190372,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/71/front/victory.webp",
+      "sourceSha256": "d6f5e32317f2f7ec8f8b7239f107893a4e7f4bd09fd37b00812d201d518d6956",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 7338458,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/71/front/ko.webp",
+      "sourceSha256": "624426a82b79157e95c97f8802ce5a319288e59dbc8a0c70af7993dc05caefe0",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5642210,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/72/front/idle.webp",
+      "sourceSha256": "0c8e7052db165ee17ad7ddb1ab786bcabf908750064161a2938c73b3f4a953fa",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 5274934,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/72/front/attack.webp",
+      "sourceSha256": "15887cf1ae720eb4b7770d9a49183f02fe9d88a99eea02be71c7097bbe9c1b46",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4287400,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/72/front/hit.webp",
+      "sourceSha256": "ca09107ef1424012670d3edcc928857e249e893e85665ef3eaa89076d8262cd1",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4014904,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/72/front/victory.webp",
+      "sourceSha256": "960a9b4f36f3e637b9e2cdf5847e8cf6fd8ff2ac7d21da5f6c50066e6567bf67",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 6077456,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/72/front/ko.webp",
+      "sourceSha256": "5e626df05c95b08a514d317536629e80e6d463ff8a136dc3f58a69cb1a632861",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 7645036,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/62/front/idle.webp",
+      "sourceSha256": "416544befcd299f73bf0cd7a28d9d7a8a5df1d472fee14c3090c2ade4c50e420",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 3706402,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/62/front/attack.webp",
+      "sourceSha256": "99ba7cc01ccbd1fa809ec6bfd21240127d6237945b450c78bb9ebb1484643b40",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 5647444,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/62/front/hit.webp",
+      "sourceSha256": "ebc49482fd864bbc9d0c7d84bedf85e8bd606d55eb30e4fef4394ec71725f417",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 3883342,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/62/front/victory.webp",
+      "sourceSha256": "32322d146982b2f05cd5c1c798621f4fd3df51d7d8112a53047bd0b20aedd63e",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 3812208,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/62/front/ko.webp",
+      "sourceSha256": "ceedc4f19d7a53b1c9ceebc1224831922a157d75e51d62f140352ed940f583d7",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 6399938,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/73/front/idle.webp",
+      "sourceSha256": "008ce74cd17af8372b10413ae9c846228e53a89f532a431e5605eb6e1804d0d7",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 3915426,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/73/front/attack.webp",
+      "sourceSha256": "9a355e7d4a3ded0a8ac14d105dcb3b484d9315b6eba23d83765dcf8ed4a1d106",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 4612686,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/73/front/hit.webp",
+      "sourceSha256": "5094fd9d58d80ad84e5971c1c2da928e5fb020e75fdc2e537fe8e62f7539409e",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 5048248,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/73/front/victory.webp",
+      "sourceSha256": "1e14aa2ac81208c41ba208fd5f1ab97b140b78da2f3aa4bffcea896a8b3cb176",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 5153090,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/73/front/ko.webp",
+      "sourceSha256": "143cb876fa54669746c0324a52c168c9c774ec4c4613cc3a2dfa8668562dc8dc",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 6486780,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/63/front/idle.webp",
+      "sourceSha256": "6ff6808bde9ac0034c9bb3974008173aa4fa378470badb3c532abcc333272cdc",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4098990,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/63/front/attack.webp",
+      "sourceSha256": "6063f68ff1bf4f0b3b492cfe77ed125331ebb7cd8fcfb67ae5d2d71b1e3e0ed7",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4712676,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/63/front/hit.webp",
+      "sourceSha256": "1a906a6825b021f63b30be3c3c6ebe622e9a391cc18af87e74741ce2fa0cc377",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4233316,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/63/front/victory.webp",
+      "sourceSha256": "99ad95091e23564b4fbb0228f662b8e015db3e1fdd8d8c03207e7c11f9c27637",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4716986,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/63/front/ko.webp",
+      "sourceSha256": "d08ab6c5fc843a563378f6b14b9edb06a2bc4388c31b7de38bc05ee385aa2fba",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 10702376,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/74/front/idle.webp",
+      "sourceSha256": "1998e53eef1947c5fa1b142325deabe162a2e47f635f859b5480657f3cb9e66c",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 3153496,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/74/front/attack.webp",
+      "sourceSha256": "33e21b621d443921a1fc5427241721d96dd3ef9c99589ffdfc742073526080a9",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4743406,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/74/front/hit.webp",
+      "sourceSha256": "ebeeb6d5878cc53e18bfd17c50ef3f9e9cb17194e9cfa4a0a153eae45dc699f8",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4167344,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/74/front/victory.webp",
+      "sourceSha256": "d94af62602489ff69553dca2c80e6a496bd347588fba14a657c94d344c5423f6",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 3973362,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/74/front/ko.webp",
+      "sourceSha256": "59718fdde94234cad21b54622e3dcb5c07e634687e6a1d71ec8c29e681ba5cec",
+      "frames": 96,
+      "pages": 16,
+      "runtimeEncodedBytes": 4096728,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/64/front/idle.webp",
+      "sourceSha256": "aa3fdd8abfe1bedb78023c6ab8769ee212a464976ae022a4cc52fee8da20c183",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4409030,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/64/front/attack.webp",
+      "sourceSha256": "474510ab71a6aa7d6ecf65b94d97eb8ed5d9c3eb2222d74f5b8246a921b660b3",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4463608,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/64/front/hit.webp",
+      "sourceSha256": "974758884cf243095ac2aabdca9160a79be6f6634a71d87560d53657cad6293c",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4195588,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/64/front/victory.webp",
+      "sourceSha256": "6be8ddc009bb4820791d86be0d0ac8e811d48a48691d460aedcfcc04061cb872",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4282286,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/64/front/ko.webp",
+      "sourceSha256": "d80377b2bcab11907e3a6112ee2be3730c2d7e9add4d48d2f8d662b1b176354f",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4586530,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/75/front/idle.webp",
+      "sourceSha256": "f15c8c29fad81a4de1644e4741d30da1028e69bd009d37ec54d79fd4f1031555",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4934322,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/75/front/attack.webp",
+      "sourceSha256": "2495b9026aa77bd206f007d70e0c8b8c31e63502b365d4dde61154ebc089f02c",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 8838886,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/75/front/hit.webp",
+      "sourceSha256": "e141a093ab441965e60679442a25ba8598b6be2a3fa30f63d6e3a14caac28c12",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4824684,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/75/front/victory.webp",
+      "sourceSha256": "e90f1711c70f919ec719df69efa3d54a0f552f7cde72079853c364d6e3cd300a",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 6870996,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/75/front/ko.webp",
+      "sourceSha256": "c07fad2fff1e44b3ff945e2a366f689cd25de613dceae3557c6f3f90356cf944",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5605724,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/65/front/idle.webp",
+      "sourceSha256": "cd25ec67f30109e72893af7cd0477cce8364ef58523e77d7192d01b7307d473c",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4136010,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/65/front/attack.webp",
+      "sourceSha256": "7cdd5b8ef2a0c1ee1fe55145ee309f65d6d0c030bb978833f8e94d8a54ac773e",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 5874694,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/65/front/hit.webp",
+      "sourceSha256": "f6990fa91d1ae86839e9b9bf0ebcfe8c1bbec872f3a5676bf3f2a3ea89d2d89f",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4863198,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/65/front/victory.webp",
+      "sourceSha256": "010db69d7cd1b444049e5dbfe2b44306d6108116784e634d439005d618862cfa",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4379372,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/65/front/ko.webp",
+      "sourceSha256": "a636fc5c2496e5e6139fc0b1b5c4f65c7126917bfb6408a7cd8ddde2323ae13c",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4763228,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/66/front/idle.webp",
+      "sourceSha256": "319ea666c1cbb30e4bbc2a31f21d9db228727cfce7dc9620eb645f08297590bc",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3517512,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/66/front/attack.webp",
+      "sourceSha256": "f26bcd2b7da896a4ce3338b7ef64163e0351a2fe1cc75383779238fd7fcce0b8",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3609350,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/66/front/hit.webp",
+      "sourceSha256": "8915862c5e5b87a4507a046bd7271ff69fa9a8fdfcaefbe9b3a368b61d6c6262",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3572810,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/66/front/victory.webp",
+      "sourceSha256": "7e28b0e87439d09026a5d730fc1aaf0cc33c14139783c28deb38d04a2ee9e8d6",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4310778,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/66/front/ko.webp",
+      "sourceSha256": "8a928fee3fbbde126a53d07a4b5cabfbdfa031aa6d42959ac8019fd197230717",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4052288,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/76/front/idle.webp",
+      "sourceSha256": "b64ce8733975d4442d5243d427529076abed363e573a3980553414ae40a2b73b",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 7374254,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/76/front/attack.webp",
+      "sourceSha256": "951e46bbde335f6d7dd47c55e0183c9e0102a00a9c8243d52a5f222e1369daad",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 6534438,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/76/front/hit.webp",
+      "sourceSha256": "2883ce81900ccdf495fd658db70702651b058044f4c9365e636a06ace8307947",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 5993888,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/76/front/victory.webp",
+      "sourceSha256": "e3db26dd78964c33e34e04b17282cb96bb2d660ce68c4af87c3855f1f773c323",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 7911808,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/76/front/ko.webp",
+      "sourceSha256": "6faee66ee9c2ba88f412aa6ce321aabd6c5d556487729057a04affb3dc021e3f",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 7095350,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/54/front/idle.webp",
+      "sourceSha256": "c7815da5cc3884f9103ce306f05e7a5ff8bdcd67867c801b0f842f28357f2502",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 3315344,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/54/front/attack.webp",
+      "sourceSha256": "e2dd261fe9f34cbe14649ce9ac2e43d7669893577ccafc351ff505af625da8ec",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 3564268,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/54/front/hit.webp",
+      "sourceSha256": "c38083ac67b880b3767be34074ecb9f949258495b476b8d738950167d709db48",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 3530306,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/54/front/victory.webp",
+      "sourceSha256": "cb22bab866ec20f883bf40dc2bb6f344e89e70203e40e497d3a6eafe324b9040",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 5352152,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/54/front/ko.webp",
+      "sourceSha256": "90eb65b539bad9d7d70173c714e1c44a2698b5fbb2287124a4f3af3b658f0557",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 3750686,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/67/front/idle.webp",
+      "sourceSha256": "479f081c865394662e4c828641b1729a2bf6839027bf85dcfb28ea5368162d75",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 3714480,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/67/front/attack.webp",
+      "sourceSha256": "a99aa7705f6d7f1343fa11ba93248f9a9743b285b1c233feb2abb10d6066ce2a",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 3690176,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/67/front/hit.webp",
+      "sourceSha256": "54db0b8e0f01e667aa39abfb1a7b12a9564db3853a7882da13f615863b0f9099",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 3852884,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/67/front/victory.webp",
+      "sourceSha256": "9fdb8707b3fb15b8ff4b22158dfebb4210fe52afa195aae500c46e63a4edbc0a",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4277582,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/67/front/ko.webp",
+      "sourceSha256": "6cdf9f95988caa1494d55483fbdacd4be4d943124ee282c78c875381dc80aaab",
+      "frames": 96,
+      "pages": 11,
+      "runtimeEncodedBytes": 4339326,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/77/front/idle.webp",
+      "sourceSha256": "1c355b2de2162d761455cf7d0fc44a322e52221f3fe529e466cc7c34236257ae",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 2845680,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/77/front/attack.webp",
+      "sourceSha256": "1a1833799b468f20e1e69dd5925da2b08c183358bd8f04cbc1909461023c4610",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 2864838,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/77/front/hit.webp",
+      "sourceSha256": "39eb683b5159c81f045f35e80ed97ece6ffb7f5f486f4fc125465467a2c975d9",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3292774,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/77/front/victory.webp",
+      "sourceSha256": "d7826598ad53717e49e45539193536fdfc465eda47687d12456a8e14f6533890",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3545504,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/77/front/ko.webp",
+      "sourceSha256": "62f58c89d11d9b76fec09284753d578e68e6607b391505427d52f4fe75a4a566",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4076146,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/22/front/idle.webp",
+      "sourceSha256": "211fc17a9320d3d81319f5b80faec6c3165d8fc30954a183b24afeba4abb3158",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 4788318,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/22/front/attack.webp",
+      "sourceSha256": "95580a9ca6c3893795d551a49a361a36b62d1f43f56fa77652b975ba160fe953",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 7960500,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/22/front/hit.webp",
+      "sourceSha256": "fe05e901375dca22511f94dc31544c206cdd48e7884ec8ab3ef684c4f13c2ec8",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 5442634,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/22/front/victory.webp",
+      "sourceSha256": "d0e664457b1c80426cfeeefa6dddfd6ee28384ddf317baaebf1d33ffecb3fc24",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 7263046,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/22/front/ko.webp",
+      "sourceSha256": "b7b51cd11b73c77ee1d33d2c35e6eb66a943160dcf58e43b6dc95a3f84635499",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 6865304,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/68/front/idle.webp",
+      "sourceSha256": "6e3c198bfbabd9f3d0c069ce461d2f4f3989d1fa2bc3319e08eb4f5ee244ab09",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3645856,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/68/front/attack.webp",
+      "sourceSha256": "11111fdd6406cfc45ab4aab3173daa907bdc94d12ce1f81479f45ecdc6209d8a",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3643578,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/68/front/hit.webp",
+      "sourceSha256": "eef6877dfa69b6552f4f79ae64dab3ffe3406b39f9b1c8179993e5c51943897c",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3846652,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/68/front/victory.webp",
+      "sourceSha256": "5ba07dacf24a4bc871710dbbc1be2a6b412a76aa71e8c159eab2e6e0fb6ce980",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3671614,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/68/front/ko.webp",
+      "sourceSha256": "dada9ef66486dece42bb43b1abcd3c504a205cc35ba5aed019c98618089915a5",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4314324,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/78/front/idle.webp",
+      "sourceSha256": "d8d706a9518755ce9aec866b1f998dc64bc3975118a7592af33edd5480d0480e",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3286338,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/78/front/attack.webp",
+      "sourceSha256": "ee83f94b832b56f61f5cb97aa7b922cdb943fb608af895aeeef09a6a3c696e6a",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3872018,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/78/front/hit.webp",
+      "sourceSha256": "b7f2f5ba8d5c64ed81aa40674f3b99e90809229357b0ce2cc7ebf1e0edf5197b",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3251664,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/78/front/victory.webp",
+      "sourceSha256": "e614ca8310518e046ee0fbecfbc26e2dcd680711919a3225aa8be443267a0c81",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 5196210,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/78/front/ko.webp",
+      "sourceSha256": "99f6bf56909175088043e97453b3a34ed0cc0ed74b0b84951b1215133ae994da",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3832094,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/81/front/idle.webp",
+      "sourceSha256": "1309fd87ff9ff7565db994701e76d36eea2fabf6931e1610fb995017a93953ac",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 4380560,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/81/front/attack.webp",
+      "sourceSha256": "b6911e2512d61960af2bcf93b8d30532056980f0874f3b3a92f8494cf170850a",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 6889186,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/81/front/hit.webp",
+      "sourceSha256": "537352136fb1a80ede9c233526c233f0d6a61be820bd6556f0f845f83a73834e",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 3998698,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/81/front/victory.webp",
+      "sourceSha256": "788f2db7007b6d6ab7e7c5014205bb174e9c9f9040b05c660ff40bfb0f3c55b2",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 6053962,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/81/front/ko.webp",
+      "sourceSha256": "767c95a68ed4e840ff21aca1419514c306fab1963f0a60a8e085dbecdb4796e5",
+      "frames": 96,
+      "pages": 6,
+      "runtimeEncodedBytes": 5321800,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/69/front/idle.webp",
+      "sourceSha256": "a18ce6faab8d70d7b1c179c00d60dad9f4f9d656fc50fe9c45223f3c6bbb15d6",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4480572,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/69/front/attack.webp",
+      "sourceSha256": "2d61f5d3abfe730a0abc1235e4438dcd65984ed5761cda6042a03e79ede6c1ec",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4541972,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/69/front/hit.webp",
+      "sourceSha256": "a0667fb58bb9382c2c11fc55b4199f6fba6c2383d9fd5c88369187e137ecac8b",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4968986,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/69/front/victory.webp",
+      "sourceSha256": "1bd19c079b5b9b02097b4ba4561b36a063ecf10f2adbcce15a4099494d7be818",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 4503592,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/69/front/ko.webp",
+      "sourceSha256": "a7e5e9d9b8afa94296d7565655d95fc60af5c7e3676a13618284739111b43d37",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 6191780,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/79/front/idle.webp",
+      "sourceSha256": "bc381b847a244c5fd3db74f407bfb5b2e9a747c859fd20f3b698880bbdc8c70d",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 2668208,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/79/front/attack.webp",
+      "sourceSha256": "11da40805fa453dae257f1a133c8d714df442d9eedf679cfb97cf011d6519ca0",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 3289672,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/79/front/hit.webp",
+      "sourceSha256": "9bd0d78ffd4ed4ea45e9e0438aee25521c8df8388ba0a72a89200124b79d5813",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 2379482,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/79/front/victory.webp",
+      "sourceSha256": "431b4859ddee562ea7e63363a497d1db3d0f8d74627fb6667a0cad58ff281f2c",
+      "frames": 95,
+      "pages": 12,
+      "runtimeEncodedBytes": 2356420,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/79/front/ko.webp",
+      "sourceSha256": "30b80adc5a0710d7d40be369ce88a6c07f923e293c96c7748c38feb991359405",
+      "frames": 96,
+      "pages": 12,
+      "runtimeEncodedBytes": 3765120,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/80/front/idle.webp",
+      "sourceSha256": "d37e747f4345c7beecc78f902292e826d94b461c8d5f3e62a8be7b48e7f1f090",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3445798,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/80/front/attack.webp",
+      "sourceSha256": "8bdc7506d99ef40a220a04eb3af0e2f1695944955107728cd5364a2b94374685",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 5095214,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/80/front/hit.webp",
+      "sourceSha256": "2b0bd3df087fb2b1e9efd24f46f75116752bd13d4c0cd5d8b0306bac2948f7c3",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 3372270,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/80/front/victory.webp",
+      "sourceSha256": "045494063c4eed31686211af449fdd83dbfcf19d429fc4d18d49090ccf238197",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4212058,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
+    },
+    {
+      "source": "/sprites/arkamon/80/front/ko.webp",
+      "sourceSha256": "9e23eb282eed693deae83a1e3e9b4354e8346f4a9f0be8ca83a95424991eb338",
+      "frames": 96,
+      "pages": 8,
+      "runtimeEncodedBytes": 4773030,
+      "allVisibleRgbaPixelsAndAlphaPreserved": true
     }
   ],
-  "frames": 27349,
-  "pageCount": 3755,
-  "sourceEncodedBytes": 2132568066,
-  "runtimeEncodedBytes": 2125878492,
+  "frames": 38868,
+  "pageCount": 4990,
+  "sourceEncodedBytes": 2744724908,
+  "runtimeEncodedBytes": 2738612682,
   "maxPageDecodedBytes": 16777216,
   "allVisibleRgbaPixelsAndAlphaPreserved": true
 }

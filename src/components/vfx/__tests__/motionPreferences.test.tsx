@@ -150,6 +150,25 @@ describe('game motion preference across native frames and VFX', () => {
     if (typeof dispose === 'function') dispose()
   })
 
+  it('shows a stable reduced-motion cue for 180 ms and resolves impact exactly once', async () => {
+    runtime.preference = 'on'
+    const onStart = vi.fn(), onImpact = vi.fn(), onComplete = vi.fn()
+    const cue = await readyVfx({ onStart, onImpact, onComplete })
+    expect(cue?.props['data-vfx-reduced-cue']).toBe(true)
+    expect(cue?.props.style).toMatchObject({ left: '70%', top: '20%' })
+    const clock = runtime.effects.find(entry => entry.dependencies?.length === 4 && entry.dependencies[1] === effect.id)!
+    const dispose = clock.callback()
+    runtime.raf[0](0)
+    vi.advanceTimersByTime(0)
+    expect(onImpact).toHaveBeenCalledOnce()
+    vi.advanceTimersByTime(179)
+    expect(onComplete).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(1)
+    expect(onComplete).toHaveBeenCalledOnce()
+    expect(onStart).toHaveBeenCalledOnce()
+    if (typeof dispose === 'function') dispose()
+  })
+
   it('cancels pending fast impact and completion callbacks when unmounted', async () => {
     runtime.speed = 2
     const onImpact = vi.fn(), onComplete = vi.fn()

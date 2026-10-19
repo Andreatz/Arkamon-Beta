@@ -1,3 +1,5 @@
+import { RpgCommand, RpgFrame } from '@/components/rpg'
+import './rpgScenes.css'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { useGameStore } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
@@ -173,7 +175,7 @@ export function EvoluzioneScene() {
   return (
     <div
       data-admin-layout-root
-      className="w-full h-full relative bg-gradient-to-br from-violet-950 via-fuchsia-900 to-indigo-950 overflow-hidden bg-cover bg-center"
+      className="rpg-evolution-scene w-full h-full relative bg-gradient-to-br from-violet-950 via-fuchsia-900 to-indigo-950 overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: `url(${EVOLUTION_BG})` }}
     >
       {/* Sfondo a stelline animate */}
@@ -304,7 +306,7 @@ export function EvoluzioneScene() {
         onChange={(rect) => updateEvolutionLayout('textPanel', rect)}
         zIndex={20}
       >
-      <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
+      <div className="rpg-evolution-message flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center"><RpgFrame />
         {fase === 'pre' && (
           <>
             <h2 className="arka-layout-content arka-readable-title text-3xl font-bold text-white">
@@ -314,9 +316,9 @@ export function EvoluzioneScene() {
               {oldSpec.nome} (livello {istanza.livello}) ha raggiunto la soglia
               di evoluzione.
             </p>
-            <button onClick={avvia} className="arka-button mt-4">
+            <RpgCommand tone="primary" onClick={avvia} className="mt-4">
               <span className="arka-layout-content">✨ Evolvi!</span>
-            </button>
+            </RpgCommand>
           </>
         )}
         {fase === 'morphing' && (
@@ -327,13 +329,13 @@ export function EvoluzioneScene() {
         {fase === 'post' && (
           <>
             <h2 className="arka-layout-content arka-readable-title text-4xl font-black text-yellow-300">
-              {oldSpec.nome} si e' evoluto!
+              {oldSpec.nome} si è evoluto in {newSpec.nome}!
             </h2>
-            <button onClick={continua} className="arka-button mt-4">
+            <RpgCommand tone="primary" onClick={continua} className="mt-4">
               <span className="arka-layout-content">
                 {indice + 1 < evoluzioni.length ? 'Continua' : 'Fine'}
               </span>
-            </button>
+            </RpgCommand>
           </>
         )}
       </div>

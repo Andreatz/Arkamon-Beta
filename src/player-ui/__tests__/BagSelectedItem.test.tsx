@@ -51,7 +51,7 @@ describe('selected inventory item action view', () => {
     expect(markup).not.toContain('is-single-item')
     expect(markup).toContain('Oggetti disponibili')
     for (const item of SHOP_ITEMS) expect(markup).toContain(item.description)
-    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Usa Masterball<\/button>/)
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>(?:<span\b[^>]*><\/span>)*Usa Masterball<\/button>/)
     expect(onUse).not.toHaveBeenCalled()
   })
 
@@ -88,11 +88,11 @@ describe('selected inventory item action view', () => {
     runtime.state.scenaCorrente = { scena: 'lega' }
     const markup = renderToStaticMarkup(<BagScreen playerId={1} />)
     expect(markup).toContain('Gli oggetti consentiti fra gli incontri non interrompono la serie della Lega')
-    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Usa Pozione<\/button>/)
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>(?:<span\b[^>]*><\/span>)*Usa Pozione<\/button>/)
     expect(markup).not.toContain('Usare un oggetto conclude il turno')
     runtime.state.league.config.betweenBattleItems = false
     const blocked = renderToStaticMarkup(<BagScreen playerId={1} />)
     expect(blocked).toContain('Gli oggetti fra gli incontri della Lega non sono consentiti')
-    expect(blocked).toMatch(/<button[^>]*disabled=""[^>]*>Usa Pozione<\/button>/)
+    expect(blocked).toMatch(/<button[^>]*disabled=""[^>]*>(?:<span\b[^>]*><\/span>)*Usa Pozione<\/button>/)
   })
 })

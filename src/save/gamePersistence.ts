@@ -241,6 +241,59 @@ function restoreLocalPositions(value: unknown, warn: Warn): PosizioniMappeLocali
   return positions
 }
 
+/** Owned creatures are canonical. A later duplicate is recovered rather than
+ * deleted, but no live battle/evolution may guess which original ID it meant. */
+function restoreInstanceIdentity(state: GameSaveState, warn: Warn): void {
+  const owned = [state.giocatore1, state.giocatore2].flatMap((player) => [...player.squadra, ...Object.values(player.deposito)])
+  const reserved = new Set(owned.map((pokemon) => pokemon.istanzaId))
+  const existingBattle = state.battaglia
+  if (existingBattle) for (const pokemon of [existingBattle.pokemonA, existingBattle.pokemonB, ...(existingBattle.squadraA ?? []), ...(existingBattle.squadraB ?? [])]) reserved.add(pokemon.istanzaId)
+  for (const pokemon of state.league.winner?.team ?? []) reserved.add(pokemon.istanzaId)
+  const seen = new Set<string>(), ambiguous = new Set<string>()
+  const recover = (pokemon: PokemonIstanza): PokemonIstanza => {
+    const id = pokemon.istanzaId
+    if (!seen.has(id)) { seen.add(id); return pokemon }
+    ambiguous.add(id)
+    let suffix = 1
+    while (reserved.has(`${id}-recovered-${suffix}`)) suffix++
+    const recoveredId = `${id}-recovered-${suffix}`
+    reserved.add(recoveredId); seen.add(recoveredId)
+    return { ...pokemon, istanzaId: recoveredId }
+  }
+  for (const player of [state.giocatore1, state.giocatore2]) {
+    player.squadra = player.squadra.map(recover)
+    player.deposito = Object.fromEntries(Object.entries(player.deposito).map(([slot, pokemon]) => [slot, recover(pokemon)]))
+  }
+  if (ambiguous.size) warn('Recuperate identità duplicate: la prima creatura conserva l’identificatore, le successive ricevono un nuovo identificatore. Specie, livelli, HP e status sono conservati.')
+  const battle = state.battaglia
+  if (battle) {
+    const sideA = battle.squadraA ?? [battle.pokemonA], sideB = battle.squadraB ?? [battle.pokemonB]
+    const idsA = sideA.map((pokemon) => pokemon.istanzaId), idsB = sideB.map((pokemon) => pokemon.istanzaId)
+    const canonical = new Map([state.giocatore1, state.giocatore2].flatMap((player) => [...player.squadra, ...Object.values(player.deposito)]).map((pokemon) => [pokemon.istanzaId, pokemon]))
+    const inconsistentSpecies = (active: PokemonIstanza, roster: PokemonIstanza[]) => roster.find((pokemon) => pokemon.istanzaId === active.istanzaId)?.specieId !== active.specieId
+    const ambiguousReference = [...idsA, ...idsB, battle.pokemonA.istanzaId, battle.pokemonB.istanzaId,
+      ...(battle.checkpoint?.evolutions.map((evolution) => evolution.istanzaId) ?? []),
+      ...(battle.evoluzioneInAttesa ? [battle.evoluzioneInAttesa.istanzaId] : [])].some((id) => ambiguous.has(id))
+    if (ambiguousReference || new Set(idsA).size !== idsA.length || new Set(idsB).size !== idsB.length
+      || idsA.some((id) => idsB.includes(id)) || !idsA.includes(battle.pokemonA.istanzaId) || !idsB.includes(battle.pokemonB.istanzaId)
+      || inconsistentSpecies(battle.pokemonA, sideA) || inconsistentSpecies(battle.pokemonB, sideB)
+      || sideA.some((pokemon) => canonical.get(pokemon.istanzaId)?.specieId !== pokemon.specieId)
+      || sideB.some((pokemon) => canonical.has(pokemon.istanzaId) && canonical.get(pokemon.istanzaId)!.specieId !== pokemon.specieId)) {
+      state.battaglia = null
+      warn('La battaglia aveva riferimenti a creature ambigui o incoerenti ed è stata chiusa senza applicare ricompense. Le creature recuperate restano disponibili.')
+    }
+  }
+  for (const key of ['scenaCorrente', 'scenaPrecedente'] as const) {
+    const scene = state[key]
+    if (scene?.scena === 'evoluzione' && Array.isArray(scene.payload?.evoluzioni)
+      && scene.payload.evoluzioni.some((entry) => isSaveRecord(entry) && ambiguous.has(String(entry.istanzaId)))) {
+      if (key === 'scenaPrecedente') state.scenaPrecedente = null
+      else state.scenaCorrente = { scena: 'mappa-principale' }
+      warn('Una presentazione di evoluzione con identità ambigua è stata chiusa; nessun nuovo livello o evoluzione è stato assegnato.')
+    }
+  }
+}
+
 export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = initialGameSave()): { state: GameSaveState; warnings: string[] } {
   const warnings: string[] = []
   const warn: Warn = (message) => { if (!warnings.includes(message)) warnings.push(message) }
@@ -265,6 +318,7 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
     interactionProgress: normalizeInteractionProgress(p.interactionProgress),
     arkadex: normalizeArkadexProgress(p.arkadex), matchLog: normalizeMatchLog(p.matchLog),
   }
+  restoreInstanceIdentity(state, warn)
   state.arkadex = deriveArkadexProgress(state.arkadex, state)
   if (state.battaglia?.leagueBattle) {
     const reference = state.battaglia.leagueBattle

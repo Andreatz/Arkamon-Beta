@@ -8,6 +8,11 @@ const object = (value: unknown): value is Record<string, unknown> => typeof valu
 const integer = (value: unknown, max = 1_000_000): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 && value <= max
 const validId = (value: unknown): value is string => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value)
 const text = (value: unknown, max: number): value is string => typeof value === 'string' && value.length <= max
+/** Legacy impossible edges remain visible only until removed, never selectable anew. */
+export function completionPrerequisiteOptions(entries: readonly InteractionDefinition[], draft: InteractionDefinition): InteractionDefinition[] {
+  return entries.filter((entry) => entry.id !== draft.id && entry.action.kind !== 'shop'
+    && (!entry.repeatable || draft.requirements.completedInteractions.includes(entry.id)))
+}
 export function validResources(value: unknown): value is InteractionResources {
   if (!object(value) || !integer(value.coins) || !object(value.items)) return false
   return Object.entries(value.items).every(([id, quantity]) => id === 'masterball' && integer(quantity, 999))

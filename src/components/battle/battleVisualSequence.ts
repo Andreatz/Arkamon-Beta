@@ -7,7 +7,8 @@ export interface BattleVisualSequenceOptions {
 }
 
 /** Align the defender's native reaction pose with the attack effect's impact. */
-export function planBattleAnimationPlayback(attackReleaseMs: number, hitReactionMs: number, vfxImpactMs: number) {
+export function planBattleAnimationPlayback(attackReleaseMs: number, hitReactionMs: number, vfxImpactMs: number, reducedMotion = false) {
+  if (reducedMotion) return { attackerAtMs: 0, hitAtMs: 0, vfxAtMs: 0, impactAtMs: 0 }
   const releaseMs = Math.max(0, Number.isFinite(attackReleaseMs) ? attackReleaseMs : 0)
   const reactionMs = Math.max(0, Number.isFinite(hitReactionMs) ? hitReactionMs : 0)
   const impactMs = Math.max(0, Number.isFinite(vfxImpactMs) ? vfxImpactMs : 0)

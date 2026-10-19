@@ -56,7 +56,8 @@ describe('recupero dei campi corrotti senza perdere la partita valida', () => {
       allenatoriSconfitti: [101, '102', null], cespugliVisitati: ['Percorso_1:A', 4],
       inventario: { masterball: -4 }, monete: -1 } })
     expect(state.giocatore2.squadra).toEqual([{ ...pokemon, xp: 0 }])
-    expect(state.giocatore2.deposito).toEqual({ '1:2': { ...pokemon, xp: 0 } })
+    expect(state.giocatore2.deposito['1:2']).toEqual({ ...pokemon, xp: 0, istanzaId: `${pokemon.istanzaId}-recovered-1` })
+    expect(state.saveRecoveryWarnings.join(' ')).toContain('identità duplicate')
     expect(state.giocatore2.allenatoriSconfitti).toEqual(new Set([101]))
     expect(state.giocatore2.cespugliVisitati).toEqual(new Set(['Percorso_1:A']))
     expect(state.giocatore2.monete).toBe(0)

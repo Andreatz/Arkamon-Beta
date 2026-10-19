@@ -17,7 +17,7 @@ function mappaTest(): MappaGriglia {
   const T: Casella = { tipo: 'transito' }
   const C: Casella = { tipo: 'cespuglio', cespuglioId: 'A' }
   const O: Casella = { tipo: 'ostacolo' }
-  const X: Casella = { tipo: 'allenatore', allenatoreId: 42 }
+  const X: Casella = { tipo: 'allenatore', allenatoreId: 202 }
   const U: Casella = {
     tipo: 'uscita',
     versoMappaId: 'AltraMappa',
@@ -25,7 +25,7 @@ function mappaTest(): MappaGriglia {
     spawnY: 6,
   }
   return {
-    id: 'TestMap',
+    id: 'Percorso_1',
     larghezza: 4,
     altezza: 3,
     caselle: [
@@ -39,7 +39,7 @@ function mappaTest(): MappaGriglia {
 }
 
 const posIn = (x: number, y: number): PosizioneAvatar => ({
-  mappaId: 'TestMap',
+  mappaId: 'Percorso_1',
   x,
   y,
   direzione: 'S',
@@ -115,6 +115,7 @@ describe('store overworld — interagisciCasella', () => {
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       giocatore1: {
         ...useGameStore.getState().giocatore1,
+        squadra: [{ istanzaId: 'grid-player', specieId: 1, nome: 'Vyrath', livello: 5, hp: 8, xp: 0 }],
         caselleConsumate: new Set(),
         allenatoriSconfitti: new Set(),
       },
@@ -125,7 +126,7 @@ describe('store overworld — interagisciCasella', () => {
     const r = useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 1)
     expect(r.tipo).toBe('battaglia-selvatica')
     const s = useGameStore.getState()
-    expect(s.giocatore1.caselleConsumate.has('TestMap:2,1:cespuglio:A')).toBe(true)
+    expect(s.giocatore1.caselleConsumate.has('Percorso_1:2,1:cespuglio:A')).toBe(true)
     // Turno chiuso → swap a giocatore 2 con 2 azioni
     expect(s.turnoOverworld.giocatoreAttivo).toBe(2)
     expect(s.turnoOverworld.azioniRimaste).toBe(2)
@@ -134,9 +135,9 @@ describe('store overworld — interagisciCasella', () => {
   it('allenatore → battaglia-npc + consumata', () => {
     useGameStore.setState({ posizione1: posIn(2, 1) })
     const r = useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 2)
-    expect(r).toMatchObject({ tipo: 'battaglia-npc', allenatoreId: 42 })
+    expect(r).toMatchObject({ tipo: 'battaglia-npc', allenatoreId: 202 })
     const s = useGameStore.getState()
-    expect(s.giocatore1.caselleConsumate.has('TestMap:2,2:allenatore:42')).toBe(true)
+    expect(s.giocatore1.caselleConsumate.has('Percorso_1:2,2:allenatore:202')).toBe(true)
   })
 
   it('uscita → transizione-mappa + sposta avatar sul nuovo spawn', () => {
@@ -165,7 +166,7 @@ describe('store overworld — interagisciCasella', () => {
     useGameStore.setState({
       giocatore1: {
         ...useGameStore.getState().giocatore1,
-        caselleConsumate: new Set(['TestMap:2,1:cespuglio:A']),
+        caselleConsumate: new Set(['Percorso_1:2,1:cespuglio:A']),
       },
     })
     const r = useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 1)
@@ -205,6 +206,28 @@ describe('store overworld — interagisciCasella', () => {
 
   it('rifiuta interazioni quando non restano azioni', () => {
     useGameStore.setState({ turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 0 } })
+    expect(useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 1).tipo).toBe('no-op')
+    expect(useGameStore.getState().giocatore1.caselleConsumate.size).toBe(0)
+    expect(useGameStore.getState().turnoOverworld.giocatoreAttivo).toBe(1)
+  })
+  it.each(['npc', 'bush'] as const)('non consuma il punto %s né il turno con squadra fuori cap; l’incontro resta riprovabile', (kind) => {
+    const before = useGameStore.getState()
+    useGameStore.setState({ posizione1: posIn(kind === 'npc' ? 2 : 1, 1), giocatore1: { ...before.giocatore1,
+      squadra: [...before.giocatore1.squadra, { istanzaId: 'out-of-cap', specieId: 5, nome: 'Felyss', livello: 20, hp: 12, xp: 0 }] } })
+    const current = useGameStore.getState()
+    const target = kind === 'npc' ? { x: 2, y: 2 } : { x: 2, y: 1 }
+    expect(current.interagisciCasella(1, mappaTest(), target.x, target.y)).toEqual({ tipo: 'no-op' })
+    expect(useGameStore.getState().giocatore1.caselleConsumate).toEqual(new Set())
+    expect(useGameStore.getState().turnoOverworld).toEqual({ giocatoreAttivo: 1, azioniRimaste: 2 })
+    expect(useGameStore.getState().teamRuleMessage).toMatch(/5 livelli/)
+    useGameStore.setState({ giocatore1: { ...current.giocatore1, squadra: before.giocatore1.squadra } })
+    expect(useGameStore.getState().interagisciCasella(1, mappaTest(), target.x, target.y).tipo).toBe(kind === 'npc' ? 'battaglia-npc' : 'battaglia-selvatica')
+  })
+  it('un allenatore inesistente o una squadra KO non consumano progressione', () => {
+    const invalid = mappaTest()
+    invalid.caselle[1][2] = { tipo: 'allenatore', allenatoreId: 999999 }
+    expect(useGameStore.getState().interagisciCasella(1, invalid, 2, 1).tipo).toBe('no-op')
+    useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, squadra: state.giocatore1.squadra.map((pokemon) => ({ ...pokemon, hp: 0 })) } }))
     expect(useGameStore.getState().interagisciCasella(1, mappaTest(), 2, 1).tipo).toBe('no-op')
     expect(useGameStore.getState().giocatore1.caselleConsumate.size).toBe(0)
     expect(useGameStore.getState().turnoOverworld.giocatoreAttivo).toBe(1)

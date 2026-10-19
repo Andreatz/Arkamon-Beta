@@ -8,6 +8,7 @@ import { resolvedScreenDesign } from './runtimeDesign'
 import { UI_STUDIO_SCREENS, UI_STUDIO_SCREEN_VIEWS } from './types'
 import type { UiBuiltinAsset, UiDesignDocument, UiElementDesign, UiElementInfo, UiExtraLayer, UiPreviewMessage, UiRect, UiScreenDesign, UiStudioMessage, UiTypography } from './types'
 import './uiStudio.css'
+import { PresentationProjectPanel } from '@/presentation/PresentationProjectPanel'
 
 const WIDTH = 1920
 const HEIGHT = 1080
@@ -15,7 +16,7 @@ const FONT_NAMES = [['norwester', 'Norwester'], ['chela', 'Chela One · preceden
 const EMPTY_SCREEN: UiScreenDesign = { elements: {}, layers: [] }
 const HANDLE_NAMES = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'] as const
 type Handle = typeof HANDLE_NAMES[number] | 'move'
-type InspectorTab = 'element' | 'screen' | 'fonts' | 'menus'
+type InspectorTab = 'element' | 'screen' | 'fonts' | 'menus' | 'project'
 type LibraryTarget = 'element' | 'background'
 type DisplayElement = UiElementInfo & { custom?: UiExtraLayer; actionable?: boolean; reorderable?: boolean; reorderGroupId?: string }
 
@@ -423,8 +424,13 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
         <div className="uis-canvas-note"><span>Trascina per spostare · maniglie per ridimensionare · frecce per 1 px · Maiusc per 8 px · Alt ignora l’aggancio</span><span className={dirty ? 'uis-dirty' : ''}>{dirty ? 'Bozza non applicata' : 'Layout salvato'}</span></div>
       </main>
       <aside className="uis-sidebar uis-inspector" aria-label="Proprietà del layout">
-        <div className="uis-inspector-tabs" role="tablist" aria-label="Proprietà">{([['element', 'Elemento'], ['screen', 'Schermata'], ['fonts', 'Font'], ['menus', 'Menù']] as const).map(([id, label]) => <button type="button" role="tab" aria-selected={inspector === id} key={id} className={inspector === id ? 'is-active' : ''} onClick={() => setInspector(id)}>{label}</button>)}</div>
-        <div className="uis-inspector-content">
+        <div className="uis-inspector-tabs" role="tablist" aria-label="Proprietà">{([['element', 'Elemento'], ['screen', 'Schermata'], ['fonts', 'Font'], ['menus', 'Menù'], ['project', 'Progetto']] as const).map(([id, label], index, tabs) => <button type="button" role="tab" id={`uis-tab-${id}`} aria-controls={inspector === id ? `uis-panel-${id}` : undefined} aria-selected={inspector === id} tabIndex={inspector === id ? 0 : -1} key={id} className={inspector === id ? 'is-active' : ''} onClick={() => setInspector(id)} onKeyDown={event => {
+          const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : -1
+          if (next < 0) return
+          event.preventDefault(); setInspector(tabs[next][0]); document.getElementById(`uis-tab-${tabs[next][0]}`)?.focus()
+        }}>{label}</button>)}</div>
+        <div className="uis-inspector-content" role="tabpanel" id={`uis-panel-${inspector}`} aria-labelledby={`uis-tab-${inspector}`}>
+          {inspector === 'project' && <PresentationProjectPanel design={draft} onApplied={() => { useUiStudioStore.getState().load(); setSavedSignature(JSON.stringify(useUiStudioStore.getState().draft)); setMessage('Progetto visivo applicato.'); setSelectedId(null) }} />}
           {inspector === 'element' ? selected ? <>
             <div className="uis-panel-heading"><h2>{selected.label}</h2></div><p className="uis-element-id">{selected.id}</p>
             {selected.custom ? <label className="uis-field"><span>Nome nell’elenco</span><input value={selected.custom.label} onChange={event => { const next = cloneDesign(draftRef.current); const layer = editableLayer(next, screenId, selected); if (layer) layer.label = event.target.value; setDraft(next) }} /></label> : null}

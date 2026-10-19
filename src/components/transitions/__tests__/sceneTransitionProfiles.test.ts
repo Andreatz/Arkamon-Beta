@@ -20,15 +20,14 @@ describe('scene transition profiles', () => {
     expect(battle.filter).toBe('none')
   })
 
-  it('uses a capture D6 with enough time to land and open during ordinary navigation', () => {
+  it('keeps routine consultation below 200 ms instead of replaying the D6', () => {
     const general = getSceneTransitionProfile({ scena: 'deposito' })
-    expect(general.mode).toBe('arkamon-dice')
-    expect(general.durationMs).toBeGreaterThan(1000)
-    expect(general.durationMs + general.coverMs).toBeLessThan(2200)
-    // The open pose is fully visible at 71% of the animation, before the reveal starts.
-    expect((general.durationMs + general.coverMs) * 0.71)
-      .toBeLessThan(general.coverMs + general.durationMs - general.blendMs)
+    expect(general.mode).toBe('fade')
+    expect(general.durationMs + general.coverMs).toBeLessThanOrEqual(200)
     expect(general.filter).toBe('none')
+    const travel = getSceneTransitionProfile({ scena: 'citta', payload: { luogo: 'Venezia' } })
+    expect(travel.mode).toBe('fade')
+    expect(travel.durationMs + travel.coverMs).toBeLessThanOrEqual(650)
   })
 
   it('lets the same crimson D6 linger slightly longer for evolution', () => {

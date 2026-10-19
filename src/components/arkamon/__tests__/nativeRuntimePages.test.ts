@@ -17,7 +17,14 @@ describe('compact native runtime metadata', () => {
     }
     const serialized = JSON.stringify(packed)
     expect(serialized).not.toMatch(/sha256|sourceRgba|decodedRgba|encodedBytes|viewport/i)
-    expect(gzipSync(serialized).byteLength).toBeLessThan(gzipSync(JSON.stringify(authoritative)).byteLength * .02)
+    // Content-addressed filenames are required runtime URLs, not optional
+    // provenance fields. Budget those names explicitly while retaining the
+    // existing 2% geometry budget and a firm ceiling for the bundled index.
+    const filenames = Object.values(authoritative.clips).flatMap(clip => clip.pages.map(page => page.src.slice(page.src.lastIndexOf('/') + 1)))
+    const filenameBytes = gzipSync(JSON.stringify(filenames)).byteLength
+    const runtimeBytes = gzipSync(serialized).byteLength
+    expect(runtimeBytes).toBeLessThan(gzipSync(JSON.stringify(authoritative)).byteLength * .02 + filenameBytes)
+    expect(runtimeBytes).toBeLessThan(32 * 1024)
   })
 
   it('synchronously supplies pages on the first lookup, including all original cues and irregular frame counts', () => {

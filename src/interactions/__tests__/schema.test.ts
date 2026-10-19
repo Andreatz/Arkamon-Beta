@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getLocalMap } from '@/data/localMaps'
 import { newInteractionDefinition } from '../types'
-import { normalizeInteractionProgress, validateCatalog, validateInteraction } from '../schema'
+import { completionPrerequisiteOptions, normalizeInteractionProgress, validateCatalog, validateInteraction } from '../schema'
 import { exportTiledInteractions, importTiledInteractions } from '../tiledAdapter'
 
 function entry(id = 'first-step') {
@@ -9,6 +9,15 @@ function entry(id = 'first-step') {
   return { ...newInteractionDefinition(map.id, map.startNode, id), title: 'Tappa di prova' }
 }
 describe('catalogo interazioni e adattatore Tiled', () => {
+  it('l’editor propone solo completamenti possibili e lascia rimuovere un prerequisito storico ripetibile', () => {
+    const draft = entry('draft'), oneShot = entry('one-shot')
+    const repeatable = { ...entry('repeatable'), repeatable: true }
+    const shop = { ...entry('shop'), repeatable: true, action: { kind: 'shop' as const } }
+    expect(completionPrerequisiteOptions([draft, oneShot, repeatable, shop], draft)).toEqual([oneShot])
+    const legacy = { ...draft, requirements: { ...draft.requirements, completedInteractions: ['repeatable'] } }
+    expect(completionPrerequisiteOptions([draft, oneShot, repeatable, shop], legacy)).toEqual([oneShot, repeatable])
+    expect(validateCatalog({ version: 1, interactions: [repeatable, legacy] }).error).toMatch(/ripetibile/)
+  })
   it('il catalogo vuoto è valido e non aggiunge contenuti al luogo segreto', () => {
     expect(validateCatalog({ version: 1, interactions: [] }).catalog?.interactions).toEqual([])
     const item = { ...entry(), mapId: 'Percorso_15', nodeId: getLocalMap('Percorso_15')!.startNode }

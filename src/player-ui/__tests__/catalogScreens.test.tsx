@@ -103,7 +103,7 @@ describe('real catalog screen visibility and action boundaries', () => {
     expect(one).toContain('Usa Antiparalisi')
     expect(one).not.toContain('Usa Masterball')
     const two = renderToStaticMarkup(<BagScreen playerId={2} />)
-    expect(two).toMatch(/<button[^>]*disabled=""[^>]*>Usa Masterball<\/button>/)
+    expect(two).toMatch(/<button[^>]*disabled=""[^>]*>(?:<span\b[^>]*><\/span>)*Usa Masterball<\/button>/)
     expect(two).not.toContain('Usa Antiparalisi')
     expect(two).toContain('Puoi usare gli oggetti soltanto durante il turno di questo giocatore.')
     expect(state.applicaOggetto).not.toHaveBeenCalled()

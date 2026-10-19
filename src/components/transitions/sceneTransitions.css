@@ -274,3 +274,5 @@
   .arka-d6-hero, .arka-d6-wordmark { transform: translateX(-50%); }
   .arka-d6-open, .arka-d6-interior-light { display: none; }
 }
+
+.arka-scene-transition[data-transition-mode='fade'] { background:linear-gradient(135deg,#101b2b,#172a45); }

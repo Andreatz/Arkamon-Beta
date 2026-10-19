@@ -38,3 +38,5 @@
   .game-button { transition: none; }
   .game-button:active:enabled { transform: none; }
 }
+/* Same outer targets, new Scuro/Blu art. End caps keep a fixed local scale. */
+.game-button-frame.rpg-frame-command,.game-button-frame.rpg-frame-selected{inset:0;border-width:10px 23px;border-image-slice:70 160 fill}
