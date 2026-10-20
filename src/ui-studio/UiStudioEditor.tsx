@@ -292,7 +292,7 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement
-      if (target.closest('input,textarea,select,[contenteditable="true"]') || libraryTarget) return
+      if (event.defaultPrevented || target.closest('input,textarea,select,button,a,[role="tab"],[role="tabpanel"],[contenteditable="true"]') || libraryTarget) return
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') { event.preventDefault(); if (event.shiftKey) redo(); else undo(); return }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') { event.preventDefault(); redo(); return }
       if (!selected || !rect || override.locked) return

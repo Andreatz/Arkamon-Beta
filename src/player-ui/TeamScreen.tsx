@@ -129,7 +129,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
           <div className="pu-actions">
             <KitButton active disabled={!current} onClick={() => current && onAnalyse(current.istanzaId)}><KitIcon id="icon-analysis" /> Analizza Arkamon</KitButton>
             <KitButton disabled={!current} onClick={onBag}><KitIcon id="icon-bag" /> Apri borsa</KitButton>
-            <KitButton onClick={onDeposit}><KitIcon id="icon-box" /> Apri deposito</KitButton>
+            <KitButton onClick={onDeposit}><KitIcon id="icon-deposit" /> Apri deposito</KitButton>
             <KitButton disabled={!current || !mayManage} onClick={() => { setMovingId(movingId ? null : current?.istanzaId ?? null); setMessage('') }}>{movingId ? 'Annulla spostamento' : 'Cambia ordine'}</KitButton>
           </div>
         </KitPanel>

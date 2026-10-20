@@ -15,6 +15,7 @@ import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gameP
 import { getPortraitFraming } from '@/player-ui/portraitFraming'
 import type { AdminEvolutionLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import type { PokemonIstanza } from '@/types'
+import { useRegiaStore } from '@/regia/regiaStore'
 
 /**
  * Scena Evoluzione: animazione per ogni Pokémon che ha raggiunto la
@@ -60,6 +61,7 @@ export function EvoluzioneScene() {
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const evolutionLayout = useAdminStore((s) => s.theme.layouts.evolution)
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
+  const setBusy = useRegiaStore((s) => s.setBusy)
 
   const initialPayloadRef = useRef(scenaCorrente.payload)
   const luogoRitorno =
@@ -108,6 +110,12 @@ export function EvoluzioneScene() {
     }
   }, [])
 
+  useEffect(() => {
+    const active = fase === 'morphing'
+    setBusy(active, 'Attendi la conclusione dell’evoluzione.', 'evolution')
+    return () => setBusy(false, undefined, 'evolution')
+  }, [fase, setBusy])
+
   const oldSpec = corrente ? getPokemon(corrente.oldSpecieId) : null
   const newSpec = corrente ? getPokemon(corrente.newSpecieId) : null
   const giocatore = giocatoreId === 1 ? giocatore1 : giocatore2
@@ -120,9 +128,10 @@ export function EvoluzioneScene() {
   useEffect(() => {
     if (fase === 'morphing' && istanza?.specieId === corrente?.newSpecieId) {
       playSound('level-up')
+      setBusy(false, undefined, 'evolution')
       setFase('post')
     }
-  }, [fase, istanza?.specieId, corrente?.newSpecieId])
+  }, [fase, istanza?.specieId, corrente?.newSpecieId, setBusy])
 
   useEffect(() => {
     if (!corrente) {

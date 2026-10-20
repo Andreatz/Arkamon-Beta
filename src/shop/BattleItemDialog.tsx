@@ -44,9 +44,9 @@ export function BattleItemDialog({ squad, inventory, onUse, onClose, disabled = 
         <nav aria-label="Pagine oggetti" className="battle-bag-pages"><RpgCommand disabled={page === 0} onClick={() => setPage(value => value - 1)}>←</RpgCommand><span>{page + 1} / {pageCount}</span><RpgCommand disabled={page + 1 >= pageCount} onClick={() => setPage(value => value + 1)}>→</RpgCommand></nav>
       </RpgWindow>
       <RpgWindow className="battle-bag-detail">
-        {item ? <><header><KitIcon id={ITEM_ICONS[item.id]} /><div><h3>{item.name}</h3><p>{item.description}</p></div></header>
+        {item ? <><header role="presentation"><KitIcon id={ITEM_ICONS[item.id]} /><div><h3>{item.name}</h3><p>{item.description}</p></div></header>
           <h4>Scegli il compagno</h4><div className="battle-bag-squad" role="group" aria-label="Arkamon da curare">
-            {squad.map(pokemon => <RpgCommand key={pokemon.istanzaId} selected={target?.istanzaId === pokemon.istanzaId} onClick={() => { setTargetId(pokemon.istanzaId); setMessage('') }}>
+            {squad.map(pokemon => <RpgCommand key={pokemon.istanzaId} selected={target?.istanzaId === pokemon.istanzaId} aria-pressed={target?.istanzaId === pokemon.istanzaId} onClick={() => { setTargetId(pokemon.istanzaId); setMessage('') }}>
               <img src={assetUrl(`/sprites/front_sprites/${pokemon.specieId}.png`)} alt=""/><span><strong>{pokemon.nome}</strong><small>Lv. {pokemon.livello} · {pokemon.hp}/{calcolaHPMax(pokemon)} HP{pokemon.hp === 0 ? ' · KO' : pokemon.stato ? ` · ${pokemon.stato.tipo}` : ''}</small></span>
             </RpgCommand>)}
           </div>

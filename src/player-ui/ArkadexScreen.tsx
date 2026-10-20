@@ -130,9 +130,9 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
           {!entries.length && <p className="pu-empty">Nessuna specie corrisponde ai filtri scelti.</p>}
         </SpatialNavigation>
         <nav className="pu-pagination pu-dex-pagination" aria-label="Pagine dell’Arkadex">
-          <KitButton aria-label="Pagina precedente dell’Arkadex" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>←</KitButton>
+          <KitButton artwork="previous" aria-label="Pagina precedente dell’Arkadex" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>←</KitButton>
           <span aria-live="polite">Pagina {currentPage + 1} / {pageCount}<small>{entries.length ? `${firstEntry + 1}–${firstEntry + pageEntries.length} di ${entries.length}` : '0 specie'}</small></span>
-          <KitButton aria-label="Pagina successiva dell’Arkadex" disabled={!entries.length || currentPage + 1 >= pageCount} onClick={() => setPage(currentPage + 1)}>→</KitButton>
+          <KitButton artwork="next" aria-label="Pagina successiva dell’Arkadex" disabled={!entries.length || currentPage + 1 >= pageCount} onClick={() => setPage(currentPage + 1)}>→</KitButton>
         </nav>
       </KitPanel>
 
@@ -143,7 +143,7 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
             : <SpeciesPortrait speciesId={species.id} large />}
           <div className="pu-hero-caption"><span className="pu-kicker">{statusLabels[selected.status]}</span><h2>{species.nome}</h2><TypeBadge type={species.tipo} /></div>
           {canAnimate && <KitButton className="pu-animation-toggle" active={animated} aria-pressed={animated} onClick={() => setAnimatedSpeciesId(animated ? null : species.id)}>{animated ? 'Ferma animazione' : 'Mostra animazione'}</KitButton>}
-        </> : <div className="pu-unknown-hero"><KitIcon id="icon-book" /><span aria-hidden="true">?</span><h2>{selected ? 'Specie da scoprire' : 'Nessuna scheda'}</h2><p>{selected ? `Nº ${String(selected.id).padStart(3, '0')}` : 'Modifica la ricerca per consultare l’Arkadex.'}</p></div>}
+        </> : <div className="pu-unknown-hero"><KitIcon id="icon-arkadex" /><span aria-hidden="true">?</span><h2>{selected ? 'Specie da scoprire' : 'Nessuna scheda'}</h2><p>{selected ? `Nº ${String(selected.id).padStart(3, '0')}` : 'Modifica la ricerca per consultare l’Arkadex.'}</p></div>}
       </div>
 
       <KitPanel className="pu-dex-detail">

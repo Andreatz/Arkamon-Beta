@@ -66,6 +66,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   await expect(shop).toBeVisible()
 
   // An unaffordable cart never charges anything and cannot consume the interaction.
+  await shop.getByRole('button', { name: 'Seleziona Masterball', exact: true }).click()
   await shop.getByLabel('Quantità di Masterball', { exact: true }).fill('1')
   await expect(shop).toContainText('Ti mancano 1200 monete.')
   await expect(shop.getByRole('button', { name: 'Acquista carrello', exact: true })).toBeDisabled()
@@ -76,7 +77,9 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   expect(saved.turnoOverworld).toEqual({ giocatoreAttivo: 1, azioniRimaste: 2 })
   await shop.getByRole('button', { name: 'Svuota carrello', exact: true }).click()
 
+  await shop.getByRole('button', { name: 'Seleziona Pozione', exact: true }).click()
   await shop.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
+  await shop.getByRole('button', { name: 'Seleziona Antiparalisi', exact: true }).click()
   await shop.getByLabel('Quantità di Antiparalisi', { exact: true }).fill('1')
   await expect(shop).toContainText('Carrello: 2 oggetti · 180 ₳')
   const shopA11y = await new AxeBuilder({ page }).include('.arka-store').analyze()
@@ -209,7 +212,11 @@ test('a battle item heals once, consumes the move and resumes at the opponent tu
   await battleScene.getByRole('button', { name: 'Borsa', exact: true }).click()
   const bag = page.getByRole('dialog', { name: 'Borsa in battaglia' })
   await expect(bag).toBeVisible()
-  await expect(bag.getByLabel('Arkamon da curare')).toHaveValue('battle-bag-one')
+  const target = bag.getByRole('group', { name: 'Arkamon da curare', exact: true }).getByRole('button', { name: 'Vyrath Borsa Lv. 5 · 3/12 HP', exact: true })
+  await expect(target).toHaveAttribute('aria-pressed', 'true')
+  await target.click()
+  await expect(target).toHaveAttribute('aria-pressed', 'true')
+  await expect(bag.getByRole('status')).toContainText('Vyrath Borsa · 3 → 6 HP')
   const a11y = await new AxeBuilder({ page }).include('[data-game-dialog]').analyze()
   expect(a11y.violations).toEqual([])
   await test.info().attach('Borsa durante il turno di battaglia', { body: await page.screenshot(), contentType: 'image/png' })

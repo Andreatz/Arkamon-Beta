@@ -20,6 +20,7 @@ import {
   orthogonalizeRoadPoints,
 } from '@/utils/mainMapRoadGeometry'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
+import { trackAdminPointerDrag } from '@/admin/adminPointerDrag'
 import { MainMapAvatar } from '@/components/map/MainMapAvatar'
 import { getMainMapJourney } from '@/components/map/mapJourney'
 import { useEffect, useState } from 'react'
@@ -351,18 +352,8 @@ export function MappaPrincipaleScene() {
       )
     }
 
-    const onPointerMove = (moveEvent: PointerEvent) => {
-      moveTo(moveEvent.clientX, moveEvent.clientY)
-    }
-
-    const onPointerUp = () => {
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerup', onPointerUp)
-    }
-
     moveTo(event.clientX, event.clientY)
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
+    trackAdminPointerDrag(event.pointerId, (moveEvent) => moveTo(moveEvent.clientX, moveEvent.clientY))
   }
 
   const getRoadPointWithSnap = (
@@ -439,18 +430,8 @@ export function MappaPrincipaleScene() {
       updateMainMapRoad(roadKey, nextPoints)
     }
 
-    const onPointerMove = (moveEvent: PointerEvent) => {
-      moveTo(moveEvent.clientX, moveEvent.clientY)
-    }
-
-    const onPointerUp = () => {
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerup', onPointerUp)
-    }
-
     moveTo(event.clientX, event.clientY)
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
+    trackAdminPointerDrag(event.pointerId, (moveEvent) => moveTo(moveEvent.clientX, moveEvent.clientY))
   }
 
   const addRoadPoint = (

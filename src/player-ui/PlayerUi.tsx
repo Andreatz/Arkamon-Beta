@@ -28,8 +28,8 @@ const ChallengePanel = lazy(() => import('@/challenges/ChallengePanel').then(mod
 const screens: Record<PlayerUiScreen, { label: string; title: string; kicker: string; description: string; icon: string }> = {
   partita: { label: 'Menù Partita', title: 'Menù Partita', kicker: 'La tua partita', description: 'La tua avventura, sempre a portata di mano.', icon: 'icon-home' },
   squadra: { label: 'Squadra', title: 'Gestione Squadra', kicker: 'La tua squadra', description: 'I tuoi compagni. Un’unica avventura.', icon: 'icon-team' },
-  deposito: { label: 'Deposito', title: 'Deposito Arkamon', kicker: 'Squadra e riserve', description: 'Un posto per ogni compagno di viaggio.', icon: 'icon-box' },
-  arkadex: { label: 'Arkadex', title: 'Arkadex', kicker: 'Le tue scoperte', description: 'Ogni incontro aggiunge una pagina alla tua storia.', icon: 'icon-book' },
+  deposito: { label: 'Deposito', title: 'Deposito Arkamon', kicker: 'Squadra e riserve', description: 'Un posto per ogni compagno di viaggio.', icon: 'icon-deposit' },
+  arkadex: { label: 'Arkadex', title: 'Arkadex', kicker: 'Le tue scoperte', description: 'Ogni incontro aggiunge una pagina alla tua storia.', icon: 'icon-arkadex' },
   analisi: { label: 'Analisi', title: 'Analisi Arkamon', kicker: 'Scheda del compagno', description: 'Conosci il tuo compagno. Prepara la prossima mossa.', icon: 'icon-analysis' },
   borsa: { label: 'Borsa', title: 'Borsa Oggetti', kicker: 'I tuoi strumenti', description: 'Le scorte giuste per il prossimo incontro.', icon: 'icon-bag' },
   negozio: { label: 'Negozio', title: 'Arkastore', kicker: 'Scorte di viaggio', description: 'Rifornisci la borsa. Riparti verso nuove scoperte.', icon: 'icon-shop' },
@@ -39,12 +39,12 @@ const auxiliary: { id: PlayerUiAuxiliary; label: string; icon: string }[] = [
   { id: 'register', label: 'Registro', icon: 'icon-book' },
   { id: 'race', label: 'Gara', icon: 'icon-activity' },
   { id: 'recap', label: 'Ripresa', icon: 'icon-activity' },
-  { id: 'journal', label: 'Diario', icon: 'icon-book' },
+  { id: 'journal', label: 'Diario', icon: 'icon-journal' },
   { id: 'backup', label: 'Backup', icon: 'icon-box' },
   { id: 'settings', label: 'Impostazioni', icon: 'icon-options' },
-  { id: 'chronicles', label: 'Cronache', icon: 'icon-activity' },
+  { id: 'chronicles', label: 'Cronache', icon: 'icon-chronicles' },
   { id: 'match', label: 'Registro del match', icon: 'icon-activity' },
-  { id: 'challenges', label: 'Sfide', icon: 'icon-activity' },
+  { id: 'challenges', label: 'Sfide', icon: 'icon-challenges' },
 ]
 const challengeBlocked = new Set<PlayerUiScreen>(['deposito', 'borsa', 'negozio'])
 

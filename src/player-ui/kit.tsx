@@ -7,6 +7,7 @@ import { getPortraitFraming } from './portraitFraming'
 import { RpgFrame, RPG_SKINS } from '@/components/rpg'
 import './player-ui.css'
 import './rpgPlayerUi.css'
+import './studioControls.css'
 
 export const TYPE_ICONS: Record<TipoPokemon, string> = {
   Normale: 'type-normal', Elettro: 'type-electric', Fuoco: 'type-fire', Terra: 'type-earth',
@@ -17,8 +18,15 @@ export const ITEM_ICONS: Record<string, string> = {
   antidote: 'item-antidote', masterball: 'item-sphere', 'paralysis-heal': 'type-electric', awakening: 'type-psychic',
 }
 export function kitAsset(id: string): string { return assetUrl(`/ui/player-kit/${id}.svg`) }
+const STUDIO_MENU_ICONS: Record<string, string> = {
+  'icon-analysis': 'analisi', 'icon-arkadex': 'arkadex', 'icon-deposit': 'deposito',
+  'icon-journal': 'diario', 'icon-options': 'impostazioni', 'icon-shop': 'negozio',
+  'icon-chronicles': 'cronache', 'icon-challenges': 'sfide',
+}
 export function KitIcon({ id, className = '' }: { id: string; className?: string }) {
-  return <span className={`pu-kit-icon ${className}`} aria-hidden="true"><img src={kitAsset(id)} alt="" draggable={false} /></span>
+  const studioIcon = STUDIO_MENU_ICONS[id]
+  const source = studioIcon ? assetUrl(`/ui/studio/individuali/Scuro/menu/${studioIcon}.svg`) : kitAsset(id)
+  return <span className={`pu-kit-icon ${className}`} aria-hidden="true"><img src={source} alt="" draggable={false} /></span>
 }
 const slices: Record<string, number> = { 'panel-wide': 163, 'panel-medium': 97, 'button-primary': 44,
   'button-default': 48, 'card-default': 61, 'card-selected-violet': 58, 'card-selected-cyan': 56,
@@ -33,8 +41,11 @@ export function KitFrame({ id = 'panel-medium' }: { id?: string }) {
 export function KitPanel({ children, className = '', asset = 'panel-medium', ...props }: HTMLAttributes<HTMLDivElement> & { asset?: string }) {
   return <div {...props} className={`pu-panel ${className}`}><KitFrame id={asset} />{children}</div>
 }
-export function KitButton({ active = false, asset, children, className = '', type = 'button', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean; asset?: string }) {
-  return <button {...props} type={type} className={`pu-button ${active ? 'is-active' : ''} ${className}`}><KitFrame id={asset ?? (active ? 'button-primary' : 'button-default')} />{children}</button>
+export function KitButton({ active = false, asset, artwork, children, className = '', type = 'button', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean; asset?: string; artwork?: 'previous' | 'next' }) {
+  return <button {...props} type={type} data-ui-artwork={artwork} className={`pu-button ${active ? 'is-active' : ''} ${artwork ? 'pu-artwork-button' : ''} ${className}`}>
+    {artwork ? <><img className="pu-button-artwork" src={assetUrl(`/ui/studio/Scuro/pulsante-freccia-${artwork === 'previous' ? 'sinistra' : 'destra'}.svg`)} width={52} height={44} alt="" draggable={false} aria-hidden="true" /><span className="pu-artwork-label">{children}</span></>
+      : <><KitFrame id={asset ?? (active ? 'button-primary' : 'button-default')} />{children}</>}
+  </button>
 }
 export function TypeBadge({ type }: { type: TipoPokemon }) {
   return <span className="pu-type"><KitIcon id={TYPE_ICONS[type]} />{type}</span>

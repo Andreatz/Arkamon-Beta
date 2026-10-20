@@ -337,6 +337,7 @@ export function MappaGrigliaScene() {
   }
 
   const tentaMovimento = (dx: number, dy: number) => {
+    if (layoutEditing) return
     const nuova: PosizioneAvatar = {
       mappaId: mappa.id,
       x: posAttivo.x + dx,
@@ -348,6 +349,7 @@ export function MappaGrigliaScene() {
   }
 
   const cellaClick = (x: number, y: number) => {
+    if (layoutEditing) return
     if (isInteragibile(x, y)) {
       eseguiInterazione(x, y)
       return
@@ -367,6 +369,7 @@ export function MappaGrigliaScene() {
    *   4. In base al risultato, scatena la scena vera o l'effetto.
    */
   const eseguiInterazione = (x: number, y: number) => {
+    if (layoutEditing) return
     const giocatoreId = turno.giocatoreAttivo
     const casella = mappa.caselle[y]?.[x]
     if (!casella) return
@@ -489,7 +492,7 @@ export function MappaGrigliaScene() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (sceneInputBlocked || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return
-      if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable="true"], .arka-admin-panel, [role="dialog"]')) return
+      if (e.target instanceof Element && e.target.closest('input, textarea, select, button, a, [role="tab"], [contenteditable="true"], .arka-admin-panel, [role="dialog"]')) return
       const k = e.key.toLowerCase()
       if (k === 'w' || k === 'arrowup') {
         e.preventDefault()

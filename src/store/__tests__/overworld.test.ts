@@ -106,6 +106,16 @@ describe('store overworld — muoviAvatar', () => {
     expect(useGameStore.getState().posizione1).toEqual(posIn(1, 1))
     expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)
   })
+
+  it('dimentica la prenotazione fallback quando si esce dalla scena', () => {
+    useGameStore.setState({
+      fallbackLocationActivity: { playerId: 1, location: 'Pescara' },
+      scenaCorrente: { scena: 'citta', payload: { luogo: 'Pescara' } },
+      scenaPrecedente: null,
+    })
+    useGameStore.getState().vaiAScena('mappa-principale')
+    expect(useGameStore.getState().fallbackLocationActivity).toBeNull()
+  })
 })
 
 describe('store overworld — interagisciCasella', () => {
@@ -348,6 +358,21 @@ describe('store overworld — mappa principale', () => {
       giocatoreAttivo: 2,
       azioniRimaste: 2,
     })
+  })
+
+  it('prenota una sola attività nei luoghi fallback senza mappa locale', () => {
+    useGameStore.setState({
+      posizione1: { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Pescara' },
+      giocatoreAttivo: 1,
+      turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
+      fallbackLocationActivity: null,
+      scenaCorrente: { scena: 'citta', payload: { luogo: 'Pescara' } },
+    })
+    expect(useGameStore.getState().interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'luogo', luogo: 'Pescara' })
+    expect(useGameStore.getState().fallbackLocationActivity).toEqual({ playerId: 1, location: 'Pescara' })
+    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Pescara')).toBe(true)
+    expect(useGameStore.getState().fallbackLocationActivity).toBeNull()
+    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Pescara')).toBe(false)
   })
 })
 

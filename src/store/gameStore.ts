@@ -386,6 +386,7 @@ export const useGameStore = create<GameState>()(
       challengeContext: null,
       league: emptyLeagueState(),
       interactionProgress: emptyInteractionProgress(),
+      fallbackLocationActivity: null,
       arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(),
       teamRuleMessage: null,
       dismissTeamRuleMessage: () => set({ teamRuleMessage: null }),
@@ -396,13 +397,24 @@ export const useGameStore = create<GameState>()(
         set((s) => !navigazioneSegretaConsentita(s, { scena, payload }) ? s : ({
           scenaPrecedente: s.scenaCorrente,
           scenaCorrente: { scena, payload },
+          // A fallback location reserves exactly one activity. The reservation
+          // must not survive a return to the overworld or another scene.
+          fallbackLocationActivity: scena === 'citta' || scena === 'percorso'
+            ? s.fallbackLocationActivity
+            : null,
         })),
 
       scenaIndietro: () =>
         set((s) =>
           s.scenaPrecedente
             && navigazioneSegretaConsentita(s, s.scenaPrecedente)
-            ? { scenaCorrente: s.scenaPrecedente, scenaPrecedente: null }
+            ? {
+              scenaCorrente: s.scenaPrecedente,
+              scenaPrecedente: null,
+              fallbackLocationActivity: s.scenaPrecedente.scena === 'citta' || s.scenaPrecedente.scena === 'percorso'
+                ? s.fallbackLocationActivity
+                : null,
+            }
             : s
         ),
 
@@ -1040,10 +1052,12 @@ export const useGameStore = create<GameState>()(
 
         const luogo = luogoMappaPrincipale(posizione)
         if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return { tipo: 'no-op' }
+        const localMap = getLocalMap(luogo)
         if (!set({
           [chiavePos]: posizioneMappaPrincipale(luogo),
           giocatoreAttivo: giocatoreId,
           turnoOverworld: nuovoTurno(giocatoreId),
+          fallbackLocationActivity: localMap ? null : { playerId: giocatoreId, location: luogo },
         } as Partial<GameState>)) return { tipo: 'no-op' }
 
         return { tipo: 'luogo', luogo }
@@ -1100,6 +1114,14 @@ export const useGameStore = create<GameState>()(
         const state = get()
         const worldPosition = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
         if (luogo === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, giocatoreId)) return false
+        const fallback = state.fallbackLocationActivity
+        if (!getLocalMap(luogo) && fallback?.playerId === giocatoreId && fallback.location === luogo) {
+          const sceneMatches = (state.scenaCorrente.scena === 'citta' || state.scenaCorrente.scena === 'percorso')
+            && state.scenaCorrente.payload?.luogo === luogo
+          if (state.battaglia || isLeagueTurnLocked(state.league) || state.giocatoreAttivo !== giocatoreId
+            || !sceneMatches || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) return false
+          return set({ fallbackLocationActivity: null })
+        }
         if (state.battaglia || isLeagueTurnLocked(state.league) || !getLocalMap(luogo) || state.giocatoreAttivo !== giocatoreId
           || state.turnoOverworld.giocatoreAttivo !== giocatoreId || state.turnoOverworld.azioniRimaste <= 0
           || worldPosition.mappaId !== 'mappa-principale' || luogoMappaPrincipale(worldPosition) !== luogo) {
@@ -1135,6 +1157,7 @@ export const useGameStore = create<GameState>()(
           scenaPrecedente: null,
           saveRecoveryWarnings: [],
           interactionProgress: emptyInteractionProgress(),
+          fallbackLocationActivity: null,
           arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(), teamRuleMessage: null,
         })),
     })},

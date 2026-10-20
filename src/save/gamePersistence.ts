@@ -35,6 +35,7 @@ export interface GameSaveState {
   scenaPrecedente: NavigazioneScena | null
   audioMuted: boolean
   interactionProgress: InteractionProgress
+  fallbackLocationActivity?: { playerId: 1 | 2; location: string } | null
 }
 
 export const GAME_SAVE_STORAGE_KEY = 'arkamon-save'
@@ -53,7 +54,7 @@ export function initialGameSave(): GameSaveState {
     giocatore1: emptyPlayer(1), giocatore2: emptyPlayer(2), giocatoreAttivo: 1, battaglia: null,
     rivaleStarterId: null, posizione1: mainMapPosition(), posizione2: mainMapPosition(),
     turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {},
-    scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, audioMuted: false, interactionProgress: emptyInteractionProgress(),
+    scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, audioMuted: false, interactionProgress: emptyInteractionProgress(), fallbackLocationActivity: null,
     arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(), league: emptyLeagueState(),
   }
 }
@@ -316,6 +317,11 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
     posizioniLocali1: restoreLocalPositions(p.posizioniLocali1, warn), posizioniLocali2: restoreLocalPositions(p.posizioniLocali2, warn),
     audioMuted: typeof p.audioMuted === 'boolean' ? p.audioMuted : fallback.audioMuted,
     interactionProgress: normalizeInteractionProgress(p.interactionProgress),
+    fallbackLocationActivity: isSaveRecord(p.fallbackLocationActivity)
+      && (p.fallbackLocationActivity.playerId === 1 || p.fallbackLocationActivity.playerId === 2)
+      && typeof p.fallbackLocationActivity.location === 'string'
+      ? { playerId: p.fallbackLocationActivity.playerId, location: p.fallbackLocationActivity.location }
+      : null,
     arkadex: normalizeArkadexProgress(p.arkadex), matchLog: normalizeMatchLog(p.matchLog),
   }
   restoreInstanceIdentity(state, warn)
@@ -393,6 +399,7 @@ export function serializeGameState(state: GameSaveState): Record<string, unknown
     turnoOverworld: state.turnoOverworld, posizioniLocali1: state.posizioniLocali1, posizioniLocali2: state.posizioniLocali2,
     scenaCorrente: state.scenaCorrente, scenaPrecedente: state.scenaPrecedente, audioMuted: state.audioMuted,
     interactionProgress: state.interactionProgress,
+    fallbackLocationActivity: state.fallbackLocationActivity ?? null,
     arkadex: state.arkadex, matchLog: state.matchLog, league: state.league,
   }
 }

@@ -99,11 +99,11 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
 
   return (
     <section className="pu-screen pu-deposit-screen" aria-labelledby="pu-deposit-title">
-      <header className="pu-screen-heading"><div><p className="pu-kicker">Squadra e riserve · {player.nome}</p><h1 id="pu-deposit-title">Deposito Arkamon</h1><p>Un posto per ogni compagno di viaggio.</p></div><span className="pu-count"><KitIcon id="icon-box" /> Box {box} / {BOX_COUNT}</span></header>
+      <header className="pu-screen-heading"><div><p className="pu-kicker">Squadra e riserve · {player.nome}</p><h1 id="pu-deposit-title">Deposito Arkamon</h1><p>Un posto per ogni compagno di viaggio.</p></div><span className="pu-count"><KitIcon id="icon-deposit" /> Box {box} / {BOX_COUNT}</span></header>
       <nav className="pu-box-toolbar" aria-label="Box del deposito">
-        <KitButton aria-label={`Vai al box ${previousBox}`} onClick={() => changeBox(previousBox)}>←</KitButton>
+        <KitButton artwork="previous" aria-label={`Vai al box ${previousBox}`} onClick={() => changeBox(previousBox)}>←</KitButton>
         <label>Box <select aria-label="Scegli box del deposito" value={box} onChange={(event) => changeBox(Number(event.target.value))}>{Array.from({ length: BOX_COUNT }, (_, index) => <option key={index + 1} value={index + 1}>Box {index + 1}</option>)}</select></label>
-        <KitButton aria-label={`Vai al box ${nextBox}`} onClick={() => changeBox(nextBox)}>→</KitButton>
+        <KitButton artwork="next" aria-label={`Vai al box ${nextBox}`} onClick={() => changeBox(nextBox)}>→</KitButton>
         {filtering && <KitButton className="pu-next-match" disabled={!nextMatchingBox || nextMatchingBox === box} onClick={() => nextMatchingBox && changeBox(nextMatchingBox)}>Prossimo box con risultati</KitButton>}
         <span>{BOX_COUNT} box · {SLOT_PER_BOX} posti ciascuno</span>
       </nav>
@@ -157,7 +157,7 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
         </KitPanel>
         <KitPanel className="pu-detail-panel pu-deposit-detail">
           {pokemon ? <><PokemonHero pokemon={pokemon} /><HealthBar pokemon={pokemon} /><div className="pu-stat-grid pu-stat-grid-pair"><div className="pu-stat"><span>Livello</span><strong>{pokemon.livello}</strong></div><div className="pu-stat"><span>Crescita</span><strong>{species?.categoria ?? '—'}</strong></div></div></>
-            : <div className="pu-empty-state"><KitIcon id="icon-box" /><h2>Scegli un Arkamon</h2><p>Seleziona un compagno nella squadra o nel box per consultare la sua scheda.</p></div>}
+            : <div className="pu-empty-state"><KitIcon id="icon-deposit" /><h2>Scegli un Arkamon</h2><p>Seleziona un compagno nella squadra o nel box per consultare la sua scheda.</p></div>}
           {mayManage && <p className="pu-note">{moving ? 'Scegli un posto del box o della squadra. Un posto occupato scambia i due Arkamon.' : 'Per spostare un Arkamon, selezionalo e premi «Sposta o scambia».'}</p>}
           {swapPreview && <div className={`pu-swap-preview${swapPreview.allowed ? '' : ' is-blocked'}`} role="status" aria-live="polite">
             <span className="pu-kicker">Squadra dopo lo spostamento</span>

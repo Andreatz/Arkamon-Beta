@@ -18,7 +18,7 @@ const tiles: { id: PlayerUiAuxiliary; title: string; description: string; icon: 
   { id: 'settings', title: 'Impostazioni', description: 'Audio, animazioni e preferenze', icon: 'icon-options' },
   { id: 'race', title: 'Gara', description: 'Posizioni, medaglie e corsa alla Lega', icon: 'icon-activity' },
   { id: 'recap', title: 'Ripresa', description: 'Situazione corrente e ultimi eventi', icon: 'icon-activity' },
-  { id: 'challenges', title: 'Sfide', description: 'Seed e Fanta-Team Builder', icon: 'icon-activity' },
+  { id: 'challenges', title: 'Sfide', description: 'Seed e Fanta-Team Builder', icon: 'icon-challenges' },
 ]
 const sceneNames: Record<string, string> = { titolo: 'Titolo', laboratorio: 'Laboratorio', 'mappa-principale': 'Mappa principale', 'mappa-griglia': 'Mappa locale', citta: 'Città', percorso: 'Percorso', palestra: 'Palestra', 'centro-pokemon': 'Centro Pokémon', battaglia: 'Battaglia', deposito: 'Deposito', squadra: 'Squadra', evoluzione: 'Evoluzione', lega: 'Lega' }
 

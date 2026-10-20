@@ -34,13 +34,16 @@ export function CittaScene() {
   const curaSquadra = useGameStore((s) => s.curaSquadra)
   const consumaInterazione = useGameStore((s) => s.consumaInterazioneMappaLocale)
   const turno = useGameStore((s) => s.turnoOverworld)
+  const fallbackActivity = useGameStore((s) => s.fallbackLocationActivity)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const luogoLayout = useAdminStore((s) => s.theme.layouts.luogo)
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Venezia'
   const localMap = getLocalMap(luogo)
-  const interazioneDisponibile = !localMap || (turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0)
+  const interazioneDisponibile = localMap
+    ? turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0
+    : fallbackActivity?.playerId === giocatoreAttivo && fallbackActivity.location === luogo
   const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
   const tutti = getAllenatoriInLuogo(luogo).filter((a) => a.tipo !== 'PVP')
   const allenatoriOrdinati = [...tutti].sort((a, b) => {
@@ -52,7 +55,7 @@ export function CittaScene() {
     if (layoutEditing || !interazioneDisponibile || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
     if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.getState().aggiornaStato({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
     useGameStore.getState().eseguiTransazione(() => {
-      if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+      if (!consumaInterazione(giocatoreAttivo, luogo)) return
       const ok = iniziaBattagliaNPC(allenatoreId, luogo)
       if (ok) vaiAScena('battaglia')
     })
@@ -73,7 +76,7 @@ export function CittaScene() {
             disabled={layoutEditing || !interazioneDisponibile}
             onClick={() => {
               useGameStore.getState().eseguiTransazione(() => {
-                if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+                if (!consumaInterazione(giocatoreAttivo, luogo)) return
                 curaSquadra(giocatoreAttivo)
               })
             }}

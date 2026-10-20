@@ -35,6 +35,7 @@ const EvoluzioneScene = lazy(() => import('@scenes/EvoluzioneScene').then((modul
 const LeagueScene = lazy(() => import('@/league/LeagueScene').then((module) => ({ default: module.LeagueScene })))
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
+const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
 const UiDesignRuntime = lazy(() => import('@/ui-studio/UiDesignRuntime').then(module => ({ default: module.UiDesignRuntime })))
 
 /**
@@ -53,6 +54,9 @@ function App() {
   useEffect(() => { preloadSceneTransitionArtwork() }, [])
 
   if (new URLSearchParams(window.location.search).get('uiStudioPreview') === '1') {
+    if (new URLSearchParams(window.location.search).get('assetExamples') === '1') {
+      return <Suspense fallback={<div role="status">Preparazione esempi…</div>}><UiAssetExamples /></Suspense>
+    }
     return <Suspense fallback={<div role="status">Preparazione anteprima…</div>}><UiStudioPreview /></Suspense>
   }
   if (hash === '#ui-studio') {

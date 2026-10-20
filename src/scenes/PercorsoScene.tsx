@@ -30,6 +30,7 @@ export function PercorsoScene() {
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const consumaInterazione = useGameStore((s) => s.consumaInterazioneMappaLocale)
   const turno = useGameStore((s) => s.turnoOverworld)
+  const fallbackActivity = useGameStore((s) => s.fallbackLocationActivity)
   const giocatore = useGameStore((s) =>
     giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
   )
@@ -40,7 +41,9 @@ export function PercorsoScene() {
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Percorso_1'
   const localMap = getLocalMap(luogo)
-  const interazioneDisponibile = !localMap || (turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0)
+  const interazioneDisponibile = localMap
+    ? turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0
+    : fallbackActivity?.playerId === giocatoreAttivo && fallbackActivity.location === luogo
   const allenatori = getAllenatoriInLuogo(luogo)
   const secret = luogo === SECRET_LOCATION_ID
   const secretAccess = !secret || canAccessSecretLocation(giocatore, posizione)
@@ -51,7 +54,7 @@ export function PercorsoScene() {
     if (layoutEditing || !interazioneDisponibile || !haPokemonVivi || giocatore.allenatoriSconfitti.has(allenatoreId)) return
     if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.getState().aggiornaStato({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
     useGameStore.getState().eseguiTransazione(() => {
-      if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+      if (!consumaInterazione(giocatoreAttivo, luogo)) return
       if (iniziaBattagliaNPC(allenatoreId, luogo)) vaiAScena('battaglia')
     })
   }
@@ -78,7 +81,7 @@ export function PercorsoScene() {
       evoluzioneInAttesa: null,
     }
     useGameStore.getState().eseguiTransazione(() => {
-      if (localMap && !consumaInterazione(giocatoreAttivo, luogo)) return
+      if (!consumaInterazione(giocatoreAttivo, luogo)) return
       segnaCespuglioVisitato(giocatoreAttivo, luogo, cespuglio)
       iniziaBattaglia(battaglia)
       vaiAScena('battaglia')
