@@ -5,12 +5,12 @@ Questa cartella conserva i rapporti finali prodotti durante l'analisi del proget
 ## Stato da consultare per primo
 
 1. [Correzioni implementate](./Fixes-2026-10-20.md): interventi alle regole delle visite fallback, pausa dell'evoluzione, authoring e layout intermedio, con le verifiche di quella fase.
-2. [Esempi UI con asset per ruolo](../ui-asset-examples-2026-10-20.md): stato dell'anteprima Borsa, Squadra, Laboratorio e Comandi, più la prima integrazione delle icone e delle frecce nelle schermate reali.
+2. [Esempi UI con asset per ruolo](../ui-asset-examples-2026-10-20.md): anteprima e successiva integrazione attiva di Borsa, Squadra, Laboratorio e controlli nelle schermate della campagna.
 3. [Mappa di utilizzo degli asset](./UI-Asset-Usage-Map-2026-10-20.md) e [specifica dimensionale](./UiFrame-Spec-2026-10-20.md): motivazioni e misure di riferimento per proseguire la migrazione delle superfici.
 
 Gli esempi si aprono con il server locale normale del progetto, alla pagina `/?uiStudioPreview=1&assetExamples=1`. La gallery usa dati dimostrativi e la modalità di anteprima del progetto. La sua implementazione è in [UiAssetExamples.tsx](../../src/ui-studio/UiAssetExamples.tsx) e [assetExamples.css](../../src/ui-studio/assetExamples.css).
 
-Le correzioni documentate non chiudono tutti i rilievi del primo audit. Per esempio, i rilievi sui valori storici di scena, sull'esito del riordino squadra, sulle importazioni concorrenti e sui debiti strutturali restano analisi aperte salvo interventi successivi esplicitamente documentati. La galleria dimostra l'uso degli asset dedicati su esempi confrontabili; non equivale alla migrazione di tutti i pannelli del gioco.
+Le correzioni documentate non chiudono tutti i rilievi del primo audit. Per esempio, i rilievi sui valori storici di scena, sull'esito del riordino squadra, sulle importazioni concorrenti e sui debiti strutturali restano analisi aperte salvo interventi successivi esplicitamente documentati. La gallery conserva esempi confrontabili; la successiva integrazione attiva Borsa, Squadra, Laboratorio e controlli senza dichiarare migrati tutti i pannelli del gioco.
 
 ## Rapporti inclusi
 

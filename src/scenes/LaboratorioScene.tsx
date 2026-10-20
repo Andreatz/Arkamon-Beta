@@ -1,15 +1,32 @@
-import { RpgCommand, RpgFrame } from '@/components/rpg'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
-import { SpeciesPortrait } from '@/player-ui/kit'
+import { StudioCommand, StudioSurface } from '@/components/ui/StudioArtwork'
+import { getPortraitFraming } from '@/player-ui/portraitFraming'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
-import './rpgScenes.css'
+import './liveLaboratory.css'
 import { useGameStore, STARTER_IDS } from '@store/gameStore'
 import { getPokemon } from '@data/index'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LABORATORY_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
+
+const capsuleColors = ['blu', 'nera', 'viola'] as const
+
+function LaboratorySprite({ speciesId }: { speciesId: number }) {
+  const source = `/sprites/front_sprites/${speciesId}.png`
+  const framing = getPortraitFraming(source)
+  return <svg className="live-laboratory-sprite" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+    <image href={assetUrl(source)} width={framing.width} height={framing.height} />
+  </svg>
+}
+
+/** The source canvas is wider than the artwork. Keep every painted coordinate. */
+function LaboratoryArtwork({ source, crop, className = '' }: { source: string; crop: string; className?: string }) {
+  return <svg className={`live-laboratory-crop ${className}`} viewBox={crop} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" data-studio-source={source}>
+    <image href={assetUrl(source)} width={880} height={360} />
+  </svg>
+}
 
 /**
  * Scena del Laboratorio: scelta dello starter.
@@ -19,6 +36,7 @@ import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
  * tre famiglie evolutive). Il terzo non scelto andrà al Rivale.
  */
 export function LaboratorioScene() {
+  const sceneRef = useRef<HTMLDivElement>(null)
   const { reducedMotion } = useGameMotionPreferences()
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const scegliStarter = useGameStore((s) => s.scegliStarter)
@@ -31,6 +49,10 @@ export function LaboratorioScene() {
   const [nomeGiocatore1, setNomeGiocatore1] = useState(giocatore1.nome)
   const [nomeGiocatore2, setNomeGiocatore2] = useState(giocatore2.nome)
   const [confermaRichiesta, setConfermaRichiesta] = useState(false)
+
+  useEffect(() => {
+    if (sceneRef.current) sceneRef.current.scrollTop = 0
+  }, [nomiConfermati])
 
   useEffect(() => {
     if (confermaRichiesta && giocatore1.nome === (nomeGiocatore1.trim() || 'Giocatore 1')
@@ -60,69 +82,59 @@ export function LaboratorioScene() {
 
   return (
     <div
-      className="rpg-starter-scene relative w-full h-full overflow-y-auto bg-gradient-to-b from-slate-800 to-slate-950 bg-cover bg-center"
+      ref={sceneRef}
+      className="live-laboratory-scene"
       style={{ backgroundImage: `url(${LABORATORY_BG})` }}
     >
-      <img
-        src={assetUrl('/ui/player1.png')}
-        alt=""
-        className="pointer-events-none absolute bottom-[5%] left-[-15%] z-100 h-[60%] max-w-[75%] object-contain object-bottom-left drop-shadow-2xl"
-        aria-hidden="true"
-      />
-      <img
-        src={assetUrl('/ui/player2.png')}
-        alt=""
-        className="pointer-events-none absolute bottom-0 right-0 z-0 h-[88%] max-w-[30%] object-contain object-bottom-right drop-shadow-2xl"
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10 flex min-h-full w-full flex-col items-center justify-center px-4 py-4 sm:px-8 sm:py-8">
-      <h2 className="arka-readable-title mb-2 text-center text-2xl font-bold text-arka-accent sm:text-4xl">
-        Laboratorio del Professore
-      </h2>
+      <div className="live-laboratory-content">
+      <header className="live-laboratory-heading">
+        <span>LABORATORIO · IL PRIMO COMPAGNO</span>
+        <h2>Laboratorio del Professore</h2>
+      </header>
       {!nomiConfermati ? (
         <form
-          className="rpg-starter-form mt-5 w-full max-w-[40rem] space-y-4 p-6"
+          className="live-laboratory-form"
           onSubmit={(event) => {
             event.preventDefault()
             confermaNomi()
           }}
         >
-          <RpgFrame />
-          <p className="text-center text-lg font-bold text-white">Inserisci i nomi dei giocatori</p>
-          <label className="block text-sm font-bold text-arka-text">
+          <p>Inserisci i nomi dei giocatori</p>
+          <label>
             Giocatore 1
+            <StudioSurface source="/ui/studio/Scuro/box-2.svg" width={1060} height={330} className="live-laboratory-name-field">
             <input
               value={nomeGiocatore1}
               onChange={(event) => setNomeGiocatore1(event.target.value)}
               maxLength={24}
-              className="mt-2 h-11 w-full rounded-md border border-arka-border bg-slate-950/80 px-3 text-white outline-none focus:border-arka-accent"
               autoFocus
             />
+            </StudioSurface>
           </label>
-          <label className="block text-sm font-bold text-arka-text">
+          <label>
             Giocatore 2
+            <StudioSurface source="/ui/studio/Scuro/box-2.svg" width={1060} height={330} className="live-laboratory-name-field">
             <input
               value={nomeGiocatore2}
               onChange={(event) => setNomeGiocatore2(event.target.value)}
               maxLength={24}
-              className="mt-2 h-11 w-full rounded-md border border-arka-border bg-slate-950/80 px-3 text-white outline-none focus:border-arka-accent"
             />
+            </StudioSurface>
           </label>
-          <RpgCommand type="submit" tone="primary" className="w-full">
+          <StudioCommand type="submit" selected className="live-laboratory-confirm">
             Continua
-          </RpgCommand>
+          </StudioCommand>
         </form>
       ) : (
         <>
-      <p className="arka-readable-text mb-4 text-center text-sm text-arka-text-muted sm:mb-8 sm:text-lg">
+      <p className="live-laboratory-prompt" aria-live="polite">
         {tuttiHannoStarter
           ? 'Tutti hanno scelto! Si parte!'
           : `${nomeGiocatoreAttivo}, scegli il tuo Starter.`}
       </p>
 
-      <SpatialNavigation columns={3} selectOnFocus={false} className="rpg-starter-cards grid w-full grid-cols-3">
-        {STARTER_IDS.map((id) => {
+      <SpatialNavigation columns={3} selectOnFocus={false} className="live-laboratory-capsules">
+        {STARTER_IDS.map((id, index) => {
           const specie = getPokemon(id)
           if (!specie) return null
           const disponibile = !tuttiHannoStarter && !starterScelti.includes(id)
@@ -130,22 +142,29 @@ export function LaboratorioScene() {
           return (
             <motion.button
               data-rpg-item key={id}
-              whileHover={disponibile && !reducedMotion ? { scale: 1.05, y: -10 } : {}}
-              whileTap={disponibile && !reducedMotion ? { scale: 0.95 } : {}}
+              type="button"
+              whileHover={disponibile && !reducedMotion ? { scale: 1.025, y: -6 } : {}}
+              whileTap={disponibile && !reducedMotion ? { scale: 0.98 } : {}}
               disabled={!disponibile}
+              aria-label={`${specie.nome} · ${specie.tipo}${starterScelti.includes(id) ? ' · già scelto' : ''}`}
               onClick={() => scegliStarter(id)}
-              className={`rpg-starter-card flex min-w-0 w-full flex-col items-center gap-2 p-2 sm:gap-3 sm:p-6
-                ${disponibile ? 'cursor-pointer hover:border-arka-accent' : 'opacity-40 cursor-not-allowed'}
-              `}
+              className="live-laboratory-capsule"
             >
-              <RpgFrame />
-              <SpeciesPortrait speciesId={specie.id} large />
-              <h3 className="w-full break-words text-center text-base font-bold sm:text-2xl">{specie.nome}</h3>
-              <span className="text-xs text-arka-text-muted sm:text-sm">{specie.tipo}</span>
+              <LaboratorySprite speciesId={specie.id} />
+              <LaboratoryArtwork source={`/ui/studio/Comuni/capsula-lab-${capsuleColors[index]}.svg`} crop="0 0 260 360" />
+              <span className="live-laboratory-capsule-name">{specie.nome}</span>
+              <span className="live-laboratory-capsule-type">{starterScelti.includes(id) ? 'SCELTO' : specie.tipo}</span>
             </motion.button>
           )
         })}
       </SpatialNavigation>
+      <div className="live-laboratory-dialog">
+        <LaboratoryArtwork source="/ui/studio/Comuni/dialogo-lab.svg" crop="250 145 630 210" />
+        <p className="live-laboratory-sr-only">Professore: scegli con cura il tuo compagno d’avventura! Sarà il coraggioso Vyrath, l’oscuro Darklaw, o il misterioso Felyss?</p>
+      </div>
+      <StudioSurface source="/ui/studio/Scuro/dialogo-scuro.svg" width={820} height={430} className="live-laboratory-mobile-dialog">
+        <div><strong>PROFESSORE</strong><p>Scegli con cura il tuo compagno d’avventura! Vyrath, Darklaw o Felyss?</p></div>
+      </StudioSurface>
         </>
       )}
       </div>

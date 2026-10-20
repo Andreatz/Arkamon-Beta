@@ -1,5 +1,7 @@
 import { useGameStore } from '@/store/gameStore'
 import { useGamePreferences } from './gamePreferences'
+import { assetUrl } from '@/utils/assetUrl'
+import './gameSettingsArtwork.css'
 
 export function GameSettingsPanel() {
   const musicVolume = useGamePreferences((state) => state.musicVolume)
@@ -10,9 +12,9 @@ export function GameSettingsPanel() {
   const setPreferences = useGamePreferences((state) => state.setPreferences)
   const muted = useGameStore((state) => state.audioMuted)
   const setMuted = useGameStore((state) => state.setAudioMuted)
-  return <section aria-label="Impostazioni del gioco" className="space-y-5">
+  return <section aria-label="Impostazioni del gioco" className="game-settings-artwork space-y-5">
     <h3 className="text-lg font-bold">Suoni e animazioni</h3>
-    <label className="flex items-center gap-3"><input type="checkbox" checked={!muted} onChange={(event) => setMuted(!event.target.checked)} /> Audio attivo</label>
+    <label className="game-audio-toggle"><input type="checkbox" checked={!muted} onChange={(event) => setMuted(!event.target.checked)} /><img src={assetUrl(`/ui/studio/Scuro/toggle-${muted ? 'off' : 'on'}.svg`)} alt="" draggable={false} /><span>Audio attivo</span></label>
     <label className="block">Volume musica: {Math.round(musicVolume * 100)}%
       <input className="mt-2 block w-full" aria-label="Volume musica" type="range" min="0" max="100" step="1" value={Math.round(musicVolume * 100)} onChange={(event) => setPreferences({ musicVolume: Number(event.target.value) / 100 })} />
     </label>

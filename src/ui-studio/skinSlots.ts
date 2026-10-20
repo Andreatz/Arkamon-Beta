@@ -6,6 +6,11 @@ export function getUiSkinSurface(element: HTMLElement | SVGElement): HTMLElement
   if (element.hasAttribute('data-ui-skin-slot')) return element
   return element.querySelector<HTMLElement | SVGElement>(':scope > [data-ui-skin-slot="frame"]')
     ?? element.querySelector<HTMLElement>(':scope > .pu-frame,:scope > .game-button-frame')
+    // Team art has one declared frame inside its portrait composition. Do not
+    // descend through arbitrary groups, which can contain independent commands.
+    ?? (element.matches('.pu-hero-column')
+      ? element.querySelector<HTMLElement>(':scope > .pu-hero > .studio-surface > img[data-ui-skin-slot="frame"]')
+      : null)
     ?? element
 }
 

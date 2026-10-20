@@ -13,6 +13,8 @@ test('preferences persist independently and dialog is keyboard accessible', asyn
   await page.goto('/')
   const errors: string[] = []; page.on('pageerror', (error) => errors.push(error.message))
   const dialog = await tools(page, 'Impostazioni')
+  await dialog.getByRole('checkbox', { name: 'Audio attivo', exact: true }).check()
+  await expect(dialog.locator('.game-audio-toggle img')).toHaveAttribute('src', /\/ui\/studio\/Scuro\/toggle-on\.svg$/)
   await dialog.getByLabel('Velocità animazioni').selectOption('fast')
   await dialog.getByLabel('Movimento ridotto').selectOption('on')
   await dialog.getByRole('slider', { name: 'Volume musica' }).fill('25')
@@ -25,6 +27,7 @@ test('preferences persist independently and dialog is keyboard accessible', asyn
   await expect(page.getByRole('button', { name: 'Partita', exact: true })).toBeFocused()
   await page.reload()
   const reopened = await tools(page, 'Impostazioni')
+  await expect(reopened.getByRole('checkbox', { name: 'Audio attivo', exact: true })).toBeChecked()
   await expect(reopened.getByLabel('Velocità animazioni')).toHaveValue('fast')
   await expect(reopened.getByRole('slider', { name: 'Volume musica' })).toHaveValue('25')
   await expect(reopened.getByRole('slider', { name: 'Volume effetti' })).toHaveValue('70')
@@ -39,6 +42,10 @@ test('new campaign chooses two starters and survives reload', async ({ page }) =
   await page.getByLabel('Giocatore 1', { exact: true }).fill('E2E Uno')
   await page.getByLabel('Giocatore 2', { exact: true }).fill('E2E Due')
   await page.getByRole('button', { name: 'Continua', exact: true }).click()
+  await expect(page.locator('.live-laboratory-capsule')).toHaveCount(3)
+  for (const color of ['blu', 'nera', 'viola']) {
+    await expect(page.locator(`[data-studio-source="/ui/studio/Comuni/capsula-lab-${color}.svg"]`)).toBeVisible()
+  }
   await page.getByRole('button', { name: /Vyrath/ }).click()
   await page.getByRole('button', { name: /Darklaw/ }).click()
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')

@@ -6,6 +6,7 @@ import { MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, SHOP_ITEMS, type ShopCart, type S
 import { shopAvailabilityMessage, shopCartTotal } from '@/shop/purchase'
 import { ITEM_ICONS, KitButton, KitIcon, KitPanel } from './kit'
 import { useInteractionStore } from '@/interactions/interactionStore'
+import { assetUrl } from '@/utils/assetUrl'
 
 export interface StoreScreenProps { playerId: 1 | 2; inputBlocked?: boolean; shopInteractionId?: string }
 
@@ -51,9 +52,9 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
         <div className="pu-store-selected-summary"><div className="pu-item-hero"><KitIcon id={ITEM_ICONS[selected.id]} /></div><div><span className="pu-kicker">Articolo selezionato</span><h2>{selected.name}</h2>
           <p className="pu-description">{selected.description}</p><p className="pu-item-held">{selected.price} ₳ ciascuno · In borsa: <strong>{player.inventario[selected.id] ?? 0}</strong></p></div></div>
         <div className="pu-quantity-control" aria-label={`Quantità nel carrello di ${selected.name}`}>
-          <KitButton aria-label={`Diminuisci ${selected.name}`} disabled={editBlocked || !(cart[selected.id] ?? 0)} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) - 1)}>−</KitButton>
-          <label className="pu-shop-quantity"><span>Quantità di {selected.name}</span><input aria-label={`Quantità di ${selected.name}`} type="number" min={0} max={MAX_SHOP_QUANTITY} step={1} inputMode="numeric" value={cart[selected.id] ?? 0} disabled={editBlocked} onChange={event => setQuantity(selected.id, Number(event.target.value))} /></label>
-          <KitButton aria-label={`Aumenta ${selected.name}`} disabled={editBlocked || (cart[selected.id] ?? 0) >= MAX_SHOP_QUANTITY} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) + 1)}>+</KitButton>
+          <KitButton artwork="decrement" aria-label={`Diminuisci ${selected.name}`} disabled={editBlocked || !(cart[selected.id] ?? 0)} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) - 1)}>−</KitButton>
+          <label className="pu-shop-quantity"><span>Quantità di {selected.name}</span><input aria-label={`Quantità di ${selected.name}`} type="number" min={0} max={MAX_SHOP_QUANTITY} step={1} inputMode="numeric" value={cart[selected.id] ?? 0} disabled={editBlocked} style={{ backgroundImage: `url("${assetUrl('/ui/studio/individuali/Scuro/quantita/display.svg')}")` }} onChange={event => setQuantity(selected.id, Number(event.target.value))} /></label>
+          <KitButton artwork="increment" aria-label={`Aumenta ${selected.name}`} disabled={editBlocked || (cart[selected.id] ?? 0) >= MAX_SHOP_QUANTITY} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) + 1)}>+</KitButton>
         </div>
         {(unavailable || insufficient || capacityItem) && <div className="pu-store-notices" aria-live="polite">
           {unavailable && <p className="pu-warning" role="status">{unavailable}</p>}

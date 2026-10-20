@@ -79,6 +79,25 @@ describe('selected inventory item action view', () => {
     expect(markup).toContain('HP di Vyrath selezionato: 6 su 12')
     expect(markup).toContain('+3 HP')
     expect(markup).toContain('Paralizzato')
+    expect(markup).toContain('data-ui-asset="/ui/studio/Scuro/box-inventario.svg"')
+    expect(markup).toContain('data-ui-asset="/ui/studio/Scuro/box-1.svg"')
+    expect(markup).toContain('aspect-ratio:1060 / 650')
+    expect(markup).toContain('cornice-piccola-selezionata.svg')
+    expect(markup).toContain('La borsa di Arianna')
+    expect(markup).not.toContain('Confronta Superpozione')
+    expect(markup).not.toContain('Dati dimostrativi')
+  })
+
+  it('retains the real turn, pending-battle and current-scene restrictions with the dedicated artwork', () => {
+    runtime.state.turnoOverworld.azioniRimaste = 0
+    expect(renderToStaticMarkup(<BagScreen playerId={1} />)).toContain('Puoi usare gli oggetti soltanto durante il turno di questo giocatore.')
+    runtime.state.turnoOverworld.azioniRimaste = 1
+    runtime.state.interactionProgress.pendingBattle = {} as GameState['interactionProgress']['pendingBattle']
+    expect(renderToStaticMarkup(<BagScreen playerId={1} />)).toContain('Durante la battaglia usa la borsa della pulsantiera di combattimento.')
+    runtime.state.interactionProgress.pendingBattle = null
+    runtime.state.scenaCorrente = { scena: 'laboratorio' }
+    expect(renderToStaticMarkup(<BagScreen playerId={1} />)).toContain('Concludi questa schermata prima di usare un oggetto.')
+    expect(runtime.state.applicaOggetto).not.toHaveBeenCalled()
   })
 
   it('allows configured between-battle items with the reserved zero-action League turn and shows its real consequence', () => {

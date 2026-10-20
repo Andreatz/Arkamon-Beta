@@ -41,9 +41,12 @@ export function KitFrame({ id = 'panel-medium' }: { id?: string }) {
 export function KitPanel({ children, className = '', asset = 'panel-medium', ...props }: HTMLAttributes<HTMLDivElement> & { asset?: string }) {
   return <div {...props} className={`pu-panel ${className}`}><KitFrame id={asset} />{children}</div>
 }
-export function KitButton({ active = false, asset, artwork, children, className = '', type = 'button', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean; asset?: string; artwork?: 'previous' | 'next' }) {
+export function KitButton({ active = false, asset, artwork, children, className = '', type = 'button', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean; asset?: string; artwork?: 'previous' | 'next' | 'decrement' | 'increment' }) {
+  const artworkSource = artwork === 'decrement' || artwork === 'increment'
+    ? `/ui/studio/individuali/Scuro/quantita/${artwork === 'decrement' ? 'meno' : 'piu'}.svg`
+    : `/ui/studio/Scuro/pulsante-freccia-${artwork === 'previous' ? 'sinistra' : 'destra'}.svg`
   return <button {...props} type={type} data-ui-artwork={artwork} className={`pu-button ${active ? 'is-active' : ''} ${artwork ? 'pu-artwork-button' : ''} ${className}`}>
-    {artwork ? <><img className="pu-button-artwork" src={assetUrl(`/ui/studio/Scuro/pulsante-freccia-${artwork === 'previous' ? 'sinistra' : 'destra'}.svg`)} width={52} height={44} alt="" draggable={false} aria-hidden="true" /><span className="pu-artwork-label">{children}</span></>
+    {artwork ? <><img className="pu-button-artwork" src={assetUrl(artworkSource)} width={52} height={44} alt="" draggable={false} aria-hidden="true" /><span className="pu-artwork-label">{children}</span></>
       : <><KitFrame id={asset ?? (active ? 'button-primary' : 'button-default')} />{children}</>}
   </button>
 }

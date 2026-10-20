@@ -47,7 +47,7 @@ async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directD
   const g2Discoveries = sparseG2Discoveries
     ? [...new Set([...g2.squadra, ...Object.values(g2.deposito)].map(pokemon => pokemon.specieId))] : allIds
   const state = {
-    giocatore1: player(1), giocatore2: g2, giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null,
+    giocatore1: player(1), giocatore2: g2, giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null, fallbackLocationActivity: null,
     posizione1: position('Venezia'), posizione2: position('Torino'),
     turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
     posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: {},
@@ -90,14 +90,20 @@ async function selectScreen(dialog: Locator, name: string, id: string) {
 }
 
 /** Projects source pixels through the rendered SVG, so CSS zooming/cropping cannot pass as a centered portrait. */
-async function assertVisiblePortraits(dialog: Locator, context: string) {
+async function assertVisiblePortraits(dialog: Locator, context: string, scrollIntoView = false) {
   const portraits = dialog.locator('svg.pu-creature-art')
   await expect(portraits.first(), `${context}: portraits use SVG framing`).toBeVisible()
   await expect.poll(async () => portraits.evaluateAll(elements => elements.filter(element =>
     element.getAttribute('data-creature-loaded') !== 'true').length), {
     message: `${context}: every visible portrait must finish loading`,
   }).toBe(0)
-  const report = await portraits.evaluateAll((elements, metadata) => elements.map(element => {
+  const report: { source: string; speciesId?: string | null; issues: string[] }[] = []
+  const initialScroll = scrollIntoView ? await dialog.locator('.pu-content').evaluate(element => element.scrollTop) : 0
+  // The authored Team/Bag layouts may scroll. Inspect every portrait while it
+  // is actually reachable in the viewport; other screens retain the full-view check.
+  for (const target of scrollIntoView ? await portraits.all() : [portraits]) {
+    if (scrollIntoView) await target.scrollIntoViewIfNeeded()
+    report.push(...await target.evaluateAll((elements, metadata) => elements.map(element => {
     const svg = element as SVGSVGElement
     const source = svg.getAttribute('data-creature-source')!
     const speciesId = svg.getAttribute('data-species-id')
@@ -113,7 +119,10 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
     })
     const alpha = { left: alphaPoints[0].x, top: alphaPoints[0].y, right: alphaPoints[1].x, bottom: alphaPoints[1].y }
     const rect = svg.getBoundingClientRect()
-    const circle = svg.parentElement!.querySelector('.pu-creature-circle')!.getBoundingClientRect()
+    const circleElement = svg.parentElement!.querySelector('.pu-creature-circle')!
+    // Complete authored Team frames replace the old circle decoration. Its
+    // portrait host remains the exact contained area, independent of that skin.
+    const circle = (getComputedStyle(circleElement).display === 'none' ? svg.parentElement! : circleElement).getBoundingClientRect()
     // object-fit:contain renders the circle as a square even when its large portrait host is a wide rectangle.
     const diameter = Math.min(circle.width, circle.height), cx = (circle.left + circle.right) / 2, cy = (circle.top + circle.bottom) / 2
     const circleSquare = { left: cx - diameter / 2, top: cy - diameter / 2, right: cx + diameter / 2, bottom: cy + diameter / 2 }
@@ -140,18 +149,91 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
       }
     }
     return { source, speciesId, issues }
-  }), portraitMetadata)
+    }), portraitMetadata))
+  }
+  if (scrollIntoView) await dialog.locator('.pu-content').evaluate((element, top) => { element.scrollTop = top }, initialScroll)
   expect(report.filter(portrait => portrait.issues.length), `${context}: complete centered portrait pixels`).toEqual([])
   return report
 }
 
-/** Checks actual content geometry even when CSS hides overflowing content. */
+/** Authored Team/Bag compositions keep a viewport-sized scrolling workspace. */
+async function assertReachableComposition(dialog: Locator, context: string) {
+  const report = await dialog.evaluate(root => {
+    const epsilon = 2, issues: string[] = []
+    const content = root.querySelector<HTMLElement>('.pu-content')!
+    const originalTop = content.scrollTop, originalLeft = content.scrollLeft
+    const identify = (element: Element) => element.getAttribute('aria-label') ?? element.getAttribute('class') ?? element.tagName
+    const visible = (element: Element) => {
+      const rect = element.getBoundingClientRect(), style = getComputedStyle(element)
+      return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden'
+    }
+    const bounds = content.getBoundingClientRect(), style = getComputedStyle(content)
+    if (!['auto', 'scroll'].includes(style.overflowY)) issues.push('Authored layout lacks an explicit vertical scroll area')
+    if (bounds.top < -epsilon || bounds.bottom > innerHeight + epsilon || content.clientHeight <= 0 || content.clientHeight >= innerHeight) issues.push('Scroll workspace is not bounded by the viewport')
+    if (content.scrollWidth > content.clientWidth + epsilon) issues.push('Scroll workspace overflows horizontally')
+    if (document.documentElement.scrollHeight > innerHeight + epsilon || document.documentElement.scrollWidth > innerWidth + epsilon) issues.push('Document escapes the viewport')
+    const all = [...content.querySelectorAll<HTMLElement>('*')].filter(visible)
+    for (const element of all) {
+      if (element.scrollWidth > element.clientWidth + epsilon && !element.matches('svg,image')
+        && getComputedStyle(element).overflowX !== 'visible') {
+        const label = element.getAttribute('title') ?? element.closest('[aria-label]')?.getAttribute('aria-label') ?? ''
+        const clamped = Number.parseInt(getComputedStyle(element).webkitLineClamp) > 0
+        if (!(clamped && label.includes(element.textContent?.trim() ?? ''))) issues.push(`${identify(element)}: irreversible horizontal clipping`)
+      }
+    }
+    function checkReachable(element: HTMLElement, rects: () => DOMRect[], label: string) {
+      element.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+      for (const rect of rects()) {
+        if (rect.left < -epsilon || rect.right > innerWidth + epsilon || rect.top < -epsilon || rect.bottom > innerHeight + epsilon) issues.push(`${label}: cannot be reached within viewport`)
+        for (let ancestor = element.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
+          const ancestorStyle = getComputedStyle(ancestor), bound = ancestor.getBoundingClientRect()
+          if (['hidden', 'clip', 'auto', 'scroll'].includes(ancestorStyle.overflowY)
+            && (rect.top < bound.top + ancestor.clientTop - epsilon || rect.bottom > bound.top + ancestor.clientTop + ancestor.clientHeight + epsilon)) {
+            issues.push(`${label}: irreversibly clipped by ${identify(ancestor)}`); break
+          }
+        }
+      }
+    }
+    const controls = all.filter(element => element.matches('button,input,select,textarea,a[href],output,[role="tab"]'))
+    for (const control of controls) {
+      checkReachable(control, () => [control.getBoundingClientRect()], `Command ${identify(control)}`)
+      if (control.matches('button,input,select,textarea') && control.getBoundingClientRect().height < 44 - epsilon) issues.push(`${identify(control)}: touch target smaller than 44px`)
+    }
+    const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT)
+    let node: Node | null
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement
+      if (!(parent instanceof HTMLElement) || !visible(parent) || parent.closest('option,script,style') || !node.textContent?.trim()) continue
+      const clamped = Number.parseInt(getComputedStyle(parent).webkitLineClamp) > 0
+      if (clamped) {
+        const fullText = parent.getAttribute('title') ?? parent.closest('[aria-label]')?.getAttribute('aria-label') ?? ''
+        if (!fullText.includes(node.textContent.trim())) issues.push(`Clamped name has no complete accessible label: ${node.textContent.trim()}`)
+        checkReachable(parent, () => [parent.getBoundingClientRect()], `Name ${node.textContent.trim()}`)
+        continue
+      }
+      const range = document.createRange(); range.selectNodeContents(node)
+      checkReachable(parent, () => [...range.getClientRects()].filter(rect => rect.width && rect.height), `Text ${node.textContent.trim().slice(0, 65)}`)
+    }
+    const broken = [...root.querySelectorAll<HTMLImageElement>('img')].filter(image => visible(image) && (!image.complete || !image.naturalWidth)).map(image => image.src)
+    content.scrollTop = originalTop; content.scrollLeft = originalLeft
+    return { issues, broken, controls: controls.length, viewport: { width: innerWidth, height: innerHeight } }
+  })
+  expect(report.viewport).toEqual(dialog.page().viewportSize())
+  expect(report.controls, `${context}: real commands remain reachable`).toBeGreaterThan(0)
+  expect(report.broken, `${context}: authored SVG artwork must load`).toEqual([])
+  expect(report.issues, `${context}: bounded scrolling must expose complete content`).toEqual([])
+  const portraits = await dialog.locator('svg.pu-creature-art').count() ? await assertVisiblePortraits(dialog, context, true) : []
+  return { portraits }
+}
+
+/** Strict full-view geometry remains required outside the two authored scroll layouts. */
 async function assertFitsWithoutScroll(dialog: Locator, context: string) {
   await dialog.evaluate(async element => {
     await document.fonts.ready
     await Promise.all(Array.from(element.querySelectorAll('img')).map(image => image.decode().catch(() => null)))
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
   })
+  if (await dialog.locator('.pu-live-team,.pu-bag-dedicated').count()) return assertReachableComposition(dialog, context)
   const report = await dialog.evaluate(root => {
     const epsilon = 2
     const issues: string[] = []
@@ -226,7 +308,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
   test.use({ viewport: { width: 1920, height: 1080 } })
   test.skip(({ isMobile }) => isMobile, 'This requirement targets the desktop 1920×1080 viewport; existing tests cover phones.')
 
-  test('all six views and their dense selected contents stay visible without scroll or campaign mutations', async ({ page }) => {
+  test('all six views keep dense selected contents reachable within the viewport without campaign mutations', async ({ page }) => {
     test.setTimeout(180_000)
     await seedFullCampaign(page)
     const before = await savedCampaign(page)
@@ -306,7 +388,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
       }
       if (id === 'borsa') {
         for (const category of ['Cure', 'Status', 'Cattura', 'Tutti']) {
-          await dialog.locator('.pu-bag-inventory').getByRole('button', { name: category, exact: true }).click()
+          await dialog.locator('.pu-live-bag-categories').getByRole('button', { name: category, exact: true }).click()
           await assertFitsWithoutScroll(dialog, `Borsa: ${category} with seven real inventory entries`)
         }
         for (const [, itemName] of ITEMS) {
@@ -354,7 +436,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
     expect(await savedCampaign(page)).toEqual(before)
   })
 
-  test('the direct deposit scene and its six tools also fit without scrolling', async ({ page }) => {
+  test('the direct deposit scene and its six tools keep all content reachable within the viewport', async ({ page }) => {
     await seedFullCampaign(page, false, true)
     const before = await savedCampaign(page)
     const scene = page.locator('.pu-scene-host')

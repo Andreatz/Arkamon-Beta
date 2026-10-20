@@ -1,0 +1,32 @@
+/* The approved compositions are mounted in the real dialog, with real navigation. */
+.pu-shell.pu-live-shell{display:flex;flex-direction:column;gap:0;height:100%;min-height:0;padding:18px 28px;background:linear-gradient(130deg,#132333,#08101e)}
+.pu-live-shell>.pu-topbar{flex:none;background:none;border:0;border-bottom:1px solid #51617155;border-radius:0;padding:0 0 16px;min-height:70px}
+.pu-live-shell>.pu-topbar>.rpg-frame,.pu-live-shell>.pu-nav>.rpg-frame,.pu-live-shell .pu-player-switch>.pu-button>.rpg-frame,.pu-live-shell .pu-nav-button>.rpg-frame{display:none}
+.pu-live-shell .pu-brand img{width:150px;height:54px;object-fit:contain}
+.pu-live-shell .pu-brand small{font-size:12px;letter-spacing:2px}
+.pu-live-shell .pu-player-switch>.pu-button{border:1px solid #476176;border-radius:5px;background:#132a3c;font-size:16px;padding:7px 12px;min-height:44px}
+.pu-live-shell .pu-player-switch>.is-active{border-color:#d3b18a;color:#ffe3bb}
+.pu-live-shell>.pu-nav{flex:none;margin:12px 0 16px;padding:4px;min-height:48px;background:#0d1926;border:1px solid #2a3c4c;border-radius:7px;gap:4px}
+.pu-live-shell .pu-nav-button{font-size:17px;padding:8px 12px;min-height:44px;border-radius:4px;background:transparent}
+.pu-live-shell .pu-nav-button.is-active{background:#d7bd99;color:#1b232d}
+.pu-live-shell>.pu-page-head{display:none}
+.pu-live-shell>.pu-content{flex:1;min-height:0;width:100%;max-width:1440px;margin:0 auto;overflow:auto;overscroll-behavior:contain;padding:0 4px 12px}
+.pu-live-shell>.pu-footer{flex:none;margin-top:10px;padding-top:8px;min-height:52px;align-items:center;font-size:15px}
+.pu-shell .pu-footer>.pu-resume-command{width:270px;max-width:100%;flex:none;min-height:44px;font-size:18px}
+.pu-live-shell .pu-keyboard-hint{font-size:14px}
+@media(max-width:900px){
+ .pu-shell.pu-live-shell{padding:12px;height:auto;min-height:100%}
+ .pu-live-shell>.pu-content{flex:none;overflow:visible;padding:0}
+ .pu-live-shell>.pu-topbar{gap:10px;padding:0 0 12px}
+ .pu-live-shell .pu-brand img{width:105px;height:36px}
+ .pu-live-shell .pu-brand small{display:none}
+ .pu-live-shell .pu-header-meta{width:auto;margin-left:auto;font-size:13px}
+ .pu-live-shell .pu-currency{font-size:17px;margin-left:auto}
+ .pu-live-shell .pu-currency strong{font-size:20px}
+ .pu-live-shell .pu-player-switch{width:100%;order:4}
+ .pu-live-shell .pu-player-switch>.pu-button{font-size:14px}
+ .pu-live-shell>.pu-nav{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;min-height:52px}
+ .pu-live-shell .pu-nav-button{font-size:14px;flex:none;padding:8px 12px}
+ .pu-live-shell>.pu-footer{flex-wrap:wrap;gap:10px;font-size:13px}
+ .pu-shell .pu-footer>.pu-resume-command{width:230px;margin-left:auto;font-size:16px}
+}

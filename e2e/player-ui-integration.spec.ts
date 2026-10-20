@@ -80,6 +80,17 @@ test('all six menu screens fit the desktop and phone viewport with loaded SVG ar
     await dialog.getByRole('button', { name, exact: true }).click()
     await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
     await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+    // Approval concerns the running game: a separate Studio gallery cannot satisfy it.
+    const approvedArtwork = id === 'squadra' ? ['cornice-arkamon', 'box-2', 'squadra']
+      : id === 'borsa' ? ['box-inventario', 'box-1'] : []
+    for (const asset of approvedArtwork) {
+      const surface = dialog.locator(`[data-ui-asset="/ui/studio/Scuro/${asset}.svg"]`)
+      await expect(surface).toBeAttached()
+      const image = surface.locator('> img')
+      await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
+      expect(await image.evaluate(element => getComputedStyle(element).objectFit)).toBe('contain')
+    }
+    expect(new URL(page.url()).searchParams.has('uiStudioPreview')).toBe(false)
     await dialog.evaluate(async (element) => Promise.all(Array.from(element.querySelectorAll('img')).map(image => image.decode().catch(() => null))))
     const geometry = await dialog.evaluate((element) => {
       const shell = element.querySelector('.pu-shell') as HTMLElement

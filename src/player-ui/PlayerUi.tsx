@@ -10,6 +10,8 @@ import { MenuScreen } from './MenuScreen'
 import { usePlayerUiSession } from './playerUiSession'
 import { PresentManagementControl } from '@/regia/PresentManagementControl'
 import { PLAYER_UI_SCREENS, type PlayerUiAuxiliary, type PlayerUiScreen } from './navigation'
+import { StudioCommand } from '@/components/ui/StudioArtwork'
+import './livePlayerUi.css'
 
 export { PLAYER_UI_SCREENS, PLAYER_UI_OPEN_EVENT, isPlayerUiScreen, openPlayerUi } from './navigation'
 export type { PlayerUiScreen, PlayerUiAuxiliary, PlayerUiOpenRequest } from './navigation'
@@ -127,7 +129,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     return () => cancelAnimationFrame(frame)
   }, [screen, tool])
 
-  return <div ref={shell} className="pu-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ '--pu-background': `url("${screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")` } as CSSProperties}
+  return <div ref={shell} className={`pu-shell${!visibleTool && (screen === 'borsa' || screen === 'squadra') ? ' pu-live-shell' : ''}`} onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ '--pu-background': `url("${screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")` } as CSSProperties}
     data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId}>
     <div className="pu-topbar">
       <KitFrame id="panel-wide" />
@@ -177,7 +179,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     </main>
 
     <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} azioni disponibili` : ''}</span>
-      <span className="pu-keyboard-hint">↑ ↓ Seleziona · Invio Conferma · Esc Indietro</span><PresentManagementControl screen={visibleTool ?? screen} playerId={playerId} instanceId={instanceId} /><KitButton data-ui-id="resume-journey" active onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</KitButton>
+      <span className="pu-keyboard-hint">↑ ↓ Seleziona · Invio Conferma · Esc Indietro</span><PresentManagementControl screen={visibleTool ?? screen} playerId={playerId} instanceId={instanceId} /><StudioCommand className="pu-resume-command" data-ui-id="resume-journey" selected onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</StudioCommand>
     </footer>
   </div>
 }

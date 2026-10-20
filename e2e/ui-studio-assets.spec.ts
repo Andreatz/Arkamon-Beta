@@ -207,6 +207,35 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
       await expect(portrait).toBeVisible()
       const image = portrait.locator('image')
       const originalSource = await image.getAttribute('href')
+      if (screen === 'squadra') {
+        // The approved Team composition owns a complete SVG frame image. The
+        // editor replaces that frame without painting over the creature or HP.
+        const frame = hero.locator(':scope > .pu-hero > .studio-surface > img[data-ui-skin-slot="frame"]')
+        const originalFrame = await frame.getAttribute('src')
+        const hp = preview(page).locator('.pu-detail-panel > .pu-health')
+        const originalHp = await hp.textContent()
+        await expect(frame).toHaveAttribute('src', /\/ui\/studio\/Scuro\/cornice-arkamon\.svg$/)
+
+        await selectLayer(page, 'Arkamon selezionato', 'Gruppo')
+        await chooseAsset(page, 'infobox')
+        await expect(frame).toHaveAttribute('src', /\/ui\/studio\/Comuni\/infobox\.svg$/)
+        await expect(frame).toHaveCSS('object-fit', 'contain')
+        await expect(portrait).toBeVisible()
+        await expect(image).toHaveAttribute('href', originalSource!)
+        expect(await hp.textContent()).toBe(originalHp)
+
+        await original(page)
+        await expect(frame).toHaveAttribute('src', originalFrame!)
+        await expect(image).toHaveAttribute('href', originalSource!)
+        expect(await hp.textContent()).toBe(originalHp)
+        await page.reload()
+        await expect(page.locator('.uis-layer').first()).toBeVisible()
+        await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('squadra')
+        await expect(frame).toHaveAttribute('src', originalFrame!)
+        await expect(image).toHaveAttribute('href', originalSource!)
+        expect(await hp.textContent()).toBe(originalHp)
+        continue
+      }
       const background = await hero.evaluate(element => getComputedStyle(element).backgroundImage)
       const pseudoVisibility = () => hero.evaluate(element => getComputedStyle(element, '::before').visibility)
       await expect.poll(pseudoVisibility).toBe('visible')
