@@ -12,6 +12,8 @@ import { PresentManagementControl } from '@/regia/PresentManagementControl'
 import { PLAYER_UI_SCREENS, type PlayerUiAuxiliary, type PlayerUiScreen } from './navigation'
 import { StudioCommand } from '@/components/ui/StudioArtwork'
 import './livePlayerUi.css'
+import './fullscreenLegacy.css'
+import './fullscreenAuxiliary.css'
 
 export { PLAYER_UI_SCREENS, PLAYER_UI_OPEN_EVENT, isPlayerUiScreen, openPlayerUi } from './navigation'
 export type { PlayerUiScreen, PlayerUiAuxiliary, PlayerUiOpenRequest } from './navigation'
@@ -129,18 +131,18 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     return () => cancelAnimationFrame(frame)
   }, [screen, tool])
 
-  return <div ref={shell} className={`pu-shell${!visibleTool && (screen === 'borsa' || screen === 'squadra') ? ' pu-live-shell' : ''}`} onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ '--pu-background': `url("${screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")` } as CSSProperties}
+  return <div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ '--pu-background': `url("${screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")` } as CSSProperties}
     data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId}>
     <div className="pu-topbar">
       <KitFrame id="panel-wide" />
       <div className="pu-brand"><img src={assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" /><small>Strumenti dell’allenatore</small></div>
       <div className="pu-header-meta"><small>Posizione di G{playerId}</small><strong>{location}</strong></div>
       <div className="pu-player-switch" role="group" aria-label="Giocatore degli strumenti">
-        {[player1, player2].map(entry => <KitButton key={entry.id} active={playerId === entry.id} aria-pressed={playerId === entry.id}
+        {[player1, player2].map(entry => <StudioCommand className="pu-player-option" key={entry.id} selected={playerId === entry.id} aria-pressed={playerId === entry.id}
           aria-label={`G${entry.id} · ${entry.nome || `Giocatore ${entry.id}`}`} onClick={() => changePlayer(entry.id)}>
           {entry.squadra[0] ? <CreaturePortrait pokemon={entry.squadra[0]} /> : <KitIcon id="icon-home" />}
           <span>{entry.nome || `Giocatore ${entry.id}`} · G{entry.id}</span>
-        </KitButton>)}
+        </StudioCommand>)}
       </div>
       <div className="pu-currency" aria-label={`Monete di G${playerId}: ${player.monete}`}><KitIcon id="item-coin" /><div><strong>{formatNumber(player.monete)} ₳</strong><span>Monete</span></div></div>
     </div>

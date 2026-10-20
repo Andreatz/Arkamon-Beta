@@ -13,7 +13,7 @@ Il commit iniziale `d8962760` conteneva la gallery separata e la prima integrazi
 - **Laboratorio:** la scelta effettiva degli starter usa le tre capsule e il dialogo del Professore. I nomi dei due giocatori vengono confermati tramite la transazione esistente; selezione esclusiva, salvataggio e ingresso nella mappa restano operazioni della campagna. Su telefono il laboratorio occupa l'altezza dello schermo e torna in alto dopo la conferma dei nomi.
 - **Controlli:** il checkbox audio nativo mostra `toggle-on/off.svg` e conserva la preferenza al reload; il negozio usa i tre SVG del selettore quantità con input numerico e limiti originali; i dialoghi che espongono il comando Chiudi usano il relativo SVG. La Player UI conserva il comando Riprendi il Viaggio.
 
-`StudioSurface` e `StudioCommand` renderizzano gli SVG interi conservandone il rapporto. La gallery resta disponibile come confronto dimostrativo, con un collegamento al gioco normale. Il Deposito a 35 posti e le altre schermate non illustrate negli esempi conservano le composizioni precedenti.
+`StudioSurface` e `StudioCommand` renderizzano gli SVG interi conservandone il rapporto. La gallery resta disponibile come confronto dimostrativo, con un collegamento al gioco normale. La revisione del 21 ottobre adatta tutte le schermate degli strumenti all'altezza desktop e uniforma i selettori G1/G2, mantenendo i 35 posti del Deposito.
 
 ## Uso degli asset
 
@@ -53,7 +53,7 @@ Per ripetere le 32 verifiche sul server locale avviato con `npm run dev`, esegui
 
 - Suite completa: 162 file, 3.859 test superati.
 - Browser: selezione di 44 scenari per acquisti/cure, strumenti, salvataggi e Studio; 39 superati e 5 riservati esplicitamente al desktop. Le asserzioni aggiuntive verificano gli SVG approvati nelle schermate reali, senza i parametri della gallery, il toggle audio dopo reload e le tre capsule nel flusso della nuova partita.
-- Contenuti massimi: 11 scenari desktop superati a 1920×900, 1920×945 e 1920×1080, con nomi lunghi, sei compagni, 35 riserve, catalogo Arkadex completo e carrello di sette articoli. Borsa e Squadra usano uno spazio di scorrimento contenuto nella finestra; i controlli verificano raggiungibilità, testo e ritratti completi, area cliccabile, sorgenti ufficiali e conservazione della campagna. Le altre quattro viste mantengono la verifica dell'intero contenuto senza scorrimento.
+- La prima integrazione verificava 11 scenari desktop a 1920×900, 1920×945 e 1920×1080, ammettendo lo scorrimento interno per Borsa e Squadra. Questo limite è superato dalla [revisione fullscreen del 21 ottobre](ui-fullscreen-2026-10-21.md): la verifica senza scorrimento ora vale per tutte e sei le viste, anche a 1366×768, con nomi lunghi, sei compagni, 35 riserve e Arkadex completo. Arkastore dispone inoltre di tre colonne per mostrare catalogo, dettaglio e carrello insieme.
 - Borsa e Squadra provate a 1920×1080, 1280×900, 390×844 e 320×844: selezione da tastiera, filtri, memoria separata dei giocatori, callback e riordino; nessun overflow orizzontale. Tutte le sette icone della Borsa sono centrate con scostamento inferiore a un pixel CSS.
 - Cura e acquisti verificano consumo, turno e persistenza tramite i test esistenti. La consultazione e il riordino conservano HP, status, inventario e numero di azioni.
 - Laboratorio controllato a 1440×1000, 768×1024, 390×844 e 320×844; quattro scenari browser verificano anche fallimento/riprova del salvataggio dei nomi, scelta dei due starter e reload.

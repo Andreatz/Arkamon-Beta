@@ -83,7 +83,8 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
           <h2>{selected.name}</h2><p className="pu-description">{selected.description}</p>
           <StudioSurface source={studioAsset('box-1')} width={1060} height={320} className="pu-live-bag-stock"><div><span>IN BORSA</span><strong>{player.inventario[selected.id] ?? 0} <small>disponibili</small></strong></div></StudioSurface>
         </> : <div className="pu-empty"><KitIcon id="icon-bag" /><h2>Pronto per il viaggio</h2><p>Le scorte acquistate e raccolte compariranno nella borsa di questo giocatore.</p></div>}
-        {selected && <div className="pu-item-use pu-item-use-single" style={{ '--bag-command-art': `url("${assetUrl(studioAsset('bottone-selezionato'))}")` } as CSSProperties}>
+      </div>
+      {selected && <div className="pu-live-bag-use pu-item-use pu-item-use-single" style={{ '--bag-command-art': `url("${assetUrl(studioAsset('bottone-selezionato'))}")` } as CSSProperties}>
           <ItemUsePanel key={`${viewPlayerId}:${state.campaignRevision}`} squad={squad} inventory={player.inventario} selectedInstanceId={targetId} onTargetChange={setTargetId} unavailableMessage={unavailable}
             visibleItemIds={[selected.id]}
             renderItemIcon={itemId => <KitIcon id={ITEM_ICONS[itemId]} />}
@@ -93,8 +94,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
             </div>}
             onUse={(itemId, instanceId) => { setSelectedId(itemId); return state.applicaOggetto(viewPlayerId, itemId, instanceId) }}
             actionNote={leagueRunning ? 'Gli oggetti consentiti fra gli incontri non interrompono la serie della Lega. Gli oggetti inutili non vengono consumati.' : 'Usare un oggetto conclude il turno. Gli oggetti inutili non vengono consumati.'} />
-        </div>}
-      </div>
+      </div>}
     </div>
   </section>
 }

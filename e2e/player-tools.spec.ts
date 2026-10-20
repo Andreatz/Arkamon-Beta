@@ -110,6 +110,7 @@ test('interaction editor persists definitions and journal shows per-player requi
   await expect(editor.getByRole('status')).toHaveText('Interazione salvata.')
   await page.getByRole('button', { name: 'Chiudi', exact: true }).click()
   const journal = await tools(page, 'Diario')
+  await journal.getByRole('navigation', { name: 'Sezioni del diario', exact: true }).getByRole('button', { name: 'Tappe e missioni configurate', exact: true }).click()
   await expect(journal).toContainText('Indizio di prova')
   await expect(journal).toContainText('progressi individuali')
   await journal.getByLabel('Giocatore del diario').selectOption('2')

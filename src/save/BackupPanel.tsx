@@ -46,9 +46,10 @@ export function BackupPanel() {
     setPreviousAvailable(true); setPreview(null); setAccepted(false); setError(null)
     setMessage('Partita ripristinata. La partita precedente è conservata nel backup precedente scaricabile qui sotto.')
   }
-  return <section aria-label="Backup della partita" className="space-y-4">
+  return <section aria-label="Backup della partita" className="pu-backup-screen space-y-4">
     <h2 className="text-lg font-bold">Backup della partita</h2>
     <p className="text-sm">Salva i progressi di entrambi i giocatori, squadre, deposito, mappe e battaglia. Il ripristino conserva HP e status; i codici QR e le impostazioni del pubblico restano separati.</p>
+    <div className="pu-backup-overview">
     {backupWarning && <p role="status" className="text-sm">{backupWarning}</p>}
     {copies.length > 0 && <div className="rounded border border-current p-3 text-sm">
       <p className="font-bold">Copie automatiche dei progressi precedenti</p>
@@ -80,6 +81,7 @@ export function BackupPanel() {
     </label>
     {error && <p role="alert" className="rounded border border-current p-2 text-sm">{error}</p>}
     {message && <p role="status" className="text-sm">{message}</p>}
+    </div>
     {preview && <div className="space-y-3 rounded border border-current p-3" aria-label="Anteprima ripristino">
       <h3 className="font-bold">Anteprima del backup</h3>
       <p className="text-sm">Creato il {new Date(preview.createdAt).toLocaleString('it-IT')} · formato {preview.version}</p>

@@ -87,23 +87,47 @@ async function selectScreen(dialog: Locator, name: string, id: string) {
   await dialog.getByRole('button', { name, exact: true }).click()
   await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
   await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+  await assertPlayerSelectorArtwork(dialog)
+}
+
+/** The shared G1/G2 selector keeps one authored button family on every route. */
+async function assertPlayerSelectorArtwork(dialog: Locator) {
+  const selector = dialog.getByRole('group', { name: 'Giocatore degli strumenti', exact: true })
+  const buttons = selector.locator(':scope > button')
+  await expect(buttons).toHaveCount(2)
+  const report = await buttons.evaluateAll(async elements => {
+    await Promise.all(elements.map(element => element.querySelector<HTMLImageElement>(':scope > img[data-ui-skin-slot="frame"]')?.decode()))
+    return elements.map(element => {
+      const frame = element.querySelector<HTMLImageElement>(':scope > img[data-ui-skin-slot="frame"]')
+      const label = element.querySelector<HTMLElement>(':scope > span > span:last-child')
+      const button = element.getBoundingClientRect(), labelBox = label?.getBoundingClientRect()
+      return { selected: element.getAttribute('aria-pressed') === 'true', source: frame?.getAttribute('src'), loaded: frame?.complete && !!frame.naturalWidth,
+        fit: frame && getComputedStyle(frame).objectFit, width: button.width, height: button.height,
+        labelFits: !!labelBox && labelBox.left >= button.left + button.width * .16 - 2 && labelBox.right <= button.right - button.width * .16 + 2
+          && labelBox.top >= button.top - 2 && labelBox.bottom <= button.bottom + 2 }
+    })
+  })
+  expect(report.filter(button => button.selected)).toHaveLength(1)
+  for (const button of report) {
+    expect(button.source).toMatch(new RegExp(`/ui/studio/Scuro/${button.selected ? 'bottone-selezionato' : 'bottone'}\\.svg$`))
+    expect(button.loaded).toBe(true)
+    expect(button.fit).toBe('contain')
+    expect(button.height).toBeGreaterThanOrEqual(44)
+    expect(button.labelFits, 'Long player labels stay inside the authored button').toBe(true)
+  }
+  expect(Math.abs(report[0].width - report[1].width)).toBeLessThanOrEqual(1)
+  expect(Math.abs(report[0].height - report[1].height)).toBeLessThanOrEqual(1)
 }
 
 /** Projects source pixels through the rendered SVG, so CSS zooming/cropping cannot pass as a centered portrait. */
-async function assertVisiblePortraits(dialog: Locator, context: string, scrollIntoView = false) {
-  const portraits = dialog.locator('svg.pu-creature-art')
+async function assertVisiblePortraits(dialog: Locator, context: string) {
+  const portraits = dialog.locator('svg.pu-creature-art:visible')
   await expect(portraits.first(), `${context}: portraits use SVG framing`).toBeVisible()
   await expect.poll(async () => portraits.evaluateAll(elements => elements.filter(element =>
     element.getAttribute('data-creature-loaded') !== 'true').length), {
     message: `${context}: every visible portrait must finish loading`,
   }).toBe(0)
-  const report: { source: string; speciesId?: string | null; issues: string[] }[] = []
-  const initialScroll = scrollIntoView ? await dialog.locator('.pu-content').evaluate(element => element.scrollTop) : 0
-  // The authored Team/Bag layouts may scroll. Inspect every portrait while it
-  // is actually reachable in the viewport; other screens retain the full-view check.
-  for (const target of scrollIntoView ? await portraits.all() : [portraits]) {
-    if (scrollIntoView) await target.scrollIntoViewIfNeeded()
-    report.push(...await target.evaluateAll((elements, metadata) => elements.map(element => {
+  const report = await portraits.evaluateAll((elements, metadata) => elements.map(element => {
     const svg = element as SVGSVGElement
     const source = svg.getAttribute('data-creature-source')!
     const speciesId = svg.getAttribute('data-species-id')
@@ -149,91 +173,18 @@ async function assertVisiblePortraits(dialog: Locator, context: string, scrollIn
       }
     }
     return { source, speciesId, issues }
-    }), portraitMetadata))
-  }
-  if (scrollIntoView) await dialog.locator('.pu-content').evaluate((element, top) => { element.scrollTop = top }, initialScroll)
+  }), portraitMetadata)
   expect(report.filter(portrait => portrait.issues.length), `${context}: complete centered portrait pixels`).toEqual([])
   return report
 }
 
-/** Authored Team/Bag compositions keep a viewport-sized scrolling workspace. */
-async function assertReachableComposition(dialog: Locator, context: string) {
-  const report = await dialog.evaluate(root => {
-    const epsilon = 2, issues: string[] = []
-    const content = root.querySelector<HTMLElement>('.pu-content')!
-    const originalTop = content.scrollTop, originalLeft = content.scrollLeft
-    const identify = (element: Element) => element.getAttribute('aria-label') ?? element.getAttribute('class') ?? element.tagName
-    const visible = (element: Element) => {
-      const rect = element.getBoundingClientRect(), style = getComputedStyle(element)
-      return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden'
-    }
-    const bounds = content.getBoundingClientRect(), style = getComputedStyle(content)
-    if (!['auto', 'scroll'].includes(style.overflowY)) issues.push('Authored layout lacks an explicit vertical scroll area')
-    if (bounds.top < -epsilon || bounds.bottom > innerHeight + epsilon || content.clientHeight <= 0 || content.clientHeight >= innerHeight) issues.push('Scroll workspace is not bounded by the viewport')
-    if (content.scrollWidth > content.clientWidth + epsilon) issues.push('Scroll workspace overflows horizontally')
-    if (document.documentElement.scrollHeight > innerHeight + epsilon || document.documentElement.scrollWidth > innerWidth + epsilon) issues.push('Document escapes the viewport')
-    const all = [...content.querySelectorAll<HTMLElement>('*')].filter(visible)
-    for (const element of all) {
-      if (element.scrollWidth > element.clientWidth + epsilon && !element.matches('svg,image')
-        && getComputedStyle(element).overflowX !== 'visible') {
-        const label = element.getAttribute('title') ?? element.closest('[aria-label]')?.getAttribute('aria-label') ?? ''
-        const clamped = Number.parseInt(getComputedStyle(element).webkitLineClamp) > 0
-        if (!(clamped && label.includes(element.textContent?.trim() ?? ''))) issues.push(`${identify(element)}: irreversible horizontal clipping`)
-      }
-    }
-    function checkReachable(element: HTMLElement, rects: () => DOMRect[], label: string) {
-      element.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-      for (const rect of rects()) {
-        if (rect.left < -epsilon || rect.right > innerWidth + epsilon || rect.top < -epsilon || rect.bottom > innerHeight + epsilon) issues.push(`${label}: cannot be reached within viewport`)
-        for (let ancestor = element.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
-          const ancestorStyle = getComputedStyle(ancestor), bound = ancestor.getBoundingClientRect()
-          if (['hidden', 'clip', 'auto', 'scroll'].includes(ancestorStyle.overflowY)
-            && (rect.top < bound.top + ancestor.clientTop - epsilon || rect.bottom > bound.top + ancestor.clientTop + ancestor.clientHeight + epsilon)) {
-            issues.push(`${label}: irreversibly clipped by ${identify(ancestor)}`); break
-          }
-        }
-      }
-    }
-    const controls = all.filter(element => element.matches('button,input,select,textarea,a[href],output,[role="tab"]'))
-    for (const control of controls) {
-      checkReachable(control, () => [control.getBoundingClientRect()], `Command ${identify(control)}`)
-      if (control.matches('button,input,select,textarea') && control.getBoundingClientRect().height < 44 - epsilon) issues.push(`${identify(control)}: touch target smaller than 44px`)
-    }
-    const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT)
-    let node: Node | null
-    while ((node = walker.nextNode())) {
-      const parent = node.parentElement
-      if (!(parent instanceof HTMLElement) || !visible(parent) || parent.closest('option,script,style') || !node.textContent?.trim()) continue
-      const clamped = Number.parseInt(getComputedStyle(parent).webkitLineClamp) > 0
-      if (clamped) {
-        const fullText = parent.getAttribute('title') ?? parent.closest('[aria-label]')?.getAttribute('aria-label') ?? ''
-        if (!fullText.includes(node.textContent.trim())) issues.push(`Clamped name has no complete accessible label: ${node.textContent.trim()}`)
-        checkReachable(parent, () => [parent.getBoundingClientRect()], `Name ${node.textContent.trim()}`)
-        continue
-      }
-      const range = document.createRange(); range.selectNodeContents(node)
-      checkReachable(parent, () => [...range.getClientRects()].filter(rect => rect.width && rect.height), `Text ${node.textContent.trim().slice(0, 65)}`)
-    }
-    const broken = [...root.querySelectorAll<HTMLImageElement>('img')].filter(image => visible(image) && (!image.complete || !image.naturalWidth)).map(image => image.src)
-    content.scrollTop = originalTop; content.scrollLeft = originalLeft
-    return { issues, broken, controls: controls.length, viewport: { width: innerWidth, height: innerHeight } }
-  })
-  expect(report.viewport).toEqual(dialog.page().viewportSize())
-  expect(report.controls, `${context}: real commands remain reachable`).toBeGreaterThan(0)
-  expect(report.broken, `${context}: authored SVG artwork must load`).toEqual([])
-  expect(report.issues, `${context}: bounded scrolling must expose complete content`).toEqual([])
-  const portraits = await dialog.locator('svg.pu-creature-art').count() ? await assertVisiblePortraits(dialog, context, true) : []
-  return { portraits }
-}
-
-/** Strict full-view geometry remains required outside the two authored scroll layouts. */
+/** Checks complete visible geometry for all six screens, including the authored SVG layouts. */
 async function assertFitsWithoutScroll(dialog: Locator, context: string) {
   await dialog.evaluate(async element => {
     await document.fonts.ready
     await Promise.all(Array.from(element.querySelectorAll('img')).map(image => image.decode().catch(() => null)))
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
   })
-  if (await dialog.locator('.pu-live-team,.pu-bag-dedicated').count()) return assertReachableComposition(dialog, context)
   const report = await dialog.evaluate(root => {
     const epsilon = 2
     const issues: string[] = []
@@ -300,7 +251,7 @@ async function assertFitsWithoutScroll(dialog: Locator, context: string) {
   expect(report.viewport).toEqual(dialog.page().viewportSize())
   expect(report.brokenKit, `${context}: SVG artwork must load`).toEqual([])
   expect(report.issues, `${context}: ${report.issueCount} geometry issues; ${JSON.stringify(report.metrics)}`).toEqual([])
-  const portraits = await dialog.locator('svg.pu-creature-art').count() ? await assertVisiblePortraits(dialog, context) : []
+  const portraits = await dialog.locator('svg.pu-creature-art:visible').count() ? await assertVisiblePortraits(dialog, context) : []
   return { portraits }
 }
 
@@ -308,7 +259,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
   test.use({ viewport: { width: 1920, height: 1080 } })
   test.skip(({ isMobile }) => isMobile, 'This requirement targets the desktop 1920×1080 viewport; existing tests cover phones.')
 
-  test('all six views keep dense selected contents reachable within the viewport without campaign mutations', async ({ page }) => {
+  test('all six views and their dense selected contents stay visible without scroll or campaign mutations', async ({ page }) => {
     test.setTimeout(180_000)
     await seedFullCampaign(page)
     const before = await savedCampaign(page)
@@ -414,6 +365,22 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
     }
   })
 
+  test('the same player button family survives auxiliary tools and both selected states', async ({ page }) => {
+    await seedFullCampaign(page)
+    const before = await savedCampaign(page), dialog = await openTools(page)
+    for (const [label, id] of [['Registro', 'register'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Backup', 'backup'], ['Impostazioni', 'settings'], ['Sfide', 'challenges']] as const) {
+      await selectScreen(dialog, 'Menù Partita', 'partita')
+      await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
+      await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
+      await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+      for (const player of ['G2 · Bruno delle Costellazioni', 'G1 · Arianna delle Costellazioni']) {
+        await dialog.getByRole('button', { name: player, exact: true }).click()
+        await assertPlayerSelectorArtwork(dialog)
+      }
+    }
+    expect(await savedCampaign(page)).toEqual(before)
+  })
+
   test('unknown Arkadex detail stays private and fully visible after using a known species tab', async ({ page }) => {
     await seedFullCampaign(page, true)
     const before = await savedCampaign(page)
@@ -436,7 +403,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
     expect(await savedCampaign(page)).toEqual(before)
   })
 
-  test('the direct deposit scene and its six tools keep all content reachable within the viewport', async ({ page }) => {
+  test('the direct deposit scene and its six tools also fit without scrolling', async ({ page }) => {
     await seedFullCampaign(page, false, true)
     const before = await savedCampaign(page)
     const scene = page.locator('.pu-scene-host')
@@ -449,9 +416,66 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
   })
 })
 
-for (const height of [900, 945, 1080]) {
-  test.describe(`Six player tools in a normal desktop browser, 1920×${height} content viewport`, () => {
-    test.use({ viewport: { width: 1920, height } })
+for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 900 }]) {
+  test.describe(`Auxiliary tools remain completely visible at ${viewport.width}×${viewport.height}`, () => {
+    test.use({ viewport })
+    test.skip(({ isMobile }) => isMobile, 'Desktop auxiliary compositions have a complete viewport contract.')
+
+    test('all six auxiliary tools and their reading pages fit without scroll or campaign mutations', async ({ page }) => {
+      test.setTimeout(120_000)
+      await seedFullCampaign(page)
+      const before = await savedCampaign(page), dialog = await openTools(page)
+      const check = async (label: string) => {
+        await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: /Caricamento/ })).toHaveCount(0)
+        await assertPlayerSelectorArtwork(dialog)
+        await assertFitsWithoutScroll(dialog, `${viewport.width}×${viewport.height} auxiliary ${label}`)
+        expect(await savedCampaign(page), `${label}: reading tools preserve the campaign`).toEqual(before)
+      }
+      for (const [label, id] of [['Registro', 'register'], ['Backup', 'backup'], ['Impostazioni', 'settings'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Sfide', 'challenges']] as const) {
+        await selectScreen(dialog, 'Menù Partita', 'partita')
+        await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
+        await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
+        await check(label)
+
+        if (id === 'register') {
+          const archives = dialog.getByRole('navigation', { name: 'Archivi del registro', exact: true })
+          await archives.getByRole('button', { name: 'Diario', exact: true }).click()
+          const sections = dialog.getByRole('navigation', { name: 'Sezioni del diario', exact: true })
+          for (const section of ['Medaglie', 'Luoghi e attività', 'Tappe e missioni configurate', 'Cronaca delle interazioni']) {
+            await sections.getByRole('button', { name: section, exact: true }).click()
+            await expect(dialog.getByRole('region', { name: section, exact: true })).toBeVisible()
+            await check(`Diario: ${section}`)
+          }
+          await archives.getByRole('button', { name: 'Cronache delle battaglie', exact: true }).click()
+          await expect(dialog.getByRole('region', { name: 'Cronache delle battaglie', exact: true })).toBeVisible()
+          await check('Cronache delle battaglie')
+        }
+
+        if (id === 'challenges') {
+          const pages = dialog.getByRole('navigation', { name: 'Pagine delle sfide', exact: true })
+          await pages.getByRole('button', { name: 'Configurazione', exact: true }).click()
+          await dialog.getByRole('button', { name: 'Sfida a seed', exact: true }).click()
+          await dialog.getByLabel('Seed della sfida', { exact: true }).fill('fullscreen-auxiliary-regression')
+          await check('Sfide: Configurazione')
+          await dialog.getByRole('button', { name: 'Genera sfida', exact: true }).click()
+          await expect(dialog.getByRole('region', { name: 'Squadra del giocatore', exact: true })).toBeVisible()
+          await expect(dialog.getByRole('region', { name: 'Squadra avversaria', exact: true })).toBeVisible()
+          await check('Sfide: anteprima squadre del seed')
+          await pages.getByRole('button', { name: 'Condividi o importa', exact: true }).click()
+          await expect(dialog.getByRole('textbox', { name: 'Codice della sfida', exact: true })).toBeVisible()
+          await check('Sfide: Condividi o importa')
+          await pages.getByRole('button', { name: 'Risultati', exact: true }).click()
+          await expect(dialog.getByRole('region', { name: 'Risultati delle sfide', exact: true })).toBeVisible()
+          await check('Sfide: Risultati')
+        }
+      }
+    })
+  })
+}
+
+for (const { width, height } of [{ width: 1920, height: 900 }, { width: 1920, height: 945 }, { width: 1920, height: 1080 }, { width: 1366, height: 768 }]) {
+  test.describe(`Six player tools in a normal desktop browser, ${width}×${height} content viewport`, () => {
+    test.use({ viewport: { width, height } })
     test.skip(({ isMobile }) => isMobile, 'Desktop browser chrome reduces usable height; phone layouts have separate coverage.')
 
     test('the match dialog fits dense G1 contents and every G2 readonly view', async ({ page }) => {

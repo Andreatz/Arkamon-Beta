@@ -93,7 +93,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
   return (
     <section className="pu-screen pu-team-screen pu-live-team" aria-labelledby="pu-team-title">
       <header className="pu-screen-heading">
-        <div><p className="pu-kicker">Compagni di viaggio</p><h1 id="pu-team-title">La squadra di {player.nome}</h1><p>Sei posti. I tuoi compagni di viaggio.</p></div>
+        <div><p className="pu-kicker">Compagni di viaggio</p><h1 id="pu-team-title">La squadra di {player.nome}</h1></div>
         <span className="pu-count"><KitIcon id="icon-team" /> {player.squadra.length} / {SQUADRA_MAX} Arkamon</span>
       </header>
       <div className="pu-team-layout">
@@ -104,7 +104,6 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
             </StudioSurface>
             <div className="pu-hero-caption">
               <span className="pu-species-number">ARKA / {String(current.specieId).padStart(3, '0')}</span>
-              <h2>{current.nome}</h2>
               {currentSpecies && <TypeBadge type={currentSpecies.tipo} />}
               {current.hp <= 0 ? <span className="pu-status-pill pu-status-ko">KO</span>
                 : current.stato && <span className="pu-status-pill">{current.stato.tipo}</span>}
@@ -117,17 +116,17 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
               <strong title={current?.nome}>{current?.nome ?? 'La tua squadra'}</strong>
               <small>{current ? current.hp <= 0 ? 'Arkamon esausto' : current.stato?.tipo ?? 'Pronto al viaggio' : 'Nessun Arkamon selezionato'}</small></div>
           </StudioSurface>
-          {current && <><HealthBar pokemon={current} /><p className="pu-note pu-live-team-health-note">Gli HP restano dopo ogni scontro. La cura è sempre esplicita.</p><h3>Mosse disponibili</h3><PokemonMoves pokemon={current} /></>}
-          {!mayManage && <p className="pu-readonly" role="status">{leagueRunning ? 'Consultazione: concludi il tentativo della Lega prima di cambiare squadra.' : 'Consultazione: il riordino è disponibile nel tuo turno, fuori dalla battaglia.'}</p>}
-          {(message || (mayManage && ruleMessage)) && <p className="pu-note" role="status">{message || ruleMessage}</p>}
-          {movingId && mayManage && <p className="pu-note" role="status">Scegli un altro Arkamon della squadra per scambiare i due posti.</p>}
+          {current && <><HealthBar pokemon={current} /><p className="pu-note pu-live-team-health-note">Gli HP restano dopo ogni scontro. La cura è sempre esplicita.</p></>}
+        </div>
+        <section className="pu-team-tactics" aria-label="Mosse e comandi del compagno">
+          {current && <><h2>Mosse disponibili</h2><PokemonMoves pokemon={current} /></>}
           <div className="pu-actions">
             <StudioCommand selected disabled={!current} onClick={() => current && onAnalyse(current.istanzaId)}><KitIcon id="icon-analysis" /> Analizza Arkamon</StudioCommand>
             <StudioCommand disabled={!current} onClick={onBag}><KitIcon id="icon-bag" /> Apri borsa</StudioCommand>
             <StudioCommand onClick={onDeposit}><KitIcon id="icon-deposit" /> Apri deposito</StudioCommand>
             <StudioCommand disabled={!current || !mayManage} onClick={() => { setMovingId(movingId ? null : current?.istanzaId ?? null); setMessage('') }}>{movingId ? 'Annulla spostamento' : 'Cambia ordine'}</StudioCommand>
           </div>
-        </div>
+        </section>
       </div>
       <SpatialNavigation columns={navigationColumns} selectOnFocus={!movingId} className="pu-team-list" role="group" aria-label={`Squadra di ${player.nome}`}>
         <StudioSurface source={teamArtwork('squadra')} width={1100} height={240} className="pu-live-team-strip" />
@@ -164,8 +163,13 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
       </SpatialNavigation>
           <div className={`pu-team-cap${balanced ? '' : ' pu-warning'}`}>
             <KitIcon id="icon-activity" />
-            <div><strong>{balanced ? 'Squadra in equilibrio' : 'Squadra fuori fascia'} · Δ {range.gap} livelli</strong>
+            <div className="pu-team-cap-copy"><strong>{balanced ? 'Squadra in equilibrio' : 'Squadra fuori fascia'} · Δ {range.gap} livelli</strong>
               <p>{player.squadra.length ? `Fascia attuale: Lv. ${range.min}–${range.max}.` : 'Scegli il tuo starter per iniziare.'} Differenza massima: {TEAM_LEVEL_GAP}.</p></div>
+            <div className="pu-team-feedback">
+              {!mayManage && <p className="pu-readonly" role="status">{leagueRunning ? 'Consultazione: concludi il tentativo della Lega prima di cambiare squadra.' : 'Consultazione: il riordino è disponibile nel tuo turno, fuori dalla battaglia.'}</p>}
+              {(message || (mayManage && ruleMessage)) && <p className="pu-note" role="status">{message || ruleMessage}</p>}
+              {movingId && mayManage && <p className="pu-note" role="status">Scegli un altro Arkamon della squadra per scambiare i due posti.</p>}
+            </div>
           </div>
     </section>
   )

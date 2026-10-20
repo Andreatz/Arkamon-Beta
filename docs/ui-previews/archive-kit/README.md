@@ -2,6 +2,8 @@
 
 Revisione dell’11 ottobre 2026. Le sette anteprime usano i **47 SVG di Arkamon-Assets-SVG.rar**, copiati senza modifiche. I colori di sfondi e testi si accordano ai blu e al ciano delle grafiche fornite. Gli eventuali accenti viola negli SVG restano quelli dell’archivio.
 
+Queste anteprime sono archiviate. Le schermate reali della campagna includono la successiva [revisione fullscreen del 21 ottobre](../../ui-fullscreen-2026-10-21.md), con impaginazione aggiornata e selettori G1/G2 uniformi.
+
 ## Aprire le anteprime
 
 - [Sette schermate interattive](index.html#overview)
