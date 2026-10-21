@@ -1,6 +1,6 @@
 # Animazioni frontali: forme 82–91
 
-Importazione locale del 21 ottobre 2026. **Convertite e integrate 50 nuove clip per le forme 82–91; conservazione storica, provenienza, test unitari e prove automatiche nel browser verificati.** Il catalogo completo comprende 91 forme, 455 clip e 43.667 fotogrammi nativi. Build, pin della libreria media, push e deploy restano in attesa, come indicato nel riepilogo dei controlli.
+Importazione del 21 ottobre 2026. **Convertite e integrate 50 nuove clip per le forme 82–91; conservazione storica, provenienza, test unitari, prove automatiche nel browser e build di produzione verificati.** Il catalogo completo comprende 91 forme, 455 clip e 43.667 fotogrammi nativi. Il pin della libreria media identifica il commit degli asset; la pubblicazione viene verificata separatamente attraverso il workflow e il manifest del sito.
 
 ## Sorgenti e fedeltà temporale
 
@@ -85,7 +85,7 @@ Le evidenze locali dell'importazione sono raccolte in `outputs/animation-import-
 | Strumenti Node: controlli mirati | Packing, pubblicazione atomica, confezionamento release e web, revisione pinnata e impronte | 30/30 test superati in quattro file; log `node-tests.log` |
 | Test unitari completi | Contratti esatti 91 forme/455 clip, eccezione 83/KO, runtime e regressioni del progetto | **4.069/4.069 test superati in 162 file**, codice 0; log `vitest-full.log` |
 | TypeScript | Controllo `tsc --noEmit` | Superato con codice 0; esecuzione comunicata dal coordinatore |
-| Build | Compilazione con il nuovo catalogo | In attesa |
+| Build | Compilazione di produzione con `GITHUB_PAGES=true npm run build` | Superata con codice 0: 455 clip, 43.667 frame; pacchetto locale 573,1 MiB, media pesanti riferiti al commit degli asset |
 | Browser desktop | Tutte le forme 82–91, ciascuna con cinque azioni, marker, ritorno all'attesa e finale KO | Dieci prove singole e due prove nel laboratorio superate |
 | Viewport mobile | Campione 82, 85, 88 e 91; altre sei forme escluse soltanto dal progetto mobile | Quattro prove singole e due prove nel laboratorio superate; sei esclusioni intenzionali |
 | Laboratorio reale | Confronti 82/91 e 85/88 a velocità ordinaria, sequenza completa e rilascio/ripristino del confronto | Superato su desktop e viewport mobile; entrambi i renderer a 24 FPS |
@@ -104,4 +104,6 @@ La conversione locale, il collaudo, i commit, il push e il deploy sono passaggi 
 3. Registrare in un secondo commit il pin aggiornato `src/data/media-release.json`.
 4. Eseguire gli eventuali passaggi di confezionamento, build, push e pubblicazione previsti, riportandone separatamente gli esiti.
 
-**Release, pin definitivo, push e deploy di questa importazione sono in attesa.** Questo documento non attribuisce ai nuovi asset uno stato di pubblicazione sulla base della sola presenza nel checkout.
+Gli asset sono registrati nel commit `11eb8edfcaad86d2d6d59fcdfbc77682d1dc8367`. Il pin in `src/data/media-release.json` usa questa stessa revisione e l'impronta del manifest `f5c947d01293603447063516bb33130be5131f19ab25fa842df5b1e07967c909`. La build di produzione è superata: il pacchetto locale è di 573,1 MiB e il suo `media-release.json` dichiara 455 clip e 43.667 frame.
+
+Il commit successivo registra il pin e questo esito della build. Il push su `main` attiva il workflow `.github/workflows/deploy.yml`; lo stato di pubblicazione è quello della run associata al commit inviato. Sul sito pubblicato, `media-release.json` permette di verificare direttamente la revisione media e i conteggi, separatamente dai risultati locali documentati qui.
