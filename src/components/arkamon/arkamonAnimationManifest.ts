@@ -150,6 +150,16 @@ export const ARKAMON_ANIMATION_MANIFEST: Partial<Record<number, ArkamonAnimation
   79: frontAnimationSet(79, 704, { width: 192, height: 192, left: 261, top: 257 }, 45, 14, { victory: 95 }),
   80: frontAnimationSet(80, 576, { width: 192, height: 192, left: 194, top: 192 }, 32, 13),
   81: frontAnimationSet(81, 512, { width: 192, height: 192, left: 159, top: 160 }, 27, 35),
+  82: frontAnimationSet(82, 576, { width: 192, height: 192, left: 190, top: 200 }, 33, 11),
+  83: frontAnimationSet(83, 576, { width: 192, height: 192, left: 192, top: 178 }, 36, 23, { ko: 95 }),
+  84: frontAnimationSet(84, 640, { width: 192, height: 192, left: 224, top: 201 }, 34, 19),
+  85: frontAnimationSet(85, 512, { width: 192, height: 192, left: 159, top: 153 }, 35, 26),
+  86: frontAnimationSet(86, 704, { width: 192, height: 192, left: 256, top: 253 }, 39, 20),
+  87: frontAnimationSet(87, 640, { width: 192, height: 192, left: 224, top: 216 }, 27, 20),
+  88: frontAnimationSet(88, 512, { width: 192, height: 192, left: 160, top: 159 }, 24, 14),
+  89: frontAnimationSet(89, 704, { width: 192, height: 192, left: 256, top: 243 }, 49, 19),
+  90: frontAnimationSet(90, 512, { width: 192, height: 192, left: 160, top: 140 }, 27, 13),
+  91: frontAnimationSet(91, 576, { width: 192, height: 192, left: 189, top: 192 }, 27, 23),
 }
 
 export function getArkamonAnimationAsset(

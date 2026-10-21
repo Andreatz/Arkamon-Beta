@@ -1,0 +1,4161 @@
+{
+  "schemaVersion": 1,
+  "importDate": "2026-10-21",
+  "createdAt": "2026-10-21T21:22:08.621098+00:00",
+  "speciesCount": 10,
+  "clipCount": 50,
+  "nativeFrameCount": 4799,
+  "sourceContract": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "frameIndexBase": 0
+  },
+  "shortClipPolicy": "Species 83 KO has 95 original frames. All other new clips have 96. No temporal padding, interpolation, skipping, reversal or replacement of final frames.",
+  "allProvenanceChecksPassed": true,
+  "allPosterAndUnusedCellChecksPassed": true,
+  "allConverterLosslessRgbaChecksPassed": true,
+  "preservation": {
+    "priorRuntimeClipsUnchanged": 405,
+    "priorPublicFilesUnchanged": 5931,
+    "priorPublicBytesUnchanged": 5827589537,
+    "baselineInventorySha256": "a7dddf6b98a346fb321cd23b1faf018c2d9b9ba9d53c7ee28f747238ef96a4ac",
+    "newSourceCopiesVerifiedPerClip": 3,
+    "newRuntimePages": 440,
+    "maximumRuntimePageDecodedBytes": 16777216,
+    "scope": "Converter verifies complete atlas RGBA; page builder verifies complete visible RGBA and alpha. This audit independently samples first/poster and last/page pixels, all unused atlas cells, and fingerprints every old file and every new page."
+  },
+  "visualInspection": {
+    "scope": "All five converted actions for all ten forms reviewed through generated light/dark contact sheets and common initial-pose comparison. Attack/hit cues reviewed through consecutive original source frames. This is sampled visual inspection, not manual inspection of all 4799 source frames.",
+    "sourceLimitationsRetained": true,
+    "reviewReports": [
+      {
+        "schemaVersion": 1,
+        "reviewDate": "2026-10-21",
+        "status": "complete",
+        "scope": "Converted visual QA for forms 82..86. Contact sheets show selected samples only; this report does not claim observation of every native frame.",
+        "frameIndexNote": "Converter contact sheet labels Frame 01..96 are one based. Source marker reports use zero-based indices.",
+        "openedSheets": [
+          "outputs/animation-import-2026-10-21/converted/82/idle/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/idle/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/attack/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/attack/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/hit/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/hit/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/victory/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/victory/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/ko/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/ko/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/82/initial-poses-common-canvas.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/idle/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/idle/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/attack/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/attack/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/hit/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/hit/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/victory/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/victory/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/ko/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/ko/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/83/initial-poses-common-canvas.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/idle/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/idle/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/attack/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/attack/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/hit/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/hit/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/victory/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/victory/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/ko/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/ko/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/84/initial-poses-common-canvas.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/idle/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/idle/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/attack/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/attack/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/hit/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/hit/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/victory/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/victory/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/ko/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/ko/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/85/initial-poses-common-canvas.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/idle/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/idle/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/attack/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/attack/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/hit/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/hit/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/victory/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/victory/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/ko/contact-dark.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/ko/contact-light.jpg",
+          "outputs/animation-import-2026-10-21/converted/86/initial-poses-common-canvas.jpg"
+        ],
+        "forms": [
+          {
+            "id": 82,
+            "status": "sampled_visual_review_complete",
+            "reviewedActions": [
+              "idle",
+              "attack",
+              "hit",
+              "victory",
+              "ko"
+            ],
+            "observations": [
+              "Blue background is removed on both light and dark sampled contact sheets without obvious blue halo.",
+              "Green algae, flags, hull and eye remain visible and readable.",
+              "Attack gold beam and hit impact flash remain visible; semitransparent particle/bubble trail is consistent with the source.",
+              "The detailed silhouette is acceptable at base-cell 192 in inspected samples; no concrete reason to increase to 256 was identified.",
+              "Victory cyan fins, gold flash and bubbles remain visible on both backgrounds; no added blue rectangle or obvious missing body areas in the sampled poses.",
+              "Common-canvas first-pose sheet shows matched apparent body scale and ground placement across all five actions.",
+              "KO explosion, smoke, wood, green debris and bubbles survive on both backgrounds. The late body exit has a horizontal native-source bottom cut consistent with the source, not a newly introduced conversion crop."
+            ],
+            "baseCellRecommendation": 192,
+            "limitations": [
+              "KO final pose contains debris/bubbles rather than an intact body, matching the original.",
+              "This is review of sampled contact sheets, not all frames or real-browser playback."
+            ]
+          },
+          {
+            "id": 83,
+            "status": "sampled_visual_review_complete",
+            "reviewedActions": [
+              "idle",
+              "attack",
+              "hit",
+              "victory",
+              "ko"
+            ],
+            "baseCellRecommendation": 192,
+            "observations": [
+              "Idle: cyan helmet rim, brain, dark blue limbs and purple orbiting orbs are preserved against both backgrounds.",
+              "No obvious green screen residue, body holes or clipped silhouette in the sampled idle poses.",
+              "Attack palm/brain flash and surrounding pale particles remain visible; light effects naturally have lower contrast on the light background.",
+              "Hit yellow/white flash and scattered purple droplets retain their colour and soft tails. No added green haze or obvious body loss in the inspected samples.",
+              "Victory jump, white shockwave and pulsing curves retain their shape and soft edges. No new screen-coloured halo is apparent in the inspected samples.",
+              "Common-canvas first-pose sheet shows matched apparent body scale and ground placement across all five actions.",
+              "KO glass shards, purple burst and semitransparent smoke remain visible; the real final frame has no intact body, consistent with the original."
+            ],
+            "limitations": [
+              "Some semitransparent KO smoke curls have a grey/green tint on the light background; possible residual colour from source pixels blended with the green screen. No full green screen rectangle or missing opaque body areas were seen.",
+              "KO has 95 original frames; final native frame 94 is nearly empty, matching source disappearance.",
+              "This is review of sampled contact sheets, not all frames or real-browser playback."
+            ]
+          },
+          {
+            "id": 84,
+            "status": "sampled_visual_review_complete",
+            "reviewedActions": [
+              "idle",
+              "attack",
+              "hit",
+              "victory",
+              "ko"
+            ],
+            "baseCellRecommendation": 192,
+            "observations": [
+              "Idle purple/blue body, pale belly, cyan eyes/orb and fine fingers/toes remain readable against both backgrounds.",
+              "No obvious green screen rectangle, green halo or clipped body in the sampled idle poses.",
+              "Attack cyan orb, white/cyan beam and spark burst are retained. The beam exits at a vertical left source boundary already visible in the original; this is documented source clipping.",
+              "Hit white/yellow starburst, yellow orbiting stars and cyan orb tails retain visible shapes with no opaque-body loss in the sampled poses.",
+              "Victory jump, cyan orbital ring and tiny sparkles retain their paths and soft edges on both backgrounds.",
+              "KO preserves cyan spiral eyes, dust, pale landing cloud and yellow stars; the final visible prone body retains its full sampled silhouette.",
+              "Common-canvas first-pose sheet shows matched body size and initial placement across five actions."
+            ],
+            "limitations": [
+              "Attack projectile/electric effects are clipped at the native left source edge; no offscreen continuation exists in the video.",
+              "This is review of sampled contact sheets, not all frames or real-browser playback."
+            ]
+          },
+          {
+            "id": 85,
+            "status": "sampled_visual_review_complete",
+            "reviewedActions": [
+              "idle",
+              "attack",
+              "hit",
+              "victory",
+              "ko"
+            ],
+            "baseCellRecommendation": 192,
+            "observations": [
+              "Idle purple body, gold markings, thin fingers and electric orb/ribbons retain their shape on both backgrounds.",
+              "No obvious green screen rectangle, green rim or body holes in the sampled idle poses.",
+              "Attack preserves broad purple projectile, white/purple lightning branches, hand and body.",
+              "Hit preserves white impact spokes and very broad lightning branches; the body remains intact. Lightning branches show flat truncation at the original video edges.",
+              "Victory purple rotational ribbons and electric charge retain visible curves and soft glow without sampled opaque-body holes.",
+              "KO broad electrical burst, falling body, pale dust and yellow particles survive on both backgrounds; the final prone body is fully readable.",
+              "Common-canvas first-pose sheet shows matched apparent scale and body placement across all five actions."
+            ],
+            "limitations": [
+              "Attack samples labelled Frame 44/52 show a broad grey/purple semitransparent aura with straight left/bottom boundaries where the VFX reaches the rectangular native source limits. This visible cropped aura is a source-compositing/keying limitation, not a body-scale issue; aggressive removal could destroy the glow or fine branches.",
+              "This is review of sampled contact sheets, not all frames or real-browser playback.",
+              "Hit lightning crosses all four native source edges, creating obvious straight effect truncations. Source review already showed this; no missing external pixels can be recovered by padding.",
+              "KO burst also reaches native source borders, with flat effect truncations and a broad semitransparent aura; source limits remain visible."
+            ]
+          },
+          {
+            "id": 86,
+            "status": "sampled_visual_review_complete",
+            "reviewedActions": [
+              "idle",
+              "attack",
+              "hit",
+              "victory",
+              "ko"
+            ],
+            "baseCellRecommendation": 192,
+            "observations": [
+              "Idle blue/cyan armour, dark body, gold/yellow ears/claws and thin tail remain readable on both backgrounds.",
+              "The sampled arm/elbow regions retain visible structure; no obvious opaque-body holes or broad green screen rectangle was seen.",
+              "Attack cyan rotational slashes and broad ring/burst remain smooth and readable, with the gold/yellow body accents preserved in the sampled movement poses.",
+              "Late scattered olive/green particles remain visible but are much subtler than the cyan fragments, consistent with the source/chroma conflict.",
+              "Hit white/cyan chest starburst and small cyan droplets remain visible; body, tail and ear/claw accents stay intact through sampled crouch/recovery poses.",
+              "Victory jump, gold ear sparks, cyan orbital arc and pale ground pulse remain visible without an obvious extra screen-coloured rectangle.",
+              "KO gold sparks, pale cyan electrical body glow and pixel-like cyan disintegration remain visible on both backgrounds; the body disappears late as in the original.",
+              "Common-canvas first-pose sheet shows matched body size, feet and initial position across all five actions."
+            ],
+            "limitations": [
+              "Small yellow/lime source accents remain a chroma-key sensitivity area; sampled contact sheets do not establish exact colour fidelity at every pixel.",
+              "This is review of sampled contact sheets, not all frames or real-browser playback.",
+              "Late dark/green victory fragments are faint/partly transparent after keying. Their similarity to the green screen is an intrinsic source separation limit; the body stays intact in sampled poses.",
+              "The true final native frame 95 has no intact body, only very faint particles, matching the source. Holding it will make KO nearly invisible."
+            ]
+          }
+        ],
+        "limitations": [
+          "Contact sheets sample 12 positions per action; intermediate native frames may contain issues absent from those samples. No exhaustive per-frame visual inspection or real-browser playback is claimed.",
+          "Source-composited semitransparent VFX and screen-coloured fragments retain the specific limitations recorded per form; no perfect-matte claim is made."
+        ],
+        "openedSheetCount": 55,
+        "reviewSummary": {
+          "formsReviewed": 5,
+          "actionsReviewed": 25,
+          "lightDarkContactSheetsOpened": 50,
+          "commonCanvasInitialPoseSheetsOpened": 5,
+          "baseCellRecommendationForAllForms": 192,
+          "scope": "Visual QA of selected contact-sheet samples on both backgrounds plus common initial-pose comparisons. This does not assert that every native frame was individually observed or that real-browser playback was tested."
+        }
+      },
+      {
+        "schemaVersion": 1,
+        "reviewType": "Visual inspection of actual converted contact sheets, compared with source video frame sheets and official front PNGs.",
+        "limitations": [
+          "Contact sheets sample the converted clips; this is not an exhaustive frame-by-frame alpha or browser playback certification.",
+          "Source frame inspection and corner-colour statistics are separate evidence from this converted-image review.",
+          "Some soft glow and motion blur originate in the source videos. Fine edge perfection is not claimed."
+        ],
+        "referenceSheet": "outputs/animation-import-2026-10-21/markers/front-references-87-91.jpg",
+        "referencesViewed": [
+          "Official front PNGs 87-91 via front-references-87-91.jpg",
+          "Native first frames and original per-action contact sheets 87-91",
+          "Every-third-frame source attack and hit timelines, plus consecutive marker frames 87-91"
+        ],
+        "reviews": {
+          "87": {
+            "status": "complete",
+            "convertedImagesViewed": [
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/idle/contact-dark.jpg",
+                "sha256": "49bc9f420ab6de664baeb4a06b230301244d9b60179144b785187ad94b667795",
+                "viewedAtUtc": "2026-10-21T20:40:09.816778+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/idle/contact-light.jpg",
+                "sha256": "607e6bbc77495a586d474177b5f1f2a136dbb36adfd46de1138b180aa74445b4",
+                "viewedAtUtc": "2026-10-21T20:40:09.817773+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/attack/contact-dark.jpg",
+                "sha256": "374bd295cf5e6f09fd56a1c96ef793fa3b3d8ab4521034282e16d6545be227d4",
+                "viewedAtUtc": "2026-10-21T20:40:09.817773+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/attack/contact-light.jpg",
+                "sha256": "625d6d373e94c77f374f58cd3ac5a606ff6673bfd3ce8a4c5636ce25832aa975",
+                "viewedAtUtc": "2026-10-21T20:40:09.818772+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/hit/contact-dark.jpg",
+                "sha256": "f640b6d14d8ea55cd7a20a3f54c642dcbeafe53bfd623a65c3f6a570ed8cf862",
+                "viewedAtUtc": "2026-10-21T20:40:09.818772+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/hit/contact-light.jpg",
+                "sha256": "3fcd250cf50ba3ca6bf49267a775708bc67d7620b4085e5104ed0b3f72f1101e",
+                "viewedAtUtc": "2026-10-21T20:40:09.819772+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/victory/contact-dark.jpg",
+                "sha256": "77128755f43637cb7a51e9e37ac2db90df0c0af8418be11edd1b613c5ed1fe89",
+                "viewedAtUtc": "2026-10-21T20:41:41.507799+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/victory/contact-light.jpg",
+                "sha256": "74ad8a3abdb2fa6b5df050e34373746882b5ab819d8dcc552219936b87e9909f",
+                "viewedAtUtc": "2026-10-21T20:41:41.508798+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/ko/contact-dark.jpg",
+                "sha256": "797c31db931e5c36c62d6d11f352de5635c361daea7d03902f799adfd8ef415e",
+                "viewedAtUtc": "2026-10-21T20:41:41.509309+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/ko/contact-light.jpg",
+                "sha256": "38cd15886523dbb2002cdd767efcf475fef519a95bd23bdd2b3bf6bc66784a9b",
+                "viewedAtUtc": "2026-10-21T20:41:41.509309+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/87/initial-poses-common-canvas.jpg",
+                "sha256": "4f390d28a83fdb7937fc766bfc0362bb3d780b135334c01a06dd0ef7053e358c",
+                "viewedAtUtc": "2026-10-21T20:41:41.510313+00:00"
+              }
+            ],
+            "findings": [
+              {
+                "category": "body",
+                "severity": "info",
+                "finding": "Corpo blu e oro, artigli, orecchie e coda integri sulle tavole chiare e scure; aspetto coerente con front PNG e video sorgente."
+              },
+              {
+                "category": "alignment",
+                "severity": "info",
+                "finding": "Le cinque pose iniziali hanno dimensione e appoggio coerenti sul canvas comune."
+              },
+              {
+                "category": "effects",
+                "severity": "info",
+                "finding": "Archi elettrici, anelli, scintille e fumo del KO conservati. Nessun ulteriore taglio evidente delle sagome rispetto alla sorgente."
+              },
+              {
+                "category": "keying",
+                "severity": "info",
+                "finding": "Nessun fondale verde pieno o foro corporeo evidente nelle tavole aperte. Restano la morbidezza del movimento e i bordi luminosi nativi; non si afferma una matte perfetta."
+              }
+            ],
+            "blockingDefectObserved": false
+          },
+          "88": {
+            "status": "complete",
+            "convertedImagesViewed": [
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/idle/contact-dark.jpg",
+                "sha256": "bc337e1c9e4851a4c356afa5368c9a3476e21f3fbc44fe4e48c516a4e8066a97",
+                "viewedAtUtc": "2026-10-21T20:46:18.026388+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/idle/contact-light.jpg",
+                "sha256": "31db05657ef4c9903fe30b02a2a27554c847d26db5b0c4f36e7418ffea0a02a7",
+                "viewedAtUtc": "2026-10-21T20:46:18.026915+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/attack/contact-dark.jpg",
+                "sha256": "3b7434d935167b2cbbd535eb41709a3dbd708646eaa808ba8b5b16fbb0ac13ce",
+                "viewedAtUtc": "2026-10-21T20:46:18.026915+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/attack/contact-light.jpg",
+                "sha256": "7ccb7991940f3057d8c2908f7d9fe813b4e411693c92ee79730da0dbecca899e",
+                "viewedAtUtc": "2026-10-21T20:46:18.027924+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/hit/contact-dark.jpg",
+                "sha256": "40499260ab2e10ba12d5c448b4fe0a4301598437a0cf84ed1f89e6fdc8e6c954",
+                "viewedAtUtc": "2026-10-21T20:46:18.027924+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/hit/contact-light.jpg",
+                "sha256": "c0837bc29c9d70a0baf8d7da93560f38bcd2eec08a6c5ac5b9aa8b4bd4acdea4",
+                "viewedAtUtc": "2026-10-21T20:46:18.028924+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/victory/contact-dark.jpg",
+                "sha256": "b8708d721a560c86395e7e949d6cc3be5e205c28a872be50a5a9a40c6e1c68c4",
+                "viewedAtUtc": "2026-10-21T20:46:18.028924+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/victory/contact-light.jpg",
+                "sha256": "9a0205adbd86871ebdf2c56d09b92c40dc89865af81e9a81a998f9d7aefddb4b",
+                "viewedAtUtc": "2026-10-21T20:46:18.028924+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/ko/contact-dark.jpg",
+                "sha256": "7075fc794a4f5179bc409f4ba5a53ad262fe5d9f0bf94ff050131d49f8d0ccbf",
+                "viewedAtUtc": "2026-10-21T20:47:48.258486+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/ko/contact-light.jpg",
+                "sha256": "74e513604306a17042a77aef6e891be56f899383b064fa49bf8e5310ffc86fd5",
+                "viewedAtUtc": "2026-10-21T20:47:48.259485+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/88/initial-poses-common-canvas.jpg",
+                "sha256": "1a278c352ce0a812f09e282bf26324c9067070e944b212e0350e9f0c855e4c88",
+                "viewedAtUtc": "2026-10-21T20:47:48.259485+00:00"
+              }
+            ],
+            "findings": [
+              {
+                "category": "body",
+                "severity": "info",
+                "finding": "Sagoma scura, orecchie, mani, piedi e coda leggibili sulle tavole chiare e scure; luci ciano conservate e corpo coerente con il front e la sorgente."
+              },
+              {
+                "category": "alignment",
+                "severity": "info",
+                "finding": "Le cinque pose iniziali sono coerenti per altezza e appoggio sul canvas comune."
+              },
+              {
+                "category": "source-clipping",
+                "severity": "minor",
+                "action": "attack",
+                "sourceFrameIndex": 77,
+                "finding": "Il grande anello di shock ha tagli netti in alto e in basso, gia presenti nel frame originale 77; non e un nuovo ritaglio della conversione."
+              },
+              {
+                "category": "effects",
+                "severity": "info",
+                "finding": "Scariche, bagliori e dissolvenza finale del KO sono conservati. La scomparsa finale del corpo avviene anche nel video originale."
+              },
+              {
+                "category": "keying",
+                "severity": "info",
+                "finding": "Nessun fondale verde pieno o foro evidente nel corpo osservato sulle tavole aperte. Bagliori morbidi e motion blur rimangono nativi."
+              }
+            ],
+            "blockingDefectObserved": false,
+            "additionalSourceEvidenceViewed": [
+              "outputs/animation-import-2026-10-21/markers/88/attack-frames/frame-0077.png"
+            ]
+          },
+          "89": {
+            "status": "complete",
+            "convertedImagesViewed": [
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/idle/contact-dark.jpg",
+                "sha256": "2342dd3d007a6943266b31ecb6f62ff83f16e5dfbb98b18fa248712f555cc535",
+                "viewedAtUtc": "2026-10-21T20:51:28.124494+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/idle/contact-light.jpg",
+                "sha256": "2e56799ba7c6387bfbab363be3cbacf6846a4355597dc3e0eb42b623f3ecf883",
+                "viewedAtUtc": "2026-10-21T20:51:28.124494+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/attack/contact-dark.jpg",
+                "sha256": "72a4f627dc3b152f2ff9113b97dabcbbcb643aa282d5361d36e5db460d1d9445",
+                "viewedAtUtc": "2026-10-21T20:51:28.124494+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/attack/contact-light.jpg",
+                "sha256": "280a8500f6fe42a4e05fae9ab0524992319000b9932a506a12fa9d0a2647f8bd",
+                "viewedAtUtc": "2026-10-21T20:51:28.126110+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/hit/contact-dark.jpg",
+                "sha256": "77f89117c9fd3615f08de0d3b8ad873f1e8ec425e0e2b3e00fc792f6e57c448d",
+                "viewedAtUtc": "2026-10-21T20:51:28.126110+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/hit/contact-light.jpg",
+                "sha256": "82fbbf44dcbbe581883715fa8e90de1336e97470c56cac88480a7987c0afec05",
+                "viewedAtUtc": "2026-10-21T20:51:28.127197+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/victory/contact-dark.jpg",
+                "sha256": "c846380e86c55a2653d02e3ac9fcc2201016c68a21bc4b2b46a3aeffa2fd4292",
+                "viewedAtUtc": "2026-10-21T20:53:28.632947+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/victory/contact-light.jpg",
+                "sha256": "30d695074480bca55d7822ca5df654d31e6a9ee146d49369de3af08a19b9c390",
+                "viewedAtUtc": "2026-10-21T20:53:28.634563+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/ko/contact-dark.jpg",
+                "sha256": "40d6ffe8c250149bdb09d1ac078997b4be78bf20384bf5215d0e7f46aa455cd0",
+                "viewedAtUtc": "2026-10-21T20:53:28.635698+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/ko/contact-light.jpg",
+                "sha256": "733944c43cc2f3c294a96d8a64001367d01a8c86609b9ba2a3ac6ead6c8d6b05",
+                "viewedAtUtc": "2026-10-21T20:53:28.636679+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/89/initial-poses-common-canvas.jpg",
+                "sha256": "0ed5a8b9e7ac017b7dff76d6a018b5d63ca1a86f722d664d161b3d91a1811b5a",
+                "viewedAtUtc": "2026-10-21T20:53:28.636679+00:00"
+              }
+            ],
+            "findings": [
+              {
+                "category": "body",
+                "severity": "info",
+                "finding": "Corpo bianco, occhi, orecchie blu, ali rosa e coda conservati nelle tavole chiare e scure; aspetto coerente con front PNG e sorgente."
+              },
+              {
+                "category": "alignment",
+                "severity": "info",
+                "finding": "Le cinque pose iniziali hanno altezza e posizione coerenti sul canvas comune."
+              },
+              {
+                "category": "source-clipping",
+                "severity": "minor",
+                "action": "attack",
+                "finding": "Il raggio e tagliato sul bordo sinistro gia nel video originale; la conversione conserva il limite nativo."
+              },
+              {
+                "category": "source-animation",
+                "severity": "minor",
+                "action": "hit",
+                "sourceFrameIndices": [
+                  77,
+                  86
+                ],
+                "finding": "La punta rosa della coda e temporaneamente staccata dal tratto blu; verificato esplicitamente anche nei due fotogrammi originali."
+              },
+              {
+                "category": "keying",
+                "severity": "minor",
+                "action": "ko",
+                "sourceFrameIndex": 69,
+                "finding": "Il bordo esterno tenue della grande aura ciano mostra gradini e piccole macchie rettangolari dopo l estrazione dal verde compresso, soprattutto sullo scuro. Corpo e nucleo luminoso restano integri. Imperfezione locale, nessuna matte perfetta dichiarata."
+              },
+              {
+                "category": "effects",
+                "severity": "info",
+                "finding": "Raggio, stelle, anelli e dissolvenza finale del KO conservati; la scomparsa finale del corpo e parte della sorgente."
+              }
+            ],
+            "blockingDefectObserved": false,
+            "additionalSourceEvidenceViewed": [
+              "outputs/animation-import-2026-10-21/markers/89/attack-frames/frame-0051.png",
+              "outputs/animation-import-2026-10-21/markers/89/hit-frames/frame-0077.png",
+              "outputs/animation-import-2026-10-21/markers/89/hit-frames/frame-0086.png",
+              "outputs/animation-import-2026-10-21/markers/89/ko-frame0069-source.png"
+            ],
+            "additionalConvertedDetailViewed": "outputs/animation-import-2026-10-21/markers/89/ko-frame0069-converted-detail.jpg"
+          },
+          "90": {
+            "status": "complete",
+            "convertedImagesViewed": [
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/idle/contact-dark.jpg",
+                "sha256": "a8fba24aa9b8c0b4c1665d28cf852657b285c1516c4f90652ddc6c3008834f76",
+                "viewedAtUtc": "2026-10-21T20:56:53.982001+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/idle/contact-light.jpg",
+                "sha256": "0d43b5ac73995b2ad1954b26f555734775900da3ff7485c7508d72867bec6394",
+                "viewedAtUtc": "2026-10-21T20:56:53.982001+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/attack/contact-dark.jpg",
+                "sha256": "2c97faa440b6412c476f2216f4364cbe36bb981d04ca7632df6ddc8a61742b48",
+                "viewedAtUtc": "2026-10-21T20:56:53.982994+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/attack/contact-light.jpg",
+                "sha256": "49569ec24f31d31ceca2512f22a0bd0bc4f3dc53e52749a146b7def6b075766e",
+                "viewedAtUtc": "2026-10-21T20:56:53.983624+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/hit/contact-dark.jpg",
+                "sha256": "1e86b699b95f43abe06a2ed1e05076d69094616a77bb13202824593aa01dc635",
+                "viewedAtUtc": "2026-10-21T20:59:17.190923+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/hit/contact-light.jpg",
+                "sha256": "2c69fed27e0c1de12bd1e3e1d9878b6aa4d3834482fe7b4d0b8436764bbd1f9c",
+                "viewedAtUtc": "2026-10-21T20:59:17.190923+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/victory/contact-dark.jpg",
+                "sha256": "46e9c53dc1d9e7a94339b8cfa190ad7781cd34ff3b04745a4b17e1f051d085a5",
+                "viewedAtUtc": "2026-10-21T20:59:17.190923+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/victory/contact-light.jpg",
+                "sha256": "817b60e8659d476de2cd1c1b068d3471ba9286fe24b31425896933d64489cc16",
+                "viewedAtUtc": "2026-10-21T20:59:17.191925+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/ko/contact-dark.jpg",
+                "sha256": "106f95f53dee4956908f6f503f0f9c2835236c882908291d7c0b46c0227143d8",
+                "viewedAtUtc": "2026-10-21T21:01:37.022187+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/ko/contact-light.jpg",
+                "sha256": "b5088b17e8dc0eea2cff86f18ab44ae4345d6acc876ac42a60b626c76b9b62f1",
+                "viewedAtUtc": "2026-10-21T21:01:37.022187+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/90/initial-poses-common-canvas.jpg",
+                "sha256": "665746eca0babd2e44b1b56cb307efad8a422bce8e964bf1609c3735db392dcf",
+                "viewedAtUtc": "2026-10-21T21:01:37.022187+00:00"
+              }
+            ],
+            "findings": [
+              {
+                "category": "body",
+                "severity": "info",
+                "finding": "Corpo bianco e blu scuro, orecchie, mani e code conservati; sfera viola e dettagli restano coerenti con front PNG e video originale."
+              },
+              {
+                "category": "alignment",
+                "severity": "info",
+                "finding": "Le cinque pose iniziali hanno altezza e posizione coerenti sul canvas comune."
+              },
+              {
+                "category": "effects",
+                "severity": "info",
+                "finding": "Sfera, falci viola, lampi, particelle e dissolvenza finale del KO conservati. Il grande anello grigio del KO esiste gia nella sorgente."
+              },
+              {
+                "category": "source-clipping",
+                "severity": "minor",
+                "action": "ko",
+                "sourceFrameIndex": 60,
+                "finding": "L anello orizzontale grigio esce dai bordi laterali del video originale e presenta gli stessi tagli nella conversione."
+              },
+              {
+                "category": "keying",
+                "severity": "info",
+                "finding": "Nessun fondale verde pieno o foro corporeo evidente sulle tavole aperte. I bagliori tenui mantengono una morbidezza e una grana locali; non si afferma una matte perfetta."
+              }
+            ],
+            "blockingDefectObserved": false,
+            "additionalSourceEvidenceViewed": [
+              "outputs/animation-import-2026-10-21/markers/90/ko-clipping-source-0.png",
+              "outputs/animation-import-2026-10-21/markers/90/ko-frame0060-source.png"
+            ]
+          },
+          "91": {
+            "status": "complete",
+            "convertedImagesViewed": [
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/idle/contact-dark.jpg",
+                "sha256": "90e52e3880197176400eac87cafe317aab92536277b3634d079d3729d927472b",
+                "viewedAtUtc": "2026-10-21T21:11:04.205013+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/idle/contact-light.jpg",
+                "sha256": "863400437e075f692cadabe87d2f343128beb33317290c0655cdee21ec6c01fb",
+                "viewedAtUtc": "2026-10-21T21:11:04.205013+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/attack/contact-dark.jpg",
+                "sha256": "46f3685482a41c6d98e18467923652ddc9c23e7bd7f37acf8337977832d996ff",
+                "viewedAtUtc": "2026-10-21T21:11:04.206522+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/attack/contact-light.jpg",
+                "sha256": "1cf5df9071cfb8945a2af1281f82ee360d63a228b32cbd3d87613d5bddbeb271",
+                "viewedAtUtc": "2026-10-21T21:11:04.207047+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/hit/contact-dark.jpg",
+                "sha256": "fa1b9a0fe7ce9275433b1e1701b9bf89b12e7ab8338c6710c919216f8e8dd161",
+                "viewedAtUtc": "2026-10-21T21:11:04.207047+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/hit/contact-light.jpg",
+                "sha256": "f91bc693492de0bf6db276223260f6a7427337457eb9388fcc9c186155e1baa8",
+                "viewedAtUtc": "2026-10-21T21:11:04.207047+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/victory/contact-dark.jpg",
+                "sha256": "8edec0ab27fd7d9d77be23d8799f80f1759ef0d565ea428145571d5efffda219",
+                "viewedAtUtc": "2026-10-21T21:11:04.208056+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/victory/contact-light.jpg",
+                "sha256": "bdee209240ae173ad662c0b033c474ad022d1c205390c138cc0a96787c03f3bb",
+                "viewedAtUtc": "2026-10-21T21:11:04.208056+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/ko/contact-dark.jpg",
+                "sha256": "19029540e1e197c116a9ec4f93037802351b1d82582e05461347b450e285affe",
+                "viewedAtUtc": "2026-10-21T21:11:04.209057+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/ko/contact-light.jpg",
+                "sha256": "c0ea195c4b3cac0335f42ab32b6ffbab8b5d4d225e40b33333bf6065444acf59",
+                "viewedAtUtc": "2026-10-21T21:11:04.209057+00:00"
+              },
+              {
+                "path": "outputs/animation-import-2026-10-21/converted/91/initial-poses-common-canvas.jpg",
+                "sha256": "26d9154a6404b18deaf4cf11b89aeb543ff1b5e7d88a576b61b886565799e6cc",
+                "viewedAtUtc": "2026-10-21T21:11:04.209057+00:00"
+              }
+            ],
+            "findings": [
+              {
+                "category": "body",
+                "severity": "info",
+                "finding": "Corpo bianco e blu scuro, ali e pannelli rosa, coda e piccola fiamma ciano conservati; aspetto coerente con front PNG e sorgenti."
+              },
+              {
+                "category": "alignment",
+                "severity": "info",
+                "finding": "Revisionata solo la generazione finale con fit-initial-body: corpo iniziale di 190.32 pixel nel viewport 192, canvas di 576 pixel. Le cinque pose iniziali hanno dimensione e posizione coerenti, pur con il diverso effetto iniziale della victory."
+              },
+              {
+                "category": "effects",
+                "severity": "info",
+                "finding": "Spazzate ciano, lampo giallo, spirali, particelle e dissolvenza finale KO conservati; nessuna nuova perdita evidente delle sagome corporee."
+              },
+              {
+                "category": "source-clipping",
+                "severity": "minor",
+                "action": "hit",
+                "sourceFrameIndex": 60,
+                "finding": "Le grandi scie ciano escono dal bordo destro gia nel video originale; la conversione conserva il limite."
+              },
+              {
+                "category": "keying",
+                "severity": "minor",
+                "action": "hit",
+                "sourceFrameIndex": 43,
+                "finding": "Le ampie scie orizzontali tenui diventano grigio violacee sul fondale scuro e hanno alcuni bordi netti. Le scie sono presenti nel video originale; e una limitazione locale di estrazione delle trasparenze dal verde, senza danno evidente al corpo."
+              },
+              {
+                "category": "keying",
+                "severity": "info",
+                "finding": "Nessun fondale verde pieno o foro corporeo evidente sulle tavole aperte. I bagliori e il motion blur non sono certificati come matte perfetta."
+              }
+            ],
+            "blockingDefectObserved": false,
+            "additionalSourceEvidenceViewed": [
+              "outputs/animation-import-2026-10-21/markers/91/hit-frames/frame-0043.png",
+              "outputs/animation-import-2026-10-21/markers/91/hit-frames/frame-0060.png"
+            ],
+            "reviewedGeneration": {
+              "invocation": "outputs/animation-import-2026-10-21/converted/91/invocation.json",
+              "invocationSha256": "14e4a5afc10e1c390858cf6570d1edcc402362ca6d82d5b6f9c55854c2e3d770",
+              "fitInitialBody": true,
+              "cellWidth": 576,
+              "cellHeight": 576,
+              "idleBodyHeightOutputPixels": 190.32
+            }
+          }
+        },
+        "updatedAtUtc": "2026-10-21T21:11:30.881643+00:00",
+        "reviewComplete": true,
+        "convertedImagesViewedCount": 55,
+        "finalHashVerification": {
+          "matched": 55,
+          "mismatches": []
+        },
+        "referenceSheetSha256": "752ab6e9a45c86e414453e5581cd1faaa001fc637a79820a9aebb5034059c65c"
+      }
+    ]
+  },
+  "species": [
+    {
+      "speciesId": 82,
+      "name": "Reliskull",
+      "timing": {
+        "attack": {
+          "releaseFrame": 33,
+          "releaseMs": 1375.0,
+          "evidence": "Frame 32: the eye is bright but there is no external ray. Frame 33: the first short pointed gold ray leaves the eye. Frame 34: the external ray has visibly lengthened.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 11,
+          "reactionMs": 458.3333333333333,
+          "evidence": "Frame 10: no impact flash. Frame 11: first white/gold impact starburst at the front eye/hull. Frame 12: the same burst expands.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 32,
+            "observation": "Frame 32: the eye is bright but there is no external ray."
+          },
+          {
+            "frame": 33,
+            "observation": "Frame 33: the first short pointed gold ray leaves the eye."
+          },
+          {
+            "frame": 34,
+            "observation": "Frame 34: the external ray has visibly lengthened."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 10,
+            "observation": "Frame 10: no impact flash."
+          },
+          {
+            "frame": 11,
+            "observation": "Frame 11: first white/gold impact starburst at the front eye/hull."
+          },
+          {
+            "frame": 12,
+            "observation": "Frame 12: the same burst expands."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "KO: the ship-fish breaks into wood/debris/flags and falls below the native bottom edge. Frame 95 has bubbles/debris but no intact body; holding the real final frame will retain that appearance.",
+        "Native KO debris and effects reach/cross the source edges; no reconstruction beyond those edges is possible from this source.",
+        "No obvious intact-body clipping in the inspected idle, attack or victory samples."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          2,
+          5,
+          244
+        ],
+        "attack": [
+          2,
+          5,
+          246
+        ],
+        "hit": [
+          3,
+          4,
+          243
+        ],
+        "victory": [
+          2,
+          6,
+          245
+        ],
+        "ko": [
+          4,
+          5,
+          244
+        ]
+      },
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 190,
+        "top": 200
+      },
+      "sharedScale": 0.26453025477707004,
+      "groundPivot": [
+        286.0,
+        371
+      ],
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "82 idle.mp4",
+          "sourceSha256": "dda93dffec69053d1ec9806c17c9e842a5817e11254f1a0923550852cf553a07",
+          "sourceBytes": 1902418,
+          "sheetSha256": "b9620479943ed76104099ea0d8f8456399f01ea380d67406a8532899fa392cb3",
+          "sheetBytes": 3774726,
+          "posterSha256": "570c0e855b81251a0572f538224675a5bc77036c8f90c0f1d8fb19b5df2a1869",
+          "posterBytes": 40050,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              5,
+              244
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 15310,
+            "pixelsOver16": 13563,
+            "alphaBounds": [
+              56,
+              145,
+              506,
+              426
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.085394,
+            "bodyAlphaMeanAbsoluteDifference": 0.106121,
+            "bodyChangedPixelFractionOver5Percent": 0.457358,
+            "adjacentMedianBodyRgbDifference": 0.042746,
+            "adjacentMaxBodyRgbDifference": 0.053975,
+            "seamToAdjacentMedianRatio": 1.998
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "82 attack.mp4",
+          "sourceSha256": "1aca7aeb1c18a7ceb1ef0d5987a92abb0cf376bdebb3298a6bf93e8fb1577dc7",
+          "sourceBytes": 2185963,
+          "sheetSha256": "d15010ab5736b45141f402c343108d793cbf97486516a299277d66506a9c39a3",
+          "sheetBytes": 3565590,
+          "posterSha256": "0cecdcda6a433a6c519821fa70d8c37e1fb472bb286021e0065523a4ee72b873",
+          "posterBytes": 39284,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              5,
+              244
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 14870,
+            "pixelsOver16": 13268,
+            "alphaBounds": [
+              67,
+              172,
+              494,
+              374
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "82 hit.mp4",
+          "sourceSha256": "bbf6190bfa17144036a78def5bd3631e50166267822e787714fb64ba078f3c16",
+          "sourceBytes": 2717581,
+          "sheetSha256": "67656bea45029d475ffc796cc29eb9cb644c11fc12628549a55fd34cf05c9a36",
+          "sheetBytes": 3723146,
+          "posterSha256": "d9fa482ac1b0c2a0b6aca03d39cf9e1f3b452bd3236f1d845e7a8f0ea9c2b2cb",
+          "posterBytes": 38896,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              5,
+              244
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 14727,
+            "pixelsOver16": 13208,
+            "alphaBounds": [
+              64,
+              202,
+              523,
+              402
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "82 victory.mp4",
+          "sourceSha256": "73c638c847de7d475c062bd8f7d97900a04d34ef8eb1052ecd46723d485932d7",
+          "sourceBytes": 2841598,
+          "sheetSha256": "d95ee29386d91e8550164159ca1af1f7a5ce3116d63a860710c41f75ffdc714c",
+          "sheetBytes": 4219542,
+          "posterSha256": "2c9660b00ae0eb1d20b2bc74fb7d40af1db557d09d4c70aff7905b6894974335",
+          "posterBytes": 39024,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              5,
+              244
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 15433,
+            "pixelsOver16": 13462,
+            "alphaBounds": [
+              40,
+              146,
+              525,
+              430
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "82 ko.mp4",
+          "sourceSha256": "933d53c4bfd7ee88a109bd3f23297ea899e2aeeb45d8c60e39a715e3ed216db9",
+          "sourceBytes": 3975589,
+          "sheetSha256": "6d453196ca8c216e3c0c3509bb4c15afc5b316307adb40b1eb6b0e0b2491ba2d",
+          "sheetBytes": 6523914,
+          "posterSha256": "64cac8cfa72b0d20a8da243d86263c2880a898705babf60e7da57ddc4a7590b2",
+          "posterBytes": 38456,
+          "key": {
+            "method": "Corner-sampled soft blue-excess alpha plus brightness-independent screen-colour ratio rejection; blue edge despill before and after resampling. Native green features retained.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenColour": "blue",
+            "screenBackgroundFallback": [
+              2,
+              5,
+              244
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11403,
+            "pixelsOver16": 7832,
+            "alphaBounds": [
+              46,
+              146,
+              515,
+              430
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 83,
+      "name": "Cerebron",
+      "timing": {
+        "attack": {
+          "releaseFrame": 36,
+          "releaseMs": 1500.0,
+          "evidence": "Frame 35: anticipatory hand/body pose without emitted discharge. Frame 36: the extended palm emits its first white/purple discharge. Frame 37: the external discharge and brain glow expand.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 23,
+          "reactionMs": 958.3333333333334,
+          "evidence": "Frame 22: flinch motion but no new impact flash. Frame 23: the first yellow/white impact flash appears on the upper-right body. Frame 24: the impact flash expands.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 35,
+            "observation": "Frame 35: anticipatory hand/body pose without emitted discharge."
+          },
+          {
+            "frame": 36,
+            "observation": "Frame 36: the extended palm emits its first white/purple discharge."
+          },
+          {
+            "frame": 37,
+            "observation": "Frame 37: the external discharge and brain glow expand."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 22,
+            "observation": "Frame 22: flinch motion but no new impact flash."
+          },
+          {
+            "frame": 23,
+            "observation": "Frame 23: the first yellow/white impact flash appears on the upper-right body."
+          },
+          {
+            "frame": 24,
+            "observation": "Frame 24: the impact flash expands."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Hit: flying purple droplets meet/cross native source edges in later frames, including the lateral edges.",
+        "KO has 95 native frames (0..94), unlike the other clips here. By the real final frame 94 the body has dissolved; only a near-empty green background/tiny residual particles remain. Holding frame 94 therefore gives an almost invisible KO.",
+        "Body motion begins before the chosen hit marker; reactionFrame marks the first visible impact flash rather than the anticipation."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          54,
+          239,
+          22
+        ],
+        "attack": [
+          54,
+          235,
+          22
+        ],
+        "hit": [
+          55,
+          238,
+          19
+        ],
+        "victory": [
+          56,
+          237,
+          24
+        ],
+        "ko": [
+          52,
+          239,
+          18
+        ]
+      },
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 178
+      },
+      "sharedScale": 0.27646831530139104,
+      "groundPivot": [
+        288.0,
+        361
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 95
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "83 idle.mp4",
+          "sourceSha256": "2a16d9962b732682f3f793d5f02f56a1d322773a5a1cccce7d14e5a5f66aae7b",
+          "sourceBytes": 1551564,
+          "sheetSha256": "b37f365ef2ab4b77f7a626c53f8a9019c2ab42649d161bd93619f443770464db",
+          "sheetBytes": 3126232,
+          "posterSha256": "989da390daa5cfadc1f3a500b27dea5392638f3fc05737401e39029bd70cd3bc",
+          "posterBytes": 31894,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              239,
+              22
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11634,
+            "pixelsOver16": 10453,
+            "alphaBounds": [
+              222,
+              211,
+              354,
+              364
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.100767,
+            "bodyAlphaMeanAbsoluteDifference": 0.049885,
+            "bodyChangedPixelFractionOver5Percent": 0.559274,
+            "adjacentMedianBodyRgbDifference": 0.05844,
+            "adjacentMaxBodyRgbDifference": 0.147693,
+            "seamToAdjacentMedianRatio": 1.724
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "83 attack.mp4",
+          "sourceSha256": "6d89eb5576156d9bf6a75eb8c9de318ad22a7f59f44774103a22428e161dfd91",
+          "sourceBytes": 1897434,
+          "sheetSha256": "7addb1372d0505948ed25b81ec24b06e971d9c747c007387986cc6291702c510",
+          "sheetBytes": 3460966,
+          "posterSha256": "456404a87ad55282a1d6da65fdb65e6c8838019dedaa9a11ddbce2ec3c3bf31d",
+          "posterBytes": 33398,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              239,
+              22
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 12117,
+            "pixelsOver16": 10725,
+            "alphaBounds": [
+              64,
+              152,
+              413,
+              418
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "83 hit.mp4",
+          "sourceSha256": "2700d3927879936876dad052f44b822f52e192fc326eca3f93a3959a3e6a158e",
+          "sourceBytes": 2188538,
+          "sheetSha256": "a84d94ab4cb2d7ab2e193d9368e4ac2836569b0123e49196a257eb7ed29025b1",
+          "sheetBytes": 3655146,
+          "posterSha256": "beee2b2f48c63bf51e4cb6e2c27fe3dbf5ce0f43a40a2e46ae8c0ef2c86ce11e",
+          "posterBytes": 32190,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              239,
+              22
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 13230,
+            "pixelsOver16": 11586,
+            "alphaBounds": [
+              32,
+              212,
+              500,
+              364
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "83 victory.mp4",
+          "sourceSha256": "a1647fe0590153b93b18ef29f7fd108c637650b743f57fe74d302b8eca0aed5b",
+          "sourceBytes": 1949059,
+          "sheetSha256": "8831d4466e9ce2785a5987c2796ce196a53a8ae9b49a03f49e0a58a579f1ca45",
+          "sheetBytes": 3502342,
+          "posterSha256": "33f485d3b6f2882340d7c59130f3adcc62790662999c234d4ccaaf61781d6602",
+          "posterBytes": 32018,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              239,
+              22
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11663,
+            "pixelsOver16": 10444,
+            "alphaBounds": [
+              223,
+              212,
+              355,
+              365
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 95,
+          "fps": 24.0,
+          "suppliedFilename": "83 ko.mp4",
+          "sourceSha256": "4373ad91251f1603d8ef08032b4430fcf1764eccc76f3aa0606d1c051128d526",
+          "sourceBytes": 2439971,
+          "sheetSha256": "8aee0361669858cb376f7bad976875566397a8faa26f2d2d0af5dd7623ab0e0b",
+          "sheetBytes": 4800832,
+          "posterSha256": "3014e2e41b0b3793b150c410c0dbbf389bfd5d1e756c653992996da95d6125e2",
+          "posterBytes": 32248,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              239,
+              22
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 94,
+            "occupiedPixels": 36,
+            "pixelsOver16": 19,
+            "alphaBounds": [
+              301,
+              398,
+              309,
+              407
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 84,
+      "name": "Psycroak",
+      "timing": {
+        "attack": {
+          "releaseFrame": 34,
+          "releaseMs": 1416.6666666666667,
+          "evidence": "Frame 33: the charged orb is still close to the palms. Frame 34: it becomes a distinct outbound projectile with a long cyan tail. Frame 35: the outbound projectile has travelled farther.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 19,
+          "reactionMs": 791.6666666666666,
+          "evidence": "Frame 18: anticipatory body movement without the impact flash. Frame 19: the first white chest impact appears. Frame 20: the eyes change to X and the impact/stars grow.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 33,
+            "observation": "Frame 33: the charged orb is still close to the palms."
+          },
+          {
+            "frame": 34,
+            "observation": "Frame 34: it becomes a distinct outbound projectile with a long cyan tail."
+          },
+          {
+            "frame": 35,
+            "observation": "Frame 35: the outbound projectile has travelled farther."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 18,
+            "observation": "Frame 18: anticipatory body movement without the impact flash."
+          },
+          {
+            "frame": 19,
+            "observation": "Frame 19: the first white chest impact appears."
+          },
+          {
+            "frame": 20,
+            "observation": "Frame 20: the eyes change to X and the impact/stars grow."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Attack: cyan projectile/lightning exits through the native left edge (visible around frames 42..48). Its offscreen continuation is absent from the source.",
+        "KO frame 95 retains a prone visible body and circling yellow stars.",
+        "No obvious intact-body clipping in the inspected samples."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          55,
+          238,
+          19
+        ],
+        "attack": [
+          56,
+          233,
+          22
+        ],
+        "hit": [
+          53,
+          238,
+          23
+        ],
+        "victory": [
+          56,
+          238,
+          22
+        ],
+        "ko": [
+          57,
+          240,
+          21
+        ]
+      },
+      "cellWidth": 640,
+      "cellHeight": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 224,
+        "top": 201
+      },
+      "sharedScale": 0.290519877675841,
+      "groundPivot": [
+        320.0,
+        382
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "84 idle.mp4",
+          "sourceSha256": "d6548ffaba620b382b040615f30c9adce6369ecddef131bfaa7ec53f330e72b7",
+          "sourceBytes": 956109,
+          "sheetSha256": "2a259a31ead500f1c65f7bba9df7945ad33ac6fe5f373f941fd57ea02379a53d",
+          "sheetBytes": 2754652,
+          "posterSha256": "de1ead1bbff2be3907806f6f9ae6cabbd923aaefc0353c37dd07e2308cb374f8",
+          "posterBytes": 26344,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              238,
+              19
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 10794,
+            "pixelsOver16": 9777,
+            "alphaBounds": [
+              228,
+              248,
+              383,
+              383
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.119979,
+            "bodyAlphaMeanAbsoluteDifference": 0.095308,
+            "bodyChangedPixelFractionOver5Percent": 0.509384,
+            "adjacentMedianBodyRgbDifference": 0.076198,
+            "adjacentMaxBodyRgbDifference": 0.100772,
+            "seamToAdjacentMedianRatio": 1.575
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "84 attack.mp4",
+          "sourceSha256": "76f285faf869b38236a072c2f5680cc37cb182ea0cb60521200200f494d3cf4b",
+          "sourceBytes": 1426065,
+          "sheetSha256": "30bc6ae4a0fde49ce04303c1b3d21262e266c787e6541a2f946b020a50ff2300",
+          "sheetBytes": 3548204,
+          "posterSha256": "8d0e7861bc3f3c7ac533ece3c3475594aae291d0acb16210178e187beb417efa",
+          "posterBytes": 26394,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              238,
+              19
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 10706,
+            "pixelsOver16": 9605,
+            "alphaBounds": [
+              63,
+              196,
+              593,
+              473
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "84 hit.mp4",
+          "sourceSha256": "881b50f673ac4ebfe3c9551728cdcfb09ef7d9f35853173c2a2465100b305bc3",
+          "sourceBytes": 1906061,
+          "sheetSha256": "5f1d07ca6c62e6dea8168cd2e9d64b9efd3c8cb0ac4dd89c364470da345d6f88",
+          "sheetBytes": 3820562,
+          "posterSha256": "344fa5a905668bc6a64517ab61a97fffdc8d7d496b40a62afca3e76d60abc398",
+          "posterBytes": 26752,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              238,
+              19
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11028,
+            "pixelsOver16": 9740,
+            "alphaBounds": [
+              81,
+              163,
+              592,
+              441
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "84 victory.mp4",
+          "sourceSha256": "c4a73d55065479a02819e7e7a3a730072b5f662c38d42272ae921101222ef12f",
+          "sourceBytes": 1734305,
+          "sheetSha256": "41e3c17d77c61c8510d7511dabcff709c64f3fd717e3c6e003a7b1d2815ff449",
+          "sheetBytes": 3509408,
+          "posterSha256": "5b9ac904fbea75270aa35584f3ab4f3f266350c8934da83494ee683bbc0d4b19",
+          "posterBytes": 26920,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              238,
+              19
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11232,
+            "pixelsOver16": 9935,
+            "alphaBounds": [
+              91,
+              175,
+              588,
+              467
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "84 ko.mp4",
+          "sourceSha256": "e4c509f9960e991eef02d8e9a751ee5f6b5e057d42f835cf1e81439b0e023f0c",
+          "sourceBytes": 1665304,
+          "sheetSha256": "febe3fd36dee990e35765bf3e77972185d65346b3882cb9865b642c750599217",
+          "sheetBytes": 3373060,
+          "posterSha256": "cfa23f68d1df8d085ac2f082d177fd8a1011e7713d4d742849b05c35138fd9e3",
+          "posterBytes": 26842,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              238,
+              19
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 16597,
+            "pixelsOver16": 14530,
+            "alphaBounds": [
+              171,
+              274,
+              469,
+              432
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 85,
+      "name": "Psycroak",
+      "timing": {
+        "attack": {
+          "releaseFrame": 35,
+          "releaseMs": 1458.3333333333333,
+          "evidence": "Frame 34: charged purple orb starts moving out; no strong palm-release flash yet. Frame 35: first distinct white release flash at the palm and outgoing projectile. Frame 36: the projectile is outside the hand and the lightning expands.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 26,
+          "reactionMs": 1083.3333333333333,
+          "evidence": "Frame 25: the pre-existing held purple orb is visible but no new hit flash. Frame 26: the first new white impact ring forms around the orb/body. Frame 27: the new impact ring expands.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 34,
+            "observation": "Frame 34: charged purple orb starts moving out; no strong palm-release flash yet."
+          },
+          {
+            "frame": 35,
+            "observation": "Frame 35: first distinct white release flash at the palm and outgoing projectile."
+          },
+          {
+            "frame": 36,
+            "observation": "Frame 36: the projectile is outside the hand and the lightning expands."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 25,
+            "observation": "Frame 25: the pre-existing held purple orb is visible but no new hit flash."
+          },
+          {
+            "frame": 26,
+            "observation": "Frame 26: the first new white impact ring forms around the orb/body."
+          },
+          {
+            "frame": 27,
+            "observation": "Frame 27: the new impact ring expands."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Attack after release: purple projectile/lightning touches/crosses the native left/top/bottom edges.",
+        "Hit around frame 40: large electric branches cross the native top/left/right/bottom edges. These are source cuts rather than conversion cuts.",
+        "Using the first-frame background RGB as fallback is useful where a later effect contaminates corners.",
+        "KO frame 95 retains a visible prone body."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          53,
+          239,
+          23
+        ],
+        "attack": [
+          52,
+          237,
+          20
+        ],
+        "hit": [
+          53,
+          238,
+          21
+        ],
+        "victory": [
+          55,
+          238,
+          22
+        ],
+        "ko": [
+          53,
+          238,
+          19
+        ]
+      },
+      "cellWidth": 512,
+      "cellHeight": 512,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 159,
+        "top": 153
+      },
+      "sharedScale": 0.248,
+      "groundPivot": [
+        255.0,
+        341
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "85 idle.mp4",
+          "sourceSha256": "a6ae7851fc637c12969ca6e69c8d6c8c1f91c8057a17adf4b20129959d32535f",
+          "sourceBytes": 1390126,
+          "sheetSha256": "6fe52528fcf7d982ee12f61a3dbb21e2710564f4b0e4c545607441e20d623458",
+          "sheetBytes": 3854042,
+          "posterSha256": "fb5c475c531d0b50f8133f691e693f052acfe183b3102ac21a46de6d53fbec1c",
+          "posterBytes": 44828,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              53,
+              239,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 16377,
+            "pixelsOver16": 14740,
+            "alphaBounds": [
+              170,
+              167,
+              339,
+              342
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.046016,
+            "bodyAlphaMeanAbsoluteDifference": 0.030539,
+            "bodyChangedPixelFractionOver5Percent": 0.285491,
+            "adjacentMedianBodyRgbDifference": 0.021514,
+            "adjacentMaxBodyRgbDifference": 0.157726,
+            "seamToAdjacentMedianRatio": 2.139
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "85 attack.mp4",
+          "sourceSha256": "2b5429790920f64ffc151b9bab992ab62edff19d4c98c3267b2df6796f2ee9f1",
+          "sourceBytes": 2151742,
+          "sheetSha256": "85ccdcbbbe6fe25c4e3a73561e2b5730792b56b01e304c857487b16b6700e7d1",
+          "sheetBytes": 5104744,
+          "posterSha256": "4b94905dbcfc52678248c89a5bb2e79ff3ceff69e0bae459b95d1afb246872bc",
+          "posterBytes": 44936,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              53,
+              239,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 16346,
+            "pixelsOver16": 14639,
+            "alphaBounds": [
+              170,
+              167,
+              341,
+              345
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "85 hit.mp4",
+          "sourceSha256": "21e1012ff17060eacb2f73d5a3481678a3949f31311c31cdb51030de858211a3",
+          "sourceBytes": 2286205,
+          "sheetSha256": "6a2c1179e276328c143c06c00194df2620aa8d1069cdade5a1cc68a4fb043419",
+          "sheetBytes": 4928492,
+          "posterSha256": "a1985a45fa50487ccd63d4a3e1f4fbcf5c5e677ab186ae391fbcb8455eb24b09",
+          "posterBytes": 45150,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              53,
+              239,
+              23
+            ],
+            "screenBackgroundFallbackFrames": [
+              39,
+              40,
+              41,
+              42,
+              43,
+              44
+            ]
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 16177,
+            "pixelsOver16": 14526,
+            "alphaBounds": [
+              172,
+              168,
+              340,
+              345
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "85 victory.mp4",
+          "sourceSha256": "9312a59fef0eace44dd78d2eeef3c13029bff3808a6beb20c30f797f48133c12",
+          "sourceBytes": 2007439,
+          "sheetSha256": "249879766b02b1135267769c13f2c5bbf1cd173e41a7b9ab06d38139ae23a5cf",
+          "sheetBytes": 4017606,
+          "posterSha256": "8b894a9a497cfebd66d535843528e926d385b3bbdf9938c832b8b672200ce2f3",
+          "posterBytes": 44492,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              53,
+              239,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 16230,
+            "pixelsOver16": 14486,
+            "alphaBounds": [
+              169,
+              166,
+              340,
+              341
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "85 ko.mp4",
+          "sourceSha256": "2ff4fe76e45a73b8000393c24a8da5a86ed8ba807feae0e2f0d666f33fedf537",
+          "sourceBytes": 2571718,
+          "sheetSha256": "2a3b5aa35cbd997d0745f3158335559ed9fc4dfa44c51227ef3d124e449901df",
+          "sheetBytes": 4920146,
+          "posterSha256": "c2d37922b3c65c861d55f74ebebc90513b15b3a1d81cba3193ba84fb24067bf3",
+          "posterBytes": 45462,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              53,
+              239,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 8341,
+            "pixelsOver16": 7555,
+            "alphaBounds": [
+              32,
+              134,
+              364,
+              372
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 86,
+      "name": "Teslat",
+      "timing": {
+        "attack": {
+          "releaseFrame": 39,
+          "releaseMs": 1625.0,
+          "evidence": "Frame 38: charged fist remains in the wind-up pose. Frame 39: the first long cyan arc leaves the fist toward the left. Frame 40: the external arc extends into the rotational slash.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 20,
+          "reactionMs": 833.3333333333334,
+          "evidence": "Frame 19: no new chest pulse. Frame 20: the first white/cyan chest impact star appears. Frame 21: the chest impact expands.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 38,
+            "observation": "Frame 38: charged fist remains in the wind-up pose."
+          },
+          {
+            "frame": 39,
+            "observation": "Frame 39: the first long cyan arc leaves the fist toward the left."
+          },
+          {
+            "frame": 40,
+            "observation": "Frame 40: the external arc extends into the rotational slash."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 19,
+            "observation": "Frame 19: no new chest pulse."
+          },
+          {
+            "frame": 20,
+            "observation": "Frame 20: the first white/cyan chest impact star appears."
+          },
+          {
+            "frame": 21,
+            "observation": "Frame 21: the chest impact expands."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Attack: rotational slash, later burst/ring and fragment spread meet native boundaries; later particles may already be clipped in the source.",
+        "Victory around frame 72 contains dark/green fragment-like material around the body. Some greens resemble the screen; details with the same chroma cannot be recovered confidently through keying alone.",
+        "KO: the body is prone around frame 72 and then dissolves. Frame 95 has no intact body, only near-empty green/tiny particles. Holding the real final frame therefore gives an almost invisible KO."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          55,
+          237,
+          23
+        ],
+        "attack": [
+          53,
+          238,
+          23
+        ],
+        "hit": [
+          54,
+          236,
+          20
+        ],
+        "victory": [
+          55,
+          240,
+          21
+        ],
+        "ko": [
+          55,
+          237,
+          23
+        ]
+      },
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 256,
+        "top": 253
+      },
+      "sharedScale": 0.3286219081272085,
+      "groundPivot": [
+        352.0,
+        441
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "86 idle.mp4",
+          "sourceSha256": "4a44f249913784699c6bf376c8b1a793e342163da7148d2d47d037a0d9f0aee9",
+          "sourceBytes": 1155855,
+          "sheetSha256": "3618e94425349716581c2a6912ce3b1d17a8e24ba356ede258d9919885e9c3c7",
+          "sheetBytes": 2977538,
+          "posterSha256": "423a0f0481c0b69a56cb934c67c57cf0cd76fb21c7dba6b0894622973c875371",
+          "posterBytes": 32708,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              237,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 12134,
+            "pixelsOver16": 11019,
+            "alphaBounds": [
+              291,
+              261,
+              409,
+              442
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.166732,
+            "bodyAlphaMeanAbsoluteDifference": 0.161726,
+            "bodyChangedPixelFractionOver5Percent": 0.691081,
+            "adjacentMedianBodyRgbDifference": 0.059714,
+            "adjacentMaxBodyRgbDifference": 0.150871,
+            "seamToAdjacentMedianRatio": 2.792
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "86 attack.mp4",
+          "sourceSha256": "2621e7c9da09eedcae60a509760ec401a6de36b23c47e7cff78e051b5c1b94c0",
+          "sourceBytes": 2288709,
+          "sheetSha256": "e1e65bc6c1ae972d312522f23d5217b134a3069948337c6bdf22a4dc53c30de8",
+          "sheetBytes": 5496684,
+          "posterSha256": "70403b131f31eb592c2ccb59cfc4e1baabf81400b468205f811927b90f526936",
+          "posterBytes": 32590,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              237,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 13505,
+            "pixelsOver16": 11835,
+            "alphaBounds": [
+              36,
+              175,
+              660,
+              528
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "86 hit.mp4",
+          "sourceSha256": "5a34d1d9e41a9f15de6dc0a60166474a3ec7fd9377e86de40e2d0842a115c5f5",
+          "sourceBytes": 1792164,
+          "sheetSha256": "68f455d02d67ab8c2f7d717218133751ba1db49089379b837d902e64c45b4054",
+          "sheetBytes": 3512454,
+          "posterSha256": "28db75c3f37deb31a9ac0b59a26c08c0ae849a0fafaa248b76f926d1d851a880",
+          "posterBytes": 32904,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              237,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 12501,
+            "pixelsOver16": 11296,
+            "alphaBounds": [
+              52,
+              188,
+              609,
+              468
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "86 victory.mp4",
+          "sourceSha256": "344b51533b5e0f80f556fcb17fcaea8b2a80aced069fb8ae53d48548d0fe0a53",
+          "sourceBytes": 1821005,
+          "sheetSha256": "1af467b2afdf07d055e8e16b024c37bb803c829f39cff4521ed4e114f7c2f251",
+          "sheetBytes": 3249148,
+          "posterSha256": "842b4c31911b40a4d21cee2f1d418bf5316ff64ba7d965749ad0cc212fd71803",
+          "posterBytes": 32886,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              237,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 12543,
+            "pixelsOver16": 11373,
+            "alphaBounds": [
+              42,
+              191,
+              507,
+              468
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "86 ko.mp4",
+          "sourceSha256": "5cc4e4c6bb2b3f91d82a1d2bc934bf169945fca9771ceeb5e180ae7ccf68f186",
+          "sourceBytes": 2283046,
+          "sheetSha256": "7f279ca9e7bfb44673dceca4d1365b905d81821b6a928e1f2dd60c6753465732",
+          "sheetBytes": 5553796,
+          "posterSha256": "9eba2d03d25b19804d9db0d1fe2610a5fe53b84b480e36e9356ff5395e505c49",
+          "posterBytes": 32978,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              237,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 1601,
+            "pixelsOver16": 898,
+            "alphaBounds": [
+              37,
+              175,
+              631,
+              521
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 87,
+      "name": "Teslat",
+      "timing": {
+        "attack": {
+          "releaseFrame": 27,
+          "releaseMs": 1125.0,
+          "evidence": "Le braccia sono estese; piccole scintille restano aderenti agli artigli, senza il grande arco esterno. Compare il primo ampio arco ciano e bianco, proiettato oltre gli artigli verso sinistra e davanti al corpo. L arco rilasciato si allarga ulteriormente davanti al personaggio.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 20,
+          "reactionMs": 833.3333333333334,
+          "evidence": "Posa preparatoria, senza nucleo bianco di impatto sul petto. Primo nucleo bianco e ciano di impatto sul petto. Il lampo si espande e testa e corpo iniziano il contraccolpo.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 26,
+            "observation": "Le braccia sono estese; piccole scintille restano aderenti agli artigli, senza il grande arco esterno."
+          },
+          {
+            "frame": 27,
+            "observation": "Compare il primo ampio arco ciano e bianco, proiettato oltre gli artigli verso sinistra e davanti al corpo."
+          },
+          {
+            "frame": 28,
+            "observation": "L arco rilasciato si allarga ulteriormente davanti al personaggio."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 19,
+            "observation": "Posa preparatoria, senza nucleo bianco di impatto sul petto."
+          },
+          {
+            "frame": 20,
+            "observation": "Primo nucleo bianco e ciano di impatto sul petto."
+          },
+          {
+            "frame": 21,
+            "observation": "Il lampo si espande e testa e corpo iniziano il contraccolpo."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Effetti nativi ampi negli attacchi: conservare l intero padding del video; nessun ulteriore taglio del corpo osservato."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          54,
+          240,
+          23
+        ],
+        "attack": [
+          55,
+          235,
+          24
+        ],
+        "hit": [
+          54,
+          239,
+          23
+        ],
+        "victory": [
+          52,
+          239,
+          20
+        ],
+        "ko": [
+          55,
+          237,
+          23
+        ]
+      },
+      "cellWidth": 640,
+      "cellHeight": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 224,
+        "top": 216
+      },
+      "sharedScale": 0.2923076923076923,
+      "groundPivot": [
+        320.0,
+        402
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "87 idle.mp4",
+          "sourceSha256": "852cd5aeb49282608cb9d60125892c5c83222a33f9bd38a017cc44f3940b2d00",
+          "sourceBytes": 1615980,
+          "sheetSha256": "101d5cfe571f63240255545a1bfd655286c8b3dab9aebe671f4a241ec2df6b63",
+          "sheetBytes": 3350230,
+          "posterSha256": "9cddfb6e342da6e8109ff0b3bb0a0fd9fa1a7532129aa128220e062ffa7420f4",
+          "posterBytes": 36444,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              54,
+              240,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 13840,
+            "pixelsOver16": 12677,
+            "alphaBounds": [
+              242,
+              235,
+              398,
+              404
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.074789,
+            "bodyAlphaMeanAbsoluteDifference": 0.04099,
+            "bodyChangedPixelFractionOver5Percent": 0.416725,
+            "adjacentMedianBodyRgbDifference": 0.060242,
+            "adjacentMaxBodyRgbDifference": 0.118561,
+            "seamToAdjacentMedianRatio": 1.241
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "87 attack.mp4",
+          "sourceSha256": "27d1f22d4d275503969eaefbb806ca09dfa12bc20c92f5e77801366d804c23bb",
+          "sourceBytes": 2265470,
+          "sheetSha256": "a4b3694dbee65191c4dff65d13b0ea8f9eb19e81db089672ca9199e07b6598a4",
+          "sheetBytes": 5476668,
+          "posterSha256": "1f7e05c58512749ea08e090bd89d07700d4c883e564b87dc78e918797ddfee37",
+          "posterBytes": 36134,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              54,
+              240,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 13792,
+            "pixelsOver16": 12621,
+            "alphaBounds": [
+              243,
+              236,
+              399,
+              405
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "87 hit.mp4",
+          "sourceSha256": "fda462b078a073fea2d9eb4afbedc4300c5e7b87ac68194a761924c87e856336",
+          "sourceBytes": 1913284,
+          "sheetSha256": "3f3a9299c461510710f75fe2d51936c833f8dd1bd57756c78a948d90ce38ef54",
+          "sheetBytes": 3619158,
+          "posterSha256": "527f83b89942984c56f44f0996240b4920a4f2e746488fc81d9d3defb22abac2",
+          "posterBytes": 35316,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              54,
+              240,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 13908,
+            "pixelsOver16": 12711,
+            "alphaBounds": [
+              242,
+              236,
+              397,
+              405
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "87 victory.mp4",
+          "sourceSha256": "653e3e2a45a01697846e91f2d52ef1d19d20ef8b85e950609f2f50be182b5ce8",
+          "sourceBytes": 1929542,
+          "sheetSha256": "58efceeee7c25aa3ade2497e457ca521db078d37e09885c9fa9bdfe328eac6e0",
+          "sheetBytes": 3976432,
+          "posterSha256": "7dab24f4756019f1d108933567cc26fb10e42e6fea5c1fac1593f6e8f0b178d1",
+          "posterBytes": 36670,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              54,
+              240,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 13759,
+            "pixelsOver16": 12576,
+            "alphaBounds": [
+              243,
+              236,
+              399,
+              405
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "87 ko.mp4",
+          "sourceSha256": "b62a8d47ef527ca36346cbd093871c414a428eac76d936afc9894de5a8b61ba2",
+          "sourceBytes": 1961947,
+          "sheetSha256": "95c2c6c1f3bff972334977f7e948b42b24d372c22ed1244ffa649021f33beb0e",
+          "sheetBytes": 3890910,
+          "posterSha256": "5dc954cdd332987597c6bd39814e28b60d685030f26e24f0be98943038b8f418",
+          "posterBytes": 36308,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              54,
+              240,
+              23
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 16497,
+            "pixelsOver16": 15250,
+            "alphaBounds": [
+              194,
+              244,
+              448,
+              433
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 11,
+          "maximumRuntimePageDecodedBytes": 14745600,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 88,
+      "name": "Teslat",
+      "timing": {
+        "attack": {
+          "releaseFrame": 24,
+          "releaseMs": 1000.0,
+          "evidence": "Una scia sottile accompagna il movimento del braccio; non e ancora presente l ampia falce in uscita. Prima falce ciano e bianca ampia e proiettata oltre il braccio esteso verso sinistra. La falce esterna si espande davanti al personaggio.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 14,
+          "reactionMs": 583.3333333333334,
+          "evidence": "Il fulmine in arrivo si sovrappone al torace, mentre il corpo rimane ancora nella posa precedente. Primo nucleo bianco di impatto ben definito con evidente contraccolpo di testa e corpo. Il lampo si allarga e la reazione continua.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 23,
+            "observation": "Una scia sottile accompagna il movimento del braccio; non e ancora presente l ampia falce in uscita."
+          },
+          {
+            "frame": 24,
+            "observation": "Prima falce ciano e bianca ampia e proiettata oltre il braccio esteso verso sinistra."
+          },
+          {
+            "frame": 25,
+            "observation": "La falce esterna si espande davanti al personaggio."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 13,
+            "observation": "Il fulmine in arrivo si sovrappone al torace, mentre il corpo rimane ancora nella posa precedente."
+          },
+          {
+            "frame": 14,
+            "observation": "Primo nucleo bianco di impatto ben definito con evidente contraccolpo di testa e corpo."
+          },
+          {
+            "frame": 15,
+            "observation": "Il lampo si allarga e la reazione continua."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "L anello verticale di shock nell attack, visibile intorno ai frame 72-75, raggiunge ed e tagliato dal bordo inferiore del video originale. Il corpo resta visibile."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          56,
+          237,
+          25
+        ],
+        "attack": [
+          51,
+          235,
+          20
+        ],
+        "hit": [
+          53,
+          239,
+          20
+        ],
+        "victory": [
+          56,
+          239,
+          21
+        ],
+        "ko": [
+          54,
+          240,
+          19
+        ]
+      },
+      "cellWidth": 512,
+      "cellHeight": 512,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 160,
+        "top": 159
+      },
+      "sharedScale": 0.24000000000000002,
+      "groundPivot": [
+        256.0,
+        351
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "88 idle.mp4",
+          "sourceSha256": "5faa497b51886e9e150c63692145314104176c3411e51fbce558698798aa3615",
+          "sourceBytes": 1422665,
+          "sheetSha256": "7a57f20df9ef4e625e09824ea9ba5593e414a708415f7212085d725a523b23cf",
+          "sheetBytes": 2594776,
+          "posterSha256": "e84c0f0828c3b685d8d13e8a95c77ff930843d8aecc2d61910edee1137e71fa2",
+          "posterBytes": 28960,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              237,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 10466,
+            "pixelsOver16": 9108,
+            "alphaBounds": [
+              196,
+              160,
+              316,
+              352
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.035736,
+            "bodyAlphaMeanAbsoluteDifference": 0.026109,
+            "bodyChangedPixelFractionOver5Percent": 0.220104,
+            "adjacentMedianBodyRgbDifference": 0.031985,
+            "adjacentMaxBodyRgbDifference": 0.09541,
+            "seamToAdjacentMedianRatio": 1.117
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "88 attack.mp4",
+          "sourceSha256": "a950f0805fcacc9bec1abb412bb8c8f582b5fd0543b5141129707525b08201af",
+          "sourceBytes": 3275906,
+          "sheetSha256": "813ce8e5036d2dbea8b4a6f51fa6141374f2d03f7fcf80a937b43b36cf575dae",
+          "sheetBytes": 5178782,
+          "posterSha256": "472b593faa4c22e6621c8baed1e4d6dc9503ff373d3da6413824f517b8ad8736",
+          "posterBytes": 28972,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              237,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 10430,
+            "pixelsOver16": 9045,
+            "alphaBounds": [
+              74,
+              158,
+              387,
+              354
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "88 hit.mp4",
+          "sourceSha256": "6ff2e85d39defbe21c4fe8f6e76c7c7b79fc3b991c830faa93c7cbcc01a5b449",
+          "sourceBytes": 2413337,
+          "sheetSha256": "fa56903ba8f6a6c9188b5fc776de917f336dd51a0a0a2cf8be50351a3a2ac119",
+          "sheetBytes": 3607514,
+          "posterSha256": "21b5a66ad2468969a74461b52b7f7d3fad2603e50a47654cf7cff78224c2eb83",
+          "posterBytes": 28724,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              237,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 10538,
+            "pixelsOver16": 9136,
+            "alphaBounds": [
+              195,
+              158,
+              317,
+              353
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "88 victory.mp4",
+          "sourceSha256": "4f6eacf6cae166feaf95b97e36919e2fda937492951ea019e33a73b466c4fa73",
+          "sourceBytes": 2121460,
+          "sheetSha256": "f48628d66baca681ada719d50d2557a4a1a3206ecb9f387ed642adac5d63b390",
+          "sheetBytes": 3541424,
+          "posterSha256": "775a57da7d4c713ccdb571231dcafecd14caf7df4fa8c5f550d3e43e8f08c929",
+          "posterBytes": 28784,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              237,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 10396,
+            "pixelsOver16": 9017,
+            "alphaBounds": [
+              196,
+              159,
+              316,
+              354
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "88 ko.mp4",
+          "sourceSha256": "2deeaca9352ae12d12d574fd2d840560ebeccbe6424b7a81223567b433246180",
+          "sourceBytes": 2250300,
+          "sheetSha256": "63fd5f8803b86ed8f0a5ec90c5574d0684f9022715ee7edabe898dd0db455b19",
+          "sheetBytes": 3821320,
+          "posterSha256": "dcb4a19c5bd4337bf7b4e1e7a485374a32ff77ff0df698f696c4badfdc759205",
+          "posterBytes": 28884,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              237,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 10119,
+            "pixelsOver16": 6709,
+            "alphaBounds": [
+              26,
+              127,
+              486,
+              386
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 89,
+      "name": "Espeiry",
+      "timing": {
+        "attack": {
+          "releaseFrame": 49,
+          "releaseMs": 2041.6666666666665,
+          "evidence": "Carica molto piccola ancora aderente alla mano estesa; nessun proiettile separato. Primo proiettile ciano e bianco distinto a sinistra delle mani. Il proiettile si allarga e diventa l emissione diretta in avanti.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 19,
+          "reactionMs": 791.6666666666666,
+          "evidence": "Occhi aperti e posa ancora priva della stella bianca di impatto. Prima stella bianca su viso e torace; gli occhi si chiudono. Il personaggio apre la bocca e il contraccolpo prosegue con il lampo in espansione.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 48,
+            "observation": "Carica molto piccola ancora aderente alla mano estesa; nessun proiettile separato."
+          },
+          {
+            "frame": 49,
+            "observation": "Primo proiettile ciano e bianco distinto a sinistra delle mani."
+          },
+          {
+            "frame": 50,
+            "observation": "Il proiettile si allarga e diventa l emissione diretta in avanti."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 18,
+            "observation": "Occhi aperti e posa ancora priva della stella bianca di impatto."
+          },
+          {
+            "frame": 19,
+            "observation": "Prima stella bianca su viso e torace; gli occhi si chiudono."
+          },
+          {
+            "frame": 20,
+            "observation": "Il personaggio apre la bocca e il contraccolpo prosegue con il lampo in espansione."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Il raggio dell attack, nei frame circa 52-60, esce dal bordo sinistro del video originale. Conservare il taglio nativo senza ritagliare ulteriormente."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          51,
+          236,
+          21
+        ],
+        "attack": [
+          55,
+          237,
+          23
+        ],
+        "hit": [
+          56,
+          238,
+          24
+        ],
+        "victory": [
+          56,
+          238,
+          22
+        ],
+        "ko": [
+          51,
+          236,
+          20
+        ]
+      },
+      "cellWidth": 704,
+      "cellHeight": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 256,
+        "top": 243
+      },
+      "sharedScale": 0.3163097199341021,
+      "groundPivot": [
+        352.0,
+        435
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "89 idle.mp4",
+          "sourceSha256": "80e426358e28d8f3e7a4306479cf83267303b9c88388b245804d1c4ba4f14826",
+          "sourceBytes": 1009969,
+          "sheetSha256": "2b3b3fc19396a09a50eb8b4a5fad758d2abd97edd526d4881d42c7b7afa8ece5",
+          "sheetBytes": 2458662,
+          "posterSha256": "bb607b341a9091058e6fcdb0dc674a8ecb6c95007703679bdb199e69d5ba0828",
+          "posterBytes": 26550,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              51,
+              236,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11848,
+            "pixelsOver16": 10800,
+            "alphaBounds": [
+              287,
+              263,
+              417,
+              441
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.196479,
+            "bodyAlphaMeanAbsoluteDifference": 0.182532,
+            "bodyChangedPixelFractionOver5Percent": 0.62998,
+            "adjacentMedianBodyRgbDifference": 0.114549,
+            "adjacentMaxBodyRgbDifference": 0.213277,
+            "seamToAdjacentMedianRatio": 1.715
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "89 attack.mp4",
+          "sourceSha256": "d63182f358b6d20dd75e9a8ed0fb2d1f661b8f1af0139f85f159014458ec4997",
+          "sourceBytes": 1943975,
+          "sheetSha256": "dda66fb8a1954bef230e9246fd7142ac48c03af4c5db6917ffc5d9e8244437be",
+          "sheetBytes": 4960880,
+          "posterSha256": "47d81a0fcf66b97566efb1cec5d4bffd031212e252cadbb7f67e259758cc6839",
+          "posterBytes": 27342,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              51,
+              236,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 12327,
+            "pixelsOver16": 11147,
+            "alphaBounds": [
+              87,
+              237,
+              612,
+              522
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "89 hit.mp4",
+          "sourceSha256": "a4c90b06a24ded88c3d1e9a1d3624192209c8fe034090fc49a549e5f4d24e5af",
+          "sourceBytes": 1586736,
+          "sheetSha256": "684aed86736d5db3d11b9d97c7a91313a1fc5a87f9751696ffc85d21a2ea54cd",
+          "sheetBytes": 2624372,
+          "posterSha256": "42c35aeed504f67fb1c3c8cf4f7456103d1b239fd26ca00e95b0c8bf9d6693ba",
+          "posterBytes": 26586,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              51,
+              236,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11932,
+            "pixelsOver16": 10909,
+            "alphaBounds": [
+              287,
+              265,
+              417,
+              438
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "89 victory.mp4",
+          "sourceSha256": "62a529cb8ca8722ef446b6cafe7997107a1334d2badcd6358eeda578082c35d7",
+          "sourceBytes": 1704784,
+          "sheetSha256": "f97357cf3cdefcc8345a20bb798dff8d4dd1d02ea6b6e6f39e7f0f030e6cc86e",
+          "sheetBytes": 3726382,
+          "posterSha256": "9c8d6ab180a26990758629b3efb25e8c720a53af7e4030e123b7018f49db6342",
+          "posterBytes": 26974,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              51,
+              236,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11894,
+            "pixelsOver16": 10878,
+            "alphaBounds": [
+              289,
+              263,
+              415,
+              442
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "89 ko.mp4",
+          "sourceSha256": "d6053e2e956164a6a8344ad0777b39002f9d66f0c32bac02af26ffcc7a7ce495",
+          "sourceBytes": 2178169,
+          "sheetSha256": "f08b91a67ee58e6903ae65782638809602f314a70b28c04ad047a40a4d63d6c3",
+          "sheetBytes": 7720750,
+          "posterSha256": "37bc1fe35bd3e2a1c248e0a78b7b49115180253fd5c2079b49e356b0c2c1ac5e",
+          "posterBytes": 27534,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              51,
+              236,
+              21
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 13115,
+            "pixelsOver16": 8954,
+            "alphaBounds": [
+              49,
+              182,
+              656,
+              521
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 12,
+          "maximumRuntimePageDecodedBytes": 15859712,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 90,
+      "name": "Espeiry",
+      "timing": {
+        "attack": {
+          "releaseFrame": 27,
+          "releaseMs": 1125.0,
+          "evidence": "La sfera viola resta compatta e aderente alla mano; movimento di preparazione. Prima ampia falce viola e bianca proiettata all esterno sopra e davanti alla sfera. La falce rilasciata si illumina e si espande.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 13,
+          "reactionMs": 541.6666666666666,
+          "evidence": "Occhi chiusi e posa preparatoria; sfera ancora priva del lampo appuntito di impatto. Primo lampo appuntito bianco e rosa intorno alla sfera, con inizio del contraccolpo. Il lampo si espande e il corpo continua la reazione.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 26,
+            "observation": "La sfera viola resta compatta e aderente alla mano; movimento di preparazione."
+          },
+          {
+            "frame": 27,
+            "observation": "Prima ampia falce viola e bianca proiettata all esterno sopra e davanti alla sfera."
+          },
+          {
+            "frame": 28,
+            "observation": "La falce rilasciata si illumina e si espande."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 12,
+            "observation": "Occhi chiusi e posa preparatoria; sfera ancora priva del lampo appuntito di impatto."
+          },
+          {
+            "frame": 13,
+            "observation": "Primo lampo appuntito bianco e rosa intorno alla sfera, con inizio del contraccolpo."
+          },
+          {
+            "frame": 14,
+            "observation": "Il lampo si espande e il corpo continua la reazione."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Le grandi falci e il lampo viola del KO fanno parte dei video nativi; mantenere padding e trasparenze morbide. Nessun taglio del corpo osservato."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          55,
+          236,
+          25
+        ],
+        "attack": [
+          57,
+          236,
+          25
+        ],
+        "hit": [
+          57,
+          239,
+          23
+        ],
+        "victory": [
+          58,
+          238,
+          23
+        ],
+        "ko": [
+          52,
+          238,
+          20
+        ]
+      },
+      "cellWidth": 512,
+      "cellHeight": 512,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 160,
+        "top": 140
+      },
+      "sharedScale": 0.24362824675324676,
+      "groundPivot": [
+        256.0,
+        330
+      ],
+      "scaleReference": "Existing idle-derived common scale and ground plane.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "90 idle.mp4",
+          "sourceSha256": "ed0406677bda106ee9263f3de1381771d19b18073687b65072bf8f86039d641d",
+          "sourceBytes": 1189386,
+          "sheetSha256": "13882e8c8d314829ab95702beafe0bb2606f32a34b39be1673773e83f65b2e9e",
+          "sheetBytes": 2176286,
+          "posterSha256": "5971e00b1d24ed4434f75e304553390c8d063cc75e1a57698d706ca1cac78664",
+          "posterBytes": 23578,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              236,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 9063,
+            "pixelsOver16": 7902,
+            "alphaBounds": [
+              195,
+              177,
+              319,
+              333
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.066278,
+            "bodyAlphaMeanAbsoluteDifference": 0.075575,
+            "bodyChangedPixelFractionOver5Percent": 0.394945,
+            "adjacentMedianBodyRgbDifference": 0.0579,
+            "adjacentMaxBodyRgbDifference": 0.105618,
+            "seamToAdjacentMedianRatio": 1.145
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "90 attack.mp4",
+          "sourceSha256": "75766500395e5c9c55d5b230dd5fd9eb9390072da362e1108dccc2d07b3112ba",
+          "sourceBytes": 2113554,
+          "sheetSha256": "d27e105ce7bb715301b06081c8abe2e7979a53fa86f249c68df3a914eba7a4a8",
+          "sheetBytes": 3820400,
+          "posterSha256": "f04bb26d837c5699c2b2ccaf1a81ee5af6ed067879c93b131f07029995481bbd",
+          "posterBytes": 23744,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              236,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 9164,
+            "pixelsOver16": 8021,
+            "alphaBounds": [
+              193,
+              178,
+              318,
+              334
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "90 hit.mp4",
+          "sourceSha256": "90f17353b89153a801d7f0d10f927b2a9b8451c357f15f249a83a7d68eebc831",
+          "sourceBytes": 1428602,
+          "sheetSha256": "77978744c9bb9cfbb5b776c78afda2a60363cebb3fb64e1846b8b2caf2411ea8",
+          "sheetBytes": 2170898,
+          "posterSha256": "ced44ff401f55f8494814ec844f0c08a1a0b67de3b72958da345d745994f3b4c",
+          "posterBytes": 23730,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              236,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 9068,
+            "pixelsOver16": 7928,
+            "alphaBounds": [
+              194,
+              177,
+              317,
+              335
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "90 victory.mp4",
+          "sourceSha256": "9020a3d15073cc907e33218cab83abba7dfd21a84285d8f7ca91a13bfeae795e",
+          "sourceBytes": 1465502,
+          "sheetSha256": "02aa59b9468811e4c6b3bcc6688ec266bc5cbbe406d20821f61e9c68d784c300",
+          "sheetBytes": 2318246,
+          "posterSha256": "616314ee5f98832074ad3cbc565f5f9a25acb13e5b85d66ddeea8cf79b3cc167",
+          "posterBytes": 23714,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              236,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 9077,
+            "pixelsOver16": 7953,
+            "alphaBounds": [
+              195,
+              175,
+              318,
+              331
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "90 ko.mp4",
+          "sourceSha256": "d4a08e5ca2afea5c4aa9da6f8aa948dfdb74e54e651861d353011f14122cb6fe",
+          "sourceBytes": 2525660,
+          "sheetSha256": "82b7c9590e75d4920d32746e984193c3b4a75051e97065141c64e4c7271a5bab",
+          "sheetBytes": 4917110,
+          "posterSha256": "ebef86a75cb377572b2c0b5c32b5e7068be2ed95edcb51c6d97b97af0fc33bde",
+          "posterBytes": 24142,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              55,
+              236,
+              25
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 2923,
+            "pixelsOver16": 1782,
+            "alphaBounds": [
+              23,
+              131,
+              476,
+              388
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 6,
+          "maximumRuntimePageDecodedBytes": 16777216,
+          "loopSeam": null
+        }
+      ]
+    },
+    {
+      "speciesId": 91,
+      "name": "Espeiry",
+      "timing": {
+        "attack": {
+          "releaseFrame": 27,
+          "releaseMs": 1125.0,
+          "evidence": "Piccola falce ciano isolata dietro e a destra del corpo durante la preparazione. Prima lunga spazzata ciano e bianca che attraversa in avanti la parte bassa del torso. La spazzata si estende ulteriormente e inizia ad avvolgere il corpo.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        },
+        "hit": {
+          "reactionFrame": 23,
+          "reactionMs": 958.3333333333334,
+          "evidence": "Sottile scia bianca in arrivo sulla destra; nessun grande anello di impatto sul corpo. Primo grande anello bianco e ciano su testa e torace, con brusco contraccolpo verso destra. Anello e scie si espandono mentre il corpo prosegue la reazione.",
+          "inspection": "Consecutive original decoded frames, zero-based indices at native 24 FPS; every original frame retained."
+        }
+      },
+      "markerEvidence": {
+        "attack": [
+          {
+            "frame": 26,
+            "observation": "Piccola falce ciano isolata dietro e a destra del corpo durante la preparazione."
+          },
+          {
+            "frame": 27,
+            "observation": "Prima lunga spazzata ciano e bianca che attraversa in avanti la parte bassa del torso."
+          },
+          {
+            "frame": 28,
+            "observation": "La spazzata si estende ulteriormente e inizia ad avvolgere il corpo."
+          }
+        ],
+        "hit": [
+          {
+            "frame": 22,
+            "observation": "Sottile scia bianca in arrivo sulla destra; nessun grande anello di impatto sul corpo."
+          },
+          {
+            "frame": 23,
+            "observation": "Primo grande anello bianco e ciano su testa e torace, con brusco contraccolpo verso destra."
+          },
+          {
+            "frame": 24,
+            "observation": "Anello e scie si espandono mentre il corpo prosegue la reazione."
+          }
+        ]
+      },
+      "sourceVisualLimits": [
+        "Le lunghe scie orizzontali dell hit intorno ai frame 42-57 arrivano al bordo destro del video originale. Sono effetti nativi, mentre il corpo rimane all interno."
+      ],
+      "initialScreenRgbByAction": {
+        "idle": [
+          56,
+          238,
+          24
+        ],
+        "attack": [
+          53,
+          239,
+          22
+        ],
+        "hit": [
+          54,
+          241,
+          23
+        ],
+        "victory": [
+          55,
+          236,
+          22
+        ],
+        "ko": [
+          56,
+          238,
+          22
+        ]
+      },
+      "cellWidth": 576,
+      "cellHeight": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 189,
+        "top": 192
+      },
+      "sharedScale": 0.26581005586592177,
+      "groundPivot": [
+        285.0,
+        383
+      ],
+      "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+      "frameCounts": {
+        "idle": 96,
+        "attack": 96,
+        "hit": 96,
+        "victory": 96,
+        "ko": 96
+      },
+      "clips": [
+        {
+          "action": "idle",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "91 idle.mp4",
+          "sourceSha256": "3fc8f3c97cb77bbbb93ff050fdc0e1665c19db845237cccf32cfb4bac2e96564",
+          "sourceBytes": 1492786,
+          "sheetSha256": "1cf47c003d3f0dcc47975a15743de901b27d0b504f26625211b143a5a1c2d2b5",
+          "sheetBytes": 2865894,
+          "posterSha256": "d72f1b609c6362dd2721303e3384e6ced4913ea2f5af2820a7481b333e620f23",
+          "posterBytes": 29216,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              24
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11535,
+            "pixelsOver16": 10134,
+            "alphaBounds": [
+              234,
+              189,
+              512,
+              386
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": {
+            "bodyPremultipliedRgbMeanAbsoluteDifference": 0.034699,
+            "bodyAlphaMeanAbsoluteDifference": 0.023649,
+            "bodyChangedPixelFractionOver5Percent": 0.214009,
+            "adjacentMedianBodyRgbDifference": 0.058034,
+            "adjacentMaxBodyRgbDifference": 0.111271,
+            "seamToAdjacentMedianRatio": 0.598
+          }
+        },
+        {
+          "action": "attack",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "91 attack.mp4",
+          "sourceSha256": "4410877c794b07093521ca2fd079a472ffcde077e3eeaf6307c31893548d7e76",
+          "sourceBytes": 2164052,
+          "sheetSha256": "a5d604a89f47192eeeeab4823d69eef89262cea6d5580f67b5b824104c2b1025",
+          "sheetBytes": 3957296,
+          "posterSha256": "718128a8a5050a31885704c7cdc4efd595b2633cd9aaff7e5d574a50da2bab93",
+          "posterBytes": 28998,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              24
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11498,
+            "pixelsOver16": 10133,
+            "alphaBounds": [
+              234,
+              189,
+              336,
+              386
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "hit",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "91 hit.mp4",
+          "sourceSha256": "38e5d5a549573f31b94e5763eccd39f106c50d5dd61d11ca04c5aa12053d6737",
+          "sourceBytes": 2256986,
+          "sheetSha256": "5a06a5bc14862d36bd98aa27f087a3fcc17099dddcde84e9754e49ca403c9829",
+          "sheetBytes": 3793212,
+          "posterSha256": "c049c63a4151b73a552212ecf3f400dc120fb7c81695a6471ea42215fb2fab31",
+          "posterBytes": 29334,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              24
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11549,
+            "pixelsOver16": 10234,
+            "alphaBounds": [
+              232,
+              189,
+              334,
+              384
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "victory",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "91 victory.mp4",
+          "sourceSha256": "523d22e95e41c5b242726397743f89843744c55430e71f3753397f9814c9ef85",
+          "sourceBytes": 3024533,
+          "sheetSha256": "aacdf253f62b616ccd913863c31a25f45c54fc6325bc831722fceba734c0e820",
+          "sheetBytes": 4832950,
+          "posterSha256": "2f7e16887bfc833c4f39fcfaa05fd55ce4f3da5d5860a1d802ec0623687cca71",
+          "posterBytes": 33364,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              24
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 11521,
+            "pixelsOver16": 10134,
+            "alphaBounds": [
+              92,
+              190,
+              537,
+              393
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        },
+        {
+          "action": "ko",
+          "frameCount": 96,
+          "fps": 24.0,
+          "suppliedFilename": "91 ko.mp4",
+          "sourceSha256": "f7d41c0a6dd507b930e51537dec48b51cdb6d23839cae8ea4e46c3af1a121322",
+          "sourceBytes": 1896893,
+          "sheetSha256": "31018f9e15c80871367393d14f3a8ca7010bbe8b60023b38768e13a05bc7cbcf",
+          "sheetBytes": 2935016,
+          "posterSha256": "50ac8e23c86ac2f75139a0614c08c2c1fd13b812a472d48510c2e69dad62e713",
+          "posterBytes": 29056,
+          "key": {
+            "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+            "alphaCutoff": 0.08,
+            "screenColourRatioTolerance": 0.12,
+            "screenDominanceCleanup": false,
+            "screenDominanceRatio": null,
+            "screenFringeCleanup": false,
+            "screenFringeProfile": null,
+            "screenBackgroundFallback": [
+              56,
+              238,
+              24
+            ],
+            "screenBackgroundFallbackFrames": []
+          },
+          "allSourceFramesPreserved": true,
+          "losslessDecodedRgbaMatches": true,
+          "posterMatchesFirstFrame": true,
+          "unusedCellsTransparent": true,
+          "finalFrame": {
+            "index": 95,
+            "occupiedPixels": 1102,
+            "pixelsOver16": 596,
+            "alphaBounds": [
+              28,
+              151,
+              522,
+              409
+            ],
+            "preservedInRuntimePage": true
+          },
+          "runtimePages": 8,
+          "maximumRuntimePageDecodedBytes": 15925248,
+          "loopSeam": null
+        }
+      ]
+    }
+  ]
+}
