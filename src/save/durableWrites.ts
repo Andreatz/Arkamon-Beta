@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { serializeGameBackup, validateGameBackup } from './gameBackup'
 import type { GameSaveState } from './gamePersistence'
+import { isUiStudioPreview } from '@/ui-studio/previewMode'
 
 export const AUTO_BACKUP_STORAGE_KEY = 'arkamon-automatic-backups-v1'
 export interface RecoveryCopy { createdAt: string; backup: string }
@@ -23,6 +24,7 @@ export function reportSaveFailure(retry: () => boolean, local = false, cancel?: 
 interface CachedCopies { raw: string | null; copies: RecoveryCopy[]; firstCampaign: string | null }
 const recoveryCache = new WeakMap<object, CachedCopies>()
 export function readRecoveryCopies(storage?: Pick<Storage, 'getItem'>): RecoveryCopy[] {
+  if (isUiStudioPreview()) return []
   try {
     const target = storage ?? localStorage
     const raw = target.getItem(AUTO_BACKUP_STORAGE_KEY)
@@ -40,6 +42,7 @@ export function readRecoveryCopies(storage?: Pick<Storage, 'getItem'>): Recovery
 }
 /** Preserve the previous valid checkpoint, never an unreadable disk envelope. */
 export function rememberRecoveryCopy(previous: GameSaveState, storage?: Pick<Storage, 'getItem' | 'setItem'>): void {
+  if (isUiStudioPreview()) return
   try {
     const target = storage ?? localStorage
     const backup = serializeGameBackup(previous)
@@ -62,12 +65,14 @@ let pendingTimer: ReturnType<typeof setTimeout> | null = null
 /** The primary checkpoint is already durable. Coalesce recovery work outside the
  * input/impact task and never publish a stale copy after ownership/restore changes. */
 export function scheduleRecoveryCopy(previous: GameSaveState, canWrite: () => boolean, canRun: () => boolean = () => true): void {
+  if (isUiStudioPreview()) return
   pendingCopy = { previous, canWrite, canRun }
   if (pendingTimer !== null) return
   pendingTimer = setTimeout(runDeferredRecoveryCopy, 350)
 }
 function runDeferredRecoveryCopy(): void {
   pendingTimer = null
+  if (isUiStudioPreview()) { pendingCopy = null; return }
   if (pendingCopy && !pendingCopy.canWrite()) { pendingCopy = null; return }
   // Battle impact and scene transitions declare busy independently. Retain the
   // newest pending checkpoint and try again after the presentation cue finishes.
@@ -78,6 +83,7 @@ export function flushPendingRecoveryCopy(): void {
   if (pendingTimer !== null) clearTimeout(pendingTimer)
   const pending = pendingCopy
   pendingTimer = null; pendingCopy = null
+  if (isUiStudioPreview()) return
   if (pending?.canWrite()) rememberRecoveryCopy(pending.previous)
 }
 export function cancelPendingRecoveryCopy(): void {

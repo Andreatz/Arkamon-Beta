@@ -1,6 +1,7 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { useReducedMotion } from 'framer-motion'
+import { isUiStudioPreview, uiPreviewCampaignStorage } from '@/ui-studio/previewMode'
 
 export type MotionPreference = 'system' | 'on' | 'off'
 export interface GamePreferences {
@@ -34,6 +35,7 @@ export const useGamePreferences = create<PreferencesStore>()(persist((set, get) 
   resetPreferences: () => set({ ...DEFAULT_GAME_PREFERENCES }),
 }), {
   name: 'arkamon-preferences-v1', version: 1,
+  storage: createJSONStorage(() => isUiStudioPreview() ? uiPreviewCampaignStorage : localStorage),
   partialize: ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory }) => ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory }),
   merge: (saved, current) => ({ ...current, ...normalizeGamePreferences(saved) }),
 }))

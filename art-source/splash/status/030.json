@@ -1,0 +1,38 @@
+{
+  "id": 30,
+  "name": "Eclyps",
+  "type": "Oscurità",
+  "version": "hero-focus-v1",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-7e561be9-ac45-4774-b945-73a028978f66.png",
+  "sourceMaster": "output/splash-art/originals/030-eclyps-hero-focus-v1.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/030-eclyps.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/030-eclyps.webp",
+  "promptFile": "art-source/splash/prompts/030-eclyps-hero-focus-v1.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 606282,
+  "sha256": "bc408b1216a1e0a6092a2ea5450001b788e250c3198af6bb010c012185f74fba",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-25T19:53:15.603Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.295,
+    "top": 0.08,
+    "right": 0.715,
+    "bottom": 0.98
+  },
+  "focusBounds": {
+    "left": 0.34,
+    "top": 0.25,
+    "right": 0.595,
+    "bottom": 0.79
+  },
+  "visualReview": {
+    "method": "manual conservative visual envelopes on generated source",
+    "notes": "New hero standard: measured focus includes face/forehead markings and central chest/torso. Outer ear/leaf tips, legs, rear flanks and tail are part of the full subject bounds and may fall under UI. Official form design inspected. No live UI test claimed."
+  }
+}

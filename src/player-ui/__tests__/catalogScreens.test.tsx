@@ -66,6 +66,7 @@ describe('real catalog screen visibility and action boundaries', () => {
     expect(markup).not.toContain('data-arkadex-detail=')
     expect(markup).not.toContain('Dati di riferimento al livello 5')
     expect(markup).not.toContain('class="pu-creature-art"')
+    expect(markup).not.toContain('/ui/reference-png/portrait-')
     expect(state.giocatoreAttivo).toBe(1)
     expect(JSON.stringify(state)).toBe(before)
   })
@@ -91,10 +92,14 @@ describe('real catalog screen visibility and action boundaries', () => {
     expect(one).not.toContain('Voider')
     expect(one).not.toContain('/sprites/arkamon/2/')
     expect(one).not.toContain('/sprites/front_sprites/110.png')
+    for (const id of [2, 3, 4, 5, 6, 110]) expect(one).not.toContain(`/ui/reference-png/portrait-${String(id).padStart(3, '0')}.webp`)
+    expect(one).toContain('/ui/reference-png/portrait-001.webp')
     const two = renderToStaticMarkup(<ArkadexScreen playerId={2} />)
     expect(two).toContain('Numero 5: Darklaw · Ottenuto')
     expect(two).toContain('Numero 1: specie da scoprire · Da scoprire')
     expect(two).not.toContain('Vyrath')
+    expect(two).not.toContain('/ui/reference-png/portrait-001.webp')
+    expect(two).toContain('/ui/reference-png/portrait-005.webp')
   })
 
   it('shows only the selected player’s real items and keeps Masterball unavailable outside battle', () => {
@@ -121,6 +126,8 @@ describe('real catalog screen visibility and action boundaries', () => {
     expect(markup).not.toContain('/sprites/front_sprites/1.png')
     expect(markup).not.toContain('/sprites/front_sprites/2.png')
     expect(markup).not.toContain('/sprites/front_sprites/3.png')
+    for (const id of [1, 2, 3]) expect(markup).not.toContain(`/ui/reference-png/portrait-${String(id).padStart(3, '0')}.webp`)
+    expect(markup).toContain('/ui/reference-png/portrait-004.webp')
   })
 
   it('does not turn viewing another city or player into permission to shop', () => {

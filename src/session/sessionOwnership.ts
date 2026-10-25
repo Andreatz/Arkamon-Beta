@@ -35,12 +35,17 @@ export function isCampaignCheckpointCurrent(key: string): boolean { return coord
 export function sessionOwnershipMessage(): string { return coordinator?.getSnapshot().reason ?? '' }
 export function requestSessionControl(): Promise<boolean> { return coordinator?.acquire() ?? Promise.resolve(true) }
 /** Raw save access shared by normal writes, challenge transitions and backup restoration. */
-export function readCampaignCheckpoint(key: string): string | null { return coordinator?.read(key) ?? localStorage.getItem(key) }
+export function readCampaignCheckpoint(key: string): string | null {
+  if (isUiStudioPreview()) return null
+  return coordinator?.read(key) ?? localStorage.getItem(key)
+}
 export function writeCampaignCheckpoint(key: string, text: string): void {
+  if (isUiStudioPreview()) return
   if (coordinator) coordinator.write(key, text)
   else localStorage.setItem(key, text)
 }
 export function removeCampaignCheckpoint(key: string): void {
+  if (isUiStudioPreview()) return
   if (coordinator) coordinator.remove(key)
   else localStorage.removeItem(key)
 }
@@ -49,10 +54,12 @@ export function removeCampaignCheckpoint(key: string): void {
  */
 export function canRecoverCampaignCheckpoint(): boolean { return coordinator?.canRecover() ?? true }
 export function recoverCampaignCheckpoint(key: string, text: string): void {
+  if (isUiStudioPreview()) return
   if (coordinator) coordinator.recoverWrite(key, text)
   else localStorage.setItem(key, text)
 }
 export function retireRecoveredCampaignCheckpoint(key: string): void {
+  if (isUiStudioPreview()) return
   if (coordinator) coordinator.recoverRemove(key)
   else localStorage.removeItem(key)
 }

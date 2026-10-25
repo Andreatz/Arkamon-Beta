@@ -5,6 +5,7 @@ import { createSeededRandomState, nextSeededRandom } from './seededRandom'
 import { useChallengeStore } from './challengeStore'
 import type { ChallengeSession } from './types'
 import { isCampaignWritable, sessionOwnershipMessage, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
+import { isUiStudioPreview } from '@/ui-studio/previewMode'
 
 import { ACTIVE_CHALLENGE_STORAGE_KEY, canonicalChallengeSession, type ChallengeContext } from './challengePersistence'
 
@@ -14,6 +15,7 @@ function publishWithoutSecondWrite(patch: Partial<GameState>) {
   try { useGameStore.setState(patch) } finally { if (storage) useGameStore.persist.setOptions({ storage }) }
 }
 export function launchChallenge(value: ChallengeSession): { ok: boolean; message: string } {
+  if (isUiStudioPreview()) return { ok: false, message: 'Avvia le sfide dalla partita. Questa anteprima non modifica i salvataggi.' }
   if (!isCampaignWritable()) return { ok: false, message: sessionOwnershipMessage() }
   const previous = useGameStore.getState()
   if (previous.challengeContext) return { ok: false, message: 'Concludi o abbandona la sfida in corso.' }
@@ -41,6 +43,7 @@ export function launchChallenge(value: ChallengeSession): { ok: boolean; message
 }
 /** Returning is durable before UI publication. An abandoned match never becomes a competitive result. */
 export function exitChallenge(completed = false): { ok: boolean; message: string } {
+  if (isUiStudioPreview()) return { ok: false, message: 'Gestisci le sfide dalla partita. Questa anteprima non modifica i salvataggi.' }
   if (!isCampaignWritable()) return { ok: false, message: sessionOwnershipMessage() }
   const previous = useGameStore.getState(), context = previous.challengeContext
   if (!context) return { ok: false, message: 'Non c’è una sfida in corso.' }

@@ -6,12 +6,14 @@ import { BATTLE_ARCHIVE_STORAGE_KEY, useBattleArchiveStore } from '@/components/
 import { isCampaignWritable, sessionOwnershipMessage } from '@/session/sessionOwnership'
 import { backupRestoreStorage, prepareBackupRestore, finishBackupRestore, rollbackBackupRestore, useBackupRestoreRecoveryStatus, type RestoreEntry } from './restoreJournal'
 import { cancelPendingRecoveryCopy } from './durableWrites'
+import { isUiStudioPreview } from '@/ui-studio/previewMode'
 
 type BackupStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 export type GameBackupRestoreResult = { ok: true; previousBackup: string } | { ok: false; error: string }
 
 /** Write durable data first, then publish one in-memory state update. Failed writes leave the game untouched. */
 export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupStorage): GameBackupRestoreResult {
+  if (isUiStudioPreview()) return { ok: false, error: 'Il ripristino dei backup è disponibile nella partita. Questa anteprima non modifica i salvataggi.' }
   if (!isCampaignWritable()) return { ok: false, error: sessionOwnershipMessage() }
   if (useGameStore.getState().challengeContext) return { ok: false, error: 'Torna alla campagna prima di ripristinare un backup.' }
   const restored = stateFromValidatedBackup(preview)
@@ -68,6 +70,7 @@ export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupSt
 }
 
 export function readPreviousGameBackup(storage?: BackupStorage): string | null {
+  if (isUiStudioPreview()) return null
   try { return (storage ?? localStorage).getItem(PREVIOUS_BACKUP_STORAGE_KEY) } catch { return null }
 }
 

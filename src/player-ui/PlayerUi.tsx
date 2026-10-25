@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useContext, useEffect, useRef, type CSSProperties } from 'react'
+import { lazy, Suspense, useState, useContext, useEffect, useRef, useMemo, type CSSProperties } from 'react'
 import { DialogNavigationContext } from '@/components/ui/DialogNavigation'
 import { useGameStore } from '@/store/gameStore'
 import { GameSettingsPanel } from '@/settings/GameSettingsPanel'
@@ -14,6 +14,30 @@ import { StudioCommand } from '@/components/ui/StudioArtwork'
 import './livePlayerUi.css'
 import './fullscreenLegacy.css'
 import './fullscreenAuxiliary.css'
+import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
+import { resolveUiConcept } from './concepts/uiConcepts'
+import './concepts/concept-base.css'
+import './concepts/concept-dramatic.css'
+import './concepts/concept-editorial.css'
+import { isReferenceUi } from './reference/referenceTheme'
+import { referenceScreenBackground } from './reference/referenceBackgrounds'
+import { providedArtworkVariables } from './reference/ProvidedArtwork'
+import { getSplashArtwork, supportsSplashArtwork } from './reference/splashArtwork'
+import { SplashArtworkProvider, type ReadySplashArtwork } from './reference/SplashArtworkContext'
+import { createSplashArtworkLoader } from './reference/splashArtworkLoader'
+import { useSplashFraming } from './reference/useSplashFraming'
+import './reference/reference-shared.css'
+import './reference/reference-menu.css'
+import './reference/reference-team.css'
+import './reference/reference-collections.css'
+import './reference/reference-inventory.css'
+import './reference/reference-finish.css'
+import './reference/reference-artwork.css'
+import './reference/reference-artwork-menu.css'
+import './reference/reference-artwork-collections.css'
+import './reference/reference-artwork-controls.css'
+import './reference/reference-png.css'
+import './reference/reference-splash.css'
 
 export { PLAYER_UI_SCREENS, PLAYER_UI_OPEN_EVENT, isPlayerUiScreen, openPlayerUi } from './navigation'
 export type { PlayerUiScreen, PlayerUiAuxiliary, PlayerUiOpenRequest } from './navigation'
@@ -85,6 +109,25 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   const blockedScreen = !!context && challengeBlocked.has(screen)
   const page = screens[screen]
   const toolLabel = auxiliary.find(entry => entry.id === visibleTool)?.label
+  const reference = !MENU_SVG_ARTWORK_ENABLED && isReferenceUi()
+  const selectedSpeciesId = usePlayerUiSession(state => state.selection[playerId]?.speciesId)
+  const [loadedSplash, setLoadedSplash] = useState<{ screen: PlayerUiScreen; artwork: ReadySplashArtwork } | null>(null)
+  const splashCandidate = useMemo<ReadySplashArtwork | null>(() => {
+    if (!reference || visibleTool || blockedScreen || !supportsSplashArtwork(screen)) return null
+    const artwork = getSplashArtwork(selectedSpeciesId)
+    return artwork ? { ...artwork, src: assetUrl(artwork.src), playerId } : null
+  }, [reference, visibleTool, blockedScreen, screen, selectedSpeciesId, playerId])
+  // Compare the complete selection before rendering, rather than waiting for effect cleanup.
+  const readySplash = splashCandidate && loadedSplash?.screen === screen
+    && loadedSplash.artwork.playerId === splashCandidate.playerId && loadedSplash.artwork.speciesId === splashCandidate.speciesId
+    && loadedSplash.artwork.src === splashCandidate.src ? loadedSplash.artwork : null
+  useEffect(() => {
+    const loader = createSplashArtworkLoader(artwork => setLoadedSplash(artwork ? { screen, artwork } : null))
+    loader.load(splashCandidate)
+    return () => loader.dispose()
+  }, [splashCandidate, screen])
+
+  const splashFraming = useSplashFraming(shell, readySplash, screen)
 
   function navigate(next: PlayerUiScreen) {
     if (next === 'negozio') return
@@ -131,11 +174,16 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     return () => cancelAnimationFrame(frame)
   }, [screen, tool])
 
-  return <div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ '--pu-background': `url("${screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")` } as CSSProperties}
-    data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId}>
+  return <SplashArtworkProvider value={readySplash}><div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ ...(reference ? providedArtworkVariables : {}), '--pu-background': `url("${reference ? referenceScreenBackground(screen, location, readySplash) : screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-transform': splashFraming?.transform ?? 'none' } as CSSProperties}
+    data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId}
+    data-splash-frame-ready={readySplash && splashFraming ? 'true' : undefined} data-splash-frame-region={splashFraming?.region}
+    data-reference-splash-species={readySplash?.speciesId} data-reference-splash-ready={readySplash ? 'true' : undefined}
+    data-ui-concept={MENU_SVG_ARTWORK_ENABLED ? undefined : reference ? 'aurora' : resolveUiConcept(typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('uiConcept'))}>
+    {readySplash && <div className="pu-splash-backdrop" aria-hidden="true" />}
     <div className="pu-topbar">
       <KitFrame id="panel-wide" />
-      <div className="pu-brand"><img src={assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" /><small>Strumenti dell’allenatore</small></div>
+      <div className="pu-brand" role="img" aria-label="Arkamon"><img src={assetUrl('/ui/logo_arkamon.png')} className={reference ? 'pu-provided-logo' : undefined} alt="" />{!reference && <b className="pu-wordmark" aria-hidden="true">ARKAMON<span>VIAGGIA. SCOPRI. SFIDA.</span></b>}<small>Strumenti dell’allenatore</small></div>
+      {reference && <h1 className="ref-screen-title"><KitIcon id={visibleTool ? auxiliary.find(entry => entry.id === visibleTool)?.icon ?? page.icon : page.icon} />{visibleTool ? toolLabel : screen === 'partita' ? 'Menù principale' : screen === 'negozio' ? 'Negozio' : screens[screen].label}</h1>}
       <div className="pu-header-meta"><small>Posizione di G{playerId}</small><strong>{location}</strong></div>
       <div className="pu-player-switch" role="group" aria-label="Giocatore degli strumenti">
         {[player1, player2].map(entry => <StudioCommand className="pu-player-option" key={entry.id} selected={playerId === entry.id} aria-pressed={playerId === entry.id}
@@ -170,7 +218,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
             ? <RegisterScreen key={`${visibleTool}-${playerId}`} playerId={playerId} initialTab={visibleTool === 'register' ? 'match' : visibleTool} />
           : visibleTool === 'backup' ? <BackupPanel />
           : blockedScreen ? <p role="status">Questa funzione torna disponibile dopo la sfida.</p>
-          : screen === 'partita' ? <MenuScreen playerId={playerId} onAuxiliary={openTool} />
+          : screen === 'partita' ? <MenuScreen playerId={playerId} onAuxiliary={openTool} onNavigate={navigate} onResume={onClose} />
           : screen === 'squadra' ? <TeamScreen playerId={playerId} onAnalyse={analyse} onBag={openBag} onDeposit={() => contextualScreen('deposito')} />
           : screen === 'deposito' ? <DepositScreen playerId={playerId} onAnalyse={analyse} />
           : screen === 'arkadex' ? <ArkadexScreen playerId={playerId} showPlayerPicker={false} />
@@ -183,5 +231,5 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} azioni disponibili` : ''}</span>
       <span className="pu-keyboard-hint">↑ ↓ Seleziona · Invio Conferma · Esc Indietro</span><PresentManagementControl screen={visibleTool ?? screen} playerId={playerId} instanceId={instanceId} /><StudioCommand className="pu-resume-command" data-ui-id="resume-journey" selected onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</StudioCommand>
     </footer>
-  </div>
+  </div></SplashArtworkProvider>
 }

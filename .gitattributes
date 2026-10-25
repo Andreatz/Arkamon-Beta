@@ -14,3 +14,8 @@ public/ui/player-kit/** -text whitespace=cr-at-eol
 # Keep authored SVG formatting byte-identical in runtime adapters and templates.
 public/ui/studio/runtime/*.svg -text whitespace=-blank-at-eol
 src/ui-studio/templates/*.svg -text whitespace=-blank-at-eol
+
+# Preserve imported vector bytes and deterministic generated UI catalogs.
+public/ui/reference-assets/*.svg -text whitespace=-blank-at-eol
+public/ui/reference-png/*.json text eol=lf
+ui-source/*.json text eol=lf

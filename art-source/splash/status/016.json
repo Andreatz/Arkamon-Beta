@@ -1,0 +1,52 @@
+{
+  "id": 16,
+  "name": "Clastoom",
+  "type": "Terra",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-86170199-1518-480c-86f0-3e7050285ec1.png",
+  "sourceMaster": "output/splash-art/originals/016-clastoom-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/016-clastoom.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/016-clastoom.webp",
+  "promptFile": "art-source/splash/prompts/016-clastoom.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 683424,
+  "sha256": "2dbc46b4ff215b462328fe6789464e7a7c0110ac15d48e6101c323597c08ac32",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:19:55.264Z",
+  "subjectBounds": {
+    "left": 0.405,
+    "top": 0.36,
+    "right": 0.58,
+    "bottom": 0.67
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope on generated source",
+    "notes": "Full species-specific body, crests, tail, feet and essential sand/rock appendages inspected inside safe zone. Exact official reference matched. No live UI validation claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.422,
+    "top": 0.415,
+    "right": 0.553,
+    "bottom": 0.65
+  },
+  "displayScale": 2.2128,
+  "displayOffset": {
+    "x": 0.0077,
+    "y": -0.0419
+  },
+  "reviewedAt": "2026-10-25T20:54:59.260Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

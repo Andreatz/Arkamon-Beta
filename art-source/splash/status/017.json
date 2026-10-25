@@ -1,0 +1,52 @@
+{
+  "id": 17,
+  "name": "Clastoom",
+  "type": "Terra",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-b0c9e322-a229-44c1-94fc-e2c3ec738867.png",
+  "sourceMaster": "output/splash-art/originals/017-clastoom-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/017-clastoom.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/017-clastoom.webp",
+  "promptFile": "art-source/splash/prompts/017-clastoom.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 650728,
+  "sha256": "98d588b80142ad75494ee3c4724a58022286180282bd39a899bd06e18184826e",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:23:45.807Z",
+  "subjectBounds": {
+    "left": 0.405,
+    "top": 0.35,
+    "right": 0.6,
+    "bottom": 0.71
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope",
+    "notes": "Exact reference inspected; all horns, limbs, tail or sand vortex visible inside safe zone. No live UI claim."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.423,
+    "top": 0.41,
+    "right": 0.553,
+    "bottom": 0.65
+  },
+  "displayScale": 2.1667,
+  "displayOffset": {
+    "x": 0.006,
+    "y": -0.035
+  },
+  "reviewedAt": "2026-10-25T20:54:59.261Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

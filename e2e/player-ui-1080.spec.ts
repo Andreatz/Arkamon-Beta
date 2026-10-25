@@ -7,6 +7,8 @@ const SAVE_KEY = 'arkamon-save'
 const pokemonCatalog: { id: number; nome: string }[] = JSON.parse(readFileSync(new URL('../src/data/pokemon.json', import.meta.url), 'utf8'))
 type PortraitMetadata = { width: number; height: number; alphaBounds: [number, number, number, number] }
 const portraitMetadata: Record<string, PortraitMetadata> = JSON.parse(readFileSync(new URL('../src/player-ui/portraitMetadata.json', import.meta.url), 'utf8'))
+const pngPackage: { assets: { id: string; file: string; width: number; height: number; trim: boolean }[] } = JSON.parse(readFileSync(new URL('../public/ui/reference-png/manifest.generated.json', import.meta.url), 'utf8'))
+const compactPortraitMetadata = Object.fromEntries(pngPackage.assets.filter(asset => asset.id.startsWith('portrait-')).map(asset => [`/ui/reference-png/${asset.file}`, asset]))
 const SCREENS = [
   ['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'],
   ['Borsa', 'borsa'], ['Menù Partita', 'partita'],
@@ -90,40 +92,61 @@ async function selectScreen(dialog: Locator, name: string, id: string) {
   await assertPlayerSelectorArtwork(dialog)
 }
 
-/** The shared G1/G2 selector keeps one authored button family on every route. */
+/** G1/G2 share computed geometry and paint for each state, independently of legacy frame images. */
 async function assertPlayerSelectorArtwork(dialog: Locator) {
   const selector = dialog.getByRole('group', { name: 'Giocatore degli strumenti', exact: true })
   const buttons = selector.locator(':scope > button')
   await expect(buttons).toHaveCount(2)
+  for (let index = 0; index < 2; index++) {
+    await expect(buttons.nth(index)).toBeEnabled()
+    await expect(buttons.nth(index)).toHaveAccessibleName(new RegExp(`^G${index + 1} · .+`))
+  }
   const report = await buttons.evaluateAll(async elements => {
-    await Promise.all(elements.map(element => element.querySelector<HTMLImageElement>(':scope > img[data-ui-skin-slot="frame"]')?.decode()))
+    await Promise.all(elements.flatMap(element => [...element.querySelectorAll<HTMLImageElement>('img')].map(image => image.decode())))
     return elements.map(element => {
-      const frame = element.querySelector<HTMLImageElement>(':scope > img[data-ui-skin-slot="frame"]')
       const label = element.querySelector<HTMLElement>(':scope > span > span:last-child')
       const button = element.getBoundingClientRect(), labelBox = label?.getBoundingClientRect()
-      return { selected: element.getAttribute('aria-pressed') === 'true', source: frame?.getAttribute('src'), loaded: frame?.complete && !!frame.naturalWidth,
-        fit: frame && getComputedStyle(frame).objectFit, width: button.width, height: button.height,
-        labelFits: !!labelBox && labelBox.left >= button.left + button.width * .16 - 2 && labelBox.right <= button.right - button.width * .16 + 2
+      const selected = element.getAttribute('aria-pressed') === 'true'
+      const originalAttributes = ['aria-pressed', 'data-selected'].map(name => [name, element.getAttribute(name)] as const)
+      // Inspect both paint states synchronously, without dispatching a game action
+      // or changing the selected player/specimen. Restore the real attributes.
+      const paint = [false, true].map(active => {
+        element.setAttribute('aria-pressed', String(active))
+        if (active) element.setAttribute('data-selected', 'true'); else element.removeAttribute('data-selected')
+        const style = getComputedStyle(element), before = getComputedStyle(element, '::before')
+        return { background: style.backgroundImage, backgroundSize: style.backgroundSize, borderStyle: style.borderStyle,
+          borderWidth: style.borderWidth, borderRadius: style.borderRadius, font: style.font, padding: style.padding,
+          beforeBackground: before.backgroundImage, beforeSize: before.backgroundSize, beforeDisplay: before.display }
+      })
+      for (const [name, value] of originalAttributes) {
+        if (value === null) element.removeAttribute(name); else element.setAttribute(name, value)
+      }
+      const images = [...element.querySelectorAll<HTMLImageElement>('img')]
+      return { selected, paint, loaded: images.every(image => image.complete && image.naturalWidth > 0 && image.naturalHeight > 0),
+        width: button.width, height: button.height,
+        labelFits: !!labelBox && labelBox.left >= button.left + 2 && labelBox.right <= button.right - 2
           && labelBox.top >= button.top - 2 && labelBox.bottom <= button.bottom + 2 }
     })
   })
   expect(report.filter(button => button.selected)).toHaveLength(1)
   for (const button of report) {
-    expect(button.source).toMatch(new RegExp(`/ui/studio/Scuro/${button.selected ? 'bottone-selezionato' : 'bottone'}\\.svg$`))
     expect(button.loaded).toBe(true)
-    expect(button.fit).toBe('contain')
+    expect(button.paint.every(state => state.background !== 'none' || state.beforeBackground !== 'none'), 'Player selection retains visible paint in both states').toBe(true)
+    expect(button.paint[1].background, 'Selection changes the visible paint').not.toBe(button.paint[0].background)
     expect(button.height).toBeGreaterThanOrEqual(44)
     expect(button.labelFits, 'Long player labels stay inside the authored button').toBe(true)
   }
   expect(Math.abs(report[0].width - report[1].width)).toBeLessThanOrEqual(1)
   expect(Math.abs(report[0].height - report[1].height)).toBeLessThanOrEqual(1)
+  expect(report[0].paint, 'G1 and G2 use the same geometry and artwork for the same selected state').toEqual(report[1].paint)
 }
 
-/** Projects source pixels through the rendered SVG, so CSS zooming/cropping cannot pass as a centered portrait. */
+/** Full-body source pixels retain exact SVG framing; supplied compact PNG canvases stay contained. */
 async function assertVisiblePortraits(dialog: Locator, context: string) {
+  const allPortraits = dialog.locator('.pu-creature-art:visible')
   const portraits = dialog.locator('svg.pu-creature-art:visible')
-  await expect(portraits.first(), `${context}: portraits use SVG framing`).toBeVisible()
-  await expect.poll(async () => portraits.evaluateAll(elements => elements.filter(element =>
+  await expect(allPortraits.first(), `${context}: real creature artwork is visible`).toBeVisible()
+  await expect.poll(async () => allPortraits.evaluateAll(elements => elements.filter(element =>
     element.getAttribute('data-creature-loaded') !== 'true').length), {
     message: `${context}: every visible portrait must finish loading`,
   }).toBe(0)
@@ -143,10 +166,10 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
     })
     const alpha = { left: alphaPoints[0].x, top: alphaPoints[0].y, right: alphaPoints[1].x, bottom: alphaPoints[1].y }
     const rect = svg.getBoundingClientRect()
-    const circleElement = svg.parentElement!.querySelector('.pu-creature-circle')!
+    const circleElement = svg.parentElement!.querySelector('.pu-creature-circle')
     // Complete authored Team frames replace the old circle decoration. Its
     // portrait host remains the exact contained area, independent of that skin.
-    const circle = (getComputedStyle(circleElement).display === 'none' ? svg.parentElement! : circleElement).getBoundingClientRect()
+    const circle = (!circleElement || getComputedStyle(circleElement).display === 'none' ? svg.parentElement! : circleElement).getBoundingClientRect()
     // object-fit:contain renders the circle as a square even when its large portrait host is a wide rectangle.
     const diameter = Math.min(circle.width, circle.height), cx = (circle.left + circle.right) / 2, cy = (circle.top + circle.bottom) / 2
     const circleSquare = { left: cx - diameter / 2, top: cy - diameter / 2, right: cx + diameter / 2, bottom: cy + diameter / 2 }
@@ -174,11 +197,48 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
     }
     return { source, speciesId, issues }
   }), portraitMetadata)
+  const compactReport = await dialog.locator('img.pu-creature-art:visible').evaluateAll((elements, metadata) => elements.map(element => {
+    const image = element as HTMLImageElement
+    const source = image.getAttribute('data-creature-source')!
+    const speciesId = image.getAttribute('data-species-id')
+    const entry = metadata[source]
+    const issues: string[] = []
+    const expected = `/ui/reference-png/portrait-${String(speciesId).padStart(3, '0')}.webp`
+    if (source !== expected || !new URL(image.currentSrc || image.src).pathname.endsWith(expected)) issues.push('Compact PNG does not match its species')
+    if (!entry) return { source, speciesId, issues: [...issues, 'Unrecognized compact source metadata'] }
+    if (entry.trim) issues.push('Authored compact portrait canvas was cropped')
+    if (!image.complete || image.naturalWidth !== entry.width || image.naturalHeight !== entry.height) issues.push('Compact source dimensions changed or image not decoded')
+    const style = getComputedStyle(image)
+    if (style.objectFit !== 'contain') issues.push('Compact portrait is not contained')
+    if (image.closest('.is-large')) issues.push('Compact portrait replaced a full-body hero')
+    const rect = image.getBoundingClientRect(), host = image.parentElement!.getBoundingClientRect(), epsilon = 2
+    const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
+    const paddingY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
+    const contentWidth = rect.width - paddingX, contentHeight = rect.height - paddingY
+    const scale = Math.min(contentWidth / entry.width, contentHeight / entry.height)
+    const width = entry.width * scale, height = entry.height * scale
+    const left = rect.left + parseFloat(style.paddingLeft) + (contentWidth - width) / 2
+    const top = rect.top + parseFloat(style.paddingTop) + (contentHeight - height) / 2
+    const right = left + width, bottom = top + height
+    if (scale <= 0 || rect.width > host.width + epsilon || rect.height > host.height + epsilon) issues.push('Compact portrait exceeds its host')
+    if (left < -epsilon || right > innerWidth + epsilon || top < -epsilon || bottom > innerHeight + epsilon) issues.push('Compact portrait canvas exceeds viewport')
+    for (let ancestor = image.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
+      const ancestorStyle = getComputedStyle(ancestor), bounds = ancestor.getBoundingClientRect()
+      const clippedX = ['hidden', 'clip', 'auto', 'scroll'].includes(ancestorStyle.overflowX)
+      const clippedY = ['hidden', 'clip', 'auto', 'scroll'].includes(ancestorStyle.overflowY)
+      if ((clippedX && (left < bounds.left + ancestor.clientLeft - epsilon || right > bounds.left + ancestor.clientLeft + ancestor.clientWidth + epsilon))
+        || (clippedY && (top < bounds.top + ancestor.clientTop - epsilon || bottom > bounds.top + ancestor.clientTop + ancestor.clientHeight + epsilon))) {
+        issues.push(`Compact portrait canvas clipped by ${ancestor.className}`); break
+      }
+    }
+    return { source, speciesId, issues }
+  }), compactPortraitMetadata)
+  report.push(...compactReport)
   expect(report.filter(portrait => portrait.issues.length), `${context}: complete centered portrait pixels`).toEqual([])
   return report
 }
 
-/** Checks complete visible geometry for all six screens, including the authored SVG layouts. */
+/** Checks complete visible geometry for all six screens and the authored PNG layouts. */
 async function assertFitsWithoutScroll(dialog: Locator, context: string) {
   await dialog.evaluate(async element => {
     await document.fonts.ready
@@ -251,7 +311,7 @@ async function assertFitsWithoutScroll(dialog: Locator, context: string) {
   expect(report.viewport).toEqual(dialog.page().viewportSize())
   expect(report.brokenKit, `${context}: SVG artwork must load`).toEqual([])
   expect(report.issues, `${context}: ${report.issueCount} geometry issues; ${JSON.stringify(report.metrics)}`).toEqual([])
-  const portraits = await dialog.locator('svg.pu-creature-art:visible').count() ? await assertVisiblePortraits(dialog, context) : []
+  const portraits = await dialog.locator('.pu-creature-art:visible').count() ? await assertVisiblePortraits(dialog, context) : []
   return { portraits }
 }
 
@@ -307,8 +367,9 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
         }
         expect(visitedSpecies).toEqual(pokemonCatalog.map(species => species.id))
         expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(0)
-        expect([...portraitSources].filter(source => source.endsWith('.png'))).toHaveLength(110)
-        expect([...portraitSources].sort()).toEqual(pokemonCatalog.map(species => `/sprites/front_sprites/${species.id}.png`).sort())
+        expect([...portraitSources].filter(source => source.startsWith('/ui/reference-png/')).sort()).toEqual(pokemonCatalog.map(species => `/ui/reference-png/portrait-${String(species.id).padStart(3, '0')}.webp`).sort())
+        // Paging changes only the compact index. The selected official full-body hero remains species 1.
+        expect([...portraitSources].filter(source => source.startsWith('/sprites/front_sprites/'))).toEqual(['/sprites/front_sprites/1.png'])
         await expect(next).toBeDisabled()
         await previous.click()
         await expect(pagination).toContainText('Pagina 18 / 19')
@@ -368,7 +429,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
   test('the same player button family survives auxiliary tools and both selected states', async ({ page }) => {
     await seedFullCampaign(page)
     const before = await savedCampaign(page), dialog = await openTools(page)
-    for (const [label, id] of [['Registro', 'register'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Backup', 'backup'], ['Impostazioni', 'settings'], ['Sfide', 'challenges']] as const) {
+    for (const [label, id] of [['Registro', 'register'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Sfide', 'challenges']] as const) {
       await selectScreen(dialog, 'Menù Partita', 'partita')
       await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
       await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
@@ -399,6 +460,8 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
     await expect(tabs).toHaveCount(0)
     await expect(dialog.locator('.pu-dex-tab-content')).toHaveCount(0)
     await expect(dialog.locator('.pu-dex-detail')).not.toContainText(pokemonCatalog.find(species => species.id === 99)!.nome)
+    await expect(dialog.locator('[data-creature-source="/ui/reference-png/portrait-099.webp"]')).toHaveCount(0)
+    await expect(dialog.locator('[data-creature-source="/sprites/front_sprites/99.png"]')).toHaveCount(0)
     await assertFitsWithoutScroll(dialog, 'G2 Arkadex: unknown species does not retain hidden information from the previous tab')
     expect(await savedCampaign(page)).toEqual(before)
   })
@@ -431,7 +494,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 900
         await assertFitsWithoutScroll(dialog, `${viewport.width}×${viewport.height} auxiliary ${label}`)
         expect(await savedCampaign(page), `${label}: reading tools preserve the campaign`).toEqual(before)
       }
-      for (const [label, id] of [['Registro', 'register'], ['Backup', 'backup'], ['Impostazioni', 'settings'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Sfide', 'challenges']] as const) {
+      for (const [label, id] of [['Registro', 'register'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Sfide', 'challenges']] as const) {
         await selectScreen(dialog, 'Menù Partita', 'partita')
         await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
         await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)

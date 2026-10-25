@@ -1,0 +1,38 @@
+{
+  "id": 29,
+  "name": "Silvard",
+  "type": "Erba",
+  "version": "hero-focus-v1",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-089b391e-3a7d-4452-8974-6e929c2f51a9.png",
+  "sourceMaster": "output/splash-art/originals/029-silvard-hero-focus-v1.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/029-silvard.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/029-silvard.webp",
+  "promptFile": "art-source/splash/prompts/029-silvard-hero-focus-v1.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 800024,
+  "sha256": "e4d36c4367e233c53fc90c0a77b80c3abe162e3672e184f5d69a7ebbaa97ca2f",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-25T19:53:14.417Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.315,
+    "top": 0.17,
+    "right": 0.88,
+    "bottom": 0.91
+  },
+  "focusBounds": {
+    "left": 0.36,
+    "top": 0.28,
+    "right": 0.645,
+    "bottom": 0.7
+  },
+  "visualReview": {
+    "method": "manual conservative visual envelopes on generated source",
+    "notes": "New hero standard: measured focus includes face/forehead markings and central chest/torso. Outer ear/leaf tips, legs, rear flanks and tail are part of the full subject bounds and may fall under UI. Official form design inspected. No live UI test claimed."
+  }
+}

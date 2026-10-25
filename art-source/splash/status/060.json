@@ -1,0 +1,48 @@
+{
+  "id": 60,
+  "name": "Shabyss",
+  "type": "Acqua",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-c64a4d74-b42d-4f16-80fa-c6e6c79ca7e5.png",
+  "sourceMaster": "output/splash-art/originals/060-shabyss-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/060-shabyss.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/060-shabyss.webp",
+  "promptFile": "art-source/splash/prompts/060-shabyss.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 635430,
+  "sha256": "f4b9d7c7102a10ca80be14e38ba96827d5100527f99ceb3d752d723a6ba65cc5",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:26:22.844Z",
+  "subjectBounds": {
+    "left": 0.359,
+    "top": 0.31,
+    "right": 0.628,
+    "bottom": 0.723
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.366,
+    "top": 0.385,
+    "right": 0.596,
+    "bottom": 0.695
+  },
+  "displayScale": 1.3478,
+  "displayOffset": {
+    "x": 0.0056,
+    "y": -0.0239
+  },
+  "reviewedAt": "2026-10-25T21:49:24.966Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "Face visibility correction after independent review of the actual compact Squadra and Arkadex screens. The critical rectangle now includes the full forehead, cheeks and muzzle; RS-219 includes its main head dome and Leafrex its main leaf cap. Uniform zoom was recalculated without changing the original drawing. Runtime UI fit still requires browser verification."
+}

@@ -12,6 +12,11 @@ import { ConfiguredInteractionPanel } from '@/interactions/ConfiguredInteraction
 import { TurnSummary } from '@/journal/TurnSummary'
 import { useAdminStore } from '@/store/adminStore'
 import './localMapScene.css'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
+import { CreaturePortrait, HealthBar, KitIcon } from '@/player-ui/kit'
+import { assetUrl } from '@/utils/assetUrl'
+import { openPlayerUi } from '@/player-ui/navigation'
+import './referenceLocalMap.css'
 
 function ActivityDialog({ open, onClose, children, title = 'Attività del luogo' }: { open: boolean; onClose: () => void; children: ReactNode; title?: string }) {
   const dialog = useRef<HTMLDivElement>(null)
@@ -119,11 +124,12 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     <GameButton onClick={() => navigate('mappa-principale')}>Mappa principale</GameButton>
   </section>
 
-  return <section className="local-map-scene" aria-label={`Esplorazione ${map.id.replace(/_/g, ' ')}`}>
+  return <section className="local-map-scene" data-reference-ui={isReferenceUi() ? 'aurora' : undefined} aria-label={`Esplorazione ${map.id.replace(/_/g, ' ')}`}>
     <header className="local-map-toolbar">
       <GameButton disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</GameButton>
       <div className="local-map-heading"><h1>{map.id.replace(/_/g, ' ')}</h1><span>G{actor} · {player.nome}</span></div>
       <span className="local-map-budget" role="status">{remaining} {remaining === 1 ? 'azione' : 'azioni'}</span>
+      {isReferenceUi() && <div className="ref-local-players" aria-label="Giocatori">{[player1,player2].map(owner=><span key={owner.id} data-active={owner.id===actor}><img src={assetUrl(`/ui/player${owner.id}_avatar.png`)} alt=""/><span>{owner.nome || `Giocatore ${owner.id}`} · G{owner.id}<small>{owner.id===actor?'Turno attuale':'In attesa'}</small></span></span>)}</div>}
       {(secretPassageVisible || secret) && <GameButton
         disabled={!canMove || activitiesOpen || interactionOpen} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
         {secret ? 'Torna a Roma' : 'Passaggio segreto'} · 1 movimento
@@ -138,6 +144,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
         }} />
     </div>
     <footer className="local-map-footer">
+      {isReferenceUi() && <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`}>{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}`}><CreaturePortrait pokemon={pokemon}/><strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}</div>}
       <div className="local-map-point-info" role="status">
         {currentNode ? <><strong>{pointInteractions[0]?.title ?? nodeLabel(selected ?? currentNode.id)}</strong><span>{pointInteractions.length ? `${pointInteractions.length} interazioni disponibili sul punto` : 'Nessuna interazione configurata sul punto'}</span></> : <span>Questo giocatore si trova in un altro luogo.</span>}
       </div>
@@ -147,6 +154,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       {pointInteractions.length > 0 && <GameButton disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</GameButton>}
       <p>{remaining > 0 ? 'Due movimenti, oppure un movimento e un’interazione.' : 'Turno concluso. Passa il controllo all’altro giocatore.'}</p>
       <TurnSummary />
+      {isReferenceUi() && <button type="button" className="ref-local-menu" onClick={()=>openPlayerUi('partita',{playerId:actor})}><KitIcon id="icon-home"/>Menù</button>}
     </footer>
     <ActivityDialog open={activitiesOpen} onClose={closeActivities} title="Scorciatoie del Game Master">{activities}</ActivityDialog>
     {currentNode && <ActivityDialog open={interactionOpen} onClose={closeInteraction} title="Interazioni del punto">

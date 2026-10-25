@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { GameDialog } from '@/components/ui/GameDialog'
 import { RpgWindow, RpgCommand } from '@/components/rpg'
-import { ITEM_ICONS, KitIcon } from '@/player-ui/kit'
+import { itemIconId, KitIcon } from '@/player-ui/kit'
 import { assetUrl } from '@/utils/assetUrl'
 import { calcolaHPMax } from '@/engine/battleEngine'
 import type { PokemonIstanza } from '@/types'
@@ -37,14 +37,14 @@ export function BattleItemDialog({ squad, inventory, onUse, onClose, disabled = 
         <h3>Oggetti disponibili</h3>
         <div className="battle-bag-items">
           {owned.slice(page * 4, page * 4 + 4).map(entry => <RpgCommand key={entry.id} selected={item?.id === entry.id} onClick={() => { setItemId(entry.id); setMessage('') }}>
-            <KitIcon id={ITEM_ICONS[entry.id]} /><span>{entry.name}</span><strong>×{inventory[entry.id]}</strong>
+            <KitIcon id={itemIconId(entry.id)} /><span>{entry.name}</span><strong>×{inventory[entry.id]}</strong>
           </RpgCommand>)}
           {!owned.length && <p>La borsa è vuota.</p>}
         </div>
         <nav aria-label="Pagine oggetti" className="battle-bag-pages"><RpgCommand disabled={page === 0} onClick={() => setPage(value => value - 1)}>←</RpgCommand><span>{page + 1} / {pageCount}</span><RpgCommand disabled={page + 1 >= pageCount} onClick={() => setPage(value => value + 1)}>→</RpgCommand></nav>
       </RpgWindow>
       <RpgWindow className="battle-bag-detail">
-        {item ? <><header role="presentation"><KitIcon id={ITEM_ICONS[item.id]} /><div><h3>{item.name}</h3><p>{item.description}</p></div></header>
+        {item ? <><header role="presentation"><KitIcon id={itemIconId(item.id)} /><div><h3>{item.name}</h3><p>{item.description}</p></div></header>
           <h4>Scegli il compagno</h4><div className="battle-bag-squad" role="group" aria-label="Arkamon da curare">
             {squad.map(pokemon => <RpgCommand key={pokemon.istanzaId} selected={target?.istanzaId === pokemon.istanzaId} aria-pressed={target?.istanzaId === pokemon.istanzaId} onClick={() => { setTargetId(pokemon.istanzaId); setMessage('') }}>
               <img src={assetUrl(`/sprites/front_sprites/${pokemon.specieId}.png`)} alt=""/><span><strong>{pokemon.nome}</strong><small>Lv. {pokemon.livello} · {pokemon.hp}/{calcolaHPMax(pokemon)} HP{pokemon.hp === 0 ? ' · KO' : pokemon.stato ? ` · ${pokemon.stato.tipo}` : ''}</small></span>

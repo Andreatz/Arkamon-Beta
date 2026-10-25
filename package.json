@@ -11,6 +11,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:ui-assets": "node --test tests/reference-svg-atlas.test.mjs tests/provided-png-package.test.mjs scripts/__tests__/catalog-splash-artwork.test.mjs",
     "test:e2e": "playwright test",
     "vfx:runtime": "node scripts/build-vfx-runtime-assets.mjs",
     "tauri:dev": "tauri dev",

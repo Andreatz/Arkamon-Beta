@@ -63,33 +63,82 @@ async function openTools(page: Page, screen: string): Promise<Locator> {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   await dialog.getByRole('button', { name: screen, exact: true }).click()
+  await expect(dialog.locator('.pu-shell')).toBeVisible({ timeout: 30000 })
   await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
   return dialog
+}
+
+async function expectProvidedArtwork(root: Locator) {
+  const artwork = root.locator('img[data-provided-asset][data-package-asset][src*="/ui/reference-png/"]')
+  expect(await artwork.count(), 'provided artwork is mounted as real images in the game').toBeGreaterThan(0)
+  await expect.poll(() => root.locator('img').evaluateAll((images: HTMLImageElement[]) => images
+    .filter(image => image.hasAttribute('data-provided-asset') || /\.svg$/i.test(new URL(image.currentSrc || image.src).pathname) || /\/ui\/(?:reference-assets|reference-png)\//.test(new URL(image.currentSrc || image.src).pathname))
+    .map(image => ({
+      source: new URL(image.currentSrc || image.src).pathname,
+      complete: image.complete && image.naturalWidth > 0 && image.naturalHeight > 0,
+      fit: getComputedStyle(image).objectFit,
+      packaged: !image.hasAttribute('data-provided-asset') || !!image.getAttribute('data-package-asset'),
+    }))
+    .filter(image => ! /\/ui\/reference-png\/[a-z0-9][a-z0-9_-]*\.webp$/i.test(image.source) || !image.complete || image.fit !== 'contain' || !image.packaged)),
+  { message: 'provided PNG package artwork loads completely and preserves its proportions', timeout: 30000 }).toEqual([])
+  await expect(root.locator('[data-provided-svg]'), 'Aurora does not retain vector crop dependencies').toHaveCount(0)
+  await expect(root.locator('svg:not(.pu-creature-art)'), 'menu decoration uses the supplied PNG package').toHaveCount(0)
+  const inlineAtlases = await root.locator('svg').evaluateAll(elements => elements
+    .filter(element => element.querySelectorAll('path').length > 1000)
+    .map(element => ({ className: element.getAttribute('class'), paths: element.querySelectorAll('path').length })))
+  expect(inlineAtlases, 'dense source atlases stay outside the live DOM').toEqual([])
 }
 
 test.beforeEach(async ({ page, isMobile }) => {
   if (!isMobile) await page.setViewportSize({ width: 1440, height: 1000 })
 })
 
-test('all six menu screens fit the desktop and phone viewport with loaded SVG artwork', async ({ page }) => {
+test('all six Aurora menu screens fit the viewport with supplied PNG controls, compact icons and official full-body artwork', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
+  const legacyArtwork: string[] = []
+  page.on('request', request => {
+    if (request.resourceType() === 'image' && /\/ui\/(?:studio|player-kit|reference-assets)(?:\/|$)/i.test(new URL(request.url()).pathname)) legacyArtwork.push(request.url())
+  })
   await seedCampaign(page)
   const dialog = await openTools(page, 'Squadra')
   for (const [name, id] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Menù Partita', 'partita']] as const) {
     await dialog.getByRole('button', { name, exact: true }).click()
-    await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
+    const shell = dialog.locator('.pu-shell')
+    await expect(shell).toHaveAttribute('data-player-ui-screen', id)
+    await expect(shell).toHaveAttribute('data-ui-concept', 'aurora')
     await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
+    await expectProvidedArtwork(shell)
     // Approval concerns the running game: a separate Studio gallery cannot satisfy it.
-    const approvedArtwork = id === 'squadra' ? ['cornice-arkamon', 'box-2', 'squadra']
-      : id === 'borsa' ? ['box-inventario', 'box-1'] : []
-    for (const asset of approvedArtwork) {
-      const surface = dialog.locator(`[data-ui-asset="/ui/studio/Scuro/${asset}.svg"]`)
-      await expect(surface).toBeAttached()
-      const image = surface.locator('> img')
-      await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true)
-      expect(await image.evaluate(element => getComputedStyle(element).objectFit)).toBe('contain')
+    const portraits = shell.locator('.pu-creature-art')
+    expect(await portraits.count(), `${name}: creature portraits`).toBeGreaterThan(0)
+    await expect.poll(() => portraits.evaluateAll(elements => elements.every(element => element.getAttribute('data-creature-loaded') === 'true')),
+      { message: `${name}: compact and full-body artwork decode`, timeout: 30000 }).toBe(true)
+    const creatureArtwork = await portraits.evaluateAll(elements => elements.map(element => ({
+      compact: element instanceof HTMLImageElement,
+      speciesId: Number(element.getAttribute('data-species-id')),
+      source: element.getAttribute('data-creature-source'),
+      image: element instanceof HTMLImageElement ? new URL(element.currentSrc || element.src).pathname : element.querySelector('image')?.getAttribute('href'),
+      framing: element.getAttribute('preserveAspectRatio'),
+      fit: getComputedStyle(element).objectFit,
+      decoded: element instanceof HTMLImageElement ? element.complete && element.naturalWidth > 0 && element.naturalHeight > 0 : true,
+      replacesHero: element instanceof HTMLImageElement && !!element.closest('.is-large'),
+    })))
+    for (const portrait of creatureArtwork) {
+      expect(portrait.speciesId).toBeGreaterThanOrEqual(1)
+      expect(portrait.speciesId).toBeLessThanOrEqual(110)
+      const expected = portrait.compact ? `/ui/reference-png/portrait-${String(portrait.speciesId).padStart(3, '0')}.webp` : `/sprites/front_sprites/${portrait.speciesId}.png`
+      expect(portrait.source).toBe(expected)
+      expect(portrait.image).toContain(portrait.source!)
+      if (portrait.compact) {
+        expect(portrait.fit).toBe('contain')
+        expect(portrait.decoded).toBe(true)
+        expect(portrait.replacesHero).toBe(false)
+      } else expect(portrait.framing).toBe('xMidYMid meet')
     }
+    if (['squadra', 'deposito', 'arkadex', 'partita'].includes(id)) expect(await shell.locator('img.pu-creature-art').count(), `${name}: supplied compact creature PNGs`).toBeGreaterThan(0)
+    if (['squadra', 'arkadex'].includes(id)) await expect(shell.locator('.is-large > svg.pu-creature-art,.pu-splash-hero-presence').first(), `${name}: full-body hero or decoded splash`).toBeVisible()
+    if (['deposito', 'analisi'].includes(id)) expect(await shell.locator('.is-large > svg.pu-creature-art').count(), `${name}: official full-body hero`).toBeGreaterThan(0)
     expect(new URL(page.url()).searchParams.has('uiStudioPreview')).toBe(false)
     await dialog.evaluate(async (element) => Promise.all(Array.from(element.querySelectorAll('img')).map(image => image.decode().catch(() => null))))
     const geometry = await dialog.evaluate((element) => {
@@ -97,17 +146,18 @@ test('all six menu screens fit the desktop and phone viewport with loaded SVG ar
       const content = element.querySelector('.pu-content') as HTMLElement
       return { viewport: innerWidth, document: document.documentElement.scrollWidth, shell: shell.scrollWidth,
         shellWidth: shell.clientWidth, content: content.scrollWidth, contentWidth: content.clientWidth,
-        brokenKit: Array.from(element.querySelectorAll<HTMLImageElement>('img[src*="/ui/player-kit/"]')).filter(image => !image.complete || !image.naturalWidth || !image.src.endsWith('.svg')).map(image => image.src) }
+        brokenImages: Array.from(element.querySelectorAll<HTMLImageElement>('img')).filter(image => !image.complete || !image.naturalWidth || !image.naturalHeight).map(image => image.src) }
     })
     expect(geometry.document, `${name}: document horizontal overflow`).toBeLessThanOrEqual(geometry.viewport + 2)
     expect(geometry.shell, `${name}: tools horizontal overflow`).toBeLessThanOrEqual(geometry.shellWidth + 2)
     expect(geometry.content, `${name}: screen horizontal overflow`).toBeLessThanOrEqual(geometry.contentWidth + 2)
-    expect(geometry.brokenKit, `${name}: missing SVG artwork`).toEqual([])
+    expect(geometry.brokenImages, `${name}: missing image artwork`).toEqual([])
     const accessibility = await new AxeBuilder({ page }).include('.player-ui-dialog').analyze()
     expect(accessibility.violations, `${name}: accessibility violations`).toEqual([])
     await test.info().attach(`Integrated ${id} at ${geometry.viewport}px`, { body: await page.screenshot(), contentType: 'image/png' })
   }
   expect(errors).toEqual([])
+  expect(legacyArtwork, 'Aurora does not request the suspended legacy SVG families').toEqual([])
 })
 
 test('the city shop opens the integrated window and the direct deposit respects Escape without changing the campaign', async ({ page }) => {
@@ -124,6 +174,7 @@ test('the city shop opens the integrated window and the direct deposit respects 
   await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
   const dialog = await openConfiguredShop(page)
   await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'negozio')
+  await expectProvidedArtwork(dialog.locator('.pu-shell'))
   await expect(dialog.getByRole('region', { name: 'Arkastore di Venezia' })).toBeVisible()
   const after = await campaign(page)
   expect(after.giocatore1).toEqual(before.giocatore1)
@@ -309,41 +360,57 @@ test('the route menu has no shop entry and rejects an incomplete shop request wi
   const dialog = await openTools(page, 'Menù Partita')
   await expect(dialog.getByRole('button', { name: 'Negozio', exact: true })).toHaveCount(0)
   await expect(dialog.getByRole('button', { name: 'Apri Negozio', exact: true })).toHaveCount(0)
-  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(6)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(9)
   await expect(dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true })).toHaveCount(1)
   await expect(dialog.getByRole('button', { name: /^(Chiudi|Riprendi)$/ })).toHaveCount(0)
   await page.evaluate(() => window.dispatchEvent(new CustomEvent('arkamon:open-player-ui', { detail: { screen: 'negozio', playerId: 1 } })))
   await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', 'partita')
   expect(await campaign(page)).toEqual(before)
+  const presentedScene = await page.locator('[data-presented-scene]').getAttribute('data-presented-scene')
+  await dialog.getByRole('button', { name: 'Apri Mappa', exact: true }).click()
+  await expect(dialog).toHaveCount(0)
+  await expect(page.locator('[data-presented-scene]')).toHaveAttribute('data-presented-scene', presentedScene!)
+  expect(await campaign(page)).toEqual(before)
 })
 
-test('six match utilities use their main cards, Norwester and a single journey resume command', async ({ page, isMobile }) => {
+test('six match utilities use their main cards, role-based typography and a single journey resume command', async ({ page, isMobile }) => {
   if (!isMobile) await page.setViewportSize({ width: 1920, height: 1080 })
   await seedCampaign(page)
   const before = await campaign(page)
   const dialog = await openTools(page, 'Menù Partita')
   const utilities = [
     ['Registro', 'register', 'Registro della partita'],
-    ['Backup', 'backup', 'Backup della partita'],
+    ['Salvataggio', 'backup', 'Backup della partita'],
     ['Impostazioni', 'settings', 'Impostazioni del gioco'],
     ['Gara', 'race', 'Situazione della gara'],
     ['Ripresa', 'recap', 'Ripresa della sessione'],
     ['Sfide', 'challenges', 'Sfide a seed e Fanta-Team Builder'],
   ] as const
-  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(6)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(9)
+  const mainCards = dialog.locator('.ref-menu-grid')
+  await expect(mainCards).toHaveAttribute('aria-label', 'Destinazioni del menù principale')
+  for (const label of ['Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Registro', 'Salvataggio', 'Impostazioni']) {
+    await expect(mainCards.getByRole('button', { name: `Apri ${label}`, exact: true })).toHaveCount(1)
+  }
   await page.evaluate(() => document.fonts.ready)
   const fonts = await dialog.evaluate(element => ({
     button: getComputedStyle(element.querySelector('.pu-menu-tile')!).fontFamily,
     title: getComputedStyle(element.querySelector('.pu-shell h1')!).fontFamily,
     text: getComputedStyle(element.querySelector('.pu-shell')!).fontFamily,
-    loaded: document.fonts.check('16px "Arkamon Norwester"'),
+    bodyRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-body-font').trim(),
+    displayRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-display-font').trim(),
+    loaded: document.fonts.check('16px Georgia'),
   }))
-  expect(fonts.button).toContain('Arkamon Norwester')
-  expect(fonts.title).toContain('Arkamon Norwester')
-  expect(fonts.text).toContain('Arkamon Norwester')
+  const normalizeFont = (value: string) => value.replace(/["']/g, '').replace(/\s*,\s*/g, ',').toLowerCase()
+  expect(fonts.bodyRole).toMatch(/^Georgia,/)
+  expect(fonts.displayRole).toMatch(/^Georgia,/)
+  const primaryFont = (value: string) => normalizeFont(value).split(',')[0]
+  expect(primaryFont(fonts.button)).toBe(primaryFont(fonts.bodyRole))
+  expect(primaryFont(fonts.title)).toBe(primaryFont(fonts.displayRole))
+  expect(primaryFont(fonts.text)).toBe(primaryFont(fonts.bodyRole))
   expect(fonts.loaded).toBe(true)
   const screenshot = await page.screenshot({ path: test.info().outputPath(isMobile ? 'menu-phone.png' : 'menu-1920x1080.png') })
-  await test.info().attach('Menù aggiornato con Norwester', { body: screenshot, contentType: 'image/png' })
+  await test.info().attach('Menù Aurora con nove destinazioni e tipografia serif', { body: screenshot, contentType: 'image/png' })
   for (const [label, id, region] of utilities) {
     await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
     await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)

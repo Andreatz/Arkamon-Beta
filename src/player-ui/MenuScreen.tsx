@@ -7,10 +7,16 @@ import { getBackground } from '@/data/backgrounds'
 import { useGameStore } from '@/store/gameStore'
 import { CreaturePortrait, KitFrame, KitIcon, KitPanel, formatNumber } from './kit'
 import type { PlayerUiAuxiliary } from './navigation'
+import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
+import { isReferenceUi } from './reference/referenceTheme'
+import { ReferenceMainMenu } from './reference/ReferenceMainMenu'
+import type { PlayerUiScreen } from './navigation'
 
 interface MenuScreenProps {
   playerId: 1 | 2
   onAuxiliary: (tool: PlayerUiAuxiliary) => void
+  onNavigate?: (screen: PlayerUiScreen) => void
+  onResume?: () => void
 }
 const tiles: { id: PlayerUiAuxiliary; title: string; description: string; icon: string }[] = [
   { id: 'register', title: 'Registro', description: 'Diario, eventi e cronache delle battaglie', icon: 'icon-book' },
@@ -22,7 +28,7 @@ const tiles: { id: PlayerUiAuxiliary; title: string; description: string; icon: 
 ]
 const sceneNames: Record<string, string> = { titolo: 'Titolo', laboratorio: 'Laboratorio', 'mappa-principale': 'Mappa principale', 'mappa-griglia': 'Mappa locale', citta: 'Città', percorso: 'Percorso', palestra: 'Palestra', 'centro-pokemon': 'Centro Pokémon', battaglia: 'Battaglia', deposito: 'Deposito', squadra: 'Squadra', evoluzione: 'Evoluzione', lega: 'Lega' }
 
-export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
+export function MenuScreen({ playerId, onAuxiliary, onNavigate, onResume }: MenuScreenProps) {
   const one = useGameStore(state => state.giocatore1)
   const two = useGameStore(state => state.giocatore2)
   const position1 = useGameStore(state => state.posizione1)
@@ -48,6 +54,8 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
   const leagueProgress = league?.players[playerId]
   const leagueStages = league?.config?.championEnabled ? 5 : 4
 
+  if (isReferenceUi()) return <ReferenceMainMenu playerId={playerId} onAuxiliary={onAuxiliary} onNavigate={onNavigate} onResume={onResume} />
+
   return <div className="pu-menu-layout">
     <SpatialNavigation selectOnFocus={false} className="pu-menu-grid">{tiles.map((tile, index) => <button data-rpg-item data-ui-id={`service.${tile.id}`} type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
       aria-label={`Apri ${tile.title}`} disabled={!!context && tile.id !== 'settings' && tile.id !== 'challenges'}
@@ -69,7 +77,7 @@ export function MenuScreen({ playerId, onAuxiliary }: MenuScreenProps) {
       </dl>
       <div className="pu-gym-progress"><span className="pu-kicker">Medaglie delle palestre · {gymCount} / {gyms.length}</span>
         <div className="pu-gym-badges" aria-label="Medaglie ottenute">{gyms.map((gym, index) => <span role="img" key={gym.id} className={player.allenatoriSconfitti.has(gym.id) ? 'earned' : ''}
-          title={`${gym.luogo} · ${player.allenatoriSconfitti.has(gym.id) ? 'ottenuta' : 'da ottenere'}`} aria-label={`${gym.luogo}: ${player.allenatoriSconfitti.has(gym.id) ? 'medaglia ottenuta' : 'medaglia da ottenere'}`}><img src={assetUrl(`/ui/studio/progression/gym-${index + 1}.svg`)} alt="" /></span>)}</div>
+          title={`${gym.luogo} · ${player.allenatoriSconfitti.has(gym.id) ? 'ottenuta' : 'da ottenere'}`} aria-label={`${gym.luogo}: ${player.allenatoriSconfitti.has(gym.id) ? 'medaglia ottenuta' : 'medaglia da ottenere'}`}>{MENU_SVG_ARTWORK_ENABLED ? <img src={assetUrl(`/ui/studio/progression/gym-${index + 1}.svg`)} alt="" /> : <b className="pu-gym-badge-symbol" aria-hidden="true">{String(index + 1).padStart(2, '0')}</b>}</span>)}</div>
       </div>
       <div className="pu-trainer-progress" aria-label={`Progresso della Lega di G${playerId}`}>
         <strong>{league?.winner ? `Campione della regione: ${league.winner.name}` : 'La sfida della Lega'}</strong>

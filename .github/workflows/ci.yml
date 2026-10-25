@@ -25,6 +25,9 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: UI asset imports and splash catalog
+        run: npm run test:ui-assets
+
       - name: Build dependency security regressions
         run: npm run test:security
 

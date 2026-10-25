@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { canRecoverCampaignCheckpoint, isCampaignWritable, readCampaignCheckpoint, recoverCampaignCheckpoint,
   retireRecoveredCampaignCheckpoint, writeCampaignCheckpoint, removeCampaignCheckpoint } from '@/session/sessionOwnership'
 import { GAME_SAVE_STORAGE_KEY, PREVIOUS_BACKUP_STORAGE_KEY } from './gamePersistence'
+import { isUiStudioPreview, uiPreviewCampaignStorage } from '@/ui-studio/previewMode'
 
 export const BACKUP_RESTORE_JOURNAL_KEY = 'arkamon-backup-restore-transaction-v1'
 const allowedKeys = new Set([GAME_SAVE_STORAGE_KEY, PREVIOUS_BACKUP_STORAGE_KEY, 'arkamon-interactions-v1', 'arkamon-battle-archive-v1'])
@@ -38,6 +39,7 @@ function equivalent(left: string | null, right: string | null): boolean {
 /** Session metadata belongs to the current owner. Journal values contain data;
  * replay writes pass through the same fence as ordinary campaign checkpoints. */
 export function backupRestoreStorage(storage?: BackupRestoreStorage, recovering = false): BackupRestoreStorage {
+  if (isUiStudioPreview()) return uiPreviewCampaignStorage
   if (storage) return storage
   return {
     getItem: (key) => key === BACKUP_RESTORE_JOURNAL_KEY || key === PREVIOUS_BACKUP_STORAGE_KEY ? localStorage.getItem(key) : readCampaignCheckpoint(key),

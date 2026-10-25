@@ -212,7 +212,14 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
       if (stopped || running) return
       running = true
       observer.disconnect(); restore()
-      const found = findUiScreenRoot(latest.current.screen, preview)
+      const candidate = findUiScreenRoot(latest.current.screen, preview)
+      // The temporary concept owns its menu layout. Saved Studio skins must not
+      // reintroduce suspended SVGs or absolute geometry into the running menu.
+      const found = !preview && candidate?.root.matches('.pu-shell[data-ui-concept]') ? null : candidate
+      if (!found && currentRoot) {
+        currentRoot.removeAttribute('data-ui-runtime-root')
+        currentRoot = null; entries = []
+      }
       if (found) {
         if (currentRoot && currentRoot !== found.root) currentRoot.removeAttribute('data-ui-runtime-root')
         currentRoot = found.root; currentScreen = found.screen

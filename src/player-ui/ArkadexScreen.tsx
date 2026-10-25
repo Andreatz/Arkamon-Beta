@@ -13,6 +13,7 @@ import { useGameStore } from '@/store/gameStore'
 import type { PokemonIstanza, PokemonSpecie, TipoPokemon } from '@/types'
 import { KitButton, KitIcon, KitPanel, PokemonMoves, SpeciesPortrait, TypeBadge } from './kit'
 import { liveOwnedPokemon } from './currentRoster'
+import { useSplashArtwork } from './reference/SplashArtworkContext'
 
 const AnimatedArkamon = lazy(async () => ({ default: (await import('@/components/arkamon/ArkamonBattleSprite')).ArkamonBattleSprite }))
 const statusLabels = { unknown: 'Da scoprire', seen: 'Visto', caught: 'Ottenuto' } as const
@@ -88,13 +89,15 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
   const canAnimate = !!species && !!getArkamonAnimationAsset(species.id, 'front', 'idle')
   usePublishPlayerUiSelection(viewPlayerId, { speciesId: species?.id, instanceId: specimen?.pokemon.istanzaId })
   const animated = canAnimate && animatedSpeciesId === species?.id
+  const readySplash = useSplashArtwork()
+  const splash = readySplash?.playerId === viewPlayerId && readySplash.speciesId === species?.id ? readySplash : null
 
   function resetFilters() {
     setSearch(''); setStatus('all'); setType('all')
     setPage(0); setDetailTab('information')
   }
 
-  return <section className="pu-dex-screen" aria-label="Arkadex" data-ui-view={detailTab}>
+  return <section className="pu-dex-screen" aria-label="Arkadex" data-ui-view={detailTab} data-splash-artwork={splash ? 'ready' : undefined}>
     <div className="pu-screen-toolbar">
       {showPlayerPicker && <label className="pu-player-picker">Giocatore dell’Arkadex
         <select value={viewPlayerId} onChange={(event) => {
@@ -120,7 +123,7 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
         <p role="status" className="pu-result-count">{entries.length} schede corrispondenti. Nome e tipo sono ricercabili soltanto dopo la scoperta.</p>
         <SpatialNavigation className="pu-dex-list" aria-label="Specie dell’Arkadex">
           {pageEntries.map((entry) => <KitButton data-rpg-item key={entry.id} active={selected?.id === entry.id} className="pu-dex-row"
-            aria-pressed={selected?.id === entry.id}
+            aria-pressed={selected?.id === entry.id} data-discovery-state={entry.status}
             aria-label={`Numero ${entry.id}: ${entry.species?.nome ?? 'specie da scoprire'} · ${statusLabels[entry.status]}`}
             onClick={() => { setSelectedId(entry.id); setSelectedInstanceId(null); setAnimatedSpeciesId(null); setDetailTab('information') }}>
             {entry.species ? <SpeciesPortrait speciesId={entry.id} /> : <span className="pu-unknown-portrait" aria-hidden="true">?</span>}
@@ -136,11 +139,11 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
         </nav>
       </KitPanel>
 
-      <div className="pu-dex-hero pu-hero">
+      <div className="pu-dex-hero pu-hero" data-splash-animation={splash && animated ? 'playing' : undefined}>
         {species ? <>
           <span className="pu-species-number">ARKA / {String(species.id).padStart(3, '0')}</span>
           {animated ? <div className="pu-species-animation"><Suspense fallback={<p>Caricamento animazione…</p>}><AnimatedArkamon speciesId={species.id} name={species.nome} side="front" animation="idle" /></Suspense></div>
-            : <SpeciesPortrait speciesId={species.id} large />}
+            : splash ? <div className="pu-splash-hero-presence" role="img" aria-label={splash.label} data-splash-species={species.id} data-splash-source={splash.src} /> : <SpeciesPortrait speciesId={species.id} large />}
           <div className="pu-hero-caption"><span className="pu-kicker">{statusLabels[selected.status]}</span><h2>{species.nome}</h2><TypeBadge type={species.tipo} /></div>
           {canAnimate && <KitButton className="pu-animation-toggle" active={animated} aria-pressed={animated} onClick={() => setAnimatedSpeciesId(animated ? null : species.id)}>{animated ? 'Ferma animazione' : 'Mostra animazione'}</KitButton>}
         </> : <div className="pu-unknown-hero"><KitIcon id="icon-arkadex" /><span aria-hidden="true">?</span><h2>{selected ? 'Specie da scoprire' : 'Nessuna scheda'}</h2><p>{selected ? `Nº ${String(selected.id).padStart(3, '0')}` : 'Modifica la ricerca per consultare l’Arkadex.'}</p></div>}

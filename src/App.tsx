@@ -36,6 +36,8 @@ const LeagueScene = lazy(() => import('@/league/LeagueScene').then((module) => (
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
 const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
+const UiConceptLab = lazy(() => import('@/ui-studio/UiConceptLab').then(module => ({ default: module.UiConceptLab })))
+const ReferenceUiPreview = lazy(() => import('@/ui-studio/ReferenceUiPreview').then(module => ({ default: module.ReferenceUiPreview })))
 const UiDesignRuntime = lazy(() => import('@/ui-studio/UiDesignRuntime').then(module => ({ default: module.UiDesignRuntime })))
 
 /**
@@ -53,6 +55,12 @@ function App() {
 
   useEffect(() => { preloadSceneTransitionArtwork() }, [])
 
+  if (new URLSearchParams(window.location.search).get('uiReferences') === '1' || new URLSearchParams(window.location.search).get('uiConcepts') === '1' && new URLSearchParams(window.location.search).get('legacyConcepts') !== '1') {
+    return <Suspense fallback={<div role="status">Preparazione della nuova interfaccia…</div>}><ReferenceUiPreview /></Suspense>
+  }
+  if (new URLSearchParams(window.location.search).get('uiConcepts') === '1') {
+    return <Suspense fallback={<div role="status">Preparazione delle nuove interfacce…</div>}><UiConceptLab /></Suspense>
+  }
   if (new URLSearchParams(window.location.search).get('uiStudioPreview') === '1') {
     if (new URLSearchParams(window.location.search).get('assetExamples') === '1') {
       return <Suspense fallback={<div role="status">Preparazione esempi…</div>}><UiAssetExamples /></Suspense>

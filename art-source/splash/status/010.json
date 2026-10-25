@@ -1,0 +1,52 @@
+{
+  "id": 10,
+  "name": "Felyss",
+  "type": "Psico",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-ccf3e151-08d0-4073-b36a-00d72af551be.png",
+  "sourceMaster": "output/splash-art/originals/010-felyss-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/010-felyss.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/010-felyss.webp",
+  "promptFile": "art-source/splash/prompts/010-felyss.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 651228,
+  "sha256": "4a9b2ff65ceefe2d1855105fecbcfa2a197f5c2b9a582b7ba8a6b99a25f0c0fa",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:14:32.420Z",
+  "subjectBounds": {
+    "left": 0.38,
+    "top": 0.38,
+    "right": 0.645,
+    "bottom": 0.75
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope on generated source",
+    "notes": "Includes both long flowing tail/ribbons, ears, paws and intrinsic orb. Exact form010 design retained. No live UI validation claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.406,
+    "top": 0.44,
+    "right": 0.553,
+    "bottom": 0.71
+  },
+  "displayScale": 1.9259,
+  "displayOffset": {
+    "x": 0.0195,
+    "y": -0.1144
+  },
+  "reviewedAt": "2026-10-25T20:54:59.250Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

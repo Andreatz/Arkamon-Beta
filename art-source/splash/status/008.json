@@ -1,0 +1,62 @@
+{
+  "id": 8,
+  "name": "Darklaw",
+  "type": "Oscurità",
+  "version": "v3-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-8794fe26-b74b-46ee-9d27-057b3c272460.png",
+  "sourceMaster": "output/splash-art/originals/008-darklaw-v3-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/008-darklaw.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/008-darklaw.webp",
+  "promptFile": "art-source/splash/prompts/008-darklaw.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 604640,
+  "sha256": "82de1b7489ab0732443cf57dfecfebfa23ae9225133551e11e8157fe34acc14b",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:10:37.285Z",
+  "subjectBounds": {
+    "left": 0.443,
+    "top": 0.412,
+    "right": 0.57,
+    "bottom": 0.75
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope on generated source",
+    "sourcePixels": {
+      "left": 741,
+      "top": 388,
+      "right": 953,
+      "bottom": 706
+    },
+    "sourceDimensions": {
+      "width": 1672,
+      "height": 941
+    },
+    "notes": "All head crest/ears, feet, claws and tail fit. Zoom-out revision requested1.4x; exact form-specific design retained. No live UI validation claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.456,
+    "top": 0.48,
+    "right": 0.539,
+    "bottom": 0.71
+  },
+  "displayScale": 2.2609,
+  "displayOffset": {
+    "x": -0.0143,
+    "y": -0.1848
+  },
+  "reviewedAt": "2026-10-25T20:54:59.249Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

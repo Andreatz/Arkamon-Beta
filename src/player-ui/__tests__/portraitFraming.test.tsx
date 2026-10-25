@@ -1,10 +1,14 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { resolve } from 'node:path'
 import sharp from 'sharp'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { POKEMON_BASE } from '@/data'
 import { SpeciesPortrait } from '../kit'
 import { getPortraitFraming } from '../portraitFraming'
+
+const appearance = vi.hoisted(() => ({ reference: true }))
+vi.mock('../reference/referenceTheme', () => ({ isReferenceUi: () => appearance.reference }))
+beforeEach(() => { appearance.reference = true })
 
 const samples = [
   '/sprites/front_sprites/13.png', '/sprites/front_sprites/25.png',
@@ -39,18 +43,49 @@ describe('Whole-creature portrait framing', () => {
     expect(y + height / 2).toBeCloseTo((top + bottom) / 2)
   })
 
-  it('uses the official front sprite and its own geometry for every species, with or without animation', () => {
+  it('keeps the official full-body front sprite and its own geometry for every large hero', () => {
     expect(POKEMON_BASE).toHaveLength(110)
     for (const species of POKEMON_BASE) {
       const source = `/sprites/front_sprites/${species.id}.png`
-      for (const large of [false, true]) {
-        const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} large={large} selected />)
-        expect(markup).toContain(`data-creature-source="${source}"`)
-        expect(markup).toContain(`viewBox="${getPortraitFraming(source).viewBox}"`)
-        expect(markup).toContain('preserveAspectRatio="xMidYMid meet"')
-        expect(markup).not.toContain('/sprites/arkamon/')
-        expect(markup).not.toContain('idle-poster.webp')
-      }
+      const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} large selected />)
+      expect(markup).toContain(`data-creature-source="${source}"`)
+      expect(markup).toContain(`viewBox="${getPortraitFraming(source).viewBox}"`)
+      expect(markup).toContain('preserveAspectRatio="xMidYMid meet"')
+      expect(markup).not.toContain('/sprites/arkamon/')
+      expect(markup).not.toContain('idle-poster.webp')
+      expect(markup).not.toContain('/ui/reference-png/portrait-')
+    }
+  })
+
+  it('uses each supplied PNG portrait for compact Aurora slots without borrowing full-body framing', async () => {
+    for (const species of POKEMON_BASE) {
+      const source = `/ui/reference-png/portrait-${String(species.id).padStart(3, '0')}.webp`
+      const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} selected />)
+      expect(markup).toMatch(/<img(?=[^>]*class="[^"]*\bpu-creature-art\b)[^>]*>/)
+      expect(markup).toContain(`data-species-id="${species.id}"`)
+      expect(markup).toContain(`data-creature-source="${source}"`)
+      expect(markup).toContain(source)
+      expect(markup).not.toContain('<svg')
+      expect(markup).not.toContain('/sprites/front_sprites/')
+      expect(markup).not.toContain('/sprites/arkamon/')
+      expect(markup).not.toContain('idle-poster.webp')
+      const metadata = await sharp(resolve(`public${source}`)).metadata()
+      expect(metadata.format).toBe('webp')
+      expect(metadata.width).toBeGreaterThan(0)
+      expect(metadata.height).toBe(metadata.width)
+      expect(metadata.hasAlpha).toBe(true)
+    }
+  })
+
+  it('retains official full-body sources in the explicitly requested legacy concepts', () => {
+    appearance.reference = false
+    for (const species of POKEMON_BASE) {
+      const source = `/sprites/front_sprites/${species.id}.png`
+      const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} selected />)
+      expect(markup).toContain(`data-creature-source="${source}"`)
+      expect(markup).toContain(`viewBox="${getPortraitFraming(source).viewBox}"`)
+      expect(markup).toContain('preserveAspectRatio="xMidYMid meet"')
+      expect(markup).not.toContain('/ui/reference-png/portrait-')
     }
   })
 })

@@ -1,6 +1,8 @@
 /** A preview is a separate, volatile application: campaign writes are forbidden. */
 export function isUiStudioPreview(): boolean {
-  return typeof window !== 'undefined' && new URLSearchParams(window.location?.search ?? '').get('uiStudioPreview') === '1'
+  if (typeof window === 'undefined') return false
+  const query = new URLSearchParams(window.location?.search ?? '')
+  return query.get('uiStudioPreview') === '1' || query.get('uiConcepts') === '1' || query.get('uiReferences') === '1'
 }
 
 export const uiPreviewCampaignStorage = {

@@ -1,0 +1,52 @@
+{
+  "id": 22,
+  "name": "Voltrake",
+  "type": "Elettro",
+  "version": "v3-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-e64dc13b-14dc-467d-a656-8221b402cbb6.png",
+  "sourceMaster": "output/splash-art/originals/022-voltrake-v3-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/022-voltrake.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/022-voltrake.webp",
+  "promptFile": "art-source/splash/prompts/022-voltrake.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 657922,
+  "sha256": "41f5e4e3d17ef5b0c0de7708f85f49b9beb58d7f13f21ec541cf62cdabae0e88",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:31:43.603Z",
+  "subjectBounds": {
+    "left": 0.4,
+    "top": 0.3,
+    "right": 0.6,
+    "bottom": 0.625
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope",
+    "notes": "All wings/crests/feet/tail and intrinsic sparks fit. Exact official form retained; no live UI validation claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.43,
+    "top": 0.407,
+    "right": 0.528,
+    "bottom": 0.556
+  },
+  "displayScale": 2.5,
+  "displayOffset": {
+    "x": 0.0325,
+    "y": 0.0762
+  },
+  "reviewedAt": "2026-10-25T20:54:59.265Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

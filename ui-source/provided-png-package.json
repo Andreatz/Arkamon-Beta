@@ -1,0 +1,1638 @@
+{
+  "version": 1,
+  "package": {
+    "file": "Arkamon.zip",
+    "sha256": "19dd43467f9fd14aed49d9cc36621637a7e2f3336c76a0c2a40f1ed1449fc92e"
+  },
+  "assets": [
+    {
+      "id": "loading-ring",
+      "source": "Arkamon-UI/anello_caricamento.png",
+      "role": "Elemento UI fornito: anello_caricamento",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "experience-bar-art",
+      "source": "Arkamon-UI/barra_esperienza.png",
+      "role": "Elemento UI fornito: barra_esperienza",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "health-bar-art",
+      "source": "Arkamon-UI/barra_ps.png",
+      "role": "Elemento UI fornito: barra_ps",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "scrollbar",
+      "source": "Arkamon-UI/barra_scorrimento.png",
+      "role": "Elemento UI fornito: barra_scorrimento",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "checkbox-checked",
+      "source": "Arkamon-UI/casella_spuntata.png",
+      "role": "Elemento UI fornito: casella_spuntata",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-frame",
+      "source": "Arkamon-UI/cornice_ritratto.png",
+      "role": "Elemento UI fornito: cornice_ritratto",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "selection-cursor",
+      "source": "Arkamon-UI/cursore_selezione.png",
+      "role": "Elemento UI fornito: cursore_selezione",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "dialog-frame",
+      "source": "Arkamon-UI/finestra_dialogo.png",
+      "role": "Elemento UI fornito: finestra_dialogo",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-water",
+      "source": "Arkamon-UI/icona-acqua.png",
+      "role": "Elemento UI fornito: icona-acqua",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-electric",
+      "source": "Arkamon-UI/icona-elettro.png",
+      "role": "Elemento UI fornito: icona-elettro",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-grass",
+      "source": "Arkamon-UI/icona-erba.png",
+      "role": "Elemento UI fornito: icona-erba",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-fire",
+      "source": "Arkamon-UI/icona-fuoco.png",
+      "role": "Elemento UI fornito: icona-fuoco",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-normal",
+      "source": "Arkamon-UI/icona-normale.png",
+      "role": "Elemento UI fornito: icona-normale",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-dark",
+      "source": "Arkamon-UI/icona-oscurit�.png",
+      "role": "Elemento UI fornito: icona-oscurit�",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-psychic",
+      "source": "Arkamon-UI/icona-psico.png",
+      "role": "Elemento UI fornito: icona-psico",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "type-earth",
+      "source": "Arkamon-UI/icona-terra.png",
+      "role": "Elemento UI fornito: icona-terra",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "warning",
+      "source": "Arkamon-UI/indicatore_avviso.png",
+      "role": "Elemento UI fornito: indicatore_avviso",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "info-panel",
+      "source": "Arkamon-UI/infobox.png",
+      "role": "Elemento UI fornito: infobox",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "toggle-on",
+      "source": "Arkamon-UI/interruttore_attivo.png",
+      "role": "Elemento UI fornito: interruttore_attivo",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-water",
+      "source": "Arkamon-UI/medaglia-acqua.png",
+      "role": "Elemento UI fornito: medaglia-acqua",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-electric",
+      "source": "Arkamon-UI/medaglia-elettro.png",
+      "role": "Elemento UI fornito: medaglia-elettro",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-grass",
+      "source": "Arkamon-UI/medaglia-erba.png",
+      "role": "Elemento UI fornito: medaglia-erba",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-fire",
+      "source": "Arkamon-UI/medaglia-fuoco.png",
+      "role": "Elemento UI fornito: medaglia-fuoco",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-normal",
+      "source": "Arkamon-UI/medaglia-normale.png",
+      "role": "Elemento UI fornito: medaglia-normale",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-dark",
+      "source": "Arkamon-UI/medaglia-oscurit�.png",
+      "role": "Elemento UI fornito: medaglia-oscurit�",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-psychic",
+      "source": "Arkamon-UI/medaglia-psico.png",
+      "role": "Elemento UI fornito: medaglia-psico",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "medal-earth",
+      "source": "Arkamon-UI/medaglia-terra.png",
+      "role": "Elemento UI fornito: medaglia-terra",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "corner",
+      "source": "Arkamon-UI/mod_angolo.png",
+      "role": "Elemento UI fornito: mod_angolo",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "edge",
+      "source": "Arkamon-UI/mod_bordo.png",
+      "role": "Elemento UI fornito: mod_bordo",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "panel-fill",
+      "source": "Arkamon-UI/mod_centro.png",
+      "role": "Elemento UI fornito: mod_centro",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "panel-modular",
+      "source": "Arkamon-UI/pannello_modulare.png",
+      "role": "Elemento UI fornito: pannello_modulare",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "panel-main",
+      "source": "Arkamon-UI/pannello_principale.png",
+      "role": "Elemento UI fornito: pannello_principale",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "close-control",
+      "source": "Arkamon-UI/pulsante_chiudi.png",
+      "role": "Elemento UI fornito: pulsante_chiudi",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "confirm-control",
+      "source": "Arkamon-UI/pulsante_conferma.png",
+      "role": "Elemento UI fornito: pulsante_conferma",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "button-disabled",
+      "source": "Arkamon-UI/pulsante_disabilitato.png",
+      "role": "Elemento UI fornito: pulsante_disabilitato",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "filter-icon",
+      "source": "Arkamon-UI/pulsante_filtro.png",
+      "role": "Elemento UI fornito: pulsante_filtro",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "back-control",
+      "source": "Arkamon-UI/pulsante_indietro.png",
+      "role": "Elemento UI fornito: pulsante_indietro",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "locked-control",
+      "source": "Arkamon-UI/pulsante_lucchetto.png",
+      "role": "Elemento UI fornito: pulsante_lucchetto",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "quantity-minus",
+      "source": "Arkamon-UI/pulsante_meno.png",
+      "role": "Elemento UI fornito: pulsante_meno",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "move-button",
+      "source": "Arkamon-UI/pulsante_mossa.png",
+      "role": "Elemento UI fornito: pulsante_mossa",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "button-normal",
+      "source": "Arkamon-UI/pulsante_normale.png",
+      "role": "Elemento UI fornito: pulsante_normale",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "quantity-plus",
+      "source": "Arkamon-UI/pulsante_piu.png",
+      "role": "Elemento UI fornito: pulsante_piu",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "search-icon",
+      "source": "Arkamon-UI/pulsante_ricerca.png",
+      "role": "Elemento UI fornito: pulsante_ricerca",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "button-selected",
+      "source": "Arkamon-UI/pulsante_selezionato.png",
+      "role": "Elemento UI fornito: pulsante_selezionato",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "tab-frame",
+      "source": "Arkamon-UI/scheda_navigazione.png",
+      "role": "Elemento UI fornito: scheda_navigazione",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "team-row",
+      "source": "Arkamon-UI/scheda_squadra.png",
+      "role": "Elemento UI fornito: scheda_squadra",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "divider",
+      "source": "Arkamon-UI/separatore.png",
+      "role": "Elemento UI fornito: separatore",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "item-slot",
+      "source": "Arkamon-UI/slot_oggetto.png",
+      "role": "Elemento UI fornito: slot_oggetto",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "title-plaque",
+      "source": "Arkamon-UI/targa_titolo.png",
+      "role": "Elemento UI fornito: targa_titolo",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "tooltip-frame",
+      "source": "Arkamon-UI/tooltip.png",
+      "role": "Elemento UI fornito: tooltip",
+      "maxWidth": 1200,
+      "maxHeight": 900,
+      "trim": true,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-001",
+      "source": "Arkamon-Icone/arkamon_001.png",
+      "role": "Ritratto compatto Arkamon 1",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-002",
+      "source": "Arkamon-Icone/arkamon_002.png",
+      "role": "Ritratto compatto Arkamon 2",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-003",
+      "source": "Arkamon-Icone/arkamon_003.png",
+      "role": "Ritratto compatto Arkamon 3",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-004",
+      "source": "Arkamon-Icone/arkamon_004.png",
+      "role": "Ritratto compatto Arkamon 4",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-005",
+      "source": "Arkamon-Icone/arkamon_005.png",
+      "role": "Ritratto compatto Arkamon 5",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-006",
+      "source": "Arkamon-Icone/arkamon_006.png",
+      "role": "Ritratto compatto Arkamon 6",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-007",
+      "source": "Arkamon-Icone/arkamon_007.png",
+      "role": "Ritratto compatto Arkamon 7",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-008",
+      "source": "Arkamon-Icone/arkamon_008.png",
+      "role": "Ritratto compatto Arkamon 8",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-009",
+      "source": "Arkamon-Icone/arkamon_009.png",
+      "role": "Ritratto compatto Arkamon 9",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-010",
+      "source": "Arkamon-Icone/arkamon_010.png",
+      "role": "Ritratto compatto Arkamon 10",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-011",
+      "source": "Arkamon-Icone/arkamon_011.png",
+      "role": "Ritratto compatto Arkamon 11",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-012",
+      "source": "Arkamon-Icone/arkamon_012.png",
+      "role": "Ritratto compatto Arkamon 12",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-013",
+      "source": "Arkamon-Icone/arkamon_013.png",
+      "role": "Ritratto compatto Arkamon 13",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-014",
+      "source": "Arkamon-Icone/arkamon_014.png",
+      "role": "Ritratto compatto Arkamon 14",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-015",
+      "source": "Arkamon-Icone/arkamon_015.png",
+      "role": "Ritratto compatto Arkamon 15",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-016",
+      "source": "Arkamon-Icone/arkamon_016.png",
+      "role": "Ritratto compatto Arkamon 16",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-017",
+      "source": "Arkamon-Icone/arkamon_017.png",
+      "role": "Ritratto compatto Arkamon 17",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-018",
+      "source": "Arkamon-Icone/arkamon_018.png",
+      "role": "Ritratto compatto Arkamon 18",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-019",
+      "source": "Arkamon-Icone/arkamon_019.png",
+      "role": "Ritratto compatto Arkamon 19",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-020",
+      "source": "Arkamon-Icone/arkamon_020.png",
+      "role": "Ritratto compatto Arkamon 20",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-021",
+      "source": "Arkamon-Icone/arkamon_021.png",
+      "role": "Ritratto compatto Arkamon 21",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-022",
+      "source": "Arkamon-Icone/arkamon_022.png",
+      "role": "Ritratto compatto Arkamon 22",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-023",
+      "source": "Arkamon-Icone/arkamon_023.png",
+      "role": "Ritratto compatto Arkamon 23",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-024",
+      "source": "Arkamon-Icone/arkamon_024.png",
+      "role": "Ritratto compatto Arkamon 24",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-025",
+      "source": "Arkamon-Icone/arkamon_025.png",
+      "role": "Ritratto compatto Arkamon 25",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-026",
+      "source": "Arkamon-Icone/arkamon_026.png",
+      "role": "Ritratto compatto Arkamon 26",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-027",
+      "source": "Arkamon-Icone/arkamon_027.png",
+      "role": "Ritratto compatto Arkamon 27",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-028",
+      "source": "Arkamon-Icone/arkamon_028.png",
+      "role": "Ritratto compatto Arkamon 28",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-029",
+      "source": "Arkamon-Icone/arkamon_029.png",
+      "role": "Ritratto compatto Arkamon 29",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-030",
+      "source": "Arkamon-Icone/arkamon_030.png",
+      "role": "Ritratto compatto Arkamon 30",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-031",
+      "source": "Arkamon-Icone/arkamon_031.png",
+      "role": "Ritratto compatto Arkamon 31",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-032",
+      "source": "Arkamon-Icone/arkamon_032.png",
+      "role": "Ritratto compatto Arkamon 32",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-033",
+      "source": "Arkamon-Icone/arkamon_033.png",
+      "role": "Ritratto compatto Arkamon 33",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-034",
+      "source": "Arkamon-Icone/arkamon_034.png",
+      "role": "Ritratto compatto Arkamon 34",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-035",
+      "source": "Arkamon-Icone/arkamon_035.png",
+      "role": "Ritratto compatto Arkamon 35",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-036",
+      "source": "Arkamon-Icone/arkamon_036.png",
+      "role": "Ritratto compatto Arkamon 36",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-037",
+      "source": "Arkamon-Icone/arkamon_037.png",
+      "role": "Ritratto compatto Arkamon 37",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-038",
+      "source": "Arkamon-Icone/arkamon_038.png",
+      "role": "Ritratto compatto Arkamon 38",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-039",
+      "source": "Arkamon-Icone/arkamon_039.png",
+      "role": "Ritratto compatto Arkamon 39",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-040",
+      "source": "Arkamon-Icone/arkamon_040.png",
+      "role": "Ritratto compatto Arkamon 40",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-041",
+      "source": "Arkamon-Icone/arkamon_041.png",
+      "role": "Ritratto compatto Arkamon 41",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-042",
+      "source": "Arkamon-Icone/arkamon_042.png",
+      "role": "Ritratto compatto Arkamon 42",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-043",
+      "source": "Arkamon-Icone/arkamon_043.png",
+      "role": "Ritratto compatto Arkamon 43",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-044",
+      "source": "Arkamon-Icone/arkamon_044.png",
+      "role": "Ritratto compatto Arkamon 44",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-045",
+      "source": "Arkamon-Icone/arkamon_045.png",
+      "role": "Ritratto compatto Arkamon 45",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-046",
+      "source": "Arkamon-Icone/arkamon_046.png",
+      "role": "Ritratto compatto Arkamon 46",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-047",
+      "source": "Arkamon-Icone/arkamon_047.png",
+      "role": "Ritratto compatto Arkamon 47",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-048",
+      "source": "Arkamon-Icone/arkamon_048.png",
+      "role": "Ritratto compatto Arkamon 48",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-049",
+      "source": "Arkamon-Icone/arkamon_049.png",
+      "role": "Ritratto compatto Arkamon 49",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-050",
+      "source": "Arkamon-Icone/arkamon_050.png",
+      "role": "Ritratto compatto Arkamon 50",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-051",
+      "source": "Arkamon-Icone/arkamon_051.png",
+      "role": "Ritratto compatto Arkamon 51",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-052",
+      "source": "Arkamon-Icone/arkamon_052.png",
+      "role": "Ritratto compatto Arkamon 52",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-053",
+      "source": "Arkamon-Icone/arkamon_053.png",
+      "role": "Ritratto compatto Arkamon 53",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-054",
+      "source": "Arkamon-Icone/arkamon_054.png",
+      "role": "Ritratto compatto Arkamon 54",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-055",
+      "source": "Arkamon-Icone/arkamon_055.png",
+      "role": "Ritratto compatto Arkamon 55",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-056",
+      "source": "Arkamon-Icone/arkamon_056.png",
+      "role": "Ritratto compatto Arkamon 56",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-057",
+      "source": "Arkamon-Icone/arkamon_057.png",
+      "role": "Ritratto compatto Arkamon 57",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-058",
+      "source": "Arkamon-Icone/arkamon_058.png",
+      "role": "Ritratto compatto Arkamon 58",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-059",
+      "source": "Arkamon-Icone/arkamon_059.png",
+      "role": "Ritratto compatto Arkamon 59",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-060",
+      "source": "Arkamon-Icone/arkamon_060.png",
+      "role": "Ritratto compatto Arkamon 60",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-061",
+      "source": "Arkamon-Icone/arkamon_061.png",
+      "role": "Ritratto compatto Arkamon 61",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-062",
+      "source": "Arkamon-Icone/arkamon_062.png",
+      "role": "Ritratto compatto Arkamon 62",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-063",
+      "source": "Arkamon-Icone/arkamon_063.png",
+      "role": "Ritratto compatto Arkamon 63",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-064",
+      "source": "Arkamon-Icone/arkamon_064.png",
+      "role": "Ritratto compatto Arkamon 64",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-065",
+      "source": "Arkamon-Icone/arkamon_065.png",
+      "role": "Ritratto compatto Arkamon 65",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-066",
+      "source": "Arkamon-Icone/arkamon_066.png",
+      "role": "Ritratto compatto Arkamon 66",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-067",
+      "source": "Arkamon-Icone/arkamon_067.png",
+      "role": "Ritratto compatto Arkamon 67",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-068",
+      "source": "Arkamon-Icone/arkamon_068.png",
+      "role": "Ritratto compatto Arkamon 68",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-069",
+      "source": "Arkamon-Icone/arkamon_069.png",
+      "role": "Ritratto compatto Arkamon 69",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-070",
+      "source": "Arkamon-Icone/arkamon_070.png",
+      "role": "Ritratto compatto Arkamon 70",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-071",
+      "source": "Arkamon-Icone/arkamon_071.png",
+      "role": "Ritratto compatto Arkamon 71",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-072",
+      "source": "Arkamon-Icone/arkamon_072.png",
+      "role": "Ritratto compatto Arkamon 72",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-073",
+      "source": "Arkamon-Icone/arkamon_073.png",
+      "role": "Ritratto compatto Arkamon 73",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-074",
+      "source": "Arkamon-Icone/arkamon_074.png",
+      "role": "Ritratto compatto Arkamon 74",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-075",
+      "source": "Arkamon-Icone/arkamon_075.png",
+      "role": "Ritratto compatto Arkamon 75",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-076",
+      "source": "Arkamon-Icone/arkamon_076.png",
+      "role": "Ritratto compatto Arkamon 76",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-077",
+      "source": "Arkamon-Icone/arkamon_077.png",
+      "role": "Ritratto compatto Arkamon 77",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-078",
+      "source": "Arkamon-Icone/arkamon_078.png",
+      "role": "Ritratto compatto Arkamon 78",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-079",
+      "source": "Arkamon-Icone/arkamon_079.png",
+      "role": "Ritratto compatto Arkamon 79",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-080",
+      "source": "Arkamon-Icone/arkamon_080.png",
+      "role": "Ritratto compatto Arkamon 80",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-081",
+      "source": "Arkamon-Icone/arkamon_081.png",
+      "role": "Ritratto compatto Arkamon 81",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-082",
+      "source": "Arkamon-Icone/arkamon_082.png",
+      "role": "Ritratto compatto Arkamon 82",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-083",
+      "source": "Arkamon-Icone/arkamon_083.png",
+      "role": "Ritratto compatto Arkamon 83",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-084",
+      "source": "Arkamon-Icone/arkamon_084.png",
+      "role": "Ritratto compatto Arkamon 84",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-085",
+      "source": "Arkamon-Icone/arkamon_085.png",
+      "role": "Ritratto compatto Arkamon 85",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-086",
+      "source": "Arkamon-Icone/arkamon_086.png",
+      "role": "Ritratto compatto Arkamon 86",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-087",
+      "source": "Arkamon-Icone/arkamon_087.png",
+      "role": "Ritratto compatto Arkamon 87",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-088",
+      "source": "Arkamon-Icone/arkamon_088.png",
+      "role": "Ritratto compatto Arkamon 88",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-089",
+      "source": "Arkamon-Icone/arkamon_089.png",
+      "role": "Ritratto compatto Arkamon 89",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-090",
+      "source": "Arkamon-Icone/arkamon_090.png",
+      "role": "Ritratto compatto Arkamon 90",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-091",
+      "source": "Arkamon-Icone/arkamon_091.png",
+      "role": "Ritratto compatto Arkamon 91",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-092",
+      "source": "Arkamon-Icone/arkamon_092.png",
+      "role": "Ritratto compatto Arkamon 92",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-093",
+      "source": "Arkamon-Icone/arkamon_093.png",
+      "role": "Ritratto compatto Arkamon 93",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-094",
+      "source": "Arkamon-Icone/arkamon_094.png",
+      "role": "Ritratto compatto Arkamon 94",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-095",
+      "source": "Arkamon-Icone/arkamon_095.png",
+      "role": "Ritratto compatto Arkamon 95",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-096",
+      "source": "Arkamon-Icone/arkamon_096.png",
+      "role": "Ritratto compatto Arkamon 96",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-097",
+      "source": "Arkamon-Icone/arkamon_097.png",
+      "role": "Ritratto compatto Arkamon 97",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-098",
+      "source": "Arkamon-Icone/arkamon_098.png",
+      "role": "Ritratto compatto Arkamon 98",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-099",
+      "source": "Arkamon-Icone/arkamon_099.png",
+      "role": "Ritratto compatto Arkamon 99",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-100",
+      "source": "Arkamon-Icone/arkamon_100.png",
+      "role": "Ritratto compatto Arkamon 100",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-101",
+      "source": "Arkamon-Icone/arkamon_101.png",
+      "role": "Ritratto compatto Arkamon 101",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-102",
+      "source": "Arkamon-Icone/arkamon_102.png",
+      "role": "Ritratto compatto Arkamon 102",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-103",
+      "source": "Arkamon-Icone/arkamon_103.png",
+      "role": "Ritratto compatto Arkamon 103",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-104",
+      "source": "Arkamon-Icone/arkamon_104.png",
+      "role": "Ritratto compatto Arkamon 104",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-105",
+      "source": "Arkamon-Icone/arkamon_105.png",
+      "role": "Ritratto compatto Arkamon 105",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-106",
+      "source": "Arkamon-Icone/arkamon_106.png",
+      "role": "Ritratto compatto Arkamon 106",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-107",
+      "source": "Arkamon-Icone/arkamon_107.png",
+      "role": "Ritratto compatto Arkamon 107",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-108",
+      "source": "Arkamon-Icone/arkamon_108.png",
+      "role": "Ritratto compatto Arkamon 108",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-109",
+      "source": "Arkamon-Icone/arkamon_109.png",
+      "role": "Ritratto compatto Arkamon 109",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-110",
+      "source": "Arkamon-Icone/arkamon_110.png",
+      "role": "Ritratto compatto Arkamon 110",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-111",
+      "source": "Arkamon-Icone/arkamon_111.png",
+      "role": "Ritratto compatto Arkamon 111",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-112",
+      "source": "Arkamon-Icone/arkamon_112.png",
+      "role": "Ritratto compatto Arkamon 112",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-113",
+      "source": "Arkamon-Icone/arkamon_113.png",
+      "role": "Ritratto compatto Arkamon 113",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-115",
+      "source": "Arkamon-Icone/arkamon_115.png",
+      "role": "Ritratto compatto Arkamon 115",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-116",
+      "source": "Arkamon-Icone/arkamon_116.png",
+      "role": "Ritratto compatto Arkamon 116",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-117",
+      "source": "Arkamon-Icone/arkamon_117.png",
+      "role": "Ritratto compatto Arkamon 117",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-119",
+      "source": "Arkamon-Icone/arkamon_119.png",
+      "role": "Ritratto compatto Arkamon 119",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-120",
+      "source": "Arkamon-Icone/arkamon_120.png",
+      "role": "Ritratto compatto Arkamon 120",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-121",
+      "source": "Arkamon-Icone/arkamon_121.png",
+      "role": "Ritratto compatto Arkamon 121",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-122",
+      "source": "Arkamon-Icone/arkamon_122.png",
+      "role": "Ritratto compatto Arkamon 122",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-123",
+      "source": "Arkamon-Icone/arkamon_123.png",
+      "role": "Ritratto compatto Arkamon 123",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-124",
+      "source": "Arkamon-Icone/arkamon_124.png",
+      "role": "Ritratto compatto Arkamon 124",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-125",
+      "source": "Arkamon-Icone/arkamon_125.png",
+      "role": "Ritratto compatto Arkamon 125",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-126",
+      "source": "Arkamon-Icone/arkamon_126.png",
+      "role": "Ritratto compatto Arkamon 126",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-127",
+      "source": "Arkamon-Icone/arkamon_127.png",
+      "role": "Ritratto compatto Arkamon 127",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-128",
+      "source": "Arkamon-Icone/arkamon_128.png",
+      "role": "Ritratto compatto Arkamon 128",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-129",
+      "source": "Arkamon-Icone/arkamon_129.png",
+      "role": "Ritratto compatto Arkamon 129",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-130",
+      "source": "Arkamon-Icone/arkamon_130.png",
+      "role": "Ritratto compatto Arkamon 130",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-131",
+      "source": "Arkamon-Icone/arkamon_131.png",
+      "role": "Ritratto compatto Arkamon 131",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-132",
+      "source": "Arkamon-Icone/arkamon_132.png",
+      "role": "Ritratto compatto Arkamon 132",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    },
+    {
+      "id": "portrait-134",
+      "source": "Arkamon-Icone/arkamon_134.png",
+      "role": "Ritratto compatto Arkamon 134",
+      "maxWidth": 640,
+      "maxHeight": 640,
+      "trim": false,
+      "rotate": 0
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { initialGameSave } from '@/save/gamePersistence'
+import { ALLENATORI } from '@/data'
 import type { GameState } from '@/store/gameStore'
 import { MenuScreen } from '../MenuScreen'
 import { PlayerUi } from '../PlayerUi'
@@ -24,14 +25,31 @@ beforeEach(() => {
 })
 
 describe('player menu navigation and progression facts', () => {
-  it('offers the six match tools once instead of repeating the top navigation', () => {
+  it('shows the earned Venice water medal and never counts an ordinary trainer as a gym victory', () => {
+    const veniceGym = ALLENATORI.find(trainer => trainer.tipo === 'Capopalestra' && trainer.luogo === 'Venezia')!
+    const ordinaryTrainer = ALLENATORI.find(trainer => trainer.tipo === 'NPC')!
+    runtime.state.giocatore1.allenatoriSconfitti = new Set([ordinaryTrainer.id])
+    const ordinaryVictory = renderToStaticMarkup(<MenuScreen playerId={1} onAuxiliary={vi.fn()} />)
+    expect(ordinaryVictory).toContain('aria-label="0 medaglie su 8"')
+    expect(ordinaryVictory).not.toContain('data-earned="true"')
+
+    runtime.state.giocatore1.allenatoriSconfitti.add(veniceGym.id)
+    const before = structuredClone(runtime.state.giocatore1)
+    const markup = renderToStaticMarkup(<MenuScreen playerId={1} onAuxiliary={vi.fn()} />)
+    expect(markup).toContain('aria-label="1 medaglie su 8"')
+    expect(markup.match(/data-earned="true"/g)).toHaveLength(1)
+    expect(markup).toMatch(/<span(?=[^>]*data-earned="true")(?=[^>]*title="Venezia: ottenuta")[^>]*><img(?=[^>]*data-provided-asset="medal-water")(?=[^>]*src="[^"]*\/ui\/reference-png\/medal-water\.webp")[^>]*>/)
+    expect(runtime.state.giocatore1).toEqual(before)
+  })
+
+  it('offers the reference destinations and match utilities without adding a free shop', () => {
     const onAuxiliary = vi.fn()
     const before = structuredClone(runtime.state.giocatore1)
     const markup = renderToStaticMarkup(<MenuScreen playerId={1} onAuxiliary={onAuxiliary} />)
     expect([...markup.matchAll(/aria-label="Apri ([^"]+)"/g)].map(([, name]) => name)).toEqual([
-      'Registro', 'Backup', 'Impostazioni', 'Gara', 'Ripresa', 'Sfide',
+      'Gara', 'Ripresa', 'Sfide', 'Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Registro', 'Salvataggio', 'Impostazioni',
     ])
-    expect(markup).not.toContain('Apri Squadra')
+    expect(markup.match(/aria-label="Apri Squadra"/g)).toHaveLength(1)
     expect(markup).not.toContain('Apri Negozio')
     expect(markup).not.toContain('pu-journey-actions')
     expect(onAuxiliary).not.toHaveBeenCalled()
