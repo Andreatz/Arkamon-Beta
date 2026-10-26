@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arkamon-Beta · Redesign UI & Twitch Broadcast Showcase</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.2); }
+      50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), inset 0 0 20px rgba(245, 158, 11, 0.4); }
+    }
+    .supreme-pulse { animation: pulse-glow 2s infinite ease-in-out; }
+    @keyframes dice-tumble {
+      0% { transform: translateY(-40px) rotate(0deg) scale(0.6); opacity: 0; }
+      50% { transform: translateY(10px) rotate(180deg) scale(1.15); }
+      75% { transform: translateY(-8px) rotate(270deg) scale(0.95); }
+      100% { transform: translateY(0) rotate(360deg) scale(1); opacity: 1; }
+    }
+    .dice-rolling { animation: dice-tumble 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .glow-cyan { box-shadow: 0 0 20px rgba(6, 182, 212, 0.35); }
+    .glow-gold { box-shadow: 0 0 25px rgba(251, 191, 36, 0.4); }
+    .scanline {
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3));
+      background-size: 100% 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+
+  <!-- Top Navigation & View Switcher -->
+  <header class="max-w-7xl mx-auto mb-8 bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-md flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-fuchsia-500 flex items-center justify-center font-black text-xl shadow-lg shadow-cyan-500/30">
+        A
+      </div>
+      <div>
+        <h1 class="text-xl font-black tracking-wide bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+          ARKAMON · UI REDESIGN SHOWCASE
+        </h1>
+        <p class="text-xs text-slate-400 font-medium">Proposte visive per Arkanight (Livio GM, Melia G1, Maggi G2)</p>
+      </div>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="flex flex-wrap items-center bg-slate-950/80 p-1.5 rounded-xl border border-slate-800 gap-1" id="tabGroup">
+      <button onclick="switchTab('battle')" id="btn-battle" class="px-4 py-2 rounded-lg text-sm font-bold transition-all bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25">
+        ⚔️ 1. Battle HUD & Dadi
+      </button>
+      <button onclick="switchTab('map')" id="btn-map" class="px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all">
+        🗺️ 2. Mappa & Nodi Tematici
+      </button>
+      <button onclick="switchTab('race')" id="btn-race" class="px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all">
+        🏆 3. Corsa alla Lega (Overlay)
+      </button>
+      <button onclick="switchTab('arkadex')" id="btn-arkadex" class="px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all">
+        📱 4. Arkadex Modern-DS
+      </button>
+    </div>
+
+    <!-- Toggle Webcam overlay -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleWebcams()" id="webcamBtn" class="px-3.5 py-2 rounded-lg border border-fuchsia-500/40 bg-fuchsia-950/40 hover:bg-fuchsia-900/60 text-fuchsia-300 text-xs font-bold transition-all flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-500 animate-pulse"></span>
+        <span>Mostra Safe Zones Webcam OBS</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="max-w-7xl mx-auto relative">
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: BATTLE HUD REDESIGN -->
+    <!-- ============================================================ -->
+    <section id="tab-battle" class="space-y-6">
+
+      <!-- Analysis pill banner -->
+      <div class="bg-gradient-to-r from-cyan-950/60 via-slate-900 to-indigo-950/60 border border-cyan-800/40 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+            Soluzione al Problema Contrasti & Game Feel
+          </div>
+          <h2 class="text-lg font-bold text-white">Battle HUD: Alto Contrasto, Dadi 3D & Chat Hivemind</h2>
+          <p class="text-sm text-slate-300 max-w-3xl">
+            Sostituisce i vecchi bottoni grigio-su-grigio illeggibili su Twitch con finiture in stile Nintendo DS moderno. Include il vassoio di tiro dadi D6 interattivo e il contatore in diretta dei voti del pubblico per gli NPC!
+          </p>
+        </div>
+        <div class="flex items-center gap-2 self-end md:self-center">
+          <button onclick="simulateDiceRoll()" class="px-5 py-2.5 rounded-xl font-extrabold text-sm bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all">
+            🎲 Simula Tiro Dadi
+          </button>
+        </div>
+      </div>
+
+      <!-- BATTLE ARENA FRAME (16:9 Aspect Ratio Container) -->
+      <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border-2 border-slate-700 bg-slate-900 shadow-2xl scanline" id="battleCanvas">
+
+        <!-- Background Artwork -->
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1511497584788-87676104235f?q=80&w=1920&auto=format&fit=crop'); filter: brightness(0.65) contrast(1.1);"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-slate-950/70"></div>
+
+        <!-- WEBCAM SAFE ZONES -->
+        <div id="webcamOverlay" class="hidden absolute inset-0 pointer-events-none z-40 transition-all">
+          <div class="absolute top-4 left-1/2 -translate-x-1/2 w-72 h-36 border-2 border-dashed border-amber-400/80 bg-amber-950/40 backdrop-blur-sm rounded-xl p-2 flex flex-col justify-between">
+            <span class="text-xs font-black text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded self-start">👑 WEBCAM LIVIO (GM)</span>
+            <span class="text-[11px] text-amber-200/70 text-center font-mono">1920x1080 Safe Zone OBS</span>
+          </div>
+          <div class="absolute top-4 left-4 w-60 h-32 border-2 border-dashed border-fuchsia-400/80 bg-fuchsia-950/40 backdrop-blur-sm rounded-xl p-2 flex flex-col justify-between">
+            <span class="text-xs font-black text-fuchsia-300 bg-fuchsia-950/80 px-2 py-0.5 rounded self-start">🎮 WEBCAM MELIA (G1)</span>
+            <span class="text-[11px] text-fuchsia-200/70 text-center font-mono">Giocatore di Turno</span>
+          </div>
+          <div class="absolute top-4 right-4 w-60 h-32 border-2 border-dashed border-cyan-400/80 bg-cyan-950/40 backdrop-blur-sm rounded-xl p-2 flex flex-col justify-between">
+            <span class="text-xs font-black text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded self-start">🎮 WEBCAM MAGGI (G2)</span>
+            <span class="text-[11px] text-cyan-200/70 text-center font-mono">In Attesa di Turno</span>
+          </div>
+        </div>
+
+        <!-- TOP BAR: Turn, Player Context & Opponent QR info -->
+        <div class="absolute top-4 left-4 right-4 z-20 flex justify-between items-start pointer-events-auto">
+          <!-- Active Player Card -->
+          <div class="bg-slate-900/90 border-2 border-fuchsia-500/80 rounded-xl px-4 py-2 shadow-xl backdrop-blur-md flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-fuchsia-600 flex items-center justify-center font-black text-white text-lg shadow-md shadow-fuchsia-600/50">
+              G1
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-white text-base">MELIA</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-fuchsia-500/30 text-fuchsia-300 uppercase">In Sfida</span>
+              </div>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                <span class="text-xs text-slate-300 ml-2 font-mono">Arkaball: <b>x3</b></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHAT HIVEMIND VOTING GAUGE -->
+          <div class="bg-slate-900/95 border-2 border-cyan-500/80 rounded-xl p-3 shadow-2xl backdrop-blur-md w-80">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                <span class="text-xs font-black text-cyan-300 tracking-wider">VOTO CHAT TWITCH</span>
+              </div>
+              <div class="text-xs font-mono font-bold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-600/40">
+                ⏱️ <span id="timerCountdown">09s</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-300 mb-2 font-medium">Scansiona il QR per decidere l'attacco di <b>Wormaren</b>!</p>
+
+            <div class="space-y-1.5 text-xs font-bold">
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-200 mb-0.5">
+                  <span>Morso Rapido</span>
+                  <span class="font-mono text-cyan-400" id="votePerc1">58%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="voteBar1" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-500" style="width: 58%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-300 mb-0.5">
+                  <span>Pungiglione</span>
+                  <span class="font-mono text-slate-400" id="votePerc2">28%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="voteBar2" class="h-full bg-slate-600 rounded-full transition-all duration-500" style="width: 28%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-2 pt-1.5 border-t border-slate-800 flex justify-between items-center text-[10px] text-slate-400">
+              <span>👥 Votanti: <b class="text-white" id="voterCount">184</b> spettatori</span>
+              <span class="text-cyan-400 font-bold hover:underline cursor-pointer">Apri QR Grande</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BATTLE FIELD: OPPONENT (Top Right) -->
+        <div class="absolute top-28 right-12 z-10 flex flex-col items-end">
+          <div class="bg-slate-900/95 border-2 border-slate-600 rounded-xl p-3 shadow-2xl backdrop-blur-md w-72 mb-4">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-black text-white text-base tracking-wide">Wormaren</span>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 bg-slate-800 rounded border border-slate-700 text-amber-300">Lv. 15</span>
+            </div>
+            <div class="flex gap-1.5 mb-2">
+              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-900/60 border border-amber-600 text-amber-200">Terra</span>
+            </div>
+            <div class="relative w-full h-4 rounded-full bg-slate-950 p-0.5 border border-slate-700 overflow-hidden">
+              <div id="opponentHpBar" class="h-full rounded-full bg-gradient-to-r from-red-600 to-amber-500 transition-all duration-700 shadow-md shadow-red-500/50" style="width: 35%;"></div>
+            </div>
+            <div class="flex justify-between items-center mt-1 text-[11px] font-mono text-slate-400">
+              <span class="text-red-400 font-bold">HP Bassi</span>
+              <span>12 / 34 HP</span>
+            </div>
+          </div>
+
+          <div class="w-48 h-48 relative flex items-center justify-center animate-bounce" style="animation-duration: 3s;">
+            <div class="w-40 h-40 rounded-full bg-amber-500/10 blur-xl absolute"></div>
+            <div class="w-36 h-36 bg-contain bg-no-repeat bg-center" style="background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/23.png');"></div>
+          </div>
+        </div>
+
+        <!-- BATTLE FIELD: PLAYER POKEMON (Bottom Left) -->
+        <div class="absolute bottom-40 left-12 z-10 flex items-center gap-6">
+          <div class="w-52 h-52 relative flex items-center justify-center">
+            <div class="w-44 h-44 rounded-full bg-cyan-500/10 blur-xl absolute"></div>
+            <div class="w-48 h-48 bg-contain bg-no-repeat bg-center" style="background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/147.png'); filter: drop-shadow(0 15px 15px rgba(0,0,0,0.7));"></div>
+          </div>
+
+          <div class="bg-slate-900/95 border-2 border-cyan-500/70 rounded-xl p-3 shadow-2xl backdrop-blur-md w-72">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-black text-white text-base tracking-wide">Vyrath</span>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 bg-cyan-950/80 rounded border border-cyan-600/50 text-cyan-300">Lv. 14</span>
+            </div>
+            <div class="flex gap-1.5 mb-2">
+              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-cyan-900/60 border border-cyan-500 text-cyan-200">Normale</span>
+            </div>
+            <div class="relative w-full h-4 rounded-full bg-slate-950 p-0.5 border border-slate-700 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-700 shadow-md shadow-emerald-500/50" style="width: 82%;"></div>
+            </div>
+            <div class="flex justify-between items-center mt-1 text-[11px] font-mono text-slate-300">
+              <span class="text-emerald-400 font-bold">Ottimo stato</span>
+              <span>23 / 28 HP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D DICE TRAY OVERLAY -->
+        <div id="diceTray" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-slate-950/90 border-2 border-amber-500/70 rounded-2xl p-6 shadow-2xl backdrop-blur-lg flex flex-col items-center gap-3 w-96 glow-gold transition-all">
+          <div class="text-xs font-black uppercase tracking-widest text-amber-400 flex items-center gap-2">
+            <span>⚔️ TAVOLO DI TIRO D&D</span>
+          </div>
+          
+          <div class="flex items-center gap-4 py-2" id="diceContainer">
+            <div id="die1" class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 border-2 border-white shadow-xl shadow-cyan-500/40 flex items-center justify-center text-3xl font-black text-white">
+              5
+            </div>
+            <span class="text-2xl font-black text-amber-400">+</span>
+            <div id="die2" class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 border-2 border-white shadow-xl shadow-cyan-500/40 flex items-center justify-center text-3xl font-black text-white">
+              4
+            </div>
+          </div>
+
+          <div class="w-full bg-slate-900/90 rounded-xl p-2.5 border border-slate-800 text-center font-mono">
+            <div class="text-xs text-slate-400">DADO (5 + 4) + STAB (2)</div>
+            <div class="text-lg font-black text-emerald-400" id="diceTotal">= 11 DANNI INFLITTI!</div>
+          </div>
+        </div>
+
+        <!-- BOTTOM HUD: MOVE CARDS -->
+        <div class="absolute bottom-4 left-4 right-4 z-20 flex flex-col md:flex-row items-stretch gap-3">
+          <div class="flex-1 grid grid-cols-2 gap-3">
+            <button class="group relative bg-slate-900/95 hover:bg-slate-800 border-2 border-slate-700 hover:border-cyan-400 rounded-xl p-3 text-left transition-all shadow-xl hover:-translate-y-0.5">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-black text-white text-base group-hover:text-cyan-300">Soffio</span>
+                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 border border-slate-600 text-slate-300">Normale</span>
+              </div>
+              <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+                <span class="text-cyan-400 font-bold">2 🎲 + 2 Danni</span>
+                <span>PP 25/25</span>
+              </div>
+            </button>
+
+            <button class="group relative bg-slate-900/95 hover:bg-slate-800 border-2 border-slate-700 hover:border-emerald-400 rounded-xl p-3 text-left transition-all shadow-xl hover:-translate-y-0.5">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-black text-white text-base group-hover:text-emerald-300">Brezza Profumata</span>
+                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-600 text-emerald-300">Erba</span>
+              </div>
+              <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+                <span class="text-emerald-400 font-bold">1 🎲 + 1 (Cura 5 HP)</span>
+                <span>PP 15/15</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- MOSSA SUPREMA -->
+          <div class="w-full md:w-72">
+            <button class="w-full h-full relative supreme-pulse bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 border-2 border-amber-500 rounded-xl p-3 text-left transition-all group overflow-hidden">
+              <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-500/20 rounded-full blur-xl group-hover:scale-150 transition-all"></div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-black text-amber-300 text-base tracking-wide flex items-center gap-1.5">
+                  ⚡ MOSSA SUPREMA
+                </span>
+                <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-red-600 text-white uppercase animate-pulse">RISCHIO</span>
+              </div>
+              <p class="text-xs text-amber-100/90 font-medium leading-snug">
+                Danno Raddoppiato (x2)
+              </p>
+              <div class="mt-1 text-[11px] font-mono font-bold text-red-400">
+                ⚠️ Costo: -50% HP Massimi
+              </div>
+            </button>
+          </div>
+
+          <!-- Utility Actions -->
+          <div class="flex md:flex-col gap-2 justify-center">
+            <button class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-500 text-xs font-bold text-slate-200 hover:text-white transition-all">
+              🎒 Borsa
+            </button>
+            <button class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-xs font-bold text-white shadow-md shadow-emerald-600/30 hover:scale-105 transition-all">
+              🔴 Cattura (x3)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: OVERWORLD & LOCAL MAP REDESIGN -->
+    <!-- ============================================================ -->
+    <section id="tab-map" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-emerald-950/60 via-slate-900 to-teal-950/60 border border-emerald-800/40 rounded-2xl p-5">
+        <h2 class="text-lg font-bold text-white">Mappa a Nodi Tematici (Ispirata a Mario Party / Slay the Spire)</h2>
+        <p class="text-sm text-slate-300">
+          Ogni casella comunica a colpo d'occhio agli streamer e agli spettatori cosa accadrà fermandosi su quel punto.
+        </p>
+      </div>
+
+      <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border-2 border-slate-700 bg-slate-950 shadow-2xl flex items-center justify-center p-8">
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=1920&auto=format&fit=crop'); filter: brightness(0.4) saturate(1.2);"></div>
+        <div class="absolute inset-0 bg-slate-950/50"></div>
+
+        <!-- TOP BAR: Location & Turn Budget -->
+        <div class="absolute top-4 left-4 right-4 flex justify-between items-center z-20">
+          <div class="bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2 backdrop-blur-md flex items-center gap-3">
+            <span class="text-xl">🌲</span>
+            <div>
+              <h3 class="text-sm font-black text-white">PERCORSO 1 · BOSCO ANTICO</h3>
+              <p class="text-xs text-slate-400">Verso la Palestra di Venezia</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 border-2 border-cyan-500 rounded-xl px-4 py-2 backdrop-blur-md flex items-center gap-3 shadow-lg shadow-cyan-500/20">
+            <span class="text-xs font-bold text-cyan-300">AZIONI RIMASTE:</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-lg animate-pulse">💎</span>
+              <span class="text-lg animate-pulse">💎</span>
+              <span class="text-xs font-mono font-bold text-white ml-1">2/2</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOARD NODES -->
+        <div class="relative w-full max-w-4xl h-96 z-10 flex items-center justify-between px-12">
+          <div class="absolute left-20 right-20 top-1/2 -translate-y-1/2 h-2.5 bg-gradient-to-r from-emerald-600 via-amber-500 to-indigo-600 rounded-full shadow-lg"></div>
+
+          <!-- NODE 1 -->
+          <div class="relative flex flex-col items-center group cursor-pointer">
+            <div class="absolute -top-12 px-3 py-1 bg-fuchsia-600 text-white font-extrabold text-xs rounded-full shadow-lg shadow-fuchsia-600/50 animate-bounce">
+              MELIA (G1) QUI
+            </div>
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-800 border-4 border-white shadow-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-all glow-cyan">
+              🌿
+            </div>
+            <span class="mt-2 text-xs font-black text-white bg-slate-900/90 px-2.5 py-0.5 rounded border border-slate-700">Erba Alta</span>
+            <span class="text-[10px] text-emerald-400 font-mono">Incontro Selvatico</span>
+          </div>
+
+          <!-- NODE 2 -->
+          <div class="relative flex flex-col items-center group cursor-pointer">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-red-600 border-4 border-cyan-400 shadow-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-all animate-pulse">
+              ⚔️
+            </div>
+            <span class="mt-2 text-xs font-black text-white bg-slate-900/90 px-2.5 py-0.5 rounded border border-cyan-500">Allenatore NPC</span>
+            <span class="text-[10px] text-cyan-300 font-mono">Voto Chat Twitch!</span>
+          </div>
+
+          <!-- NODE 3 -->
+          <div class="relative flex flex-col items-center group cursor-pointer">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-800 border-4 border-slate-700 shadow-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-all">
+              ❓
+            </div>
+            <span class="mt-2 text-xs font-black text-white bg-slate-900/90 px-2.5 py-0.5 rounded border border-slate-700">Evento D&D</span>
+            <span class="text-[10px] text-purple-300 font-mono">Prova Abilità Livio</span>
+          </div>
+
+          <!-- NODE 4 -->
+          <div class="relative flex flex-col items-center group cursor-pointer">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-700 border-4 border-slate-700 shadow-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-all">
+              🎁
+            </div>
+            <span class="mt-2 text-xs font-black text-white bg-slate-900/90 px-2.5 py-0.5 rounded border border-slate-700">Baule Scorte</span>
+            <span class="text-[10px] text-amber-300 font-mono">Pozioni / Arkaball</span>
+          </div>
+
+          <!-- NODE 5 -->
+          <div class="relative flex flex-col items-center group cursor-pointer">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-800 border-4 border-slate-700 shadow-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-all">
+              🏛️
+            </div>
+            <span class="mt-2 text-xs font-black text-white bg-slate-900/90 px-2.5 py-0.5 rounded border border-slate-700">Venezia</span>
+            <span class="text-[10px] text-cyan-400 font-mono">Palestra & Centro</span>
+          </div>
+        </div>
+
+        <!-- FOOTER PROMPT -->
+        <div class="absolute bottom-4 left-4 right-4 bg-slate-900/95 border border-slate-700 rounded-xl p-3 flex items-center justify-between z-20">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">⚔️</span>
+            <div>
+              <span class="text-xs font-mono text-cyan-400 font-bold uppercase">Nodo 44 Selezionato</span>
+              <p class="text-sm font-bold text-white">Sfida il Bullo Marco (Scouting Chat)</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="px-5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-black rounded-lg shadow-lg shadow-cyan-500/30">
+              Muovi Qui (1 Azione)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: RACE TO THE LEAGUE TRACKER -->
+    <!-- ============================================================ -->
+    <section id="tab-race" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-amber-950/60 via-slate-900 to-orange-950/60 border border-amber-800/40 rounded-2xl p-5">
+        <h2 class="text-lg font-bold text-white mb-1">Overlay Permanente della Corsa: Melia vs Maggi</h2>
+        <p class="text-sm text-slate-300">
+          Barra visuale fissa da posizionare in overlay OBS per visualizzare costantemente lo scarto di medaglie e la distanza dalla Lega Arkamon.
+        </p>
+      </div>
+
+      <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl p-6 shadow-2xl space-y-6">
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-fuchsia-600 flex items-center justify-center font-black text-white text-sm">G1</div>
+              <span class="font-extrabold text-white text-base">MELIA</span>
+              <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Posizione: Roma</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400">Medaglie:</span>
+              <span class="text-base">🏅🏅🏅⚪⚪⚪⚪⚪</span>
+              <span class="font-mono text-xs font-bold text-fuchsia-400 ml-2">3 / 8</span>
+            </div>
+          </div>
+          <div class="relative w-full h-4 bg-slate-950 rounded-full border border-slate-800 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-fuchsia-600 to-pink-500 rounded-full" style="width: 42%;"></div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center font-black text-white text-sm">G2</div>
+              <span class="font-extrabold text-white text-base">MAGGI</span>
+              <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Posizione: Firenze</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400">Medaglie:</span>
+              <span class="text-base">🏅🏅⚪⚪⚪⚪⚪⚪</span>
+              <span class="font-mono text-xs font-bold text-cyan-400 ml-2">2 / 8</span>
+            </div>
+          </div>
+          <div class="relative w-full h-4 bg-slate-950 rounded-full border border-slate-800 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-cyan-600 to-blue-500 rounded-full" style="width: 28%;"></div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400 font-mono">
+          <span>🚩 Traguardo Finale: LEGA DI PORDENONE</span>
+          <span class="text-amber-400 font-bold">⚔️ Vantaggio Melia: +1 Medaglia</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- TAB 4: ARKADEX MODERN-DS -->
+    <!-- ============================================================ -->
+    <section id="tab-arkadex" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-indigo-950/60 via-slate-900 to-purple-950/60 border border-indigo-800/40 rounded-2xl p-5">
+        <h2 class="text-lg font-bold text-white mb-1">Arkadex: Scocca Tecnologica Modern Handheld</h2>
+        <p class="text-sm text-slate-300">
+          Ispirato al display superiore e inferiore di un Nintendo DS moderno: scanner olografico 3D da un lato, parametri statistici e mosse dall'altro.
+        </p>
+      </div>
+
+      <div class="bg-slate-900 border-4 border-slate-700 rounded-3xl p-6 shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+        <div class="bg-slate-950 border-2 border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-800">
+              <span class="text-xs font-mono font-bold text-cyan-400">ARKADEX N° 035</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">CATTURATO</span>
+            </div>
+            
+            <div class="w-full h-56 rounded-xl bg-slate-900/90 border border-cyan-500/30 flex items-center justify-center relative overflow-hidden mb-4">
+              <div class="w-36 h-36 rounded-full bg-cyan-500/10 blur-xl absolute"></div>
+              <div class="w-40 h-40 bg-contain bg-no-repeat bg-center relative z-10" style="background-image: url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png');"></div>
+              <div class="absolute bottom-2 left-3 text-[10px] font-mono text-cyan-400/80">3D SCAN: 100% COMPLETATO</div>
+            </div>
+
+            <h3 class="text-xl font-black text-white">Crawgoyle</h3>
+            <p class="text-xs text-slate-400 mt-1">
+              Creatura guardiana delle vette alpine. Usa le sue ali di roccia per resistere alle intemperie e generare raffiche sismiche.
+            </p>
+          </div>
+
+          <div class="flex gap-2 mt-4">
+            <span class="px-2.5 py-1 bg-amber-950/80 border border-amber-600 text-amber-300 text-xs font-extrabold rounded">TERRA</span>
+            <span class="px-2.5 py-1 bg-cyan-950/80 border border-cyan-600 text-cyan-300 text-xs font-extrabold rounded">VOLANTE</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 border-2 border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+              <span class="text-xs font-mono font-bold text-slate-400">PARAMETRI COMBATTIMENTO</span>
+              <span class="text-xs font-bold text-white">Livello 20</span>
+            </div>
+
+            <div class="space-y-2.5 text-xs font-mono">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-400">Punti Vita (HP)</span>
+                  <span class="text-white font-bold">34 / 34</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-emerald-500 rounded-full" style="width: 75%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-400">Attacco Fisico</span>
+                  <span class="text-white font-bold">28</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-amber-500 rounded-full" style="width: 60%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-400">Velocità Iniziativa</span>
+                  <span class="text-white font-bold">32</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-cyan-500 rounded-full" style="width: 70%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-xs font-bold text-slate-300 mb-2 block">MOSSE APPRESE</span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                  <span class="font-bold text-white block">Frana Sismica</span>
+                  <span class="text-[10px] text-amber-400 font-mono">Terra · 2🎲+3</span>
+                </div>
+                <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                  <span class="font-bold text-white block">Ala d'Acciaio</span>
+                  <span class="text-[10px] text-slate-400 font-mono">Normale · 1🎲+4</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Tasso Cattura: <b>3 / 5</b></span>
+            <button class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-bold rounded-lg border border-slate-700">
+              Mostra Evoluzioni →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      const tabs = ['battle', 'map', 'race', 'arkadex'];
+      tabs.forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        const btn = document.getElementById('btn-' + t);
+        if (t === tabId) {
+          el.classList.remove('hidden');
+          btn.className = 'px-4 py-2 rounded-lg text-sm font-bold transition-all bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25';
+        } else {
+          el.classList.add('hidden');
+          btn.className = 'px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all';
+        }
+      });
+    }
+
+    let webcamsVisible = false;
+    function toggleWebcams() {
+      webcamsVisible = !webcamsVisible;
+      const overlay = document.getElementById('webcamOverlay');
+      const btn = document.getElementById('webcamBtn');
+      if (webcamsVisible) {
+        overlay.classList.remove('hidden');
+        btn.classList.add('bg-fuchsia-600', 'text-white');
+        btn.classList.remove('bg-fuchsia-950/40', 'text-fuchsia-300');
+      } else {
+        overlay.classList.add('hidden');
+        btn.classList.remove('bg-fuchsia-600', 'text-white');
+        btn.classList.add('bg-fuchsia-950/40', 'text-fuchsia-300');
+      }
+    }
+
+    function simulateDiceRoll() {
+      const die1 = document.getElementById('die1');
+      const die2 = document.getElementById('die2');
+      const total = document.getElementById('diceTotal');
+      const hpBar = document.getElementById('opponentHpBar');
+
+      die1.classList.add('dice-rolling');
+      die2.classList.add('dice-rolling');
+
+      setTimeout(() => {
+        const roll1 = Math.floor(Math.random() * 6) + 1;
+        const roll2 = Math.floor(Math.random() * 6) + 1;
+        die1.textContent = roll1;
+        die2.textContent = roll2;
+        const damage = roll1 + roll2 + 2;
+        total.textContent = `= ${damage} DANNI INFLITTI!`;
+        die1.classList.remove('dice-rolling');
+        die2.classList.remove('dice-rolling');
+
+        hpBar.style.width = '10%';
+      }, 600);
+    }
+
+    let countdown = 9;
+    setInterval(() => {
+      countdown = countdown > 1 ? countdown - 1 : 15;
+      document.getElementById('timerCountdown').textContent = (countdown < 10 ? '0' : '') + countdown + 's';
+
+      if (countdown % 3 === 0) {
+        const p1 = Math.floor(Math.random() * 25) + 45;
+        const p2 = 100 - p1;
+        document.getElementById('votePerc1').textContent = p1 + '%';
+        document.getElementById('votePerc2').textContent = p2 + '%';
+        document.getElementById('voteBar1').style.width = p1 + '%';
+        document.getElementById('voteBar2').style.width = p2 + '%';
+        const voters = parseInt(document.getElementById('voterCount').textContent) + Math.floor(Math.random() * 5);
+        document.getElementById('voterCount').textContent = voters;
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
