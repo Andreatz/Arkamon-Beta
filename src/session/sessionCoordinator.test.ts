@@ -226,4 +226,21 @@ describe('exclusive campaign writer and durable revision fencing', () => {
     expect(disk.getItem(key)).toBe(envelope('External checkpoint'))
     await session.release()
   })
+  it('keeps conflict recovery retryable if rereading under an already-held Web Lock fails', async () => {
+    const disk = memoryDisk(), session = coordinator(disk, 'owner', webLocks())
+    await session.acquire()
+    disk.setItem(key, envelope('External checkpoint', 42))
+    expect(session.canCommit(key)).toBe(false)
+    session.setHydration(() => { throw new Error('Checkpoint read temporarily unavailable') })
+    try {
+      await expect(session.acquire()).resolves.toBe(false)
+      expect(session.getSnapshot().mode).toBe('conflict')
+      expect(session.canWrite()).toBe(false)
+      expect(disk.getItem(key)).toBe(envelope('External checkpoint', 42))
+      session.setHydration(() => { session.read(key) })
+      expect(await session.acquire()).toBe(true)
+      session.write(key, envelope('Recovered', 43))
+      expect(JSON.parse(disk.getItem(key)!).state.coins).toBe(43)
+    } finally { await session.release() }
+  })
 })

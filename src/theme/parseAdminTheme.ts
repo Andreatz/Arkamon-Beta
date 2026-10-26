@@ -1,4 +1,5 @@
 import { normalizeDesign } from '@/ui-studio/designModel'
+import { isSafeThemeAssetPath } from './adminThemeAssetPaths'
 import { ADMIN_THEME_UI_BOUNDS, isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
 import type {
   AdminTheme,
@@ -196,7 +197,7 @@ export function parseThemeJson(value: string): { theme: AdminTheme; error: null 
     for (const key of assetKeys) {
       const asset = parsed.assets[key]
       if (asset === undefined) continue
-      if (typeof asset !== 'string' || !asset.startsWith('/') || asset.startsWith('//')) {
+      if (!isSafeThemeAssetPath(asset)) {
         return { theme: null, error: `Asset non valido: ${key}.` }
       }
       assets[key] = asset

@@ -1,0 +1,2246 @@
+{
+  "date": "2026-10-26",
+  "policy": "cover-only-v2",
+  "method": "Manual review of complete paintings and actual UI. Bounds describe face, full muzzle and core torso, excluding peripheral crests, wings, tails and feet. No runtime shrinking; actual per-viewport focus fit is recorded separately by browser QA. Source hashes prevent applying stale measurements.",
+  "records": [
+    {
+      "id": 1,
+      "name": "Vyrath",
+      "version": "hero-restored-v1",
+      "sourceSha256": "32e9dd3c627535930777d859afd4a56f9ec5ff8500972a6d744eba1bd837cd21",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.316,
+        "top": 0.265,
+        "right": 0.552,
+        "bottom": 0.798
+      },
+      "subjectBounds": {
+        "left": 0.174,
+        "top": 0.083,
+        "right": 0.7,
+        "bottom": 0.903
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 2,
+      "name": "Vyrath",
+      "version": "hero-source-v2",
+      "sourceSha256": "071c811f8e2c3973c2f714ac943f1ff5a2d70a842ea9c9b5a3fc20af28b27177",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.255,
+        "right": 0.565,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0.06,
+        "top": 0,
+        "right": 0.93,
+        "bottom": 0.96
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 3,
+      "name": "Vyrath",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "8962d2a22825460be17babf86036c47f59a882118b6537a44b32ccb33e12593f",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.4,
+        "top": 0.295,
+        "right": 0.55,
+        "bottom": 0.745
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 4,
+      "name": "Vyrath",
+      "version": "hero-user-reference",
+      "sourceSha256": "b3f9edf2c42c9b13bb4113210c3d8ad5166277e070e80c6c3b3f000955137b23",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.344,
+        "top": 0.31,
+        "right": 0.585,
+        "bottom": 0.775
+      },
+      "subjectBounds": {
+        "left": 0.321,
+        "top": 0.192,
+        "right": 0.721,
+        "bottom": 0.835
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 5,
+      "name": "Darklaw",
+      "version": "hero-source-v2",
+      "sourceSha256": "98e341e7a902d22e3f041e9eb6177d94873b0f7aa29a00ab6d412d2151721bcf",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.255,
+        "right": 0.59,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0.25,
+        "top": 0,
+        "right": 0.84,
+        "bottom": 0.98
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 6,
+      "name": "Darklaw",
+      "version": "hero-source-v2",
+      "sourceSha256": "3c016eae80ecb0b90fe210d7b031b46164b719ba78adc116289b30b9ad6a1d47",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.26,
+        "right": 0.61,
+        "bottom": 0.77
+      },
+      "subjectBounds": {
+        "left": 0.22,
+        "top": 0,
+        "right": 0.93,
+        "bottom": 0.97
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 7,
+      "name": "Darklaw",
+      "version": "hero-source-v2",
+      "sourceSha256": "26d0a70ac3616035fef75843f4b8fb39c28834c6acdd5bc012b4289678b56a3a",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.255,
+        "right": 0.59,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 8,
+      "name": "Darklaw",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "6cf0f2335ed86a1b2652a8c53f20559bd83be38283ab913d8a89250b1ed3757d",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.423,
+        "top": 0.266,
+        "right": 0.535,
+        "bottom": 0.755
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 9,
+      "name": "Felyss",
+      "version": "hero-restored-v1",
+      "sourceSha256": "d6fc828ac40ce2ac944d46e2c150a7b3fcf67031035592d59ccbab143bdf853c",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.339,
+        "top": 0.271,
+        "right": 0.57,
+        "bottom": 0.738
+      },
+      "subjectBounds": {
+        "left": 0.297,
+        "top": 0.1,
+        "right": 0.65,
+        "bottom": 0.761
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 10,
+      "name": "Felyss",
+      "version": "hero-source-v2",
+      "sourceSha256": "ed0d76b6c9e22d84153c0194a1cec8a8c06e8ba31c92b5bf12aceec7f651fe95",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.225,
+        "right": 0.615,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Third eye top reaches y .225; verify title does not touch it."
+    },
+    {
+      "id": 11,
+      "name": "Felyss",
+      "version": "hero-source-v2",
+      "sourceSha256": "8eda055dcffadf20543e9d080e26f25979ecf4c86a98bb717eb598e844283b3d",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.235,
+        "right": 0.585,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 12,
+      "name": "Felyss",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "d03dd647c9a457289181421fa956a955534d42ff8a6602f214dd4b5a4d61a395",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.398,
+        "top": 0.368,
+        "right": 0.565,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0.05,
+        "top": 0.146,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 13,
+      "name": "Wormaren",
+      "version": "hero-source-v2",
+      "sourceSha256": "5a87d88cd52ab0db09c93b2d6c5cd52018535b50e9bbae67f126076d1891afc2",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.285,
+        "top": 0.285,
+        "right": 0.62,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Broad left cheek/nose reaches x .285; verify live panel edge."
+    },
+    {
+      "id": 14,
+      "name": "Wormaren",
+      "version": "hero-source-v2",
+      "sourceSha256": "3a18a7685bb6ef0d7bbcf2db08c56accafc7c38b63d3176eb771848f60569344",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.295,
+        "top": 0.255,
+        "right": 0.625,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Long snout reaches x .295; verify live panel edge."
+    },
+    {
+      "id": 15,
+      "name": "Wormaren",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "89ce1f587fb020e62bac3b080a8d0ef3dcac31b949957f5264a635f125807b33",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.344,
+        "top": 0.28,
+        "right": 0.615,
+        "bottom": 0.795
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 16,
+      "name": "Clastoom",
+      "version": "hero-source-v2",
+      "sourceSha256": "64a626566498976066c2fc16871b7a1425e40bd6ce9eb6c11fc7db34924725ce",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.24,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 17,
+      "name": "Clastoom",
+      "version": "hero-source-v2",
+      "sourceSha256": "02029d109a1e05c77fba544532d9ecaa5cdb0690d3280c577c3358b9eacba70a",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.255,
+        "right": 0.625,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 18,
+      "name": "Clastoom",
+      "version": "hero-source-v2",
+      "sourceSha256": "c6a8b8bb998bf66fbc8413af59cc31d243b180e04ac42afea0448fa8839c402f",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.265,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 19,
+      "name": "Colussand",
+      "version": "hero-source-v2",
+      "sourceSha256": "1054bb927aed994068e6ab92f7797fea69a24ad585aa9149362b872dcf8085e5",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.23,
+        "right": 0.645,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 20,
+      "name": "Handipus",
+      "version": "hero-source-v2",
+      "sourceSha256": "6e730c59f36249c50ab90103fe0264785e18d7d6dd7b8c3ea10f7831a5f853d9",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.305,
+        "top": 0.29,
+        "right": 0.615,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Nose at left edge of central opening; trunk is peripheral below."
+    },
+    {
+      "id": 21,
+      "name": "Shrody",
+      "version": "hero-source-v2",
+      "sourceSha256": "a139235c3ccf4e9d2784ba48a242910ce6fe6a6d3d06ca86dc2c6ec11cdac054",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.285,
+        "top": 0.255,
+        "right": 0.605,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Left eye/nose start near x .285-.30; right eye is clear. Do not discard the left eye from protected area."
+    },
+    {
+      "id": 22,
+      "name": "Voltrake",
+      "version": "hero-source-v2",
+      "sourceSha256": "7c163b0942f606f90f569fc86fb87a31005e4ff9b8c8cb76fa8f0568726d2a92",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.235,
+        "right": 0.65,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 23,
+      "name": "Sparkly",
+      "version": "hero-source-v2",
+      "sourceSha256": "ba4598310ae0d460341a984007014437fbbf96ebc4474bf4482af2852223bec9",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.265,
+        "right": 0.6,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 24,
+      "name": "Grimbolt",
+      "version": "hero-source-v2",
+      "sourceSha256": "39b388219221851c13b6439988fbb7a10a699c713d8538bf88b9f3d5ff10b028",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.265,
+        "right": 0.62,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 25,
+      "name": "Grimbolt",
+      "version": "hero-source-v2",
+      "sourceSha256": "c0147a31279b690cb61c508e47f99a30b313ebd7d237758ae2f3ed8468e010c3",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.28,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 26,
+      "name": "Ampereel",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "41daa1a0915cbdad4a5a405b16540a6b66faa0babe62e4e4865aa3ad93c02275",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.389,
+        "top": 0.329,
+        "right": 0.611,
+        "bottom": 0.799
+      },
+      "subjectBounds": {
+        "left": 0.29,
+        "top": 0.216,
+        "right": 0.952,
+        "bottom": 0.969
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 27,
+      "name": "Ampereel",
+      "version": "hero-source-v2",
+      "sourceSha256": "361132ab50e8c4bff16c277582f09f3aa1e9e9a5546036dc68a3581b97e2bd8d",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.29,
+        "top": 0.28,
+        "right": 0.625,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Long jaw reaches x .29, main eye is central."
+    },
+    {
+      "id": 28,
+      "name": "Silvard",
+      "version": "hero-source-v2",
+      "sourceSha256": "838f073b591efb99ad44f5178fa812661567ac0eb55235c9db85d263f95ceebe",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.235,
+        "right": 0.625,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 29,
+      "name": "Silvard",
+      "version": "hero-focus-v1",
+      "sourceSha256": "e4d36c4367e233c53fc90c0a77b80c3abe162e3672e184f5d69a7ebbaa97ca2f",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.36,
+        "top": 0.28,
+        "right": 0.645,
+        "bottom": 0.7
+      },
+      "subjectBounds": {
+        "left": 0.315,
+        "top": 0.17,
+        "right": 0.88,
+        "bottom": 0.91
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 30,
+      "name": "Eclyps",
+      "version": "hero-focus-v1",
+      "sourceSha256": "bc408b1216a1e0a6092a2ea5450001b788e250c3198af6bb010c012185f74fba",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.34,
+        "top": 0.25,
+        "right": 0.595,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0.295,
+        "top": 0.08,
+        "right": 0.715,
+        "bottom": 0.98
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 31,
+      "name": "Eclyps",
+      "version": "hero-focus-v1",
+      "sourceSha256": "1cbe8d2f6cf101d61d7cf2b92a5ae4ff8125118daaeb7c45c8501bcf0f2c5425",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.38,
+        "top": 0.23,
+        "right": 0.645,
+        "bottom": 0.76
+      },
+      "subjectBounds": {
+        "left": 0.34,
+        "top": 0.14,
+        "right": 0.81,
+        "bottom": 0.935
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 32,
+      "name": "Blazion",
+      "version": "hero-focus-v1",
+      "sourceSha256": "d3229a5420e0383f8346fa374ca6d44b774f208eb49216ef79eb18a913fa20ca",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.309,
+        "top": 0.242,
+        "right": 0.628,
+        "bottom": 0.785
+      },
+      "subjectBounds": {
+        "left": 0.258,
+        "top": 0.052,
+        "right": 0.79,
+        "bottom": 0.875
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 33,
+      "name": "Blazion",
+      "version": "hero-focus-v1",
+      "sourceSha256": "e471aa2f3ed42056c508992116d907476198d9c1474ac652b0f866c209ec588b",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.293,
+        "top": 0.23,
+        "right": 0.612,
+        "bottom": 0.77
+      },
+      "subjectBounds": {
+        "left": 0.224,
+        "top": 0,
+        "right": 0.8,
+        "bottom": 0.937
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 34,
+      "name": "Crawgoyle",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "5417a16dd539e1128580a8ec79e0353fec6c4e88108f8d1355091e76e3ce11e8",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.352,
+        "top": 0.305,
+        "right": 0.557,
+        "bottom": 0.745
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 35,
+      "name": "Crawgoyle",
+      "version": "hero-focus-v1",
+      "sourceSha256": "ea8a89d9ec53d6eb7e3dcf531bc72c60918f40ab62190662c09504d6ba3dac81",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.317,
+        "top": 0.277,
+        "right": 0.593,
+        "bottom": 0.778
+      },
+      "subjectBounds": {
+        "left": 0.162,
+        "top": 0,
+        "right": 0.858,
+        "bottom": 0.92
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 36,
+      "name": "Chimzap",
+      "version": "hero-focus-v1",
+      "sourceSha256": "a242c2dd837b6a251e579458768d02909c27d85437b361fb673ddcf9bef93c71",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.374,
+        "top": 0.295,
+        "right": 0.598,
+        "bottom": 0.792
+      },
+      "subjectBounds": {
+        "left": 0.284,
+        "top": 0.103,
+        "right": 0.797,
+        "bottom": 0.918
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 37,
+      "name": "Chimzap",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "278b2b73b6fbf08b65f2858d8e36e86ee9dd7d394c92aca9b56287216cf09479",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.345,
+        "top": 0.265,
+        "right": 0.63,
+        "bottom": 0.75
+      },
+      "subjectBounds": {
+        "left": 0.14,
+        "top": 0.012,
+        "right": 0.88,
+        "bottom": 0.97
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 38,
+      "name": "Chimzap",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "83214ea5d61c9c552ac977387389280b849a571ba44e50b1a5c311b92098eb9f",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.35,
+        "top": 0.24,
+        "right": 0.59,
+        "bottom": 0.735
+      },
+      "subjectBounds": {
+        "left": 0.17,
+        "top": 0.01,
+        "right": 0.825,
+        "bottom": 0.98
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 39,
+      "name": "RS-219",
+      "version": "hero-source-v2",
+      "sourceSha256": "2b761356af2844892dc02a0a52f2d8ff277c52334d579e8323f069a7a9c63666",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.285,
+        "top": 0.285,
+        "right": 0.615,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0.18,
+        "top": 0.04,
+        "right": 0.75,
+        "bottom": 0.95
+      },
+      "notes": "White face cheeks reach x .285; both eyes and muzzle are within approximately x .31-.58. Dome upper rim is decorative boundary, not an eye."
+    },
+    {
+      "id": 40,
+      "name": "RS-219",
+      "version": "hero-source-v2",
+      "sourceSha256": "feba657b89ec1ca60eb7b889a0594de7f553c141fb834a996919cc0083f33ce4",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.25,
+        "right": 0.585,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0.23,
+        "top": 0.004,
+        "right": 0.785,
+        "bottom": 1
+      },
+      "notes": "Actual eyes/muzzle fit y .25-.40; upper galaxy dome extends higher. Protect actual face, not all ears/dome."
+    },
+    {
+      "id": 41,
+      "name": "RS-219",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "ea2b4f1e68824333067705c7a3bc34faf274ec94d8b261e2154381d8339a6a59",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.355,
+        "top": 0.23,
+        "right": 0.61,
+        "bottom": 0.74
+      },
+      "subjectBounds": {
+        "left": 0.24,
+        "top": 0.218,
+        "right": 0.85,
+        "bottom": 0.97
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 42,
+      "name": "Felvex",
+      "version": "hero-source-v2",
+      "sourceSha256": "c8566bf00792890bc1eb80bed75510f11c793e39f72a0403bbe37c3c84fb72ab",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.285,
+        "top": 0.3,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Muzzle extends slightly left of x .30; both eyes are central."
+    },
+    {
+      "id": 43,
+      "name": "Felvex",
+      "version": "hero-source-v2",
+      "sourceSha256": "1300fbd8c0dc3b059f33482195e9c6b2c3433348f3b80addee6eaa2660e472bc",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.265,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 44,
+      "name": "Felvex",
+      "version": "hero-source-v2",
+      "sourceSha256": "7288a07a528f9dfe26042fb686e708557ac889093c0288c7a3b227e9854afa08",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.305,
+        "top": 0.26,
+        "right": 0.625,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Nose slightly left of x .31; verify."
+    },
+    {
+      "id": 45,
+      "name": "Spectron",
+      "version": "hero-source-v2",
+      "sourceSha256": "c6db7ce5725031bfe9b696fa60180ded1aea4223a0022a8d01182159fbd69ad4",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.265,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 46,
+      "name": "Spectron",
+      "version": "hero-source-v2",
+      "sourceSha256": "01962518348004d90636a3d520b101a4a2665af0ae53816dcdbe16e8292235bc",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.27,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 47,
+      "name": "Weedrug",
+      "version": "hero-source-v2",
+      "sourceSha256": "f8305eea1f6180f1daa2f15a5c5695c32e47a3e59c8082cdb97d2b2e62844325",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.3,
+        "top": 0.255,
+        "right": 0.65,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Main large toothy mouth touches x .30. No left eye can be omitted."
+    },
+    {
+      "id": 48,
+      "name": "Weedrug",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "23d61b551f07890cac293e556b34fd1e540eda80093bc22802cc8bcbd43fdf3c",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.329,
+        "top": 0.303,
+        "right": 0.667,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0.181,
+        "top": 0.119,
+        "right": 0.846,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 49,
+      "name": "Constrix",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "48614761a0d661e81095564ca2e7b907cc90357975f5302e83ecc385543ec0c5",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.346,
+        "top": 0.232,
+        "right": 0.577,
+        "bottom": 0.775
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 50,
+      "name": "Constrix",
+      "version": "hero-source-v2",
+      "sourceSha256": "8022bb081ea15a85392c37e3bf2f11578d459702eaacc5475c76309702695153",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.295,
+        "top": 0.265,
+        "right": 0.625,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Long snout begins around x .295. Red crest/gem above is peripheral."
+    },
+    {
+      "id": 51,
+      "name": "Goliash",
+      "version": "hero-source-v2",
+      "sourceSha256": "96945009e6f4ad3566f850bea699b5eb812c26d6f71fe239b2bc491d5a690d57",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.245,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 52,
+      "name": "Leafrex",
+      "version": "hero-source-v2",
+      "sourceSha256": "dd4cf35e24b133040ed55603ffb149e4739c04de062c2dc10cb7a06482e7a8f1",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.3,
+        "top": 0.255,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Broad cheek extends around x .30, both eyes visible in central gap."
+    },
+    {
+      "id": 53,
+      "name": "Leafrex",
+      "version": "hero-source-v2",
+      "sourceSha256": "7cb4f56155ee4f2ed6bda338569352789ed02e4f669e28b7a72d1956f1199a12",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.3,
+        "top": 0.255,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Small snout at x .30; verify actual left panel."
+    },
+    {
+      "id": 54,
+      "name": "Leafrex",
+      "version": "hero-source-v2",
+      "sourceSha256": "64c9d774bdfd290aecf21a666cbfe0707563814515c5eb7057abccd8fcd4a15b",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.255,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 55,
+      "name": "Peek-a-buu",
+      "version": "hero-source-v2",
+      "sourceSha256": "25081a3337f1751572f045ee172f56296935dafb3c9d1508c25950220b5d24c7",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.23,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 56,
+      "name": "Deephion",
+      "version": "hero-source-v2",
+      "sourceSha256": "e801e769eca0a18dd774607c2d72bd5670add74fac3f6d8e90b295428d5e73b9",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.29,
+        "top": 0.255,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Cheek/nose starts around x .29; eyes central."
+    },
+    {
+      "id": 57,
+      "name": "Deephion",
+      "version": "hero-source-v2",
+      "sourceSha256": "a7c3d9ae4e8dbf135fb26c6edbed2a53bfa4463559735ea1d77e89ccf17d521d",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.25,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 58,
+      "name": "Shabyss",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "655bc10d2d10e002a0f9254f82bd6f48804811c84af157cd545de6db61f82a11",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.333,
+        "top": 0.298,
+        "right": 0.609,
+        "bottom": 0.795
+      },
+      "subjectBounds": {
+        "left": 0.278,
+        "top": 0.085,
+        "right": 0.846,
+        "bottom": 0.98
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 59,
+      "name": "Shabyss",
+      "version": "hero-source-v2",
+      "sourceSha256": "8aeec117729999a72c1c7c680fdfb8e8ec82645c3e01961f96701446cbcacacf",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.275,
+        "top": 0.265,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Snout begins x .275; eye and main jaw are central. Verify whole muzzle."
+    },
+    {
+      "id": 60,
+      "name": "Shabyss",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "fc0bd894c1d0adb488f2887db01dd6eeec4ab5cfdf0143200108664d6409f573",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.329,
+        "top": 0.257,
+        "right": 0.601,
+        "bottom": 0.796
+      },
+      "subjectBounds": {
+        "left": 0.165,
+        "top": 0.022,
+        "right": 0.98,
+        "bottom": 0.987
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 61,
+      "name": "Wailoom",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "95ea69f8dbdaf163d46bf4e419c3386db506947a63100947e4244179317673a0",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.351,
+        "top": 0.282,
+        "right": 0.601,
+        "bottom": 0.799
+      },
+      "subjectBounds": {
+        "left": 0.196,
+        "top": 0.117,
+        "right": 0.937,
+        "bottom": 0.996
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 62,
+      "name": "Fluffet",
+      "version": "hero-source-v2",
+      "sourceSha256": "f2439e6a67b9af8bf65fb47fa5d40901f25e2761105c253ce56ba5fc0c27ff5e",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.29,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 63,
+      "name": "Fluffet",
+      "version": "hero-source-v2",
+      "sourceSha256": "7ad53dcd24f5edd9b7a52420f9280ced85d0c23474652efa59b628069a065f1c",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.285,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 64,
+      "name": "Hopz",
+      "version": "hero-source-v2",
+      "sourceSha256": "c42df0f13c3776ab2d5c352bf07b6cbb21c11a0fc4c7c9c27e7d2e4916c8f62c",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.235,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 65,
+      "name": "Piox",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "c48b62dd8e55748c10ad7fda14058fe2c879474cb117cda8e24214283b92aa0e",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.39,
+        "top": 0.247,
+        "right": 0.597,
+        "bottom": 0.748
+      },
+      "subjectBounds": {
+        "left": 0.333,
+        "top": 0.145,
+        "right": 0.963,
+        "bottom": 0.965
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 66,
+      "name": "Hoppiox",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "f49372102f7ccb381021aa7da37f0154a85aee4db8b980b2195b23ff4bfe869f",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.228,
+        "right": 0.6,
+        "bottom": 0.795
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 67,
+      "name": "Fearstraw",
+      "version": "hero-source-v2",
+      "sourceSha256": "2856956799747978b5d8abaf80dcbe6d09a71e35d5ad237e8bea9b3243c2413a",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.26,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0.15,
+        "top": 0,
+        "right": 0.81,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 68,
+      "name": "Fearstraw",
+      "version": "hero-source-v2",
+      "sourceSha256": "5d3fcb6c37f9f902c9381868992ea9562b63036c07d53cb56246171921365827",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.245,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0.07,
+        "top": 0,
+        "right": 0.84,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 69,
+      "name": "Lickard",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "7b277c5abc8738e2dcab68e1184973440255907de08ebbc73e9a38079de89b88",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.332,
+        "top": 0.232,
+        "right": 0.608,
+        "bottom": 0.799
+      },
+      "subjectBounds": {
+        "left": 0.307,
+        "top": 0.213,
+        "right": 0.853,
+        "bottom": 0.977
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 70,
+      "name": "Lickard",
+      "version": "hero-focus-v1",
+      "sourceSha256": "3ad78039e75cfd0e1ce1570e009085f59690e01aa890b369852c87a571e4e9f4",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "bottom": 0.792,
+        "right": 0.572,
+        "left": 0.411,
+        "top": 0.283
+      },
+      "subjectBounds": {
+        "left": 0.263,
+        "top": 0.282,
+        "right": 0.718,
+        "bottom": 0.899
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 71,
+      "name": "Blizzaquil",
+      "version": "hero-focus-v1",
+      "sourceSha256": "79d46165fa8e13871f42899cacb69ac22d1a9e4fab97634cc5f6b83963520997",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.37,
+        "right": 0.568,
+        "bottom": 0.77,
+        "top": 0.303
+      },
+      "subjectBounds": {
+        "left": 0.287,
+        "top": 0.17,
+        "right": 0.716,
+        "bottom": 0.845
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 72,
+      "name": "Blizzaquil",
+      "version": "hero-focus-v1",
+      "sourceSha256": "9d27ed81980ddb18fa462e7d7838df9a402c5cfedb0a07375a92577c00cfb419",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "top": 0.24,
+        "bottom": 0.7,
+        "right": 0.58,
+        "left": 0.36
+      },
+      "subjectBounds": {
+        "left": 0.132,
+        "top": 0,
+        "right": 0.912,
+        "bottom": 0.903
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 73,
+      "name": "Blizzaquil",
+      "version": "hero-focus-v1",
+      "sourceSha256": "34ba0a5aa7111a5e78aa6d007f56c35b6fc6949a71b7c0a40dd68001036e4c04",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "right": 0.61,
+        "bottom": 0.77,
+        "left": 0.323,
+        "top": 0.26
+      },
+      "subjectBounds": {
+        "left": 0.097,
+        "top": 0,
+        "right": 0.899,
+        "bottom": 0.929
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 74,
+      "name": "Impise",
+      "version": "hero-focus-v1",
+      "sourceSha256": "c17d5032d0c5d7cbf9bd3a600c16fe5ee29dc1ae44878c801ffb511bb01a0962",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.345,
+        "right": 0.54,
+        "bottom": 0.799
+      },
+      "subjectBounds": {
+        "left": 0.219,
+        "top": 0.01,
+        "right": 0.704,
+        "bottom": 0.903
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 75,
+      "name": "Impise",
+      "version": "hero-focus-v1",
+      "sourceSha256": "4cb4f07de3be9ec30e5ebea94a0cc48aa6d2bd122d9db6e813b247d6afa3417b",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "bottom": 0.72,
+        "top": 0.26,
+        "right": 0.51,
+        "left": 0.35
+      },
+      "subjectBounds": {
+        "left": 0.165,
+        "top": 0,
+        "right": 0.79,
+        "bottom": 0.95
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 76,
+      "name": "Impise",
+      "version": "hero-focus-v1",
+      "sourceSha256": "f7d69ab7154abcc8800bbb4ebd55c7e0016b50eadaea0f10fcf0e7acd4964431",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.342,
+        "top": 0.235,
+        "right": 0.536,
+        "bottom": 0.779
+      },
+      "subjectBounds": {
+        "left": 0.168,
+        "top": 0,
+        "right": 0.824,
+        "bottom": 0.9
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 77,
+      "name": "Ignitor",
+      "version": "hero-source-v2",
+      "sourceSha256": "afd84faab147e8bf7a5217d072a7d9b693eb68f8220d3f019cfa5562c6d49b9b",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.27,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 78,
+      "name": "Trippix",
+      "version": "hero-source-v2",
+      "sourceSha256": "0e873b1b7a4f4db6c4f7cb2c28d02c64aa93b126d5bbb7bfbc9006e7296d8d84",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.255,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 79,
+      "name": "Cellgon",
+      "version": "hero-source-v2",
+      "sourceSha256": "582526f1928ea5f44b098c5314c0ba1d6cd80d7c17ca973d890ed738481b239e",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.255,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 80,
+      "name": "Cellgon",
+      "version": "hero-source-v2",
+      "sourceSha256": "4213fe21cfee130de320bacbc10e949c24b7afae366d6b4d87c910dc08b86e4f",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.25,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 81,
+      "name": "Cellgon",
+      "version": "hero-source-v2",
+      "sourceSha256": "6eb260f853ba6d60de98e7cc015eb161dc9ac62ce70ede780fe6bbc8a86381f1",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.255,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 82,
+      "name": "Reliskull",
+      "version": "hero-source-v2",
+      "sourceSha256": "7e4a7c83c78db50449ff3a6ec8706b4fa5bc75faae6b141738225c4400b1319b",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.29,
+        "top": 0.265,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Reliskull central shell/face edges begin around x .29. Verify central authored skull rather than peripheral arms."
+    },
+    {
+      "id": 83,
+      "name": "Cerebron",
+      "version": "hero-source-v2",
+      "sourceSha256": "3f5ba6914df9694198f4dbb8e2cf8266dcc76f163b160d6bdcb0c1c23f6ee123",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.285,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 84,
+      "name": "Psycroak",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "469b26b1f2cd52fbb392e2a41c5c20f2c85d00ac3b58abe8ccce2f8938687164",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.354,
+        "top": 0.274,
+        "right": 0.65,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 85,
+      "name": "Psycroak",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "601b165cb075193d5a040db021a7457c7d6d291777de80771366af9dc5338091",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.38,
+        "top": 0.24,
+        "right": 0.61,
+        "bottom": 0.78
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 86,
+      "name": "Teslat",
+      "version": "hero-source-v2",
+      "sourceSha256": "168db7e93b13724046ecbe248742c61b4e6416d22f09833a4245b29cf44ad1c3",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.265,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 87,
+      "name": "Teslat",
+      "version": "hero-source-v2",
+      "sourceSha256": "8a0bc543cf647279f2be413620b023a238b96532780f6d0181196e818c374c93",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.265,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 88,
+      "name": "Teslat",
+      "version": "hero-source-v2",
+      "sourceSha256": "6b6c8b86464d1be31729a66253d6e7afffbd71ded701b83117fd4ccc8062635e",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.24,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 89,
+      "name": "Espeiry",
+      "version": "hero-source-v2",
+      "sourceSha256": "550558241c530bdd3e72cfa26d19daf01dafd6f52debae713daef674562cfce8",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.235,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 90,
+      "name": "Espeiry",
+      "version": "hero-source-v2",
+      "sourceSha256": "350ee7c100d071366f9c3413ba060dd4f44fcb3fd3e352e702eda7af1f7c6587",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.31,
+        "top": 0.245,
+        "right": 0.63,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 91,
+      "name": "Espeiry",
+      "version": "hero-source-v2",
+      "sourceSha256": "eb5ac101fd281a91aea855fa5ab89148acd5bd57525263df36d709e82f5c1bc7",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.24,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Face eyes and muzzle are at y .25-.43, while white dome forehead is above. Verify title only touches upper skull, not eyes."
+    },
+    {
+      "id": 92,
+      "name": "Pyrodil",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "264535254669054c62c65572a4db1dbf2f426eb216f9e5386287809a5ca8b192",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.302,
+        "top": 0.235,
+        "right": 0.605,
+        "bottom": 0.785
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 93,
+      "name": "Pyrodil",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "37e75dda3045fb7fca8eda414f5d45e8d1cee9138e556c9d44ba18143643392e",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.29,
+        "top": 0.23,
+        "right": 0.61,
+        "bottom": 0.785
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 94,
+      "name": "Pyrodil",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "b19a0a27f3cb9ce0a68dcc6f7d7df743ca9d879056148f074f5f609ba54275f1",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.255,
+        "top": 0.23,
+        "right": 0.62,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 95,
+      "name": "Beestrix",
+      "version": "hero-source-v2",
+      "sourceSha256": "407474f308466ba347b6a33cadbe79a75cda43e71d566a01bace3a9fb2be225d",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.235,
+        "right": 0.645,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 96,
+      "name": "Beestrix",
+      "version": "hero-source-v2",
+      "sourceSha256": "2004fdda5e6a6c0092ac8cff3e803063d8bba3aed901a2d2fcbc1c8c08c11774",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.315,
+        "top": 0.255,
+        "right": 0.635,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1
+      },
+      "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    },
+    {
+      "id": 97,
+      "name": "Beestrix",
+      "version": "hero-focus-v1",
+      "sourceSha256": "1272a5584186481312624610716049e0a8db9215c892580aac8a673b3b03890f",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.397,
+        "top": 0.296,
+        "right": 0.538,
+        "bottom": 0.707
+      },
+      "subjectBounds": {
+        "left": 0.14,
+        "top": 0,
+        "right": 0.835,
+        "bottom": 0.97
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 98,
+      "name": "Grooty",
+      "version": "hero-focus-v1",
+      "sourceSha256": "05bbc713f34cdc370c492764127f06298ef59078f06f3ac5724ae0835d8b6a63",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.375,
+        "top": 0.28,
+        "right": 0.598,
+        "bottom": 0.79
+      },
+      "subjectBounds": {
+        "left": 0.22,
+        "top": 0,
+        "right": 0.765,
+        "bottom": 0.973
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 99,
+      "name": "Ervys",
+      "version": "hero-focus-v1",
+      "sourceSha256": "8d98ba4c1eb7ebb6f6b3547c273372c9d21f9ff0ab4b25a7ba73bbf2ed280b56",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.325,
+        "top": 0.283,
+        "right": 0.582,
+        "bottom": 0.724
+      },
+      "subjectBounds": {
+        "left": 0.196,
+        "top": 0.03,
+        "right": 0.851,
+        "bottom": 0.789
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 100,
+      "name": "Ervys",
+      "version": "hero-focus-v1",
+      "sourceSha256": "2dddb7fb01ea03d2fada020bd85d1c13e189c7d1d62b0910952d4767f1a474d9",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.331,
+        "top": 0.31,
+        "right": 0.555,
+        "bottom": 0.708
+      },
+      "subjectBounds": {
+        "left": 0.023,
+        "top": 0,
+        "right": 0.963,
+        "bottom": 0.845
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 101,
+      "name": "Xesar",
+      "version": "hero-focus-v1",
+      "sourceSha256": "ce24c6819b686d38e3b793e81cd4bc1d648f55621f1aa492a13ecacf125499a0",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.346,
+        "top": 0.235,
+        "right": 0.565,
+        "bottom": 0.78
+      },
+      "subjectBounds": {
+        "left": 0.262,
+        "top": 0.095,
+        "right": 0.751,
+        "bottom": 0.913
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 102,
+      "name": "Xesar",
+      "version": "hero-focus-v1",
+      "sourceSha256": "fd25518b82c1941f2bc7239071e938a36ca634898708254c0d700efc93380aa2",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.324,
+        "top": 0.232,
+        "right": 0.601,
+        "bottom": 0.785
+      },
+      "subjectBounds": {
+        "left": 0.175,
+        "top": 0.011,
+        "right": 0.834,
+        "bottom": 0.969
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 103,
+      "name": "Boomrock",
+      "version": "hero-focus-v1",
+      "sourceSha256": "85e154ac4f80d35c4e3a68aa312fda37e58a9d63168887d5b0e838a55228d14d",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.309,
+        "top": 0.235,
+        "right": 0.606,
+        "bottom": 0.789
+      },
+      "subjectBounds": {
+        "left": 0.253,
+        "top": 0.056,
+        "right": 0.757,
+        "bottom": 0.908
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 104,
+      "name": "Boomrock",
+      "version": "hero-focus-v1",
+      "sourceSha256": "dbba8c528db4665e28f80de890863671edb54a59c948f4ad01d011e97be44e20",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.33,
+        "top": 0.255,
+        "right": 0.622,
+        "bottom": 0.727
+      },
+      "subjectBounds": {
+        "left": 0.237,
+        "top": 0.031,
+        "right": 0.817,
+        "bottom": 0.961
+      },
+      "notes": "Old focus .11 includes rock crown; actual eyes and mouth at approximately y .26-.49. Recalibrate to actual face/core bust."
+    },
+    {
+      "id": 105,
+      "name": "Zoorian",
+      "version": "hero-focus-v1",
+      "sourceSha256": "5e92e596b8527ff4261125d61e79f38f75c0c12603587cf234b576003c32a508",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.327,
+        "top": 0.319,
+        "right": 0.634,
+        "bottom": 0.797
+      },
+      "subjectBounds": {
+        "left": 0.262,
+        "top": 0.008,
+        "right": 0.782,
+        "bottom": 0.889
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 106,
+      "name": "Zoorian",
+      "version": "hero-focus-v1",
+      "sourceSha256": "77b0b977805d70a63a30abb9bc5bc14de9489b5cb1c5548368631fff0614108a",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.319,
+        "top": 0.279,
+        "right": 0.592,
+        "bottom": 0.797
+      },
+      "subjectBounds": {
+        "left": 0.266,
+        "top": 0,
+        "right": 0.783,
+        "bottom": 0.958
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 107,
+      "name": "Ao-shin",
+      "version": "fullscreen-source-v3",
+      "sourceSha256": "254c16c89c43b14a611aba9e9c50fc48bb58405e7d4dd9e261415b544e10e7ec",
+      "action": "recomposed-source",
+      "focusBounds": {
+        "left": 0.333,
+        "top": 0.275,
+        "right": 0.58,
+        "bottom": 0.8
+      },
+      "subjectBounds": {
+        "left": 0.123,
+        "top": 0.036,
+        "right": 0.983,
+        "bottom": 0.967
+      },
+      "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    },
+    {
+      "id": 108,
+      "name": "Aka-shin",
+      "version": "hero-focus-v1",
+      "sourceSha256": "8b37665619313b5eb7ef5d191b5f66866d95c0ed129dea7accc9def3bbf2bcc2",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.29,
+        "top": 0.245,
+        "right": 0.619,
+        "bottom": 0.777
+      },
+      "subjectBounds": {
+        "left": 0.206,
+        "top": 0.012,
+        "right": 0.893,
+        "bottom": 0.928
+      },
+      "notes": "Dragon muzzle begins around x .29; actual eyes/mouth at y .25-.45. Existing top .14 includes mane."
+    },
+    {
+      "id": 109,
+      "name": "Oniros",
+      "version": "hero-focus-v1",
+      "sourceSha256": "aa8defb70abd5b06d78a86f2259363d411a9a8073e14a585cd3d1af49c47c5d0",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.365,
+        "top": 0.235,
+        "right": 0.607,
+        "bottom": 0.725
+      },
+      "subjectBounds": {
+        "left": 0.177,
+        "top": 0.028,
+        "right": 0.831,
+        "bottom": 0.863
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    },
+    {
+      "id": 110,
+      "name": "Voider",
+      "version": "hero-focus-v1",
+      "sourceSha256": "9beba6edb12858c8c9352d0263f592e1560ca7d4208590df08213c85fcbc2576",
+      "action": "retain-painting-review-focus",
+      "focusBounds": {
+        "left": 0.361,
+        "top": 0.247,
+        "right": 0.623,
+        "bottom": 0.779
+      },
+      "subjectBounds": {
+        "left": 0.222,
+        "top": 0.062,
+        "right": 0.839,
+        "bottom": 0.974
+      },
+      "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    }
+  ],
+  "qualityCheckpoint": {
+    "date": "2026-10-26T12:23:22.710Z",
+    "catalogSha256": "0f7695efd0f30574354f19284056a99d5b937cacb40e83b303ecddddba166bfd",
+    "framingPolicy": "cover-only-v2",
+    "gallery": {
+      "inspectedScreens": 220,
+      "faceIssues": 0,
+      "layoutIssues": 0,
+      "renderIssues": 0,
+      "errors": 0,
+      "logicalCanvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "resultFile": "output/splash-art/gallery-autofit-audit.json"
+    },
+    "compiledBuild": {
+      "inspectedScreens": 660,
+      "availableForms": 110,
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "width": 1600,
+          "height": 900
+        },
+        {
+          "width": 1920,
+          "height": 1080
+        }
+      ],
+      "issues": 0,
+      "renderIssues": 0,
+      "resultFile": "output/splash-art/built-ui/measurements.json"
+    },
+    "manualSourceReview": "All initial paintings reviewed in contact sheets; regenerated candidates inspected separately. Manual UI screenshots checked for the named cases in docs; automated coverage is not claimed as manual inspection of every screenshot."
+  }
+}

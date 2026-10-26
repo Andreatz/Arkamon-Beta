@@ -1,0 +1,52 @@
+{
+  "id": 64,
+  "name": "Hopz",
+  "type": "Normale",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-262ee505-6e22-414a-bc85-0b394757aaf7.png",
+  "sourceMaster": "output/splash-art/originals/064-hopz-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/064-hopz.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/064-hopz.webp",
+  "promptFile": "art-source/splash/prompts/064-hopz-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 577064,
+  "sha256": "c42df0f13c3776ab2d5c352bf07b6cbb21c11a0fc4c7c9c27e7d2e4916c8f62c",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:46:32.534Z",
+  "reviewedAt": "2026-10-26T00:46:32.535Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.32,
+    "top": 0.03,
+    "right": 0.72,
+    "bottom": 0.93
+  },
+  "displayScale": 0.632222,
+  "displayOffset": {
+    "x": -0.03264444,
+    "y": 0.027644439999999992
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/064-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

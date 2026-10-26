@@ -1,0 +1,52 @@
+{
+  "id": 27,
+  "name": "Ampereel",
+  "type": "Elettro",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-92e9bfc7-6332-43e0-87b4-4b6adfdfeca5.png",
+  "sourceMaster": "output/splash-art/originals/027-ampereel-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/027-ampereel.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/027-ampereel.webp",
+  "promptFile": "art-source/splash/prompts/027-ampereel-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 706010,
+  "sha256": "361132ab50e8c4bff16c277582f09f3aa1e9e9a5546036dc68a3581b97e2bd8d",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:26:02.284Z",
+  "reviewedAt": "2026-10-26T00:26:02.285Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.32,
+    "top": 0.16,
+    "right": 0.76,
+    "bottom": 0.85
+  },
+  "displayScale": 0.770454,
+  "displayOffset": {
+    "x": -0.05081816000000006,
+    "y": 0.011147730000000022
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/027-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

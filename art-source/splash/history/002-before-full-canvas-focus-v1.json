@@ -1,0 +1,52 @@
+{
+  "id": 2,
+  "name": "Vyrath",
+  "type": "Normale",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17578-f7c3-78c0-b773-f8ab36a9bbfa\\exec-a7019d24-db62-44f0-b41d-7cc62e199ce7.png",
+  "sourceMaster": "output/splash-art/originals/002-vyrath-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/002-vyrath.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/002-vyrath.webp",
+  "promptFile": "art-source/splash/prompts/002-vyrath-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 650648,
+  "sha256": "071c811f8e2c3973c2f714ac943f1ff5a2d70a842ea9c9b5a3fc20af28b27177",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-25T23:59:49.225Z",
+  "reviewedAt": "2026-10-25T23:59:49.226Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.06,
+    "top": 0,
+    "right": 0.93,
+    "bottom": 0.96
+  },
+  "focusBounds": {
+    "left": 0.275,
+    "top": 0.18,
+    "right": 0.59,
+    "bottom": 0.8
+  },
+  "displayScale": 0.917741,
+  "displayOffset": {
+    "x": 0.041947517499999976,
+    "y": 0.02417741000000001
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/002-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

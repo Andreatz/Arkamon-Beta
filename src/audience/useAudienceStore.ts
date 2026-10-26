@@ -79,9 +79,13 @@ export const useAudienceStore = create<AudienceStoreState>((set, get) => ({
   setGuestEnabled(value) { set({ guestEnabled: value, error: null }) },
   async controlGuest(action) {
     const session = get().session
-    if (!session) return
-    try { get().acceptSnapshot(session.sessionId, await controlAudienceSession(session, action)) }
-    catch (error) { set({ error: audienceErrorMessage(error) }) }
+    if (!session || get().connectionStatus === 'connecting') return
+    const revision = connectionRevision
+    const current = () => revision === connectionRevision && get().session?.sessionId === session.sessionId
+    try {
+      const snapshot = await controlAudienceSession(session, action)
+      if (current()) get().acceptSnapshot(session.sessionId, snapshot)
+    } catch (error) { if (current()) set({ error: audienceErrorMessage(error) }) }
   },
   setDuration(value) { set({ durationSeconds: normalizeAudienceDuration(value) }) },
   async connect(password) {

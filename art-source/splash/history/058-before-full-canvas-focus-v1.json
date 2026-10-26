@@ -1,0 +1,46 @@
+{
+  "id": 58,
+  "name": "Shabyss",
+  "type": "Acqua",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-2fe71d56-1e16-4fe1-90ea-85ecf4dc1cc4.png",
+  "sourceMaster": "output/splash-art/originals/058-shabyss-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/058-shabyss.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/058-shabyss.webp",
+  "promptFile": "art-source/splash/prompts/058-shabyss-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 651986,
+  "sha256": "655bc10d2d10e002a0f9254f82bd6f48804811c84af157cd545de6db61f82a11",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T10:58:09.417Z",
+  "reviewedAt": "2026-10-26T10:58:09.418Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.278,
+    "top": 0.085,
+    "right": 0.846,
+    "bottom": 0.98
+  },
+  "focusBounds": {
+    "left": 0.333,
+    "top": 0.298,
+    "right": 0.609,
+    "bottom": 0.795
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/058-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

@@ -2,46 +2,52 @@
   "id": 43,
   "name": "Felvex",
   "type": "Normale",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-c26baef7-26dc-4c05-a3ac-f00b4d8d673f.png",
-  "sourceMaster": "output/splash-art/originals/043-felvex-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-e7c21039-37f6-4a27-b06a-71ea01095880.png",
+  "sourceMaster": "output/splash-art/originals/043-felvex-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/043-felvex.webp",
   "runtimePath": "/backgrounds/arkamon-splash/043-felvex.webp",
-  "promptFile": "art-source/splash/prompts/043-felvex.txt",
+  "promptFile": "art-source/splash/prompts/043-felvex-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 705398,
-  "sha256": "678e725d4ca2734992bfaf15dc2aed1e2fed1d7b334abbd0dfd9e9f78ee01869",
+  "bytes": 605538,
+  "sha256": "1300fbd8c0dc3b059f33482195e9c6b2c3433348f3b80addee6eaa2660e472bc",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:32:18.756Z",
+  "reviewedAt": "2026-10-26T00:32:18.756Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.265,
+    "right": 0.63,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:05:27.681Z",
-  "subjectBounds": {
-    "left": 0.399,
-    "top": 0.345,
-    "right": 0.58,
-    "bottom": 0.729
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/043-before-hero-source-v2.json"
   },
-  "reviewedAt": "2026-10-25T19:51:39.524Z",
-  "reviewNotes": "Full silhouette inspected in the generated master; UI layout verification is recorded separately.",
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.419,
-    "top": 0.439,
-    "right": 0.551,
-    "bottom": 0.698
-  },
-  "displayScale": 1.6,
-  "displayOffset": {
-    "x": 0.005,
-    "y": -0.08
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
   }
 }

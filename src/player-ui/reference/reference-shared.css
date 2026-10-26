@@ -64,7 +64,14 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-currency>div>span {di
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"]>.pu-nav {position:absolute;left:22px;bottom:12px;right:235px;z-index:3;gap:3px;min-height:40px;display:flex;align-items:center}
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav-button {font:14px Georgia,serif;min-height:38px;padding:7px 8px;border-radius:5px;flex:1}
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"]>.pu-footer {display:flex;align-items:center;justify-content:flex-end;padding:5px 0 0;min-height:0;border-top:1px solid var(--ref-gold-dim);gap:10px}
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-footer>span,html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-present-control {display:none}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-footer>span {display:none}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-present-control {display:flex;flex:none;gap:4px}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-present-control :is(.pu-present-hint,.pu-present-label) {display:none}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-present-symbol {display:inline;font-size:18px}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-present-control button {width:36px;height:36px;min-height:36px;padding:4px;border-color:var(--ref-gold-dim);color:var(--ref-ink);background:#0b253d}
+@media(min-width:901px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"]>.pu-nav {right:330px}
+}
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-footer>.pu-resume-command {font:16px Georgia,serif;min-height:38px;padding:8px 18px;min-width:195px;margin:0}
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"]>.pu-content {overflow:hidden;position:relative;min-height:0}
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] :is(.pu-panel,.pu-detail-panel,.pu-live-bag-detail,.pu-team-tactics,.pu-content-auxiliary) {

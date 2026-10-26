@@ -6,17 +6,11 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"][data-reference-splash-rea
 .pu-splash-backdrop { position:absolute; inset:0; overflow:hidden; z-index:-2; pointer-events:none; }
 .pu-splash-backdrop::before {
   content:''; position:absolute; inset:0; z-index:1; background-image:var(--pu-background);
-  background-position:var(--pu-background-position,50% 50%); background-size:contain; background-repeat:no-repeat; opacity:1;
-  transform:var(--pu-splash-transform,none); transform-origin:50% 50%;
-  mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent),linear-gradient(transparent,#000 24px,#000 calc(100% - 24px),transparent);
-  mask-composite:intersect;
+  background-position:var(--pu-splash-position,50% 50%); background-size:cover; background-repeat:no-repeat; opacity:1;
+  transform:none;
 }
-/* A smaller hero framing still keeps the environment across the whole screen. */
-.pu-splash-backdrop::after {
-  content:''; position:absolute; inset:-16px; z-index:0;
-  background:var(--pu-background) center/cover no-repeat;
-  filter:blur(12px) brightness(.65);
-}
+/* One continuous, sharp painting: no resized inset or blurred duplicate. */
+.pu-splash-backdrop::after { content:none; }
 /* Avoid briefly showing an old or unmeasured framing while the lazy screen mounts. */
 .pu-shell:not([data-splash-frame-ready="true"]) .pu-splash-backdrop { visibility:hidden; }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"][data-reference-splash-ready="true"]::after {
@@ -46,19 +40,34 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-hero[data-splash-
   isolation:isolate; background:#071b31ee; border:1px solid #c9a76f; border-radius:12px;
 }
 @media(min-width:901px) {
+  /* Give authored faces a wider opening while keeping the dossier's width. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen[data-splash-artwork="ready"] .pu-dex-layout {
+    grid-template-columns:minmax(215px,.70fr) minmax(180px,1.26fr) minmax(255px,.94fr);
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-team-layout {
+    grid-template-columns:minmax(205px,.815fr) minmax(200px,1.405fr) minmax(260px,1.08fr);
+  }
   /* Type and condition remain in the live dossier; leave the painted feet clear. */
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-hero-caption { display:none; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-title .pu-species-number { display:none; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen[data-splash-artwork="ready"] .pu-dex-hero .pu-hero-caption>.pu-kicker { display:none; }
 }
 @media(min-width:901px) and (max-height:820px) {
-  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-title { transform:translateY(-8px); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-title { transform:translateY(-26px); }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-title .pu-species-number { margin-bottom:5px; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-title h2 { font-size:34px; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-level { margin-top:4px; }
-  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen[data-splash-artwork="ready"] .pu-dex-hero .pu-hero-caption { top:-14px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen[data-splash-artwork="ready"] .pu-dex-hero .pu-hero-caption { top:-26px; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen[data-splash-artwork="ready"] .pu-dex-hero .pu-hero-caption h2 { font-size:30px; line-height:1.05; margin:3px 0; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen[data-splash-artwork="ready"] .pu-dex-hero .pu-hero-caption .pu-type { padding:3px 10px; font-size:13px; }
+}
+@media(min-width:901px) and (min-height:821px) and (max-height:1000px) {
+  /* Keep names above the authored face at intermediate desktop heights too. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-title { transform:translateY(calc(20vh - 218px)); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen[data-splash-artwork="ready"] .pu-dex-hero .pu-hero-caption { top:calc(20vh - 218px); }
+}
+@media(min-width:901px) and (max-height:1000px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-screen[data-splash-artwork="ready"] .pu-reference-hero-caption { display:none; }
 }
 @media(max-width:900px) {
   /* A tall mobile page must not enlarge and crop the landscape artwork. */

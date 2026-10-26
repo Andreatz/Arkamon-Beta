@@ -2,46 +2,52 @@
   "id": 20,
   "name": "Handipus",
   "type": "Terra",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-f507fd70-3513-4b34-a633-7fbe52b03247.png",
-  "sourceMaster": "output/splash-art/originals/020-handipus-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-c2d2e9c4-05ce-4860-9d29-ed9b4e547599.png",
+  "sourceMaster": "output/splash-art/originals/020-handipus-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/020-handipus.webp",
   "runtimePath": "/backgrounds/arkamon-splash/020-handipus.webp",
-  "promptFile": "art-source/splash/prompts/020-handipus.txt",
+  "promptFile": "art-source/splash/prompts/020-handipus-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 706480,
-  "sha256": "c84f62cc706cf99b2246254a2760949b3f6f9fdce7d77651e92f100780718b11",
+  "bytes": 661100,
+  "sha256": "6e730c59f36249c50ab90103fe0264785e18d7d6dd7b8c3ea10f7831a5f853d9",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:22:00.643Z",
+  "reviewedAt": "2026-10-26T00:22:00.645Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.305,
+    "top": 0.29,
+    "right": 0.615,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:05:27.658Z",
-  "subjectBounds": {
-    "left": 0.379,
-    "top": 0.431,
-    "right": 0.619,
-    "bottom": 0.762
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/020-before-hero-source-v2.json"
   },
-  "reviewedAt": "2026-10-25T19:51:39.524Z",
-  "reviewNotes": "Full silhouette inspected in the generated master; UI layout verification is recorded separately.",
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.416,
-    "top": 0.437,
-    "right": 0.593,
-    "bottom": 0.735
-  },
-  "displayScale": 1.5,
-  "displayOffset": {
-    "x": -0.01,
-    "y": -0.08
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Nose at left edge of central opening; trunk is peripheral below."
   }
 }

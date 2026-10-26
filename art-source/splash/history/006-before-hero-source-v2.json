@@ -1,0 +1,62 @@
+{
+  "id": 6,
+  "name": "Darklaw",
+  "type": "Oscurità",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-c4cc6ebe-f04e-4ef8-8522-c2c347a4e6a2.png",
+  "sourceMaster": "output/splash-art/originals/006-darklaw-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 940
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/006-darklaw.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/006-darklaw.webp",
+  "promptFile": "art-source/splash/prompts/006-darklaw.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 639542,
+  "sha256": "1db10154c5d3584b91a9f41831944b8d0b3a262d3451a9941a234e988db35094",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:05:12.635Z",
+  "subjectBounds": {
+    "left": 0.41,
+    "top": 0.32,
+    "right": 0.63,
+    "bottom": 0.74
+  },
+  "visualReview": {
+    "method": "manual visual silhouette envelope on generated source",
+    "sourcePixels": {
+      "left": 686,
+      "top": 301,
+      "right": 1053,
+      "bottom": 696
+    },
+    "sourceDimensions": {
+      "width": 1672,
+      "height": 940
+    },
+    "notes": "Entire ears, all four paws and curled tail fit this conservative measured envelope. Exact form006 forehead gem retained, no chest gem. No live UI test claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.423,
+    "top": 0.4,
+    "right": 0.561,
+    "bottom": 0.71
+  },
+  "displayScale": 1.6774,
+  "displayOffset": {
+    "x": -0.0066,
+    "y": -0.0623
+  },
+  "reviewedAt": "2026-10-25T20:54:59.246Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

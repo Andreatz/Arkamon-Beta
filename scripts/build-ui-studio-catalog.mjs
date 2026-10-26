@@ -11,6 +11,8 @@ async function scan(relative) {
     else if (/\.(svg|png|jpg|jpeg|webp|gif|avif)$/i.test(entry.name)) entries.push({
       id: `builtin:${next}`, name: entry.name.replace(/\.[^.]+$/, '').replaceAll('-', ' '),
       source: `/${next}`, category: next.startsWith('ui/studio/') ? next.split('/').slice(2, -1).join(' · ') || 'Kit aggiornato'
+        : next.startsWith('ui/reference-png/') ? 'UI PNG fornita'
+        : next.startsWith('backgrounds/arkamon-splash/') ? 'Splash Arkamon'
         : relative.startsWith('backgrounds') ? 'Sfondi del gioco' : 'Asset originali', kind: 'image',
     })
   }

@@ -1,0 +1,46 @@
+{
+  "id": 49,
+  "name": "Constrix",
+  "type": "Fuoco",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-acc6d9a9-2f61-4557-bed6-6aa33d84ec0d.png",
+  "sourceMaster": "output/splash-art/originals/049-constrix-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/049-constrix.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/049-constrix.webp",
+  "promptFile": "art-source/splash/prompts/049-constrix-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 598552,
+  "sha256": "48614761a0d661e81095564ca2e7b907cc90357975f5302e83ecc385543ec0c5",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T11:09:44.536Z",
+  "reviewedAt": "2026-10-26T11:09:44.537Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.346,
+    "top": 0.232,
+    "right": 0.577,
+    "bottom": 0.775
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/049-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

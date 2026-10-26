@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 export default defineConfig({
-  testDir: resolve(root, 'e2e'), testMatch: ['splash-artwork.spec.ts', 'splash-catalog.spec.ts', 'splash-responsive-framing.spec.ts'],
+  testDir: resolve(root, 'e2e'), testMatch: ['splash-artwork.spec.ts', 'splash-catalog.spec.ts', 'splash-responsive-framing.spec.ts', 'splash-fullscreen.spec.ts'],
   timeout: 90_000, workers: 1, retries: 0,
   outputDir: resolve(root, 'output/splash-art/results'),
   reporter: [['list'], ['json', { outputFile: resolve(root, 'output/splash-art/results.json') }]],

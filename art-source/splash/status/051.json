@@ -2,47 +2,52 @@
   "id": 51,
   "name": "Goliash",
   "type": "Fuoco",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-55979db3-fd5d-406c-96dc-5abb99c3d9b8.png",
-  "sourceMaster": "output/splash-art/originals/051-goliash-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-a7ce477e-29f4-4a00-b6aa-6c81800b6640.png",
+  "sourceMaster": "output/splash-art/originals/051-goliash-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/051-goliash.webp",
   "runtimePath": "/backgrounds/arkamon-splash/051-goliash.webp",
-  "promptFile": "art-source/splash/prompts/051-goliash.txt",
+  "promptFile": "art-source/splash/prompts/051-goliash-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 516118,
-  "sha256": "5db75eed1327d292fd76ee00005f5f5572547690c5d86bfa47d106630068246c",
+  "bytes": 591246,
+  "sha256": "96945009e6f4ad3566f850bea699b5eb812c26d6f71fe239b2bc491d5a690d57",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:37:02.216Z",
+  "reviewedAt": "2026-10-26T00:37:02.217Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.245,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:14:43.612Z",
-  "subjectBounds": {
-    "left": 0.38,
-    "top": 0.307,
-    "right": 0.646,
-    "bottom": 0.715
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/051-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.41,
-    "top": 0.391,
-    "right": 0.595,
-    "bottom": 0.672
-  },
-  "displayScale": 1.6757,
-  "displayOffset": {
-    "x": -0.0242,
-    "y": -0.0228
-  },
-  "reviewedAt": "2026-10-25T20:54:59.290Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

@@ -1,0 +1,52 @@
+{
+  "id": 15,
+  "name": "Wormaren",
+  "type": "Terra",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-aa71ca93-654e-4366-b139-3b562b8b111a.png",
+  "sourceMaster": "output/splash-art/originals/015-wormaren-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/015-wormaren.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/015-wormaren.webp",
+  "promptFile": "art-source/splash/prompts/015-wormaren-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 576068,
+  "sha256": "c318fdc74d4f0983691ddbeb4bd7fb996c4a55e2693e840a5d5d0aff488039c5",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:14:44.135Z",
+  "reviewedAt": "2026-10-26T00:14:44.136Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.19,
+    "top": 0.025,
+    "right": 0.7,
+    "bottom": 0.9
+  },
+  "displayScale": 0.650285,
+  "displayOffset": {
+    "x": 0.015765675000000035,
+    "y": 0.03938568749999999
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/015-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

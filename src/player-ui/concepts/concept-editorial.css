@@ -649,7 +649,7 @@ html .pu-shell.pu-live-shell[data-ui-concept="taccuino"] .pu-footer .pu-resume-c
   html .pu-shell.pu-live-shell[data-ui-concept="taccuino"] .pu-team-tactics > .pu-actions {
     grid-column: 2;
     grid-row: 1/3;
-    grid-template-columns: minmax(0,1fr);
+    grid-template-columns: repeat(2,minmax(0,1fr));
     grid-template-rows: none;
     align-self: start;
     gap: 6px;

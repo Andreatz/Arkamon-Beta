@@ -1,0 +1,46 @@
+{
+  "id": 37,
+  "name": "Chimzap",
+  "type": "Elettro",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-55d998f2-a511-460c-8f77-f460996a9ea7.png",
+  "sourceMaster": "output/splash-art/originals/037-chimzap-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/037-chimzap.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/037-chimzap.webp",
+  "promptFile": "art-source/splash/prompts/037-chimzap-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 682698,
+  "sha256": "278b2b73b6fbf08b65f2858d8e36e86ee9dd7d394c92aca9b56287216cf09479",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T10:45:45.060Z",
+  "reviewedAt": "2026-10-26T10:45:45.061Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.14,
+    "top": 0.012,
+    "right": 0.88,
+    "bottom": 0.97
+  },
+  "focusBounds": {
+    "left": 0.345,
+    "top": 0.265,
+    "right": 0.63,
+    "bottom": 0.75
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/037-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

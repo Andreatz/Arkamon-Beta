@@ -2,47 +2,52 @@
   "id": 68,
   "name": "Fearstraw",
   "type": "Psico",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-2c21745d-2690-405a-b2bc-25fb53a69fc2.png",
-  "sourceMaster": "output/splash-art/originals/068-fearstraw-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17579-674b-7a40-97c4-89ad7033f20b\\exec-113b7396-0cf1-4d19-90ac-05f1b28ef8e9.png",
+  "sourceMaster": "output/splash-art/originals/068-fearstraw-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/068-fearstraw.webp",
   "runtimePath": "/backgrounds/arkamon-splash/068-fearstraw.webp",
-  "promptFile": "art-source/splash/prompts/068-fearstraw.txt",
+  "promptFile": "art-source/splash/prompts/068-fearstraw-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 598584,
-  "sha256": "0ea939a347460911db0882e3abb1a0b2e46583b7aa09f9851956f0939cd1d600",
+  "bytes": 617186,
+  "sha256": "5d3fcb6c37f9f902c9381868992ea9562b63036c07d53cb56246171921365827",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:02:22.201Z",
+  "reviewedAt": "2026-10-26T00:02:22.202Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0.07,
+    "top": 0,
+    "right": 0.84,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.245,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:35:17.567Z",
-  "subjectBounds": {
-    "left": 0.4,
-    "top": 0.265,
-    "right": 0.608,
-    "bottom": 0.774
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/068-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.423,
-    "top": 0.377,
-    "right": 0.577,
-    "bottom": 0.712
-  },
-  "displayScale": 1.5522,
-  "displayOffset": {
-    "x": -0.02,
-    "y": -0.0391
-  },
-  "reviewedAt": "2026-10-25T20:54:59.313Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

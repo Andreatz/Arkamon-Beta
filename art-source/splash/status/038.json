@@ -1,15 +1,52 @@
 {
   "id": 38,
   "name": "Chimzap",
-  "status": "generation-blocked",
-  "compositionPolicy": "hero-focus",
-  "generationAttempts": 2,
-  "failure": {
-    "code": "moderation_blocked",
-    "stage": "output",
-    "category": "other",
-    "requestId": "2f4aa770-a5af-4e9f-96de-9c320d8296aa"
+  "type": "Elettro",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-1bcf335a-a1f8-470d-bca6-a285d6a00ca4.png",
+  "sourceMaster": "output/splash-art/originals/038-chimzap-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
   },
-  "reviewNotes": "No splash output was delivered by the built-in generator; retain the official portrait fallback. Do not mark this form completed.",
-  "updatedAt": "2026-10-25T20:50:21.217Z"
+  "outputFile": "public/backgrounds/arkamon-splash/038-chimzap.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/038-chimzap.webp",
+  "promptFile": "art-source/splash/prompts/038-chimzap-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 736726,
+  "sha256": "83214ea5d61c9c552ac977387389280b849a571ba44e50b1a5c311b92098eb9f",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T10:45:45.427Z",
+  "reviewedAt": "2026-10-26T10:45:45.428Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0.17,
+    "top": 0.01,
+    "right": 0.825,
+    "bottom": 0.98
+  },
+  "focusBounds": {
+    "left": 0.35,
+    "top": 0.24,
+    "right": 0.59,
+    "bottom": 0.735
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/038-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+  }
 }

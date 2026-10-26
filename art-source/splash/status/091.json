@@ -2,47 +2,52 @@
   "id": 91,
   "name": "Espeiry",
   "type": "Psico",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17471-00ca-7513-a0cc-5a12e9f4cd14\\exec-02b89c1f-cd89-459a-bd10-5d05d5f8c8e3.png",
-  "sourceMaster": "output/splash-art/originals/091-espeiry-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-6c99bd12-ffff-4456-88d6-d05a9d5ef622.png",
+  "sourceMaster": "output/splash-art/originals/091-espeiry-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/091-espeiry.webp",
   "runtimePath": "/backgrounds/arkamon-splash/091-espeiry.webp",
-  "promptFile": "art-source/splash/prompts/091-espeiry.txt",
+  "promptFile": "art-source/splash/prompts/091-espeiry-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 979192,
-  "sha256": "f435ff143bd2554eddbe1780b82389d3df85a79c3e3c9dbb7197b243bd524699",
+  "bytes": 752282,
+  "sha256": "eb5ac101fd281a91aea855fa5ab89148acd5bd57525263df36d709e82f5c1bc7",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T01:03:09.178Z",
+  "reviewedAt": "2026-10-26T01:03:09.179Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.315,
+    "top": 0.24,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:27:00.653Z",
-  "subjectBounds": {
-    "left": 0.44,
-    "top": 0.356,
-    "right": 0.556,
-    "bottom": 0.704
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/091-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.454,
-    "top": 0.432,
-    "right": 0.535,
-    "bottom": 0.631
-  },
-  "displayScale": 2.5,
-  "displayOffset": {
-    "x": -0.0063,
-    "y": -0.0487
-  },
-  "reviewedAt": "2026-10-25T20:54:59.335Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Face eyes and muzzle are at y .25-.43, while white dome forehead is above. Verify title only touches upper skull, not eyes."
+  }
 }

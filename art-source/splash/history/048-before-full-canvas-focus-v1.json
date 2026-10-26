@@ -1,0 +1,52 @@
+{
+  "id": 48,
+  "name": "Weedrug",
+  "type": "Erba",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-5fff2f82-20ec-4dba-8c89-e944e1b6502a.png",
+  "sourceMaster": "output/splash-art/originals/048-weedrug-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/048-weedrug.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/048-weedrug.webp",
+  "promptFile": "art-source/splash/prompts/048-weedrug-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 745596,
+  "sha256": "d379c35d9541bae3e264c5fde8db8526a9db5b52a41b6ece9ba151fee391fb54",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:37:00.138Z",
+  "reviewedAt": "2026-10-26T00:37:00.139Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.32,
+    "top": 0.17,
+    "right": 0.61,
+    "bottom": 0.92
+  },
+  "displayScale": 0.758666,
+  "displayOffset": {
+    "x": 0.006553309999999979,
+    "y": -0.019139970000000006
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/048-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

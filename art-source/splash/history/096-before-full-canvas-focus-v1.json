@@ -1,0 +1,52 @@
+{
+  "id": 96,
+  "name": "Beestrix",
+  "type": "Erba",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-7dcec25e-b53b-4dca-bc40-15719cc2e318.png",
+  "sourceMaster": "output/splash-art/originals/096-beestrix-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/096-beestrix.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/096-beestrix.webp",
+  "promptFile": "art-source/splash/prompts/096-beestrix-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 595838,
+  "sha256": "2004fdda5e6a6c0092ac8cff3e803063d8bba3aed901a2d2fcbc1c8c08c11774",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T01:03:12.777Z",
+  "reviewedAt": "2026-10-26T01:03:12.777Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.16,
+    "right": 0.68,
+    "bottom": 0.91
+  },
+  "displayScale": 0.758666,
+  "displayOffset": {
+    "x": -0.016206670000000034,
+    "y": -0.011553310000000039
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/096-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

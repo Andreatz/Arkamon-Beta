@@ -1,0 +1,46 @@
+{
+  "id": 41,
+  "name": "RS-219",
+  "type": "Normale",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-404d83d9-6ba9-434d-9ea7-8c7856d8b686.png",
+  "sourceMaster": "output/splash-art/originals/041-rs-219-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/041-rs-219.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/041-rs-219.webp",
+  "promptFile": "art-source/splash/prompts/041-rs-219-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 941662,
+  "sha256": "ea2b4f1e68824333067705c7a3bc34faf274ec94d8b261e2154381d8339a6a59",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T10:45:45.826Z",
+  "reviewedAt": "2026-10-26T10:45:45.827Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.24,
+    "top": 0.218,
+    "right": 0.85,
+    "bottom": 0.97
+  },
+  "focusBounds": {
+    "left": 0.355,
+    "top": 0.23,
+    "right": 0.61,
+    "bottom": 0.74
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/041-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

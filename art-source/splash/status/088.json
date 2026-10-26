@@ -2,47 +2,52 @@
   "id": 88,
   "name": "Teslat",
   "type": "Elettro",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17471-00ca-7513-a0cc-5a12e9f4cd14\\exec-0463b282-1029-4866-8c72-d7477435ac60.png",
-  "sourceMaster": "output/splash-art/originals/088-teslat-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-a6a56578-b680-4610-9429-2c705d364749.png",
+  "sourceMaster": "output/splash-art/originals/088-teslat-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/088-teslat.webp",
   "runtimePath": "/backgrounds/arkamon-splash/088-teslat.webp",
-  "promptFile": "art-source/splash/prompts/088-teslat.txt",
+  "promptFile": "art-source/splash/prompts/088-teslat-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 665986,
-  "sha256": "1732fc189807915e93bc60e8ea8c2ac6cb2f093e1e9a0a28953ee5394dfa8c42",
+  "bytes": 610528,
+  "sha256": "6b6c8b86464d1be31729a66253d6e7afffbd71ded701b83117fd4ccc8062635e",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:56:23.328Z",
+  "reviewedAt": "2026-10-26T00:56:23.330Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.315,
+    "top": 0.24,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:19:45.377Z",
-  "subjectBounds": {
-    "left": 0.41,
-    "top": 0.258,
-    "right": 0.614,
-    "bottom": 0.797
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/088-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.447,
-    "top": 0.391,
-    "right": 0.56,
-    "bottom": 0.737
-  },
-  "displayScale": 1.5029,
-  "displayOffset": {
-    "x": -0.0253,
-    "y": -0.0662
-  },
-  "reviewedAt": "2026-10-25T20:54:59.331Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

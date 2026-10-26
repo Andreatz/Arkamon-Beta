@@ -224,7 +224,8 @@ test('healing moves show their real effect in team, analysis and Arkadex without
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   for (const screen of ['Squadra', 'Analisi', 'Arkadex']) {
     await dialog.getByRole('button', { name: screen, exact: true }).click()
-    if (screen === 'Analisi' || screen === 'Arkadex') await dialog.getByRole('button', { name: 'Mosse', exact: true }).click()
+    if (screen === 'Squadra') await dialog.getByRole('tab', { name: 'Mosse', exact: true }).click()
+    else await dialog.getByRole('button', { name: 'Mosse', exact: true }).click()
     const move = dialog.locator('.pu-move').filter({ hasText: 'Assorbilinfa' })
     await expect(move.locator('.pu-dice')).toHaveText('Cura 25%')
     await expect(move.locator('.pu-dice')).toHaveAttribute('aria-label', 'Cura 25% degli HP massimi e rimuove veleno e paralisi')

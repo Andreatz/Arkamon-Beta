@@ -162,9 +162,15 @@ function restorePlayer(value: unknown, fallback: StatoGiocatore, warn: Warn): St
   return player
 }
 
-const SCENES: SceneId[] = ['lega', 'titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso', 'citta', 'palestra', 'centro-pokemon', 'battaglia', 'deposito', 'squadra', 'evoluzione']
+const SCENES: SceneId[] = ['lega', 'titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso', 'citta', 'battaglia', 'deposito', 'evoluzione']
+const LEGACY_SCENES = new Set(['palestra', 'centro-pokemon', 'squadra'])
+const isLegacyNavigation = (value: unknown): boolean => isSaveRecord(value) && typeof value.scena === 'string' && LEGACY_SCENES.has(value.scena)
 function restoreNavigation(value: unknown, fallback: NavigazioneScena | null, warn: Warn): NavigazioneScena | null {
   if (value === null && fallback === null) return null
+  if (isLegacyNavigation(value)) {
+    warn('Una schermata storica non più disponibile è stata recuperata sulla mappa; squadre e progressi restano invariati.')
+    return fallback === null ? null : { scena: 'mappa-principale' }
+  }
   if (!isSaveRecord(value) || !SCENES.includes(value.scena as SceneId)) {
     if (value !== undefined) warn('Una schermata non valida è stata recuperata.')
     return fallback
@@ -325,6 +331,8 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
     arkadex: normalizeArkadexProgress(p.arkadex), matchLog: normalizeMatchLog(p.matchLog),
   }
   restoreInstanceIdentity(state, warn)
+  // Obsolete management routes must not strand a still-valid battle behind the map.
+  if (isLegacyNavigation(p.scenaCorrente) && state.battaglia) state.scenaCorrente = { scena: 'battaglia' }
   state.arkadex = deriveArkadexProgress(state.arkadex, state)
   if (state.battaglia?.leagueBattle) {
     const reference = state.battaglia.leagueBattle

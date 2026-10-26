@@ -77,7 +77,7 @@ test.describe('presentation project and deliberate broadcast', () => {
     await page.getByRole('button', { name: 'Partita', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
     await dialog.getByRole('navigation', { name: 'Schermate del giocatore' }).getByRole('button', { name: 'Squadra', exact: true }).click()
-    await expect(dialog.getByRole('heading', { name: 'Gestione squadra', exact: true })).toBeVisible()
+    await expect(dialog.getByRole('heading', { name: 'Squadra', exact: true })).toBeVisible()
     await expect(broadcast.getByRole('region', { name: 'Scheda presentata dal GM' })).toHaveCount(0)
     await dialog.getByRole('button', { name: 'Presenta scheda selezionata', exact: true }).click()
     const shown = broadcast.getByRole('region', { name: 'Scheda presentata dal GM' })

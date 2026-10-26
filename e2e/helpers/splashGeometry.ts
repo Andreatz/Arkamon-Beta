@@ -7,8 +7,10 @@ export async function splashGeometry(root: Locator, screen: 'squadra' | 'arkadex
       const rect = target.getBoundingClientRect()
       return { x: rect.x, y: rect.y, width: rect.width, height: rect.height, right: rect.right, bottom: rect.bottom }
     }
-    const backdrop = element.querySelector('.pu-splash-backdrop') ?? element
-    const shell = box(element), computed = getComputedStyle(backdrop), background = getComputedStyle(backdrop, '::before')
+    const desktopBackdrop = element.querySelector('.pu-splash-backdrop') ?? element
+    const card = getComputedStyle(desktopBackdrop).display === 'none'
+    const backdrop = card ? element.querySelector('.pu-splash-hero-presence')! : desktopBackdrop
+    const shell = box(element), computed = getComputedStyle(backdrop), background = card ? computed : getComputedStyle(backdrop, '::before'), duplicate = getComputedStyle(backdrop, '::after')
     const backdropBox=box(backdrop)
     const source = element.querySelector('[data-splash-source]')?.getAttribute('data-splash-source')
     if (!source) throw new Error('Decoded splash source is absent from the selected hero')
@@ -16,8 +18,8 @@ export async function splashGeometry(root: Locator, screen: 'squadra' | 'arkadex
     image.src = source
     await image.decode()
     const paint = {
-      x: backdropBox.x + parseFloat(computed.borderLeftWidth || '0') + (parseFloat(background.left) || 0),
-      y: backdropBox.y + parseFloat(computed.borderTopWidth || '0') + (parseFloat(background.top) || 0),
+      x: backdropBox.x + parseFloat(computed.borderLeftWidth || '0') + (card ? 0 : parseFloat(background.left) || 0),
+      y: backdropBox.y + parseFloat(computed.borderTopWidth || '0') + (card ? 0 : parseFloat(background.top) || 0),
       width: parseFloat(background.width) || element.clientWidth,
       height: parseFloat(background.height) || element.clientHeight,
     }
@@ -27,6 +29,7 @@ export async function splashGeometry(root: Locator, screen: 'squadra' | 'arkadex
     const offset = (value: string, free: number) => value.endsWith('%') ? free * parseFloat(value) / 100 : value === 'center' ? free / 2 : parseFloat(value) || 0
     const startX = paint.x + offset(position[0], paint.width - renderedWidth)
     const startY = paint.y + offset(position[1] || position[0], paint.height - renderedHeight)
+    const paintedImage = { x: startX, y: startY, width: renderedWidth, height: renderedHeight, right: startX + renderedWidth, bottom: startY + renderedHeight }
     const transform = new DOMMatrix(background.transform === 'none' ? undefined : background.transform)
     const centerX=paint.x+paint.width/2,centerY=paint.y+paint.height/2
     const projectedX=(fraction:number)=>centerX+(startX+fraction*renderedWidth-centerX)*transform.a+transform.e
@@ -50,8 +53,8 @@ export async function splashGeometry(root: Locator, screen: 'squadra' | 'arkadex
     const content = element.querySelector('.pu-content')!
     const information = element.querySelector(screen === 'squadra' ? '.pu-reference-team-dossier' : '.pu-dex-detail')!
     return {
-      source, normalized, image: { width: image.naturalWidth, height: image.naturalHeight }, shell, paint, creature, panels,
-      background: { image: background.backgroundImage, size: background.backgroundSize, position: background.backgroundPosition, opacity: background.opacity, transform: background.transform },
+      source, normalized, image: { width: image.naturalWidth, height: image.naturalHeight }, shell, paint, paintedImage, creature, panels,
+      background: { presentation: card ? 'card' : 'backdrop', image: background.backgroundImage, size: background.backgroundSize, position: background.backgroundPosition, opacity: background.opacity, transform: background.transform, filter: background.filter, mask: background.maskImage, duplicateContent: duplicate.content, duplicateImage: duplicate.backgroundImage },
       layout: { rootClientWidth: element.clientWidth, rootScrollWidth: element.scrollWidth, contentClientHeight: content.clientHeight, contentScrollHeight: content.scrollHeight, contentClientWidth: content.clientWidth, contentScrollWidth: content.scrollWidth },
       information: [...information.querySelectorAll('h2,dt,dd,[role="tab"],.pu-dex-detail-tabs button')].filter(target => target.getBoundingClientRect().height > 0).map(target => {
         const style = getComputedStyle(target)

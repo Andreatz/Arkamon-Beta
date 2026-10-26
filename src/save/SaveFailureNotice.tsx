@@ -5,6 +5,7 @@ import { useSaveWriteStatus } from './durableWrites'
 import { serializeGameBackup, gameBackupFilename } from './gameBackup'
 import { downloadGameBackup } from './restoreGameBackup'
 import { useInteractionStore } from '@/interactions/interactionStore'
+import { interactionCatalogForBackup, useInteractionRecoveryStatus } from '@/interactions/interactionRecovery'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { useState } from 'react'
 
@@ -16,10 +17,11 @@ export function SaveFailureNotice() {
   const clear = useSaveWriteStatus(s => s.clear)
   const cancel = useSaveWriteStatus(s => s.cancel)
   const challengeContext = useGameStore(s => s.challengeContext)
+  const catalogRecovery = useInteractionRecoveryStatus(s => s.recovery)
   const discard = () => { cancel?.(); clear() }
   const download = () => {
     try {
-      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState()), gameBackupFilename())
+      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState()), gameBackupFilename())
       setDownloadError('')
     } catch { setDownloadError('Il download non è riuscito. Riprova senza cancellare i dati del browser.') }
   }
@@ -28,6 +30,7 @@ export function SaveFailureNotice() {
     <p role="alert">{error}</p>
     <p className="mt-3 text-sm">Libera spazio per i dati del browser, poi riprova. Puoi scaricare una copia dei progressi conservati prima di continuare.</p>
     {challengeContext && <p className="mt-3 text-sm">Il download conserva la campagna dei due giocatori. La sfida a seed o Fanta-Team resta nel suo salvataggio separato.</p>}
+    {catalogRecovery && <p className="mt-3 text-sm">Il catalogo interazioni richiede recupero e resta escluso dal backup della campagna. L’originale è conservato nell’editor Interazioni e nel pannello Backup.</p>}
     <div className="mt-4 flex flex-wrap gap-3">
       <GameButton tone="primary" onClick={() => retry?.()}>Riprova salvataggio</GameButton>
       <GameButton onClick={download}>Scarica progressi conservati</GameButton>

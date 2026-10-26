@@ -14,6 +14,8 @@ import { readPreviousGameBackup, restoreGameBackup } from './restoreGameBackup'
 import { BACKUP_RESTORE_JOURNAL_KEY, backupRestoreStorage, recoverInterruptedBackupRestore } from './restoreJournal'
 import { AUTO_BACKUP_STORAGE_KEY, readRecoveryCopies, rememberRecoveryCopy, scheduleRecoveryCopy,
   flushPendingRecoveryCopy, cancelPendingRecoveryCopy } from './durableWrites'
+import { applyCampaignConfiguration, CAMPAIGN_IMPORT_RECOVERY_KEY, recoverCampaignConfigurationImport } from '@/readiness/campaignApply'
+import type { CampaignPackage } from '@/readiness/campaignPackage'
 
 const fixture = vi.hoisted(() => {
   const values = new Map<string, string>()
@@ -45,6 +47,24 @@ afterEach(() => {
 })
 
 describe('backup restore isolation in UI previews without a session coordinator', () => {
+  it.each(['?uiConcepts=1', '?uiStudioPreview=1', '?uiReferences=1'])('does not apply or recover a campaign configuration against real storage in %s', (search) => {
+    const configuration: CampaignPackage = { format: 'arkamon-campaign-configuration', version: 1, name: 'Preview configuration', catalog: { version: 1, interactions: [] }, league: null }
+    // An interrupted import belongs to the live campaign, not the preview.
+    fixture.values.set(CAMPAIGN_IMPORT_RECOVERY_KEY, JSON.stringify({ version: 1, beforeCatalog: null,
+      afterCatalog: JSON.stringify({ state: { interactions: [] }, version: 0 }), beforeLeague: null, afterLeague: null }))
+    const game = useGameStore.getState(), catalog = useInteractionStore.getState(), saved = new Map(fixture.values)
+    vi.stubGlobal('window', { location: { search } })
+
+    expect(applyCampaignConfiguration(configuration)).toMatchObject({ ok: false, message: expect.stringMatching(/anteprima/) })
+    expect(recoverCampaignConfigurationImport()).toEqual({ ok: true, message: '' })
+    expect(useGameStore.getState()).toBe(game)
+    expect(useInteractionStore.getState()).toBe(catalog)
+    expect(fixture.values).toEqual(saved)
+    expect(fixture.storage.getItem).not.toHaveBeenCalled()
+    expect(fixture.storage.setItem).not.toHaveBeenCalled()
+    expect(fixture.storage.removeItem).not.toHaveBeenCalled()
+  })
+
   it.each(['?uiConcepts=1', '?uiStudioPreview=1'])('refuses restore without touching campaign, catalog, archive or storage in %s', (search) => {
     const imported = initialGameSave()
     imported.giocatore1.nome = 'Partita importata'

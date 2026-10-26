@@ -32,9 +32,10 @@ export function rollbackVisualTransaction(storage: VisualStorage, entries: Visua
   storage.removeItem(VISUAL_JOURNAL_KEY)
 }
 export function recoverPresentationStorage(storage?: VisualStorage): { ok: boolean; error: string | null } {
-  if (!storage && typeof localStorage === 'undefined') return { ok: true, error: null }
-  const target = storage ?? localStorage
   try {
+    // Accessing the getter can fail before getItem is called in embedded/private contexts.
+    if (!storage && typeof localStorage === 'undefined') return { ok: true, error: null }
+    const target = storage ?? localStorage
     const raw = target.getItem(VISUAL_JOURNAL_KEY)
     if (!raw) return { ok: true, error: null }
     const journal = parse(raw), marker = journal.entries[journal.entries.length - 1]

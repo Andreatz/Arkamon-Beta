@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { useInteractionStore } from '@/interactions/interactionStore'
+import { useInteractionRecoveryStatus } from '@/interactions/interactionRecovery'
 import { useAudienceStore } from '@/audience/useAudienceStore'
 import { useRegiaStore } from '@/regia/regiaStore'
 import { useAdminStore } from '@/store/adminStore'
@@ -21,15 +22,18 @@ function downloadConfiguration(json: string) {
 export function AdminSessionPanel({ onNavigate }: { onNavigate: (tab: ReadinessDestination) => void }) {
   const game = useGameStore()
   const interactions = useInteractionStore(state => state.interactions)
+  const catalogRecovery = useInteractionRecoveryStatus(state => state.recovery)
   const audience = useAudienceStore()
   const { paused, busy, busyReason, setPaused } = useRegiaStore()
   const [configuration, setConfiguration] = useState<CampaignPackage | null>(null)
+  const importRevision = useRef(0)
   const [message, setMessage] = useState('')
   const [mediaStatus, setMediaStatus] = useState('Immagini non ancora verificate in questa visita.')
   const [checking, setChecking] = useState(false)
   const [now, setNow] = useState(Date.now)
   useEffect(() => { const timer = window.setInterval(() => setNow(Date.now()), 15_000); return () => window.clearInterval(timer) }, [])
-  const report = useMemo(() => buildReadinessReport(game, interactions, audience, now), [game, interactions, audience, now])
+  useEffect(() => () => { importRevision.current++ }, [])
+  const report = useMemo(() => buildReadinessReport(game, interactions, audience, now, catalogRecovery?.error), [game, interactions, audience, now, catalogRecovery])
   const progress = currentRaceProgress(game)
   const broadcast = new URL(window.location.href)
   broadcast.searchParams.set('view', 'broadcast'); broadcast.hash = ''
@@ -55,14 +59,17 @@ export function AdminSessionPanel({ onNavigate }: { onNavigate: (tab: ReadinessD
   }
 
   async function previewImport(file: File | undefined) {
-    setConfiguration(null)
+    const revision = ++importRevision.current
+    setConfiguration(null); setMessage('')
     if (!file) return
     if (file.size > 2_000_000) { setMessage('Il pacchetto supera il limite di 2 MB.'); return }
     try {
-      const result = parseCampaignPackage(await file.text())
+      const text = await file.text()
+      if (revision !== importRevision.current) return
+      const result = parseCampaignPackage(text)
       setConfiguration(result.configuration)
       setMessage(result.error ?? 'Anteprima pronta. Nessuna modifica applicata.')
-    } catch { setMessage('Non è stato possibile leggere il file. Nessuna modifica applicata.') }
+    } catch { if (revision === importRevision.current) setMessage('Non è stato possibile leggere il file. Nessuna modifica applicata.') }
   }
 
   return <section aria-label="Regia e preparazione della sessione" className="arka-session space-y-5">
@@ -93,12 +100,13 @@ export function AdminSessionPanel({ onNavigate }: { onNavigate: (tab: ReadinessD
     </section>
 
     <section aria-label="Configurazione portabile della campagna"><h4 className="font-bold">Pacchetto di configurazione</h4><p>Trasporta solo interazioni e regole/squadre avversarie della Lega. Non importa squadre delle giocatrici, monete, oggetti, cronologia, posizioni o credenziali.</p>
-      <button type="button" className="arka-session-button" onClick={() => downloadConfiguration(exportCampaignPackage('Configurazione Arkamon', { version: 1, interactions }, game.league.config))}>Esporta configurazione</button>
+      <button type="button" className="arka-session-button" disabled={!!catalogRecovery} onClick={() => downloadConfiguration(exportCampaignPackage('Configurazione Arkamon', { version: 1, interactions }, game.league.config))}>Esporta configurazione</button>
+      {catalogRecovery && <p>Il catalogo salvato richiede recupero. Scarica l’originale nell’editor delle interazioni prima di esportare o importare la configurazione.</p>}
       <label className="block mt-3">Importa configurazione per anteprima<input type="file" accept="application/json,.json" aria-label="Importa configurazione campagna" className="block mt-2 max-w-full" onChange={event => { void previewImport(event.target.files?.[0]); event.target.value = '' }} /></label>
       {configuration && <div className="arka-session-import" aria-label="Anteprima configurazione campagna"><strong>{configuration.name}</strong><p>{configuration.catalog.interactions.length} interazioni ({configuration.catalog.interactions.filter(entry => entry.enabled).length} attive) · {configuration.league ? 'Lega inclusa' : 'Lega non configurata'}.</p>
         <p>Verranno sostituiti {interactions.length} elementi del catalogo e la configurazione della Lega. I progressi e gli identificativi delle tappe già completate rimangono invariati.</p>
         {locked && <p>Importazione sospesa durante battaglie, sfide o dopo il primo tentativo della Lega.</p>}
-        <div className="arka-session-actions"><button type="button" className="arka-session-button" disabled={locked} onClick={() => { const result = applyCampaignConfiguration(configuration); setMessage(result.message); if (result.ok) setConfiguration(null) }}>Applica configurazione verificata</button><button type="button" className="arka-session-button" onClick={() => { setConfiguration(null); setMessage('Anteprima annullata. Nessuna modifica applicata.') }}>Annulla importazione</button></div>
+        <div className="arka-session-actions"><button type="button" className="arka-session-button" disabled={locked} onClick={() => { const result = applyCampaignConfiguration(configuration); setMessage(result.message); if (result.ok) { importRevision.current++; setConfiguration(null) } }}>Applica configurazione verificata</button><button type="button" className="arka-session-button" onClick={() => { importRevision.current++; setConfiguration(null); setMessage('Anteprima annullata. Nessuna modifica applicata.') }}>Annulla importazione</button></div>
       </div>}
       <p role="status">{message}</p>
     </section>

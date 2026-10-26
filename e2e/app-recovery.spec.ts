@@ -39,7 +39,7 @@ for (const [module, label] of [['TeamScreen', 'Squadra'], ['LaboratorioScene', '
       await expect(page.getByRole('button', { name: 'Nuova Partita', exact: true })).toBeVisible()
       await page.getByRole('button', { name: 'Partita', exact: true }).click()
       await page.getByRole('button', { name: 'Squadra', exact: true }).click()
-      await expect(page.getByRole('heading', { name: 'Gestione squadra', exact: true })).toBeVisible()
+      await expect(page.getByRole('dialog', { name: 'La tua partita', exact: true }).getByRole('heading', { name: 'Squadra', exact: true })).toBeVisible()
       await expect(page.getByRole('group', { name: 'Squadra di Aldo', exact: true })).toContainText('Vyrath di Aldo')
     } else await expect(page.getByRole('heading', { name: 'Laboratorio del Professore', exact: true })).toBeVisible()
     expect(await page.evaluate(() => localStorage.getItem('arkamon-save'))).toBe(after)

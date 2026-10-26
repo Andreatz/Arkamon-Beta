@@ -1,0 +1,52 @@
+{
+  "id": 52,
+  "name": "Leafrex",
+  "type": "Erba",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-274c2d8d-abee-487a-93b9-5be40eaa29d6.png",
+  "sourceMaster": "output/splash-art/originals/052-leafrex-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/052-leafrex.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/052-leafrex.webp",
+  "promptFile": "art-source/splash/prompts/052-leafrex-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 601124,
+  "sha256": "dd4cf35e24b133040ed55603ffb149e4739c04de062c2dc10cb7a06482e7a8f1",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:42:51.130Z",
+  "reviewedAt": "2026-10-26T00:42:51.131Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.3,
+    "top": 0.13,
+    "right": 0.64,
+    "bottom": 0.93
+  },
+  "displayScale": 0.711249,
+  "displayOffset": {
+    "x": 0.0013374700000000073,
+    "y": -0.006337469999999956
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/052-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

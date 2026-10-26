@@ -2,49 +2,51 @@
   "id": 26,
   "name": "Ampereel",
   "type": "Elettro",
-  "version": "v2-full-silhouette-preserved",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-ad9392da-dfc5-47a3-9717-11efff11cc23.png",
-  "sourceMaster": "output/splash-art/originals/026-ampereel-v2-full-silhouette-preserved.png",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-7d762bbb-5e60-4cfe-a468-85d3d044353e.png",
+  "sourceMaster": "output/splash-art/originals/026-ampereel-fullscreen-source-v3.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/026-ampereel.webp",
   "runtimePath": "/backgrounds/arkamon-splash/026-ampereel.webp",
-  "promptFile": "art-source/splash/prompts/026-ampereel.txt",
+  "promptFile": "art-source/splash/prompts/026-ampereel-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 672902,
-  "sha256": "0037fa05516fb30ed2090db187eff5e0d01cb164b84b46a5d88448cb1c9b023d",
+  "bytes": 768536,
+  "sha256": "41daa1a0915cbdad4a5a405b16540a6b66faa0babe62e4e4865aa3ad93c02275",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:36:19.807Z",
-  "compositionCriterion": "full-silhouette-small-subject-superseded",
-  "reviewNote": "Generated before the new user direction prioritizing large face and torso. Preserved without approval under the new criterion; no zoom-out revision performed.",
-  "compositionPolicy": "hero-focus",
+  "generatedAt": "2026-10-26T10:58:09.053Z",
+  "reviewedAt": "2026-10-26T10:58:09.054Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.394,
-    "top": 0.397,
-    "right": 0.601,
-    "bottom": 0.729
+    "left": 0.29,
+    "top": 0.216,
+    "right": 0.952,
+    "bottom": 0.969
   },
   "focusBounds": {
-    "left": 0.405,
-    "top": 0.438,
-    "right": 0.584,
-    "bottom": 0.706
+    "left": 0.389,
+    "top": 0.329,
+    "right": 0.611,
+    "bottom": 0.799
   },
-  "displayScale": 1.7318,
-  "displayOffset": {
-    "x": -0.0105,
-    "y": -0.0947
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/026-before-fullscreen-source-v3.json"
   },
-  "reviewedAt": "2026-10-25T20:54:59.271Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+  }
 }

@@ -1,0 +1,52 @@
+{
+  "id": 94,
+  "name": "Pyrodil",
+  "type": "Fuoco",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-fa31f0e7-793e-4809-a17a-4eb74f8bacde.png",
+  "sourceMaster": "output/splash-art/originals/094-pyrodil-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/094-pyrodil.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/094-pyrodil.webp",
+  "promptFile": "art-source/splash/prompts/094-pyrodil-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 549716,
+  "sha256": "e22c770eea64f47b9bf77365becf626148dc666ab88ea299e061ac7749492deb",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T01:03:11.316Z",
+  "reviewedAt": "2026-10-26T01:03:11.317Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.14,
+    "top": 0.05,
+    "right": 0.69,
+    "bottom": 0.95
+  },
+  "displayScale": 0.616363,
+  "displayOffset": {
+    "x": 0.032390854999999996,
+    "y": 0.015000000000000013
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/094-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

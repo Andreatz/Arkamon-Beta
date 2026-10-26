@@ -1,0 +1,52 @@
+{
+  "id": 65,
+  "name": "Piox",
+  "type": "Normale",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17579-674b-7a40-97c4-89ad7033f20b\\exec-11bafa0b-e47c-436c-a252-4ccdc88c967a.png",
+  "sourceMaster": "output/splash-art/originals/065-piox-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/065-piox.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/065-piox.webp",
+  "promptFile": "art-source/splash/prompts/065-piox-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 506604,
+  "sha256": "e7fe4b083755f3e1f87826e43f3a1de45926995f817ba265d76904688d1098b8",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:00:16.110Z",
+  "reviewedAt": "2026-10-26T00:00:16.111Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.05,
+    "top": 0,
+    "right": 0.75,
+    "bottom": 0.98
+  },
+  "focusBounds": {
+    "left": 0.48,
+    "top": 0,
+    "right": 0.72,
+    "bottom": 0.7
+  },
+  "displayScale": 0.812857,
+  "displayOffset": {
+    "x": -0.10128570000000003,
+    "y": 0.13692855000000004
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/065-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

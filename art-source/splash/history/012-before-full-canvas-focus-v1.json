@@ -1,0 +1,52 @@
+{
+  "id": 12,
+  "name": "Felyss",
+  "type": "Psico",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-f8bb2621-6985-4f21-a268-0fdb617f4610.png",
+  "sourceMaster": "output/splash-art/originals/012-felyss-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 940
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/012-felyss.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/012-felyss.webp",
+  "promptFile": "art-source/splash/prompts/012-felyss-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 654102,
+  "sha256": "d43d561bced96bdcc9accc872a99bb7f2582eddd07de5aa8d4f5f1e475a31397",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:14:41.604Z",
+  "reviewedAt": "2026-10-26T00:14:41.612Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.32,
+    "top": 0.09,
+    "right": 0.62,
+    "bottom": 0.86
+  },
+  "displayScale": 0.738961,
+  "displayOffset": {
+    "x": 0.0021688300000000105,
+    "y": 0.03347402500000002
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/012-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

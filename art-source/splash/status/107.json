@@ -2,44 +2,51 @@
   "id": 107,
   "name": "Ao-shin",
   "type": "Normale",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-ac28c5c0-11db-430f-81c2-22d6456ef984.png",
-  "sourceMaster": "output/splash-art/originals/107-ao-shin-hero-focus-v1.png",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-b6db09a9-2d9e-4f43-bbc1-7263d1de3300.png",
+  "sourceMaster": "output/splash-art/originals/107-ao-shin-fullscreen-source-v3.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/107-ao-shin.webp",
   "runtimePath": "/backgrounds/arkamon-splash/107-ao-shin.webp",
-  "promptFile": "art-source/splash/prompts/107-ao-shin-hero-focus-v1.txt",
+  "promptFile": "art-source/splash/prompts/107-ao-shin-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 773592,
-  "sha256": "ca3adbae0950e0350197c493a559718ff39181bc527bd38c9a141040c9e72d4e",
+  "bytes": 737334,
+  "sha256": "254c16c89c43b14a611aba9e9c50fc48bb58405e7d4dd9e261415b544e10e7ec",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T20:42:51.612Z",
-  "compositionPolicy": "hero-focus",
+  "generatedAt": "2026-10-26T11:38:23.463Z",
+  "reviewedAt": "2026-10-26T11:38:23.464Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0.123,
-    "top": 0.035,
-    "right": 0.984,
-    "bottom": 0.963
+    "top": 0.036,
+    "right": 0.983,
+    "bottom": 0.967
   },
   "focusBounds": {
-    "left": 0.26,
-    "top": 0.21,
-    "right": 0.559,
-    "bottom": 0.77
+    "left": 0.333,
+    "top": 0.275,
+    "right": 0.58,
+    "bottom": 0.8
   },
-  "reviewedAt": "2026-10-25T20:43:35.174Z",
-  "displayOffset": {
-    "x": 0.06,
-    "y": 0.02
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/107-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
   }
 }

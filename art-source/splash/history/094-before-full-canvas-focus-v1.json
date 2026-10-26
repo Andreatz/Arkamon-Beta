@@ -1,0 +1,46 @@
+{
+  "id": 94,
+  "name": "Pyrodil",
+  "type": "Fuoco",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-442c58d8-c5d0-4ef2-b5a1-76fa843b7fb9.png",
+  "sourceMaster": "output/splash-art/originals/094-pyrodil-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/094-pyrodil.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/094-pyrodil.webp",
+  "promptFile": "art-source/splash/prompts/094-pyrodil-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 582784,
+  "sha256": "b19a0a27f3cb9ce0a68dcc6f7d7df743ca9d879056148f074f5f609ba54275f1",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T11:09:47.164Z",
+  "reviewedAt": "2026-10-26T11:09:47.164Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.255,
+    "top": 0.23,
+    "right": 0.62,
+    "bottom": 0.79
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/094-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

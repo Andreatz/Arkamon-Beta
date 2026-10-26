@@ -27,6 +27,11 @@ describe('preparazione della live', () => {
     const entry = { ...newInteractionDefinition('Venezia', 'impossible', 'broken'), title: 'Errata' }
     expect(buildReadinessReport(initialGameSave(), [entry], disconnected).checks.find(check => check.id === 'interaction-invalid')?.level).toBe('error')
   })
+  it('segnala come errore un catalogo persistito sospeso invece di presentarlo soltanto come non configurato', () => {
+    const report = buildReadinessReport(initialGameSave(), [], disconnected, Date.now(), 'Pallino non disponibile.')
+    expect(report.checks.find(check => check.id === 'interaction-recovery')).toMatchObject({ level: 'error', destination: 'interactions', message: expect.stringMatching(/originale.*conservato/) })
+    expect(report.counts.errors).toBe(1)
+  })
   it('mostra la gara usando solo dati reali e gli eventi restano esterni al rapporto', () => {
     const game = initialGameSave()
     game.giocatore1.nome = 'Melia'

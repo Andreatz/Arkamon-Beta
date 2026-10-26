@@ -1,0 +1,52 @@
+{
+  "id": 77,
+  "name": "Ignitor",
+  "type": "Fuoco",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-ae46baac-eac6-416c-aa98-cc63ef1d9809.png",
+  "sourceMaster": "output/splash-art/originals/077-ignitor-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/077-ignitor.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/077-ignitor.webp",
+  "promptFile": "art-source/splash/prompts/077-ignitor-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 620828,
+  "sha256": "afd84faab147e8bf7a5217d072a7d9b693eb68f8220d3f019cfa5562c6d49b9b",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:51:09.050Z",
+  "reviewedAt": "2026-10-26T00:51:09.051Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.32,
+    "top": 0.24,
+    "right": 0.65,
+    "bottom": 0.94
+  },
+  "displayScale": 0.812857,
+  "displayOffset": {
+    "x": -0.007807145000000015,
+    "y": -0.05815713
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/077-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

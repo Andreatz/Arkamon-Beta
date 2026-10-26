@@ -30,8 +30,9 @@ export interface ReadinessReport {
 }
 
 /** A configuration diagnostic, never a validator of the GM's unwritten story. */
-export function buildReadinessReport(game: GameSaveState, interactions: readonly InteractionDefinition[], connection: ConnectionReadiness, now = Date.now()): ReadinessReport {
+export function buildReadinessReport(game: GameSaveState, interactions: readonly InteractionDefinition[], connection: ConnectionReadiness, now = Date.now(), catalogRecoveryError?: string | null): ReadinessReport {
   const checks: ReadinessCheck[] = []
+  if (catalogRecoveryError) checks.push({ id: 'interaction-recovery', level: 'error', title: 'Catalogo salvato da recuperare', message: `${catalogRecoveryError} L’originale è conservato nell’editor; le interazioni restano sospese.`, destination: 'interactions' })
   const validation = validateCatalog({ version: 1, interactions }, { allowLegacyRepeatableRequirements: true })
   if (validation.error) checks.push({ id: 'interaction-invalid', level: 'error', title: 'Catalogo da correggere', message: validation.error, destination: 'interactions' })
   else if (validation.warning) checks.push({ id: 'interaction-legacy', level: 'warning', title: 'Requisiti delle interazioni', message: validation.warning, destination: 'interactions' })

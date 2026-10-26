@@ -1,0 +1,52 @@
+{
+  "id": 81,
+  "name": "Cellgon",
+  "type": "Oscurità",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-ee200dab-5c72-4615-bc80-f22ab6807460.png",
+  "sourceMaster": "output/splash-art/originals/081-cellgon-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/081-cellgon.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/081-cellgon.webp",
+  "promptFile": "art-source/splash/prompts/081-cellgon-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 625836,
+  "sha256": "6eb260f853ba6d60de98e7cc015eb161dc9ac62ce70ede780fe6bbc8a86381f1",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:51:12.018Z",
+  "reviewedAt": "2026-10-26T00:51:12.018Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.21,
+    "right": 0.66,
+    "bottom": 0.94
+  },
+  "displayScale": 0.779452,
+  "displayOffset": {
+    "x": -0.008308220000000033,
+    "y": -0.04345889999999997
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/081-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

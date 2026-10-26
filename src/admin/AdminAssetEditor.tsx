@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
 import type { AdminThemeAssets } from '@/theme/adminThemeTypes'
 import { assetUrl } from '@/utils/assetUrl'
+import { isSafeThemeAssetPath } from '@/theme/adminThemeAssetPaths'
 
 type AssetKey = keyof AdminThemeAssets
 
@@ -54,7 +55,7 @@ const assetFields: {
 ]
 
 function isSafeAssetPath(path: string): boolean {
-  return path === '' || (path.startsWith('/') && !path.startsWith('//'))
+  return path === '' || isSafeThemeAssetPath(path)
 }
 
 function AssetPreview({ path }: { path: string }) {

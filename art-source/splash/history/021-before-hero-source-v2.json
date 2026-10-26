@@ -1,0 +1,52 @@
+{
+  "id": 21,
+  "name": "Shrody",
+  "type": "Psico",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-531181f2-e677-4497-9eda-91024eb24d40.png",
+  "sourceMaster": "output/splash-art/originals/021-shrody-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/021-shrody.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/021-shrody.webp",
+  "promptFile": "art-source/splash/prompts/021-shrody.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 702522,
+  "sha256": "4d233059d7ae51e031e31a4a9cdd2401fbfd2901ff58991dcc5757e8f23b209d",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:28:14.219Z",
+  "subjectBounds": {
+    "left": 0.395,
+    "top": 0.375,
+    "right": 0.595,
+    "bottom": 0.715
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope",
+    "notes": "Full box flaps/tails or ears/limbs/complete electrical trail included in measured bounds. Official design preserved. No live UI claim."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.416,
+    "top": 0.45,
+    "right": 0.535,
+    "bottom": 0.63
+  },
+  "displayScale": 2.5,
+  "displayOffset": {
+    "x": 0.0412,
+    "y": -0.07
+  },
+  "reviewedAt": "2026-10-25T20:54:59.264Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

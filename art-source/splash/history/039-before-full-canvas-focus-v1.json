@@ -1,0 +1,52 @@
+{
+  "id": 39,
+  "name": "RS-219",
+  "type": "Normale",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17579-2baa-7073-88ce-755ca5745e81\\exec-1eb88246-28e4-4da7-a25e-ec3323f5292a.png",
+  "sourceMaster": "output/splash-art/originals/039-rs-219-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/039-rs-219.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/039-rs-219.webp",
+  "promptFile": "art-source/splash/prompts/039-rs-219-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 652944,
+  "sha256": "2b761356af2844892dc02a0a52f2d8ff277c52334d579e8323f069a7a9c63666",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:02:16.833Z",
+  "reviewedAt": "2026-10-26T00:02:16.834Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.18,
+    "top": 0.04,
+    "right": 0.75,
+    "bottom": 0.95
+  },
+  "focusBounds": {
+    "left": 0.25,
+    "top": 0.045,
+    "right": 0.605,
+    "bottom": 0.84
+  },
+  "displayScale": 0.715723,
+  "displayOffset": {
+    "x": 0.031889917499999976,
+    "y": 0.05615407250000004
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/039-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

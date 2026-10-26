@@ -51,4 +51,10 @@ describe('importazione temi Admin', () => {
     expect(parseThemeJson(JSON.stringify({ ...defaultAdminTheme, assets: [] })))
       .toMatchObject({ theme: null, error: expect.stringContaining('assets') })
   })
+
+  it.each(['/\\example.invalid/image.png', '/%5cexample.invalid/image.png', '/%2fexample.invalid/image.png', '/ui/../private.png', '/ui/"image.png', 'data:image/png;base64,AAAA', 'blob:http://localhost/test', 'ui-media:imported'])('rifiuta asset non locali o non risolvibili dal tema legacy: %s', path => {
+    const theme = cloneAdminTheme(defaultAdminTheme)
+    theme.assets.titleLogo = path
+    expect(parseThemeJson(JSON.stringify(theme))).toMatchObject({ theme: null, error: expect.stringContaining('titleLogo') })
+  })
 })

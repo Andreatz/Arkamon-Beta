@@ -2,51 +2,52 @@
   "id": 17,
   "name": "Clastoom",
   "type": "Terra",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-b0c9e322-a229-44c1-94fc-e2c3ec738867.png",
-  "sourceMaster": "output/splash-art/originals/017-clastoom-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-970721c3-d05b-4f8e-8008-0f7a7180cdc6.png",
+  "sourceMaster": "output/splash-art/originals/017-clastoom-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/017-clastoom.webp",
   "runtimePath": "/backgrounds/arkamon-splash/017-clastoom.webp",
-  "promptFile": "art-source/splash/prompts/017-clastoom.txt",
+  "promptFile": "art-source/splash/prompts/017-clastoom-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 650728,
-  "sha256": "98d588b80142ad75494ee3c4724a58022286180282bd39a899bd06e18184826e",
+  "bytes": 674126,
+  "sha256": "02029d109a1e05c77fba544532d9ecaa5cdb0690d3280c577c3358b9eacba70a",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:18:09.079Z",
+  "reviewedAt": "2026-10-26T00:18:09.080Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.255,
+    "right": 0.625,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:23:45.807Z",
-  "subjectBounds": {
-    "left": 0.405,
-    "top": 0.35,
-    "right": 0.6,
-    "bottom": 0.71
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/017-before-hero-source-v2.json"
   },
-  "visualReview": {
-    "method": "manual conservative silhouette envelope",
-    "notes": "Exact reference inspected; all horns, limbs, tail or sand vortex visible inside safe zone. No live UI claim."
-  },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.423,
-    "top": 0.41,
-    "right": 0.553,
-    "bottom": 0.65
-  },
-  "displayScale": 2.1667,
-  "displayOffset": {
-    "x": 0.006,
-    "y": -0.035
-  },
-  "reviewedAt": "2026-10-25T20:54:59.261Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

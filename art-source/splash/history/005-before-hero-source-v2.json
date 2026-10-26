@@ -1,0 +1,52 @@
+{
+  "id": 5,
+  "name": "Darklaw",
+  "type": "Oscurità",
+  "version": "v2-centered",
+  "sourceMaster": "output/splash-art/originals/005-darklaw-v2-centered.png",
+  "outputFile": "public/backgrounds/arkamon-splash/005-darklaw.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/005-darklaw.webp",
+  "promptFile": "art-source/splash/005-darklaw-v2-centered.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 581518,
+  "sha256": "4bbb0e1e716761caaff78bc32cba9baafadc18928ef50fb7132daa597e34322f",
+  "status": "approved-visual",
+  "subjectBounds": {
+    "left": 0.38,
+    "top": 0.265,
+    "right": 0.64,
+    "bottom": 0.805
+  },
+  "objectPosition": "50% 50%",
+  "validation": {
+    "resultFile": "output/splash-art/results.json",
+    "startedAt": "2026-10-25T18:41:43.179Z",
+    "passedScenarios": 6,
+    "failedScenarios": 0,
+    "screens": [
+      "squadra",
+      "arkadex"
+    ],
+    "viewports": [
+      "1440x900",
+      "1366x768",
+      "1920x1080"
+    ]
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.394,
+    "top": 0.33,
+    "right": 0.573,
+    "bottom": 0.76
+  },
+  "displayScale": 1.2093,
+  "displayOffset": {
+    "x": 0,
+    "y": -0.0244
+  },
+  "reviewedAt": "2026-10-25T20:54:59.242Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

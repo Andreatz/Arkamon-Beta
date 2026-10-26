@@ -44,6 +44,26 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
   test.skip(({ isMobile }) => isMobile, 'The layout editor is a desktop workspace.')
   test.setTimeout(120_000)
 
+  test('the asset library bounds previews to one page while searching the complete catalog', async ({ page }) => {
+    const requestedSplash = new Set<string>()
+    page.on('request', request => { if (request.url().includes('/backgrounds/arkamon-splash/')) requestedSplash.add(request.url()) })
+    await openStudio(page, 'menu')
+    await selectLayer(page, 'Apri Registro')
+    await page.getByRole('button', { name: 'Scegli asset', exact: true }).click()
+    const library = page.getByRole('dialog', { name: 'Scegli asset', exact: true })
+    await expect(library.locator('.uis-asset-grid > button')).toHaveCount(24)
+    await library.getByRole('button', { name: 'Asset successivi', exact: true }).click()
+    await expect(library.getByRole('status')).toContainText('Pagina 2 /')
+    await expect(library.locator('.uis-asset-grid > button')).toHaveCount(24)
+    await library.getByLabel('Categoria asset', { exact: true }).selectOption('Splash Arkamon')
+    await library.getByLabel('Cerca asset', { exact: true }).fill('109 oniros')
+    await expect(library.locator('.uis-asset-grid > button')).toHaveCount(1)
+    await expect(library.getByRole('status')).toContainText('Pagina 1 / 1')
+    await expect(library.getByRole('button', { name: '109 oniros Splash Arkamon', exact: true })).toBeVisible()
+    // A library opening must not eagerly download all 110 full-resolution paintings.
+    expect(requestedSplash.size).toBeLessThanOrEqual(49)
+  })
+
   test('the enemy and player HP groups replace their frame and texture while preserving the live bar and labels', async ({ page }) => {
     const errors: string[] = []
     page.on('pageerror', error => errors.push(error.message))
@@ -78,7 +98,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     // Change the real Zustand color observed by HpBar: React must still own the
     // animated health fill after the editor replaces only the surrounding art.
     await preview(page).locator('body').evaluate(async () => {
-      const modulePath = '/src/store/adminStore.ts'
+      const modulePath = performance.getEntriesByType('resource').map(entry => entry.name).filter(name => new URL(name).pathname === '/src/store/adminStore.ts').at(-1) ?? '/src/store/adminStore.ts'
       const { useAdminStore } = await import(modulePath)
       useAdminStore.getState().updateColor('hpHigh', '#1122ee')
     })
@@ -165,93 +185,72 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     await expect(typeIcon).toBeVisible()
   })
 
-  test('KitFrame and GameButton replacements still suppress and restore their original border image', async ({ page }) => {
+  test('the supplied PNG menu frame and title command accept reversible artwork without losing labels', async ({ page }) => {
     await openStudio(page, 'menu')
     const diary = preview(page).locator('[data-ui-id="service.register"]')
-    const kitFrame = diary.locator(':scope>.pu-frame')
-    await expect(kitFrame).toBeVisible()
-    const kitBorder = await kitFrame.evaluate(element => getComputedStyle(element).borderImageSource)
-    const diaryText = (await diary.textContent())!.trim()
+    const frame = diary.locator('.ref-menu-card-frame')
+    await expect(frame).toHaveAttribute('src', /\/ui\/reference-png\/panel-modular\.webp$/)
+    const originalFrame = await frame.getAttribute('src')
+    const label = (await diary.textContent())!.trim()
     await selectLayer(page, 'Apri Registro')
-    await chooseAsset(page, 'infobox')
-    await assertBackground(kitFrame, '/ui/studio/Comuni/infobox.svg')
-    await expect(kitFrame).toHaveCSS('border-image-source', 'none')
-    expect((await diary.textContent())!.trim()).toBe(diaryText)
+    await chooseAsset(page, 'info panel', 'UI PNG fornita')
+    // The PNG frame is the declared decoration. An override must replace it,
+    // not paint a second panel behind its opaque artwork.
+    await expect(frame).toHaveAttribute('src', /\/ui\/reference-png\/info-panel\.webp$/)
+    expect((await diary.textContent())!.trim()).toBe(label)
+    await page.getByRole('button', { name: 'Applica al gioco', exact: true }).click()
+    await page.getByRole('button', { name: 'Esci', exact: true }).click()
+    await page.getByRole('button', { name: 'Partita', exact: true }).click()
+    await expect(page.locator('[data-ui-id="service.register"] .ref-menu-card-frame')).toHaveAttribute('src', /\/ui\/reference-png\/info-panel\.webp$/)
+    await page.reload()
+    await page.getByRole('button', { name: 'Partita', exact: true }).click()
+    await expect(page.locator('[data-ui-id="service.register"] .ref-menu-card-frame')).toHaveAttribute('src', /\/ui\/reference-png\/info-panel\.webp$/)
+    await page.goto('/#ui-studio')
+    await expect(page.locator('.uis-layer').first()).toBeVisible()
+    await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('menu')
+    await selectLayer(page, 'Apri Registro')
     await original(page)
-    await expect(kitFrame).toHaveCSS('border-image-source', kitBorder)
+    await expect(frame).toHaveAttribute('src', originalFrame!)
+    await page.getByRole('button', { name: 'Applica al gioco', exact: true }).click()
+    await chooseAsset(page, 'infobox')
+    await expect(frame).toHaveAttribute('src', originalFrame!)
+    expect((await diary.textContent())!.trim()).toBe(label)
+    await original(page)
 
     await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('titolo')
     const command = preview(page).locator('button[data-game-button]').first()
-    const gameFrame = command.locator(':scope>.game-button-frame')
-    await expect(gameFrame).toBeVisible()
-    const border = await gameFrame.evaluate(element => getComputedStyle(element).borderImageSource)
-    const label = (await command.textContent())!.trim()
+    const commandLabel = (await command.textContent())!.trim()
     await selectLayer(page, 'Comando titolo 1')
-    await chooseAsset(page, 'infobox')
-    await assertBackground(gameFrame, '/ui/studio/Comuni/infobox.svg')
-    await expect(gameFrame).toHaveCSS('border-image-source', 'none')
-    expect((await command.textContent())!.trim()).toBe(label)
+    await chooseAsset(page, 'info panel', 'UI PNG fornita')
+    await assertBackground(command, '/ui/reference-png/info-panel.webp')
+    expect((await command.textContent())!.trim()).toBe(commandLabel)
     await original(page)
-    await expect(gameFrame).toHaveCSS('border-image-source', border)
+    await expect(command).not.toHaveCSS('background-image', /info-panel/)
     await expect(command).toBeEnabled()
   })
 
-  test('Squadra, Analisi and Arkadex hero skins replace the inset decoration while preserving official portraits', async ({ page }) => {
-    test.setTimeout(180_000)
+  test('hero decoration changes preserve the full-screen splash and official analysis portrait', async ({ page }) => {
     await openStudio(page, 'squadra')
     for (const screen of ['squadra', 'analisi', 'arkadex']) {
       await page.getByLabel('Schermata da modificare', { exact: true }).selectOption(screen)
       const hero = preview(page).locator('[data-ui-id="hero"]')
-      await expect(hero).toBeVisible({ timeout: 45_000 })
-      const portrait = hero.locator('svg.pu-creature-art')
-      await expect(portrait).toBeVisible()
-      const image = portrait.locator('image')
-      const originalSource = await image.getAttribute('href')
-      if (screen === 'squadra') {
-        // The approved Team composition owns a complete SVG frame image. The
-        // editor replaces that frame without painting over the creature or HP.
-        const frame = hero.locator(':scope > .pu-hero > .studio-surface > img[data-ui-skin-slot="frame"]')
-        const originalFrame = await frame.getAttribute('src')
-        const hp = preview(page).locator('.pu-detail-panel > .pu-health')
-        const originalHp = await hp.textContent()
-        await expect(frame).toHaveAttribute('src', /\/ui\/studio\/Scuro\/cornice-arkamon\.svg$/)
-
-        await selectLayer(page, 'Arkamon selezionato', 'Gruppo')
-        await chooseAsset(page, 'infobox')
-        await expect(frame).toHaveAttribute('src', /\/ui\/studio\/Comuni\/infobox\.svg$/)
-        await expect(frame).toHaveCSS('object-fit', 'contain')
-        await expect(portrait).toBeVisible()
-        await expect(image).toHaveAttribute('href', originalSource!)
-        expect(await hp.textContent()).toBe(originalHp)
-
-        await original(page)
-        await expect(frame).toHaveAttribute('src', originalFrame!)
-        await expect(image).toHaveAttribute('href', originalSource!)
-        expect(await hp.textContent()).toBe(originalHp)
-        await page.reload()
-        await expect(page.locator('.uis-layer').first()).toBeVisible()
-        await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('squadra')
-        await expect(frame).toHaveAttribute('src', originalFrame!)
-        await expect(image).toHaveAttribute('href', originalSource!)
-        expect(await hp.textContent()).toBe(originalHp)
-        continue
-      }
+      await expect(hero).toBeVisible()
+      const portrait = hero.locator('svg.pu-creature-art image')
+      const splash = hero.locator('[data-splash-species]')
+      const usesSplash = screen !== 'analisi'
+      if (usesSplash) await expect(splash).toHaveAttribute('data-splash-species', '1')
+      else await expect(portrait).toHaveAttribute('href', /front_sprites\/1\.png$/)
+      const source = usesSplash ? await splash.getAttribute('data-splash-source') : await portrait.getAttribute('href')
       const background = await hero.evaluate(element => getComputedStyle(element).backgroundImage)
-      const pseudoVisibility = () => hero.evaluate(element => getComputedStyle(element, '::before').visibility)
-      await expect.poll(pseudoVisibility).toBe('visible')
-
       await selectLayer(page, 'Arkamon selezionato', 'Gruppo')
-      await chooseAsset(page, 'infobox')
-      await assertBackground(hero, '/ui/studio/Comuni/infobox.svg')
-      await expect.poll(pseudoVisibility).toBe('hidden')
-      await expect(portrait).toBeVisible()
-      await expect(image).toHaveAttribute('href', originalSource!)
-
+      await chooseAsset(page, 'info panel', 'UI PNG fornita')
+      await assertBackground(hero, '/ui/reference-png/info-panel.webp')
+      if (usesSplash) await expect(splash).toHaveAttribute('data-splash-source', source!)
+      else await expect(portrait).toHaveAttribute('href', source!)
       await original(page)
       await expect(hero).toHaveCSS('background-image', background)
-      await expect.poll(pseudoVisibility).toBe('visible')
-      await expect(portrait).toBeVisible()
-      await expect(image).toHaveAttribute('href', originalSource!)
+      if (usesSplash) await expect(splash).toHaveAttribute('data-splash-source', source!)
+      else await expect(portrait).toHaveAttribute('href', source!)
     }
   })
 })

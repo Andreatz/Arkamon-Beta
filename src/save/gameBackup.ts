@@ -2,6 +2,7 @@ import { initialGameSave, isSaveRecord, normalizeGameSave, serializeGameState, t
 import { validateCatalog } from '@/interactions/schema'
 import type { InteractionCatalog, InteractionDefinition } from '@/interactions/types'
 import { normalizeBattleArchive, type BattleArchive } from '@/components/battle/battleArchiveStore'
+import { useInteractionRecoveryStatus } from '@/interactions/interactionRecovery'
 
 export const GAME_BACKUP_FORMAT = 'arkamon-campaign-backup'
 export const GAME_BACKUP_VERSION = 1
@@ -46,6 +47,8 @@ function portableCampaignData(state: GameSaveState): Record<string, unknown> {
 }
 
 export function serializeGameBackup(state: GameSaveState & { challengeContext?: unknown }, createdAt = new Date(), interactions?: InteractionDefinition[], battleArchive?: BattleArchive): string {
+  if (interactions !== undefined && useInteractionRecoveryStatus.getState().recovery)
+    throw new Error('Il catalogo interazioni richiede recupero. Esporta la campagna senza catalogo e conserva separatamente l’originale.')
   // During a challenge the visible roster is temporary. Both download entry
   // points must export the conserved campaign, never turn that roster into it.
   let campaign: unknown = serializeGameState(state)

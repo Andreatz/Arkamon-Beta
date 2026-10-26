@@ -2,47 +2,52 @@
   "id": 47,
   "name": "Weedrug",
   "type": "Erba",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-7f673e85-9460-4a37-9970-1c8fe89595d4.png",
-  "sourceMaster": "output/splash-art/originals/047-weedrug-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-4a2b6912-8da9-425f-9637-f7c4f5278179.png",
+  "sourceMaster": "output/splash-art/originals/047-weedrug-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/047-weedrug.webp",
   "runtimePath": "/backgrounds/arkamon-splash/047-weedrug.webp",
-  "promptFile": "art-source/splash/prompts/047-weedrug.txt",
+  "promptFile": "art-source/splash/prompts/047-weedrug-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 677520,
-  "sha256": "0556fb70607ad5f3ee4ea102f137c5c131566ade817804fae5afa4ec8ca4ef94",
+  "bytes": 639858,
+  "sha256": "f8305eea1f6180f1daa2f15a5c5695c32e47a3e59c8082cdb97d2b2e62844325",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
+  "generatedAt": "2026-10-26T00:32:21.760Z",
+  "reviewedAt": "2026-10-26T00:32:21.761Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.3,
+    "top": 0.255,
     "right": 0.65,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:10:07.308Z",
-  "subjectBounds": {
-    "left": 0.376,
-    "top": 0.328,
-    "right": 0.621,
-    "bottom": 0.689
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/047-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.412,
-    "top": 0.426,
-    "right": 0.575,
-    "bottom": 0.655
-  },
-  "displayScale": 1.9018,
-  "displayOffset": {
-    "x": -0.0076,
-    "y": -0.047
-  },
-  "reviewedAt": "2026-10-25T20:54:59.285Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Main large toothy mouth touches x .30. No left eye can be omitted."
+  }
 }

@@ -1,0 +1,46 @@
+{
+  "id": 3,
+  "name": "Vyrath",
+  "type": "Normale",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-16cacaad-e515-4846-a90a-c789ea164447.png",
+  "sourceMaster": "output/splash-art/originals/003-vyrath-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/003-vyrath.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/003-vyrath.webp",
+  "promptFile": "art-source/splash/prompts/003-vyrath-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 710830,
+  "sha256": "8962d2a22825460be17babf86036c47f59a882118b6537a44b32ccb33e12593f",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T11:09:43.052Z",
+  "reviewedAt": "2026-10-26T11:09:43.054Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.4,
+    "top": 0.295,
+    "right": 0.55,
+    "bottom": 0.745
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/003-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

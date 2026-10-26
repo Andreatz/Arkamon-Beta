@@ -2,47 +2,52 @@
   "id": 80,
   "name": "Cellgon",
   "type": "Oscurità",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17471-00ca-7513-a0cc-5a12e9f4cd14\\exec-8cc09a0c-4a43-4102-ad40-41004bb6acf9.png",
-  "sourceMaster": "output/splash-art/originals/080-cellgon-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-38135716-e0d8-43fa-8133-418c443f43a1.png",
+  "sourceMaster": "output/splash-art/originals/080-cellgon-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/080-cellgon.webp",
   "runtimePath": "/backgrounds/arkamon-splash/080-cellgon.webp",
-  "promptFile": "art-source/splash/prompts/080-cellgon.txt",
+  "promptFile": "art-source/splash/prompts/080-cellgon-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 628572,
-  "sha256": "8349700353ee1de9d7fbd3e3f241f9314d9fe62f10cb3c6ddb73173f116642b9",
+  "bytes": 604778,
+  "sha256": "4213fe21cfee130de320bacbc10e949c24b7afae366d6b4d87c910dc08b86e4f",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:51:11.289Z",
+  "reviewedAt": "2026-10-26T00:51:11.290Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.25,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:07:49.546Z",
-  "subjectBounds": {
-    "left": 0.38,
-    "top": 0.255,
-    "right": 0.61,
-    "bottom": 0.757
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/080-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.422,
-    "top": 0.382,
-    "right": 0.565,
-    "bottom": 0.69
-  },
-  "displayScale": 1.6883,
-  "displayOffset": {
-    "x": -0.009,
-    "y": -0.0308
-  },
-  "reviewedAt": "2026-10-25T20:54:59.319Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

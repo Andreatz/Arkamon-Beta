@@ -33,12 +33,12 @@ async function fixture(t) {
 
 test('publishes only reviewed records in a minimal runtime catalog', async t => {
   const f = await fixture(t)
-  await f.add()
+  const record = await f.add()
   await f.add({ id: 1, name: 'Vyrath', status: 'generated-needs-ui-review' })
   // An unreviewed record is excluded before attempting to read its missing artwork.
   await f.writeStatus({ id: 9, name: 'Felyss', status: 'generated-needs-ui-review' })
   const result = await buildSplashArtworkCatalog({ root: f.root })
-  assert.deepEqual(result.assets, [{ speciesId: 5, src: '/backgrounds/arkamon-splash/005-darklaw.webp', label: 'Illustrazione di Darklaw', objectPosition: '50% 50%', aspectRatio: '16 / 9', subjectBounds: bounds }])
+  assert.deepEqual(result.assets, [{ speciesId: 5, src: '/backgrounds/arkamon-splash/005-darklaw.webp', sha256: record.sha256, label: 'Illustrazione di Darklaw', objectPosition: '50% 50%', aspectRatio: '16 / 9', subjectBounds: bounds }])
   assert.equal(result.skipped.length, 2)
   assert.deepEqual(JSON.parse(await fs.readFile(f.output, 'utf8')), result.assets)
 })
@@ -59,6 +59,26 @@ test('rejects artwork bytes changed after review without replacing the prior cat
   await fs.appendFile(path.join(f.root, record.outputFile), 'changed-after-review')
   await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /SHA256 differs/)
   assert.deepEqual(await fs.readFile(f.output), before)
+})
+
+test('an approved replacement painting changes the catalog fingerprint even with identical paths and bounds', async t => {
+  const f = await fixture(t), record = await f.add({ status: 'approved-visual' })
+  const first = await buildSplashArtworkCatalog({ root: f.root })
+  const before = await fs.readFile(f.output)
+  const replacement = await sharp({ create: { width: record.width, height: record.height, channels: 4, background: '#bc5c29' } }).webp().toBuffer()
+  const replacementSha256 = digest(replacement)
+  assert.notEqual(replacementSha256, record.sha256)
+  await fs.writeFile(path.join(f.root, record.outputFile), replacement)
+  // Review approves the replacement bytes; URL, dimensions, label and measured
+  // source composition remain identical. Its proof must still become stale.
+  await f.writeStatus({ ...record, sha256: replacementSha256.toUpperCase(), bytes: replacement.length })
+  await assert.rejects(buildSplashArtworkCatalog({ root: f.root, check: true }), /catalog is stale/)
+  assert.deepEqual(await fs.readFile(f.output), before)
+  const second = await buildSplashArtworkCatalog({ root: f.root })
+  const after = await fs.readFile(f.output)
+  assert.deepEqual(second.assets[0], { ...first.assets[0], sha256: replacementSha256 })
+  assert.notEqual(after.toString(), before.toString())
+  assert.notEqual(digest(after), digest(before))
 })
 
 test('requires a real decodable 16:9 file with matching reviewed dimensions', async t => {
@@ -88,10 +108,10 @@ test('hero-focus publishes the real full silhouette and protects only the face a
   await f.add()
   const subjectBounds = { left: .12, top: .08, right: .94, bottom: .98 }
   const focusBounds = { left: .4, top: .34, right: .58, bottom: .64 }
-  await f.add({ id: 4, name: 'Vyrath', compositionPolicy: 'hero-focus', subjectBounds, focusBounds, displayScale: 1.4 })
+  const record = await f.add({ id: 4, name: 'Vyrath', compositionPolicy: 'hero-focus', subjectBounds, focusBounds, displayScale: 1.4 })
   const { assets } = await buildSplashArtworkCatalog({ root: f.root })
   assert.deepEqual(assets.map(asset => asset.speciesId), [4, 5])
-  assert.deepEqual(assets[0], { speciesId: 4, src: '/backgrounds/arkamon-splash/004-vyrath.webp', label: 'Illustrazione di Vyrath', objectPosition: '50% 50%', aspectRatio: '16 / 9', subjectBounds, compositionPolicy: 'hero-focus', focusBounds, displayScale: 1.4 })
+  assert.deepEqual(assets[0], { speciesId: 4, src: '/backgrounds/arkamon-splash/004-vyrath.webp', sha256: record.sha256, label: 'Illustrazione di Vyrath', objectPosition: '50% 50%', aspectRatio: '16 / 9', subjectBounds, compositionPolicy: 'hero-focus', focusBounds, displayScale: 1.4 })
   assert.equal(Object.hasOwn(assets[1], 'compositionPolicy'), false)
   assert.equal(Object.hasOwn(assets[1], 'focusBounds'), false)
 })
@@ -125,6 +145,83 @@ test('hero-focus still requires the full real silhouette inside the canvas', asy
   await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /subjectBounds must remain inside/)
   await f.writeStatus({ ...record, subjectBounds: { left: .1, top: .1, right: 1.01, bottom: .95 } })
   await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /subjectBounds must remain inside/)
+})
+
+test('full-canvas-focus preserves honest measurements outside the fixed guide without display compensation', async t => {
+  const f = await fixture(t)
+  const subjectBounds = { left: .12, top: .04, right: .94, bottom: .98 }
+  const focusBounds = { left: .285, top: .2, right: .67, bottom: .85 }
+  const record = await f.add({ compositionPolicy: 'full-canvas-focus', subjectBounds, focusBounds })
+  const { assets } = await buildSplashArtworkCatalog({ root: f.root })
+  assert.deepEqual(assets[0], {
+    speciesId: 5, src: '/backgrounds/arkamon-splash/005-darklaw.webp', sha256: record.sha256, label: 'Illustrazione di Darklaw',
+    objectPosition: '50% 50%', aspectRatio: '16 / 9', subjectBounds, compositionPolicy: 'full-canvas-focus', focusBounds,
+  })
+  assert.equal(Object.hasOwn(assets[0], 'displayScale'), false)
+  assert.equal(Object.hasOwn(assets[0], 'displayOffset'), false)
+  // This explicit policy changes only source measurement acceptance. Older
+  // policies keep their existing guide; browser QA decides whether this fits UI.
+  await f.writeStatus({ ...record, compositionPolicy: 'hero-focus' })
+  await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /projected critical face and torso must fit/)
+  await f.writeStatus({ ...record, compositionPolicy: undefined })
+  await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /complete silhouette must fit/)
+})
+
+test('full-canvas-focus requires a complete finite nonempty normalized focus rectangle', async t => {
+  const f = await fixture(t)
+  const focusBounds = { left: .285, top: .25, right: .63, bottom: .75 }
+  const record = await f.add({ compositionPolicy: 'full-canvas-focus', subjectBounds: { left: 0, top: 0, right: 1, bottom: 1 } })
+  for (const missing of [undefined, null, []]) {
+    await f.writeStatus({ ...record, focusBounds: missing })
+    await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /reviewed focusBounds are required/)
+  }
+  for (const malformed of [{ left: .3, top: .3, right: .6 }, { ...focusBounds, right: '0.63' }, { ...focusBounds, top: Infinity }]) {
+    await f.writeStatus({ ...record, focusBounds: malformed })
+    await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /focusBounds must contain four finite normalized numbers/)
+  }
+  for (const empty of [{ ...focusBounds, left: focusBounds.right }, { ...focusBounds, bottom: focusBounds.top - .01 }]) {
+    await f.writeStatus({ ...record, focusBounds: empty })
+    await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /focusBounds must describe a nonempty rectangle/)
+  }
+  for (const clipped of [{ left: -.001 }, { top: -.001 }, { right: 1.001 }, { bottom: 1.001 }]) {
+    await f.writeStatus({ ...record, focusBounds: { ...focusBounds, ...clipped } })
+    await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /focusBounds must remain inside the normalized canvas/)
+  }
+})
+
+test('full-canvas-focus keeps the measured focus inside the subject on every edge', async t => {
+  const f = await fixture(t)
+  const subjectBounds = { left: .285, top: .2, right: .67, bottom: .85 }
+  const record = await f.add({ compositionPolicy: 'full-canvas-focus', subjectBounds, focusBounds: subjectBounds })
+  assert.deepEqual((await buildSplashArtworkCatalog({ root: f.root })).assets[0].focusBounds, subjectBounds)
+  for (const outside of [{ left: .284 }, { top: .199 }, { right: .671 }, { bottom: .851 }]) {
+    await f.writeStatus({ ...record, focusBounds: { ...subjectBounds, ...outside } })
+    await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /focusBounds must be contained in the full subjectBounds/)
+  }
+})
+
+test('full-canvas-focus still rejects missing or clipped subject measurements', async t => {
+  const f = await fixture(t)
+  const record = await f.add({ compositionPolicy: 'full-canvas-focus', focusBounds: { left: .35, top: .3, right: .6, bottom: .7 } })
+  await f.writeStatus({ ...record, subjectBounds: undefined })
+  await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /reviewed subjectBounds are required/)
+  for (const clipped of [{ left: -.001 }, { top: -.001 }, { right: 1.001 }, { bottom: 1.001 }]) {
+    await f.writeStatus({ ...record, subjectBounds: { left: .1, top: .1, right: .9, bottom: .95, ...clipped } })
+    await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /subjectBounds must remain inside the normalized canvas/)
+  }
+})
+
+test('full-canvas-focus forbids every explicit displayScale or displayOffset, including identity values', async t => {
+  const f = await fixture(t)
+  const record = await f.add({ compositionPolicy: 'full-canvas-focus', subjectBounds: { left: .1, top: .1, right: .9, bottom: .95 }, focusBounds: { left: .35, top: .3, right: .6, bottom: .7 } })
+  for (const transform of [
+    { displayScale: 1 }, { displayScale: .5 }, { displayScale: 1.4 }, { displayScale: null },
+    { displayOffset: { x: 0, y: 0 } }, { displayOffset: { x: -.02, y: .03 } }, { displayOffset: null },
+    { displayScale: 1, displayOffset: { x: 0, y: 0 } },
+  ]) {
+    await f.writeStatus({ ...record, ...transform })
+    await assert.rejects(buildSplashArtworkCatalog({ root: f.root }), /full-canvas-focus cannot use displayScale or displayOffset compensation/)
+  }
 })
 
 test('displayScale is optional with default1 and accepts only finite values from0.5 to2.5', async t => {

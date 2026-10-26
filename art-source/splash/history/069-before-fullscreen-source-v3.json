@@ -1,0 +1,52 @@
+{
+  "id": 69,
+  "name": "Lickard",
+  "type": "Acqua",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-4976df47-ec64-485c-a5c2-86481951ac1a.png",
+  "sourceMaster": "output/splash-art/originals/069-lickard-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/069-lickard.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/069-lickard.webp",
+  "promptFile": "art-source/splash/prompts/069-lickard-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 711854,
+  "sha256": "31560d1d138378a2a0a7c61fa310789bae31afd51a7ab89bff1e1c7e29de6ba8",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:46:33.235Z",
+  "reviewedAt": "2026-10-26T00:46:33.237Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.19,
+    "top": 0.08,
+    "right": 0.71,
+    "bottom": 0.96
+  },
+  "displayScale": 0.64659,
+  "displayOffset": {
+    "x": 0.012329499999999993,
+    "y": 0.0020681999999999645
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/069-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

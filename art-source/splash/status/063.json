@@ -2,47 +2,52 @@
   "id": 63,
   "name": "Fluffet",
   "type": "Normale",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-8dfaad0f-2755-4036-8002-8ced45624c43.png",
-  "sourceMaster": "output/splash-art/originals/063-fluffet-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-13f0ec61-2715-4964-bdbf-123f9110e226.png",
+  "sourceMaster": "output/splash-art/originals/063-fluffet-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/063-fluffet.webp",
   "runtimePath": "/backgrounds/arkamon-splash/063-fluffet.webp",
-  "promptFile": "art-source/splash/prompts/063-fluffet.txt",
+  "promptFile": "art-source/splash/prompts/063-fluffet-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 650484,
-  "sha256": "da105ae3083fae2dd3bdb4da8dd8eaf806170819d6262f0332131c3d62189a1b",
+  "bytes": 580618,
+  "sha256": "7ad53dcd24f5edd9b7a52420f9280ced85d0c23474652efa59b628069a065f1c",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:46:31.848Z",
+  "reviewedAt": "2026-10-26T00:46:31.849Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.285,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:29:13.688Z",
-  "subjectBounds": {
-    "left": 0.374,
-    "top": 0.359,
-    "right": 0.628,
-    "bottom": 0.762
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/063-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.406,
-    "top": 0.447,
-    "right": 0.579,
-    "bottom": 0.72
-  },
-  "displayScale": 1.7919,
-  "displayOffset": {
-    "x": -0.0066,
-    "y": -0.1196
-  },
-  "reviewedAt": "2026-10-25T20:54:59.307Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

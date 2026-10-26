@@ -2,47 +2,52 @@
   "id": 39,
   "name": "RS-219",
   "type": "Normale",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-24afe2b3-34ca-4a7b-bfee-7a4262ebc091.png",
-  "sourceMaster": "output/splash-art/originals/039-rs-219-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17579-2baa-7073-88ce-755ca5745e81\\exec-1eb88246-28e4-4da7-a25e-ec3323f5292a.png",
+  "sourceMaster": "output/splash-art/originals/039-rs-219-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/039-rs-219.webp",
   "runtimePath": "/backgrounds/arkamon-splash/039-rs-219.webp",
-  "promptFile": "art-source/splash/prompts/039-rs-219.txt",
+  "promptFile": "art-source/splash/prompts/039-rs-219-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 707856,
-  "sha256": "3185e2acc64b681d7a5fc911f7fc50f2f4dbf30dbb3ba835d2be2b7eea786724",
+  "bytes": 652944,
+  "sha256": "2b761356af2844892dc02a0a52f2d8ff277c52334d579e8323f069a7a9c63666",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:29:07.833Z",
+  "generatedAt": "2026-10-26T00:02:16.833Z",
+  "reviewedAt": "2026-10-26T00:02:16.834Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.384,
-    "top": 0.4,
-    "right": 0.599,
-    "bottom": 0.775
+    "left": 0.18,
+    "top": 0.04,
+    "right": 0.75,
+    "bottom": 0.95
   },
-  "reviewedAt": "2026-10-25T20:54:59.276Z",
-  "compositionPolicy": "hero-focus",
   "focusBounds": {
-    "left": 0.416,
-    "top": 0.435,
-    "right": 0.556,
-    "bottom": 0.739
+    "left": 0.285,
+    "top": 0.285,
+    "right": 0.615,
+    "bottom": 0.79
   },
-  "displayScale": 1.7105,
-  "displayOffset": {
-    "x": 0.0039,
-    "y": -0.1188
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/039-before-hero-source-v2.json"
   },
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "White face cheeks reach x .285; both eyes and muzzle are within approximately x .31-.58. Dome upper rim is decorative boundary, not an eye."
+  }
 }

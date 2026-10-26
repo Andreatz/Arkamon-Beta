@@ -1,11 +1,12 @@
 import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import { readFile } from 'node:fs/promises'
+import { MENU_SVG_ARTWORK_ENABLED } from '../src/player-ui/uiAppearancePolicy'
 
 async function tools(page: Page, tab: string) {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita' })
-  await dialog.getByRole('button', { name: `Apri ${tab === 'Diario' ? 'Registro' : tab}`, exact: true }).click()
+  await dialog.getByRole('button', { name: `Apri ${tab === 'Diario' ? 'Registro' : tab === 'Backup' ? 'Salvataggio' : tab}`, exact: true }).click()
   if (tab === 'Diario') await dialog.getByRole('navigation', { name: 'Archivi del registro', exact: true }).getByRole('button', { name: 'Diario', exact: true }).click()
   return dialog
 }
@@ -14,7 +15,11 @@ test('preferences persist independently and dialog is keyboard accessible', asyn
   const errors: string[] = []; page.on('pageerror', (error) => errors.push(error.message))
   const dialog = await tools(page, 'Impostazioni')
   await dialog.getByRole('checkbox', { name: 'Audio attivo', exact: true }).check()
-  await expect(dialog.locator('.game-audio-toggle img')).toHaveAttribute('src', /\/ui\/studio\/Scuro\/toggle-on\.svg$/)
+  if (MENU_SVG_ARTWORK_ENABLED) await expect(dialog.locator('.game-audio-toggle img')).toHaveAttribute('src', /\/ui\/studio\/Scuro\/toggle-on\.svg$/)
+  else {
+    await expect(dialog.locator('.game-audio-toggle img')).toHaveCount(0)
+    await expect(dialog.getByRole('checkbox', { name: 'Audio attivo', exact: true })).toBeVisible()
+  }
   await dialog.getByLabel('Velocità animazioni').selectOption('fast')
   await dialog.getByLabel('Movimento ridotto').selectOption('on')
   await dialog.getByRole('slider', { name: 'Volume musica' }).fill('25')

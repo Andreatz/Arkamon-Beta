@@ -1,0 +1,52 @@
+{
+  "id": 24,
+  "name": "Grimbolt",
+  "type": "Elettro",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-3e0d0dde-db61-4a88-a050-994dde5ea969.png",
+  "sourceMaster": "output/splash-art/originals/024-grimbolt-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/024-grimbolt.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/024-grimbolt.webp",
+  "promptFile": "art-source/splash/prompts/024-grimbolt.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 593532,
+  "sha256": "27e6518899442b87b194a62dd0414b216d419387a2f0ad6c40f77b1b7dd6a560",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:31:44.383Z",
+  "subjectBounds": {
+    "left": 0.42,
+    "top": 0.325,
+    "right": 0.615,
+    "bottom": 0.69
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope",
+    "notes": "All wings/crests/feet/tail and intrinsic sparks fit. Exact official form retained; no live UI validation claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.434,
+    "top": 0.434,
+    "right": 0.565,
+    "bottom": 0.657
+  },
+  "displayScale": 2.3318,
+  "displayOffset": {
+    "x": -0.0188,
+    "y": -0.0761
+  },
+  "reviewedAt": "2026-10-25T20:54:59.268Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

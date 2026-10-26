@@ -36,7 +36,7 @@ async function protectedStorage(page: Page) {
 
 test.describe('isolated real-screen UI Studio preview', () => {
   test.skip(({ isMobile }) => isMobile, 'The desktop design canvas is fixed at 1920 × 1080.')
-  test('all 22 real screens register editable elements without writing the campaign or its backups', async ({ page }) => {
+  test('all current real screens register editable elements without writing the campaign or its backups', async ({ page }) => {
     test.setTimeout(180_000)
     const errors: string[] = []
     page.on('pageerror', error => errors.push(error.message))
@@ -76,7 +76,7 @@ test.describe('isolated real-screen UI Studio preview', () => {
       const item = (await lastSnapshot(page, 'titolo'))?.elements.find(element => element.id === 'logo')
       return item ? Math.round(item.rect.x * 100) / 100 : -1
     }).toBe(25)
-    await expect(preview.locator(`[data-ui-id="${command.id}"]`)).toHaveText('Comando dimostrativo')
+    await expect(preview.locator(`[data-ui-id="${command.id}"]`)).toContainText('Comando dimostrativo')
     await expect(preview.locator(`[data-ui-id="${command.id}"]`)).toHaveCSS('font-size', '28px')
     await expect(preview.locator('[data-ui-runtime-owned="background"]')).toHaveCSS('opacity', '0.65')
     await expect(preview.locator('[data-ui-id="demo-label"]')).toHaveText('Layout di esempio')
@@ -86,13 +86,13 @@ test.describe('isolated real-screen UI Studio preview', () => {
     await sendDesign(page, defaultDesign)
     await expect(logo).toHaveCSS('opacity', '1')
     await expect(preview.locator('[data-ui-id="demo-label"]')).toHaveCount(0)
-    await expect(preview.locator(`[data-ui-id="${command.id}"]`)).not.toHaveText('Comando dimostrativo')
+    await expect(preview.locator(`[data-ui-id="${command.id}"]`)).not.toContainText('Comando dimostrativo')
     expect(await protectedStorage(page)).toEqual(before)
   })
   test('structural IDs and original sprite/text restoration survive a real React species update', async ({ page }) => {
     await launchStudio(page)
     const before = await protectedStorage(page)
-    await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('squadra')
+    await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('analisi')
     const preview = page.frameLocator('iframe')
     const name = preview.locator('.pu-hero-caption h2')
     const art = preview.locator('.pu-hero .pu-creature-art')
@@ -100,9 +100,9 @@ test.describe('isolated real-screen UI Studio preview', () => {
     await expect(art).toHaveAttribute('data-ui-id', /.+/)
     const nameId = (await name.getAttribute('data-ui-id'))!, artId = (await art.getAttribute('data-ui-id'))!
     const defaultDesign: UiDesignDocument = { version: 1, typography: { body: { family: 'norwester' }, heading: { family: 'norwester' }, button: { family: 'norwester' } }, screens: {}, media: [] }
-    await sendDesign(page, { ...defaultDesign, screens: { squadra: { elements: { [nameId]: { text: 'Nome scenico' }, [artId]: { asset: '/ui/player-kit/icon-home.svg', fit: 'contain' } }, layers: [] } } })
+    await sendDesign(page, { ...defaultDesign, screens: { analisi: { elements: { [nameId]: { text: 'Nome scenico' }, [artId]: { asset: '/ui/reference-png/search-icon.webp', fit: 'contain' } }, layers: [] } } })
     await expect(name).toHaveText('Nome scenico')
-    await expect(art.locator('image')).toHaveAttribute('href', /icon-home\.svg$/)
+    await expect(art.locator('image')).toHaveAttribute('href', /search-icon\.webp$/)
     const frame = page.frames().find(frame => frame.url().includes('uiStudioPreview=1'))!
     await frame.evaluate(async () => {
       const resources = performance.getEntriesByType('resource').map(entry => entry.name).filter(url => /\/src\/store\/gameStore\.ts(?:\?|$)/.test(url))
@@ -113,7 +113,7 @@ test.describe('isolated real-screen UI Studio preview', () => {
     })
     await expect(preview.locator('.pu-player-switch')).toContainText('Nome giocatore aggiornato')
     await expect(name).toHaveText('Nome scenico')
-    await expect(art.locator('image')).toHaveAttribute('href', /icon-home\.svg$/)
+    await expect(art.locator('image')).toHaveAttribute('href', /search-icon\.webp$/)
     await expect(name).toHaveAttribute('data-ui-id', nameId)
     await expect(art).toHaveAttribute('data-ui-id', artId)
     await sendDesign(page, defaultDesign)

@@ -1,0 +1,52 @@
+{
+  "id": 44,
+  "name": "Felvex",
+  "type": "Oscurità",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-93836d5b-5800-42d9-981c-c52bb35260f7.png",
+  "sourceMaster": "output/splash-art/originals/044-felvex-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/044-felvex.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/044-felvex.webp",
+  "promptFile": "art-source/splash/prompts/044-felvex-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 649482,
+  "sha256": "7288a07a528f9dfe26042fb686e708557ac889093c0288c7a3b227e9854afa08",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:32:19.515Z",
+  "reviewedAt": "2026-10-26T00:32:19.515Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.26,
+    "top": 0.12,
+    "right": 0.68,
+    "bottom": 0.94
+  },
+  "displayScale": 0.693902,
+  "displayOffset": {
+    "x": 0.0008170599999999806,
+    "y": -0.0058170600000000405
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/044-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

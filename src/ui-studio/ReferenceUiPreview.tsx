@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { ARKAMON_SPLASH_ARTWORK } from '@/player-ui/reference/splashArtwork'
 import { getPokemon, POKEMON_BASE } from '@/data'
 import './referenceUiPreview.css'
@@ -9,6 +9,19 @@ type Screen = typeof screens[number][0]
 export function ReferenceUiPreview() {
   const [screen,setScreen] = useState<Screen>(()=>screens.find(([id])=>id === new URLSearchParams(window.location.search).get('screen'))?.[0] ?? 'menu')
   const [splashId,setSplashId] = useState(()=>Number(new URLSearchParams(window.location.search).get('splash')) || 5)
+  const stageRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const stage = stageRef.current
+    if (!stage) return
+    // Scale the complete preview, including its interface. Its logical viewport
+    // stays1920×1080, matching the fullscreen layout instead of cropping the art.
+    const resize = new ResizeObserver(([entry]) => {
+      const scale = Math.min(entry.contentRect.width / 1920, entry.contentRect.height / 1080)
+      stage.style.setProperty('--reference-preview-scale', String(scale))
+    })
+    resize.observe(stage)
+    return () => resize.disconnect()
+  }, [])
   const showSplash = (screen === 'squadra' || screen === 'arkadex') && splashArtworks.length > 0
   const preview = `${import.meta.env.BASE_URL}?uiStudioPreview=1&uiConceptFluid=1&uiConcept=aurora&screen=${screen}${showSplash ? `&splash=${splashId}` : ''}`
   return <main className="reference-preview-lab">
@@ -19,7 +32,11 @@ export function ReferenceUiPreview() {
       const form=POKEMON_BASE.filter(entry=>entry.nome===name).findIndex(entry=>entry.id===art.speciesId)+1
       return <option key={art.speciesId} value={art.speciesId}>N° {String(art.speciesId).padStart(3,'0')} · {name} · Forma {form}</option>
     })}</select></label>}
-    <iframe key={`${screen}-${showSplash ? splashId : ''}`} src={preview} title={`Nuova UI Arkamon: ${screens.find(([id])=>id===screen)?.[1]}`} />
+    <div ref={stageRef} className={`reference-preview-stage${showSplash ? ' is-landscape' : ''}`}>
+      <div className="reference-preview-fit">
+        <iframe key={`${screen}-${showSplash ? splashId : ''}`} src={preview} title={`Nuova UI Arkamon: ${screens.find(([id])=>id===screen)?.[1]}`} />
+      </div>
+    </div>
     <footer><span>Interfaccia ispirata ai tuoi riferimenti · Sfondi attuali provvisori</span><span>Anteprima interattiva con dati dimostrativi</span></footer>
   </main>
 }

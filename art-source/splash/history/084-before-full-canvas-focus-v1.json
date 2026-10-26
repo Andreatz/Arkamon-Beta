@@ -1,0 +1,46 @@
+{
+  "id": 84,
+  "name": "Psycroak",
+  "type": "Psico",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-d64a20fe-f431-42ba-bee9-aee6f66423ec.png",
+  "sourceMaster": "output/splash-art/originals/084-psycroak-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 940
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/084-psycroak.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/084-psycroak.webp",
+  "promptFile": "art-source/splash/prompts/084-psycroak-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 815850,
+  "sha256": "469b26b1f2cd52fbb392e2a41c5c20f2c85d00ac3b58abe8ccce2f8938687164",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T11:09:45.639Z",
+  "reviewedAt": "2026-10-26T11:09:45.640Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.354,
+    "top": 0.274,
+    "right": 0.65,
+    "bottom": 0.79
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/084-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

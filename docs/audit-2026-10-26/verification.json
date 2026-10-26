@@ -1,0 +1,326 @@
+{
+  "date": "2026-10-26",
+  "repository": "C:/Users/andre/Documents/Codex/2026-10-19/https-github-com-andreatz-arkamon-beta/checkout",
+  "base_head": "e7a40dc1",
+  "scope": "Audit locale del progetto corrente, comprese UI e splash già modificate; materiale approvato conservato. Nessuna verifica di servizi di produzione.",
+  "confirmed_findings_fixed": 22,
+  "publication": {
+    "commit": false,
+    "push": false,
+    "merge": false,
+    "deploy": false
+  },
+  "unit": {
+    "report": "output/audit-2026-10-26/vitest-audit-final.json",
+    "passed": 4175,
+    "failed": 0,
+    "total": 4175,
+    "files": 173,
+    "workers": 4,
+    "success": true
+  },
+  "browser": {
+    "full_run": {
+      "report": "output/audit-2026-10-26/e2e-final.json",
+      "passed": 367,
+      "failed": 5,
+      "skipped": 100,
+      "flaky": 0,
+      "duration_ms": 1463887,
+      "total": 472,
+      "note": "Un giro generale: 367 riusciti, 100 saltati dalle condizioni delle spec, 5 falliti. Le riprove successive sono separate; non si dichiara un unico giro integralmente verde."
+    },
+    "rechecks": [
+      {
+        "failure": "legacy-wild-roster: attesa di un turno aggiuntivo lecito e riserva robusta rispetto ai dadi del percorso",
+        "result": {
+          "report": "output/audit-2026-10-26/legacy-wild-final.json",
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0,
+          "flaky": 0,
+          "duration_ms": 19166
+        }
+      },
+      {
+        "failure": "roadmap-regia 1920: attendere il rendering asincrono delle strade",
+        "report": "output/audit-2026-10-26/final-rechecks.json",
+        "passed_relevant_cases": 2,
+        "note": "Questo report include anche il fallimento PNG successivamente corretto; non è interamente verde."
+      },
+      {
+        "failure": "splash-fullscreen nel profilo mobile: impostare il viewport desktop nella prova del canvas desktop",
+        "result": {
+          "report": "output/audit-2026-10-26/fullscreen-mobile-recheck.json",
+          "passed": 4,
+          "failed": 0,
+          "skipped": 0,
+          "flaky": 0,
+          "duration_ms": 23910
+        }
+      },
+      {
+        "failure": "Studio PNG fermo su Caricamento: limitate le anteprime della libreria a 24 per pagina",
+        "result": {
+          "report": "output/audit-2026-10-26/studio-final.json",
+          "passed": 19,
+          "failed": 0,
+          "skipped": 0,
+          "flaky": 0,
+          "duration_ms": 105268
+        }
+      }
+    ],
+    "desktop_ui": {
+      "report": "output/audit-2026-10-26/ui-stable.json",
+      "passed": 31,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "duration_ms": 171415
+    },
+    "mobile_splash": {
+      "report": "output/audit-2026-10-26/splash-mobile-final.json",
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "duration_ms": 79213
+    },
+    "studio_after_final_change": {
+      "report": "output/audit-2026-10-26/studio-final.json",
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "duration_ms": 105268
+    },
+    "unresolved_failures_from_full_run": 0,
+    "full_run_repeated_after_final_studio_change": false,
+    "skipped_note": "Le 100 esclusioni dipendono dal profilo/contratto delle spec e dal servizio ospite esterno non configurato; non sono test riusciti."
+  },
+  "compiled_build": {
+    "log": "output/audit-2026-10-26/build-audit-final.log",
+    "success": true,
+    "typescript": "passed",
+    "bounded_web_build": true,
+    "native_clips": 455,
+    "local_package_mib": 784.1,
+    "media_revision": "11eb8edfcaad86d2d6d59fcdfbc77682d1dc8367",
+    "initial_chunk_warning": {
+      "minified_kb": 864.48,
+      "gzip_kb": 145.81
+    },
+    "real_management_views": {
+      "report": "output/audit-2026-10-26/compiled/results.json",
+      "passed": true,
+      "results": [
+        {
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "screen": "squadra",
+          "h": 612,
+          "sh": 612,
+          "w": 1314,
+          "sw": 1314
+        },
+        {
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "screen": "deposito",
+          "h": 612,
+          "sh": 612,
+          "w": 1314,
+          "sw": 1314
+        },
+        {
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "screen": "arkadex",
+          "h": 612,
+          "sh": 612,
+          "w": 1314,
+          "sw": 1314
+        },
+        {
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "screen": "analisi",
+          "h": 612,
+          "sh": 612,
+          "w": 1314,
+          "sw": 1314
+        },
+        {
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "screen": "borsa",
+          "h": 612,
+          "sh": 612,
+          "w": 1314,
+          "sw": 1314
+        },
+        {
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "screen": "partita",
+          "h": 612,
+          "sh": 612,
+          "w": 1314,
+          "sw": 1314
+        },
+        {
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "screen": "squadra",
+          "h": 898,
+          "sh": 898,
+          "w": 1856,
+          "sw": 1856
+        },
+        {
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "screen": "deposito",
+          "h": 898,
+          "sh": 898,
+          "w": 1856,
+          "sw": 1856
+        },
+        {
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "screen": "arkadex",
+          "h": 898,
+          "sh": 898,
+          "w": 1856,
+          "sw": 1856
+        },
+        {
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "screen": "analisi",
+          "h": 898,
+          "sh": 898,
+          "w": 1856,
+          "sw": 1856
+        },
+        {
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "screen": "borsa",
+          "h": 898,
+          "sh": 898,
+          "w": 1856,
+          "sw": 1856
+        },
+        {
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "screen": "partita",
+          "h": 898,
+          "sh": 898,
+          "w": 1856,
+          "sw": 1856
+        }
+      ],
+      "errors": []
+    },
+    "studio_after_final_change": {
+      "report": "output/audit-2026-10-26/compiled/studio-results-final.json",
+      "passed": true,
+      "paginatedLibrary": true,
+      "globalSearch": "109 oniros",
+      "pngAppliedAndReloaded": true,
+      "timings": [
+        181,
+        123
+      ],
+      "errors": [],
+      "all_images_loaded": true,
+      "visible_menu_frame_geometry_count": 9,
+      "image_geometry_report": "output/audit-2026-10-26/compiled/studio-image-geometry.json"
+    },
+    "independent_paint_check": {
+      "report": "output/audit-2026-10-26/compiled/menu-paint-diagnostic.json",
+      "contexts": 2,
+      "decoded_images_per_context": 28,
+      "broken_images": 0,
+      "menu_frames_per_context": 9,
+      "medals_per_context": 16,
+      "javascript_errors": 0,
+      "css_changes_required": false
+    }
+  },
+  "other_checks": {
+    "npm_audit": {
+      "report": "output/audit-2026-10-26/npm-audit-final.json",
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependency_security_tests": {
+      "passed": 9,
+      "failed": 0,
+      "log": "output/audit-2026-10-26/security-final.log"
+    },
+    "provided_assets_and_splash_tests": {
+      "passed": 57,
+      "failed": 0,
+      "log": "output/audit-2026-10-26/ui-assets-final.log"
+    },
+    "vfx_catalog": {
+      "entries": 276,
+      "success": true,
+      "log": "output/audit-2026-10-26/catalog-final.log"
+    },
+    "independent_gameplay_invariants": {
+      "report": "output/audit-2026-10-26/gameplay-invariants.json",
+      "team_swap_combinations": 700,
+      "attack_calculations": 3680,
+      "forms": 110
+    },
+    "whitespace_diff_check": "passed, CRLF-aware"
+  },
+  "remaining_planning_items": [
+    "Ridurre e misurare il bundle iniziale sui dispositivi meno potenti.",
+    "Separare gradualmente responsabilita dello store, scene di battaglia e cascata CSS.",
+    "Rafforzare vincoli di dominio oggi protetti anche dalla UI; non dimostrato un ingresso UI che aggiri scambiaSlot.",
+    "Associare controlli e pubblicazione alla stessa revisione; protezioni remote del ramo non verificate.",
+    "Verificare separatamente il pacchetto Tauri, il peso del public e la politica CSP.",
+    "Prove successive con servizio ospite isolato, dispositivi fisici, OBS e sospensioni lunghe."
+  ],
+  "evidence_limitations": [
+    "La lettura approfondita dei percorsi critici e le suite non equivalgono a una lettura manuale di ogni riga generata o a una prova di assenza assoluta di bug.",
+    "Il giro browser generale e le riprove sono esecuzioni distinte; non sommati in un risultato artificiale 472/472.",
+    "Le 12 viste gestionali compilate precedono la sola ultima modifica della paginazione Studio; la prova Studio compilata e successiva al rebuild finale.",
+    "Il test delle invarianti non e una campagna completa; nessuna scrittura a sistemi di produzione."
+  ]
+}

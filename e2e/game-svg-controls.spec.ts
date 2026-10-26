@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
+import { MENU_SVG_ARTWORK_ENABLED } from '../src/player-ui/uiAppearancePolicy'
 
 test.use({ viewport: { width: 1920, height: 1080 }, reducedMotion: 'no-preference' })
 test.beforeEach(async ({}, info) => {
@@ -65,20 +66,20 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
   return svgResponses
 }
 
-/** Checks the frame the browser paints, and the successful SVG response that supplied it. */
-async function assertSvgButton(button: Locator, responses: SvgResponses, tone: 'default' | 'primary' = 'default', disabled = false) {
+/** Checks current CSS commands or enabled authored SVG frames, keeping action and geometry coverage. */
+async function assertCommandButton(button: Locator, responses: SvgResponses, tone: 'default' | 'primary' = 'default', disabled = false) {
   await expect(button).toBeVisible()
   await expect(button).toHaveAttribute('data-game-button', tone)
   if (disabled) await expect(button).toBeDisabled()
   else await expect(button).toBeEnabled()
   const id = tone === 'primary' ? 'selected' : 'command'
   const proof = await button.evaluate(element => {
-    const frame = element.querySelector<HTMLElement>('.game-button-frame,.rpg-frame')!
-    const frameStyle = getComputedStyle(frame), style = getComputedStyle(element), bound = element.getBoundingClientRect()
-    const frameBound = frame.getBoundingClientRect()
-    return { tag: element.tagName, label: element.textContent?.trim(), source: frameStyle.borderImageSource,
-      slice: frameStyle.borderImageSlice, repeat: frameStyle.borderImageRepeat, font: style.fontFamily,
-      decorative: frame.getAttribute('aria-hidden'), disabled: (element as HTMLButtonElement).disabled,
+    const frame = element.querySelector<HTMLElement>('.game-button-frame,.rpg-frame')
+    const frameStyle = frame ? getComputedStyle(frame) : null, style = getComputedStyle(element), bound = element.getBoundingClientRect()
+    const frameBound = frame?.getBoundingClientRect() ?? bound
+    return { tag: element.tagName, label: element.textContent?.trim(), hasFrame: !!frame, background: style.backgroundColor, backgroundImage: style.backgroundImage, borderWidth: style.borderTopWidth, source: frameStyle?.borderImageSource,
+      slice: frameStyle?.borderImageSlice, repeat: frameStyle?.borderImageRepeat, font: style.fontFamily, localMap: !!element.closest('.local-map-scene'),
+      decorative: frame?.getAttribute('aria-hidden'), disabled: (element as HTMLButtonElement).disabled,
       bound: { left: bound.left, top: bound.top, right: bound.right, bottom: bound.bottom, width: bound.width, height: bound.height },
       frameBound: { left: frameBound.left, top: frameBound.top, right: frameBound.right, bottom: frameBound.bottom },
       viewport: { width: innerWidth, height: innerHeight },
@@ -86,12 +87,19 @@ async function assertSvgButton(button: Locator, responses: SvgResponses, tone: '
   })
   expect(proof.tag).toBe('BUTTON')
   expect(proof.label).toBeTruthy()
-  expect(proof.decorative).toBe('true')
-  expect(proof.source).toContain(`/ui/studio/runtime/${id}.svg`)
-  expect(proof.slice).toContain('70 160')
-  expect(proof.slice).toContain('fill')
-  expect(proof.repeat).toBe('stretch')
-  expect(proof.font).toContain('Arkamon Norwester')
+  expect(proof.hasFrame).toBe(MENU_SVG_ARTWORK_ENABLED)
+  if (MENU_SVG_ARTWORK_ENABLED) {
+    expect(proof.decorative).toBe('true')
+    expect(proof.source).toContain(`/ui/studio/runtime/${id}.svg`)
+    expect(proof.slice).toContain('70 160')
+    expect(proof.slice).toContain('fill')
+    expect(proof.repeat).toBe('stretch')
+  } else {
+    await expect(button).toHaveAttribute('data-menu-artwork', 'css')
+    expect(proof.background !== 'rgba(0, 0, 0, 0)' || proof.backgroundImage !== 'none', 'A solid or gradient surface visibly paints the control').toBe(true)
+    expect(parseFloat(proof.borderWidth)).toBeGreaterThan(0)
+  }
+  expect(proof.font).toContain(proof.localMap ? 'Georgia' : 'Arkamon Norwester')
   expect(proof.disabled).toBe(disabled)
   expect(proof.bound.width).toBeGreaterThan(0)
   expect(proof.bound.height).toBeGreaterThan(0)
@@ -102,7 +110,7 @@ async function assertSvgButton(button: Locator, responses: SvgResponses, tone: '
   for (const edge of ['left', 'top', 'right', 'bottom'] as const) {
     expect(Math.abs(proof.bound[edge] - proof.frameBound[edge])).toBeLessThanOrEqual(2)
   }
-  await expect.poll(() => [...responses.entries()].find(([path]) => path.endsWith(`/ui/studio/runtime/${id}.svg`))?.[1]).toBe(200)
+  if (MENU_SVG_ARTWORK_ENABLED) await expect.poll(() => [...responses.entries()].find(([path]) => path.endsWith(`/ui/studio/runtime/${id}.svg`))?.[1]).toBe(200)
   return proof
 }
 
@@ -111,44 +119,44 @@ async function capture(page: Page, name: string) {
   await test.info().attach(name, { body: await page.screenshot({ fullPage: false }), contentType: 'image/png' })
 }
 
-test('titolo: nuove cornici SVG e Continua conducono alla mappa della partita salvata', async ({ page }) => {
+test('titolo: comandi visibili e Continua conducono alla mappa della partita salvata', async ({ page }) => {
   const responses = await openFixture(page, 'titolo')
-  await assertSvgButton(page.getByRole('button', { name: 'Nuova Partita', exact: true }), responses, 'primary')
+  await assertCommandButton(page.getByRole('button', { name: 'Nuova Partita', exact: true }), responses, 'primary')
   const resume = page.getByRole('button', { name: 'Continua', exact: true })
-  await assertSvgButton(resume, responses)
+  await assertCommandButton(resume, responses)
   await capture(page, 'Titolo · 1920×1080')
   await resume.click()
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')
   await expect(page.getByRole('button', { name: 'Apri mappa di Venezia', exact: true })).toBeVisible()
 })
 
-test('mappa principale e Venezia: gli stessi SVG accompagnano la navigazione e le attività', async ({ page }) => {
+test('mappa principale e Venezia: i comandi correnti accompagnano la navigazione e le attività', async ({ page }) => {
   const responses = await openFixture(page, 'mappa-principale')
   const enter = page.getByRole('button', { name: 'Apri mappa di Venezia', exact: true })
-  await assertSvgButton(enter, responses, 'primary')
+  await assertCommandButton(enter, responses, 'primary')
   const tools = page.getByRole('button', { name: 'Partita', exact: true })
-  await assertSvgButton(tools, responses)
+  await assertCommandButton(tools, responses)
   const toolsBounds = await tools.boundingBox()
   expect(toolsBounds!.width).toBeGreaterThanOrEqual(64)
   expect(toolsBounds!.height).toBeGreaterThanOrEqual(32)
   for (const name of ['Passa turno', 'Deposito', 'Titolo']) {
-    await assertSvgButton(page.getByRole('button', { name, exact: true }), responses)
+    await assertCommandButton(page.getByRole('button', { name, exact: true }), responses)
   }
   await capture(page, 'Mappa principale · 1920×1080')
   await enter.click()
   await expect(page.locator('[data-presented-scene="citta:Venezia"]')).toHaveAttribute('aria-busy', 'false')
   await expect(page.getByRole('group', { name: 'Mappa di Venezia', exact: true })).toBeVisible()
-  await assertSvgButton(page.getByRole('button', { name: '← Mappa principale', exact: true }), responses)
-  await assertSvgButton(page.getByRole('button', { name: 'Passa turno', exact: true }), responses, 'primary')
+  await assertCommandButton(page.getByRole('button', { name: '← Mappa principale', exact: true }), responses)
+  await assertCommandButton(page.getByRole('button', { name: 'Passa turno', exact: true }), responses, 'primary')
   await expect(page.getByRole('button', { name: 'Attività', exact: true })).toHaveCount(0)
   await capture(page, 'Mappa di Venezia · 1920×1080')
   await page.getByRole('button', { name: 'Admin', exact: true }).click()
   await page.getByRole('button', { name: 'Scorciatoie del Game Master', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Scorciatoie del Game Master', exact: true })
   await expect(dialog).toBeVisible()
-  await assertSvgButton(dialog.getByRole('button', { name: /Centro Pokémon/ }), responses)
+  await assertCommandButton(dialog.getByRole('button', { name: /Centro Pokémon/ }), responses)
   const close = dialog.getByRole('button', { name: 'Chiudi attività', exact: true })
-  await assertSvgButton(close, responses)
+  await assertCommandButton(close, responses)
   await close.click()
   await expect(dialog).toBeHidden()
 })
@@ -156,14 +164,14 @@ test('mappa principale e Venezia: gli stessi SVG accompagnano la navigazione e l
 test('Percorso 1: le cornici restano integre e i movimenti esauriti disabilitano i comandi', async ({ page }) => {
   const responses = await openFixture(page, 'mappa-principale', 'Percorso_1')
   const enter = page.getByRole('button', { name: 'Apri mappa di Percorso 1', exact: true })
-  await assertSvgButton(enter, responses, 'primary')
+  await assertCommandButton(enter, responses, 'primary')
   await enter.click()
   await expect(page.locator('[data-presented-scene="percorso:Percorso_1"]')).toHaveAttribute('aria-busy', 'false')
   await expect(page.getByRole('group', { name: 'Mappa di Percorso 1', exact: true })).toBeVisible()
   const neighbours = page.getByRole('navigation', { name: 'Punti raggiungibili', exact: true })
   const firstMove = neighbours.getByRole('button').first()
-  await assertSvgButton(firstMove, responses)
-  await assertSvgButton(page.getByRole('button', { name: 'Passa turno', exact: true }), responses, 'primary')
+  await assertCommandButton(firstMove, responses)
+  await assertCommandButton(page.getByRole('button', { name: 'Passa turno', exact: true }), responses, 'primary')
   await capture(page, 'Mappa del Percorso 1 · 1920×1080')
   await firstMove.click()
   await expect(page.locator('.local-map-budget')).toHaveText('1 azione')
@@ -171,7 +179,7 @@ test('Percorso 1: le cornici restano integre e i movimenti esauriti disabilitano
   await expect(page.locator('.local-map-budget')).toHaveText('0 azioni')
   const available = neighbours.getByRole('button')
   expect(await available.count()).toBeGreaterThan(0)
-  for (const button of await available.all()) await assertSvgButton(button, responses, 'default', true)
+  for (const button of await available.all()) await assertCommandButton(button, responses, 'default', true)
   await expect(page.locator('[data-local-map-node][data-reachable="true"]')).toHaveCount(0)
   await page.getByRole('button', { name: '← Mappa principale', exact: true }).click()
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')

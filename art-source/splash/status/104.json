@@ -24,7 +24,7 @@
     "bottom": 0.8
   },
   "generatedAt": "2026-10-25T20:39:16.800Z",
-  "compositionPolicy": "hero-focus",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0.237,
     "top": 0.031,
@@ -33,15 +33,16 @@
   },
   "focusBounds": {
     "left": 0.33,
-    "top": 0.11,
+    "top": 0.255,
     "right": 0.622,
     "bottom": 0.727
   },
   "reviewedAt": "2026-10-25T21:52:12.778Z",
-  "displayOffset": {
-    "x": 0.0002,
-    "y": 0.0987
-  },
-  "displayScale": 0.8428,
-  "reviewNotes": "Face visibility correction after independent source-image review. The critical rectangle includes the full forehead and main face in addition to the torso. The painting is uniformly reduced and repositioned without changing the original drawing. Runtime UI fit still requires browser verification."
+  "reviewNotes": "Face visibility correction after independent source-image review. The critical rectangle includes the full forehead and main face in addition to the torso. The painting is uniformly reduced and repositioned without changing the original drawing. Runtime UI fit still requires browser verification.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Old focus .11 includes rock crown; actual eyes and mouth at approximately y .26-.49. Recalibrate to actual face/core bust."
+  }
 }

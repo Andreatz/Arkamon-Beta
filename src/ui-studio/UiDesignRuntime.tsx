@@ -69,6 +69,8 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
       svgSources.clear()
       owned.forEach(element => element.remove()); owned.clear()
     }
+    const suspendedMenuAsset = (root: Element, source?: string) => root.matches('.pu-shell[data-ui-concept]')
+      && !!source && /^\/ui\/(?:studio|player-kit)\/.*\.svg$/i.test(source)
     const mediaUrl = (source: string): string | undefined => {
       if (urls.has(source)) return urls.get(source)
       if (!source.startsWith('ui-media:')) { const url = assetUrl(source); urls.set(source, url); return url }
@@ -121,6 +123,9 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
     }
     const replaceAsset = (selected: HTMLElement | SVGElement, config: UiElementDesign) => {
       if (!config.asset) return
+      // Archived menu skins stay suspended in the current compositions. This
+      // does not disable new PNG/imported artwork or the rest of an edit.
+      if (suspendedMenuAsset(selected.closest('.pu-shell') ?? selected, config.asset)) return
       const element = getUiSkinSurface(uiAssetSurface(selected))
       const hpSkin = element.matches('[data-battle-hp-side]') ? hpAssetSkin(config.asset) : undefined
       const url = hpSkin ?? mediaUrl(config.asset)
@@ -212,10 +217,7 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
       if (stopped || running) return
       running = true
       observer.disconnect(); restore()
-      const candidate = findUiScreenRoot(latest.current.screen, preview)
-      // The temporary concept owns its menu layout. Saved Studio skins must not
-      // reintroduce suspended SVGs or absolute geometry into the running menu.
-      const found = !preview && candidate?.root.matches('.pu-shell[data-ui-concept]') ? null : candidate
+      const found = findUiScreenRoot(latest.current.screen, preview)
       if (!found && currentRoot) {
         currentRoot.removeAttribute('data-ui-runtime-root')
         currentRoot = null; entries = []
@@ -230,7 +232,7 @@ export function UiDesignRuntime({ preview = false, design: suppliedDesign, scree
           const background = configuration.background
           set(root, 'position', getComputedStyle(root).position === 'static' ? 'relative' : getComputedStyle(root).position)
           if (background.color) set(root, 'background-color', background.color)
-          const url = background.asset ? mediaUrl(background.asset) : undefined
+          const url = background.asset && !suspendedMenuAsset(root, background.asset) ? mediaUrl(background.asset) : undefined
           if (url || background.color) {
             set(root, 'background-image', 'none')
             root.querySelectorAll<HTMLElement>(':scope>video,:scope>img.absolute.inset-0').forEach(element => set(element, 'visibility', 'hidden'))

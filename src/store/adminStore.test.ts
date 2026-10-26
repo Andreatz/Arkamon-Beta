@@ -88,6 +88,28 @@ describe('adminStore', () => {
     expect(useAdminStore.getState().theme.assets.titleLogo).toBe('/ui/logo_arkamon.png')
   })
 
+  it('respinge percorsi esterni o codificati e conserva i file pubblici legacy e il reset', () => {
+    const path = '/ui/logo_arkamon.png'
+    useAdminStore.getState().updateAsset('titleLogo', path)
+    for (const unsafe of ['/\\example.invalid/image.png', '/%5cexample.invalid/image.png', '/%2fexample.invalid/image.png', '/ui/../private.png', 'data:image/png;base64,AAAA', 'blob:http://localhost/test', 'ui-media:imported']) {
+      useAdminStore.getState().updateAsset('titleLogo', unsafe)
+      expect(useAdminStore.getState().theme.assets.titleLogo).toBe(path)
+    }
+    useAdminStore.getState().updateAsset('titleLogo', '')
+    expect(useAdminStore.getState().theme.assets.titleLogo).toBeUndefined()
+  })
+
+  it('ripulisce asset salvati e importati senza perdere gli altri asset validi', () => {
+    const theme = cloneAdminTheme(defaultAdminTheme)
+    theme.assets = { titleLogo: '/\\example.invalid/image.png', titleBackground: '/backgrounds/venezia.png', panelTexture: '/%5cexample.invalid/image.png' }
+    const restored = useAdminStore.persist.getOptions().merge!({ defaultThemeRevision: 'notte-viola-2026-10-05', theme }, useAdminStore.getState()).theme
+    expect(restored.assets.titleLogo).toBe(defaultAdminTheme.assets.titleLogo)
+    expect(restored.assets.titleBackground).toBe('/backgrounds/venezia.png')
+    expect(restored.assets.panelTexture).toBe(defaultAdminTheme.assets.panelTexture)
+    useAdminStore.getState().importTheme(theme)
+    expect(useAdminStore.getState().theme.assets).toEqual(restored.assets)
+  })
+
   it('updateSpriteScale salva e ripristina la scala della singola specie', () => {
     useAdminStore.getState().updateSpriteScale(12, 1.45)
     expect(useAdminStore.getState().theme.spriteScales['12']).toBe(1.45)

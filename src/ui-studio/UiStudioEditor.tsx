@@ -5,6 +5,7 @@ import { createDefaultDesign } from './designModel'
 import { exportUiDesign, importUiDesign, importUiMedia, resolveUiMediaSource } from './mediaStorage'
 import { useUiStudioStore } from './studioStore'
 import { resolvedScreenDesign } from './runtimeDesign'
+import { listenToStudioPointerDrag } from './studioPointerDrag'
 import { UI_STUDIO_SCREENS, UI_STUDIO_SCREEN_VIEWS } from './types'
 import type { UiBuiltinAsset, UiDesignDocument, UiElementDesign, UiElementInfo, UiExtraLayer, UiPreviewMessage, UiRect, UiScreenDesign, UiStudioMessage, UiTypography } from './types'
 import './uiStudio.css'
@@ -12,6 +13,7 @@ import { PresentationProjectPanel } from '@/presentation/PresentationProjectPane
 
 const WIDTH = 1920
 const HEIGHT = 1080
+const ASSET_PAGE_SIZE = 24
 const FONT_NAMES = [['norwester', 'Norwester'], ['chela', 'Chela One · precedente'], ['azonix', 'Azonix · se installato'], ['system', 'Sistema · leggibile']] as const
 const EMPTY_SCREEN: UiScreenDesign = { elements: {}, layers: [] }
 const HANDLE_NAMES = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'] as const
@@ -129,6 +131,7 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   const [libraryTarget, setLibraryTarget] = useState<LibraryTarget | null>(null)
   const [librarySearch, setLibrarySearch] = useState('')
   const [libraryCategory, setLibraryCategory] = useState('all')
+  const [libraryPage, setLibraryPage] = useState(0)
   const [ready, setReady] = useState(false)
   const [scale, setScale] = useState(.5)
   const [snap, setSnap] = useState(true)
@@ -144,7 +147,7 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   const libraryRef = useRef<HTMLElement>(null)
   const draftRef = useRef(draft)
   const screenRef = useRef(screenId)
-  const dragRef = useRef<{ element: DisplayElement; start: UiRect; x: number; y: number; handle: Handle; document: UiDesignDocument; didMove: boolean; scale: number; screen: string } | null>(null)
+  const dragRef = useRef<{ pointerId: number; element: DisplayElement; start: UiRect; x: number; y: number; handle: Handle; document: UiDesignDocument; didMove: boolean; scale: number; screen: string } | null>(null)
   draftRef.current = draft
   screenRef.current = screenId
   const [baseScreenId, internalView = 'default'] = screenId.split(':')
@@ -164,6 +167,10 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   const allAssets = useMemo<UiBuiltinAsset[]>(() => [...UI_BUILTIN_ASSETS.filter(asset => asset.kind === 'image'), ...draft.media.filter(media => media.kind === 'image').map(media => ({ id: media.id, name: media.name, source: `ui-media:${media.id}`, category: 'Importati', kind: 'image' as const }))], [draft.media])
   const categories = useMemo(() => [...new Set(allAssets.map(asset => asset.category))].sort(), [allAssets])
   const matchingAssets = allAssets.filter(asset => (libraryCategory === 'all' || asset.category === libraryCategory) && `${asset.name} ${asset.category}`.toLocaleLowerCase('it').includes(librarySearch.toLocaleLowerCase('it')))
+  const libraryPageCount = Math.max(1, Math.ceil(matchingAssets.length / ASSET_PAGE_SIZE))
+  const currentLibraryPage = Math.min(libraryPage, libraryPageCount - 1)
+  const pageAssets = matchingAssets.slice(currentLibraryPage * ASSET_PAGE_SIZE, (currentLibraryPage + 1) * ASSET_PAGE_SIZE)
+  useEffect(() => { setLibraryPage(0) }, [libraryCategory, librarySearch, libraryTarget])
   const menus = elements.filter(element => element.kind === 'button' && !element.custom && element.actionable === true).sort((a, b) => (screen.elements[a.id]?.order ?? 0) - (screen.elements[b.id]?.order ?? 0))
   const menuGroups = new Map<string, DisplayElement[]>()
   for (const menu of menus) {
@@ -252,10 +259,10 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
     setLibraryTarget(null)
   }
   const beginDrag = (event: ReactPointerEvent, handle: Handle) => {
-    if (!selected || !rect || override.locked || event.button !== 0) return
+    if (dragRef.current || !selected || !rect || override.locked || event.button !== 0) return
     event.preventDefault()
     event.stopPropagation()
-    dragRef.current = { element: selected, start: { ...rect }, x: event.clientX, y: event.clientY, handle, document: cloneDesign(draftRef.current), didMove: false, scale, screen: screenId }
+    dragRef.current = { pointerId: event.pointerId, element: selected, start: { ...rect }, x: event.clientX, y: event.clientY, handle, document: cloneDesign(draftRef.current), didMove: false, scale, screen: screenId }
     event.currentTarget.setPointerCapture(event.pointerId)
   }
   useEffect(() => {
@@ -284,10 +291,7 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
       drag.didMove = true
     }
     const end = () => { dragRef.current = null }
-    window.addEventListener('pointermove', move)
-    window.addEventListener('pointerup', end)
-    window.addEventListener('pointercancel', end)
-    return () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', end); window.removeEventListener('pointercancel', end) }
+    return listenToStudioPointerDrag(() => dragRef.current?.pointerId, move, end)
   }, [snap, setDraft])
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
@@ -457,7 +461,7 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
     <input ref={importRef} type="file" accept=".json,application/json" className="uis-sr-only" aria-label="Importa layout JSON" onChange={event => void importDocument(event.target.files?.[0])} />
     <input ref={mediaRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" multiple className="uis-sr-only" aria-label="Importa immagini" onChange={event => void upload(event.target.files, 'image')} />
     <input ref={fontRef} type="file" accept=".otf,.ttf,.woff,.woff2" multiple className="uis-sr-only" aria-label="Importa caratteri" onChange={event => void upload(event.target.files, 'font')} />
-    {libraryTarget ? <div className="uis-modal-backdrop" role="presentation" onClick={event => { if (event.target === event.currentTarget) setLibraryTarget(null) }}><section ref={libraryRef} className="uis-library" role="dialog" aria-modal="true" aria-label={libraryTarget === 'background' ? 'Scegli sfondo' : 'Scegli asset'}><header><div><h2>{libraryTarget === 'background' ? 'Scegli uno sfondo' : 'Libreria degli asset'}</h2><p>Scuro, Blu, componenti comuni e immagini del gioco.</p></div><button type="button" aria-label="Chiudi libreria asset" onClick={() => setLibraryTarget(null)}>Chiudi ×</button></header><div className="uis-library-tools"><input type="search" aria-label="Cerca asset" placeholder="Cerca asset…" value={librarySearch} onChange={event => setLibrarySearch(event.target.value)} autoFocus /><select aria-label="Categoria asset" value={libraryCategory} onChange={event => setLibraryCategory(event.target.value)}><option value="all">Tutte le categorie</option>{categories.map(category => <option key={category} value={category}>{category}</option>)}</select><button type="button" disabled={busy} onClick={() => mediaRef.current?.click()}>Importa immagini</button></div><div className="uis-asset-grid">{matchingAssets.map(asset => <button type="button" key={asset.id} onClick={() => chooseAsset(asset.source)} title={asset.name}><MediaImage source={asset.source} alt="" /><strong>{asset.name}</strong><small>{asset.category}</small></button>)}{!matchingAssets.length ? <p>Nessun asset corrisponde alla ricerca.</p> : null}</div><footer><span>{matchingAssets.length} asset · SVG e immagini mantengono il file originale.</span><ImportedFiles document={draft} onRemove={removeImportedFile} /></footer></section></div> : null}
+    {libraryTarget ? <div className="uis-modal-backdrop" role="presentation" onClick={event => { if (event.target === event.currentTarget) setLibraryTarget(null) }}><section ref={libraryRef} className="uis-library" role="dialog" aria-modal="true" aria-label={libraryTarget === 'background' ? 'Scegli sfondo' : 'Scegli asset'}><header><div><h2>{libraryTarget === 'background' ? 'Scegli uno sfondo' : 'Libreria degli asset'}</h2><p>Scuro, Blu, componenti comuni e immagini del gioco.</p></div><button type="button" aria-label="Chiudi libreria asset" onClick={() => setLibraryTarget(null)}>Chiudi ×</button></header><div className="uis-library-tools"><input type="search" aria-label="Cerca asset" placeholder="Cerca asset…" value={librarySearch} onChange={event => setLibrarySearch(event.target.value)} autoFocus /><select aria-label="Categoria asset" value={libraryCategory} onChange={event => setLibraryCategory(event.target.value)}><option value="all">Tutte le categorie</option>{categories.map(category => <option key={category} value={category}>{category}</option>)}</select><button type="button" disabled={busy} onClick={() => mediaRef.current?.click()}>Importa immagini</button></div><div className="uis-asset-grid">{pageAssets.map(asset => <button type="button" key={asset.id} onClick={() => chooseAsset(asset.source)} title={asset.name}><MediaImage source={asset.source} alt="" /><strong>{asset.name}</strong><small>{asset.category}</small></button>)}{!matchingAssets.length ? <p>Nessun asset corrisponde alla ricerca.</p> : null}</div><footer><nav aria-label="Pagine della libreria asset" style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}><button type="button" disabled={currentLibraryPage === 0} onClick={() => setLibraryPage(page => page - 1)}>Asset precedenti</button><span role="status">Pagina {currentLibraryPage + 1} / {libraryPageCount} · {matchingAssets.length} asset</span><button type="button" disabled={currentLibraryPage + 1 >= libraryPageCount} onClick={() => setLibraryPage(page => page + 1)}>Asset successivi</button></nav><span>SVG e immagini mantengono il file originale.</span><ImportedFiles document={draft} onRemove={removeImportedFile} /></footer></section></div> : null}
   </div>
 }
 

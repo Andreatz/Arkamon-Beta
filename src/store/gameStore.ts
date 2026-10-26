@@ -736,8 +736,13 @@ export const useGameStore = create<GameState>()(
         if (isLeagueTurnLocked(state.league)) return
         if (battaglia.luogoRitorno === SECRET_LOCATION_ID && !puoAccedereAlLuogoSegreto(state, state.giocatoreAttivo)) return
         const team = battaglia.squadraA ?? state[state.giocatoreAttivo === 1 ? 'giocatore1' : 'giocatore2'].squadra
+        const lead = team.find((pokemon) => pokemon.istanzaId === battaglia.pokemonA.istanzaId)
+        if (!lead || !getPokemon(lead.specieId) || !Number.isInteger(lead.livello) || lead.livello < 5 || lead.livello > 100
+          || !Number.isFinite(lead.hp) || lead.hp <= 0 || lead.hp > calcolaHPMax(lead)) return
         if (!isTeamWithinLevelCap(team)) { set({ teamRuleMessage: teamCapMessage(team) }); return }
-        set({ battaglia: clearBattleExperience(battaglia) })
+        // Legacy route/grid callers supply only the active creature. Every
+        // battle still needs the full roster for replacements, items and cap.
+        set({ battaglia: clearBattleExperience({ ...battaglia, pokemonA: lead, squadraA: team, hpMaxA: calcolaHPMax(lead) }) })
       },
 
       aggiornaBattaglia: (patch) =>

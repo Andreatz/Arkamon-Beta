@@ -2,47 +2,52 @@
   "id": 77,
   "name": "Ignitor",
   "type": "Fuoco",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17471-00ca-7513-a0cc-5a12e9f4cd14\\exec-64e63ed3-35e2-423b-a3a8-34a71894c0b8.png",
-  "sourceMaster": "output/splash-art/originals/077-ignitor-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-ae46baac-eac6-416c-aa98-cc63ef1d9809.png",
+  "sourceMaster": "output/splash-art/originals/077-ignitor-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/077-ignitor.webp",
   "runtimePath": "/backgrounds/arkamon-splash/077-ignitor.webp",
-  "promptFile": "art-source/splash/prompts/077-ignitor.txt",
+  "promptFile": "art-source/splash/prompts/077-ignitor-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 563466,
-  "sha256": "e55f090f8cea42dbd9d01cf1e4c788ddcff158c9b9c7ab4ec414988b596a368b",
+  "bytes": 620828,
+  "sha256": "afd84faab147e8bf7a5217d072a7d9b693eb68f8220d3f019cfa5562c6d49b9b",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:51:09.050Z",
+  "reviewedAt": "2026-10-26T00:51:09.051Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.27,
+    "right": 0.63,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:04:07.926Z",
-  "subjectBounds": {
-    "left": 0.39,
-    "top": 0.31,
-    "right": 0.59,
-    "bottom": 0.78
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/077-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.412,
-    "top": 0.417,
-    "right": 0.564,
-    "bottom": 0.72
-  },
-  "displayScale": 1.7162,
-  "displayOffset": {
-    "x": 0.0006,
-    "y": -0.0876
-  },
-  "reviewedAt": "2026-10-25T20:54:59.316Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

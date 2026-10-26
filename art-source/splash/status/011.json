@@ -2,51 +2,52 @@
   "id": 11,
   "name": "Felyss",
   "type": "Psico",
-  "version": "v3-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-28d19dc6-0fba-468b-895c-bb0e86b27cee.png",
-  "sourceMaster": "output/splash-art/originals/011-felyss-v3-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-af240b29-d4f0-4e29-b927-e7a064e8a2e3.png",
+  "sourceMaster": "output/splash-art/originals/011-felyss-hero-source-v2.png",
   "sourceDimensions": {
-    "width": 1671,
+    "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/011-felyss.webp",
   "runtimePath": "/backgrounds/arkamon-splash/011-felyss.webp",
-  "promptFile": "art-source/splash/prompts/011-felyss.txt",
+  "promptFile": "art-source/splash/prompts/011-felyss-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 843296,
-  "sha256": "bc7f8f23f77a76b92a4fe99774d47701f0afd1c9363f7e43f371178e997952fc",
+  "bytes": 759500,
+  "sha256": "8eda055dcffadf20543e9d080e26f25979ecf4c86a98bb717eb598e844283b3d",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:16:17.174Z",
+  "generatedAt": "2026-10-26T00:11:37.713Z",
+  "reviewedAt": "2026-10-26T00:11:37.714Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.402,
-    "top": 0.3,
-    "right": 0.595,
-    "bottom": 0.66
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
-  "visualReview": {
-    "method": "manual conservative silhouette envelope on generated source",
-    "notes": "Reviewed after1.4x zoom-out: all ears, ribbons, intrinsic halo and tail fit inside safe area. Exact official form matched; no live UI test claimed."
-  },
-  "compositionPolicy": "hero-focus",
   "focusBounds": {
-    "left": 0.439,
-    "top": 0.39,
-    "right": 0.531,
-    "bottom": 0.57
+    "left": 0.315,
+    "top": 0.235,
+    "right": 0.585,
+    "bottom": 0.79
   },
-  "displayScale": 2.5,
-  "displayOffset": {
-    "x": 0.0175,
-    "y": 0.08
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/011-before-hero-source-v2.json"
   },
-  "reviewedAt": "2026-10-25T20:54:59.252Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

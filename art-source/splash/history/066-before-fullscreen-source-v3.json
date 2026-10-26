@@ -1,0 +1,52 @@
+{
+  "id": 66,
+  "name": "Hoppiox",
+  "type": "Normale",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17579-674b-7a40-97c4-89ad7033f20b\\exec-df7c412d-4cbc-4c4c-8225-bd9a591970ff.png",
+  "sourceMaster": "output/splash-art/originals/066-hoppiox-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/066-hoppiox.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/066-hoppiox.webp",
+  "promptFile": "art-source/splash/prompts/066-hoppiox-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 550618,
+  "sha256": "431edb29b51eed5b2efae59e34d124bd3f2da0897988e6cb22740e27bfbb3b78",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:00:16.924Z",
+  "reviewedAt": "2026-10-26T00:00:16.925Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.14,
+    "top": 0,
+    "right": 0.95,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.17,
+    "top": 0,
+    "right": 0.66,
+    "bottom": 0.83
+  },
+  "displayScale": 0.685542,
+  "displayOffset": {
+    "x": 0.03827106999999996,
+    "y": 0.07327107000000005
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/066-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

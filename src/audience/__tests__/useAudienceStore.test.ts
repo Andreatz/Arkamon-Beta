@@ -14,6 +14,26 @@ afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers() })
 const store = async () => (await import('../useAudienceStore')).useAudienceStore
 
 describe('preferenze e collegamento del pubblico', () => {
+  it.each(['success', 'failure'] as const)('ignores a guest command %s arriving during session replacement', async (outcome) => {
+    const lateGuest = deferred<Response>()
+    const ending = deferred<Response>()
+    const nextId = 'session-renewed-123'
+    const next = { ...snapshot, round: null, sessionId: nextId,
+      joinUrls: { npc: invitation('npc', nextId), boss: invitation('boss', nextId) }, hostToken: 'd'.repeat(64) }
+    vi.stubGlobal('fetch', vi.fn().mockReturnValueOnce(lateGuest.promise).mockReturnValueOnce(ending.promise).mockResolvedValueOnce(response(next)))
+    const api = await store()
+    api.setState({ session, snapshot: { ...snapshot, round: null }, serviceUrl, connectionStatus: 'connected' })
+    const guest = api.getState().controlGuest('renew-guest')
+    const renewal = api.getState().connect('new-password')
+    lateGuest.resolve(outcome === 'success' ? response({ ...snapshot, round: null, serverNow: 220_000 })
+      : response({ error: 'Vecchio invito non disponibile', code: 'SERVICE_ERROR' }, 503))
+    await guest
+    expect(api.getState()).toMatchObject({ session, connectionStatus: 'connecting', error: null })
+    ending.resolve(response({ ...snapshot, round: null }))
+    await renewal
+    expect(api.getState()).toMatchObject({ session: { sessionId: nextId }, connectionStatus: 'connected', error: null })
+  })
+
   it('parte disabilitato, con 15 secondi, e richiede prima una sessione', async () => {
     const api = await store()
     expect(api.getState()).toMatchObject({ enabled: false, durationSeconds: 15, session: null })

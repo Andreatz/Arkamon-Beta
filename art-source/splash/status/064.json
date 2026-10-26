@@ -2,47 +2,52 @@
   "id": 64,
   "name": "Hopz",
   "type": "Normale",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-1dd89393-e02b-4de3-b949-aed40beeb0c9.png",
-  "sourceMaster": "output/splash-art/originals/064-hopz-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-262ee505-6e22-414a-bc85-0b394757aaf7.png",
+  "sourceMaster": "output/splash-art/originals/064-hopz-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/064-hopz.webp",
   "runtimePath": "/backgrounds/arkamon-splash/064-hopz.webp",
-  "promptFile": "art-source/splash/prompts/064-hopz.txt",
+  "promptFile": "art-source/splash/prompts/064-hopz-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 643326,
-  "sha256": "3857d156bf524dbe4bb4a3464b494a24a069782d98aa931473cf84b140bdd79f",
+  "bytes": 577064,
+  "sha256": "c42df0f13c3776ab2d5c352bf07b6cbb21c11a0fc4c7c9c27e7d2e4916c8f62c",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:46:32.534Z",
+  "reviewedAt": "2026-10-26T00:46:32.535Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.235,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:30:15.276Z",
-  "subjectBounds": {
-    "left": 0.386,
-    "top": 0.348,
-    "right": 0.602,
-    "bottom": 0.745
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/064-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.419,
-    "top": 0.429,
-    "right": 0.572,
-    "bottom": 0.689
-  },
-  "displayScale": 2,
-  "displayOffset": {
-    "x": -0.011,
-    "y": -0.088
-  },
-  "reviewedAt": "2026-10-25T20:54:59.309Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

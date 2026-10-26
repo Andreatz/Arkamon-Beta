@@ -2,61 +2,52 @@
   "id": 7,
   "name": "Darklaw",
   "type": "Oscurità",
-  "version": "v3-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-a472f57a-5f1f-49a4-871c-7702456cdfe7.png",
-  "sourceMaster": "output/splash-art/originals/007-darklaw-v3-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-60f0eb44-fc40-4f9a-be91-731ae1c53ccc.png",
+  "sourceMaster": "output/splash-art/originals/007-darklaw-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/007-darklaw.webp",
   "runtimePath": "/backgrounds/arkamon-splash/007-darklaw.webp",
-  "promptFile": "art-source/splash/prompts/007-darklaw.txt",
+  "promptFile": "art-source/splash/prompts/007-darklaw-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 689574,
-  "sha256": "e90fff32a5f2134762efbc90899a9a3950a340f853ccfa08106d5adbb004f433",
+  "bytes": 622158,
+  "sha256": "26d0a70ac3616035fef75843f4b8fb39c28834c6acdd5bc012b4289678b56a3a",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:11:35.515Z",
+  "reviewedAt": "2026-10-26T00:11:35.516Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.315,
+    "top": 0.255,
+    "right": 0.59,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:10:36.540Z",
-  "subjectBounds": {
-    "left": 0.425,
-    "top": 0.4,
-    "right": 0.595,
-    "bottom": 0.75
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/007-before-hero-source-v2.json"
   },
-  "visualReview": {
-    "method": "manual conservative silhouette envelope on generated source",
-    "sourcePixels": {
-      "left": 711,
-      "top": 376,
-      "right": 995,
-      "bottom": 706
-    },
-    "sourceDimensions": {
-      "width": 1672,
-      "height": 941
-    },
-    "notes": "All head crest/ears, feet, claws and tail fit. Zoom-out revision requested1.4x; exact form-specific design retained. No live UI validation claimed."
-  },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.439,
-    "top": 0.47,
-    "right": 0.546,
-    "bottom": 0.71
-  },
-  "displayScale": 2.1667,
-  "displayOffset": {
-    "x": -0.0037,
-    "y": -0.165
-  },
-  "reviewedAt": "2026-10-25T20:54:59.247Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

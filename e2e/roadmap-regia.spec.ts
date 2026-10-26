@@ -163,7 +163,7 @@ test('configuration import, subsequent editing and backup restore retain a writa
   await seed(context); await page.goto('/'); await ownerReady(page)
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  await dialog.getByRole('button', { name: 'Apri Backup', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   const downloading = page.waitForEvent('download')
   await dialog.getByRole('button', { name: 'Scarica backup partita', exact: true }).click()
   const download = await downloading
@@ -191,7 +191,7 @@ test('configuration import, subsequent editing and backup restore retain a writa
   await expect(editor).toContainText('Interazione salvata.')
   await panel.getByRole('button', { name: 'Chiudi', exact: true }).click()
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
-  await dialog.getByRole('button', { name: 'Apri Backup', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   await dialog.getByLabel('Importa backup partita', { exact: true }).setInputFiles({ name: 'backup.json', mimeType: 'application/json', buffer: Buffer.from(backup) })
   await expect(dialog.getByLabel('Anteprima ripristino')).toBeVisible()
   await dialog.getByRole('checkbox', { name: /Confermo la sostituzione/ }).check()
@@ -221,7 +221,7 @@ test('Register keeps the three archives; Race and Recap fit one 1080p screen wit
   const before = await checkpoint(page)
   await page.getByRole('button', {name:'Partita',exact:true}).click()
   const dialog = page.getByRole('dialog',{name:'La tua partita',exact:true})
-  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(6)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(9)
   for (const [label, region] of [['Gara','Situazione della gara'], ['Ripresa','Ripresa della sessione']]) {
     await dialog.getByRole('button',{name:`Apri ${label}`,exact:true}).click()
     await expect(dialog.getByRole('region',{name:region,exact:true})).toBeVisible()
@@ -272,6 +272,8 @@ for (const viewport of [{width:1920,height:1080},{width:1280,height:640}]) {
   test(`public map preserves real roads and round separate player markers at ${viewport.width}x${viewport.height}`, async ({page,context}) => {
     await seed(context); await page.goto('/'); await ownerReady(page)
     const saved = await checkpoint(page)
+    // Ownership can settle before the lazy map/image geometry is ready.
+    await expect.poll(() => page.locator('[data-main-map-root] svg path[stroke="#e5e5e5"]').count()).toBeGreaterThan(20)
     const realRoads = await page.locator('[data-main-map-root] svg path[stroke="#e5e5e5"]').evaluateAll(paths => paths.map(path =>
       (path.getAttribute('d')!.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number)))
     expect(realRoads.length).toBeGreaterThan(20)

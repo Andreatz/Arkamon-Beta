@@ -1,0 +1,52 @@
+{
+  "id": 62,
+  "name": "Fluffet",
+  "type": "Normale",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-7797fcde-b32e-4122-9207-4b55f3b17f82.png",
+  "sourceMaster": "output/splash-art/originals/062-fluffet-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/062-fluffet.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/062-fluffet.webp",
+  "promptFile": "art-source/splash/prompts/062-fluffet-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 554822,
+  "sha256": "f2439e6a67b9af8bf65fb47fa5d40901f25e2761105c253ce56ba5fc0c27ff5e",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:46:31.139Z",
+  "reviewedAt": "2026-10-26T00:46:31.140Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.28,
+    "top": 0.16,
+    "right": 0.66,
+    "bottom": 0.94
+  },
+  "displayScale": 0.729487,
+  "displayOffset": {
+    "x": 0.0018846099999999533,
+    "y": -0.021474349999999975
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/062-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

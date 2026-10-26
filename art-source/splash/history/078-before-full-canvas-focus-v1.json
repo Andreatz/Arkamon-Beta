@@ -1,0 +1,52 @@
+{
+  "id": 78,
+  "name": "Trippix",
+  "type": "Erba",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-21cbafab-7995-49aa-98bb-cb550c06be80.png",
+  "sourceMaster": "output/splash-art/originals/078-trippix-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/078-trippix.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/078-trippix.webp",
+  "promptFile": "art-source/splash/prompts/078-trippix-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 646572,
+  "sha256": "0e873b1b7a4f4db6c4f7cb2c28d02c64aa93b126d5bbb7bfbc9006e7296d8d84",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:51:09.738Z",
+  "reviewedAt": "2026-10-26T00:51:09.740Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.33,
+    "top": 0.1,
+    "right": 0.64,
+    "bottom": 0.91
+  },
+  "displayScale": 0.702469,
+  "displayOffset": {
+    "x": -0.00946296499999999,
+    "y": 0.011487655000000041
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/078-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

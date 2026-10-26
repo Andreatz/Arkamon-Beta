@@ -2,47 +2,52 @@
   "id": 83,
   "name": "Cerebron",
   "type": "Psico",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17471-00ca-7513-a0cc-5a12e9f4cd14\\exec-9c095a4a-8c7c-476a-b168-0e6e27dfd439.png",
-  "sourceMaster": "output/splash-art/originals/083-cerebron-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-77856e1b-b98a-4b30-afc1-a03d9f871b94.png",
+  "sourceMaster": "output/splash-art/originals/083-cerebron-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/083-cerebron.webp",
   "runtimePath": "/backgrounds/arkamon-splash/083-cerebron.webp",
-  "promptFile": "art-source/splash/prompts/083-cerebron.txt",
+  "promptFile": "art-source/splash/prompts/083-cerebron-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 662682,
-  "sha256": "9e8da1d1baa2c7439ee15acc79e537559449734cc35a8bbd907c89c4678b6b1c",
+  "bytes": 720332,
+  "sha256": "3f5ba6914df9694198f4dbb8e2cf8266dcc76f163b160d6bdcb0c1c23f6ee123",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:56:19.721Z",
+  "reviewedAt": "2026-10-26T00:56:19.722Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.285,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:12:30.754Z",
-  "subjectBounds": {
-    "left": 0.4,
-    "top": 0.325,
-    "right": 0.622,
-    "bottom": 0.747
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/083-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.437,
-    "top": 0.403,
-    "right": 0.569,
-    "bottom": 0.68
-  },
-  "displayScale": 1.8773,
-  "displayOffset": {
-    "x": -0.0256,
-    "y": -0.0479
-  },
-  "reviewedAt": "2026-10-25T20:54:59.324Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

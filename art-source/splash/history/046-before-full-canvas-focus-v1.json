@@ -1,0 +1,52 @@
+{
+  "id": 46,
+  "name": "Spectron",
+  "type": "Oscurità",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-d8e91515-f5f7-47b1-ba20-77077e37c5c8.png",
+  "sourceMaster": "output/splash-art/originals/046-spectron-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/046-spectron.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/046-spectron.webp",
+  "promptFile": "art-source/splash/prompts/046-spectron-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 595148,
+  "sha256": "01962518348004d90636a3d520b101a4a2665af0ae53816dcdbe16e8292235bc",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:32:21.059Z",
+  "reviewedAt": "2026-10-26T00:32:21.059Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.35,
+    "top": 0.24,
+    "right": 0.66,
+    "bottom": 0.91
+  },
+  "displayScale": 0.849253,
+  "displayOffset": {
+    "x": -0.024246265000000045,
+    "y": -0.048693974999999945
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/046-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

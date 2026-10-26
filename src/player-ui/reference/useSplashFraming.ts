@@ -5,8 +5,9 @@ import { fitSplashFrame, type SplashFrameBounds } from './splashFraming'
 
 interface MeasuredFraming {
   key: string
-  transform: string
+  position: string
   region: string
+  focusFits: boolean
 }
 
 /** Recheck the actual central opening after fonts, lazy screens and resizes settle. */
@@ -36,7 +37,7 @@ export function useSplashFraming(shell: RefObject<HTMLDivElement>, artwork: Read
       const canvas = visibleRect('.pu-splash-backdrop', true)
       // Mobile uses a separate, contained illustration card without overlapping UI.
       if (!canvas) {
-        const next = { key, transform: 'none', region: '' }
+        const next = { key, position: '50% 50%', region: '', focusFits: true }
         setFraming(previous => previous?.key === key && previous.region === '' ? previous : next)
         return
       }
@@ -52,14 +53,12 @@ export function useSplashFraming(shell: RefObject<HTMLDivElement>, artwork: Read
       const result = fitSplashFrame({
         canvas, image: { width: 16, height: 9 },
         focus: artwork.focusBounds ?? artwork.subjectBounds, available,
-        preferredScale: artwork.displayScale ?? 1,
-        preferredOffset: artwork.displayOffset ?? { x: 0, y: 0 },
       })
       if (!result) return
-      const transform = `translate(${result.translateX.toFixed(3)}px, ${result.translateY.toFixed(3)}px) scale(${result.scale.toFixed(6)})`
+      const position = `${(result.position.x * 100).toFixed(6)}% ${(result.position.y * 100).toFixed(6)}%`
       const region = [available.left, available.top, available.right, available.bottom].map(value => value.toFixed(3)).join(',')
-      setFraming(previous => previous?.key === key && previous.transform === transform && previous.region === region
-        ? previous : { key, transform, region })
+      setFraming(previous => previous?.key === key && previous.position === position && previous.region === region && previous.focusFits === result.focusFits
+        ? previous : { key, position, region, focusFits: result.focusFits })
     }
     const schedule = () => { if (!disposed && !pending) pending = requestAnimationFrame(measure) }
     const resize = new ResizeObserver(schedule)

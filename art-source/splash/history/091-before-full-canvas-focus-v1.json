@@ -1,0 +1,52 @@
+{
+  "id": 91,
+  "name": "Espeiry",
+  "type": "Psico",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-6c99bd12-ffff-4456-88d6-d05a9d5ef622.png",
+  "sourceMaster": "output/splash-art/originals/091-espeiry-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/091-espeiry.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/091-espeiry.webp",
+  "promptFile": "art-source/splash/prompts/091-espeiry-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 752282,
+  "sha256": "eb5ac101fd281a91aea855fa5ab89148acd5bd57525263df36d709e82f5c1bc7",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T01:03:09.178Z",
+  "reviewedAt": "2026-10-26T01:03:09.179Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.34,
+    "top": 0.07,
+    "right": 0.61,
+    "bottom": 0.95
+  },
+  "displayScale": 0.64659,
+  "displayOffset": {
+    "x": -0.0038352500000000123,
+    "y": 0.008534099999999989
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/091-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

@@ -41,7 +41,7 @@ test('storage blocked before the first import keeps the title and failed operati
 
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const tools = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  await tools.getByRole('button', { name: 'Apri Backup', exact: true }).click()
+  await tools.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   const exportBackup = tools.getByRole('button', { name: 'Scarica backup partita', exact: true })
   await expect(exportBackup).toBeVisible()
   const downloaded = page.waitForEvent('download')

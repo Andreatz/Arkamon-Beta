@@ -1,0 +1,52 @@
+{
+  "id": 23,
+  "name": "Sparkly",
+  "type": "Elettro",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-e5e78368-bcee-47db-91a7-7e8c8250054c.png",
+  "sourceMaster": "output/splash-art/originals/023-sparkly-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/023-sparkly.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/023-sparkly.webp",
+  "promptFile": "art-source/splash/prompts/023-sparkly-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 715924,
+  "sha256": "ba4598310ae0d460341a984007014437fbbf96ebc4474bf4482af2852223bec9",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:22:01.316Z",
+  "reviewedAt": "2026-10-26T00:22:01.317Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.29,
+    "top": 0.15,
+    "right": 0.65,
+    "bottom": 0.86
+  },
+  "displayScale": 0.801408,
+  "displayOffset": {
+    "x": 0.004042239999999975,
+    "y": 0.010992960000000052
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/023-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

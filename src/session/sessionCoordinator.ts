@@ -190,7 +190,12 @@ export class SessionCoordinator {
   private acquireOnce(): Promise<boolean> {
     const generation = ++this.generation
     // Conflict recovery while still holding the Web Lock resynchronises rather than stealing a lock.
-    if (this.holding && this.options.locks) return this.prepare(generation)
+    if (this.holding && this.options.locks) return this.prepare(generation).catch(() => {
+      // The existing lock is still held, but failed hydration cannot leave the
+      // UI indefinitely checking or reject an unobserved recovery-button task.
+      if (generation === this.generation && !this.stopped) this.update('conflict')
+      return false
+    })
     this.update('checking')
     if (this.options.locks) return new Promise<boolean>((resolve) => {
       this.webLockTask = this.options.locks!.request(SESSION_LOCK_NAME, { ifAvailable: true }, async (lock) => {

@@ -1,0 +1,52 @@
+{
+  "id": 56,
+  "name": "Deephion",
+  "type": "Acqua",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-436458a0-ff7b-4c11-b388-77845d226e9d.png",
+  "sourceMaster": "output/splash-art/originals/056-deephion-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/056-deephion.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/056-deephion.webp",
+  "promptFile": "art-source/splash/prompts/056-deephion-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 651538,
+  "sha256": "e801e769eca0a18dd774607c2d72bd5670add74fac3f6d8e90b295428d5e73b9",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:42:53.237Z",
+  "reviewedAt": "2026-10-26T00:42:53.238Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.28,
+    "top": 0.18,
+    "right": 0.67,
+    "bottom": 0.92
+  },
+  "displayScale": 0.768918,
+  "displayOffset": {
+    "x": -0.0007770500000000569,
+    "y": -0.02344590000000002
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/056-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

@@ -174,9 +174,10 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     return () => cancelAnimationFrame(frame)
   }, [screen, tool])
 
-  return <SplashArtworkProvider value={readySplash}><div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ ...(reference ? providedArtworkVariables : {}), '--pu-background': `url("${reference ? referenceScreenBackground(screen, location, readySplash) : screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-transform': splashFraming?.transform ?? 'none' } as CSSProperties}
+  return <SplashArtworkProvider value={readySplash}><div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ ...(reference ? providedArtworkVariables : {}), '--pu-background': `url("${reference ? referenceScreenBackground(screen, location, readySplash) : screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-position': splashFraming?.position ?? '50% 50%' } as CSSProperties}
     data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId}
     data-splash-frame-ready={readySplash && splashFraming ? 'true' : undefined} data-splash-frame-region={splashFraming?.region}
+    data-splash-frame-mode={readySplash ? 'cover' : undefined} data-splash-focus-clear={readySplash && splashFraming ? String(splashFraming.focusFits) : undefined}
     data-reference-splash-species={readySplash?.speciesId} data-reference-splash-ready={readySplash ? 'true' : undefined}
     data-ui-concept={MENU_SVG_ARTWORK_ENABLED ? undefined : reference ? 'aurora' : resolveUiConcept(typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('uiConcept'))}>
     {readySplash && <div className="pu-splash-backdrop" aria-hidden="true" />}

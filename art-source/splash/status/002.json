@@ -2,41 +2,52 @@
   "id": 2,
   "name": "Vyrath",
   "type": "Normale",
-  "version": "hero-restored-v1",
-  "sourceToolPath": "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\splash-art\\originals\\002-vyrath-v2-centered.png",
-  "sourceMaster": "output/splash-art/originals/002-vyrath-hero-restored-v1.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17578-f7c3-78c0-b773-f8ab36a9bbfa\\exec-a7019d24-db62-44f0-b41d-7cc62e199ce7.png",
+  "sourceMaster": "output/splash-art/originals/002-vyrath-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/002-vyrath.webp",
   "runtimePath": "/backgrounds/arkamon-splash/002-vyrath.webp",
-  "promptFile": "art-source/splash/prompts/002-vyrath.txt",
+  "promptFile": "art-source/splash/prompts/002-vyrath-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 642764,
-  "sha256": "72d764682aca7c870f187f9cbb2c469969ad6a2521c95e33460affd9cb231a7f",
+  "bytes": 650648,
+  "sha256": "071c811f8e2c3973c2f714ac943f1ff5a2d70a842ea9c9b5a3fc20af28b27177",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:51:39.055Z",
-  "compositionPolicy": "hero-focus",
+  "generatedAt": "2026-10-25T23:59:49.225Z",
+  "reviewedAt": "2026-10-25T23:59:49.226Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.327,
-    "top": 0.272,
-    "right": 0.689,
-    "bottom": 0.843
+    "left": 0.06,
+    "top": 0,
+    "right": 0.93,
+    "bottom": 0.96
   },
   "focusBounds": {
-    "left": 0.378,
-    "top": 0.351,
-    "right": 0.569,
-    "bottom": 0.762
+    "left": 0.315,
+    "top": 0.255,
+    "right": 0.565,
+    "bottom": 0.79
   },
-  "reviewedAt": "2026-10-25T19:51:39.520Z",
-  "reviewNotes": "Larger preserved artwork restored after the user clarified that face and torso, rather than all extremities, must stay clear of UI."
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/002-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

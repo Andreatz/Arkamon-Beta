@@ -2,47 +2,52 @@
   "id": 56,
   "name": "Deephion",
   "type": "Acqua",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-8b647543-e909-4d80-ac32-8ded7bcf745a.png",
-  "sourceMaster": "output/splash-art/originals/056-deephion-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-436458a0-ff7b-4c11-b388-77845d226e9d.png",
+  "sourceMaster": "output/splash-art/originals/056-deephion-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/056-deephion.webp",
   "runtimePath": "/backgrounds/arkamon-splash/056-deephion.webp",
-  "promptFile": "art-source/splash/prompts/056-deephion.txt",
+  "promptFile": "art-source/splash/prompts/056-deephion-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 748492,
-  "sha256": "c430e8dfb453ebb3a9bd5d884931268a335ff2362b4da7cec192313e7951f7a4",
+  "bytes": 651538,
+  "sha256": "e801e769eca0a18dd774607c2d72bd5670add74fac3f6d8e90b295428d5e73b9",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:42:53.237Z",
+  "reviewedAt": "2026-10-26T00:42:53.238Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.29,
+    "top": 0.255,
+    "right": 0.63,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:22:02.117Z",
-  "subjectBounds": {
-    "left": 0.402,
-    "top": 0.345,
-    "right": 0.637,
-    "bottom": 0.793
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/056-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.42,
-    "top": 0.448,
-    "right": 0.585,
-    "bottom": 0.742
-  },
-  "displayScale": 1.7687,
-  "displayOffset": {
-    "x": -0.0244,
-    "y": -0.138
-  },
-  "reviewedAt": "2026-10-25T20:54:59.297Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Cheek/nose starts around x .29; eyes central."
+  }
 }

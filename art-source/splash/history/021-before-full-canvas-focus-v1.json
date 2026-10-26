@@ -1,0 +1,52 @@
+{
+  "id": 21,
+  "name": "Shrody",
+  "type": "Psico",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-d5274bad-e18b-4fcf-b4a6-0774942d3618.png",
+  "sourceMaster": "output/splash-art/originals/021-shrody-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/021-shrody.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/021-shrody.webp",
+  "promptFile": "art-source/splash/prompts/021-shrody-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 716224,
+  "sha256": "a139235c3ccf4e9d2784ba48a242910ce6fe6a6d3d06ca86dc2c6ec11cdac054",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:26:00.205Z",
+  "reviewedAt": "2026-10-26T00:26:00.206Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.24,
+    "top": 0.15,
+    "right": 0.61,
+    "bottom": 0.79
+  },
+  "displayScale": 0.889062,
+  "displayOffset": {
+    "x": 0.04667964999999996,
+    "y": 0.041671860000000005
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/021-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

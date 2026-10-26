@@ -2,47 +2,51 @@
   "id": 60,
   "name": "Shabyss",
   "type": "Acqua",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-c64a4d74-b42d-4f16-80fa-c6e6c79ca7e5.png",
-  "sourceMaster": "output/splash-art/originals/060-shabyss-v2-centered.png",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-faee90c6-f084-470b-a042-e512b00d5556.png",
+  "sourceMaster": "output/splash-art/originals/060-shabyss-fullscreen-source-v3.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/060-shabyss.webp",
   "runtimePath": "/backgrounds/arkamon-splash/060-shabyss.webp",
-  "promptFile": "art-source/splash/prompts/060-shabyss.txt",
+  "promptFile": "art-source/splash/prompts/060-shabyss-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 635430,
-  "sha256": "f4b9d7c7102a10ca80be14e38ba96827d5100527f99ceb3d752d723a6ba65cc5",
+  "bytes": 768516,
+  "sha256": "fc0bd894c1d0adb488f2887db01dd6eeec4ab5cfdf0143200108664d6409f573",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:26:22.844Z",
+  "generatedAt": "2026-10-26T10:58:09.796Z",
+  "reviewedAt": "2026-10-26T10:58:09.796Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.359,
-    "top": 0.31,
-    "right": 0.628,
-    "bottom": 0.723
+    "left": 0.165,
+    "top": 0.022,
+    "right": 0.98,
+    "bottom": 0.987
   },
-  "compositionPolicy": "hero-focus",
   "focusBounds": {
-    "left": 0.366,
-    "top": 0.385,
-    "right": 0.596,
-    "bottom": 0.695
+    "left": 0.329,
+    "top": 0.257,
+    "right": 0.601,
+    "bottom": 0.796
   },
-  "displayScale": 1.3478,
-  "displayOffset": {
-    "x": 0.0056,
-    "y": -0.0239
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/060-before-fullscreen-source-v3.json"
   },
-  "reviewedAt": "2026-10-25T21:49:24.966Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "Face visibility correction after independent review of the actual compact Squadra and Arkadex screens. The critical rectangle now includes the full forehead, cheeks and muzzle; RS-219 includes its main head dome and Leafrex its main leaf cap. Uniform zoom was recalculated without changing the original drawing. Runtime UI fit still requires browser verification."
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+  }
 }

@@ -1,0 +1,46 @@
+{
+  "id": 8,
+  "name": "Darklaw",
+  "type": "Oscurità",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-074b42f7-424b-4a2d-a445-97c042da13e6.png",
+  "sourceMaster": "output/splash-art/originals/008-darklaw-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/008-darklaw.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/008-darklaw.webp",
+  "promptFile": "art-source/splash/prompts/008-darklaw-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 664136,
+  "sha256": "6cf0f2335ed86a1b2652a8c53f20559bd83be38283ab913d8a89250b1ed3757d",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T11:09:43.438Z",
+  "reviewedAt": "2026-10-26T11:09:43.439Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.423,
+    "top": 0.266,
+    "right": 0.535,
+    "bottom": 0.755
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/008-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

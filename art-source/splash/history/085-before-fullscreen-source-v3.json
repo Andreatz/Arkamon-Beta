@@ -1,0 +1,52 @@
+{
+  "id": 85,
+  "name": "Psycroak",
+  "type": "Psico",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-6e88415f-71d1-48f9-8740-f2e9eac38cef.png",
+  "sourceMaster": "output/splash-art/originals/085-psycroak-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/085-psycroak.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/085-psycroak.webp",
+  "promptFile": "art-source/splash/prompts/085-psycroak-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 702116,
+  "sha256": "f002023421c9dff6267b4916347c69714c2a534c6a904258a6b6228a357d0425",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:56:21.156Z",
+  "reviewedAt": "2026-10-26T00:56:21.157Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.37,
+    "top": 0.13,
+    "right": 0.66,
+    "bottom": 0.95
+  },
+  "displayScale": 0.693902,
+  "displayOffset": {
+    "x": -0.03040852999999999,
+    "y": -0.012756080000000058
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/085-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

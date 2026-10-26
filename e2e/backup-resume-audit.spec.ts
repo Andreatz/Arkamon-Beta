@@ -23,7 +23,7 @@ test('a late file read cannot replace the automatic backup selected afterward', 
   await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const tools = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  await tools.getByRole('button', { name: 'Apri Backup', exact: true }).click()
+  await tools.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   const primary = await page.evaluate(() => localStorage.getItem('arkamon-save'))
   await page.evaluate(() => {
     File.prototype.text = function () {

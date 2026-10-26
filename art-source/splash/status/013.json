@@ -2,47 +2,52 @@
   "id": 13,
   "name": "Wormaren",
   "type": "Terra",
-  "version": "v3-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-418a8f28-fed8-46f5-bdc2-0f2ea76dd495.png",
-  "sourceMaster": "output/splash-art/originals/013-wormaren-v3-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-30facdd5-9f69-442e-9356-dc03ddb2f7b3.png",
+  "sourceMaster": "output/splash-art/originals/013-wormaren-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/013-wormaren.webp",
   "runtimePath": "/backgrounds/arkamon-splash/013-wormaren.webp",
-  "promptFile": "art-source/splash/prompts/013-wormaren-reframe-v3.txt",
+  "promptFile": "art-source/splash/prompts/013-wormaren-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 657878,
-  "sha256": "0069f44f9163173183816e4a374016f555ec0fe987005ce66bac542370a394f4",
+  "bytes": 588130,
+  "sha256": "5a87d88cd52ab0db09c93b2d6c5cd52018535b50e9bbae67f126076d1891afc2",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:14:42.491Z",
+  "reviewedAt": "2026-10-26T00:14:42.491Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.285,
+    "top": 0.285,
+    "right": 0.62,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:13:39.878Z",
-  "subjectBounds": {
-    "left": 0.396,
-    "top": 0.435,
-    "right": 0.601,
-    "bottom": 0.763
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/013-before-hero-source-v2.json"
   },
-  "reviewedAt": "2026-10-25T20:54:59.255Z",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged.",
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.413,
-    "top": 0.465,
-    "right": 0.574,
-    "bottom": 0.735
-  },
-  "displayScale": 1.9255,
-  "displayOffset": {
-    "x": -0.0075,
-    "y": -0.1625
-  },
-  "framingReview": "art-source/splash/hero-framing-review.json"
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Broad left cheek/nose reaches x .285; verify live panel edge."
+  }
 }

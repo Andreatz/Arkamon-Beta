@@ -3,6 +3,7 @@ import { useGameStore } from '@/store/gameStore'
 import { gameBackupFilename, MAX_GAME_BACKUP_BYTES, serializeGameBackup, validateGameBackup, type GameBackupPreview } from './gameBackup'
 import { downloadGameBackup, readPreviousGameBackup, restoreGameBackup } from './restoreGameBackup'
 import { useInteractionStore } from '@/interactions/interactionStore'
+import { interactionCatalogForBackup, useInteractionRecoveryStatus } from '@/interactions/interactionRecovery'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { readRecoveryCopies, useSaveWriteStatus } from './durableWrites'
 
@@ -17,11 +18,12 @@ export function BackupPanel() {
   const dismissRecovery = useGameStore((s) => s.dismissSaveRecoveryWarnings)
   const [previousAvailable, setPreviousAvailable] = useState(() => readPreviousGameBackup() !== null)
   const backupWarning = useSaveWriteStatus(s => s.backupWarning)
+  const catalogRecovery = useInteractionRecoveryStatus(s => s.recovery)
   const copies = readRecoveryCopies()
   const exportCurrent = () => {
     try {
-      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState()), gameBackupFilename())
-      setMessage('Backup della partita scaricato. Conservalo anche fuori da questo computer.')
+      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState()), gameBackupFilename())
+      setMessage(catalogRecovery ? 'Backup della campagna scaricato senza catalogo danneggiato. Scarica separatamente l’originale da recuperare.' : 'Backup della partita scaricato. Conservalo anche fuori da questo computer.')
       setError(null)
     } catch { setError('Non riesco a scaricare il backup. Riprova dal browser.'); setMessage(null) }
   }
@@ -50,6 +52,12 @@ export function BackupPanel() {
     <h2 className="text-lg font-bold">Backup della partita</h2>
     <p className="text-sm">Salva i progressi di entrambi i giocatori, squadre, deposito, mappe e battaglia. Il ripristino conserva HP e status; i codici QR e le impostazioni del pubblico restano separati.</p>
     <div className="pu-backup-overview">
+    {catalogRecovery && <div role="alert"><p>Il catalogo interazioni richiede recupero. Il backup conserva la campagna e omette quel catalogo; l’originale resta intatto nel browser. Prima di sostituirlo, scaricalo separatamente e recuperalo dall’editor Interazioni.</p>
+      <button type="button" disabled={catalogRecovery.raw === null} onClick={() => {
+        try { downloadGameBackup(catalogRecovery.raw!, 'arkamon-interazioni-originale-da-recuperare.json'); setError(null) }
+        catch { setError('Non riesco a scaricare il catalogo originale. Non cancellare i dati del browser e riprova.') }
+      }}>Scarica originale da recuperare</button>
+    </div>}
     {backupWarning && <p role="status" className="text-sm">{backupWarning}</p>}
     {copies.length > 0 && <div className="rounded border border-current p-3 text-sm">
       <p className="font-bold">Copie automatiche dei progressi precedenti</p>

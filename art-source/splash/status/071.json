@@ -24,17 +24,23 @@
     "bottom": 0.8
   },
   "generatedAt": "2026-10-25T19:47:40.912Z",
-  "compositionPolicy": "hero-focus",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0.287,
+    "top": 0.17,
     "right": 0.716,
-    "bottom": 0.845,
-    "top": 0.17
+    "bottom": 0.845
   },
   "focusBounds": {
     "left": 0.37,
     "right": 0.568,
     "bottom": 0.77,
     "top": 0.303
+  },
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
   }
 }

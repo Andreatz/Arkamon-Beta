@@ -1,0 +1,52 @@
+{
+  "id": 18,
+  "name": "Clastoom",
+  "type": "Terra",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-368388eb-a04d-43a4-875f-a5ae0fc4cef8.png",
+  "sourceMaster": "output/splash-art/originals/018-clastoom-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/018-clastoom.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/018-clastoom.webp",
+  "promptFile": "art-source/splash/prompts/018-clastoom-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 689400,
+  "sha256": "c6a8b8bb998bf66fbc8413af59cc31d243b180e04ac42afea0448fa8839c402f",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:18:09.795Z",
+  "reviewedAt": "2026-10-26T00:18:09.796Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.27,
+    "top": 0.1,
+    "right": 0.65,
+    "bottom": 0.86
+  },
+  "displayScale": 0.748684,
+  "displayOffset": {
+    "x": 0.00994735999999996,
+    "y": 0.029973680000000003
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/018-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

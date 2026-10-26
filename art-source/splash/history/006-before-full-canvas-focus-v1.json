@@ -1,0 +1,52 @@
+{
+  "id": 6,
+  "name": "Darklaw",
+  "type": "Oscurità",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17578-f7c3-78c0-b773-f8ab36a9bbfa\\exec-4155b1af-9f8b-4929-8422-966fa857654d.png",
+  "sourceMaster": "output/splash-art/originals/006-darklaw-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/006-darklaw.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/006-darklaw.webp",
+  "promptFile": "art-source/splash/prompts/006-darklaw-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 585984,
+  "sha256": "3c016eae80ecb0b90fe210d7b031b46164b719ba78adc116289b30b9ad6a1d47",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:01:49.543Z",
+  "reviewedAt": "2026-10-26T00:01:49.544Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.22,
+    "top": 0,
+    "right": 0.93,
+    "bottom": 0.97
+  },
+  "focusBounds": {
+    "left": 0.28,
+    "top": 0.14,
+    "right": 0.61,
+    "bottom": 0.75
+  },
+  "displayScale": 0.932786,
+  "displayOffset": {
+    "x": 0.03130322999999996,
+    "y": 0.06630322999999999
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/006-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

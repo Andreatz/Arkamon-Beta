@@ -2,47 +2,51 @@
   "id": 93,
   "name": "Pyrodil",
   "type": "Fuoco",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17471-00ca-7513-a0cc-5a12e9f4cd14\\exec-5eacce4a-87a6-45f3-943a-4e56d4088e18.png",
-  "sourceMaster": "output/splash-art/originals/093-pyrodil-v2-centered.png",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-de4a2cf9-c8ed-41d9-b90d-6fa8034def8e.png",
+  "sourceMaster": "output/splash-art/originals/093-pyrodil-fullscreen-source-v3.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/093-pyrodil.webp",
   "runtimePath": "/backgrounds/arkamon-splash/093-pyrodil.webp",
-  "promptFile": "art-source/splash/prompts/093-pyrodil.txt",
+  "promptFile": "art-source/splash/prompts/093-pyrodil-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 574798,
-  "sha256": "f80230d1f5b24e059499507f32e74087ee37f005540fe96ee5fa0b14ad23b314",
+  "bytes": 581342,
+  "sha256": "37e75dda3045fb7fca8eda414f5d45e8d1cee9138e556c9d44ba18143643392e",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:30:40.408Z",
+  "generatedAt": "2026-10-26T11:09:46.798Z",
+  "reviewedAt": "2026-10-26T11:09:46.799Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.365,
-    "top": 0.315,
-    "right": 0.64,
-    "bottom": 0.73
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
-  "compositionPolicy": "hero-focus",
   "focusBounds": {
-    "left": 0.405,
-    "top": 0.388,
-    "right": 0.579,
-    "bottom": 0.681
+    "left": 0.29,
+    "top": 0.23,
+    "right": 0.61,
+    "bottom": 0.785
   },
-  "displayScale": 1.7747,
-  "displayOffset": {
-    "x": -0.0058,
-    "y": -0.0312
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/093-before-fullscreen-source-v3.json"
   },
-  "reviewedAt": "2026-10-25T20:54:59.338Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+  }
 }

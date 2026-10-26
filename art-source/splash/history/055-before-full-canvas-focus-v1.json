@@ -1,0 +1,52 @@
+{
+  "id": 55,
+  "name": "Peek-a-buu",
+  "type": "Oscurità",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-36a9767c-d839-4cef-b258-4c77ee21fe9a.png",
+  "sourceMaster": "output/splash-art/originals/055-peek-a-buu-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/055-peek-a-buu.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/055-peek-a-buu.webp",
+  "promptFile": "art-source/splash/prompts/055-peek-a-buu-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 585166,
+  "sha256": "25081a3337f1751572f045ee172f56296935dafb3c9d1508c25950220b5d24c7",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:42:52.542Z",
+  "reviewedAt": "2026-10-26T00:42:52.543Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.3,
+    "top": 0.13,
+    "right": 0.66,
+    "bottom": 0.91
+  },
+  "displayScale": 0.729487,
+  "displayOffset": {
+    "x": -0.00541026,
+    "y": 0.00041025999999999563
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/055-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

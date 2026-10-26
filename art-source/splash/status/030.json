@@ -18,7 +18,7 @@
   "sha256": "bc408b1216a1e0a6092a2ea5450001b788e250c3198af6bb010c012185f74fba",
   "status": "approved-visual",
   "generatedAt": "2026-10-25T19:53:15.603Z",
-  "compositionPolicy": "hero-focus",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0.295,
     "top": 0.08,
@@ -34,5 +34,11 @@
   "visualReview": {
     "method": "manual conservative visual envelopes on generated source",
     "notes": "New hero standard: measured focus includes face/forehead markings and central chest/torso. Outer ear/leaf tips, legs, rear flanks and tail are part of the full subject bounds and may fall under UI. Official form design inspected. No live UI test claimed."
+  },
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
   }
 }

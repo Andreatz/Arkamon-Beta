@@ -1,0 +1,52 @@
+{
+  "id": 19,
+  "name": "Colussand",
+  "type": "Terra",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-9e977234-1b30-4b6f-a4a5-c0f5be8f5076.png",
+  "sourceMaster": "output/splash-art/originals/019-colussand-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/019-colussand.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/019-colussand.webp",
+  "promptFile": "art-source/splash/prompts/019-colussand.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 608392,
+  "sha256": "9e868738cbd80c79c010cd2a6dcdf75dfbf72111cb51566d10bb7cfc8dd7e589",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:23:47.308Z",
+  "subjectBounds": {
+    "left": 0.39,
+    "top": 0.32,
+    "right": 0.615,
+    "bottom": 0.77
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope",
+    "notes": "Exact reference inspected; all horns, limbs, tail or sand vortex visible inside safe zone. No live UI claim."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.427,
+    "top": 0.39,
+    "right": 0.575,
+    "bottom": 0.68
+  },
+  "displayScale": 1.7931,
+  "displayOffset": {
+    "x": -0.0218,
+    "y": -0.0328
+  },
+  "reviewedAt": "2026-10-25T20:54:59.263Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

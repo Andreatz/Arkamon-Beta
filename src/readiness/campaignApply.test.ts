@@ -123,6 +123,19 @@ describe('applicazione durevole della sola configurazione', () => {
     expect(recoverCampaignConfigurationImport().ok).toBe(false)
     expect(context.values.has(CAMPAIGN_IMPORT_RECOVERY_KEY)).toBe(true)
   })
+  it.each(['complete', 'rollback'] as const)('non sovrascrive un catalogo modificato dopo il crash durante il recovery %s', operation => {
+    const config = configuration(), afterCatalog = JSON.stringify({ state: { interactions: [entry] }, version: 0 })
+    const external = { ...entry, id: 'external-change', title: 'Modifica successiva al crash' }
+    const unrelatedCatalog = JSON.stringify({ state: { interactions: [external] }, version: 0 })
+    context.interactions = [external]
+    context.values.set(catalogKey, unrelatedCatalog)
+    context.values.set(CAMPAIGN_IMPORT_RECOVERY_KEY, JSON.stringify({ version: 1, beforeCatalog: null, afterCatalog, beforeLeague: null, afterLeague: config.league }))
+    if (operation === 'complete') (context.game.league as { config: unknown }).config = config.league
+    const saved = new Map(context.values)
+    expect(recoverCampaignConfigurationImport()).toMatchObject({ ok: false, message: expect.stringMatching(/catalogo.*cambiato/i) })
+    expect(context.values).toEqual(saved)
+    expect(context.interactions).toEqual([external])
+  })
   it('blocca la sostituzione dei contenuti durante la gara Lega', () => {
     ;(context.game.league as { players: Record<number, { attempt: number }> }).players[1].attempt = 1
     expect(applyCampaignConfiguration(configuration()).ok).toBe(false)

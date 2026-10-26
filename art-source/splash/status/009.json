@@ -24,7 +24,7 @@
     "bottom": 0.8
   },
   "generatedAt": "2026-10-25T19:51:39.097Z",
-  "compositionPolicy": "hero-focus",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0.297,
     "top": 0.1,
@@ -38,5 +38,11 @@
     "bottom": 0.738
   },
   "reviewedAt": "2026-10-25T19:51:39.522Z",
-  "reviewNotes": "Larger preserved artwork restored after the user clarified that face and torso, rather than all extremities, must stay clear of UI."
+  "reviewNotes": "Larger preserved artwork restored after the user clarified that face and torso, rather than all extremities, must stay clear of UI.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+  }
 }

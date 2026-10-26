@@ -3,6 +3,7 @@ import { ALLENATORI, POKEMON_BASE, getAllenatoriInLuogo, getIncontri } from '@/d
 import { LOCAL_MAPS } from '@/data/localMaps'
 import { assetUrl } from '@/utils/assetUrl'
 import { useInteractionStore } from './interactionStore'
+import { useInteractionRecoveryStatus } from './interactionRecovery'
 import { newInteractionDefinition, type InteractionAction, type InteractionDefinition } from './types'
 import { exportTiledInteractions, importTiledInteractions } from './tiledAdapter'
 import './interactions.css'
@@ -22,6 +23,9 @@ export function AdminInteractionEditor() {
   const remove = useInteractionStore((s) => s.removeInteraction)
   const importCatalog = useInteractionStore((s) => s.importCatalog)
   const exportCatalog = useInteractionStore((s) => s.exportCatalog)
+  const replaceDamagedCatalog = useInteractionStore((s) => s.replaceDamagedCatalog)
+  const recovery = useInteractionRecoveryStatus((s) => s.recovery)
+  const [acceptRecovery, setAcceptRecovery] = useState(false)
   const [mapId, setMapId] = useState('Venezia')
   const map = LOCAL_MAPS[mapId]
   const [draft, setDraft] = useState<InteractionDefinition>(() => createDraft(mapId, map.startNode))
@@ -49,6 +53,11 @@ export function AdminInteractionEditor() {
   return <section className="interaction-editor" aria-label="Editor delle interazioni">
     <h2>Interazioni dei pallini</h2>
     <p>I numeri compaiono soltanto in questo editor. Le strade e le posizioni rimangono quelle delle foto. Le configurazioni vuote lasciano disponibili le attività attuali.</p>
+    {recovery && <section role="alert" aria-label="Recupero catalogo interazioni">
+      <h3>Catalogo da recuperare</h3><p>{recovery.error}</p>
+      <p>Le interazioni salvate sono sospese. L’originale è conservato: scaricalo prima di sostituirlo con un catalogo valido nell’area Importa / esporta.</p>
+      <button type="button" className="arka-button-secondary" disabled={recovery.raw === null} onClick={() => download('arkamon-interazioni-originale-da-recuperare.json', recovery.raw!)}>Scarica originale da recuperare</button>
+    </section>}
     <label>Luogo<select value={mapId} onChange={(e) => {
       const id = e.target.value; setMapId(id); setDraft(createDraft(id, LOCAL_MAPS[id].startNode)); setMessage('')
     }}>{maps.map((item) => <option key={item.id} value={item.id}>{item.id.replace(/_/g, ' ')}</option>)}</select></label>
@@ -95,7 +104,7 @@ export function AdminInteractionEditor() {
         <label>{section === 'cost' ? 'Masterball da spendere' : 'Masterball da assegnare'}<input type="number" min={0} max={999} value={draft[section].items.masterball ?? 0} onChange={(e) => changeNumber(section, 'masterball', e.target.value)} /></label>
       </fieldset>)}
       <p className="interaction-note">L’interazione conclude il turno: due movimenti oppure un movimento e un’interazione. L’Arkastore si apre gratuitamente; solo l’acquisto del carrello conclude il turno. Negli incontri il costo viene speso all’avvio; il premio aggiuntivo arriva solo alla vittoria o cattura. Restano le ricompense ordinarie degli allenatori.</p>
-      <div className="interaction-actions"><button className="arka-button" onClick={() => setMessage(save(draft) ?? 'Interazione salvata.')}>Salva interazione</button>
+      <div className="interaction-actions"><button className="arka-button" disabled={!!recovery} onClick={() => setMessage(save(draft) ?? 'Interazione salvata.')}>Salva interazione</button>
         <button className="arka-button-secondary" onClick={() => { setDraft(createDraft(mapId, draft.nodeId)); setMessage('Nuova interazione sul pallino selezionato.') }}>Nuova sul pallino</button>
         <button className="arka-button-secondary" disabled={!interactions.some((entry) => entry.id === draft.id)} onClick={() => { const error = remove(draft.id); setMessage(error ?? 'Interazione eliminata.'); if (!error) setDraft(createDraft(mapId, draft.nodeId)) }}>Elimina interazione</button>
       </div>
@@ -105,16 +114,22 @@ export function AdminInteractionEditor() {
       <p>Il catalogo JSON contiene tutte le mappe. Il file Tiled modifica soltanto le interazioni del luogo selezionato: coordinate e collegamenti del gioco non vengono riscritti. Metti il file Tiled accanto al PNG originale per visualizzare lo sfondo.</p>
       <label>Configurazione delle interazioni<textarea rows={8} value={transfer} onChange={(e) => setTransfer(e.target.value)} /></label>
       <div className="interaction-actions">
-        <button className="arka-button-secondary" onClick={() => setTransfer(exportCatalog())}>Prepara esportazione</button>
-        <button className="arka-button-secondary" onClick={() => download('arkamon-interazioni.json', exportCatalog())}>Scarica catalogo</button>
-        <button className="arka-button" onClick={() => { const error = importCatalog(transfer); setMessage(error ?? 'Catalogo importato.'); if (!error) setDraft(createDraft(mapId, map.startNode)) }}>Sostituisci catalogo con questo JSON</button>
-        <button className="arka-button-secondary" onClick={() => download(`${mapId}.tmj`, exportTiledInteractions(map, interactions, dimensions.width, dimensions.height))}>Esporta luogo per Tiled</button>
-        <button className="arka-button-secondary" onClick={() => {
+        <button className="arka-button-secondary" disabled={!!recovery} onClick={() => setTransfer(exportCatalog())}>Prepara esportazione</button>
+        <button className="arka-button-secondary" disabled={!!recovery} onClick={() => download('arkamon-interazioni.json', exportCatalog())}>Scarica catalogo</button>
+        <button className="arka-button" disabled={!!recovery} onClick={() => { const error = importCatalog(transfer); setMessage(error ?? 'Catalogo importato.'); if (!error) setDraft(createDraft(mapId, map.startNode)) }}>Sostituisci catalogo con questo JSON</button>
+        <button className="arka-button-secondary" disabled={!!recovery} onClick={() => download(`${mapId}.tmj`, exportTiledInteractions(map, interactions, dimensions.width, dimensions.height))}>Esporta luogo per Tiled</button>
+        <button className="arka-button-secondary" disabled={!!recovery} onClick={() => {
           const result = importTiledInteractions(transfer, interactions)
           if (result.error) setMessage(result.error)
           else setMessage(importCatalog(JSON.stringify({ version: 1, interactions: result.interactions })) ?? 'Interazioni del luogo importate da Tiled.')
         }}>Importa proprietà Tiled</button>
       </div>
+      {recovery && <div>
+        <label><input type="checkbox" checked={acceptRecovery} onChange={event => setAcceptRecovery(event.target.checked)} />Ho conservato l’originale e autorizzo la sostituzione con il catalogo JSON qui sopra.</label>
+        <button type="button" className="arka-button" disabled={!acceptRecovery} onClick={() => {
+          const error = replaceDamagedCatalog(transfer); setMessage(error ?? 'Catalogo recuperato e salvato.'); if (!error) { setAcceptRecovery(false); setDraft(createDraft(mapId, map.startNode)) }
+        }}>Sostituisci archivio da recuperare</button>
+      </div>}
     </details>
   </section>
 }

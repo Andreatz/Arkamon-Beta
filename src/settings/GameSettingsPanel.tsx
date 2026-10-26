@@ -15,7 +15,7 @@ export function GameSettingsPanel() {
   const muted = useGameStore((state) => state.audioMuted)
   const setMuted = useGameStore((state) => state.setAudioMuted)
   return <section aria-label="Impostazioni del gioco" className="game-settings-artwork space-y-5">
-    <h3 className="text-lg font-bold">Suoni e animazioni</h3>
+    <h2 className="text-lg font-bold">Suoni e animazioni</h2>
     <label className="game-audio-toggle" data-menu-artwork={MENU_ARTWORK_MODE}><input type="checkbox" checked={!muted} onChange={(event) => setMuted(!event.target.checked)} />{MENU_SVG_ARTWORK_ENABLED && <img src={assetUrl(`/ui/studio/Scuro/toggle-${muted ? 'off' : 'on'}.svg`)} alt="" draggable={false} />}<span>Audio attivo</span></label>
     <label className="block">Volume musica: {Math.round(musicVolume * 100)}%
       <input className="mt-2 block w-full" aria-label="Volume musica" type="range" min="0" max="100" step="1" value={Math.round(musicVolume * 100)} onChange={(event) => setPreferences({ musicVolume: Number(event.target.value) / 100 })} />

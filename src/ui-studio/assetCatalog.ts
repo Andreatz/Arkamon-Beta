@@ -3,6 +3,776 @@ import type { UiBuiltinAsset } from './types'
 
 export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
   {
+    "id": "builtin:backgrounds/arkamon-splash/001-vyrath.webp",
+    "name": "001 vyrath",
+    "source": "/backgrounds/arkamon-splash/001-vyrath.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/002-vyrath.webp",
+    "name": "002 vyrath",
+    "source": "/backgrounds/arkamon-splash/002-vyrath.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/003-vyrath.webp",
+    "name": "003 vyrath",
+    "source": "/backgrounds/arkamon-splash/003-vyrath.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/004-vyrath.webp",
+    "name": "004 vyrath",
+    "source": "/backgrounds/arkamon-splash/004-vyrath.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/005-darklaw.webp",
+    "name": "005 darklaw",
+    "source": "/backgrounds/arkamon-splash/005-darklaw.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/006-darklaw.webp",
+    "name": "006 darklaw",
+    "source": "/backgrounds/arkamon-splash/006-darklaw.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/007-darklaw.webp",
+    "name": "007 darklaw",
+    "source": "/backgrounds/arkamon-splash/007-darklaw.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/008-darklaw.webp",
+    "name": "008 darklaw",
+    "source": "/backgrounds/arkamon-splash/008-darklaw.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/009-felyss.webp",
+    "name": "009 felyss",
+    "source": "/backgrounds/arkamon-splash/009-felyss.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/010-felyss.webp",
+    "name": "010 felyss",
+    "source": "/backgrounds/arkamon-splash/010-felyss.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/011-felyss.webp",
+    "name": "011 felyss",
+    "source": "/backgrounds/arkamon-splash/011-felyss.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/012-felyss.webp",
+    "name": "012 felyss",
+    "source": "/backgrounds/arkamon-splash/012-felyss.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/013-wormaren.webp",
+    "name": "013 wormaren",
+    "source": "/backgrounds/arkamon-splash/013-wormaren.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/014-wormaren.webp",
+    "name": "014 wormaren",
+    "source": "/backgrounds/arkamon-splash/014-wormaren.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/015-wormaren.webp",
+    "name": "015 wormaren",
+    "source": "/backgrounds/arkamon-splash/015-wormaren.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/016-clastoom.webp",
+    "name": "016 clastoom",
+    "source": "/backgrounds/arkamon-splash/016-clastoom.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/017-clastoom.webp",
+    "name": "017 clastoom",
+    "source": "/backgrounds/arkamon-splash/017-clastoom.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/018-clastoom.webp",
+    "name": "018 clastoom",
+    "source": "/backgrounds/arkamon-splash/018-clastoom.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/019-colussand.webp",
+    "name": "019 colussand",
+    "source": "/backgrounds/arkamon-splash/019-colussand.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/020-handipus.webp",
+    "name": "020 handipus",
+    "source": "/backgrounds/arkamon-splash/020-handipus.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/021-shrody.webp",
+    "name": "021 shrody",
+    "source": "/backgrounds/arkamon-splash/021-shrody.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/022-voltrake.webp",
+    "name": "022 voltrake",
+    "source": "/backgrounds/arkamon-splash/022-voltrake.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/023-sparkly.webp",
+    "name": "023 sparkly",
+    "source": "/backgrounds/arkamon-splash/023-sparkly.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/024-grimbolt.webp",
+    "name": "024 grimbolt",
+    "source": "/backgrounds/arkamon-splash/024-grimbolt.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/025-grimbolt.webp",
+    "name": "025 grimbolt",
+    "source": "/backgrounds/arkamon-splash/025-grimbolt.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/026-ampereel.webp",
+    "name": "026 ampereel",
+    "source": "/backgrounds/arkamon-splash/026-ampereel.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/027-ampereel.webp",
+    "name": "027 ampereel",
+    "source": "/backgrounds/arkamon-splash/027-ampereel.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/028-silvard.webp",
+    "name": "028 silvard",
+    "source": "/backgrounds/arkamon-splash/028-silvard.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/029-silvard.webp",
+    "name": "029 silvard",
+    "source": "/backgrounds/arkamon-splash/029-silvard.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/030-eclyps.webp",
+    "name": "030 eclyps",
+    "source": "/backgrounds/arkamon-splash/030-eclyps.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/031-eclyps.webp",
+    "name": "031 eclyps",
+    "source": "/backgrounds/arkamon-splash/031-eclyps.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/032-blazion.webp",
+    "name": "032 blazion",
+    "source": "/backgrounds/arkamon-splash/032-blazion.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/033-blazion.webp",
+    "name": "033 blazion",
+    "source": "/backgrounds/arkamon-splash/033-blazion.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/034-crawgoyle.webp",
+    "name": "034 crawgoyle",
+    "source": "/backgrounds/arkamon-splash/034-crawgoyle.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/035-crawgoyle.webp",
+    "name": "035 crawgoyle",
+    "source": "/backgrounds/arkamon-splash/035-crawgoyle.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/036-chimzap.webp",
+    "name": "036 chimzap",
+    "source": "/backgrounds/arkamon-splash/036-chimzap.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/037-chimzap.webp",
+    "name": "037 chimzap",
+    "source": "/backgrounds/arkamon-splash/037-chimzap.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/038-chimzap.webp",
+    "name": "038 chimzap",
+    "source": "/backgrounds/arkamon-splash/038-chimzap.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/039-rs-219.webp",
+    "name": "039 rs 219",
+    "source": "/backgrounds/arkamon-splash/039-rs-219.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/040-rs-219.webp",
+    "name": "040 rs 219",
+    "source": "/backgrounds/arkamon-splash/040-rs-219.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/041-rs-219.webp",
+    "name": "041 rs 219",
+    "source": "/backgrounds/arkamon-splash/041-rs-219.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/042-felvex.webp",
+    "name": "042 felvex",
+    "source": "/backgrounds/arkamon-splash/042-felvex.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/043-felvex.webp",
+    "name": "043 felvex",
+    "source": "/backgrounds/arkamon-splash/043-felvex.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/044-felvex.webp",
+    "name": "044 felvex",
+    "source": "/backgrounds/arkamon-splash/044-felvex.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/045-spectron.webp",
+    "name": "045 spectron",
+    "source": "/backgrounds/arkamon-splash/045-spectron.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/046-spectron.webp",
+    "name": "046 spectron",
+    "source": "/backgrounds/arkamon-splash/046-spectron.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/047-weedrug.webp",
+    "name": "047 weedrug",
+    "source": "/backgrounds/arkamon-splash/047-weedrug.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/048-weedrug.webp",
+    "name": "048 weedrug",
+    "source": "/backgrounds/arkamon-splash/048-weedrug.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/049-constrix.webp",
+    "name": "049 constrix",
+    "source": "/backgrounds/arkamon-splash/049-constrix.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/050-constrix.webp",
+    "name": "050 constrix",
+    "source": "/backgrounds/arkamon-splash/050-constrix.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/051-goliash.webp",
+    "name": "051 goliash",
+    "source": "/backgrounds/arkamon-splash/051-goliash.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/052-leafrex.webp",
+    "name": "052 leafrex",
+    "source": "/backgrounds/arkamon-splash/052-leafrex.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/053-leafrex.webp",
+    "name": "053 leafrex",
+    "source": "/backgrounds/arkamon-splash/053-leafrex.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/054-leafrex.webp",
+    "name": "054 leafrex",
+    "source": "/backgrounds/arkamon-splash/054-leafrex.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/055-peek-a-buu.webp",
+    "name": "055 peek a buu",
+    "source": "/backgrounds/arkamon-splash/055-peek-a-buu.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/056-deephion.webp",
+    "name": "056 deephion",
+    "source": "/backgrounds/arkamon-splash/056-deephion.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/057-deephion.webp",
+    "name": "057 deephion",
+    "source": "/backgrounds/arkamon-splash/057-deephion.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/058-shabyss.webp",
+    "name": "058 shabyss",
+    "source": "/backgrounds/arkamon-splash/058-shabyss.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/059-shabyss.webp",
+    "name": "059 shabyss",
+    "source": "/backgrounds/arkamon-splash/059-shabyss.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/060-shabyss.webp",
+    "name": "060 shabyss",
+    "source": "/backgrounds/arkamon-splash/060-shabyss.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/061-wailoom.webp",
+    "name": "061 wailoom",
+    "source": "/backgrounds/arkamon-splash/061-wailoom.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/062-fluffet.webp",
+    "name": "062 fluffet",
+    "source": "/backgrounds/arkamon-splash/062-fluffet.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/063-fluffet.webp",
+    "name": "063 fluffet",
+    "source": "/backgrounds/arkamon-splash/063-fluffet.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/064-hopz.webp",
+    "name": "064 hopz",
+    "source": "/backgrounds/arkamon-splash/064-hopz.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/065-piox.webp",
+    "name": "065 piox",
+    "source": "/backgrounds/arkamon-splash/065-piox.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/066-hoppiox.webp",
+    "name": "066 hoppiox",
+    "source": "/backgrounds/arkamon-splash/066-hoppiox.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/067-fearstraw.webp",
+    "name": "067 fearstraw",
+    "source": "/backgrounds/arkamon-splash/067-fearstraw.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/068-fearstraw.webp",
+    "name": "068 fearstraw",
+    "source": "/backgrounds/arkamon-splash/068-fearstraw.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/069-lickard.webp",
+    "name": "069 lickard",
+    "source": "/backgrounds/arkamon-splash/069-lickard.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/070-lickard.webp",
+    "name": "070 lickard",
+    "source": "/backgrounds/arkamon-splash/070-lickard.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/071-blizzaquil.webp",
+    "name": "071 blizzaquil",
+    "source": "/backgrounds/arkamon-splash/071-blizzaquil.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/072-blizzaquil.webp",
+    "name": "072 blizzaquil",
+    "source": "/backgrounds/arkamon-splash/072-blizzaquil.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/073-blizzaquil.webp",
+    "name": "073 blizzaquil",
+    "source": "/backgrounds/arkamon-splash/073-blizzaquil.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/074-impise.webp",
+    "name": "074 impise",
+    "source": "/backgrounds/arkamon-splash/074-impise.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/075-impise.webp",
+    "name": "075 impise",
+    "source": "/backgrounds/arkamon-splash/075-impise.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/076-impise.webp",
+    "name": "076 impise",
+    "source": "/backgrounds/arkamon-splash/076-impise.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/077-ignitor.webp",
+    "name": "077 ignitor",
+    "source": "/backgrounds/arkamon-splash/077-ignitor.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/078-trippix.webp",
+    "name": "078 trippix",
+    "source": "/backgrounds/arkamon-splash/078-trippix.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/079-cellgon.webp",
+    "name": "079 cellgon",
+    "source": "/backgrounds/arkamon-splash/079-cellgon.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/080-cellgon.webp",
+    "name": "080 cellgon",
+    "source": "/backgrounds/arkamon-splash/080-cellgon.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/081-cellgon.webp",
+    "name": "081 cellgon",
+    "source": "/backgrounds/arkamon-splash/081-cellgon.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/082-reliskull.webp",
+    "name": "082 reliskull",
+    "source": "/backgrounds/arkamon-splash/082-reliskull.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/083-cerebron.webp",
+    "name": "083 cerebron",
+    "source": "/backgrounds/arkamon-splash/083-cerebron.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/084-psycroak.webp",
+    "name": "084 psycroak",
+    "source": "/backgrounds/arkamon-splash/084-psycroak.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/085-psycroak.webp",
+    "name": "085 psycroak",
+    "source": "/backgrounds/arkamon-splash/085-psycroak.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/086-teslat.webp",
+    "name": "086 teslat",
+    "source": "/backgrounds/arkamon-splash/086-teslat.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/087-teslat.webp",
+    "name": "087 teslat",
+    "source": "/backgrounds/arkamon-splash/087-teslat.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/088-teslat.webp",
+    "name": "088 teslat",
+    "source": "/backgrounds/arkamon-splash/088-teslat.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/089-espeiry.webp",
+    "name": "089 espeiry",
+    "source": "/backgrounds/arkamon-splash/089-espeiry.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/090-espeiry.webp",
+    "name": "090 espeiry",
+    "source": "/backgrounds/arkamon-splash/090-espeiry.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/091-espeiry.webp",
+    "name": "091 espeiry",
+    "source": "/backgrounds/arkamon-splash/091-espeiry.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/092-pyrodil.webp",
+    "name": "092 pyrodil",
+    "source": "/backgrounds/arkamon-splash/092-pyrodil.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/093-pyrodil.webp",
+    "name": "093 pyrodil",
+    "source": "/backgrounds/arkamon-splash/093-pyrodil.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/094-pyrodil.webp",
+    "name": "094 pyrodil",
+    "source": "/backgrounds/arkamon-splash/094-pyrodil.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/095-beestrix.webp",
+    "name": "095 beestrix",
+    "source": "/backgrounds/arkamon-splash/095-beestrix.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/096-beestrix.webp",
+    "name": "096 beestrix",
+    "source": "/backgrounds/arkamon-splash/096-beestrix.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/097-beestrix.webp",
+    "name": "097 beestrix",
+    "source": "/backgrounds/arkamon-splash/097-beestrix.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/098-grooty.webp",
+    "name": "098 grooty",
+    "source": "/backgrounds/arkamon-splash/098-grooty.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/099-ervys.webp",
+    "name": "099 ervys",
+    "source": "/backgrounds/arkamon-splash/099-ervys.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/100-ervys.webp",
+    "name": "100 ervys",
+    "source": "/backgrounds/arkamon-splash/100-ervys.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/101-xesar.webp",
+    "name": "101 xesar",
+    "source": "/backgrounds/arkamon-splash/101-xesar.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/102-xesar.webp",
+    "name": "102 xesar",
+    "source": "/backgrounds/arkamon-splash/102-xesar.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/103-boomrock.webp",
+    "name": "103 boomrock",
+    "source": "/backgrounds/arkamon-splash/103-boomrock.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/104-boomrock.webp",
+    "name": "104 boomrock",
+    "source": "/backgrounds/arkamon-splash/104-boomrock.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/105-zoorian.webp",
+    "name": "105 zoorian",
+    "source": "/backgrounds/arkamon-splash/105-zoorian.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/106-zoorian.webp",
+    "name": "106 zoorian",
+    "source": "/backgrounds/arkamon-splash/106-zoorian.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/107-ao-shin.webp",
+    "name": "107 ao shin",
+    "source": "/backgrounds/arkamon-splash/107-ao-shin.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/108-aka-shin.webp",
+    "name": "108 aka shin",
+    "source": "/backgrounds/arkamon-splash/108-aka-shin.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/109-oniros.webp",
+    "name": "109 oniros",
+    "source": "/backgrounds/arkamon-splash/109-oniros.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/arkamon-splash/110-voider.webp",
+    "name": "110 voider",
+    "source": "/backgrounds/arkamon-splash/110-voider.webp",
+    "category": "Splash Arkamon",
+    "kind": "image"
+  },
+  {
     "id": "builtin:backgrounds/battle_forest.jpg",
     "name": "battle_forest",
     "source": "/backgrounds/battle_forest.jpg",
@@ -241,6 +1011,398 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "kind": "image"
   },
   {
+    "id": "builtin:ui/blu/banner-azioni.svg",
+    "name": "banner azioni",
+    "source": "/ui/blu/banner-azioni.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/banner-qr.svg",
+    "name": "banner qr",
+    "source": "/ui/blu/banner-qr.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/banner.svg",
+    "name": "banner",
+    "source": "/ui/blu/banner.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/barra-bianca.svg",
+    "name": "barra bianca",
+    "source": "/ui/blu/barra-bianca.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/barra-scura.svg",
+    "name": "barra scura",
+    "source": "/ui/blu/barra-scura.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/bottone-bianco.svg",
+    "name": "bottone bianco",
+    "source": "/ui/blu/bottone-bianco.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/bottone-selezionato.svg",
+    "name": "bottone selezionato",
+    "source": "/ui/blu/bottone-selezionato.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/bottone.svg",
+    "name": "bottone",
+    "source": "/ui/blu/bottone.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/box-1.svg",
+    "name": "box 1",
+    "source": "/ui/blu/box-1.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/box-2.svg",
+    "name": "box 2",
+    "source": "/ui/blu/box-2.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/box-inventario.svg",
+    "name": "box inventario",
+    "source": "/ui/blu/box-inventario.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/button-chiusura-rosso.svg",
+    "name": "button chiusura rosso",
+    "source": "/ui/blu/button-chiusura-rosso.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/button-chiusura.svg",
+    "name": "button chiusura",
+    "source": "/ui/blu/button-chiusura.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/button-circolare-check.svg",
+    "name": "button circolare check",
+    "source": "/ui/blu/button-circolare-check.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/button-circolare-off.svg",
+    "name": "button circolare off",
+    "source": "/ui/blu/button-circolare-off.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/button-circolare-on.svg",
+    "name": "button circolare on",
+    "source": "/ui/blu/button-circolare-on.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/checkbox.svg",
+    "name": "checkbox",
+    "source": "/ui/blu/checkbox.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/checker-off.svg",
+    "name": "checker off",
+    "source": "/ui/blu/checker-off.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/chiusura.svg",
+    "name": "chiusura",
+    "source": "/ui/blu/chiusura.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/cornice-arkamon.svg",
+    "name": "cornice arkamon",
+    "source": "/ui/blu/cornice-arkamon.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/cornice-piccola-selezionata.svg",
+    "name": "cornice piccola selezionata",
+    "source": "/ui/blu/cornice-piccola-selezionata.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/cornice-piccola.svg",
+    "name": "cornice piccola",
+    "source": "/ui/blu/cornice-piccola.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/cornice-ritratto.svg",
+    "name": "cornice ritratto",
+    "source": "/ui/blu/cornice-ritratto.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/cornice-selezione.svg",
+    "name": "cornice selezione",
+    "source": "/ui/blu/cornice-selezione.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/cornice.svg",
+    "name": "cornice",
+    "source": "/ui/blu/cornice.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/dialogo-bianco.svg",
+    "name": "dialogo bianco",
+    "source": "/ui/blu/dialogo-bianco.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/dialogo-scuro.svg",
+    "name": "dialogo scuro",
+    "source": "/ui/blu/dialogo-scuro.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/divisore-orizzontale.svg",
+    "name": "divisore orizzontale",
+    "source": "/ui/blu/divisore-orizzontale.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/divisori-orizzontali.svg",
+    "name": "divisori orizzontali",
+    "source": "/ui/blu/divisori-orizzontali.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/gemma.svg",
+    "name": "gemma",
+    "source": "/ui/blu/gemma.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icona-generica-accesa.svg",
+    "name": "icona generica accesa",
+    "source": "/ui/blu/icona-generica-accesa.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icona-generica.svg",
+    "name": "icona generica",
+    "source": "/ui/blu/icona-generica.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icona-home.svg",
+    "name": "icona home",
+    "source": "/ui/blu/icona-home.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icona-movimenti.svg",
+    "name": "icona movimenti",
+    "source": "/ui/blu/icona-movimenti.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icona-zaino.svg",
+    "name": "icona zaino",
+    "source": "/ui/blu/icona-zaino.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icone-menu.svg",
+    "name": "icone menu",
+    "source": "/ui/blu/icone-menu.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icone-mosse.svg",
+    "name": "icone mosse",
+    "source": "/ui/blu/icone-mosse.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icone-stati.svg",
+    "name": "icone stati",
+    "source": "/ui/blu/icone-stati.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icone-tipi-mosse.svg",
+    "name": "icone tipi mosse",
+    "source": "/ui/blu/icone-tipi-mosse.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/icone.svg",
+    "name": "icone",
+    "source": "/ui/blu/icone.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/indicatore-circolare-acceso.svg",
+    "name": "indicatore circolare acceso",
+    "source": "/ui/blu/indicatore-circolare-acceso.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/indicatore-circolare-spento.svg",
+    "name": "indicatore circolare spento",
+    "source": "/ui/blu/indicatore-circolare-spento.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/monete.svg",
+    "name": "monete",
+    "source": "/ui/blu/monete.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/pulsante-checkbox.svg",
+    "name": "pulsante checkbox",
+    "source": "/ui/blu/pulsante-checkbox.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/pulsante-freccia-destra.svg",
+    "name": "pulsante freccia destra",
+    "source": "/ui/blu/pulsante-freccia-destra.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/pulsante-freccia-sinistra.svg",
+    "name": "pulsante freccia sinistra",
+    "source": "/ui/blu/pulsante-freccia-sinistra.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/pulsante-fuga.svg",
+    "name": "pulsante fuga",
+    "source": "/ui/blu/pulsante-fuga.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/pulsante-negozio.svg",
+    "name": "pulsante negozio",
+    "source": "/ui/blu/pulsante-negozio.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/pulsanti-connessione.svg",
+    "name": "pulsanti connessione",
+    "source": "/ui/blu/pulsanti-connessione.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/pulsanti-sistema.svg",
+    "name": "pulsanti sistema",
+    "source": "/ui/blu/pulsanti-sistema.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/selettore-numerico.svg",
+    "name": "selettore numerico",
+    "source": "/ui/blu/selettore-numerico.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/slider-orizzontale.svg",
+    "name": "slider orizzontale",
+    "source": "/ui/blu/slider-orizzontale.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/slider-verticale.svg",
+    "name": "slider verticale",
+    "source": "/ui/blu/slider-verticale.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/squadra.svg",
+    "name": "squadra",
+    "source": "/ui/blu/squadra.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/toggle-off.svg",
+    "name": "toggle off",
+    "source": "/ui/blu/toggle-off.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/blu/toggle-on.svg",
+    "name": "toggle on",
+    "source": "/ui/blu/toggle-on.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
     "id": "builtin:ui/box_deposit.png",
     "name": "box_deposit",
     "source": "/ui/box_deposit.png",
@@ -251,6 +1413,104 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "id": "builtin:ui/cities.png",
     "name": "cities",
     "source": "/ui/cities.png",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/barra-giocatore.svg",
+    "name": "barra giocatore",
+    "source": "/ui/comuni/barra-giocatore.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/bottone-bronzo.svg",
+    "name": "bottone bronzo",
+    "source": "/ui/comuni/bottone-bronzo.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/bottone-grigio.svg",
+    "name": "bottone grigio",
+    "source": "/ui/comuni/bottone-grigio.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/capsula-lab-blu.svg",
+    "name": "capsula lab blu",
+    "source": "/ui/comuni/capsula-lab-blu.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/capsula-lab-nera.svg",
+    "name": "capsula lab nera",
+    "source": "/ui/comuni/capsula-lab-nera.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/capsula-lab-viola.svg",
+    "name": "capsula lab viola",
+    "source": "/ui/comuni/capsula-lab-viola.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/dialogo-lab.svg",
+    "name": "dialogo lab",
+    "source": "/ui/comuni/dialogo-lab.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/giocatore1.svg",
+    "name": "giocatore1",
+    "source": "/ui/comuni/giocatore1.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/giocatore2.svg",
+    "name": "giocatore2",
+    "source": "/ui/comuni/giocatore2.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/hp-bar-enemy.svg",
+    "name": "hp bar enemy",
+    "source": "/ui/comuni/hp-bar-enemy.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/hp-bar.svg",
+    "name": "hp bar",
+    "source": "/ui/comuni/hp-bar.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/infobox.svg",
+    "name": "infobox",
+    "source": "/ui/comuni/infobox.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/nuova-partita.svg",
+    "name": "nuova partita",
+    "source": "/ui/comuni/nuova-partita.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/comuni/percorso.svg",
+    "name": "percorso",
+    "source": "/ui/comuni/percorso.svg",
     "category": "Asset originali",
     "kind": "image"
   },
@@ -321,6 +1581,20 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "id": "builtin:ui/hp_bar.png",
     "name": "hp_bar",
     "source": "/ui/hp_bar.png",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/icone/Senza titolo-8.png",
+    "name": "Senza titolo 8",
+    "source": "/ui/icone/Senza titolo-8.png",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/icone/Senza titolo-9.png",
+    "name": "Senza titolo 9",
+    "source": "/ui/icone/Senza titolo-9.png",
     "category": "Asset originali",
     "kind": "image"
   },
@@ -780,9 +2054,3012 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "kind": "image"
   },
   {
+    "id": "builtin:ui/reference-assets/arkamon-logo.svg",
+    "name": "arkamon logo",
+    "source": "/ui/reference-assets/arkamon-logo.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/arkamon-logo.webp",
+    "name": "arkamon logo",
+    "source": "/ui/reference-assets/arkamon-logo.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/arrow-down.svg",
+    "name": "arrow down",
+    "source": "/ui/reference-assets/arrow-down.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/arrow-down.webp",
+    "name": "arrow down",
+    "source": "/ui/reference-assets/arrow-down.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/arrow-left.svg",
+    "name": "arrow left",
+    "source": "/ui/reference-assets/arrow-left.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/arrow-left.webp",
+    "name": "arrow left",
+    "source": "/ui/reference-assets/arrow-left.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/arrow-right.svg",
+    "name": "arrow right",
+    "source": "/ui/reference-assets/arrow-right.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/arrow-right.webp",
+    "name": "arrow right",
+    "source": "/ui/reference-assets/arrow-right.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-disabled.svg",
+    "name": "button disabled",
+    "source": "/ui/reference-assets/button-disabled.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-disabled.webp",
+    "name": "button disabled",
+    "source": "/ui/reference-assets/button-disabled.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-hover.svg",
+    "name": "button hover",
+    "source": "/ui/reference-assets/button-hover.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-hover.webp",
+    "name": "button hover",
+    "source": "/ui/reference-assets/button-hover.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-normal.svg",
+    "name": "button normal",
+    "source": "/ui/reference-assets/button-normal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-normal.webp",
+    "name": "button normal",
+    "source": "/ui/reference-assets/button-normal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-selected.svg",
+    "name": "button selected",
+    "source": "/ui/reference-assets/button-selected.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/button-selected.webp",
+    "name": "button selected",
+    "source": "/ui/reference-assets/button-selected.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/card-normal.svg",
+    "name": "card normal",
+    "source": "/ui/reference-assets/card-normal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/card-normal.webp",
+    "name": "card normal",
+    "source": "/ui/reference-assets/card-normal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/card-selected.svg",
+    "name": "card selected",
+    "source": "/ui/reference-assets/card-selected.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/card-selected.webp",
+    "name": "card selected",
+    "source": "/ui/reference-assets/card-selected.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/category-capture.svg",
+    "name": "category capture",
+    "source": "/ui/reference-assets/category-capture.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/category-capture.webp",
+    "name": "category capture",
+    "source": "/ui/reference-assets/category-capture.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/category-heal.svg",
+    "name": "category heal",
+    "source": "/ui/reference-assets/category-heal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/category-heal.webp",
+    "name": "category heal",
+    "source": "/ui/reference-assets/category-heal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/category-tools.svg",
+    "name": "category tools",
+    "source": "/ui/reference-assets/category-tools.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/category-tools.webp",
+    "name": "category tools",
+    "source": "/ui/reference-assets/category-tools.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/close-control.svg",
+    "name": "close control",
+    "source": "/ui/reference-assets/close-control.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/close-control.webp",
+    "name": "close control",
+    "source": "/ui/reference-assets/close-control.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/coin.svg",
+    "name": "coin",
+    "source": "/ui/reference-assets/coin.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/coin.webp",
+    "name": "coin",
+    "source": "/ui/reference-assets/coin.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/corner-gold.svg",
+    "name": "corner gold",
+    "source": "/ui/reference-assets/corner-gold.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/corner-gold.webp",
+    "name": "corner gold",
+    "source": "/ui/reference-assets/corner-gold.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/corner-rune.svg",
+    "name": "corner rune",
+    "source": "/ui/reference-assets/corner-rune.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/corner-rune.webp",
+    "name": "corner rune",
+    "source": "/ui/reference-assets/corner-rune.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-disabled.svg",
+    "name": "creature row disabled",
+    "source": "/ui/reference-assets/creature-row-disabled.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-disabled.webp",
+    "name": "creature row disabled",
+    "source": "/ui/reference-assets/creature-row-disabled.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-hover.svg",
+    "name": "creature row hover",
+    "source": "/ui/reference-assets/creature-row-hover.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-hover.webp",
+    "name": "creature row hover",
+    "source": "/ui/reference-assets/creature-row-hover.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-normal.svg",
+    "name": "creature row normal",
+    "source": "/ui/reference-assets/creature-row-normal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-normal.webp",
+    "name": "creature row normal",
+    "source": "/ui/reference-assets/creature-row-normal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-selected.svg",
+    "name": "creature row selected",
+    "source": "/ui/reference-assets/creature-row-selected.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-row-selected.webp",
+    "name": "creature row selected",
+    "source": "/ui/reference-assets/creature-row-selected.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-tile-normal.svg",
+    "name": "creature tile normal",
+    "source": "/ui/reference-assets/creature-tile-normal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-tile-normal.webp",
+    "name": "creature tile normal",
+    "source": "/ui/reference-assets/creature-tile-normal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-tile-selected.svg",
+    "name": "creature tile selected",
+    "source": "/ui/reference-assets/creature-tile-selected.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/creature-tile-selected.webp",
+    "name": "creature tile selected",
+    "source": "/ui/reference-assets/creature-tile-selected.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/divider-gem.svg",
+    "name": "divider gem",
+    "source": "/ui/reference-assets/divider-gem.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/divider-gem.webp",
+    "name": "divider gem",
+    "source": "/ui/reference-assets/divider-gem.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/divider-gold.svg",
+    "name": "divider gold",
+    "source": "/ui/reference-assets/divider-gold.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/divider-gold.webp",
+    "name": "divider gold",
+    "source": "/ui/reference-assets/divider-gold.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/divider-thin.svg",
+    "name": "divider thin",
+    "source": "/ui/reference-assets/divider-thin.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/divider-thin.webp",
+    "name": "divider thin",
+    "source": "/ui/reference-assets/divider-thin.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/evolution-empty.svg",
+    "name": "evolution empty",
+    "source": "/ui/reference-assets/evolution-empty.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/evolution-empty.webp",
+    "name": "evolution empty",
+    "source": "/ui/reference-assets/evolution-empty.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/evolution-locked.svg",
+    "name": "evolution locked",
+    "source": "/ui/reference-assets/evolution-locked.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/evolution-locked.webp",
+    "name": "evolution locked",
+    "source": "/ui/reference-assets/evolution-locked.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/filter-field-focus.svg",
+    "name": "filter field focus",
+    "source": "/ui/reference-assets/filter-field-focus.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/filter-field-focus.webp",
+    "name": "filter field focus",
+    "source": "/ui/reference-assets/filter-field-focus.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/filter-field.svg",
+    "name": "filter field",
+    "source": "/ui/reference-assets/filter-field.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/filter-field.webp",
+    "name": "filter field",
+    "source": "/ui/reference-assets/filter-field.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/gem-cyan.svg",
+    "name": "gem cyan",
+    "source": "/ui/reference-assets/gem-cyan.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/gem-cyan.webp",
+    "name": "gem cyan",
+    "source": "/ui/reference-assets/gem-cyan.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/habitat-frame.svg",
+    "name": "habitat frame",
+    "source": "/ui/reference-assets/habitat-frame.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/habitat-frame.webp",
+    "name": "habitat frame",
+    "source": "/ui/reference-assets/habitat-frame.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/header-empty.svg",
+    "name": "header empty",
+    "source": "/ui/reference-assets/header-empty.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/header-empty.webp",
+    "name": "header empty",
+    "source": "/ui/reference-assets/header-empty.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-book.svg",
+    "name": "icon book",
+    "source": "/ui/reference-assets/icon-book.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-book.webp",
+    "name": "icon book",
+    "source": "/ui/reference-assets/icon-book.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-capture.svg",
+    "name": "icon capture",
+    "source": "/ui/reference-assets/icon-capture.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-capture.webp",
+    "name": "icon capture",
+    "source": "/ui/reference-assets/icon-capture.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-filter.svg",
+    "name": "icon filter",
+    "source": "/ui/reference-assets/icon-filter.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-filter.webp",
+    "name": "icon filter",
+    "source": "/ui/reference-assets/icon-filter.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-height.svg",
+    "name": "icon height",
+    "source": "/ui/reference-assets/icon-height.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-height.webp",
+    "name": "icon height",
+    "source": "/ui/reference-assets/icon-height.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-lock.svg",
+    "name": "icon lock",
+    "source": "/ui/reference-assets/icon-lock.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-lock.webp",
+    "name": "icon lock",
+    "source": "/ui/reference-assets/icon-lock.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-search.svg",
+    "name": "icon search",
+    "source": "/ui/reference-assets/icon-search.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-search.webp",
+    "name": "icon search",
+    "source": "/ui/reference-assets/icon-search.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-seen.svg",
+    "name": "icon seen",
+    "source": "/ui/reference-assets/icon-seen.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-seen.webp",
+    "name": "icon seen",
+    "source": "/ui/reference-assets/icon-seen.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-talent.svg",
+    "name": "icon talent",
+    "source": "/ui/reference-assets/icon-talent.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-talent.webp",
+    "name": "icon talent",
+    "source": "/ui/reference-assets/icon-talent.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-weight.svg",
+    "name": "icon weight",
+    "source": "/ui/reference-assets/icon-weight.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/icon-weight.webp",
+    "name": "icon weight",
+    "source": "/ui/reference-assets/icon-weight.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-antidote.svg",
+    "name": "item antidote",
+    "source": "/ui/reference-assets/item-antidote.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-antidote.webp",
+    "name": "item antidote",
+    "source": "/ui/reference-assets/item-antidote.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-awakening.svg",
+    "name": "item awakening",
+    "source": "/ui/reference-assets/item-awakening.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-awakening.webp",
+    "name": "item awakening",
+    "source": "/ui/reference-assets/item-awakening.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-potion.svg",
+    "name": "item potion",
+    "source": "/ui/reference-assets/item-potion.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-potion.webp",
+    "name": "item potion",
+    "source": "/ui/reference-assets/item-potion.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-revive.svg",
+    "name": "item revive",
+    "source": "/ui/reference-assets/item-revive.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-revive.webp",
+    "name": "item revive",
+    "source": "/ui/reference-assets/item-revive.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-superpotion.svg",
+    "name": "item superpotion",
+    "source": "/ui/reference-assets/item-superpotion.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/item-superpotion.webp",
+    "name": "item superpotion",
+    "source": "/ui/reference-assets/item-superpotion.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/map-pin.svg",
+    "name": "map pin",
+    "source": "/ui/reference-assets/map-pin.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/map-pin.webp",
+    "name": "map pin",
+    "source": "/ui/reference-assets/map-pin.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-1.svg",
+    "name": "medal 1",
+    "source": "/ui/reference-assets/medal-1.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-1.webp",
+    "name": "medal 1",
+    "source": "/ui/reference-assets/medal-1.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-2.svg",
+    "name": "medal 2",
+    "source": "/ui/reference-assets/medal-2.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-2.webp",
+    "name": "medal 2",
+    "source": "/ui/reference-assets/medal-2.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-3.svg",
+    "name": "medal 3",
+    "source": "/ui/reference-assets/medal-3.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-3.webp",
+    "name": "medal 3",
+    "source": "/ui/reference-assets/medal-3.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-4.svg",
+    "name": "medal 4",
+    "source": "/ui/reference-assets/medal-4.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-4.webp",
+    "name": "medal 4",
+    "source": "/ui/reference-assets/medal-4.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-5.svg",
+    "name": "medal 5",
+    "source": "/ui/reference-assets/medal-5.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-5.webp",
+    "name": "medal 5",
+    "source": "/ui/reference-assets/medal-5.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-6.svg",
+    "name": "medal 6",
+    "source": "/ui/reference-assets/medal-6.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-6.webp",
+    "name": "medal 6",
+    "source": "/ui/reference-assets/medal-6.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-7.svg",
+    "name": "medal 7",
+    "source": "/ui/reference-assets/medal-7.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-7.webp",
+    "name": "medal 7",
+    "source": "/ui/reference-assets/medal-7.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-8.svg",
+    "name": "medal 8",
+    "source": "/ui/reference-assets/medal-8.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-8.webp",
+    "name": "medal 8",
+    "source": "/ui/reference-assets/medal-8.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-empty.svg",
+    "name": "medal empty",
+    "source": "/ui/reference-assets/medal-empty.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/medal-empty.webp",
+    "name": "medal empty",
+    "source": "/ui/reference-assets/medal-empty.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-arkadex-art.svg",
+    "name": "menu arkadex art",
+    "source": "/ui/reference-assets/menu-arkadex-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-arkadex-art.webp",
+    "name": "menu arkadex art",
+    "source": "/ui/reference-assets/menu-arkadex-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-bag-art.svg",
+    "name": "menu bag art",
+    "source": "/ui/reference-assets/menu-bag-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-bag-art.webp",
+    "name": "menu bag art",
+    "source": "/ui/reference-assets/menu-bag-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-card-normal.svg",
+    "name": "menu card normal",
+    "source": "/ui/reference-assets/menu-card-normal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-card-normal.webp",
+    "name": "menu card normal",
+    "source": "/ui/reference-assets/menu-card-normal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-card-selected.svg",
+    "name": "menu card selected",
+    "source": "/ui/reference-assets/menu-card-selected.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-card-selected.webp",
+    "name": "menu card selected",
+    "source": "/ui/reference-assets/menu-card-selected.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-deposit-art.svg",
+    "name": "menu deposit art",
+    "source": "/ui/reference-assets/menu-deposit-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-deposit-art.webp",
+    "name": "menu deposit art",
+    "source": "/ui/reference-assets/menu-deposit-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-diary-art.svg",
+    "name": "menu diary art",
+    "source": "/ui/reference-assets/menu-diary-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-diary-art.webp",
+    "name": "menu diary art",
+    "source": "/ui/reference-assets/menu-diary-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-map-art.svg",
+    "name": "menu map art",
+    "source": "/ui/reference-assets/menu-map-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-map-art.webp",
+    "name": "menu map art",
+    "source": "/ui/reference-assets/menu-map-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-register-art.svg",
+    "name": "menu register art",
+    "source": "/ui/reference-assets/menu-register-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-register-art.webp",
+    "name": "menu register art",
+    "source": "/ui/reference-assets/menu-register-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-save-art.svg",
+    "name": "menu save art",
+    "source": "/ui/reference-assets/menu-save-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-save-art.webp",
+    "name": "menu save art",
+    "source": "/ui/reference-assets/menu-save-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-settings-art.svg",
+    "name": "menu settings art",
+    "source": "/ui/reference-assets/menu-settings-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-settings-art.webp",
+    "name": "menu settings art",
+    "source": "/ui/reference-assets/menu-settings-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-team-art.svg",
+    "name": "menu team art",
+    "source": "/ui/reference-assets/menu-team-art.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/menu-team-art.webp",
+    "name": "menu team art",
+    "source": "/ui/reference-assets/menu-team-art.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/parchment-compact.svg",
+    "name": "parchment compact",
+    "source": "/ui/reference-assets/parchment-compact.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/parchment-compact.webp",
+    "name": "parchment compact",
+    "source": "/ui/reference-assets/parchment-compact.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/purchase-button-active.svg",
+    "name": "purchase button active",
+    "source": "/ui/reference-assets/purchase-button-active.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/purchase-button-active.webp",
+    "name": "purchase button active",
+    "source": "/ui/reference-assets/purchase-button-active.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/purchase-button.svg",
+    "name": "purchase button",
+    "source": "/ui/reference-assets/purchase-button.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/purchase-button.webp",
+    "name": "purchase button",
+    "source": "/ui/reference-assets/purchase-button.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/quantity-field.svg",
+    "name": "quantity field",
+    "source": "/ui/reference-assets/quantity-field.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/quantity-field.webp",
+    "name": "quantity field",
+    "source": "/ui/reference-assets/quantity-field.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/quantity-minus.svg",
+    "name": "quantity minus",
+    "source": "/ui/reference-assets/quantity-minus.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/quantity-minus.webp",
+    "name": "quantity minus",
+    "source": "/ui/reference-assets/quantity-minus.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/quantity-plus.svg",
+    "name": "quantity plus",
+    "source": "/ui/reference-assets/quantity-plus.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/quantity-plus.webp",
+    "name": "quantity plus",
+    "source": "/ui/reference-assets/quantity-plus.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/search-field-focus.svg",
+    "name": "search field focus",
+    "source": "/ui/reference-assets/search-field-focus.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/search-field-focus.webp",
+    "name": "search field focus",
+    "source": "/ui/reference-assets/search-field-focus.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/search-field.svg",
+    "name": "search field",
+    "source": "/ui/reference-assets/search-field.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/search-field.webp",
+    "name": "search field",
+    "source": "/ui/reference-assets/search-field.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-alchemy.svg",
+    "name": "sign alchemy",
+    "source": "/ui/reference-assets/sign-alchemy.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-alchemy.webp",
+    "name": "sign alchemy",
+    "source": "/ui/reference-assets/sign-alchemy.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-battle.svg",
+    "name": "sign battle",
+    "source": "/ui/reference-assets/sign-battle.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-battle.webp",
+    "name": "sign battle",
+    "source": "/ui/reference-assets/sign-battle.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-heal.svg",
+    "name": "sign heal",
+    "source": "/ui/reference-assets/sign-heal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-heal.webp",
+    "name": "sign heal",
+    "source": "/ui/reference-assets/sign-heal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-inventory.svg",
+    "name": "sign inventory",
+    "source": "/ui/reference-assets/sign-inventory.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/sign-inventory.webp",
+    "name": "sign inventory",
+    "source": "/ui/reference-assets/sign-inventory.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/summoning-ring.svg",
+    "name": "summoning ring",
+    "source": "/ui/reference-assets/summoning-ring.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/summoning-ring.webp",
+    "name": "summoning ring",
+    "source": "/ui/reference-assets/summoning-ring.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/tab-active.svg",
+    "name": "tab active",
+    "source": "/ui/reference-assets/tab-active.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/tab-active.webp",
+    "name": "tab active",
+    "source": "/ui/reference-assets/tab-active.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/tab-end.svg",
+    "name": "tab end",
+    "source": "/ui/reference-assets/tab-end.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/tab-end.webp",
+    "name": "tab end",
+    "source": "/ui/reference-assets/tab-end.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/tab-middle.svg",
+    "name": "tab middle",
+    "source": "/ui/reference-assets/tab-middle.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/tab-middle.webp",
+    "name": "tab middle",
+    "source": "/ui/reference-assets/tab-middle.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-disabled.svg",
+    "name": "team row disabled",
+    "source": "/ui/reference-assets/team-row-disabled.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-disabled.webp",
+    "name": "team row disabled",
+    "source": "/ui/reference-assets/team-row-disabled.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-hover.svg",
+    "name": "team row hover",
+    "source": "/ui/reference-assets/team-row-hover.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-hover.webp",
+    "name": "team row hover",
+    "source": "/ui/reference-assets/team-row-hover.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-normal.svg",
+    "name": "team row normal",
+    "source": "/ui/reference-assets/team-row-normal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-normal.webp",
+    "name": "team row normal",
+    "source": "/ui/reference-assets/team-row-normal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-selected.svg",
+    "name": "team row selected",
+    "source": "/ui/reference-assets/team-row-selected.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/team-row-selected.webp",
+    "name": "team row selected",
+    "source": "/ui/reference-assets/team-row-selected.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-dark.svg",
+    "name": "type dark",
+    "source": "/ui/reference-assets/type-dark.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-dark.webp",
+    "name": "type dark",
+    "source": "/ui/reference-assets/type-dark.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-earth.svg",
+    "name": "type earth",
+    "source": "/ui/reference-assets/type-earth.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-earth.webp",
+    "name": "type earth",
+    "source": "/ui/reference-assets/type-earth.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-electric.svg",
+    "name": "type electric",
+    "source": "/ui/reference-assets/type-electric.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-electric.webp",
+    "name": "type electric",
+    "source": "/ui/reference-assets/type-electric.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-fire.svg",
+    "name": "type fire",
+    "source": "/ui/reference-assets/type-fire.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-fire.webp",
+    "name": "type fire",
+    "source": "/ui/reference-assets/type-fire.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-grass.svg",
+    "name": "type grass",
+    "source": "/ui/reference-assets/type-grass.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-grass.webp",
+    "name": "type grass",
+    "source": "/ui/reference-assets/type-grass.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-normal.svg",
+    "name": "type normal",
+    "source": "/ui/reference-assets/type-normal.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-normal.webp",
+    "name": "type normal",
+    "source": "/ui/reference-assets/type-normal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-psychic.svg",
+    "name": "type psychic",
+    "source": "/ui/reference-assets/type-psychic.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-psychic.webp",
+    "name": "type psychic",
+    "source": "/ui/reference-assets/type-psychic.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-water.svg",
+    "name": "type water",
+    "source": "/ui/reference-assets/type-water.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-assets/type-water.webp",
+    "name": "type water",
+    "source": "/ui/reference-assets/type-water.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/back-control.webp",
+    "name": "back control",
+    "source": "/ui/reference-png/back-control.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/button-disabled.webp",
+    "name": "button disabled",
+    "source": "/ui/reference-png/button-disabled.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/button-normal.webp",
+    "name": "button normal",
+    "source": "/ui/reference-png/button-normal.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/button-selected.webp",
+    "name": "button selected",
+    "source": "/ui/reference-png/button-selected.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/checkbox-checked.webp",
+    "name": "checkbox checked",
+    "source": "/ui/reference-png/checkbox-checked.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/close-control.webp",
+    "name": "close control",
+    "source": "/ui/reference-png/close-control.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/confirm-control.webp",
+    "name": "confirm control",
+    "source": "/ui/reference-png/confirm-control.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/corner.webp",
+    "name": "corner",
+    "source": "/ui/reference-png/corner.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/dialog-frame.webp",
+    "name": "dialog frame",
+    "source": "/ui/reference-png/dialog-frame.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/divider.webp",
+    "name": "divider",
+    "source": "/ui/reference-png/divider.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/edge.webp",
+    "name": "edge",
+    "source": "/ui/reference-png/edge.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/experience-bar-art.webp",
+    "name": "experience bar art",
+    "source": "/ui/reference-png/experience-bar-art.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/filter-icon.webp",
+    "name": "filter icon",
+    "source": "/ui/reference-png/filter-icon.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/health-bar-art.webp",
+    "name": "health bar art",
+    "source": "/ui/reference-png/health-bar-art.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/info-panel.webp",
+    "name": "info panel",
+    "source": "/ui/reference-png/info-panel.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/item-slot.webp",
+    "name": "item slot",
+    "source": "/ui/reference-png/item-slot.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/loading-ring.webp",
+    "name": "loading ring",
+    "source": "/ui/reference-png/loading-ring.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/locked-control.webp",
+    "name": "locked control",
+    "source": "/ui/reference-png/locked-control.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-dark.webp",
+    "name": "medal dark",
+    "source": "/ui/reference-png/medal-dark.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-earth.webp",
+    "name": "medal earth",
+    "source": "/ui/reference-png/medal-earth.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-electric.webp",
+    "name": "medal electric",
+    "source": "/ui/reference-png/medal-electric.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-fire.webp",
+    "name": "medal fire",
+    "source": "/ui/reference-png/medal-fire.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-grass.webp",
+    "name": "medal grass",
+    "source": "/ui/reference-png/medal-grass.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-normal.webp",
+    "name": "medal normal",
+    "source": "/ui/reference-png/medal-normal.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-psychic.webp",
+    "name": "medal psychic",
+    "source": "/ui/reference-png/medal-psychic.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/medal-water.webp",
+    "name": "medal water",
+    "source": "/ui/reference-png/medal-water.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/move-button.webp",
+    "name": "move button",
+    "source": "/ui/reference-png/move-button.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/panel-fill.webp",
+    "name": "panel fill",
+    "source": "/ui/reference-png/panel-fill.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/panel-main.webp",
+    "name": "panel main",
+    "source": "/ui/reference-png/panel-main.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/panel-modular.webp",
+    "name": "panel modular",
+    "source": "/ui/reference-png/panel-modular.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-001.webp",
+    "name": "portrait 001",
+    "source": "/ui/reference-png/portrait-001.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-002.webp",
+    "name": "portrait 002",
+    "source": "/ui/reference-png/portrait-002.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-003.webp",
+    "name": "portrait 003",
+    "source": "/ui/reference-png/portrait-003.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-004.webp",
+    "name": "portrait 004",
+    "source": "/ui/reference-png/portrait-004.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-005.webp",
+    "name": "portrait 005",
+    "source": "/ui/reference-png/portrait-005.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-006.webp",
+    "name": "portrait 006",
+    "source": "/ui/reference-png/portrait-006.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-007.webp",
+    "name": "portrait 007",
+    "source": "/ui/reference-png/portrait-007.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-008.webp",
+    "name": "portrait 008",
+    "source": "/ui/reference-png/portrait-008.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-009.webp",
+    "name": "portrait 009",
+    "source": "/ui/reference-png/portrait-009.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-010.webp",
+    "name": "portrait 010",
+    "source": "/ui/reference-png/portrait-010.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-011.webp",
+    "name": "portrait 011",
+    "source": "/ui/reference-png/portrait-011.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-012.webp",
+    "name": "portrait 012",
+    "source": "/ui/reference-png/portrait-012.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-013.webp",
+    "name": "portrait 013",
+    "source": "/ui/reference-png/portrait-013.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-014.webp",
+    "name": "portrait 014",
+    "source": "/ui/reference-png/portrait-014.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-015.webp",
+    "name": "portrait 015",
+    "source": "/ui/reference-png/portrait-015.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-016.webp",
+    "name": "portrait 016",
+    "source": "/ui/reference-png/portrait-016.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-017.webp",
+    "name": "portrait 017",
+    "source": "/ui/reference-png/portrait-017.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-018.webp",
+    "name": "portrait 018",
+    "source": "/ui/reference-png/portrait-018.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-019.webp",
+    "name": "portrait 019",
+    "source": "/ui/reference-png/portrait-019.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-020.webp",
+    "name": "portrait 020",
+    "source": "/ui/reference-png/portrait-020.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-021.webp",
+    "name": "portrait 021",
+    "source": "/ui/reference-png/portrait-021.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-022.webp",
+    "name": "portrait 022",
+    "source": "/ui/reference-png/portrait-022.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-023.webp",
+    "name": "portrait 023",
+    "source": "/ui/reference-png/portrait-023.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-024.webp",
+    "name": "portrait 024",
+    "source": "/ui/reference-png/portrait-024.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-025.webp",
+    "name": "portrait 025",
+    "source": "/ui/reference-png/portrait-025.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-026.webp",
+    "name": "portrait 026",
+    "source": "/ui/reference-png/portrait-026.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-027.webp",
+    "name": "portrait 027",
+    "source": "/ui/reference-png/portrait-027.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-028.webp",
+    "name": "portrait 028",
+    "source": "/ui/reference-png/portrait-028.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-029.webp",
+    "name": "portrait 029",
+    "source": "/ui/reference-png/portrait-029.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-030.webp",
+    "name": "portrait 030",
+    "source": "/ui/reference-png/portrait-030.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-031.webp",
+    "name": "portrait 031",
+    "source": "/ui/reference-png/portrait-031.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-032.webp",
+    "name": "portrait 032",
+    "source": "/ui/reference-png/portrait-032.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-033.webp",
+    "name": "portrait 033",
+    "source": "/ui/reference-png/portrait-033.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-034.webp",
+    "name": "portrait 034",
+    "source": "/ui/reference-png/portrait-034.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-035.webp",
+    "name": "portrait 035",
+    "source": "/ui/reference-png/portrait-035.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-036.webp",
+    "name": "portrait 036",
+    "source": "/ui/reference-png/portrait-036.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-037.webp",
+    "name": "portrait 037",
+    "source": "/ui/reference-png/portrait-037.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-038.webp",
+    "name": "portrait 038",
+    "source": "/ui/reference-png/portrait-038.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-039.webp",
+    "name": "portrait 039",
+    "source": "/ui/reference-png/portrait-039.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-040.webp",
+    "name": "portrait 040",
+    "source": "/ui/reference-png/portrait-040.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-041.webp",
+    "name": "portrait 041",
+    "source": "/ui/reference-png/portrait-041.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-042.webp",
+    "name": "portrait 042",
+    "source": "/ui/reference-png/portrait-042.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-043.webp",
+    "name": "portrait 043",
+    "source": "/ui/reference-png/portrait-043.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-044.webp",
+    "name": "portrait 044",
+    "source": "/ui/reference-png/portrait-044.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-045.webp",
+    "name": "portrait 045",
+    "source": "/ui/reference-png/portrait-045.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-046.webp",
+    "name": "portrait 046",
+    "source": "/ui/reference-png/portrait-046.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-047.webp",
+    "name": "portrait 047",
+    "source": "/ui/reference-png/portrait-047.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-048.webp",
+    "name": "portrait 048",
+    "source": "/ui/reference-png/portrait-048.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-049.webp",
+    "name": "portrait 049",
+    "source": "/ui/reference-png/portrait-049.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-050.webp",
+    "name": "portrait 050",
+    "source": "/ui/reference-png/portrait-050.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-051.webp",
+    "name": "portrait 051",
+    "source": "/ui/reference-png/portrait-051.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-052.webp",
+    "name": "portrait 052",
+    "source": "/ui/reference-png/portrait-052.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-053.webp",
+    "name": "portrait 053",
+    "source": "/ui/reference-png/portrait-053.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-054.webp",
+    "name": "portrait 054",
+    "source": "/ui/reference-png/portrait-054.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-055.webp",
+    "name": "portrait 055",
+    "source": "/ui/reference-png/portrait-055.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-056.webp",
+    "name": "portrait 056",
+    "source": "/ui/reference-png/portrait-056.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-057.webp",
+    "name": "portrait 057",
+    "source": "/ui/reference-png/portrait-057.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-058.webp",
+    "name": "portrait 058",
+    "source": "/ui/reference-png/portrait-058.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-059.webp",
+    "name": "portrait 059",
+    "source": "/ui/reference-png/portrait-059.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-060.webp",
+    "name": "portrait 060",
+    "source": "/ui/reference-png/portrait-060.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-061.webp",
+    "name": "portrait 061",
+    "source": "/ui/reference-png/portrait-061.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-062.webp",
+    "name": "portrait 062",
+    "source": "/ui/reference-png/portrait-062.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-063.webp",
+    "name": "portrait 063",
+    "source": "/ui/reference-png/portrait-063.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-064.webp",
+    "name": "portrait 064",
+    "source": "/ui/reference-png/portrait-064.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-065.webp",
+    "name": "portrait 065",
+    "source": "/ui/reference-png/portrait-065.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-066.webp",
+    "name": "portrait 066",
+    "source": "/ui/reference-png/portrait-066.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-067.webp",
+    "name": "portrait 067",
+    "source": "/ui/reference-png/portrait-067.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-068.webp",
+    "name": "portrait 068",
+    "source": "/ui/reference-png/portrait-068.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-069.webp",
+    "name": "portrait 069",
+    "source": "/ui/reference-png/portrait-069.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-070.webp",
+    "name": "portrait 070",
+    "source": "/ui/reference-png/portrait-070.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-071.webp",
+    "name": "portrait 071",
+    "source": "/ui/reference-png/portrait-071.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-072.webp",
+    "name": "portrait 072",
+    "source": "/ui/reference-png/portrait-072.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-073.webp",
+    "name": "portrait 073",
+    "source": "/ui/reference-png/portrait-073.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-074.webp",
+    "name": "portrait 074",
+    "source": "/ui/reference-png/portrait-074.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-075.webp",
+    "name": "portrait 075",
+    "source": "/ui/reference-png/portrait-075.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-076.webp",
+    "name": "portrait 076",
+    "source": "/ui/reference-png/portrait-076.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-077.webp",
+    "name": "portrait 077",
+    "source": "/ui/reference-png/portrait-077.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-078.webp",
+    "name": "portrait 078",
+    "source": "/ui/reference-png/portrait-078.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-079.webp",
+    "name": "portrait 079",
+    "source": "/ui/reference-png/portrait-079.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-080.webp",
+    "name": "portrait 080",
+    "source": "/ui/reference-png/portrait-080.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-081.webp",
+    "name": "portrait 081",
+    "source": "/ui/reference-png/portrait-081.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-082.webp",
+    "name": "portrait 082",
+    "source": "/ui/reference-png/portrait-082.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-083.webp",
+    "name": "portrait 083",
+    "source": "/ui/reference-png/portrait-083.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-084.webp",
+    "name": "portrait 084",
+    "source": "/ui/reference-png/portrait-084.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-085.webp",
+    "name": "portrait 085",
+    "source": "/ui/reference-png/portrait-085.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-086.webp",
+    "name": "portrait 086",
+    "source": "/ui/reference-png/portrait-086.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-087.webp",
+    "name": "portrait 087",
+    "source": "/ui/reference-png/portrait-087.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-088.webp",
+    "name": "portrait 088",
+    "source": "/ui/reference-png/portrait-088.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-089.webp",
+    "name": "portrait 089",
+    "source": "/ui/reference-png/portrait-089.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-090.webp",
+    "name": "portrait 090",
+    "source": "/ui/reference-png/portrait-090.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-091.webp",
+    "name": "portrait 091",
+    "source": "/ui/reference-png/portrait-091.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-092.webp",
+    "name": "portrait 092",
+    "source": "/ui/reference-png/portrait-092.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-093.webp",
+    "name": "portrait 093",
+    "source": "/ui/reference-png/portrait-093.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-094.webp",
+    "name": "portrait 094",
+    "source": "/ui/reference-png/portrait-094.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-095.webp",
+    "name": "portrait 095",
+    "source": "/ui/reference-png/portrait-095.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-096.webp",
+    "name": "portrait 096",
+    "source": "/ui/reference-png/portrait-096.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-097.webp",
+    "name": "portrait 097",
+    "source": "/ui/reference-png/portrait-097.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-098.webp",
+    "name": "portrait 098",
+    "source": "/ui/reference-png/portrait-098.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-099.webp",
+    "name": "portrait 099",
+    "source": "/ui/reference-png/portrait-099.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-100.webp",
+    "name": "portrait 100",
+    "source": "/ui/reference-png/portrait-100.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-101.webp",
+    "name": "portrait 101",
+    "source": "/ui/reference-png/portrait-101.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-102.webp",
+    "name": "portrait 102",
+    "source": "/ui/reference-png/portrait-102.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-103.webp",
+    "name": "portrait 103",
+    "source": "/ui/reference-png/portrait-103.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-104.webp",
+    "name": "portrait 104",
+    "source": "/ui/reference-png/portrait-104.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-105.webp",
+    "name": "portrait 105",
+    "source": "/ui/reference-png/portrait-105.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-106.webp",
+    "name": "portrait 106",
+    "source": "/ui/reference-png/portrait-106.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-107.webp",
+    "name": "portrait 107",
+    "source": "/ui/reference-png/portrait-107.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-108.webp",
+    "name": "portrait 108",
+    "source": "/ui/reference-png/portrait-108.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-109.webp",
+    "name": "portrait 109",
+    "source": "/ui/reference-png/portrait-109.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-110.webp",
+    "name": "portrait 110",
+    "source": "/ui/reference-png/portrait-110.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-111.webp",
+    "name": "portrait 111",
+    "source": "/ui/reference-png/portrait-111.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-112.webp",
+    "name": "portrait 112",
+    "source": "/ui/reference-png/portrait-112.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-113.webp",
+    "name": "portrait 113",
+    "source": "/ui/reference-png/portrait-113.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-115.webp",
+    "name": "portrait 115",
+    "source": "/ui/reference-png/portrait-115.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-116.webp",
+    "name": "portrait 116",
+    "source": "/ui/reference-png/portrait-116.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-117.webp",
+    "name": "portrait 117",
+    "source": "/ui/reference-png/portrait-117.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-119.webp",
+    "name": "portrait 119",
+    "source": "/ui/reference-png/portrait-119.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-120.webp",
+    "name": "portrait 120",
+    "source": "/ui/reference-png/portrait-120.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-121.webp",
+    "name": "portrait 121",
+    "source": "/ui/reference-png/portrait-121.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-122.webp",
+    "name": "portrait 122",
+    "source": "/ui/reference-png/portrait-122.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-123.webp",
+    "name": "portrait 123",
+    "source": "/ui/reference-png/portrait-123.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-124.webp",
+    "name": "portrait 124",
+    "source": "/ui/reference-png/portrait-124.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-125.webp",
+    "name": "portrait 125",
+    "source": "/ui/reference-png/portrait-125.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-126.webp",
+    "name": "portrait 126",
+    "source": "/ui/reference-png/portrait-126.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-127.webp",
+    "name": "portrait 127",
+    "source": "/ui/reference-png/portrait-127.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-128.webp",
+    "name": "portrait 128",
+    "source": "/ui/reference-png/portrait-128.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-129.webp",
+    "name": "portrait 129",
+    "source": "/ui/reference-png/portrait-129.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-130.webp",
+    "name": "portrait 130",
+    "source": "/ui/reference-png/portrait-130.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-131.webp",
+    "name": "portrait 131",
+    "source": "/ui/reference-png/portrait-131.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-132.webp",
+    "name": "portrait 132",
+    "source": "/ui/reference-png/portrait-132.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-134.webp",
+    "name": "portrait 134",
+    "source": "/ui/reference-png/portrait-134.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/portrait-frame.webp",
+    "name": "portrait frame",
+    "source": "/ui/reference-png/portrait-frame.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/quantity-minus.webp",
+    "name": "quantity minus",
+    "source": "/ui/reference-png/quantity-minus.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/quantity-plus.webp",
+    "name": "quantity plus",
+    "source": "/ui/reference-png/quantity-plus.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/scrollbar.webp",
+    "name": "scrollbar",
+    "source": "/ui/reference-png/scrollbar.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/search-icon.webp",
+    "name": "search icon",
+    "source": "/ui/reference-png/search-icon.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/selection-cursor.webp",
+    "name": "selection cursor",
+    "source": "/ui/reference-png/selection-cursor.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/tab-frame.webp",
+    "name": "tab frame",
+    "source": "/ui/reference-png/tab-frame.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/team-row.webp",
+    "name": "team row",
+    "source": "/ui/reference-png/team-row.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/title-plaque.webp",
+    "name": "title plaque",
+    "source": "/ui/reference-png/title-plaque.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/toggle-on.webp",
+    "name": "toggle on",
+    "source": "/ui/reference-png/toggle-on.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/tooltip-frame.webp",
+    "name": "tooltip frame",
+    "source": "/ui/reference-png/tooltip-frame.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-dark.webp",
+    "name": "type dark",
+    "source": "/ui/reference-png/type-dark.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-earth.webp",
+    "name": "type earth",
+    "source": "/ui/reference-png/type-earth.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-electric.webp",
+    "name": "type electric",
+    "source": "/ui/reference-png/type-electric.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-fire.webp",
+    "name": "type fire",
+    "source": "/ui/reference-png/type-fire.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-grass.webp",
+    "name": "type grass",
+    "source": "/ui/reference-png/type-grass.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-normal.webp",
+    "name": "type normal",
+    "source": "/ui/reference-png/type-normal.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-psychic.webp",
+    "name": "type psychic",
+    "source": "/ui/reference-png/type-psychic.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/type-water.webp",
+    "name": "type water",
+    "source": "/ui/reference-png/type-water.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/reference-png/warning.webp",
+    "name": "warning",
+    "source": "/ui/reference-png/warning.webp",
+    "category": "UI PNG fornita",
+    "kind": "image"
+  },
+  {
     "id": "builtin:ui/route.png",
     "name": "route",
     "source": "/ui/route.png",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/banner-azioni.svg",
+    "name": "banner azioni",
+    "source": "/ui/scuro/banner-azioni.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/banner-qr.svg",
+    "name": "banner qr",
+    "source": "/ui/scuro/banner-qr.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/banner.svg",
+    "name": "banner",
+    "source": "/ui/scuro/banner.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/barra-bianca.svg",
+    "name": "barra bianca",
+    "source": "/ui/scuro/barra-bianca.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/barra-scura.svg",
+    "name": "barra scura",
+    "source": "/ui/scuro/barra-scura.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/bottone-bianco.svg",
+    "name": "bottone bianco",
+    "source": "/ui/scuro/bottone-bianco.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/bottone-selezionato.svg",
+    "name": "bottone selezionato",
+    "source": "/ui/scuro/bottone-selezionato.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/bottone.svg",
+    "name": "bottone",
+    "source": "/ui/scuro/bottone.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/box-1.svg",
+    "name": "box 1",
+    "source": "/ui/scuro/box-1.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/box-2.svg",
+    "name": "box 2",
+    "source": "/ui/scuro/box-2.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/box-inventario.svg",
+    "name": "box inventario",
+    "source": "/ui/scuro/box-inventario.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/button-chiusura-rosso.svg",
+    "name": "button chiusura rosso",
+    "source": "/ui/scuro/button-chiusura-rosso.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/button-chiusura.svg",
+    "name": "button chiusura",
+    "source": "/ui/scuro/button-chiusura.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/button-circolare-check.svg",
+    "name": "button circolare check",
+    "source": "/ui/scuro/button-circolare-check.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/button-circolare-off.svg",
+    "name": "button circolare off",
+    "source": "/ui/scuro/button-circolare-off.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/button-circolare-on.svg",
+    "name": "button circolare on",
+    "source": "/ui/scuro/button-circolare-on.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/checkbox.svg",
+    "name": "checkbox",
+    "source": "/ui/scuro/checkbox.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/checker-off.svg",
+    "name": "checker off",
+    "source": "/ui/scuro/checker-off.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/chiusura.svg",
+    "name": "chiusura",
+    "source": "/ui/scuro/chiusura.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/cornice-arkamon.svg",
+    "name": "cornice arkamon",
+    "source": "/ui/scuro/cornice-arkamon.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/cornice-piccola-selezionata.svg",
+    "name": "cornice piccola selezionata",
+    "source": "/ui/scuro/cornice-piccola-selezionata.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/cornice-piccola.svg",
+    "name": "cornice piccola",
+    "source": "/ui/scuro/cornice-piccola.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/cornice-ritratto.svg",
+    "name": "cornice ritratto",
+    "source": "/ui/scuro/cornice-ritratto.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/cornice-selezione.svg",
+    "name": "cornice selezione",
+    "source": "/ui/scuro/cornice-selezione.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/cornice.svg",
+    "name": "cornice",
+    "source": "/ui/scuro/cornice.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/dialogo-bianco.svg",
+    "name": "dialogo bianco",
+    "source": "/ui/scuro/dialogo-bianco.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/dialogo-scuro.svg",
+    "name": "dialogo scuro",
+    "source": "/ui/scuro/dialogo-scuro.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/divisore-orizzontale.svg",
+    "name": "divisore orizzontale",
+    "source": "/ui/scuro/divisore-orizzontale.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/divisori-orizzontali.svg",
+    "name": "divisori orizzontali",
+    "source": "/ui/scuro/divisori-orizzontali.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/gemma.svg",
+    "name": "gemma",
+    "source": "/ui/scuro/gemma.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icona-generica-accesa.svg",
+    "name": "icona generica accesa",
+    "source": "/ui/scuro/icona-generica-accesa.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icona-generica.svg",
+    "name": "icona generica",
+    "source": "/ui/scuro/icona-generica.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icona-home.svg",
+    "name": "icona home",
+    "source": "/ui/scuro/icona-home.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icona-movimenti.svg",
+    "name": "icona movimenti",
+    "source": "/ui/scuro/icona-movimenti.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icona-zaino.svg",
+    "name": "icona zaino",
+    "source": "/ui/scuro/icona-zaino.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icone-menu.svg",
+    "name": "icone menu",
+    "source": "/ui/scuro/icone-menu.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icone-mosse.svg",
+    "name": "icone mosse",
+    "source": "/ui/scuro/icone-mosse.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icone-stati.svg",
+    "name": "icone stati",
+    "source": "/ui/scuro/icone-stati.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icone-tipi-mosse.svg",
+    "name": "icone tipi mosse",
+    "source": "/ui/scuro/icone-tipi-mosse.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/icone.svg",
+    "name": "icone",
+    "source": "/ui/scuro/icone.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/indicatore-circolare-acceso.svg",
+    "name": "indicatore circolare acceso",
+    "source": "/ui/scuro/indicatore-circolare-acceso.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/indicatore-circolare-spento.svg",
+    "name": "indicatore circolare spento",
+    "source": "/ui/scuro/indicatore-circolare-spento.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/monete.svg",
+    "name": "monete",
+    "source": "/ui/scuro/monete.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/pulsante-checkbox.svg",
+    "name": "pulsante checkbox",
+    "source": "/ui/scuro/pulsante-checkbox.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/pulsante-freccia-destra.svg",
+    "name": "pulsante freccia destra",
+    "source": "/ui/scuro/pulsante-freccia-destra.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/pulsante-freccia-sinistra.svg",
+    "name": "pulsante freccia sinistra",
+    "source": "/ui/scuro/pulsante-freccia-sinistra.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/pulsante-fuga.svg",
+    "name": "pulsante fuga",
+    "source": "/ui/scuro/pulsante-fuga.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/pulsante-negozio.svg",
+    "name": "pulsante negozio",
+    "source": "/ui/scuro/pulsante-negozio.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/pulsanti-connessione.svg",
+    "name": "pulsanti connessione",
+    "source": "/ui/scuro/pulsanti-connessione.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/pulsanti-sistema.svg",
+    "name": "pulsanti sistema",
+    "source": "/ui/scuro/pulsanti-sistema.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/selettore-numerico.svg",
+    "name": "selettore numerico",
+    "source": "/ui/scuro/selettore-numerico.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/slider-orizzontale.svg",
+    "name": "slider orizzontale",
+    "source": "/ui/scuro/slider-orizzontale.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/slider-verticale.svg",
+    "name": "slider verticale",
+    "source": "/ui/scuro/slider-verticale.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/squadra.svg",
+    "name": "squadra",
+    "source": "/ui/scuro/squadra.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/toggle-off.svg",
+    "name": "toggle off",
+    "source": "/ui/scuro/toggle-off.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/scuro/toggle-on.svg",
+    "name": "toggle on",
+    "source": "/ui/scuro/toggle-on.svg",
     "category": "Asset originali",
     "kind": "image"
   },
@@ -1974,6 +6251,118 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "name": "terra",
     "source": "/ui/studio/individuali/Scuro/tipo/terra.svg",
     "category": "individuali · Scuro · tipo",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-1.svg",
+    "name": "gym 1",
+    "source": "/ui/studio/progression/gym-1.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-2.svg",
+    "name": "gym 2",
+    "source": "/ui/studio/progression/gym-2.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-3.svg",
+    "name": "gym 3",
+    "source": "/ui/studio/progression/gym-3.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-4.svg",
+    "name": "gym 4",
+    "source": "/ui/studio/progression/gym-4.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-5.svg",
+    "name": "gym 5",
+    "source": "/ui/studio/progression/gym-5.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-6.svg",
+    "name": "gym 6",
+    "source": "/ui/studio/progression/gym-6.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-7.svg",
+    "name": "gym 7",
+    "source": "/ui/studio/progression/gym-7.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/gym-8.svg",
+    "name": "gym 8",
+    "source": "/ui/studio/progression/gym-8.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/league-1.svg",
+    "name": "league 1",
+    "source": "/ui/studio/progression/league-1.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/league-2.svg",
+    "name": "league 2",
+    "source": "/ui/studio/progression/league-2.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/league-3.svg",
+    "name": "league 3",
+    "source": "/ui/studio/progression/league-3.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/league-4.svg",
+    "name": "league 4",
+    "source": "/ui/studio/progression/league-4.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/progression/league-5.svg",
+    "name": "league 5",
+    "source": "/ui/studio/progression/league-5.svg",
+    "category": "progression",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/runtime/command.svg",
+    "name": "command",
+    "source": "/ui/studio/runtime/command.svg",
+    "category": "runtime",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/runtime/selected.svg",
+    "name": "selected",
+    "source": "/ui/studio/runtime/selected.svg",
+    "category": "runtime",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/studio/runtime/window.svg",
+    "name": "window",
+    "source": "/ui/studio/runtime/window.svg",
+    "category": "runtime",
     "kind": "image"
   },
   {

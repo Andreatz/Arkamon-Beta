@@ -2,51 +2,52 @@
   "id": 24,
   "name": "Grimbolt",
   "type": "Elettro",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-3e0d0dde-db61-4a88-a050-994dde5ea969.png",
-  "sourceMaster": "output/splash-art/originals/024-grimbolt-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-2257c46d-07d8-482f-96c8-ec4e37963204.png",
+  "sourceMaster": "output/splash-art/originals/024-grimbolt-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/024-grimbolt.webp",
   "runtimePath": "/backgrounds/arkamon-splash/024-grimbolt.webp",
-  "promptFile": "art-source/splash/prompts/024-grimbolt.txt",
+  "promptFile": "art-source/splash/prompts/024-grimbolt-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 593532,
-  "sha256": "27e6518899442b87b194a62dd0414b216d419387a2f0ad6c40f77b1b7dd6a560",
+  "bytes": 677550,
+  "sha256": "39b388219221851c13b6439988fbb7a10a699c713d8538bf88b9f3d5ff10b028",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:22:02.019Z",
+  "reviewedAt": "2026-10-26T00:22:02.020Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.31,
+    "top": 0.265,
+    "right": 0.62,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:31:44.383Z",
-  "subjectBounds": {
-    "left": 0.42,
-    "top": 0.325,
-    "right": 0.615,
-    "bottom": 0.69
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/024-before-hero-source-v2.json"
   },
-  "visualReview": {
-    "method": "manual conservative silhouette envelope",
-    "notes": "All wings/crests/feet/tail and intrinsic sparks fit. Exact official form retained; no live UI validation claimed."
-  },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.434,
-    "top": 0.434,
-    "right": 0.565,
-    "bottom": 0.657
-  },
-  "displayScale": 2.3318,
-  "displayOffset": {
-    "x": -0.0188,
-    "y": -0.0761
-  },
-  "reviewedAt": "2026-10-25T20:54:59.268Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+  }
 }

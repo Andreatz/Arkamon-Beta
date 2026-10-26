@@ -101,6 +101,9 @@ async function assertPlayerSelectorArtwork(dialog: Locator) {
     await expect(buttons.nth(index)).toBeEnabled()
     await expect(buttons.nth(index)).toHaveAccessibleName(new RegExp(`^G${index + 1} · .+`))
   }
+  // Compare equivalent resting states; the last clicked player may still be
+  // hovered, which is an independent interaction state of the shared control.
+  await dialog.locator('.pu-brand').hover()
   const report = await buttons.evaluateAll(async elements => {
     await Promise.all(elements.flatMap(element => [...element.querySelectorAll<HTMLImageElement>('img')].map(image => image.decode())))
     return elements.map(element => {
@@ -368,8 +371,11 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
         expect(visitedSpecies).toEqual(pokemonCatalog.map(species => species.id))
         expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(0)
         expect([...portraitSources].filter(source => source.startsWith('/ui/reference-png/')).sort()).toEqual(pokemonCatalog.map(species => `/ui/reference-png/portrait-${String(species.id).padStart(3, '0')}.webp`).sort())
-        // Paging changes only the compact index. The selected official full-body hero remains species 1.
-        expect([...portraitSources].filter(source => source.startsWith('/sprites/front_sprites/'))).toEqual(['/sprites/front_sprites/1.png'])
+        // Paging changes only the compact index. The authored fullscreen hero remains species 1.
+        await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-reference-splash-ready', 'true')
+        await expect(dialog.locator('.pu-dex-hero .pu-splash-hero-presence')).toHaveAttribute('data-splash-species', '1')
+        await expect(dialog.locator('.pu-dex-hero .pu-splash-hero-presence')).toHaveAttribute('data-splash-source', /\/backgrounds\/arkamon-splash\/001-vyrath\.webp$/)
+        expect([...portraitSources].filter(source => source.startsWith('/sprites/front_sprites/'))).toEqual([])
         await expect(next).toBeDisabled()
         await previous.click()
         await expect(pagination).toContainText('Pagina 18 / 19')

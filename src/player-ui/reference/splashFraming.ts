@@ -12,16 +12,17 @@ export interface SplashFrameInput {
   readonly focus: SplashFrameBounds
   /** The unobstructed region, including its safety margin, in local canvas pixels. */
   readonly available: SplashFrameBounds
-  readonly preferredScale: number
-  /** Authored translation as fractions of the whole canvas, matching the CSS backdrop. */
-  readonly preferredOffset: { readonly x: number; readonly y: number }
+  /** The authored background position, from 0 (left/top) to 1 (right/bottom). */
+  readonly preferredPosition?: { readonly x: number; readonly y: number }
 }
 
 export interface SplashFrameResult {
-  readonly scale: number
-  readonly translateX: number
-  readonly translateY: number
+  /** A cover background can pan only within the source pixels outside the canvas. */
+  readonly position: { readonly x: number; readonly y: number }
+  readonly renderedImage: { readonly left: number; readonly top: number; readonly width: number; readonly height: number }
   readonly focus: SplashFrameBounds
+  /** A source-composition issue must not be hidden by shrinking the whole painting. */
+  readonly focusFits: boolean
 }
 
 const finite = (...values: number[]) => values.every(Number.isFinite)
@@ -30,45 +31,49 @@ const validBounds = (bounds: SplashFrameBounds) => finite(bounds.left, bounds.to
 const clamp = (value: number, minimum: number, maximum: number) => Math.min(Math.max(value, minimum), maximum)
 
 /**
- * Fit the critical part of a proportionally contained painting to the real UI gap.
- * The result applies `translate(px, px) scale(n)` around the canvas center. An
- * authored framing is preserved whenever it fits; a smaller gap first reduces
- * the scale only as much as necessary, then clamps the translation to its edges.
+ * Position one crisp, full-canvas painting. At 16:9 its complete source is visible;
+ * other aspect ratios use the natural cover crop, with bounded panning to protect
+ * the painted face. Never zoom out, transform the canvas, or expose empty edges.
+ * If the authored focus cannot fit, expose that source-art constraint to QA.
  */
 export function fitSplashFrame(input: SplashFrameInput): SplashFrameResult | null {
-  const { canvas, image, focus, available, preferredScale, preferredOffset } = input
-  if (!finite(canvas.width, canvas.height, image.width, image.height, preferredScale, preferredOffset.x, preferredOffset.y)
-    || canvas.width <= 0 || canvas.height <= 0 || image.width <= 0 || image.height <= 0 || preferredScale <= 0
+  const { canvas, image, focus, available, preferredPosition = { x: .5, y: .5 } } = input
+  if (!finite(canvas.width, canvas.height, image.width, image.height, preferredPosition.x, preferredPosition.y)
+    || canvas.width <= 0 || canvas.height <= 0 || image.width <= 0 || image.height <= 0
+    || preferredPosition.x < 0 || preferredPosition.x > 1 || preferredPosition.y < 0 || preferredPosition.y > 1
     || !validBounds(focus) || focus.left < 0 || focus.top < 0 || focus.right > 1 || focus.bottom > 1
     || !validBounds(available) || available.left < 0 || available.top < 0
     || available.right > canvas.width || available.bottom > canvas.height) return null
 
-  const containedScale = Math.min(canvas.width / image.width, canvas.height / image.height)
-  const width = image.width * containedScale, height = image.height * containedScale
-  const startX = (canvas.width - width) / 2, startY = (canvas.height - height) / 2
-  const base = {
-    left: startX + focus.left * width, right: startX + focus.right * width,
-    top: startY + focus.top * height, bottom: startY + focus.bottom * height,
+  const coverScale = Math.max(canvas.width / image.width, canvas.height / image.height)
+  const width = image.width * coverScale, height = image.height * coverScale
+  const positionAxis = (canvasSize: number, imageSize: number, start: number, end: number, minimum: number, maximum: number, preferred: number) => {
+    const minimumOffset = canvasSize - imageSize
+    const preferredOffset = minimumOffset * preferred
+    const fitMinimum = Math.max(minimumOffset, minimum - start * imageSize)
+    const fitMaximum = Math.min(0, maximum - end * imageSize)
+    // When the source is too wide/tall for the opening, keep its center nearest
+    // the opening rather than silently reducing the entire environment.
+    return fitMinimum <= fitMaximum
+      ? clamp(preferredOffset, fitMinimum, fitMaximum)
+      : clamp((minimum + maximum - (start + end) * imageSize) / 2, minimumOffset, 0)
   }
-  const scale = Math.min(preferredScale,
-    (available.right - available.left) / (base.right - base.left),
-    (available.bottom - available.top) / (base.bottom - base.top))
-  if (!Number.isFinite(scale) || scale <= 0) return null
-
-  const centerX = canvas.width / 2, centerY = canvas.height / 2
-  const scaled = {
-    left: centerX + (base.left - centerX) * scale,
-    right: centerX + (base.right - centerX) * scale,
-    top: centerY + (base.top - centerY) * scale,
-    bottom: centerY + (base.bottom - centerY) * scale,
+  const left = positionAxis(canvas.width, width, focus.left, focus.right, available.left, available.right, preferredPosition.x)
+  const top = positionAxis(canvas.height, height, focus.top, focus.bottom, available.top, available.bottom, preferredPosition.y)
+  const projected = {
+    left: left + focus.left * width, right: left + focus.right * width,
+    top: top + focus.top * height, bottom: top + focus.bottom * height,
   }
-  const translateX = clamp(preferredOffset.x * canvas.width, available.left - scaled.left, available.right - scaled.right)
-  const translateY = clamp(preferredOffset.y * canvas.height, available.top - scaled.top, available.bottom - scaled.bottom)
   return {
-    scale, translateX, translateY,
-    focus: {
-      left: scaled.left + translateX, right: scaled.right + translateX,
-      top: scaled.top + translateY, bottom: scaled.bottom + translateY,
+    position: {
+      x: width > canvas.width ? left / (canvas.width - width) : .5,
+      y: height > canvas.height ? top / (canvas.height - height) : .5,
     },
+    renderedImage: { left, top, width, height },
+    focus: projected,
+    // Match browser QA's one-pixel allowance for fractional CSS layout. The
+    // opening already includes a14–22px safety margin around the real panels.
+    focusFits: projected.left >= available.left - 1 && projected.right <= available.right + 1
+      && projected.top >= available.top - 1 && projected.bottom <= available.bottom + 1,
   }
 }

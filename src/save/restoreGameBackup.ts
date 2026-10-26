@@ -7,6 +7,7 @@ import { isCampaignWritable, sessionOwnershipMessage } from '@/session/sessionOw
 import { backupRestoreStorage, prepareBackupRestore, finishBackupRestore, rollbackBackupRestore, useBackupRestoreRecoveryStatus, type RestoreEntry } from './restoreJournal'
 import { cancelPendingRecoveryCopy } from './durableWrites'
 import { isUiStudioPreview } from '@/ui-studio/previewMode'
+import { interactionRecoveryMessage, useInteractionRecoveryStatus } from '@/interactions/interactionRecovery'
 
 type BackupStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 export type GameBackupRestoreResult = { ok: true; previousBackup: string } | { ok: false; error: string }
@@ -14,6 +15,7 @@ export type GameBackupRestoreResult = { ok: true; previousBackup: string } | { o
 /** Write durable data first, then publish one in-memory state update. Failed writes leave the game untouched. */
 export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupStorage): GameBackupRestoreResult {
   if (isUiStudioPreview()) return { ok: false, error: 'Il ripristino dei backup è disponibile nella partita. Questa anteprima non modifica i salvataggi.' }
+  if (useInteractionRecoveryStatus.getState().recovery) return { ok: false, error: interactionRecoveryMessage }
   if (!isCampaignWritable()) return { ok: false, error: sessionOwnershipMessage() }
   if (useGameStore.getState().challengeContext) return { ok: false, error: 'Torna alla campagna prima di ripristinare un backup.' }
   const restored = stateFromValidatedBackup(preview)

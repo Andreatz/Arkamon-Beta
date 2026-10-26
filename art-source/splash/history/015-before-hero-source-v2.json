@@ -1,0 +1,52 @@
+{
+  "id": 15,
+  "name": "Wormaren",
+  "type": "Terra",
+  "version": "v2-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-1aa7dafc-c0df-49f1-8bdd-66a9eaac2a8f.png",
+  "sourceMaster": "output/splash-art/originals/015-wormaren-v2-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/015-wormaren.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/015-wormaren.webp",
+  "promptFile": "art-source/splash/prompts/015-wormaren.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 524302,
+  "sha256": "f3003277b5c93ea40ec63b3a49e548e3437eb5e276a677691fbb7c69b018949c",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:19:54.547Z",
+  "subjectBounds": {
+    "left": 0.385,
+    "top": 0.31,
+    "right": 0.63,
+    "bottom": 0.78
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope on generated source",
+    "notes": "Full species-specific body, crests, tail, feet and essential sand/rock appendages inspected inside safe zone. Exact official reference matched. No live UI validation claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.419,
+    "top": 0.375,
+    "right": 0.579,
+    "bottom": 0.727
+  },
+  "displayScale": 1.4773,
+  "displayOffset": {
+    "x": -0.0185,
+    "y": -0.0453
+  },
+  "reviewedAt": "2026-10-25T20:54:59.258Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}

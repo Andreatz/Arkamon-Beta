@@ -2,47 +2,51 @@
   "id": 61,
   "name": "Wailoom",
   "type": "Acqua",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-8da0206a-a04e-4858-9997-114d7a93597b.png",
-  "sourceMaster": "output/splash-art/originals/061-wailoom-v2-centered.png",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-99dfea9f-8bae-4d00-b89a-480a81c8ede1.png",
+  "sourceMaster": "output/splash-art/originals/061-wailoom-fullscreen-source-v3.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/061-wailoom.webp",
   "runtimePath": "/backgrounds/arkamon-splash/061-wailoom.webp",
-  "promptFile": "art-source/splash/prompts/061-wailoom.txt",
+  "promptFile": "art-source/splash/prompts/061-wailoom-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 730940,
-  "sha256": "ccffaf795396e0a34bee63176be045e773e58f1533a59029aa078881e5169c87",
+  "bytes": 728370,
+  "sha256": "95ea69f8dbdaf163d46bf4e419c3386db506947a63100947e4244179317673a0",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:27:31.735Z",
+  "generatedAt": "2026-10-26T10:58:10.167Z",
+  "reviewedAt": "2026-10-26T10:58:10.168Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.389,
-    "top": 0.362,
-    "right": 0.644,
-    "bottom": 0.72
+    "left": 0.196,
+    "top": 0.117,
+    "right": 0.937,
+    "bottom": 0.996
   },
-  "compositionPolicy": "hero-focus",
   "focusBounds": {
-    "left": 0.389,
-    "top": 0.402,
-    "right": 0.583,
-    "bottom": 0.696
+    "left": 0.351,
+    "top": 0.282,
+    "right": 0.601,
+    "bottom": 0.799
   },
-  "displayScale": 1.5979,
-  "displayOffset": {
-    "x": 0.0024,
-    "y": -0.0483
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/061-before-fullscreen-source-v3.json"
   },
-  "reviewedAt": "2026-10-25T21:49:24.969Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "Face visibility correction after independent review of the actual compact Squadra and Arkadex screens. The critical rectangle now includes the full forehead, cheeks and muzzle; RS-219 includes its main head dome and Leafrex its main leaf cap. Uniform zoom was recalculated without changing the original drawing. Runtime UI fit still requires browser verification."
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+  }
 }

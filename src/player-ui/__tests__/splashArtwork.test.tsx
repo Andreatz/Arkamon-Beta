@@ -23,7 +23,8 @@ afterEach(() => { vi.unstubAllGlobals(); usePlayerUiSession.getState().clear() }
 describe('clean species splash artwork', () => {
   it('maps every reviewed catalog entry and leaves unsupported species generic', () => {
     for (const artwork of generatedCatalog) expect(getSplashArtwork(artwork.speciesId)).toEqual(artwork)
-    expect(getSplashArtwork(5)).toMatchObject({ speciesId: 5, src: '/backgrounds/arkamon-splash/005-darklaw.webp', label: 'Illustrazione di Darklaw', objectPosition: '50% 50%', aspectRatio: '16 / 9', compositionPolicy:'hero-focus', subjectBounds: { left: .38, top: .265, right: .64, bottom: .805 } })
+    // Painting bounds change when the source is repainted; identity and catalog mapping stay stable.
+    expect(getSplashArtwork(5)).toMatchObject({ speciesId: 5, src: '/backgrounds/arkamon-splash/005-darklaw.webp', label: 'Illustrazione di Darklaw', objectPosition: '50% 50%', aspectRatio: '16 / 9' })
     for (const id of [undefined, 0, 111, -1, NaN]) expect(getSplashArtwork(id)).toBeUndefined()
   })
 

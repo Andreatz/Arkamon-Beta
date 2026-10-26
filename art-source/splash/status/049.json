@@ -2,47 +2,51 @@
   "id": 49,
   "name": "Constrix",
   "type": "Fuoco",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-560d2fec-9e71-4508-aa93-e6ad1824b0b9.png",
-  "sourceMaster": "output/splash-art/originals/049-constrix-v2-centered.png",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-acc6d9a9-2f61-4557-bed6-6aa33d84ec0d.png",
+  "sourceMaster": "output/splash-art/originals/049-constrix-fullscreen-source-v3.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/049-constrix.webp",
   "runtimePath": "/backgrounds/arkamon-splash/049-constrix.webp",
-  "promptFile": "art-source/splash/prompts/049-constrix.txt",
+  "promptFile": "art-source/splash/prompts/049-constrix-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 565242,
-  "sha256": "a89ecb4001541deb1ee41bb52490dace143a59a9b58893388bdf4781e5b867b4",
+  "bytes": 598552,
+  "sha256": "48614761a0d661e81095564ca2e7b907cc90357975f5302e83ecc385543ec0c5",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:13:15.094Z",
+  "generatedAt": "2026-10-26T11:09:44.536Z",
+  "reviewedAt": "2026-10-26T11:09:44.537Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.402,
-    "top": 0.351,
-    "right": 0.608,
-    "bottom": 0.729
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
-  "compositionPolicy": "hero-focus",
   "focusBounds": {
-    "left": 0.402,
-    "top": 0.351,
-    "right": 0.572,
-    "bottom": 0.697
+    "left": 0.346,
+    "top": 0.232,
+    "right": 0.577,
+    "bottom": 0.775
   },
-  "displayScale": 1.5029,
-  "displayOffset": {
-    "x": -0.0005,
-    "y": -0.0061
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/049-before-fullscreen-source-v3.json"
   },
-  "reviewedAt": "2026-10-25T21:49:24.963Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "Face visibility correction after independent review of the actual compact Squadra and Arkadex screens. The critical rectangle now includes the full forehead, cheeks and muzzle; RS-219 includes its main head dome and Leafrex its main leaf cap. Uniform zoom was recalculated without changing the original drawing. Runtime UI fit still requires browser verification."
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+  }
 }

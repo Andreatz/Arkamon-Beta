@@ -1,0 +1,52 @@
+{
+  "id": 67,
+  "name": "Fearstraw",
+  "type": "Psico",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17579-674b-7a40-97c4-89ad7033f20b\\exec-8fec9b7d-e422-445e-ad37-2cefd9e415f6.png",
+  "sourceMaster": "output/splash-art/originals/067-fearstraw-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/067-fearstraw.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/067-fearstraw.webp",
+  "promptFile": "art-source/splash/prompts/067-fearstraw-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 595554,
+  "sha256": "2856956799747978b5d8abaf80dcbe6d09a71e35d5ad237e8bea9b3243c2413a",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:02:21.319Z",
+  "reviewedAt": "2026-10-26T00:02:21.320Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.15,
+    "top": 0,
+    "right": 0.81,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.36,
+    "top": 0.15,
+    "right": 0.64,
+    "bottom": 0.94
+  },
+  "displayScale": 0.720253,
+  "displayOffset": {
+    "x": -0.020000000000000018,
+    "y": -0.017411384999999946
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/067-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

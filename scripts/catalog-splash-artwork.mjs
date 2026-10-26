@@ -50,8 +50,16 @@ function displayTransform(record, context) {
 }
 
 function reviewedComposition(record, context) {
-  requireValue(record.compositionPolicy === undefined || record.compositionPolicy === 'hero-focus', 'unsupported compositionPolicy', context)
+  requireValue(record.compositionPolicy === undefined || ['hero-focus', 'full-canvas-focus'].includes(record.compositionPolicy), 'unsupported compositionPolicy', context)
   const subjectBounds = normalizedBounds(record.subjectBounds, 'subjectBounds', context)
+  if (record.compositionPolicy === 'full-canvas-focus') {
+    // Preserve honest source measurements. The actual panel opening is measured
+    // in the browser; a fixed guide must not silently clip a real face rectangle.
+    requireValue(record.displayScale === undefined && record.displayOffset === undefined, 'full-canvas-focus cannot use displayScale or displayOffset compensation', context)
+    const focusBounds = normalizedBounds(record.focusBounds, 'focusBounds', context)
+    requireValue(contains(subjectBounds, focusBounds), 'focusBounds must be contained in the full subjectBounds', context)
+    return { subjectBounds, compositionPolicy: 'full-canvas-focus', focusBounds }
+  }
   const { metadata, project } = displayTransform(record, context)
   const composition = { subjectBounds, ...metadata }
   if (record.compositionPolicy === 'hero-focus') {
@@ -101,6 +109,7 @@ export async function buildSplashArtworkCatalog({ root = defaultRoot, check = fa
     assets.push({
       speciesId: record.id,
       src,
+      sha256: record.sha256.toLowerCase(),
       label: `Illustrazione di ${record.name.trim()}`,
       objectPosition: '50% 50%',
       aspectRatio: '16 / 9',

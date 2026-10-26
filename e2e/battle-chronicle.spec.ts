@@ -118,7 +118,7 @@ test('restoring a different battle in the same scene replaces local HP, checkpoi
   await expect(page.locator('[data-battle-hp-side="player"]')).toHaveAttribute('data-battle-hp', '1')
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const tools = page.getByRole('dialog', { name: 'La tua partita' })
-  await tools.getByRole('button', { name: 'Apri Backup', exact: true }).click()
+  await tools.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   const downloaded = page.waitForEvent('download')
   await tools.getByRole('button', { name: 'Scarica backup partita', exact: true }).click()
   const backup = JSON.parse(await readFile((await (await downloaded).path())!, 'utf8'))

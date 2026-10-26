@@ -30,7 +30,7 @@ async function expectFallback(root: Locator) {
 }
 
 for (const screen of ['squadra', 'arkadex'] as const) {
-  test(`${screen}: centred Darklaw keeps its face and torso clear of the live interface`, async ({ page }, info) => {
+  test(`${screen}: centred Darklaw keeps its face and torso clear of the live interface`, async ({ page, isMobile }, info) => {
     const errors: string[] = [], imageFailures: { url: string; status?: number; failure?: string }[] = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('response', response => {
@@ -81,8 +81,15 @@ for (const screen of ['squadra', 'arkadex'] as const) {
 
     expect(metrics.image.width / metrics.image.height, 'clean splash retains its 16:9 canvas').toBeCloseTo(16 / 9, 2)
     expect(metrics.background.image).toContain('005-darklaw.webp')
-    expect(metrics.background.size).toBe('contain')
-    expect(metrics.background.transform).toMatch(/^(none|matrix\()/)
+    expect(metrics.background.size).toBe(isMobile ? 'contain' : 'cover')
+    expect(metrics.background.transform).toBe('none')
+    expect(metrics.background.filter).toBe('none')
+    expect(metrics.background.mask).toBe('none')
+    expect(metrics.background.duplicateContent).toBe('none')
+    expect(metrics.paintedImage.x).toBeLessThanOrEqual(metrics.paint.x + 1)
+    expect(metrics.paintedImage.y).toBeLessThanOrEqual(metrics.paint.y + 1)
+    expect(metrics.paintedImage.right).toBeGreaterThanOrEqual(metrics.paint.x + metrics.paint.width - 1)
+    expect(metrics.paintedImage.bottom).toBeGreaterThanOrEqual(metrics.paint.y + metrics.paint.height - 1)
     expect(metrics.background.opacity).toBe('1')
     expect(metrics.creature.x).toBeGreaterThanOrEqual(metrics.paint.x - 1)
     expect(metrics.creature.y).toBeGreaterThanOrEqual(metrics.paint.y - 1)
@@ -92,8 +99,10 @@ for (const screen of ['squadra', 'arkadex'] as const) {
       `${screen}: painted creature stays clear of ${panel.selector}; overlap ${panel.overlap.width.toFixed(1)}×${panel.overlap.height.toFixed(1)} px`).toBe(true)
     expect(metrics.layout.rootScrollWidth).toBeLessThanOrEqual(metrics.layout.rootClientWidth + 2)
     expect(metrics.layout.contentScrollWidth).toBeLessThanOrEqual(metrics.layout.contentClientWidth + 2)
-    expect(metrics.layout.contentScrollHeight).toBeLessThanOrEqual(metrics.layout.contentClientHeight + 2)
-    expect(metrics.shell.bottom).toBeLessThanOrEqual(page.viewportSize()!.height + 2)
+    if (!isMobile) {
+      expect(metrics.layout.contentScrollHeight).toBeLessThanOrEqual(metrics.layout.contentClientHeight + 2)
+      expect(metrics.shell.bottom).toBeLessThanOrEqual(page.viewportSize()!.height + 2)
+    }
     expect(metrics.information.length).toBeGreaterThan(3)
     expect(metrics.information.every(item => item.fontSize >= 10 && item.opacity > 0 && item.color !== 'rgba(0, 0, 0, 0)'), 'live information retains visible type at readable sizes').toBe(true)
 

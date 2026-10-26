@@ -19,6 +19,7 @@ import type {
 import { compactRoadPoints } from '@/utils/mainMapRoadGeometry'
 import { migrateDepositLayout } from '@/theme/depositLayoutMigration'
 import { isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
+import { isSafeThemeAssetPath } from '@/theme/adminThemeAssetPaths'
 import { normalizeDesign } from '@/ui-studio/designModel'
 import type { UiDesignDocument } from '@/ui-studio/types'
 import {
@@ -122,6 +123,13 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
     try { design = normalizeDesign(theme.design) } catch { /* Invalid visual settings cannot prevent boot. */ }
   }
   const ui = { ...defaultAdminTheme.ui }
+  const assets = { ...defaultAdminTheme.assets }
+  for (const key of ['titleLogo', 'titleBackground', 'battleBackground', 'panelTexture'] as const) {
+    if (!theme?.assets || !Object.prototype.hasOwnProperty.call(theme.assets, key)) continue
+    const source = theme.assets[key]
+    if (source === undefined) delete assets[key]
+    else if (isSafeThemeAssetPath(source)) assets[key] = source
+  }
   for (const key of Object.keys(ui) as (keyof AdminThemeUi)[]) {
     const value = theme?.ui?.[key]
     if (isValidThemeUiValue(key, value)) ui[key] = value
@@ -151,10 +159,7 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
       ...theme?.colors,
     },
     ui,
-    assets: {
-      ...defaultAdminTheme.assets,
-      ...theme?.assets,
-    },
+    assets,
     spriteScales,
     design,
     layouts: {
@@ -252,7 +257,7 @@ export const useAdminStore = create<AdminState>()(
         }) : state),
 
       updateAsset: (key, value) =>
-        set((state) => ({
+        set((state) => value.trim() !== '' && !isSafeThemeAssetPath(value) ? state : ({
           theme: {
             ...state.theme,
             assets: {

@@ -34,4 +34,17 @@ describe('visual project interrupted commits', () => {
     expect(recoverPresentationStorage(storage).ok).toBe(false)
     expect(data.get('arkamon-save')).toBe('PRIVATE_CAMPAIGN_UNCHANGED')
   })
+  it('does not abort application bootstrap when the browser denies the localStorage getter itself', () => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+    Object.defineProperty(globalThis, 'localStorage', { configurable: true, get: () => { throw new Error('Storage getter denied') } })
+    try {
+      expect(() => recoverPresentationStorage()).not.toThrow()
+      expect(recoverPresentationStorage()).toMatchObject({ ok: false, error: expect.stringMatching(/Recupero/) })
+      const { storage } = fixture()
+      expect(recoverPresentationStorage(storage)).toEqual({ ok: true, error: null })
+    } finally {
+      if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor)
+      else Reflect.deleteProperty(globalThis, 'localStorage')
+    }
+  })
 })

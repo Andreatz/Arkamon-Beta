@@ -1,0 +1,52 @@
+{
+  "id": 61,
+  "name": "Wailoom",
+  "type": "Acqua",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-663a7239-fdf3-4316-b2f8-88ddeb5cf5dc.png",
+  "sourceMaster": "output/splash-art/originals/061-wailoom-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/061-wailoom.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/061-wailoom.webp",
+  "promptFile": "art-source/splash/prompts/061-wailoom-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 692214,
+  "sha256": "909dfaf955ea79d3bdfae91e1bbfec836bcc010f4c35c7248ff401f29ea16452",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:46:30.478Z",
+  "reviewedAt": "2026-10-26T00:46:30.479Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.2,
+    "top": 0.14,
+    "right": 0.62,
+    "bottom": 0.94
+  },
+  "displayScale": 0.71125,
+  "displayOffset": {
+    "x": 0.044012499999999954,
+    "y": -0.013449999999999962
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/061-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

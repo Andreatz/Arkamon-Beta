@@ -1,0 +1,52 @@
+{
+  "id": 24,
+  "name": "Grimbolt",
+  "type": "Elettro",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-2257c46d-07d8-482f-96c8-ec4e37963204.png",
+  "sourceMaster": "output/splash-art/originals/024-grimbolt-hero-source-v2.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/024-grimbolt.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/024-grimbolt.webp",
+  "promptFile": "art-source/splash/prompts/024-grimbolt-hero-source-v2.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 677550,
+  "sha256": "39b388219221851c13b6439988fbb7a10a699c713d8538bf88b9f3d5ff10b028",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T00:22:02.019Z",
+  "reviewedAt": "2026-10-26T00:22:02.020Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.32,
+    "top": 0.11,
+    "right": 0.66,
+    "bottom": 0.84
+  },
+  "displayScale": 0.779452,
+  "displayOffset": {
+    "x": -0.01220547999999999,
+    "y": 0.034486300000000025
+  },
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/024-before-hero-source-v2.json"
+  },
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately."
+}

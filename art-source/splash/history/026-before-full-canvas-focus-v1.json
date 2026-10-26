@@ -1,0 +1,46 @@
+{
+  "id": 26,
+  "name": "Ampereel",
+  "type": "Elettro",
+  "version": "fullscreen-source-v3",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-7d762bbb-5e60-4cfe-a468-85d3d044353e.png",
+  "sourceMaster": "output/splash-art/originals/026-ampereel-fullscreen-source-v3.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/026-ampereel.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/026-ampereel.webp",
+  "promptFile": "art-source/splash/prompts/026-ampereel-fullscreen-source-v3.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 768536,
+  "sha256": "41daa1a0915cbdad4a5a405b16540a6b66faa0babe62e4e4865aa3ad93c02275",
+  "status": "approved-visual",
+  "generatedAt": "2026-10-26T10:58:09.053Z",
+  "reviewedAt": "2026-10-26T10:58:09.054Z",
+  "compositionPolicy": "hero-focus",
+  "subjectBounds": {
+    "left": 0.29,
+    "top": 0.216,
+    "right": 0.952,
+    "bottom": 0.969
+  },
+  "focusBounds": {
+    "left": 0.389,
+    "top": 0.329,
+    "right": 0.611,
+    "bottom": 0.799
+  },
+  "sourceComposition": "full-canvas-central-hero",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
+    "references": [
+      36,
+      97
+    ],
+    "previousStatusFile": "art-source/splash/history/026-before-fullscreen-source-v3.json"
+  },
+  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+}

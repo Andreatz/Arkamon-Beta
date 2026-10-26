@@ -2,51 +2,52 @@
   "id": 21,
   "name": "Shrody",
   "type": "Psico",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-531181f2-e677-4497-9eda-91024eb24d40.png",
-  "sourceMaster": "output/splash-art/originals/021-shrody-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-d5274bad-e18b-4fcf-b4a6-0774942d3618.png",
+  "sourceMaster": "output/splash-art/originals/021-shrody-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/021-shrody.webp",
   "runtimePath": "/backgrounds/arkamon-splash/021-shrody.webp",
-  "promptFile": "art-source/splash/prompts/021-shrody.txt",
+  "promptFile": "art-source/splash/prompts/021-shrody-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 702522,
-  "sha256": "4d233059d7ae51e031e31a4a9cdd2401fbfd2901ff58991dcc5757e8f23b209d",
+  "bytes": 716224,
+  "sha256": "a139235c3ccf4e9d2784ba48a242910ce6fe6a6d3d06ca86dc2c6ec11cdac054",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:28:14.219Z",
+  "generatedAt": "2026-10-26T00:26:00.205Z",
+  "reviewedAt": "2026-10-26T00:26:00.206Z",
+  "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.395,
-    "top": 0.375,
-    "right": 0.595,
-    "bottom": 0.715
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
-  "visualReview": {
-    "method": "manual conservative silhouette envelope",
-    "notes": "Full box flaps/tails or ears/limbs/complete electrical trail included in measured bounds. Official design preserved. No live UI claim."
-  },
-  "compositionPolicy": "hero-focus",
   "focusBounds": {
-    "left": 0.416,
-    "top": 0.45,
-    "right": 0.535,
-    "bottom": 0.63
+    "left": 0.285,
+    "top": 0.255,
+    "right": 0.605,
+    "bottom": 0.79
   },
-  "displayScale": 2.5,
-  "displayOffset": {
-    "x": 0.0412,
-    "y": -0.07
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/021-before-hero-source-v2.json"
   },
-  "reviewedAt": "2026-10-25T20:54:59.264Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Left eye/nose start near x .285-.30; right eye is clear. Do not discard the left eye from protected area."
+  }
 }

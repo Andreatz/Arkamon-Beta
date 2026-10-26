@@ -2,47 +2,52 @@
   "id": 53,
   "name": "Leafrex",
   "type": "Erba",
-  "version": "v2-centered",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-72951e6c-296d-46b0-9a58-70e470559a68.png",
-  "sourceMaster": "output/splash-art/originals/053-leafrex-v2-centered.png",
+  "version": "hero-source-v2",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-97a3ef1b-9dac-4de0-955d-df636498de07.png",
+  "sourceMaster": "output/splash-art/originals/053-leafrex-hero-source-v2.png",
   "sourceDimensions": {
     "width": 1672,
     "height": 941
   },
   "outputFile": "public/backgrounds/arkamon-splash/053-leafrex.webp",
   "runtimePath": "/backgrounds/arkamon-splash/053-leafrex.webp",
-  "promptFile": "art-source/splash/prompts/053-leafrex.txt",
+  "promptFile": "art-source/splash/prompts/053-leafrex-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 777542,
-  "sha256": "c9e8469ab6d56c5a3a8400407792d321a8e9f5b256fe0da771b791fc219bb719",
+  "bytes": 687062,
+  "sha256": "7cb4f56155ee4f2ed6bda338569352789ed02e4f669e28b7a72d1956f1199a12",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
+  "generatedAt": "2026-10-26T00:37:02.944Z",
+  "reviewedAt": "2026-10-26T00:37:02.945Z",
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.3,
+    "top": 0.255,
+    "right": 0.635,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T19:16:57.657Z",
-  "subjectBounds": {
-    "left": 0.375,
-    "top": 0.345,
-    "right": 0.639,
-    "bottom": 0.76
+  "sourceComposition": "large-central-foreground",
+  "regeneration": {
+    "date": "2026-10-26",
+    "reason": "The source character was too small relative to the environment.",
+    "references": [
+      109,
+      110,
+      30
+    ],
+    "previousStatusFile": "art-source/splash/history/053-before-hero-source-v2.json"
   },
-  "compositionPolicy": "hero-focus",
-  "focusBounds": {
-    "left": 0.407,
-    "top": 0.442,
-    "right": 0.575,
-    "bottom": 0.711
-  },
-  "displayScale": 1.8452,
-  "displayOffset": {
-    "x": -0.0034,
-    "y": -0.1112
-  },
-  "reviewedAt": "2026-10-25T20:54:59.293Z",
-  "framingReview": "art-source/splash/hero-framing-review.json",
-  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
+  "framingVersion": "full-canvas-focus-v1",
+  "framingReview": {
+    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
+    "policy": "cover-only-v2",
+    "notes": "Small snout at x .30; verify actual left panel."
+  }
 }

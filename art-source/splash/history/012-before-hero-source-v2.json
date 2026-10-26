@@ -1,0 +1,52 @@
+{
+  "id": 12,
+  "name": "Felyss",
+  "type": "Psico",
+  "version": "v3-centered",
+  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a16e13-1cab-76c2-b309-f58e7415f33e\\exec-3803d7ea-82c3-402c-ba9e-7ba4d70faeb6.png",
+  "sourceMaster": "output/splash-art/originals/012-felyss-v3-centered.png",
+  "sourceDimensions": {
+    "width": 1672,
+    "height": 941
+  },
+  "outputFile": "public/backgrounds/arkamon-splash/012-felyss.webp",
+  "runtimePath": "/backgrounds/arkamon-splash/012-felyss.webp",
+  "promptFile": "art-source/splash/prompts/012-felyss.txt",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 698456,
+  "sha256": "6d4a29065dbd36f9dddd76f38353ee82d1de99c300eb5dc23ef0adb34b13deb2",
+  "status": "approved-visual",
+  "subjectSafeZone": {
+    "left": 0.35,
+    "top": 0.28,
+    "right": 0.65,
+    "bottom": 0.8
+  },
+  "generatedAt": "2026-10-25T19:16:17.952Z",
+  "subjectBounds": {
+    "left": 0.414,
+    "top": 0.37,
+    "right": 0.615,
+    "bottom": 0.72
+  },
+  "visualReview": {
+    "method": "manual conservative silhouette envelope on generated source",
+    "notes": "Reviewed after1.4x zoom-out: all ears, ribbons, intrinsic halo and tail fit inside safe area. Exact official form matched; no live UI test claimed."
+  },
+  "compositionPolicy": "hero-focus",
+  "focusBounds": {
+    "left": 0.454,
+    "top": 0.43,
+    "right": 0.54,
+    "bottom": 0.65
+  },
+  "displayScale": 2.3636,
+  "displayOffset": {
+    "x": -0.0129,
+    "y": -0.0645
+  },
+  "reviewedAt": "2026-10-25T20:54:59.253Z",
+  "framingReview": "art-source/splash/hero-framing-review.json",
+  "reviewNotes": "The user clarified that face and torso take priority over complete extremities. The reviewed painting is enlarged uniformly and positioned for the live interface; the original drawing is unchanged."
+}
