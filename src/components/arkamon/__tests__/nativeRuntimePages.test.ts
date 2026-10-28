@@ -34,6 +34,6 @@ describe('compact native runtime metadata', () => {
       const { pages: _, ...contract } = runtime
       expect(contract).toEqual(source)
     }
-    expect(getNativeRuntimeClip('/sprites/arkamon/110/front/idle.webp')).toBeUndefined()
+    expect(getNativeRuntimeClip('/sprites/arkamon/111/front/idle.webp')).toBeUndefined()
   })
 })

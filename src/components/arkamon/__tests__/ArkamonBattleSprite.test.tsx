@@ -8,7 +8,7 @@ import {
 } from '../ArkamonBattleSprite'
 import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const ANIMATED_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]
+const ANIMATED_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const motionPreference = vi.hoisted(() => ({ reduced: false }))
@@ -160,8 +160,6 @@ describe('Arkamon battle sprite visual selection', () => {
 
   it.each([
     ...ANIMATED_SPECIES_IDS.map((speciesId) => ({ speciesId, side: 'back', src: `/back_sprites/${speciesId}.png` }) as const),
-    { speciesId: 110, side: 'front', src: '/front_sprites/110.png' },
-    { speciesId: 110, side: 'back', src: '/back_sprites/110.png' },
   ] as const)('preserves existing art for species $speciesId, view $side', ({ speciesId, side, src }) => {
     const markup = renderToStaticMarkup(
       <ArkamonBattleSprite speciesId={speciesId} name="Arkamon" side={side} animation="attack" scale={0.75} />

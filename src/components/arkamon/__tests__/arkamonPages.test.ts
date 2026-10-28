@@ -9,7 +9,8 @@ import { locateSpritePage, validateSpritePages } from '@/components/vfx/spritePa
 
 describe('generated native pages match original authoritative animation contracts', () => {
   it('has complete pages for every native front clip with identical frame counts, FPS, viewport and cues', () => {
-    expect(Object.keys(paged.clips)).toHaveLength(455)
+    expect(Object.keys(paged.clips)).toHaveLength(550)
+    expect(Object.values(paged.clips).reduce((total, clip) => total + clip.frameCount, 0)).toBe(52_775)
     for (const set of Object.values(ARKAMON_ANIMATION_MANIFEST)) for (const native of Object.values(set!.front!)) {
       const runtime = getArkamonRuntimeAsset(native!)
       expect(runtime.pages).toBeDefined()

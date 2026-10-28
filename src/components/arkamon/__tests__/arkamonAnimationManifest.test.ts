@@ -12,7 +12,7 @@ import {
 const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
-const SPECIES_IDS = Array.from({ length: 91 }, (_, index) => index + 1)
+const SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
 const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
 
@@ -28,8 +28,8 @@ describe('Arkamon animation manifest', () => {
         expect(getArkamonAnimationDurationMs(speciesId, 'back', animation)).toBe(0)
       }
     }
-    expect(resolveArkamonAnimationAsset(110, 'front', 'attack')).toBeUndefined()
-    expect(resolveArkamonAnimationAsset(110, 'back', 'attack')).toBeUndefined()
+    expect(resolveArkamonAnimationAsset(111, 'front', 'attack')).toBeUndefined()
+    expect(resolveArkamonAnimationAsset(111, 'back', 'attack')).toBeUndefined()
   })
 
   it.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => ({ speciesId, animation }))))(
@@ -97,7 +97,11 @@ describe('Arkamon animation manifest', () => {
   })
 
   it('preserves all short native clips without padding and all other new clips at 96 frames', () => {
-    const shortClips = new Set(['41/idle', '41/attack', '47/hit', '52/attack', '52/ko', '79/victory', '83/ko'])
+    // Independently decoded supplied videos contain these 95-frame clips.
+    // Their real final frame must not be replaced with a padded 96th frame.
+    const shortClips = new Set(['41/idle', '41/attack', '47/hit', '52/attack', '52/ko', '79/victory', '83/ko',
+      '107/idle', '107/attack', '107/hit', '107/victory', '107/ko',
+      '108/attack', '108/ko', '109/hit', '109/victory', '110/attack', '110/hit', '110/victory'])
     for (const speciesId of SPECIES_IDS.filter(id => id >= 39)) for (const animation of ANIMATIONS) {
       const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
       const count = shortClips.has(`${speciesId}/${animation}`) ? 95 : 96
@@ -105,6 +109,5 @@ describe('Arkamon animation manifest', () => {
       expect(asset.fps).toBe(24)
       expect(asset.durationMs).toBeCloseTo(count / 24 * 1000)
     }
-    for (const speciesId of Array.from({ length: 19 }, (_, index) => index + 92)) expect(ARKAMON_ANIMATION_MANIFEST[speciesId]).toBeUndefined()
   })
 })

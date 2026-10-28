@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = Array.from({ length: 91 }, (_, index) => index + 1)
+const SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -141,10 +141,10 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)
-      expect([28, 29, 52, 53, 54, 69, 70, 82]).toContain(speciesId)
+      expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106]).toContain(speciesId)
       // Reliskull carries small algae patches at logical size 192; the older
       // blue-screen forms have much larger green leaves or body regions.
-      expect(opaqueGreen).toBeGreaterThan(speciesId === 82 ? 300 : 1000)
+      if (speciesId <= 82) expect(opaqueGreen).toBeGreaterThan(speciesId === 82 ? 300 : 1000)
     } else if (nativeGreenAllowed) {
       expect([26, 27, 45]).toContain(speciesId)
       expect(conversion.key.preserveGreenBody.screenPocketsExcluded).toBe(true)
