@@ -56,7 +56,9 @@ La revisione visiva è completa per le 19 forme e usa tavole campionate su sfond
 | Suite unitaria completa | **5.117/5.117 test in 176 file**, codice 0 |
 | TypeScript | `tsc --noEmit`, codice 0 |
 | Browser sorgente | **34 superati, otto skip mobile dichiarati, zero errori o flaky**, codice 0; 19 forme desktop, 11 mobile e quattro duelli |
-| Build e browser del bundle compilato | In corso; risultati registrati dopo il pin degli asset |
+| Build di produzione | Codice 0, 550 clip e 52.775 frame; pacchetto locale **803,4 MiB**, sotto il limite di 900 MiB |
+| Budget avvio | Superato: ingresso 462.798 byte / 500.000; JavaScript iniziale 722.741 / 800.000; CSS 76.621 / 100.000 |
+| Browser del bundle compilato | **6/6 superati**, zero errori, skip o flaky, codice 0; quattro leggendari e due duelli con trasporto locale verificato |
 
 Il primo giro unitario ha avuto un timeout di cinque secondi nel controllo dell'indice audio, durante una verifica media concorrente; le evidenze sono conservate come `vitest-full-first.log/.json`. Senza modificare codice o timeout, il test isolato è passato (5/5, indicizzazione 770 ms) e l'intera suite successiva è passata senza quella contesa. Non si sommano i tentativi al totale di 5.117.
 
@@ -65,3 +67,7 @@ Nessun push o deploy è implicito nella conversione locale. Le prove qui riporta
 Le nuove prove sono `e2e/native-import-92-110.spec.ts` (tutte le 19 forme su desktop, undici su viewport mobile e due confronti reali nel laboratorio su entrambi) e `e2e-native-release/native-catalog.spec.ts` (le quattro forme più recenti e due confronti nel bundle di produzione). Quest'ultima serve localmente soltanto i media della revisione esatta dichiarata dalla build, verificandone inventario, dimensioni e impronte. **Certifica il bundle con il trasporto locale verificato, non la disponibilità della revisione su GitHub/CDN.** Il bundle resta invariato.
 
 Il pin della libreria media richiede l'ordine già previsto dal progetto: commit degli asset e del manifest completo, `npm run media:pin`, quindi build rigorosa e registrazione del pin. Il lettore del manifest Git usa ora un buffer di 16 MiB, sufficiente per il catalogo completo; due test verificano sia un manifest oltre 4 MiB sia il rifiuto delle modifiche non registrate. Questo evita di allentare il controllo di corrispondenza tra manifest e revisione.
+
+Gli asset e il manifest sono registrati nel commit locale **`d16ad09f1d5f37aed430bded4070991fe88034e2`**. Il pin usa questa revisione e l'impronta canonica **`d52cfb8e1d6b675eed64dab88fb5f76aa95147e504c5e74d6c8a9ff2f35d9b76`**. La build e i sei casi compilati hanno usato questi stessi valori. Il bundle non è stato modificato per il collaudo: sono state servite localmente soltanto le risorse ammesse dall'inventario di quella revisione, verificando dimensioni e SHA-256 delle pagine native richieste.
+
+Il commit successivo registra pin, audit e risultati finali. **Nessun push o deploy eseguito per questa importazione.** I precedenti interventi strutturali restano nel checkout senza essere inclusi nei commit media. L'installer desktop preesistente non è stato ricostruito e non rappresenta questa libreria completa.

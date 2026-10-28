@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "importDate": "2026-10-28",
-  "createdAt": "2026-10-28T10:02:12.076620+00:00",
+  "createdAt": "2026-10-28T10:08:40.279005+00:00",
   "speciesCount": 19,
   "clipCount": 95,
   "nativeFrameCount": 9108,
@@ -28200,14 +28200,94 @@
       "log": "browser-run.log"
     },
     "build": {
-      "status": "pending"
+      "exitCode": 0,
+      "nativeClips": 550,
+      "nativeFrames": 52775,
+      "localPackageMiB": 803.4,
+      "log": "production-build.log",
+      "mediaRevision": "d16ad09f1d5f37aed430bded4070991fe88034e2",
+      "manifestSha256": "d52cfb8e1d6b675eed64dab88fb5f76aa95147e504c5e74d6c8a9ff2f35d9b76"
     },
     "compiledNativeBrowser": {
-      "status": "pending"
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-10-28T10:05:57.238Z",
+        "duration": 112375.963,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "legendaryForms": [
+        107,
+        108,
+        109,
+        110
+      ],
+      "duels": [
+        [
+          107,
+          110
+        ],
+        [
+          108,
+          109
+        ]
+      ],
+      "bundleUnmodified": true,
+      "transport": "Exact pinned local media with native page SHA-256 verification; this does not verify CDN publication or availability.",
+      "log": "compiled-native-run.log"
     },
     "publication": {
+      "mediaRevision": "d16ad09f1d5f37aed430bded4070991fe88034e2",
       "pushed": false,
-      "deployed": false
+      "deployed": false,
+      "desktopInstallerRebuilt": false,
+      "scope": "Current working checkout tested locally; previous structural edits remain uncommitted."
+    },
+    "startupBudget": {
+      "exitCode": 0,
+      "ok": true,
+      "totals": {
+        "entryBytes": 462798,
+        "javascriptBytes": 722741,
+        "stylesheetBytes": 76621
+      },
+      "budget": {
+        "entryBytes": 500000,
+        "javascriptBytes": 800000,
+        "stylesheetBytes": 100000
+      },
+      "javascript": [
+        {
+          "file": "assets/index-Br1-FJYn.js",
+          "bytes": 462798,
+          "gzipBytes": 122287
+        },
+        {
+          "file": "assets/motion-yIMK2ghJ.js",
+          "bytes": 115945,
+          "gzipBytes": 38468
+        },
+        {
+          "file": "assets/zustand-FNTHn3Ez.js",
+          "bytes": 9924,
+          "gzipBytes": 3961
+        },
+        {
+          "file": "assets/react-BHbVzhVh.js",
+          "bytes": 134074,
+          "gzipBytes": 43055
+        }
+      ],
+      "stylesheets": [
+        {
+          "file": "assets/index-DPNs8MxM.css",
+          "bytes": 76621,
+          "gzipBytes": 15967
+        }
+      ],
+      "violations": []
     }
   }
 }
