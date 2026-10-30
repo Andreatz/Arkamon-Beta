@@ -29,7 +29,7 @@ beforeEach(() => {
     giocatore1: player(1, [first], { '1:1': reserve }), giocatore2: player(2, [foreign], {}),
     battaglia: null, interactionProgress: emptyInteractionProgress(), giocatoreAttivo: 1,
     turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, scenaCorrente: { scena: 'mappa-principale' },
-    challengeContext: null, teamRuleMessage: null,
+    challengeContext: null, teamRuleMessage: null, league: emptyLeagueState(),
   } as GameState
 })
 

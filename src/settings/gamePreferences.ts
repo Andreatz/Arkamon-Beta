@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { useReducedMotion } from 'framer-motion'
+import { useContext } from 'react'
+import { MotionPlaybackContext } from './motionPlayback'
 import { isUiStudioPreview, uiPreviewCampaignStorage } from '@/ui-studio/previewMode'
 
 export type MotionPreference = 'system' | 'on' | 'off'
@@ -45,8 +47,9 @@ export function getAnimationDuration(milliseconds: number): number {
   return Math.max(0, milliseconds) / (useGamePreferences.getState().animationSpeed === 'fast' ? 2 : 1)
 }
 export function useGameMotionPreferences(): { reducedMotion: boolean; speed: number } {
+  const playback = useContext(MotionPlaybackContext)
   const system = useReducedMotion()
   const preference = useGamePreferences((state) => state.reducedMotion)
   const speed = useGamePreferences((state) => state.animationSpeed === 'fast' ? 2 : 1)
-  return { reducedMotion: preference === 'system' ? Boolean(system) : preference === 'on', speed }
+  return playback ?? { reducedMotion: preference === 'system' ? Boolean(system) : preference === 'on', speed }
 }

@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "method": "Complete browser inventory verified across retained executions and targeted rechecks. This is not one green Playwright run and cannot be used as a release-gate report.",
+  "inventory": {
+    "total": 478,
+    "general": 348,
+    "native": 130,
+    "overlap": 0,
+    "missing": 0
+  },
+  "finalStatus": {
+    "passed": 376,
+    "declaredSkipped": 102,
+    "unresolved": 0
+  },
+  "general": {
+    "passed": 287,
+    "declaredSkipped": 61
+  },
+  "native": {
+    "passed": 89,
+    "declaredSkipped": 41
+  },
+  "nativeResidualSelection": {
+    "total": 66,
+    "passed": 27,
+    "declaredSkipped": 39,
+    "previouslyExecuted": 64,
+    "overlap": 0,
+    "missing": 0
+  },
+  "sourceReports": [
+    {
+      "path": "output/structural-2026-10-26/browser-final.json",
+      "sha256": "69434a3f41695278e47425b6b793ad202492f894f5149fc2e56163cbbbef48a5",
+      "stats": {
+        "startTime": "2026-10-26T15:15:10.414Z",
+        "duration": 3831654.378,
+        "expected": 119,
+        "skipped": 358,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "globalErrorCount": 2
+    },
+    {
+      "path": "output/structural-2026-10-26/browser-general.json",
+      "sha256": "b831eb2a7d74ac62a432b4b36b044ce0fe83542e7bf91acbfdc2db0896e3f9b4",
+      "stats": {
+        "startTime": "2026-10-26T16:25:18.450Z",
+        "duration": 1991021.86,
+        "expected": 256,
+        "skipped": 61,
+        "unexpected": 31,
+        "flaky": 0
+      },
+      "globalErrorCount": 0
+    },
+    {
+      "path": "output/structural-2026-10-26/svg-recheck-stable.json",
+      "sha256": "405a8c95d8c91d5185ce54e17fe0fda242e261a370259e8400e38bda95c3e791",
+      "stats": {
+        "startTime": "2026-10-26T17:07:02.665Z",
+        "duration": 20833.391,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "globalErrorCount": 0
+    },
+    {
+      "path": "output/structural-2026-10-26/general-mobile-recheck.json",
+      "sha256": "4bac939086041a6131f2495848251660f8b4e7bc0f0487db6454c79927cfe198",
+      "stats": {
+        "startTime": "2026-10-26T17:07:50.902Z",
+        "duration": 433341.67,
+        "expected": 29,
+        "skipped": 1,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "globalErrorCount": 0
+    },
+    {
+      "path": "output/structural-2026-10-26/catalog-mobile-stable.json",
+      "sha256": "020d756cb44d4ebbee5cfbef7cd4c6023835014f08bc7ed028842fa766b775dd",
+      "stats": {
+        "startTime": "2026-10-26T17:23:29.683Z",
+        "duration": 284060.78900000005,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "globalErrorCount": 0
+    },
+    {
+      "path": "output/structural-2026-10-26/native-remaining-final.json",
+      "sha256": "f3d2dd8c67a47086d9d29254c0a58aa875dce7ddf19cd305ab982e12e8de3a91",
+      "stats": {
+        "startTime": "2026-10-26T17:32:16.431Z",
+        "duration": 305688.167,
+        "expected": 27,
+        "skipped": 39,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "globalErrorCount": 0
+    }
+  ],
+  "localCaseHistory": "output/structural-2026-10-26/browser-consolidated-final.json",
+  "excludedFromSingleRunClaims": [
+    "The original complete invocation timed out and left 356 scenarios unexecuted.",
+    "The general invocation had a transient-dice assertion race and then 30 failures caused by the stopped development server.",
+    "The first mobile catalog recheck was interrupted by a Vite restart at form 84.",
+    "Targeted verification preserves the failed history and proves each registered case; it does not rewrite any raw report."
+  ]
+}

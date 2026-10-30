@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { assetUrl } from '@/utils/assetUrl'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { hasOwnedPokemon } from '@/engine/pokemonOwnership'
+import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
 
 const DEFAULT_TITLE_LOGO = '/ui/logo_arkamon.png'
 const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
@@ -96,6 +97,9 @@ export function TitoloScene() {
 
       <motion.div
         className="rpg-title-commands relative z-10 flex flex-col"
+        onPointerEnter={() => { if (!reducedMotion) preloadSceneTransitionArtwork() }}
+        onFocusCapture={() => { if (!reducedMotion) preloadSceneTransitionArtwork() }}
+        onPointerDown={() => { if (!reducedMotion) preloadSceneTransitionArtwork() }}
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: reducedMotion ? 0 : .3 / speed }}

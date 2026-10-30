@@ -1,0 +1,238 @@
+{
+  "version": 1,
+  "date": "2026-10-26",
+  "baseRevision": "c150cf20e6a25903d8cbe73f74e461ad38b9069b",
+  "state": "Local modified checkout. No commit, push, remote CI run or deployment for this structural phase.",
+  "unit": {
+    "passed": 4207,
+    "failed": 0,
+    "files": 175,
+    "report": {
+      "path": "output/structural-2026-10-26/unit-final.json",
+      "bytes": 1489062,
+      "sha256": "2855f46637e81ba40904dba8efe7a1cbdefe24653c852a52a55009532b17672c"
+    }
+  },
+  "browser": {
+    "passed": 376,
+    "declaredSkipped": 102,
+    "unresolved": 0,
+    "total": 478,
+    "method": "Complete browser inventory verified across retained executions and targeted rechecks. This is not one green Playwright run and cannot be used as a release-gate report.",
+    "inventoryReport": "browser-verification.json",
+    "caseHistory": "output/structural-2026-10-26/browser-consolidated-final.json"
+  },
+  "compiledRelease": {
+    "startTime": "2026-10-26T17:18:08.324Z",
+    "duration": 34538.889,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "errors": 0,
+    "report": {
+      "path": "output/ci/compiled.json",
+      "bytes": 7507,
+      "sha256": "9a092d731d9a64b929d7fc1accc27e1c0b903517b2cfd3dae0e60067a74f434e"
+    },
+    "coverage": [
+      "12 management views at 1366x768 and 1920x1080",
+      "real new campaign, starters and reload",
+      "separate public profile, fragment activation without reload, disconnect and reconnect"
+    ]
+  },
+  "desktopPolicy": {
+    "startTime": "2026-10-26T17:19:31.580Z",
+    "duration": 10581.645,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "errors": 0,
+    "report": {
+      "path": "output/structural-2026-10-26/desktop-browser.json",
+      "bytes": 6233,
+      "sha256": "d9fc1c762a31a68e706f836e766f40482518f0d02cb49d3a0f8c40aa399e0487"
+    },
+    "scope": "Compiled frontend and separate static resources under actual CSP in Chromium; not a WebView2 application execution."
+  },
+  "contracts": {
+    "nodePassed": 13,
+    "rustResourcePassed": 2,
+    "dependencySecurityPassed": 9,
+    "artworkPassed": 57,
+    "vfxCatalogEntries": 276
+  },
+  "privateGuest": {
+    "backendRevision": "ff4b0c8b03aa15a4a8a865e99c6bd7459c9c699c",
+    "backendTestsPassed": 62,
+    "integratedPhoneScenario": {
+      "startTime": "2026-10-26T15:01:07.343Z",
+      "duration": 67703.77900000001,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "productionCredentialsUsed": false
+  },
+  "startupBudgets": {
+    "web": {
+      "ok": true,
+      "totals": {
+        "entryBytes": 462798,
+        "javascriptBytes": 722741,
+        "stylesheetBytes": 76621
+      },
+      "budget": {
+        "entryBytes": 500000,
+        "javascriptBytes": 800000,
+        "stylesheetBytes": 100000
+      },
+      "javascript": [
+        {
+          "file": "assets/index-CkfFFTVo.js",
+          "bytes": 462798,
+          "gzipBytes": 122289
+        },
+        {
+          "file": "assets/motion-yIMK2ghJ.js",
+          "bytes": 115945,
+          "gzipBytes": 38468
+        },
+        {
+          "file": "assets/zustand-FNTHn3Ez.js",
+          "bytes": 9924,
+          "gzipBytes": 3961
+        },
+        {
+          "file": "assets/react-BHbVzhVh.js",
+          "bytes": 134074,
+          "gzipBytes": 43055
+        }
+      ],
+      "stylesheets": [
+        {
+          "file": "assets/index-DPNs8MxM.css",
+          "bytes": 76621,
+          "gzipBytes": 15967
+        }
+      ],
+      "violations": []
+    },
+    "desktop": {
+      "ok": true,
+      "totals": {
+        "entryBytes": 462769,
+        "javascriptBytes": 722703,
+        "stylesheetBytes": 76595
+      },
+      "budget": {
+        "entryBytes": 500000,
+        "javascriptBytes": 800000,
+        "stylesheetBytes": 100000
+      },
+      "javascript": [
+        {
+          "file": "assets/index-B9m2Sv34.js",
+          "bytes": 462769,
+          "gzipBytes": 122287
+        },
+        {
+          "file": "assets/motion-GkblJyDo.js",
+          "bytes": 115945,
+          "gzipBytes": 38469
+        },
+        {
+          "file": "assets/zustand-ClcHYXWc.js",
+          "bytes": 9915,
+          "gzipBytes": 3965
+        },
+        {
+          "file": "assets/react-BXd_TTE4.js",
+          "bytes": 134074,
+          "gzipBytes": 43055
+        }
+      ],
+      "stylesheets": [
+        {
+          "file": "assets/index-DOffGoFm.css",
+          "bytes": 76595,
+          "gzipBytes": 15944
+        }
+      ],
+      "violations": []
+    }
+  },
+  "desktopPackage": {
+    "date": "2026-10-26",
+    "target": "x86_64-pc-windows-msvc",
+    "productionCustomProtocol": true,
+    "command": "cargo build --release --manifest-path src-tauri/Cargo.toml --bin arkamon --features tauri/custom-protocol",
+    "buildJobs": 1,
+    "buildDurationSeconds": 287,
+    "executable": {
+      "path": "src-tauri/target/release/arkamon.exe",
+      "bytes": 13163008,
+      "sha256": "2d4db82f639d6e750f2a50f4acd94f55b5fdbf739e38e03b7823beb70bc5651e"
+    },
+    "package": {
+      "version": 1,
+      "embedded": {
+        "bytes": 4444148,
+        "files": 112
+      },
+      "bundled": {
+        "bytes": 838766409,
+        "files": 1498
+      },
+      "maxEmbeddedBytes": 12582912,
+      "nativeClips": 455,
+      "mediaRevision": "11eb8edfcaad86d2d6d59fcdfbc77682d1dc8367"
+    },
+    "tests": {
+      "nodePackagingPassed": 4,
+      "rustResourcePassed": 2
+    },
+    "installedOrExecuted": false,
+    "installer": {
+      "path": "src-tauri/target/release/bundle/nsis/Arkamon_0.1.0_x64-setup.exe",
+      "bytes": 724513101,
+      "sha256": "464037da85b5a9d59e3a54fe69aecb83231162c2117dd286a811f6c9ca6568e5"
+    },
+    "installerCommand": "tauri bundle --bundles nsis --features tauri/custom-protocol --ci --no-sign",
+    "installerBuilt": true,
+    "signed": false
+  },
+  "developmentWatcher": {
+    "passed": true,
+    "ignoredDirectories": [
+      "src-tauri/target",
+      "dist",
+      "dist-desktop",
+      "dist-desktop-resources"
+    ],
+    "navigations": 0,
+    "tokenPreserved": true
+  },
+  "releaseGate": {
+    "workflowsLintPassed": true,
+    "browserGroups": {
+      "total": 478,
+      "general": 348,
+      "native": 130,
+      "overlap": 0,
+      "missing": 0
+    },
+    "sameBuiltArtifactIsDeployed": true,
+    "localConsolidationAcceptedForSealing": false,
+    "remotelyExecuted": false
+  },
+  "limits": [
+    "No physical phone, OBS CEF/audio/GPU or installed WebView2 execution was performed.",
+    "Heavy native animation pages, sounds and effects remain on the pinned media revision; the desktop package is not fully offline.",
+    "Private backend GitHub automation needs a read-only backend-repository secret.",
+    "Five imported route images are inventoried but await reviewed playable geometry.",
+    "Global store and battle scenes retain their orchestration roles; this is a bounded structural refactoring, not a complete rewrite."
+  ]
+}

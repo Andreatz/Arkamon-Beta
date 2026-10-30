@@ -1,22 +1,27 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type ConfigEnv, type UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import mediaRelease from './src/data/media-release.json'
 // @ts-expect-error The packaging utility also runs as a standalone Node ES module.
-import { webAssetsPlugin } from './scripts/package-web-assets.mjs'
+import { assertPinnedMediaRevision, webAssetsPlugin } from './scripts/package-web-assets.mjs'
 // @ts-expect-error Shared Node build utility; emitted runtime data has a typed virtual module.
 import { nativeRuntimeManifestPlugin } from './scripts/native-runtime-manifest.mjs'
-
-const web = process.env.GITHUB_PAGES === 'true'
-const mediaRevision = web ? process.env.VITE_MEDIA_REVISION ?? mediaRelease.revision : ''
+// @ts-expect-error Node packaging module is shared with the release checks.
+import { separateDesktopResources } from './scripts/separate-desktop-resources.mjs'
 
 // Cambia base se pubblichi su GitHub Pages sotto /Arkamon-Beta/.
-// Il workflow .github/workflows/deploy.yml setta GITHUB_PAGES=true al build.
-export default defineConfig({
-  plugins: [react(), nativeRuntimeManifestPlugin(__dirname), ...(web ? [webAssetsPlugin(__dirname, mediaRevision)] : [])],
+// Il workflow .github/workflows/ci.yml setta GITHUB_PAGES=true al build.
+export function createGameConfig({ command, mode }: ConfigEnv): UserConfig {
+  const web = process.env.GITHUB_PAGES === 'true' && mode !== 'desktop'
+  const bounded = command === 'build'
+  const mediaRevision = bounded ? assertPinnedMediaRevision(process.env.VITE_MEDIA_REVISION ?? mediaRelease.revision, mediaRelease) : ''
+  return {
+  plugins: [react(), nativeRuntimeManifestPlugin(__dirname), ...(bounded ? [webAssetsPlugin(__dirname, mediaRevision, mode === 'desktop'
+    ? (output: string) => separateDesktopResources({ output, resources: path.resolve(__dirname, 'dist-desktop-resources'), alreadySeparated: true }) : undefined,
+    mode === 'desktop' ? path.resolve(__dirname, 'dist-desktop-resources') : undefined)] : [])],
   publicDir: 'public',
-  define: { 'import.meta.env.VITE_MEDIA_REVISION': JSON.stringify(mediaRevision), 'import.meta.env.VITE_SPLIT_MEDIA': JSON.stringify(web) },
-  base: process.env.GITHUB_PAGES === 'true' ? '/Arkamon-Beta/' : '/',
+  define: { 'import.meta.env.VITE_MEDIA_REVISION': JSON.stringify(mediaRevision), 'import.meta.env.VITE_SPLIT_MEDIA': JSON.stringify(bounded) },
+  base: web ? '/Arkamon-Beta/' : '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -31,12 +36,16 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
-    // Browser traces contain HTML snapshots. They must never trigger a live
-    // reload of a game while the same browser run is collecting evidence.
-    watch: { ignored: ['**/output/**', '**/test-results/**', '**/playwright-report/**'] },
+    // Reports and desktop codegen contain HTML. Building or collecting evidence
+    // must not reload a live game or an unrelated animation harness.
+    watch: { ignored: ['**/output/**', '**/test-results/**', '**/playwright-report/**', '**/src-tauri/target/**', '**/dist/**', '**/dist-desktop/**', '**/dist-desktop-resources/**'] },
   },
   build: {
-    copyPublicDir: !web,
+    // Every release uses the validated package. Source videos and full atlases
+    // are retained in the repository and never embedded in the executable.
+    copyPublicDir: false,
+    manifest: true,
+    ...(mode === 'desktop' ? { outDir: 'dist-desktop' } : {}),
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
@@ -48,4 +57,6 @@ export default defineConfig({
       },
     },
   },
-})
+  }
+}
+export default defineConfig(createGameConfig)

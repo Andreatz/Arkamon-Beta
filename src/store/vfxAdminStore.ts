@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { normalizeVfxOverrides } from '@/presentation/vfxValidation'
+import { assertVisualStorageWritable } from '@/presentation/presentationTransaction'
 import type { MoveVfxAssetId } from '@/components/vfx/vfxManifest'
 import type {
   VfxAnchor,
@@ -41,33 +42,37 @@ function readSaved() {
 export const useVfxAdminStore = create<VfxAdminState>((set, get) => ({
   ...readSaved(), error: null,
   setDraftOverride: override => {
-    try { const draftOverrides = normalizeVfxOverrides({ ...get().draftOverrides, [override.moveId]: override }); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides })); set({ draftOverrides, error: null }) }
+    try { assertVisualStorageWritable(); const draftOverrides = normalizeVfxOverrides({ ...get().draftOverrides, [override.moveId]: override }); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides })); set({ draftOverrides, error: null }) }
     catch (e) { set({ error: e instanceof Error ? e.message : 'Salvataggio bozza VFX non riuscito.' }) }
   },
   removeDraftOverride: moveId => {
     const draftOverrides = { ...get().draftOverrides }; delete draftOverrides[moveId]
-    try { if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides })); set({ draftOverrides, error: null }) }
+    try { assertVisualStorageWritable(); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides })); set({ draftOverrides, error: null }) }
     catch { set({ error: 'Spazio del browser non disponibile: bozza non modificata.' }) }
   },
-  resetDraftOverrides: () => { try { if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides: {} })); set({ draftOverrides: {}, error: null }) } catch { set({ error: 'Impossibile salvare la bozza.' }) } },
+  resetDraftOverrides: () => { try { assertVisualStorageWritable(); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides: get().overrides, draftOverrides: {} })); set({ draftOverrides: {}, error: null }) } catch (cause) { set({ error: cause instanceof Error ? cause.message : 'Impossibile salvare la bozza.' }) } },
   replaceOverrides: value => {
-    try { const overrides = normalizeVfxOverrides(value); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides, draftOverrides: overrides })); set({ overrides, draftOverrides: overrides, error: null }); return true }
+    try { assertVisualStorageWritable(); const overrides = normalizeVfxOverrides(value); if (typeof localStorage !== 'undefined') localStorage.setItem(VFX_KEY, JSON.stringify({ version: 1, overrides, draftOverrides: overrides })); set({ overrides, draftOverrides: overrides, error: null }); return true }
     catch (e) { set({ error: e instanceof Error ? e.message : 'Applicazione VFX non riuscita.' }); return false }
   },
-  setOverride: (override) =>
+  setOverride: (override) => {
+    try { assertVisualStorageWritable() } catch (cause) { set({ error: cause instanceof Error ? cause.message : 'Progetto visivo in recupero.' }); return }
     set((state) => ({
       overrides: {
         ...state.overrides,
         [override.moveId]: override,
       },
-    })),
-  removeOverride: (moveId) =>
+    }))
+  },
+  removeOverride: (moveId) => {
+    try { assertVisualStorageWritable() } catch (cause) { set({ error: cause instanceof Error ? cause.message : 'Progetto visivo in recupero.' }); return }
     set((state) => {
       const overrides = { ...state.overrides }
       delete overrides[moveId]
       return { overrides }
-    }),
-  resetOverrides: () => set({ overrides: {} }),
+    })
+  },
+  resetOverrides: () => { try { assertVisualStorageWritable(); set({ overrides: {} }) } catch (cause) { set({ error: cause instanceof Error ? cause.message : 'Progetto visivo in recupero.' }) } },
 }))
 
 export function getAdminMoveVfxOverride(moveId: number): AdminMoveVfxOverride | undefined {

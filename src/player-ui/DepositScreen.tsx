@@ -6,7 +6,7 @@ import { BOX_COUNT, SLOT_PER_BOX, SQUADRA_MAX, chiaveDeposito, getInSlot, type S
 import { isTeamWithinLevelCap, teamLevelRange } from '@/engine/teamLevelCap'
 import { useGameStore } from '@store/gameStore'
 import { CreaturePortrait, HealthBar, KitButton, KitFrame, KitIcon, KitPanel, PokemonHero } from './kit'
-import { canManagePlayerTeam } from './TeamScreen'
+import { canManagePlayerTeam } from '@/store/game/commandPolicy'
 import { liveOwnedPokemon } from './currentRoster'
 import { EMPTY_DEPOSIT_FILTERS, matchesDepositFilters, previewDepositSwap, type DepositFilters } from './depositTools'
 
@@ -79,22 +79,19 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
       setMessage('L’Arkamon selezionato non è più in questo posto.')
       return
     }
-    state.scambiaSlot(playerId, selection, target)
+    const result = state.scambiaSlot(playerId, selection, target)
     const after = useGameStore.getState()
     const updated = playerId === 1 ? after.giocatore1 : after.giocatore2
     // An empty team destination appends to the compact array, regardless of its displayed slot.
     const actualTeamIndex = target.tipo === 'squadra'
       ? updated.squadra.findIndex((entry) => entry.istanzaId === before.istanzaId) : -1
-    const moved = target.tipo === 'squadra'
-      ? updated.squadra !== owner.squadra && actualTeamIndex >= 0
-      : getInSlot(updated.squadra, updated.deposito, target)?.istanzaId === before.istanzaId
     setMoving(false)
-    if (moved) {
+    if (result.ok && result.changed) {
       setSelection(target.tipo === 'squadra'
         ? { tipo: 'squadra', indice: actualTeamIndex }
         : target)
-      setMessage('Arkamon spostato. Livello, HP e status sono conservati.')
-    } else setMessage(after.teamRuleMessage ?? 'Non è possibile spostare questo Arkamon nel posto scelto.')
+    }
+    setMessage(result.message)
   }
 
   return (

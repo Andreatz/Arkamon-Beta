@@ -11,6 +11,7 @@ import { AdminUiEditor } from './AdminUiEditor'
 import { AdminVfxEditor } from './AdminVfxEditor'
 import './adminPanel.css'
 import { PresentationProjectPanel } from '@/presentation/PresentationProjectPanel'
+import { VisualRecoveryNotice } from '@/presentation/VisualRecoveryNotice'
 
 const ADMIN_MODE_MARKER = 'ARKAMON_ADMIN_MODE_V1_THEME_EDITOR'
 const AdminInteractionEditor = lazy(() => import('@/interactions/AdminInteractionEditor').then((module) => ({ default: module.AdminInteractionEditor })))
@@ -76,6 +77,7 @@ export function AdminPanel() {
           ['battle-rules-lab', 'Moneta e status'], ['vfx-lab', 'VFX mosse'], ['audio-lab', 'Suoni'], ['arkamon-lab', 'Animazioni Arkamon'], ['dice-lab', 'Dadi'], ['transition-lab', 'Transizioni'], ['deposit-lab', 'Deposito'],
         ].map(([hash, label]) => <a key={hash} className="rounded border p-2 text-center" href={`#${hash}`} onClick={() => setPanelOpen(false)}>{label}</a>)}</div></details>
       </div>
+      <VisualRecoveryNotice />
       <nav aria-label="Sezioni Admin" className="grid grid-cols-3 sm:grid-cols-5 border-b border-[var(--arka-border)] text-[10px] font-bold">
         {tabs.map((tab) => (
           <button

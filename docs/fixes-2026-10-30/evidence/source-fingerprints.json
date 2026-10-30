@@ -1,0 +1,523 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-30T13:36:07.158Z",
+  "head": "bb142c1b26eb4263c711b94ae81d1293efdb5cff",
+  "note": "Current dirty checkout, including pre-existing structural edits; no publication implied.",
+  "files": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 4213,
+      "sha256": "2662bca6f65054ae5f198f6caa5656f4bb8369dd61abd70235612b999854c014"
+    },
+    {
+      "file": ".github/workflows/deploy.yml",
+      "deleted": true
+    },
+    {
+      "file": ".github/workflows/private-guest.yml",
+      "bytes": 1829,
+      "sha256": "909a0b2c6821d1a7887b897c8412a2aae5c4bddcf4fe0472be334db912a212b6"
+    },
+    {
+      "file": "e2e-native-release/native-catalog.spec.ts",
+      "bytes": 9976,
+      "sha256": "39eadfb0bfbe00f585a847247bee489cc1cd2d45249688d7b0336d32c79c7f88"
+    },
+    {
+      "file": "e2e-release/broadcast-relay.spec.ts",
+      "bytes": 5155,
+      "sha256": "9d10bd5dd9e5e659422973ab5a27f3f9ecba5611c895f4d7a13f5ef9bb41eb2d"
+    },
+    {
+      "file": "e2e-release/compiled.spec.ts",
+      "bytes": 3555,
+      "sha256": "e0f177df8f016da0e9f5b7889ddcc91cde5850756065fc572e28c151b4a6de8b"
+    },
+    {
+      "file": "e2e-release/helpers.ts",
+      "bytes": 1297,
+      "sha256": "24fd3d7bb9be87e1dffb1584f53a843e21174f0236e7e74d6409905b05bc21ae"
+    },
+    {
+      "file": "e2e/battle-conclusion.spec.ts",
+      "bytes": 5821,
+      "sha256": "16ed6efe674f76b08c9598648429a50161f44a980c257b7f5834006ccb89e075"
+    },
+    {
+      "file": "e2e/game-svg-controls.spec.ts",
+      "bytes": 16277,
+      "sha256": "8068751799fd6571a58d8af7954f78fc9923dd519b324bc13dfe5c11cb87bde9"
+    },
+    {
+      "file": "e2e/native-import-39-60.spec.ts",
+      "bytes": 9031,
+      "sha256": "52f4474bb0f4886c2fedb10b63e97d4b978899fd05f89b644cd53abad15263df"
+    },
+    {
+      "file": "e2e/presentation-import-race.spec.ts",
+      "bytes": 3093,
+      "sha256": "0af4e70967cc2572e316e3427d4d1eff0bc1efb4d995a07f32b94207b45ad2f6"
+    },
+    {
+      "file": "e2e/public-media-motion.spec.ts",
+      "bytes": 10396,
+      "sha256": "36851f37ed2790886afc1acea7aa604c43e54f92746932d432f9b553489c575a"
+    },
+    {
+      "file": "e2e/startup-loading.spec.ts",
+      "bytes": 1677,
+      "sha256": "d7745ae848b6fe4e094a8f563a18667bc442d0d46f54a8d1200637cc465d948b"
+    },
+    {
+      "file": "e2e/ui-studio-import-race.spec.ts",
+      "bytes": 3682,
+      "sha256": "91d56a6531dffd08b5ec548758f38905369c51be74c50eeba98dc1f3e851a557"
+    },
+    {
+      "file": "e2e/vite.config.ts",
+      "bytes": 388,
+      "sha256": "54b998bd6f8f9a15ca921cf6cdce6561ab7e056cb20cd0da52a004bc5dc363ab"
+    },
+    {
+      "file": "e2e/vite.durable.config.ts",
+      "bytes": 388,
+      "sha256": "ddae913c850eac68cb6020c275d56db7a7290ce4d33ca91d0fdf24b88961b2f9"
+    },
+    {
+      "file": "package.json",
+      "bytes": 2697,
+      "sha256": "b2878c24879ed799e6ec9571b20b21ed0f7833173ff9fbd00b6d3da25b0a15e2"
+    },
+    {
+      "file": "playwright.desktop.config.ts",
+      "bytes": 756,
+      "sha256": "9b1728976a1c4f07b653774271c022b252d0592da4987059b0829caf4203f59b"
+    },
+    {
+      "file": "playwright.native-release.config.ts",
+      "bytes": 984,
+      "sha256": "67d98a05d9dcf1f18c04cc0c1b9fb602bf0886e5ad9c7461842cf24bbb80b8ec"
+    },
+    {
+      "file": "playwright.private-guest.config.ts",
+      "bytes": 1180,
+      "sha256": "b8311f5e71360efffc0ea3ba80473e4eab21ad045b16ce14075ec09d88778476"
+    },
+    {
+      "file": "playwright.release.config.ts",
+      "bytes": 791,
+      "sha256": "a365bc1c27664c99b3b3bd329162cf6f48706fedb9d36d9e28e00aa2db3ab8f0"
+    },
+    {
+      "file": "scripts/__tests__/desktop-resources.test.mjs",
+      "bytes": 4365,
+      "sha256": "1528357a66c771df9142b232fa074355717a89b01acdb8b9f352f5ccdba1ed14"
+    },
+    {
+      "file": "scripts/__tests__/package-web-assets.test.mjs",
+      "bytes": 5893,
+      "sha256": "2c7dac100a5de1898add92acb3a15dc2cfcf423ec6120746e801c2184e1abb03"
+    },
+    {
+      "file": "scripts/__tests__/public-media-relay.test.mjs",
+      "bytes": 8875,
+      "sha256": "347e6acf4ea59829b588c48802fa585690f340d4f03d3546951bb8743526d460"
+    },
+    {
+      "file": "scripts/__tests__/public-relay.test.mjs",
+      "bytes": 3407,
+      "sha256": "e3528121b93ff295735cb77e2c6b6490b1b2a489347768d257e1f369552b7835"
+    },
+    {
+      "file": "scripts/__tests__/release-verification.test.mjs",
+      "bytes": 6833,
+      "sha256": "91a8d8f9bee26467bd1668a0d73aa92ab56500fcbefe1cb28d833483e204268a"
+    },
+    {
+      "file": "scripts/__tests__/startup-budget.test.mjs",
+      "bytes": 1984,
+      "sha256": "f580033bee27317e222e057ff648d12c085d9940e297d51551f3a23855e4153c"
+    },
+    {
+      "file": "scripts/build-runtime-game-data.mjs",
+      "bytes": 2752,
+      "sha256": "1f3303494318b53825b7416950a466c8002a49505b751518123e4a2d2bf50a71"
+    },
+    {
+      "file": "scripts/build-ui-studio-catalog.mjs",
+      "bytes": 1485,
+      "sha256": "99c6b9eaa3431a7afdfe220b3932d1f68ebd367db0573c5ae0f1a088d2af95a4"
+    },
+    {
+      "file": "scripts/check-startup-budget.mjs",
+      "bytes": 2438,
+      "sha256": "011d216541fae66c119342d4b484ae8bcf1d68edd6daf65ed8153ac2cc048c51"
+    },
+    {
+      "file": "scripts/package-web-assets.mjs",
+      "bytes": 5522,
+      "sha256": "a907fee68214aad7a8434e50dd87dad135740609bb3b7164cbdf4f713ecb7670"
+    },
+    {
+      "file": "scripts/public-media-protocol.d.mts",
+      "bytes": 395,
+      "sha256": "930c4f4855beb019847461879371f128e0bba6282a0b3da82572b95425ee7a0a"
+    },
+    {
+      "file": "scripts/public-media-protocol.mjs",
+      "bytes": 1068,
+      "sha256": "b375881b8896522088af516aae3dfa8699e42786aba88e8260fcb6ea958c4f86"
+    },
+    {
+      "file": "scripts/public-relay.mjs",
+      "bytes": 9527,
+      "sha256": "76aafe1f0d9df00dcedea93fa4f00cf504b8cd7e8a1dfe5d34f9984a691e9e32"
+    },
+    {
+      "file": "scripts/release-verification.mjs",
+      "bytes": 8495,
+      "sha256": "0fb1d29d07dea5f21c55fea013e76eb32d24f58ed84e91e743ff8effc720631a"
+    },
+    {
+      "file": "scripts/separate-desktop-resources.mjs",
+      "bytes": 4891,
+      "sha256": "c1a24d920f424603da065d0f81c64545e5e6e31073a68d422168039e79acec18"
+    },
+    {
+      "file": "scripts/serve-desktop-verification.mjs",
+      "bytes": 2393,
+      "sha256": "0e29570bccc56581ce13e7e9d139d4c13f370cbdd109e3647f0d8a4c24e30872"
+    },
+    {
+      "file": "scripts/start-private-guest-service.mjs",
+      "bytes": 1748,
+      "sha256": "639353985c350c0fdecc0d464925412c2c5e12909ab9431fcd8182c1655690c0"
+    },
+    {
+      "file": "src/admin/AdminImportExport.tsx",
+      "bytes": 4395,
+      "sha256": "66bb23a7697c17a82e62266fc4294d7f978ac5309c02a87a75d90873cf8a6a16"
+    },
+    {
+      "file": "src/admin/AdminPanel.tsx",
+      "bytes": 7250,
+      "sha256": "2427657d21b1196a8f6da7974fda80f167211e7a782075c502a865759797206b"
+    },
+    {
+      "file": "src/App.tsx",
+      "bytes": 9349,
+      "sha256": "670a743a2bfccbc93c298680d3524490622c3c7282800577aeb0095cc6a634c4"
+    },
+    {
+      "file": "src/components/arkamon/ArkamonBattleSprite.tsx",
+      "bytes": 20224,
+      "sha256": "a79d2d271cfbdeebb04272034c8d033e5266566b3fc8e1d1c4c2b1c0f24736e0"
+    },
+    {
+      "file": "src/components/ui/GameDialog.tsx",
+      "bytes": 3913,
+      "sha256": "e9cc51523ca75f04e60a420952489d19793116ecb0d23c01eee3617b903d2c4e"
+    },
+    {
+      "file": "src/data/__tests__/localMaps.test.ts",
+      "bytes": 6564,
+      "sha256": "328c5f93de7085c734e520b40d65dc7aa296b5fbe91230e696f9be802ce1ccf5"
+    },
+    {
+      "file": "src/data/__tests__/runtimeGameData.test.ts",
+      "bytes": 1254,
+      "sha256": "9517b3249f99644fc1aff1315311ac092722473b3fbfe0cabeda36131cf5331e"
+    },
+    {
+      "file": "src/data/index.ts",
+      "bytes": 4118,
+      "sha256": "48389657568bab5cf181fa6c7837d3ad530242f394825df87ec40a123c8ab85f"
+    },
+    {
+      "file": "src/data/localMaps/artworkInventory.ts",
+      "bytes": 634,
+      "sha256": "bc1d3970dfb3f06bc3c81a6a130ebbe637d846d0ea3b26dc4ac1e5a28837693d"
+    },
+    {
+      "file": "src/data/runtime-game-data.json",
+      "bytes": 48078,
+      "sha256": "879c4f05bce745ad14640bb7042e5c3107d5e2018661099207f89521434ebe85"
+    },
+    {
+      "file": "src/data/runtimeGameData.ts",
+      "bytes": 756,
+      "sha256": "5f99f2ea6d296d867c625f2c48983e66a29ac812fcf10e5bdfbbbaf3bbf82148"
+    },
+    {
+      "file": "src/data/statusMoves.ts",
+      "bytes": 1279,
+      "sha256": "46492843c14a4723d325a25d161e8aa559194c17f113d5e57e2779f65e0638db"
+    },
+    {
+      "file": "src/player-ui/BagScreen.tsx",
+      "bytes": 9688,
+      "sha256": "57fbb32b4d7d4aa40e8243a0fb00c232d0e853fe57769499ea844d28dd83af6c"
+    },
+    {
+      "file": "src/player-ui/DepositScreen.tsx",
+      "bytes": 14382,
+      "sha256": "e620fef3343547c5437ed103ed178a132e16590dd4d797b0af77c6ccc0e1caa1"
+    },
+    {
+      "file": "src/player-ui/kit.tsx",
+      "bytes": 12394,
+      "sha256": "2a5a21b695fa1783690a0d83aa1ad61934b50f813c0282f8eb2005cb3e2739cd"
+    },
+    {
+      "file": "src/player-ui/PlayerUi.tsx",
+      "bytes": 17631,
+      "sha256": "5493bd28ea5bfa18d951ff31ce601b4c6805f4c0c224aa9111530d2ce3fae370"
+    },
+    {
+      "file": "src/player-ui/playerUiPrimitives.ts",
+      "bytes": 276,
+      "sha256": "b5e91c4caa5ad29be1f60f204d5df3810fe7e944c10a5ff60b6b0b8c21410c30"
+    },
+    {
+      "file": "src/player-ui/playerUiStyles.ts",
+      "bytes": 1324,
+      "sha256": "5890e47a046d81b3a4ae61999bfe8fe822589810009d7b211a74a3f560672645"
+    },
+    {
+      "file": "src/player-ui/StoreScreen.tsx",
+      "bytes": 8980,
+      "sha256": "9316b3e16ea73218c8b84eeabef06b2dd6c485854dbd760a5d100dae189284f3"
+    },
+    {
+      "file": "src/player-ui/TeamAnalysisDeposit.test.tsx",
+      "bytes": 7063,
+      "sha256": "4a90e6f830d45be9c97d4cd08025e35032c3f07fc8aac7fab8b28ae9c6e8808d"
+    },
+    {
+      "file": "src/player-ui/TeamScreen.tsx",
+      "bytes": 20556,
+      "sha256": "1dda0ba17419c6a34d99991c5bac402893ec29fe9bc773451186760ab3f4da54"
+    },
+    {
+      "file": "src/presentation/presentationProject.test.ts",
+      "bytes": 10317,
+      "sha256": "361c6819777e09ec0e5e12117e52376704744f273691d97797cce7e2a3c32a61"
+    },
+    {
+      "file": "src/presentation/presentationProject.ts",
+      "bytes": 11243,
+      "sha256": "f8cc9c04669c8efa93e80f22b3961474e8bff1755a37eeb1496acddcf8ec4edd"
+    },
+    {
+      "file": "src/presentation/PresentationProjectPanel.tsx",
+      "bytes": 6240,
+      "sha256": "e43c1a12e31ba7f8101f231b71d590e5ba4e6b7bfcff410affe466660c58b8b1"
+    },
+    {
+      "file": "src/presentation/presentationTransaction.test.ts",
+      "bytes": 6713,
+      "sha256": "8f03aff8466b0bede03de6d084ad2da78299fb294175a876e7dda9720006f86e"
+    },
+    {
+      "file": "src/presentation/presentationTransaction.ts",
+      "bytes": 7109,
+      "sha256": "8c10741412a60f0d7fa36fee7cd7c5d6f376431ed7e4b99e8ffb7f8a99121ca6"
+    },
+    {
+      "file": "src/presentation/VisualRecoveryNotice.tsx",
+      "bytes": 1373,
+      "sha256": "61453b3fecf2a97efc6711a17937a9945e25dd1e7de39294e6d2a88e6d42ae91"
+    },
+    {
+      "file": "src/regia/BroadcastView.tsx",
+      "bytes": 10758,
+      "sha256": "8ae35de80d8f8245311e033d6e334c1a51004cfff5f10152ccfdc19753c3ab76"
+    },
+    {
+      "file": "src/regia/publicMedia.test.ts",
+      "bytes": 16487,
+      "sha256": "fd085e4d653dc840b41a131d865d0b70da9053125beedbe0e43b2dd02d972fde"
+    },
+    {
+      "file": "src/regia/publicMedia.ts",
+      "bytes": 5478,
+      "sha256": "675efccc04a67feb0befddd3e8b104a9af5379b31d77eb1a8f04e768ee1b92c7"
+    },
+    {
+      "file": "src/regia/PublicPresentationBridge.tsx",
+      "bytes": 3904,
+      "sha256": "cbcea1cf7f25c7516ad372a44f2a11750cc6d49229cde79325579733a49a10f3"
+    },
+    {
+      "file": "src/regia/publicRelayTransport.ts",
+      "bytes": 4626,
+      "sha256": "d533b783c3c2c25b52ee29a428a3fbfa25c3ef78c5fda65b32d5903965a18be3"
+    },
+    {
+      "file": "src/regia/publicSnapshot.ts",
+      "bytes": 4438,
+      "sha256": "9820bb4287a69effdc0a6bcd991eb10042c01ced7efccc5af6be58b606f9e289"
+    },
+    {
+      "file": "src/save/BackupPanel.tsx",
+      "bytes": 8905,
+      "sha256": "2ce589163ae821351ef6ccb16fe861f4e8384e6f857f0184d2adee2b1f921b5c"
+    },
+    {
+      "file": "src/save/gameBackup.test.ts",
+      "bytes": 20462,
+      "sha256": "981736710a305c8f0a3286c43d5ad6deb63f45fb4149bd1c45be0688e8cc6b16"
+    },
+    {
+      "file": "src/save/gameBackup.ts",
+      "bytes": 9579,
+      "sha256": "6f36f04a0f9022dba25c583cf1ab1c16b5bfb5ff055b2747e74f49e52fb1988f"
+    },
+    {
+      "file": "src/save/restoreGameBackup.ts",
+      "bytes": 6220,
+      "sha256": "f7e0e68fcf0eff52923124e67de4514883fa177142f1855fcac961b84e0f3a3c"
+    },
+    {
+      "file": "src/save/SaveFailureNotice.tsx",
+      "bytes": 2712,
+      "sha256": "eb514d432e21cd7ef0e523e3ff4d70acd0efce01f0153be356aaeb299e208825"
+    },
+    {
+      "file": "src/scenes/__tests__/LaboratorioScene.test.tsx",
+      "bytes": 3280,
+      "sha256": "a2e26d99def9f0ebf0070c980e085fae2e3280c34cc1e0514137c30634914e9b"
+    },
+    {
+      "file": "src/scenes/BattagliaScene.tsx",
+      "bytes": 86940,
+      "sha256": "d4053f306319369cfa105822542375bb4204f66ffcd8de93ec2b96cc67154d84"
+    },
+    {
+      "file": "src/scenes/TitoloScene.tsx",
+      "bytes": 5021,
+      "sha256": "664dc32ae6341422cb202359de9016c87ae9fc90e3904fcf0badb32eb130e79b"
+    },
+    {
+      "file": "src/settings/gamePreferences.ts",
+      "bytes": 3011,
+      "sha256": "4a4d1ee501af247de8da0c7e7e4c3f613e22aa04b33551e7fc6e163daf16abb4"
+    },
+    {
+      "file": "src/settings/motionPlayback.ts",
+      "bytes": 544,
+      "sha256": "ef654feabf2004cf7ad03acb3168d37c8620c4909a936e34ec2ecf3d45be86c3"
+    },
+    {
+      "file": "src/store/__tests__/starterSelection.test.ts",
+      "bytes": 5165,
+      "sha256": "5738b4b37d1082647b7c353cb3ca852dcb333e871aa06489df1a611342cfa82c"
+    },
+    {
+      "file": "src/store/adminStore.ts",
+      "bytes": 15519,
+      "sha256": "c2d2b7c8576282f6062a25c0573dcc2b237a241f9b1d85c68b29cc9a10e837b8"
+    },
+    {
+      "file": "src/store/game/battleCommands.ts",
+      "bytes": 7900,
+      "sha256": "f44ee6b0f8f43360a40ed06d1576dc9d5849998efb72c04b5c701e16e849eaf3"
+    },
+    {
+      "file": "src/store/game/battleConclusion.test.ts",
+      "bytes": 10997,
+      "sha256": "ee7956eee877e5960b8984947047d72451db2d2b2107ad7bf38e07084508d5dc"
+    },
+    {
+      "file": "src/store/game/commandBoundary.test.ts",
+      "bytes": 10891,
+      "sha256": "50225f3b62269404264cbe42769ab0ce93c02ffd2ac9274f8daeaae1da5fe24b"
+    },
+    {
+      "file": "src/store/game/commandPolicy.ts",
+      "bytes": 3259,
+      "sha256": "672d7ff7dbc7f731dd8caf45553cc0bcb60f87ac4bca1145b027c28d48bb5399"
+    },
+    {
+      "file": "src/store/game/leagueActions.ts",
+      "bytes": 11983,
+      "sha256": "caf05be065862424638520a7a28673837dbf2f4f9816cdbabf8e6b9aab96f161"
+    },
+    {
+      "file": "src/store/game/rosterCommands.ts",
+      "bytes": 2861,
+      "sha256": "1c91c51a92d9695e441e1a7e9b9d5bc7aec770aac9ebb44ff8abb6e86b7a63ac"
+    },
+    {
+      "file": "src/store/gameStore.ts",
+      "bytes": 56915,
+      "sha256": "ddf25548b3f4b55cb4ee0b1f8d949da2b69ae709c4740380c406c8e8965429ed"
+    },
+    {
+      "file": "src/store/vfxAdminStore.ts",
+      "bytes": 4432,
+      "sha256": "abf2e9e4c05c9ec4635c071b3d94bdea2b160f12c085f61a4e89875b567bcd0c"
+    },
+    {
+      "file": "src/ui-studio/AppliedUiDesign.tsx",
+      "bytes": 578,
+      "sha256": "0b95701af57251f8a3464d2a9636ed3c6ae1517f13c50548318ad4f8e24b4f0e"
+    },
+    {
+      "file": "src/ui-studio/assetCatalog.ts",
+      "bytes": 195613,
+      "sha256": "2d0158b0dc3a10b57e00aa8667bcda87a7ef3d9029849275cff46951ff62f464"
+    },
+    {
+      "file": "src/ui-studio/fontFamily.ts",
+      "bytes": 501,
+      "sha256": "d4acafc539292a5014744187f4cd445f4f8f010638cc5d9eabfbadcfcc1bcd19"
+    },
+    {
+      "file": "src/ui-studio/mediaStorage.ts",
+      "bytes": 13706,
+      "sha256": "ef0bb6e67b8e20617431ac657709b31f44c46e2303c7c21e1f9d9cedc959f5ec"
+    },
+    {
+      "file": "src/ui-studio/UiDesignRuntime.tsx",
+      "bytes": 26395,
+      "sha256": "3c2f65e6d246acfb9b48cb0260cf8bbb6eedc2ef3b1d1675f0292cd2ba7460a2"
+    },
+    {
+      "file": "src/ui-studio/UiStudioEditor.tsx",
+      "bytes": 50482,
+      "sha256": "c0d08689811691cd93372d616a317ff59232cd27298f2d902e12b53448c6e344"
+    },
+    {
+      "file": "vite.config.ts",
+      "bytes": 3167,
+      "sha256": "a5a45aa7b5ae092f399ac562a97e07874b5b1910dfa468b69603229f1234c6a8"
+    },
+    {
+      "file": "vitest.config.ts",
+      "bytes": 832,
+      "sha256": "b38b10679831f2c51600d919aba5a5c1bb0afc67a082bf4a0fe17a09cf44aefe"
+    }
+  ],
+  "finalCandidateAt": "2026-10-30T14:21:38.665Z",
+  "approvedFinalCorrections": [
+    {
+      "file": "e2e/presentation-import-race.spec.ts",
+      "before": "d451ce759d1c04420c1fd4c856a2e0b4a5cf4e41cffec077577f81768ecebb63",
+      "after": "0af4e70967cc2572e316e3427d4d1eff0bc1efb4d995a07f32b94207b45ad2f6",
+      "reason": "Open the real Project tab before awaiting its panel; original persistence assertions retained."
+    },
+    {
+      "file": "src/components/arkamon/ArkamonBattleSprite.tsx",
+      "before": "91f8323bb8aff1a196bc5aa7ee1719b0ba67f1ebeb1bf884ebfd080011b299e5",
+      "after": "a79d2d271cfbdeebb04272034c8d033e5266566b3fc8e1d1c4c2b1c0f24736e0",
+      "reason": "Distinct poster/fallback keys preserve cached error events."
+    },
+    {
+      "file": "e2e/native-import-39-60.spec.ts",
+      "before": "0d2daec3cfbb9a815c5c59b5597d626d9c318725af31c080df6820d28a94f025",
+      "after": "52f4474bb0f4886c2fedb10b63e97d4b978899fd05f89b644cd53abad15263df",
+      "reason": "Await the failed target image before Play; deterministic regression setup only, original error/retry assertions unchanged."
+    }
+  ]
+}

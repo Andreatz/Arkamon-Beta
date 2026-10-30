@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
 import { parseThemeJson } from '@/theme/parseAdminTheme'
+import { assertVisualStorageWritable } from '@/presentation/presentationTransaction'
 export { parseThemeJson } from '@/theme/parseAdminTheme'
 
 export function AdminImportExport() {
@@ -42,8 +43,8 @@ export function AdminImportExport() {
       return
     }
 
-    importTheme(result.theme)
-    setMessage('Tema importato correttamente.')
+    try { assertVisualStorageWritable(); importTheme(result.theme); setMessage('Tema importato correttamente.') }
+    catch (cause) { setMessage(cause instanceof Error ? cause.message : 'Tema non importato.') }
   }
 
   return (

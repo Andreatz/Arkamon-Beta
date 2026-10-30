@@ -14,7 +14,7 @@ import type {
 } from '@/types'
 
 import pokemonData from './pokemon.json'
-import mosseData from './mosse.json'
+import { BASE_RUNTIME_MOVES } from './runtimeGameData'
 import tipiData from './tipi.json'
 import crescitaData from './crescita_hp.json'
 import mappeData from './mappe.json'
@@ -32,7 +32,7 @@ import {
 
 // Cast tipizzati (i JSON non hanno tipi inferiti perfetti dal compilatore)
 export const POKEMON_BASE: PokemonSpecie[] = addStatusMovesToPokemon(pokemonData as PokemonSpecie[])
-export const MOSSE: MossaDef[] = [...(mosseData as MossaDef[]), ...STATUS_MOVES]
+export const MOSSE: MossaDef[] = [...BASE_RUNTIME_MOVES, ...STATUS_MOVES]
 export const TABELLA_TIPI: TabellaTipi = tipiData as TabellaTipi
 export const CRESCITA_HP: Record<CategoriaHP, number> =
   crescitaData as Record<CategoriaHP, number>

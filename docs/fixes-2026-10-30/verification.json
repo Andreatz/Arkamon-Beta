@@ -1,0 +1,191 @@
+{
+  "version": 1,
+  "date": "2026-10-30",
+  "head": "bb142c1b26eb4263c711b94ae81d1293efdb5cff",
+  "checkout": "Current dirty checkout, including preserved structural edits",
+  "issues": [
+    {
+      "id": "GAME-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "SAVE-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "VISUAL-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "VISUAL-29-02",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "STUDIO-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "OBS-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "OBS-29-02",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "RELEASE-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "UI-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "CI-29-01",
+      "status": "fixed_verified_locally"
+    },
+    {
+      "id": "LAB-30-01",
+      "status": "fixed_verified_locally"
+    }
+  ],
+  "unit": {
+    "passed": 5185,
+    "total": 5185,
+    "files": 178
+  },
+  "typescript": {
+    "exitCode": 0,
+    "checkedInFinalBuild": true
+  },
+  "nodeContracts": {
+    "passed": 21,
+    "log": "output/fixes-2026-10-30/node-contracts.log"
+  },
+  "security": {
+    "passed": 9,
+    "log": "output/fixes-2026-10-30/security-final.log"
+  },
+  "browser": {
+    "inventory": 538,
+    "passed": 427,
+    "intentionalSkipped": 111,
+    "unresolved": 0,
+    "notExecuted": 0,
+    "retainedReconciliation": true,
+    "details": "evidence/browser-summary.json"
+  },
+  "production": {
+    "exitCode": 0,
+    "startup": {
+      "ok": true,
+      "totals": {
+        "entryBytes": 469064,
+        "javascriptBytes": 729013,
+        "stylesheetBytes": 76721
+      },
+      "budget": {
+        "entryBytes": 500000,
+        "javascriptBytes": 800000,
+        "stylesheetBytes": 100000
+      },
+      "javascript": [
+        {
+          "file": "assets/index-DVqkSKMF.js",
+          "bytes": 469064,
+          "gzipBytes": 124044
+        },
+        {
+          "file": "assets/motion-CqJWRccv.js",
+          "bytes": 115945,
+          "gzipBytes": 38469
+        },
+        {
+          "file": "assets/zustand-B2MqVtqV.js",
+          "bytes": 9930,
+          "gzipBytes": 3962
+        },
+        {
+          "file": "assets/react-y4E_YFAr.js",
+          "bytes": 134074,
+          "gzipBytes": 43055
+        }
+      ],
+      "stylesheets": [
+        {
+          "file": "assets/index-DUwQJeva.css",
+          "bytes": 76721,
+          "gzipBytes": 15978
+        }
+      ],
+      "violations": []
+    },
+    "mediaRevision": "d16ad09f1d5f37aed430bded4070991fe88034e2",
+    "manifestSha256": "d52cfb8e1d6b675eed64dab88fb5f76aa95147e504c5e74d6c8a9ff2f35d9b76",
+    "nativeClips": 550,
+    "nativeFrames": 52775,
+    "contentSha256": "2c3a45849f5fe9d9198a419e68fd1fcac5db0ca4e753d62ea1a293189af026a1",
+    "files": 1630
+  },
+  "compiled": {
+    "general": {
+      "passed": 3,
+      "stats": {
+        "startTime": "2026-10-30T14:25:57.320Z",
+        "duration": 29638.19,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "native": {
+      "passed": 6,
+      "stats": {
+        "startTime": "2026-10-30T14:26:27.495Z",
+        "duration": 112567.029,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "artifactProof": {
+        "verifiedAgainstCurrentArtifact": true,
+        "files": 1630,
+        "evidence": {
+          "kind": "native-compiled",
+          "passed": 6,
+          "skipped": 0,
+          "reportSha256": "b4c7bd8d76f10d8708ab2fb25e3c3621a7fd4b6ea8846089cf654007ecf8941c",
+          "artifact": {
+            "contentSha256": "2c3a45849f5fe9d9198a419e68fd1fcac5db0ca4e753d62ea1a293189af026a1",
+            "mediaRevision": "d16ad09f1d5f37aed430bded4070991fe88034e2",
+            "manifestSha256": "d52cfb8e1d6b675eed64dab88fb5f76aa95147e504c5e74d6c8a9ff2f35d9b76",
+            "nativeClips": 550,
+            "nativeFrames": 52775,
+            "transport": "verified-local-pinned-media",
+            "cdnAvailabilityVerified": false
+          }
+        }
+      }
+    }
+  },
+  "preserved": {
+    "canonicalArtwork": true,
+    "nativeFrames": true,
+    "userCampaigns": true,
+    "preexistingChanges": true,
+    "sourceFingerprintUnchangedAfterQA": true
+  },
+  "publication": {
+    "commitCreated": false,
+    "pushed": false,
+    "deployed": false,
+    "installerRebuilt": false
+  },
+  "limits": [
+    "Browser totals reconcile retained runs plus targeted rechecks, not one all-green invocation.",
+    "Exact pinned local media transport verifies native compiled playback; CDN online availability is not certified.",
+    "Physical OBS/CEF, physical Tauri installation and remote guest backend were not newly certified."
+  ]
+}

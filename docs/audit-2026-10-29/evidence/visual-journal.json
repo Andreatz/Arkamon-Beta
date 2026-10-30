@@ -1,0 +1,31 @@
+{
+  "scenario": "A valid pending visual journal plus a newer independent theme save",
+  "cases": [
+    {
+      "committed": false,
+      "result": {
+        "ok": true,
+        "error": null
+      },
+      "newerThemePreserved": false,
+      "journalPreserved": false,
+      "finalTheme": {
+        "key": "arkamon-admin-theme",
+        "revision": "before"
+      }
+    },
+    {
+      "committed": true,
+      "result": {
+        "ok": true,
+        "error": null
+      },
+      "newerThemePreserved": false,
+      "journalPreserved": false,
+      "finalTheme": {
+        "key": "arkamon-admin-theme",
+        "revision": "interrupted-project"
+      }
+    }
+  ]
+}

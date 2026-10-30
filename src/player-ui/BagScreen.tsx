@@ -11,8 +11,6 @@ import { currentRoster } from './currentRoster'
 import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
 import { isReferenceUi } from './reference/referenceTheme'
 import { ProvidedArtwork } from './reference/ProvidedArtwork'
-import './liveBag.css'
-import './reference/reference-inventory.css'
 
 type BagCategory = 'all' | 'heal' | 'status' | 'capture'
 const inventoryCenters = [232, 430, 630, 828]

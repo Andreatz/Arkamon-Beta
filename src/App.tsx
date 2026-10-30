@@ -10,12 +10,14 @@ import { AdminRuntime } from '@/admin/AdminRuntime'
 import { getLocalMap } from '@/data/localMaps'
 import { PlayerTools } from '@/settings/PlayerTools'
 import { MotionConfig } from 'framer-motion'
-import { useGamePreferences } from '@/settings/gamePreferences'
+import { useGameMotionPreferences, useGamePreferences } from '@/settings/gamePreferences'
 import { ChallengeBanner } from '@/challenges/ChallengeBanner'
 import { SaveFailureNotice } from '@/save/SaveFailureNotice'
 import { SessionGate } from '@/session/SessionGate'
 import { PublicPresentationBridge } from '@/regia/PublicPresentationBridge'
 import { RegiaPause } from '@/regia/RegiaPause'
+import { AppliedUiDesign } from '@/ui-studio/AppliedUiDesign'
+import { isUiStudioPreview } from '@/ui-studio/previewMode'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
@@ -38,7 +40,6 @@ const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(mo
 const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
 const UiConceptLab = lazy(() => import('@/ui-studio/UiConceptLab').then(module => ({ default: module.UiConceptLab })))
 const ReferenceUiPreview = lazy(() => import('@/ui-studio/ReferenceUiPreview').then(module => ({ default: module.ReferenceUiPreview })))
-const UiDesignRuntime = lazy(() => import('@/ui-studio/UiDesignRuntime').then(module => ({ default: module.UiDesignRuntime })))
 
 /**
  * Router delle scene.
@@ -50,10 +51,15 @@ function App() {
   useEffect(() => { const sync = () => setHash(window.location.hash); window.addEventListener('hashchange', sync); return () => window.removeEventListener('hashchange', sync) }, [])
   const scenaCorrente = useGameStore((s) => s.scenaCorrente)
   const campaignRevision = useGameStore((s) => s.campaignRevision)
+  const { reducedMotion } = useGameMotionPreferences()
   const localMapOpen = (scenaCorrente.scena === 'citta' || scenaCorrente.scena === 'percorso')
     && !!getLocalMap(String(scenaCorrente.payload?.luogo ?? (scenaCorrente.scena === 'citta' ? 'Venezia' : 'Percorso_1')))
 
-  useEffect(() => { preloadSceneTransitionArtwork() }, [])
+  useEffect(() => {
+    // Title commands warm this artwork on intent. Read-only previews and the
+    // reduced-motion path never display it and must not fetch 1.3 MB of dice.
+    if (!isUiStudioPreview() && !reducedMotion && scenaCorrente.scena !== 'titolo') preloadSceneTransitionArtwork()
+  }, [reducedMotion, scenaCorrente.scena])
 
   if (new URLSearchParams(window.location.search).get('uiReferences') === '1' || new URLSearchParams(window.location.search).get('uiConcepts') === '1' && new URLSearchParams(window.location.search).get('legacyConcepts') !== '1') {
     return <Suspense fallback={<div role="status">Preparazione della nuova interfaccia…</div>}><ReferenceUiPreview /></Suspense>
@@ -100,7 +106,7 @@ function App() {
   return (
     <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}${scenaCorrente.scena === 'lega' ? ' arka-stage--league' : ''}`}>
       <AdminRuntime />
-      <Suspense fallback={null}><UiDesignRuntime /></Suspense>
+      <AppliedUiDesign />
       <AdminOverlay />
       <PublicPresentationBridge />
       <RegiaPause />
@@ -116,7 +122,7 @@ function App() {
 
 function LabShell({ children }: { children: React.ReactNode }) {
   return <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
-    <AdminRuntime /><Suspense fallback={null}><UiDesignRuntime /></Suspense><AdminOverlay /><PlayerTools /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
+    <AdminRuntime /><AppliedUiDesign /><AdminOverlay /><PlayerTools /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
   </div>
 }
 

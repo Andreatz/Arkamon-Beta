@@ -192,6 +192,17 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   await expect(move).toBeEnabled()
   expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toContain('/ui/move_button.png')
   expect(await move.evaluate(element => getComputedStyle(element).fontFamily)).toContain('Arkamon Norwester')
+  // Record the real transient result before slower artwork inspection and PNG
+  // encoding; those operations can finish after the battle removes the overlay.
+  await page.evaluate(() => {
+    const evidence: { at: number; damage: string }[] = []
+    Object.assign(window, { svgDiceRevealEvidence: evidence })
+    const observer = new MutationObserver(() => {
+      const result = document.querySelector('[data-dice-revealed="true"]')
+      if (result && !evidence.length) evidence.push({ at: performance.now(), damage: result.textContent ?? '' })
+    })
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true })
+  })
   for (const control of [move,
     page.getByRole('button', { name: 'Mossa Suprema', exact: true }),
     page.getByRole('button', { name: 'Cattura', exact: true }),
@@ -234,8 +245,10 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   expect(proof.hp).toBe('1')
   await expect(move).toBeDisabled()
   await test.info().attach('Stili effettivi del pannello dadi', { body: JSON.stringify(proof, null, 2), contentType: 'application/json' })
+  await expect.poll(() => page.evaluate(() => (window as unknown as { svgDiceRevealEvidence: { damage: string }[] }).svgDiceRevealEvidence)).toEqual([
+    expect.objectContaining({ damage: expect.stringContaining('Danno finale:') }),
+  ])
   await capture(page, 'Battaglia · pannello dadi trasparente · 1920×1080')
-  await expect(page.locator('[data-dice-revealed="true"]')).toBeVisible()
   await expect(page.locator('[data-battle-hp-side="enemy"]')).toHaveAttribute('data-battle-hp', '0', { timeout: 30_000 })
   await expect(page.getByRole('button', { name: 'Prosegui', exact: true })).toBeVisible({ timeout: 30_000 })
   expect(await page.getByRole('button', { name: 'Prosegui', exact: true }).getAttribute('data-game-button')).toBeNull()

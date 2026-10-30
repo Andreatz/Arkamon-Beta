@@ -6,6 +6,7 @@ import { MAIN_MAP_ROAD_CONNECTIONS } from '@/data/mainMapRoads'
 import { resolvedScreenDesign } from '@/ui-studio/runtimeDesign'
 import type { UiElementDesign } from '@/ui-studio/types'
 import { buildPublicManagement, type ManagementRequest, type PublicManagement } from './managementPresentation'
+import { normalizeMotionPlayback, type MotionPlayback } from '@/settings/motionPlayback'
 
 export const PUBLIC_CHANNEL = 'arkamon-public-presentation-v1'
 const publicWorldNodes = new Set(MAIN_MAP_ROAD_CONNECTIONS.flat())
@@ -18,6 +19,7 @@ export interface PublicSnapshot {
   winner: string | null
   leagueTotal: number
   management?: PublicManagement | null
+  motion?: MotionPlayback
 }
 const publicCreature = ({ specieId, nome, livello, hp, stato }: PublicBattlePresentation['pokemonA']) => ({ specieId, nome, livello, hp, ...(stato ? { stato: { ...stato } } : {}) })
 function visibleBattle(battle: PublicBattlePresentation | null, theme: AdminTheme): PublicBattlePresentation | null {
@@ -33,10 +35,10 @@ function visibleBattle(battle: PublicBattlePresentation | null, theme: AdminThem
       background: design?.background?.asset, hpColors: { hpHigh: theme.colors.hpHigh, hpMid: theme.colors.hpMid, hpLow: theme.colors.hpLow } } }
 }
 /** Only public progress is copied: no bags, unrevealed roster, authoring text, saves or credentials. */
-export function makePublicSnapshot(game: GameState, theme: AdminTheme, battle: PublicBattlePresentation | null, paused: boolean, at = Date.now(), management: ManagementRequest | null = null): PublicSnapshot {
+export function makePublicSnapshot(game: GameState, theme: AdminTheme, battle: PublicBattlePresentation | null, paused: boolean, at = Date.now(), management: ManagementRequest | null = null, motion?: MotionPlayback): PublicSnapshot {
   const place = String(game.scenaCorrente.payload?.luogo ?? game[game.giocatoreAttivo === 1 ? 'posizione1' : 'posizione2'].luogo ?? '')
   return { version: 1, at, scene: game.scenaCorrente.scena, place, active: game.giocatoreAttivo,
-    actions: game.turnoOverworld.azioniRimaste, paused,
+    actions: game.turnoOverworld.azioniRimaste, paused, motion: normalizeMotionPlayback(motion),
     players: ([1, 2] as const).map(id => {
       const player = game[id === 1 ? 'giocatore1' : 'giocatore2']
       const world = game[id === 1 ? 'posizione1' : 'posizione2']

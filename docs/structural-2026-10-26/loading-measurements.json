@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-26",
+  "scope": "Local compiled before/after comparison, not production field Core Web Vitals",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "reducedMotion": true,
+  "gzip": true,
+  "resourceWindow": "two seconds after Nuova Partita becomes visible",
+  "baseline": {
+    "gitBase": "c150cf20",
+    "entryBytes": 864479,
+    "javascriptBytes": 1124422,
+    "stylesheetBytes": 76621,
+    "runs": [
+      {
+        "readyMs": 1743.4000000059605,
+        "javascriptBytes": 1322256,
+        "javascriptRequests": 7,
+        "imageBytes": 1357528,
+        "imageRequests": 3,
+        "errors": [],
+        "javascriptTransferBytes": 260090
+      },
+      {
+        "readyMs": 155.20000000298023,
+        "javascriptBytes": 1322256,
+        "javascriptRequests": 7,
+        "imageBytes": 1357528,
+        "imageRequests": 3,
+        "errors": [],
+        "javascriptTransferBytes": 260090
+      },
+      {
+        "readyMs": 164.59999999403954,
+        "javascriptBytes": 1322256,
+        "javascriptRequests": 7,
+        "imageBytes": 1357528,
+        "imageRequests": 3,
+        "errors": [],
+        "javascriptTransferBytes": 260090
+      }
+    ]
+  },
+  "after": {
+    "entryBytes": 462263,
+    "javascriptBytes": 722206,
+    "stylesheetBytes": 76621,
+    "runs": [
+      {
+        "readyMs": 201.29999999701977,
+        "javascriptBytes": 722206,
+        "javascriptRequests": 4,
+        "imageBytes": 36266,
+        "imageRequests": 1,
+        "errors": [],
+        "javascriptTransferBytes": 208753
+      },
+      {
+        "readyMs": 159,
+        "javascriptBytes": 722206,
+        "javascriptRequests": 4,
+        "imageBytes": 36266,
+        "imageRequests": 1,
+        "errors": [],
+        "javascriptTransferBytes": 208753
+      },
+      {
+        "readyMs": 212.70000000298023,
+        "javascriptBytes": 722206,
+        "javascriptRequests": 4,
+        "imageBytes": 36266,
+        "imageRequests": 1,
+        "errors": [],
+        "javascriptTransferBytes": 208753
+      }
+    ]
+  },
+  "controls": {
+    "statusAssignments": 9,
+    "baseMoves": 220,
+    "levelTableValues": 42240,
+    "runtimeTables": 83,
+    "runtimeJsonBytes": 48078,
+    "gameDataTests": 7,
+    "startupBudgetTests": 3,
+    "studioBrowserPassed": 2,
+    "startupBrowserPassed": 3,
+    "startupBrowserSkipped": 1
+  },
+  "limitations": [
+    "The three local timing samples do not establish a statistically meaningful speedup or user-device performance.",
+    "Diagnostic after build predates final CSS/domain integration; final build budgets are checked again by the release gate.",
+    "Production CDN transfer behavior, CPU-throttled hardware and physical phones are outside this local comparison."
+  ],
+  "byteUnits": {
+    "javascriptBytes": "decoded body bytes",
+    "imageBytes": "decoded body bytes",
+    "javascriptTransferBytes": "Resource Timing transferSize including response headers"
+  }
+}

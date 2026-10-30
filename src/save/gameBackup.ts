@@ -63,11 +63,18 @@ export function serializeGameBackup(state: GameSaveState & { challengeContext?: 
     campaign = context.campaign
   }
   const normalized = normalizeGameSave(campaign, initialGameSave()).state
-  return JSON.stringify({ format: GAME_BACKUP_FORMAT, version: GAME_BACKUP_VERSION, saveSchemaVersion: 1,
+  const text = JSON.stringify({ format: GAME_BACKUP_FORMAT, version: GAME_BACKUP_VERSION, saveSchemaVersion: 1,
     createdAt: createdAt.toISOString(), campaign: portableCampaignData(normalized),
     ...(interactions === undefined ? {} : { interactionCatalog: { version: 1, interactions } }),
     ...(battleArchive === undefined ? {} : { battleArchive: normalizeBattleArchive(battleArchive) }),
-  }, null, 2)
+  })
+  // A downloaded safety copy must satisfy the same size contract as restore.
+  // Compact JSON preserves every event without spending the budget on indentation.
+  if (new TextEncoder().encode(text).byteLength > MAX_GAME_BACKUP_BYTES)
+    throw new Error('Il backup completo supera il limite di 5 MB e non sarebbe ripristinabile. Nessun replay o progresso è stato eliminato; conserva separatamente l’archivio battaglie e riprova.')
+  const validation = validateGameBackup(text)
+  if (!validation.ok) throw new Error(`Backup non esportato: ${validation.error}`)
+  return text
 }
 
 /** Unknown files/versions fail closed; damaged campaign fields require explicit user acceptance. */

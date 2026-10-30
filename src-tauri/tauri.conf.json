@@ -6,13 +6,14 @@
   "build": {
     "beforeDevCommand": "npm run dev -- --host 127.0.0.1",
     "devUrl": "http://127.0.0.1:3000",
-    "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist"
+    "beforeBuildCommand": "npm run build:desktop",
+    "frontendDist": "../dist-desktop"
   },
   "app": {
     "windows": [
       {
         "label": "main",
+        "create": false,
         "title": "Arkamon",
         "width": 1280,
         "height": 720,
@@ -23,12 +24,38 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": {
+        "default-src": "'self'",
+        "script-src": "'self'",
+        "style-src": "'self' 'unsafe-inline'",
+        "img-src": "'self' asset: http://asset.localhost https://asset.localhost blob: data: https://raw.githubusercontent.com",
+        "font-src": "'self' blob: data:",
+        "media-src": "'self' blob: data: https://raw.githubusercontent.com",
+        "connect-src": "'self' ipc: http://ipc.localhost https://ipc.localhost http: https:",
+        "worker-src": "'self' blob:",
+        "object-src": "'none'",
+        "base-uri": "'self'",
+        "frame-src": "'self'"
+      },
+      "devCsp": {
+        "default-src": "'self'",
+        "script-src": "'self' 'unsafe-inline'",
+        "style-src": "'self' 'unsafe-inline'",
+        "img-src": "'self' asset: http://asset.localhost https://asset.localhost blob: data: https://raw.githubusercontent.com",
+        "font-src": "'self' blob: data:",
+        "media-src": "'self' blob: data: https://raw.githubusercontent.com",
+        "connect-src": "'self' ipc: http://ipc.localhost https://ipc.localhost http: https: ws://127.0.0.1:3000 ws://localhost:3000",
+        "worker-src": "'self' blob:",
+        "object-src": "'none'",
+        "base-uri": "'self'",
+        "frame-src": "'self'"
+      }
     }
   },
   "bundle": {
     "active": true,
     "targets": "all",
+    "resources": { "../dist-desktop-resources/": "assets/" },
     "icon": ["icons/icon.ico"],
     "category": "Game"
   }

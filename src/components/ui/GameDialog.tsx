@@ -17,7 +17,10 @@ export function GameDialog({ title, onClose, children, className = '', showClose
     if (!dialog) return
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const release = makeDialogBackgroundInert(dialog)
-    const focusables = () => Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),a[href],[tabindex="0"]')).filter((node) => !node.hidden && node.getClientRects().length)
+    const focusables = () => Array.from(dialog.querySelectorAll<HTMLElement>('button,input,select,textarea,a[href],summary,[tabindex]'))
+      .filter(node => node.tabIndex >= 0 && !node.matches(':disabled') && !node.closest('[hidden],[inert]')
+        && node.getClientRects().length > 0 && getComputedStyle(node).visibility !== 'hidden')
+      .sort((a, b) => (a.tabIndex || Number.MAX_SAFE_INTEGER) - (b.tabIndex || Number.MAX_SAFE_INTEGER))
     ;(focusables()[0] ?? dialog).focus()
     const keys = (event: KeyboardEvent) => {
       if (dialog.closest('[inert]')) return

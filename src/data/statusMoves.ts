@@ -1,12 +1,8 @@
-import catalog from './move-vfx-assignments.json'
+import { RUNTIME_STATUS_ASSIGNMENTS } from './runtimeGameData'
 import type { MossaDef, PokemonSpecie, TipoPokemon } from '@/types'
 
 // Le nove mosse di paralisi del catalogo entrano negli slot ancora liberi.
-const PARALYSIS_SOURCE_IDS = new Set([221, 225, 227, 230, 242, 253, 256, 270, 271])
-export const PARALYSIS_MOVE_ASSIGNMENTS = catalog.moves.filter((entry) =>
-  PARALYSIS_SOURCE_IDS.has(entry.sourceMoveId)
-  && entry.gameMoveId === null && entry.type === 'Status (Paralisi)',
-)
+export const PARALYSIS_MOVE_ASSIGNMENTS = RUNTIME_STATUS_ASSIGNMENTS
 
 /** Nome, tipo e proprietari derivano dal catalogo; uno status puro non inventa danno o scaling. */
 export const STATUS_MOVES: MossaDef[] = PARALYSIS_MOVE_ASSIGNMENTS.map((entry) => ({

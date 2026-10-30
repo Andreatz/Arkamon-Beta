@@ -2,28 +2,40 @@ name: CI
 
 on:
   pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: verified-release-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test-build:
     runs-on: ubuntu-24.04
+    timeout-minutes: 65
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '22'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: Test
-        run: npm test
+        run: npm test -- --maxWorkers=4 --reporter=default --reporter=json --outputFile=output/ci/unit.json
+
+      - name: Release and relay contracts
+        run: node --test scripts/__tests__/release-verification.test.mjs scripts/__tests__/public-relay.test.mjs scripts/__tests__/public-media-relay.test.mjs scripts/__tests__/startup-budget.test.mjs scripts/__tests__/desktop-resources.test.mjs
 
       - name: UI asset imports and splash catalog
         run: npm run test:ui-assets
@@ -32,18 +44,56 @@ jobs:
         run: npm run test:security
 
       - name: Runtime catalog consistency
-        run: npm run media:catalog
+        run: |
+          npm run media:catalog
+          node scripts/build-runtime-game-data.mjs --check
 
-      - name: Build
+      - name: Build the release artifact once
         run: npm run build
         env:
           GITHUB_PAGES: 'true'
+
+      - name: Verify bounded web package and startup budget
+        run: |
+          test -f dist/media-release.json
+          node scripts/check-startup-budget.mjs
 
       - name: Install browser
         run: npx playwright install --with-deps chromium
 
       - name: Browser flows and accessibility
-        run: npm run test:e2e
+        run: npm run test:e2e -- --grep-invert 'native-(import|pages|runtime-metadata)' --reporter=list,blob --output=output/ci/browser-general
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: output/ci/browser-blobs
+
+      - name: Native animation sources and playback budgets
+        run: npm run test:e2e -- --grep 'native-(import|pages|runtime-metadata)' --reporter=list,blob --output=output/ci/browser-native
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: output/ci/browser-native-blobs
+
+      - name: Merge every browser group with the official reporter
+        run: |
+          cp output/ci/browser-native-blobs/*.zip output/ci/browser-blobs/
+          npx playwright merge-reports --reporter=json output/ci/browser-blobs
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: output/ci/browser.json
+
+      - name: Compiled release and isolated broadcast profiles
+        run: npx playwright test --config playwright.release.config.ts
+
+      - name: Compiled native actions and VFX against the same artifact
+        run: npx playwright test --config playwright.native-release.config.ts
+
+      - name: Seal the verified artifact
+        run: |
+          node scripts/release-verification.mjs seal --dist dist --revision "$GITHUB_SHA" --unit output/ci/unit.json --browser output/ci/browser.json --compiled output/ci/compiled.json --native-compiled output/ci/compiled-native.json
+          node scripts/release-verification.mjs verify --dist dist --revision "$GITHUB_SHA"
+
+      - name: Upload the verified Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
       - name: Verification artifacts
         uses: actions/upload-artifact@v4
@@ -51,6 +101,25 @@ jobs:
         with:
           name: browser-verification
           path: |
+            output/ci/
             playwright-report/
             test-results/
           retention-days: 7
+
+  deploy:
+    needs: test-build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the artifact verified by this run
+        id: deployment
+        uses: actions/deploy-pages@v4

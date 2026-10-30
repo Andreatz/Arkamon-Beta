@@ -2,24 +2,31 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test'
 import { createHash } from 'node:crypto'
 import { readFileSync, realpathSync } from 'node:fs'
 import path from 'node:path'
+// @ts-expect-error Shared standalone Node release verification utility.
+import { fingerprintRelease, NATIVE_RELEASE_PROOF } from '../scripts/release-verification.mjs'
 
 type Animation = 'idle' | 'attack' | 'hit' | 'victory' | 'ko'
 interface PageRecord { src: string; encodedBytes: number; sha256: string }
 interface Clip { frameCount: number; fps: number; pages: PageRecord[] }
 interface Manifest { clips: Record<string, Clip> }
-interface BuildProof { mediaRevision: string; mediaBase: string; nativeClips: number; nativeFrames: number; externalAssets: { path: string; bytes: number }[] }
+interface BuildProof { mediaRevision: string; mediaBase: string; manifestSha256: string; nativeClips: number; nativeFrames: number; externalAssets: { path: string; bytes: number }[] }
 const digest = (data: Buffer) => createHash('sha256').update(data).digest('hex')
+let artifactFingerprint: Promise<{ contentSha256: string }> | undefined
 
-function verifyLocalProductionMedia(page: Page, testInfo: TestInfo) {
+async function verifyLocalProductionMedia(page: Page, testInfo: TestInfo) {
   const manifest = JSON.parse(readFileSync('src/data/arkamon-paged.json', 'utf8')) as Manifest
   const pin = JSON.parse(readFileSync('src/data/media-release.json', 'utf8')) as { revision: string; manifestSha256: string }
   const proof = JSON.parse(readFileSync('dist/media-release.json', 'utf8')) as BuildProof
   expect(createHash('sha256').update(JSON.stringify(manifest)).digest('hex')).toBe(pin.manifestSha256)
   expect(proof.mediaRevision).toBe(pin.revision)
+  expect(proof.manifestSha256).toBe(pin.manifestSha256)
   expect(proof.nativeClips).toBe(550)
   expect(proof.nativeFrames).toBe(52_775)
   const origin = new URL(`https://raw.githubusercontent.com/Andreatz/Arkamon-Beta/${pin.revision}/public/`)
   expect(proof.mediaBase).toBe(origin.href)
+  // Computed once per worker from the unchanged production package. The seal
+  // recomputes this digest and rejects reports from a different build.
+  const artifact = await (artifactFingerprint ??= fingerprintRelease('dist'))
   const publicRoot = realpathSync('public')
   const files = new Map(proof.externalAssets.map(file => [file.path, file.bytes]))
   const pages = new Map(Object.values(manifest.clips).flatMap(clip => clip.pages.map(part => [part.src.slice(1), part] as const)))
@@ -52,15 +59,22 @@ function verifyLocalProductionMedia(page: Page, testInfo: TestInfo) {
   return { manifest, served, errors, install,
     allPagesRequested: (species: number, animation: Animation) => manifest.clips[`/sprites/arkamon/${species}/front/${animation}.webp`].pages
       .every(part => served.some(entry => entry.path === part.src.slice(1))),
-    attach: () => testInfo.attach('Production bundle with verified local media transport', { body: JSON.stringify({
-      proof: 'Local media transport only. This does not verify CDN publication or availability.', revision: pin.revision,
-      mediaOrigin: origin.href, bundleUnmodified: true, served, errors,
-    }, null, 2), contentType: 'application/json' }),
+    attach: async () => {
+      await testInfo.attach('Production bundle with verified local media transport', { body: JSON.stringify({
+        proof: 'Local media transport only. This does not verify CDN publication or availability.', revision: pin.revision,
+        mediaOrigin: origin.href, bundleUnmodified: true, served, errors,
+      }, null, 2), contentType: 'application/json' })
+      await testInfo.attach(NATIVE_RELEASE_PROOF, { body: JSON.stringify({ version: 1,
+        contentSha256: artifact.contentSha256, mediaRevision: pin.revision, manifestSha256: pin.manifestSha256,
+        nativeClips: proof.nativeClips, nativeFrames: proof.nativeFrames,
+        transport: 'verified-local-pinned-media', cdnAvailabilityVerified: false,
+      }), contentType: 'application/json' })
+    },
   }
 }
 
 for (const species of [107, 108, 109, 110]) test(`compiled ${species}: five native actions against the pinned local media revision`, async ({ page }, testInfo) => {
-  const media = verifyLocalProductionMedia(page, testInfo)
+  const media = await verifyLocalProductionMedia(page, testInfo)
   await media.install
   await page.goto('./#arkamon-lab')
   await page.locator('#darklaw-preview-species').selectOption(String(species))
@@ -91,7 +105,7 @@ for (const species of [107, 108, 109, 110]) test(`compiled ${species}: five nati
 })
 
 for (const [attacker, target] of [[107, 110], [108, 109]]) test(`compiled ${attacker} versus ${target}: native release and reaction cues complete the real VFX lifecycle`, async ({ page }, testInfo) => {
-  const media = verifyLocalProductionMedia(page, testInfo)
+  const media = await verifyLocalProductionMedia(page, testInfo)
   await media.install
   await page.goto('./#arkamon-lab')
   await page.locator('#darklaw-preview-species').selectOption(String(attacker))

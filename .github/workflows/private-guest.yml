@@ -1,0 +1,56 @@
+name: Isolated private guest integration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: private-guest-integration
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install frontend dependencies
+        run: npm ci
+      # The service is a separate private repository. Never copy its code or keys
+      # into the public frontend, and never send PR-supplied code a repository token.
+      - name: Checkout the pinned service
+        uses: actions/checkout@v4
+        with:
+          repository: Andreatz/arkanight
+          ref: ff4b0c8b03aa15a4a8a865e99c6bd7459c9c699c
+          path: output/private-guest-service
+          token: ${{ secrets.ARKAMON_BACKEND_READ_TOKEN }}
+          persist-credentials: false
+      - name: Install and test the isolated service
+        working-directory: output/private-guest-service
+        run: |
+          npm ci
+          npm run test:arkamon-votes
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Actual service, phone controller and resumed battle
+        run: npx playwright test --config playwright.private-guest.config.ts
+        env:
+          ARKAMON_GUEST_BACKEND_CHECKOUT: ${{ github.workspace }}/output/private-guest-service
+      - name: Verification evidence
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: private-guest-integration
+          path: |
+            output/structural-2026-10-26/private-guest.json
+            test-results/
+          retention-days: 7

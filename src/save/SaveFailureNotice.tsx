@@ -23,7 +23,7 @@ export function SaveFailureNotice() {
     try {
       downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState()), gameBackupFilename())
       setDownloadError('')
-    } catch { setDownloadError('Il download non è riuscito. Riprova senza cancellare i dati del browser.') }
+    } catch (cause) { setDownloadError(cause instanceof Error ? cause.message : 'Il download non è riuscito. Riprova senza cancellare i dati del browser.') }
   }
   if (!error || local) return null
   return <GameDialog title="Salvataggio da completare" onClose={discard} showCloseButton={false}>

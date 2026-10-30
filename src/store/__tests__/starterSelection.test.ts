@@ -48,7 +48,7 @@ describe('scelta starter persistente', () => {
   it.each([{ players: [1] }, { players: [2] }, { players: [1, 2] }] as const)('depositare gli starter di $players non riapre la scelta, anche dopo la ricarica', async ({ players }) => {
     useGameStore.getState().scegliStarter(1)
     useGameStore.getState().scegliStarter(5)
-    for (const playerId of players) useGameStore.getState().scambiaSlot(playerId, { tipo: 'squadra', indice: 0 }, { tipo: 'deposito', chiave: '1:1' })
+    for (const playerId of players) restoreBoxedStarter(playerId)
     await useGameStore.persist.rehydrate()
     const original = useGameStore.getState()
     for (const specieId of [1, 5, 9]) expect(original.scegliStarter(specieId)).toBe(false)
@@ -60,7 +60,7 @@ describe('scelta starter persistente', () => {
 
   it('la prima scelta in deposito resta esclusa mentre il secondo giocatore deve ancora scegliere', () => {
     useGameStore.getState().scegliStarter(1)
-    useGameStore.getState().scambiaSlot(1, { tipo: 'squadra', indice: 0 }, { tipo: 'deposito', chiave: '1:1' })
+    restoreBoxedStarter(1)
     expect(useGameStore.getState().scegliStarter(1)).toBe(false)
     expect(useGameStore.getState().scegliStarter(5)).toBe(true)
     const current = useGameStore.getState()
@@ -70,6 +70,16 @@ describe('scelta starter persistente', () => {
     expect(current.rivaleStarterId).toBe(9)
   })
 })
+
+/** A historical save may contain a boxed starter before the second choice.
+ * Normal roster commands are unavailable in the laboratory/title screen.
+ */
+function restoreBoxedStarter(playerId: 1 | 2) {
+  useGameStore.setState(state => {
+    const key = playerId === 1 ? 'giocatore1' : 'giocatore2', player = state[key]
+    return { [key]: { ...player, squadra: [], deposito: { '1:1': player.squadra[0] } } }
+  })
+}
 
 describe('caricamento salvataggi parziali', () => {
   beforeEach(() => useGameStore.getState().reset())

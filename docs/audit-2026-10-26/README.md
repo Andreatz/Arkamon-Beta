@@ -60,6 +60,8 @@ Gli avvisi delle dipendenze riguardano gli strumenti di sviluppo/test; non si af
 
 ## Problemi strutturali e limiti ancora da pianificare
 
+Gli interventi successivi su questi punti sono documentati separatamente nel [rapporto strutturale del 26 ottobre](../structural-2026-10-26/README.md). L'elenco seguente conserva la fotografia della fase di audit.
+
 1. **Bundle iniziale ampio.** La build corrente segnala un chunk `index` di circa 864,48 kB minificati, 145,81 kB gzip. La build riesce, ma conviene separare meglio cataloghi/runtime amministrativo dalla prima schermata e misurare il caricamento su dispositivi modesti prima di scegliere il refactoring.
 2. **Stato globale e cascata CSS complessi.** Lo store e le scene di battaglia concentrano molti comandi; le skin si sovrappongono attraverso più fogli CSS. I difetti di roster, runtime e altezza confermati mostrano dove servono confini espliciti e contratti condivisi. Un refactoring esteso non è stato mescolato alle correzioni puntuali.
 3. **Coerenza fra comandi e UI.** Alcuni vincoli sono protetti anche dall'interfaccia, mentre comandi storici come `scambiaSlot` non verificano autonomamente tutta la modalità battaglia. Non è stato dimostrato un ingresso UI attuale che aggiri il blocco; resta utile rafforzare i confini di dominio e restituire risultati espliciti invece di azioni `void`.

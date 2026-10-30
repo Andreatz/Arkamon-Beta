@@ -5,7 +5,9 @@ import { getPokemon } from '@data/index'
 import { SQUADRA_MAX } from '@engine/deposito'
 import { isTeamWithinLevelCap, teamLevelRange, TEAM_LEVEL_GAP } from '@/engine/teamLevelCap'
 import { calcolaHPMax } from '@/engine/battleEngine'
-import { useGameStore, type GameState } from '@store/gameStore'
+import { useGameStore } from '@store/gameStore'
+import { canManagePlayerTeam } from '@/store/game/commandPolicy'
+export { canManagePlayerTeam } from '@/store/game/commandPolicy'
 import { liveOwnedPokemon } from './currentRoster'
 export { liveOwnedPokemon } from './currentRoster'
 import { StudioCommand, StudioSurface } from '@/components/ui/StudioArtwork'
@@ -14,8 +16,6 @@ import { CreaturePortrait, HealthBar, KitIcon, PokemonMoves, TypeBadge } from '.
 import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
 import { isReferenceUi } from './reference/referenceTheme'
 import { useSplashArtwork } from './reference/SplashArtworkContext'
-import './liveTeam.css'
-import './reference/reference-team.css'
 
 const squadCenters = [137.5, 302.5, 467.5, 632.5, 797.5, 962.5]
 const teamArtwork = (name: string) => `/ui/studio/Scuro/${name}.svg`
@@ -25,19 +25,6 @@ export interface TeamScreenProps {
   onAnalyse: (instanceId: string) => void
   onBag: () => void
   onDeposit: () => void
-}
-
-/** Viewing another player's tools never changes the active turn. */
-export function canManagePlayerTeam(
-  state: Pick<GameState, 'battaglia' | 'interactionProgress' | 'giocatoreAttivo' | 'turnoOverworld' | 'challengeContext' | 'scenaCorrente' | 'league'>,
-  playerId: 1 | 2,
-): boolean {
-  return !state.battaglia && !state.interactionProgress.pendingBattle && !state.challengeContext
-    && !Object.values(state.league?.players ?? {}).some(progress => progress.status === 'running')
-    && !['titolo', 'laboratorio', 'evoluzione'].includes(state.scenaCorrente.scena)
-    && state.giocatoreAttivo === playerId
-    && state.turnoOverworld.giocatoreAttivo === playerId
-    && state.turnoOverworld.azioniRimaste > 0
 }
 
 export function TeamScreen(props: TeamScreenProps) {
@@ -93,8 +80,8 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
       return
     }
     if (sourceIndex !== index) {
-      state.scambiaSlot(playerId, { tipo: 'squadra', indice: sourceIndex }, { tipo: 'squadra', indice: index })
-      setMessage('Ordine della squadra aggiornato.')
+      const result = state.scambiaSlot(playerId, { tipo: 'squadra', indice: sourceIndex }, { tipo: 'squadra', indice: index })
+      setMessage(result.ok ? 'Ordine della squadra aggiornato.' : result.message)
     }
     setMovingId(null)
   }

@@ -124,7 +124,6 @@ type PendingSwitch = {
  */
 export function BattagliaScene() {
   const previewView = useContext(UiPreviewViewContext)
-  const vaiAScena = useGameStore((s) => s.vaiAScena)
   const battaglia = useGameStore((s) => s.battaglia)
   const challengeContext = useGameStore((s) => s.challengeContext)
   const isChallenge = !!challengeContext
@@ -134,18 +133,15 @@ export function BattagliaScene() {
     if (!randomState.current) return Math.random()
     const sample = nextSeededRandom(randomState.current); randomState.current = sample.state; return sample.value
   }, [])
-  const terminaBattaglia = useGameStore((s) => s.terminaBattaglia)
   const aggiornaBattaglia = useGameStore((s) => s.aggiornaBattaglia)
   const saveSettled = useCallback((patch: Partial<NonNullable<typeof battaglia>>) => {
     aggiornaBattaglia({ ...patch, ...(randomState.current ? { seeded: { ...randomState.current }, challengeActionCount: challengeActions.current } : {}) })
   }, [aggiornaBattaglia])
   const concludiCattura = useGameStore((s) => s.concludiCattura)
-  const aggiornaPokemon = useGameStore((s) => s.aggiornaPokemon)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
   const giocatore = useGameStore((s) =>
     s.giocatoreAttivo === 1 ? s.giocatore1 : s.giocatore2
   )
-  const risolviBattagliaNPC = useGameStore((s) => s.risolviBattagliaNPC)
   const customBattleBackground = useAdminStore((s) => s.theme.assets.battleBackground)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const updateBattleLayout = useAdminStore((s) => s.updateBattleLayout)
@@ -392,8 +388,13 @@ export function BattagliaScene() {
   useEffect(() => {
     if (!terminata || !esito) return
     appendChronicle([{ id: `${chronicleRef.current.battleId}:outcome`, kind: 'outcome', winnerSide: esito === 'vittoria' ? 'A' : 'B', title: esito === 'vittoria' ? 'Vittoria del giocatore' : 'Vittoria dell’avversario', messages: ['Battaglia conclusa. Gli HP residui restano nella squadra.'] }])
-    if (!isChallenge) useBattleArchiveStore.getState().archiveBattle({ chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo, location: luogoRitornoRef.current, battleType: battaglia?.tipo ?? 'Selvatico', title: `${giocatore.nome} · ${battaglia?.leagueOpponent?.nome ?? (battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico')}` })
-  }, [terminata, esito, appendChronicle, chronicleRef, giocatoreAttivo, giocatore.nome, battaglia?.tipo, battaglia?.allenatoreId])
+    // A locally revealed ending is not an archive entry until its checkpoint
+    // and complete chronicle are durable. Replays remain available before Prosegui.
+    const durable = battaglia?.cronaca
+    if (!isChallenge && battaglia?.checkpoint?.phase === 'ended' && battaglia.checkpoint.outcome === esito
+      && durable?.events.some(event => event.kind === 'outcome'))
+      useBattleArchiveStore.getState().archiveBattle({ chronicle: durable, outcome: esito, playerId: giocatoreAttivo, location: luogoRitornoRef.current, battleType: battaglia.tipo, title: `${giocatore.nome} · ${battaglia.leagueOpponent?.nome ?? (battaglia.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico')}` })
+  }, [terminata, esito, appendChronicle, chronicleRef, giocatoreAttivo, giocatore.nome, battaglia?.tipo, battaglia?.allenatoreId, battaglia?.cronaca, battaglia?.checkpoint, isChallenge])
 
   useEffect(() => {
     if (!audienceChoice || !pkmnB || !pkmnA || coinOpen || statusRoll || azioneInCorso || actionInProgressRef.current) return
@@ -484,7 +485,6 @@ export function BattagliaScene() {
   const isNPC = !!battaglia && battaglia.tipo !== 'Selvatico' && battaglia.allenatoreId !== undefined
   const isSelvatico = !battaglia || battaglia.tipo === 'Selvatico'
   const isPvP = !!battaglia && battaglia.tipo === 'PVP'
-  const isPercorso = !!luogoRitorno && /^Percorso_/.test(luogoRitorno)
 
   const updateInSquadra = updateBattleSquad
 
@@ -823,34 +823,13 @@ export function BattagliaScene() {
       if (!result.ok) mostraMessaggi([result.message])
       return
     }
-    if (esito) useBattleArchiveStore.getState().archiveBattle({
+    if (!esito) return
+    const result = useGameStore.getState().concludiBattaglia(esito)
+    if (!result.ok) { mostraMessaggi([result.message]); return }
+    useBattleArchiveStore.getState().archiveBattle({
       chronicle: chronicleRef.current, outcome: esito, playerId: giocatoreAttivo,
       location: luogoRitorno, battleType: battaglia?.tipo ?? 'Selvatico',
       title: `${giocatore.nome} · ${battaglia?.leagueOpponent?.nome ?? (battaglia?.allenatoreId ? getAllenatore(battaglia.allenatoreId)?.nome ?? 'Allenatore' : 'Incontro selvatico')}`,
-    })
-    useGameStore.getState().eseguiTransazione(() => {
-      if (isNPC && esito) risolviBattagliaNPC(esito)
-      for (const p of squadraA) aggiornaPokemon(giocatoreAttivo, p)
-      terminaBattaglia(false)
-
-    if (evoluzioniInAttesa.length > 0) {
-      vaiAScena('evoluzione', {
-        evoluzioni: evoluzioniInAttesa,
-        luogoRitorno,
-        giocatoreId: giocatoreAttivo,
-      })
-      return
-    }
-
-    if (luogoRitorno === 'mappa-griglia') {
-      vaiAScena('mappa-griglia')
-    } else if (isPercorso) {
-      vaiAScena('percorso', { luogo: luogoRitorno })
-    } else if (luogoRitorno && luogoRitorno !== 'mappa-principale') {
-      vaiAScena('citta', { luogo: luogoRitorno })
-    } else {
-      vaiAScena('mappa-principale')
-    }
     })
   }
 

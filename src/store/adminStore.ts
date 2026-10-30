@@ -21,6 +21,7 @@ import { migrateDepositLayout } from '@/theme/depositLayoutMigration'
 import { isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
 import { isSafeThemeAssetPath } from '@/theme/adminThemeAssetPaths'
 import { normalizeDesign } from '@/ui-studio/designModel'
+import { assertVisualStorageWritable } from '@/presentation/presentationTransaction'
 import type { UiDesignDocument } from '@/ui-studio/types'
 import {
   cloneAdminTheme,
@@ -197,7 +198,23 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
 
 export const useAdminStore = create<AdminState>()(
   persist(
-    (set) => ({
+    (persistSet, get) => {
+      const set: typeof persistSet = (partial, replace) => {
+        try { assertVisualStorageWritable() }
+        catch {
+          const patch = typeof partial === 'function' ? partial(get()) : partial
+          if ('theme' in patch) return
+          // Transient panel controls remain usable without flushing a stale theme.
+          const storage = useAdminStore.persist.getOptions().storage
+          try {
+            if (storage) useAdminStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
+            persistSet(partial, replace)
+          } finally { if (storage) useAdminStore.persist.setOptions({ storage }) }
+          return
+        }
+        persistSet(partial, replace)
+      }
+      return ({
       enabled: ADMIN_ENABLED_BY_DEFAULT,
       panelOpen: false,
       layoutEditing: false,
@@ -441,6 +458,7 @@ export const useAdminStore = create<AdminState>()(
         try { normalized = normalizeDesign(design) } catch { return false }
         let previousTheme: AdminTheme | undefined
         try {
+          assertVisualStorageWritable()
           // The durable theme write precedes the in-memory update; campaign data is separate.
           const current = useAdminStore.getState()
           previousTheme = current.theme
@@ -453,7 +471,8 @@ export const useAdminStore = create<AdminState>()(
           return false
         }
       },
-    }),
+    })
+    },
     {
       name: 'arkamon-admin-theme',
       storage: adminStorage,

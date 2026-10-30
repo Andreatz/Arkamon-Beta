@@ -5,7 +5,7 @@ import {
   type TargetAndTransition,
   type Transition,
 } from 'framer-motion'
-import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gamePreferences'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '@/components/vfx/AnimatedSprite'
 import {
@@ -390,15 +390,15 @@ function AnimatedArkamonVisual({
       onClipStart()
       if (run.animation === 'hit' && holdReactionUntilImpact) return
       const cueTimer = run.animation === 'attack'
-        ? window.setTimeout(onReleaseCue, getAnimationDuration((animated.releaseFrame ?? 0) / animated.fps * 1000))
+        ? window.setTimeout(onReleaseCue, (animated.releaseFrame ?? 0) / animated.fps * 1000 / speed)
         : undefined
-      const timer = window.setTimeout(onClipComplete, getAnimationDuration(clipDurationMs))
+      const timer = window.setTimeout(onClipComplete, clipDurationMs / speed)
       return () => {
         window.clearTimeout(timer)
         window.clearTimeout(cueTimer)
       }
     }
-  }, [dedicatedOneShot, run.completed, run.animation, holdReactionUntilImpact, playbackPaused, reduceMotion, sheetFailed, clipDurationMs, animated.releaseFrame, animated.fps, onClipComplete, onClipStart, onReleaseCue])
+  }, [dedicatedOneShot, run.completed, run.animation, holdReactionUntilImpact, playbackPaused, reduceMotion, sheetFailed, clipDurationMs, animated.releaseFrame, animated.fps, speed, onClipComplete, onClipStart, onReleaseCue])
 
   const viewport = animated.viewport ?? { width: animated.width, height: animated.height, left: 0, top: 0 }
   const aspect = viewport.width / viewport.height
@@ -444,6 +444,7 @@ function AnimatedArkamonVisual({
     >
       {sheetFailed ? (
         <img
+          key="procedural-fallback"
           src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
           alt=""
           aria-hidden="true"
@@ -455,6 +456,7 @@ function AnimatedArkamonVisual({
       ) : (
         <>
         {!nativeFramePainted && <img
+          key="native-loading-poster"
           src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
           alt=""
           aria-hidden="true"

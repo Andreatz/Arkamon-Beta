@@ -1,0 +1,16 @@
+{
+  "scenario": "The normal backup serializer emits a valid supported archive in a file rejected by its own importer; the same exact data in compact JSON is accepted",
+  "archiveMatches": 20,
+  "chronicleEvents": 4800,
+  "exportedBytes": 8013253,
+  "compactBytes": 4519366,
+  "importLimitBytes": 5242880,
+  "exportedValidation": {
+    "ok": false,
+    "error": "Il file supera il limite di 5 MB per un backup della partita."
+  },
+  "compactValidation": {
+    "ok": true,
+    "retainedMatches": 20
+  }
+}

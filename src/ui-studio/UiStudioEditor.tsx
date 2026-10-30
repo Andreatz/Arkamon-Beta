@@ -10,6 +10,7 @@ import { UI_STUDIO_SCREENS, UI_STUDIO_SCREEN_VIEWS } from './types'
 import type { UiBuiltinAsset, UiDesignDocument, UiElementDesign, UiElementInfo, UiExtraLayer, UiPreviewMessage, UiRect, UiScreenDesign, UiStudioMessage, UiTypography } from './types'
 import './uiStudio.css'
 import { PresentationProjectPanel } from '@/presentation/PresentationProjectPanel'
+import { VisualRecoveryNotice } from '@/presentation/VisualRecoveryNotice'
 
 const WIDTH = 1920
 const HEIGHT = 1080
@@ -138,6 +139,7 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   const [grid, setGrid] = useState(false)
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
+  const operationRevision = useRef(0)
   const [savedSignature, setSavedSignature] = useState('')
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
@@ -180,6 +182,12 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   }
   const previewUrl = `${import.meta.env.BASE_URL}?uiStudioPreview=1#ui-studio-preview`
   const send = useCallback((payload: UiStudioMessage) => iframeRef.current?.contentWindow?.postMessage(payload, window.location.origin), [])
+  const cancelPendingOperations = () => {
+    operationRevision.current += 1
+    setBusy(false)
+    for (const input of [importRef.current, mediaRef.current, fontRef.current]) if (input) input.value = ''
+  }
+  useEffect(() => () => { operationRevision.current += 1 }, [])
 
   useEffect(() => { load(); setSavedSignature(JSON.stringify(useUiStudioStore.getState().draft)) }, [load])
   useEffect(() => {
@@ -347,34 +355,47 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   }
   const upload = async (files: FileList | null, kind: 'image' | 'font') => {
     if (!files?.length) return
+    const revision = ++operationRevision.current, before = useUiStudioStore.getState().draft
+    const current = () => revision === operationRevision.current && useUiStudioStore.getState().draft === before
     setBusy(true)
     try {
       const entries = []
       for (const file of Array.from(files)) {
         const media = await importUiMedia(file)
+        if (!current()) return
         if (media.kind !== kind) throw new Error(`Seleziona un file ${kind === 'font' ? 'font' : 'immagine'}.`)
         entries.push(media)
       }
-      const next = cloneDesign(draftRef.current)
+      if (!current()) return
+      const next = cloneDesign(before)
       for (const entry of entries) { if (!next.media.some(media => media.id === entry.id)) next.media.push(entry) }
       setDraft(next)
       setMessage(`${entries.length} ${kind === 'font' ? 'font importati' : 'immagini importate'}.`)
       if (kind === 'image') setLibraryCategory('Importati')
-    } catch (cause) { setMessage(cause instanceof Error ? cause.message : 'Importazione non riuscita.') }
-    finally { setBusy(false); if (mediaRef.current) mediaRef.current.value = ''; if (fontRef.current) fontRef.current.value = '' }
+    } catch (cause) { if (current()) setMessage(cause instanceof Error ? cause.message : 'Importazione non riuscita.') }
+    finally { if (revision === operationRevision.current) { setBusy(false); if (mediaRef.current) mediaRef.current.value = ''; if (fontRef.current) fontRef.current.value = '' } }
   }
   const importDocument = async (file: File | undefined) => {
     if (!file) return
+    const revision = ++operationRevision.current, before = useUiStudioStore.getState().draft
+    const current = () => revision === operationRevision.current && useUiStudioStore.getState().draft === before
     setBusy(true)
-    try { const document = await importUiDesign(await file.text()); setDraft(document); setMessage('Layout importato nella bozza. Applica per usarlo nel gioco.'); setSelectedId(null) }
-    catch (cause) { setMessage(cause instanceof Error ? cause.message : 'Il file non è valido.') }
-    finally { setBusy(false); if (importRef.current) importRef.current.value = '' }
+    try {
+      const text = await file.text()
+      if (!current()) return
+      const document = await importUiDesign(text)
+      if (!current()) return
+      setDraft(document); setMessage('Layout importato nella bozza. Applica per usarlo nel gioco.'); setSelectedId(null)
+    }
+    catch (cause) { if (current()) setMessage(cause instanceof Error ? cause.message : 'Il file non è valido.') }
+    finally { if (revision === operationRevision.current) { setBusy(false); if (importRef.current) importRef.current.value = '' } }
   }
   const exportDocument = async () => {
+    const revision = ++operationRevision.current
     setBusy(true)
-    try { downloadText(await exportUiDesign(draftRef.current), 'arkamon-layout-ui.json'); setMessage('Layout esportato con i file importati.') }
-    catch (cause) { setMessage(cause instanceof Error ? cause.message : 'Esportazione non riuscita.') }
-    finally { setBusy(false) }
+    try { const text = await exportUiDesign(draftRef.current); if (revision !== operationRevision.current) return; downloadText(text, 'arkamon-layout-ui.json'); setMessage('Layout esportato con i file importati.') }
+    catch (cause) { if (revision === operationRevision.current) setMessage(cause instanceof Error ? cause.message : 'Esportazione non riuscita.') }
+    finally { if (revision === operationRevision.current) setBusy(false) }
   }
   const apply = () => { if (save()) { setSavedSignature(JSON.stringify(useUiStudioStore.getState().draft)); setMessage('Layout applicato e salvato in questo browser.') } }
   const removeImportedFile = (id: string) => {
@@ -399,14 +420,15 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
     setDraft(next)
   }
   const resetScreen = () => { const next = cloneDesign(draftRef.current); delete next.screens[screenId]; setDraft(next); setSelectedId(null); setMessage('Schermata ripristinata nella bozza.'); send({ source: 'arkamon-ui-studio', type: 'request-snapshot' }) }
-  const close = () => { if (dirty && !window.confirm('Ci sono modifiche non applicate. Vuoi uscire senza applicarle al gioco?')) return; if (onClose) onClose(); else window.location.hash = '' }
+  const close = () => { if (dirty && !window.confirm('Ci sono modifiche non applicate. Vuoi uscire senza applicarle al gioco?')) return; cancelPendingOperations(); if (onClose) onClose(); else window.location.hash = '' }
 
   return <div id="ui-studio" className="uis-root">
+    <VisualRecoveryNotice />
     <header className="uis-toolbar">
       <div className="uis-brand"><strong>ARKAMON</strong><span>Studio interfaccia</span></div>
       <label className="uis-screen-picker"><span className="uis-sr-only">Schermata da modificare</span><select aria-label="Schermata da modificare" value={baseScreenId} onChange={event => setScreenId(event.target.value)}>{UI_STUDIO_SCREENS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
       {availableViews ? <label className="uis-view-picker"><span className="uis-sr-only">Vista interna</span><select aria-label="Vista interna" value={internalView} onChange={event => setScreenId(event.target.value === 'default' ? baseScreenId : `${baseScreenId}:${event.target.value}`)}>{availableViews.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label> : null}
-      <div className="uis-toolbar-actions"><button type="button" title="Annulla · Ctrl+Z" disabled={!undoStack.length} onClick={undo}>↶ Annulla</button><button type="button" title="Ripeti · Ctrl+Shift+Z" disabled={!redoStack.length} onClick={redo}>↷ Ripeti</button><span className="uis-toolbar-separator" /><button type="button" disabled={busy} onClick={() => importRef.current?.click()}>Importa</button><button type="button" disabled={busy} onClick={() => void exportDocument()}>Esporta</button><button type="button" onClick={() => { discard(); setSavedSignature(JSON.stringify(useUiStudioStore.getState().draft)); setMessage('Modifiche scartate.'); setSelectedId(null) }}>Scarta</button><button type="button" className="uis-primary" disabled={busy} onClick={apply}>Applica al gioco</button><button type="button" onClick={close}>Esci</button></div>
+      <div className="uis-toolbar-actions"><button type="button" title="Annulla · Ctrl+Z" disabled={!undoStack.length} onClick={undo}>↶ Annulla</button><button type="button" title="Ripeti · Ctrl+Shift+Z" disabled={!redoStack.length} onClick={redo}>↷ Ripeti</button><span className="uis-toolbar-separator" /><button type="button" disabled={busy} onClick={() => importRef.current?.click()}>Importa</button><button type="button" disabled={busy} onClick={() => void exportDocument()}>Esporta</button><button type="button" onClick={() => { cancelPendingOperations(); discard(); setSavedSignature(JSON.stringify(useUiStudioStore.getState().draft)); setMessage('Modifiche scartate.'); setSelectedId(null) }}>Scarta</button><button type="button" className="uis-primary" disabled={busy} onClick={apply}>Applica al gioco</button><button type="button" onClick={close}>Esci</button></div>
     </header>
     <div className="uis-workspace">
       <aside className="uis-sidebar uis-layers" aria-label="Elementi della schermata">

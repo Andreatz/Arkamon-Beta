@@ -5,8 +5,8 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: './e2e-native-release', timeout: 120_000, globalTimeout: 5 * 60_000,
   expect: { timeout: 15_000 }, workers: 1, retries: 0,
-  reporter: [['list'], ['json', { outputFile: 'output/animation-import-2026-10-28/compiled-native.json' }]],
-  outputDir: 'output/animation-import-2026-10-28/compiled-native-results',
+  reporter: [['list'], ['json', { outputFile: 'output/ci/compiled-native.json' }]],
+  outputDir: 'output/ci/compiled-native-results',
   use: { baseURL: 'http://127.0.0.1:3067/Arkamon-Beta/', trace: 'retain-on-failure', screenshot: 'only-on-failure', reducedMotion: 'no-preference' },
   projects: [{ name: 'compiled-native-chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: { command: 'node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 3067 --strictPort --base /Arkamon-Beta/', url: 'http://127.0.0.1:3067/Arkamon-Beta/', reuseExistingServer: false, timeout: 60_000 },

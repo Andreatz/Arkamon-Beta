@@ -7,6 +7,7 @@ node_modules
 dist
 dist-web/
 dist-ssr
+dist-desktop/
 src-tauri/target
 *.local
 
@@ -40,6 +41,7 @@ test-results/
 playwright-report/
 native-pages-test-results/
 output/
+dist-desktop-resources/
 
 # Cache Python generata dagli strumenti locali
 __pycache__/

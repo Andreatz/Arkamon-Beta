@@ -10,8 +10,6 @@ import { assetUrl } from '@/utils/assetUrl'
 import { StudioCommand } from '@/components/ui/StudioArtwork'
 import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
 import { isReferenceUi } from './reference/referenceTheme'
-import './liveStore.css'
-import './reference/reference-inventory.css'
 
 export interface StoreScreenProps { playerId: 1 | 2; inputBlocked?: boolean; shopInteractionId?: string }
 type StoreCategory = 'all' | 'heal' | 'status' | 'capture'

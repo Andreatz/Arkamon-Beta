@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "date": "2026-10-29",
+  "completedDate": "2026-10-30",
+  "head": "bb142c1b",
+  "scope": "Current dirty checkout; read-only product audit",
+  "findings": [
+    {
+      "id": "GAME-29-01",
+      "priority": "P1",
+      "title": "Chiusura della battaglia con aggiornamenti parziali della squadra",
+      "sources": [
+        {
+          "path": "src/scenes/BattagliaScene.tsx",
+          "line": 833
+        },
+        {
+          "path": "src/store/gameStore.ts",
+          "line": 525
+        }
+      ],
+      "evidence": [
+        "evidence/settlement-order.json"
+      ],
+      "impact": "Perdita persistente di livello e HP: una vittoria può lasciare tutti i compagni KO.",
+      "verification": "Motore e store reali; checkpoint concluso, Prosegui reale e due ricariche nel browser.",
+      "direction": "Validare e applicare l'intera squadra finale insieme a ricompense e avanzamento.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "SAVE-29-01",
+      "priority": "P2",
+      "title": "Backup esportato non ripristinabile dallo stesso importatore",
+      "sources": [
+        {
+          "path": "src/save/gameBackup.ts",
+          "line": 66
+        },
+        {
+          "path": "src/save/gameBackup.ts",
+          "line": 75
+        }
+      ],
+      "evidence": [
+        "evidence/backup-roundtrip.json"
+      ],
+      "impact": "La copia di sicurezza di una campagna valida può superare il limite di importazione per la sola indentazione.",
+      "verification": "20 replay e 4800 eventi validi; 8013253 byte respinti, identici dati compatti 4519366 byte accettati.",
+      "direction": "Garantire roundtrip e soglia coerente prima di dichiarare riuscito il download.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "VISUAL-29-01",
+      "priority": "P2",
+      "title": "Recupero del journal sovrascrive personalizzazioni più recenti",
+      "sources": [
+        {
+          "path": "src/presentation/presentationTransaction.ts",
+          "line": 41
+        }
+      ],
+      "evidence": [
+        "evidence/visual-journal.json"
+      ],
+      "impact": "Il recupero perde la terza versione di un tema e cancella il journal dichiarando successo.",
+      "verification": "Due rami del recupero riprodotti sui moduli reali e storage isolato.",
+      "direction": "Confrontare valori correnti con before e after; conservare conflitti e journal.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "VISUAL-29-02",
+      "priority": "P2",
+      "title": "Una bozza corrotta elimina lo storico visivo valido",
+      "sources": [
+        {
+          "path": "src/presentation/presentationProject.ts",
+          "line": 28
+        },
+        {
+          "path": "src/presentation/presentationProject.ts",
+          "line": 78
+        }
+      ],
+      "evidence": [
+        "evidence/project-history.json"
+      ],
+      "impact": "Il successivo salvataggio cancella progetto applicato e punto di ripristino validi.",
+      "verification": "Normalizzazione e stage reali, draft invalido con applied e previous validi.",
+      "direction": "Validare ogni slot separatamente e preservare i dati originali con avviso.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "STUDIO-29-01",
+      "priority": "P3",
+      "title": "Importazione pendente ripristina una bozza già scartata",
+      "sources": [
+        {
+          "path": "src/ui-studio/UiStudioEditor.tsx",
+          "line": 366
+        }
+      ],
+      "evidence": [
+        "evidence/studio-import-race.json"
+      ],
+      "impact": "Dopo Scarta ricompare la bozza importata; il layout applicato resta intatto fino ad Applica.",
+      "verification": "Importazione file e Scarta reali nel browser; ritardo controllato di File.text.",
+      "direction": "Invalidare le operazioni asincrone su scarto, uscita e nuova importazione.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "OBS-29-01",
+      "priority": "P2",
+      "title": "Cornici HP importate assenti nel viewer con profilo separato",
+      "sources": [
+        {
+          "path": "src/regia/publicSnapshot.ts",
+          "line": 26
+        },
+        {
+          "path": "src/regia/BroadcastView.tsx",
+          "line": 24
+        },
+        {
+          "path": "src/ui-studio/mediaStorage.ts",
+          "line": 109
+        }
+      ],
+      "evidence": [
+        "evidence/obs-summary.json",
+        "evidence/console-custom-ui.png",
+        "evidence/obs-missing-custom-ui.png"
+      ],
+      "impact": "La console mostra l'asset importato mentre la regia collegata torna alla cornice predefinita.",
+      "verification": "Importazione reale, relay locale reale, due contesti Chromium separati.",
+      "direction": "Trasportare soltanto i media grafici pubblici selezionati con URL o contenuti accessibili al viewer.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "OBS-29-02",
+      "priority": "P2",
+      "title": "Velocità di animazione diversa tra console e viewer",
+      "sources": [
+        {
+          "path": "src/regia/publicSnapshot.ts",
+          "line": 30
+        }
+      ],
+      "evidence": [
+        "evidence/obs-summary.json"
+      ],
+      "impact": "Le stesse azioni possono essere rappresentate con tempi differenti.",
+      "verification": "Configurazione renderer reale 48 FPS nella console fast e 24 FPS nel viewer normal; rapporto fisico 2:1 non misurato.",
+      "direction": "Includere la politica effettiva di playback nella presentazione pubblica.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "RELEASE-29-01",
+      "priority": "P2",
+      "title": "Override della revisione media incoerente accettato dal package",
+      "sources": [
+        {
+          "path": "vite.config.ts",
+          "line": 17
+        },
+        {
+          "path": "scripts/package-web-assets.mjs",
+          "line": 31
+        }
+      ],
+      "evidence": [
+        "evidence/media-revision-override.json"
+      ],
+      "impact": "Build riuscita con URL media riferiti a un commit diverso dal pin verificato.",
+      "verification": "Fixture completa di cinque azioni, requireComplete=true; nessun test della disponibilità CDN.",
+      "direction": "Rifiutare la revisione incoerente o verificarne manifest e impronte effettive.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    },
+    {
+      "id": "UI-29-01",
+      "priority": "P3",
+      "title": "Focus trap ignora le esclusioni dalla sequenza Tab",
+      "sources": [
+        {
+          "path": "src/components/ui/GameDialog.tsx",
+          "line": 20
+        },
+        {
+          "path": "src/components/rpg/SpatialNavigation.tsx",
+          "line": 20
+        }
+      ],
+      "evidence": [
+        "evidence/keyboard-roving.json"
+      ],
+      "impact": "Tab attraversa i pulsanti tabIndex=-1 delle griglie, rendendo incoerente la navigazione.",
+      "verification": "Menù partita reale, Tab sul primo riquadro porta ad Apri Arkadex con tabIndex=-1.",
+      "direction": "Confinare il focus nel dialogo rispettando gli elementi realmente tabbabili.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    }
+  ],
+  "coverageGaps": [
+    {
+      "id": "CI-29-01",
+      "priority": "P2",
+      "title": "Suite native compilate non obbligatorie nel gate e nel sigillo di rilascio",
+      "sources": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "line": 81
+        },
+        {
+          "path": "scripts/release-verification.mjs"
+        }
+      ],
+      "direction": "Richiedere i sei casi di playwright.native-release.config.ts contro lo stesso artefatto.",
+      "status": "fixed_verified_locally",
+      "resolution": {
+        "date": "2026-10-30",
+        "report": "../fixes-2026-10-30/README.md",
+        "verification": "../fixes-2026-10-30/verification.json"
+      }
+    }
+  ]
+}

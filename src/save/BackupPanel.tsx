@@ -25,7 +25,7 @@ export function BackupPanel() {
       downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState()), gameBackupFilename())
       setMessage(catalogRecovery ? 'Backup della campagna scaricato senza catalogo danneggiato. Scarica separatamente l’originale da recuperare.' : 'Backup della partita scaricato. Conservalo anche fuori da questo computer.')
       setError(null)
-    } catch { setError('Non riesco a scaricare il backup. Riprova dal browser.'); setMessage(null) }
+    } catch (cause) { setError(cause instanceof Error ? cause.message : 'Non riesco a scaricare il backup. Riprova dal browser.'); setMessage(null) }
   }
   const loadFile = async (file: File | undefined) => {
     const revision = ++fileReadRevision.current

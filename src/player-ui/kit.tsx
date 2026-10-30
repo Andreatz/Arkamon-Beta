@@ -9,9 +9,7 @@ import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolic
 import { isReferenceUi } from './reference/referenceTheme'
 import { ReferenceIcon } from './reference/ReferenceEmblem'
 import { ProvidedArtwork, providedIconAsset, providedPortraitSource } from './reference/ProvidedArtwork'
-import './player-ui.css'
-import './rpgPlayerUi.css'
-import './studioControls.css'
+import './playerUiPrimitives'
 
 export const TYPE_ICONS: Record<TipoPokemon, string> = {
   Normale: 'type-normal', Elettro: 'type-electric', Fuoco: 'type-fire', Terra: 'type-earth',

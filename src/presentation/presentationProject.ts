@@ -11,12 +11,12 @@ import type { AdminTheme } from '@/theme/adminThemeTypes'
 import type { UiDesignDocument } from '@/ui-studio/types'
 import { normalizeVfxOverrides } from './vfxValidation'
 import { normalizePresentationAudio, PRESENTATION_STORAGE_KEY, setAppliedAudio, type PresentationAudio } from './presentationRuntime'
-import { prepareVisualTransaction, rollbackVisualTransaction, VISUAL_JOURNAL_KEY, type VisualEntry } from './presentationTransaction'
+import { assertVisualStorageWritable, prepareVisualTransaction, rollbackVisualTransaction, withVisualTransactionWrites, VISUAL_JOURNAL_KEY, type VisualEntry } from './presentationTransaction'
 import { presentationRecovery } from './bootstrapPresentation'
 
 export interface PresentationProject { version: 1; name: string; theme: AdminTheme; vfx: Record<number, AdminMoveVfxOverride>; audio: PresentationAudio }
-interface ProjectHistory { version: 1; draft: PresentationProject | null; applied: PresentationProject | null; previous: PresentationProject | null }
-const empty = (): ProjectHistory => ({ version: 1, draft: null, applied: null, previous: null })
+interface ProjectHistory { version: 1; draft: PresentationProject | null; applied: PresentationProject | null; previous: PresentationProject | null; originals: string[] }
+const empty = (): ProjectHistory => ({ version: 1, draft: null, applied: null, previous: null, originals: [] })
 export function normalizePresentationProject(raw: unknown): PresentationProject {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Progetto visivo non valido.')
   const e = raw as Record<string, unknown>
@@ -25,17 +25,31 @@ export function normalizePresentationProject(raw: unknown): PresentationProject 
   if (!theme.theme) throw new Error(theme.error)
   return { version: 1, name: e.name.trim(), theme: theme.theme, vfx: normalizeVfxOverrides(e.vfx), audio: normalizePresentationAudio(e.audio) }
 }
-function read(): ProjectHistory {
+export function readPresentationHistory(): ProjectHistory {
+  let text: string | null = null
   try {
-    const text = typeof localStorage === 'undefined' ? null : localStorage.getItem(PRESENTATION_STORAGE_KEY)
+    text = typeof localStorage === 'undefined' ? null : localStorage.getItem(PRESENTATION_STORAGE_KEY)
     if (!text) return empty()
     const e = JSON.parse(text)
-    if (e.version !== 1) return empty()
-    return { version: 1, draft: e.draft ? normalizePresentationProject(e.draft) : null, applied: e.applied ? normalizePresentationProject(e.applied) : null, previous: e.previous ? normalizePresentationProject(e.previous) : null }
-  } catch { return empty() }
+    if (!e || e.version !== 1) throw new Error('Storico non supportato.')
+    const history = empty()
+    let damaged = false
+    if (e.originals !== undefined) {
+      if (!Array.isArray(e.originals) || e.originals.some((value: unknown) => typeof value !== 'string')) damaged = true
+      else history.originals = [...e.originals]
+    }
+    // One damaged draft must not discard a valid applied project or restore point.
+    for (const slot of ['draft', 'applied', 'previous'] as const) {
+      try { history[slot] = e[slot] == null ? null : normalizePresentationProject(e[slot]) }
+      catch { damaged = true }
+    }
+    if (damaged && !history.originals.includes(text)) history.originals.push(text)
+    return history
+  } catch { return { ...empty(), originals: text === null ? [] : [text] } }
 }
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value))
-function persist(history: ProjectHistory) {
+function persist(history: ProjectHistory, transaction = false) {
+  if (!transaction) assertVisualStorageWritable()
   if (typeof localStorage !== 'undefined') localStorage.setItem(PRESENTATION_STORAGE_KEY, JSON.stringify(history))
 }
 function currentProject(name: string): PresentationProject {
@@ -45,6 +59,7 @@ interface ProjectState extends ProjectHistory {
   error: string | null
   stage: (project: PresentationProject) => boolean
   discard: () => boolean
+  clearOriginals: () => boolean
   apply: () => boolean
   rollback: () => boolean
 }
@@ -59,28 +74,39 @@ function commit(project: PresentationProject, history: ProjectHistory): void {
       entries = prepareVisualTransaction(localStorage, [nextTheme, nextVfx, JSON.stringify(history)])
       localStorage.setItem(entries[0].key, entries[0].after)
     }
-    useAdminStore.getState().importTheme(project.theme)
-    if (!useVfxAdminStore.getState().replaceOverrides(project.vfx)) throw new Error(useVfxAdminStore.getState().error ?? 'Impossibile applicare gli effetti.')
-    // The complete envelope is the commit marker, after the UI/VFX writes.
-    persist(history)
+    withVisualTransactionWrites(() => {
+      useAdminStore.getState().importTheme(project.theme)
+      if (!useVfxAdminStore.getState().replaceOverrides(project.vfx)) throw new Error(useVfxAdminStore.getState().error ?? 'Impossibile applicare gli effetti.')
+      // The complete envelope is the commit marker, after the UI/VFX writes.
+      persist(history, true)
+    })
     if (typeof localStorage !== 'undefined') localStorage.removeItem(VISUAL_JOURNAL_KEY)
     setAppliedAudio(project.audio)
   } catch (error) {
-    try { useAdminStore.getState().importTheme(oldTheme) } catch { /* Memory is restored even when persistent storage is full. */ }
+    // Restore memory without publishing a third disk value before journal rollback.
+    const adminStorage = useAdminStore.persist.getOptions().storage
+    try {
+      if (adminStorage) useAdminStore.persist.setOptions({ storage: { ...adminStorage, setItem: () => undefined } })
+      withVisualTransactionWrites(() => useAdminStore.getState().importTheme(oldTheme))
+    } finally { if (adminStorage) useAdminStore.persist.setOptions({ storage: adminStorage }) }
     useVfxAdminStore.setState({ overrides: oldVfx, draftOverrides: oldDraft })
     if (entries) { try { rollbackVisualTransaction(localStorage, entries) } catch { /* Startup recovers the retained journal before stores hydrate. */ } }
     throw error
   }
 }
 export const usePresentationProject = create<ProjectState>((set, get) => ({
-  ...read(), error: presentationRecovery.error,
+  ...readPresentationHistory(), error: presentationRecovery.error,
   stage: raw => {
-    try { const draft = normalizePresentationProject(raw); const { applied, previous } = get(); persist({ version: 1, draft, applied, previous }); set({ draft, error: null }); return true }
+    try { const draft = normalizePresentationProject(raw); const { applied, previous, originals } = get(); persist({ version: 1, draft, applied, previous, originals }); set({ draft, error: null }); return true }
     catch (e) { set({ error: e instanceof Error ? e.message : 'Bozza non salvata.' }); return false }
   },
   discard: () => {
-    try { const { applied, previous } = get(); persist({ version: 1, draft: null, applied, previous }); set({ draft: null, error: null }); return true }
+    try { const { applied, previous, originals } = get(); persist({ version: 1, draft: null, applied, previous, originals }); set({ draft: null, error: null }); return true }
     catch { set({ error: 'Impossibile scartare la bozza nello spazio del browser.' }); return false }
+  },
+  clearOriginals: () => {
+    try { const { draft, applied, previous } = get(); persist({ version: 1, draft, applied, previous, originals: [] }); set({ originals: [], error: null }); return true }
+    catch (cause) { set({ error: cause instanceof Error ? cause.message : 'Originali non rimossi.' }); return false }
   },
   apply: () => {
     const state = get()
@@ -89,14 +115,14 @@ export const usePresentationProject = create<ProjectState>((set, get) => ({
       const applied = normalizePresentationProject(state.draft), previous = currentProject(state.applied?.name ?? 'Prima dell’applicazione')
       // Keep the currently applied custom audio in the restore point.
       if (state.applied) previous.audio = clone(state.applied.audio)
-      const next: ProjectHistory = { version: 1, draft: null, applied, previous }
+      const next: ProjectHistory = { version: 1, draft: null, applied, previous, originals: state.originals }
       commit(applied, next); set({ ...next, error: null }); return true
     } catch (e) { set({ error: e instanceof Error ? e.message : 'Progetto non applicato.' }); return false }
   },
   rollback: () => {
     const state = get()
     if (!state.previous) return false
-    try { const next: ProjectHistory = { version: 1, draft: null, applied: state.previous, previous: state.applied }; commit(state.previous, next); set({ ...next, error: null }); return true }
+    try { const next: ProjectHistory = { version: 1, draft: null, applied: state.previous, previous: state.applied, originals: state.originals }; commit(state.previous, next); set({ ...next, error: null }); return true }
     catch (e) { set({ error: e instanceof Error ? e.message : 'Ripristino visivo non riuscito.' }); return false }
   },
 }))

@@ -3,6 +3,7 @@ import { readdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { LOCAL_MAPS, getLocalMap, type LocalMapPoint } from '../localMaps'
+import { PENDING_LOCAL_MAP_ARTWORK } from '../localMaps/artworkInventory'
 import sixCityReferences from './fixtures/sixCityReferences.json'
 import routeTorinoReferences from './fixtures/routeTorinoReferences.json'
 
@@ -21,9 +22,13 @@ function distanceToSegment(point: LocalMapPoint, from: LocalMapPoint, to: LocalM
 }
 
 describe('mappe locali disegnate', () => {
-  it('registra tutti i PNG forniti, senza sostituire la mappa principale', async () => {
+  it('accounts for every painting as reviewed geometry or pending source artwork', async () => {
     const images = (await readdir(imageDirectory)).filter((name) => name.endsWith('.png')).sort()
-    expect(mapDefinitions.map((map) => map.image.replace('/maps/', '')).sort()).toEqual(images)
+    const reviewed = mapDefinitions.map(map => map.image.replace('/maps/', ''))
+    const pending = PENDING_LOCAL_MAP_ARTWORK.map(map => map.image.replace('/maps/', ''))
+    expect([...reviewed, ...pending].sort()).toEqual(images)
+    expect(new Set([...reviewed, ...pending]).size).toBe(images.length)
+    for (const artwork of PENDING_LOCAL_MAP_ARTWORK) expect(getLocalMap(artwork.id)).toBeUndefined()
     expect(mapDefinitions).toHaveLength(16)
     expect(getLocalMap('ReggioCalabria')?.image).toBe('/maps/Reggio-Calabria.png')
     expect(getLocalMap('Percorso_15')?.image).toBe('/maps/Percorso_15.png')

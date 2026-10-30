@@ -119,6 +119,10 @@ test.describe('native lab preview', () => {
     await page.goto('/#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption('52')
     await page.locator('#arkamon-preview-target').selectOption('57')
+    // The loading poster must already have failed before the canvas fails, so
+    // switching to the procedural fallback cannot accidentally reuse its old
+    // error event. This makes the cached-image handover regression repeatable.
+    await expect.poll(() => page.locator('[data-preview-sync-side="B"] img[src$="/front_sprites/57.png"]').evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 0)).toBe(true)
     const play = page.getByRole('button', { name: 'Prova attacco con VFX', exact: true })
     await play.click()
     await expect(page.locator('[data-preview-sync-phase]')).toHaveAttribute('data-preview-sync-phase', 'error')

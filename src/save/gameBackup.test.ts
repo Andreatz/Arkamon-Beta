@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { creaIstanza, useGameStore } from '@/store/gameStore'
 import { initialGameSave, normalizeGameSave, serializeGameState, GAME_SAVE_STORAGE_KEY, PREVIOUS_BACKUP_STORAGE_KEY } from './gamePersistence'
-import { GAME_BACKUP_FORMAT, serializeGameBackup, stateFromValidatedBackup, validateGameBackup } from './gameBackup'
+import { GAME_BACKUP_FORMAT, MAX_GAME_BACKUP_BYTES, serializeGameBackup, stateFromValidatedBackup, validateGameBackup } from './gameBackup'
 import { readPreviousGameBackup, restoreGameBackup } from './restoreGameBackup'
 import { INTERACTION_STORAGE_KEY, useInteractionStore } from '@/interactions/interactionStore'
 import { newInteractionDefinition } from '@/interactions/types'
 import { getLocalMap } from '@/data/localMaps'
-import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
+import { normalizeBattleArchive, useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { createBattleChronicle } from '@/components/battle/battleChronicle'
 import { shopAvailabilityMessage } from '@/shop/purchase'
 
@@ -48,6 +48,19 @@ function definition(id = 'quest-a') {
   entry.dialogue = 'Benvenuto.'
   return entry
 }
+function largeArchive(messages = ['Fixture commentary. '.repeat(25)]) {
+  return normalizeBattleArchive({ version: 1, matches: Array.from({ length: 20 }, (_, battle) => {
+    const id = `fixture-${battle + 1}`
+    return { id, title: 'Fixture imported replay', completedAt: date.toISOString(), playerId: 1, outcome: 'vittoria', location: 'borgo_aurora', battleType: 'PVP', chronicle: {
+      version: 1, battleId: id, nextSequence: 241, omittedEvents: 0,
+      events: Array.from({ length: 240 }, (_, index) => ({ id: `${id}:${index + 1}:attack`, kind: 'attack', title: 'Imported valid turn record', side: 'A', messages,
+        actor: { instanceId: 'fixture-actor', speciesId: 1, name: 'Fixture Arkamon', level: 20, hp: 20 },
+        target: { instanceId: 'fixture-target', speciesId: 2, name: 'Fixture opponent', level: 20, hp: 20 },
+        dice: Array.from({ length: 12 }, () => 3), diceSum: 36, increment: 2, baseDamage: 38, effectiveness: 1, damage: 38, hpBefore: 58, hpAfter: 20,
+      })),
+    } }
+  }) })
+}
 
 describe('backup portabile e ripristino guidato della campagna', () => {
   beforeEach(() => {
@@ -55,6 +68,31 @@ describe('backup portabile e ripristino guidato della campagna', () => {
     useGameStore.getState().reset()
     useInteractionStore.setState({ interactions: [] })
     useBattleArchiveStore.setState({ version: 1, matches: [] })
+  })
+  it('exports all 20 supported replays within the restore limit instead of exceeding it through indentation', () => {
+    const archive = largeArchive()
+    const text = serializeGameBackup(initialGameSave(), date, undefined, archive)
+    expect(new TextEncoder().encode(JSON.stringify(JSON.parse(text), null, 2)).byteLength).toBeGreaterThan(MAX_GAME_BACKUP_BYTES)
+    expect(new TextEncoder().encode(text).byteLength).toBeLessThanOrEqual(MAX_GAME_BACKUP_BYTES)
+    const preview = checked(text)
+    expect(preview.battleArchive).toEqual(archive)
+    expect(preview.battleArchive?.matches).toHaveLength(20)
+    expect(preview.battleArchive?.matches.reduce((total, battle) => total + battle.chronicle.events.length, 0)).toBe(4800)
+  })
+  it('rejects intrinsically oversized exports without silently dropping archive records', () => {
+    const archive = largeArchive(['x'.repeat(800), 'y'.repeat(800)])
+    expect(() => serializeGameBackup(campaign(), date, undefined, archive)).toThrow(/supera il limite.*non sarebbe ripristinabile/)
+    expect(archive.matches).toHaveLength(20)
+    expect(archive.matches.every(match => match.chronicle.events.length === 240)).toBe(true)
+  })
+  it('does not restore another campaign if the previous complete safety copy cannot be preserved', () => {
+    const preview = checked(serializeGameBackup(campaign(), date))
+    useBattleArchiveStore.setState(largeArchive(['x'.repeat(800), 'y'.repeat(800)]))
+    const state = useGameStore.getState(), before = new Map(storageValues)
+    const result = restoreGameBackup(preview)
+    expect(result).toMatchObject({ ok: false, error: expect.stringMatching(/conservare la partita precedente/) })
+    expect(useGameStore.getState()).toBe(state)
+    expect(storageValues).toEqual(before)
   })
 
   it('roundtrip versione/data, Set, squadre e depositi senza curare HP o status', () => {

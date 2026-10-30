@@ -26,7 +26,9 @@ export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupSt
   const archive = revalidated.preview.battleArchive
   const state = useGameStore.getState()
   restored.audioMuted = state.audioMuted
-  const previousBackup = serializeGameBackup(state, new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState())
+  let previousBackup: string
+  try { previousBackup = serializeGameBackup(state, new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState()) }
+  catch (cause) { return { ok: false, error: cause instanceof Error ? `Impossibile conservare la partita precedente: ${cause.message}` : 'Impossibile conservare la partita precedente. Nessun dato è stato sostituito.' } }
   const target = backupRestoreStorage(storage)
   let entries: RestoreEntry[] | null = null
   cancelPendingRecoveryCopy()

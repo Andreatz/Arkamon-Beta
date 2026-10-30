@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
-import { packageWebAssets } from '../package-web-assets.mjs'
+import { assertPinnedMediaRevision, packageWebAssets } from '../package-web-assets.mjs'
 
 const directories = []
 afterEach(async () => { await Promise.all(directories.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))) })
@@ -47,5 +47,29 @@ describe('bounded web asset packaging', () => {
     const f = await fixture(); f.manifest.clips.a.pages[0].src = '/../outside.webp'
     await f.write('src/data/arkamon-paged.json', JSON.stringify(f.manifest))
     await expect(packageWebAssets(f.args)).rejects.toThrow('Unsafe')
+  })
+  it('refuses a stale revision even when all five source actions and the pinned manifest hash are valid', async () => {
+    const f = await fixture(), clips = {}, actions = {}
+    const digest = createHash('sha256').update('fixture').digest('hex')
+    for (const action of ['idle', 'attack', 'hit', 'victory', 'ko']) {
+      const originalSrc = `/sprites/arkamon/1/front/${action}.webp`, src = `/sprites/arkamon-paged/1/front/${action}/page-00.webp`
+      const sheet = { frameCount: 1, cellWidth: 1, cellHeight: 1, fps: 24, sha256: digest }
+      actions[action] = { speciesId: 1, view: 'front', action, sheet }
+      clips[originalSrc] = { originalSrc, frameCount: 1, frameWidth: 1, frameHeight: 1, fps: 24, sourceSha256: digest,
+        pages: [{ src, encodedBytes: 7, sha256: digest, firstFrame: 0, frameCount: 1 }] }
+      await f.write(`public${src}`, 'fixture')
+      await f.write(`public/sprites/arkamon/1/front/${action}.metadata.json`, JSON.stringify(actions[action]))
+    }
+    await f.write('public/sprites/arkamon/1/front/animation-set.metadata.json', JSON.stringify({ speciesId: 1, view: 'front', actions }))
+    await f.write('src/data/arkamon-paged.json', JSON.stringify({ clips }))
+    const pin = { version: 1, revision: 'a'.repeat(40), manifestSha256: createHash('sha256').update(JSON.stringify({ clips })).digest('hex') }
+    await f.write('src/data/media-release.json', JSON.stringify(pin))
+    await expect(packageWebAssets({ ...f.args, requireComplete: true, revision: 'b'.repeat(40) })).rejects.toThrow('differs from the pinned media release')
+    await expect(fs.access(path.join(f.output, 'media-release.json'))).rejects.toThrow()
+    const proof = await packageWebAssets({ ...f.args, requireComplete: true })
+    expect(proof).toMatchObject({ mediaRevision: pin.revision, manifestSha256: pin.manifestSha256, nativeClips: 5, nativeFrames: 5 })
+    expect(assertPinnedMediaRevision(pin.revision, pin)).toBe(pin.revision)
+    expect(() => assertPinnedMediaRevision('b'.repeat(40), pin)).toThrow('differs from the pinned media release')
+    expect(() => assertPinnedMediaRevision(pin.revision, { ...pin, version: 0 })).toThrow('valid immutable')
   })
 })

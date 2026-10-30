@@ -1,0 +1,51 @@
+{
+  "console": {
+    "connected": null,
+    "animationSpeed": "fast",
+    "hpBackground": "url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTMwIiB2aWV3Qm94PSIwIDAgNjAwIDEzMCI+PHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjU5MiIgaGVpZ2h0PSIxMjIiIHJ4PSIxNSIgZmlsbD0iIzRjMDA0YyIgc3Ryb2tlPSIjZmYwMGUwIiBzdHJva2Utd2lkdGg9IjgiLz48dGV4dCB4PSIzMDAiIHk9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmZmZmZmIiBmb250LXNpemU9IjI0Ij5BVURJVCBVUExPQUQgRlJBTUU8L3RleHQ+PC9zdmc+\")",
+    "sourceResolved": true,
+    "sourceError": null,
+    "savePresent": true,
+    "buttons": 9,
+    "sprites": [
+      {
+        "spriteInstance": ":r5:",
+        "spriteSrc": "/sprites/arkamon/13/front/idle.webp",
+        "spriteRenderer": "paged-canvas",
+        "spriteFrame": "20",
+        "spriteFps": "48",
+        "spriteFrameCount": "96",
+        "spritePaused": "false",
+        "spriteReady": "true",
+        "spritePlayback": "playing",
+        "spritePage": "1",
+        "spriteHeld": "false"
+      }
+    ]
+  },
+  "viewer": {
+    "connected": "true",
+    "animationSpeed": "normal",
+    "hpBackground": "url(\"http://127.0.0.1:3069/ui/hp_bar_enemy.png\")",
+    "sourceResolved": false,
+    "sourceError": "Error: File importato non trovato (media-ccee405c-6085-4ae5-b7df-84a4864b83aa). Importa il pacchetto UI completo.",
+    "savePresent": false,
+    "buttons": 0,
+    "sprites": [
+      {
+        "spriteInstance": ":r1:",
+        "spriteSrc": "/sprites/arkamon/13/front/idle.webp",
+        "spriteRenderer": "paged-canvas",
+        "spriteFrame": "31",
+        "spriteFps": "24",
+        "spriteFrameCount": "96",
+        "spritePaused": "false",
+        "spriteReady": "true",
+        "spritePlayback": "playing",
+        "spritePage": "2",
+        "spriteHeld": "false"
+      }
+    ]
+  },
+  "policy": "Real public relay and two isolated temporary profiles; frame configuration is evidence, not a physical 2:1 playback-rate measurement."
+}

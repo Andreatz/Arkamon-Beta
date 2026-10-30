@@ -1,6 +1,7 @@
 import { assetUrl } from '@/utils/assetUrl'
 import { isSafeDesignId, isSafeUiAssetSource, normalizeDesign } from './designModel'
 import type { UiDesignDocument, UiMediaEntry } from './types'
+import { PUBLIC_MEDIA_EXTENSIONS } from '../../scripts/public-media-protocol.mjs'
 
 const DATABASE = 'arkamon-ui-media'
 const TABLE = 'files'
@@ -111,6 +112,21 @@ export async function resolveUiMediaSource(source: string): Promise<string> {
   if (!source.startsWith('ui-media:')) return assetUrl(source)
   const stored = await readStored(source.slice(9))
   return `data:${stored.mime};base64,${stored.data}`
+}
+/** Only a selected public image is transferable; font files and the authoring archive stay private. */
+export function validatePublicUiImage(bytes: Uint8Array, mime: string): void {
+  const extension = PUBLIC_MEDIA_EXTENSIONS[mime]
+  if (!extension) throw new Error('Formato immagine pubblico non valido.')
+  const inspected = inspectFile(`public.${extension}`, bytes)
+  if (inspected.kind !== 'image' || inspected.mime !== mime) throw new Error('Il contenuto dell’immagine pubblica non corrisponde al formato dichiarato.')
+}
+export async function readPublicUiImage(source: string): Promise<{ bytes: Uint8Array; mime: string }> {
+  if (!source.startsWith('ui-media:') || !isSafeUiAssetSource(source)) throw new Error('Riferimento immagine pubblico non valido.')
+  const stored = await readStored(source.slice(9))
+  if (stored.kind !== 'image') throw new Error('Solo le immagini selezionate possono essere mostrate nella regia.')
+  const bytes = decode(stored.data)
+  validatePublicUiImage(bytes, stored.mime)
+  return { bytes, mime: stored.mime }
 }
 function referencedMedia(design: UiDesignDocument): Set<string> {
   const ids = new Set<string>()
