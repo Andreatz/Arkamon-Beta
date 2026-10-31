@@ -16,7 +16,9 @@ concurrency:
 jobs:
   test-build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 65
+    # Checkout and the two browser groups took about 63 minutes in the first full run.
+    # Leave time for compiled-native verification, sealing and artifact uploads.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
