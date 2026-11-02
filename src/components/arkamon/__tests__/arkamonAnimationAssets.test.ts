@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
+const SPECIES_IDS = Array.from({ length: 116 }, (_, index) => index + 1)
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -88,7 +88,9 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     const conversion = readConversion(speciesId, animation)
     expect(conversion.source.file).toBe(`animation-source/raw/${speciesId}/front/${animation}.mp4`)
     const video = readFileSync(resolve(conversion.source.file))
-    const suppliedAction = speciesId === 36 && animation === 'ko' ? 'defeat' : speciesId === 69 && animation === 'hit' ? 'hiy' : animation
+    // The duplicate "36 defeat.mp4" was removed by the supplied source update;
+    // "36 ko.mp4" has the same SHA-256 as the original canonical KO video.
+    const suppliedAction = speciesId === 69 && animation === 'hit' ? 'hiy' : animation
     const suppliedVideo = readFileSync(resolve(`public/sprites/animation/Front/${speciesId} ${suppliedAction}.mp4`))
     expect(video.byteLength).toBeGreaterThan(0)
     expect(suppliedVideo.byteLength).toBeGreaterThan(0)

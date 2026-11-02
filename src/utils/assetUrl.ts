@@ -10,13 +10,17 @@
  * manualmente con `BASE_URL`.
  */
 export function assetUrl(path: string): string {
-  return resolveAssetUrl(path, import.meta.env.BASE_URL, import.meta.env.VITE_SPLIT_MEDIA ? import.meta.env.VITE_MEDIA_REVISION : undefined, import.meta.env.VITE_MEDIA_BASE_URL)
+  return resolveAssetUrl(path, import.meta.env.BASE_URL, import.meta.env.VITE_SPLIT_MEDIA ? import.meta.env.VITE_MEDIA_REVISION : undefined,
+    import.meta.env.VITE_MEDIA_BASE_URL, false, import.meta.env.VITE_LOCAL_FRONT_SPRITE_IDS)
 }
 
-export function resolveAssetUrl(value: string, base: string, mediaRevision?: string, mediaBase?: string, encodeLocal = false): string {
+export function resolveAssetUrl(value: string, base: string, mediaRevision?: string, mediaBase?: string, encodeLocal = false, localFrontSpriteIds?: readonly number[]): string {
   if (/^(https?:|data:|blob:)/i.test(value)) return value
   const clean = value.replace(/^\//, '')
-  const heavy = /^(sprites\/arkamon-paged\/|sounds\/|vfx\/)/.test(clean)
+  const front = /^sprites\/front_sprites\/([1-9]\d*)\.png$/.exec(clean)
+  if (front && (mediaBase || mediaRevision) && !localFrontSpriteIds) throw new Error('Local front sprite catalog is required for split media')
+  const pendingFront = front && !localFrontSpriteIds?.includes(Number(front[1]))
+  const heavy = pendingFront || /^(sprites\/arkamon-paged\/|sounds\/|vfx\/)/.test(clean)
   const encoded = clean.split('/').map(part => encodeURIComponent(part)).join('/')
   if (heavy && (mediaBase || mediaRevision)) {
     const origin = mediaBase || `https://raw.githubusercontent.com/Andreatz/Arkamon-Beta/${mediaRevision}/public/`

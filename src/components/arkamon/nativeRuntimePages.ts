@@ -21,9 +21,15 @@ export function getNativeRuntimeClip(source: string): NativeRuntimeClip | undefi
   if (!entry) return undefined
   const [frameWidth, frameHeight, frameCount, fps, packedPages] = entry
   const directory = source.replace('/sprites/arkamon/', '/sprites/arkamon-paged/').replace(/\.webp$/, '/')
-  const pages = packedPages.map(([file, firstFrame, count, columns, rows, width, height, decodedBytes]) => ({
-    src: directory + file, firstFrame, frameCount: count, columns, rows, width, height, decodedBytes,
-  }))
+  let nextFrame = 0
+  const pages = packedPages.map(([token, count, columns], index) => {
+    const png = token.endsWith('.png'), hash = png ? token.slice(0, -4) : token
+    const file = `page-${String(index).padStart(2, '0')}${hash ? '-' + hash : ''}.${png ? 'png' : 'webp'}`
+    const rows = Math.ceil(count / columns), width = columns * frameWidth, height = rows * frameHeight
+    const firstFrame = nextFrame
+    nextFrame += count
+    return { src: directory + file, firstFrame, frameCount: count, columns, rows, width, height, decodedBytes: width * height * 4 }
+  })
   const clip = { frameWidth, frameHeight, frameCount, fps, pages }
   clips.set(source, clip)
   return clip

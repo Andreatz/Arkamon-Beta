@@ -19,6 +19,13 @@
 .darklaw-lab h1 { margin: 0; font-size: clamp(28px, 3.8vw, 43px); font-weight: 800; line-height: 1.13; letter-spacing: -.035em; }
 .darklaw-lab h1 > span { color: var(--darklaw-accent); }
 .darklaw-lab__intro { max-width: 590px; margin: 14px 0 0; color: #a4b1ad; font-size: 14px; line-height: 1.7; }
+.darklaw-lab__pending { margin: 0 0 20px; padding: 16px 20px; border: 1px solid #806a42; border-radius: 10px; background: #30291b; color: #f2dfb9; font-size: 13px; line-height: 1.65; }
+.darklaw-lab__pending p { margin: 5px 0 0; color: #d4c9ad; }
+.darklaw-lab__asset-portrait { display: block; width: 100%; height: 100%; overflow: visible; transform: scale(var(--darklaw-preview-scale)); transform-origin: center; }
+.darklaw-lab__asset-image { position: relative; width: 100%; height: 100%; }
+.darklaw-lab__asset-message { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin: 0; color: #e2e9dd; text-align: center; font-size: 12px; line-height: 1.6; }
+.darklaw-lab__asset-message p { margin: 0; padding: 8px; border-radius: 6px; background: #14201de8; }
+.darklaw-lab__asset-message button { padding: 8px 12px; border: 1px solid var(--darklaw-accent); border-radius: 6px; color: #1a2b0d; background: var(--darklaw-accent); font: inherit; cursor: pointer; }
 .darklaw-lab__back { flex-shrink: 0; display: flex; align-items: center; gap: 18px; margin-top: 5px; padding: 11px 14px; border: 1px solid #3e504d; border-radius: 8px; color: #d5dfd9; font-size: 12px; text-decoration: none; }
 .darklaw-lab__back:hover { background: #21312f; }
 .darklaw-lab__back span { color: var(--darklaw-accent); font-size: 17px; }

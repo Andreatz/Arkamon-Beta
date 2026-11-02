@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import mediaRelease from './src/data/media-release.json'
 // @ts-expect-error The packaging utility also runs as a standalone Node ES module.
-import { assertPinnedMediaRevision, webAssetsPlugin } from './scripts/package-web-assets.mjs'
+import { assertPinnedMediaRevision, readPlayableFrontSpriteIds, webAssetsPlugin } from './scripts/package-web-assets.mjs'
 // @ts-expect-error Shared Node build utility; emitted runtime data has a typed virtual module.
 import { nativeRuntimeManifestPlugin } from './scripts/native-runtime-manifest.mjs'
 // @ts-expect-error Node packaging module is shared with the release checks.
@@ -20,7 +20,8 @@ export function createGameConfig({ command, mode }: ConfigEnv): UserConfig {
     ? (output: string) => separateDesktopResources({ output, resources: path.resolve(__dirname, 'dist-desktop-resources'), alreadySeparated: true }) : undefined,
     mode === 'desktop' ? path.resolve(__dirname, 'dist-desktop-resources') : undefined)] : [])],
   publicDir: 'public',
-  define: { 'import.meta.env.VITE_MEDIA_REVISION': JSON.stringify(mediaRevision), 'import.meta.env.VITE_SPLIT_MEDIA': JSON.stringify(bounded) },
+  define: { 'import.meta.env.VITE_MEDIA_REVISION': JSON.stringify(mediaRevision), 'import.meta.env.VITE_SPLIT_MEDIA': JSON.stringify(bounded),
+    'import.meta.env.VITE_LOCAL_FRONT_SPRITE_IDS': JSON.stringify(readPlayableFrontSpriteIds(__dirname)) },
   base: web ? '/Arkamon-Beta/' : '/',
   resolve: {
     alias: {

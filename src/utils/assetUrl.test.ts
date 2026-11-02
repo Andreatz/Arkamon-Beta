@@ -14,6 +14,23 @@ describe('immutable media distribution and local graphics', () => {
       expect(resolveAssetUrl(value, '/Arkamon-Beta/', revision)).toBe(`https://raw.githubusercontent.com/Andreatz/Arkamon-Beta/${revision}/public/${expected}`)
     }
   })
+  it('keeps game portraits local and sends pending front sprites to the exact media pin using authored IDs', () => {
+    const playable = [13, 500]
+    for (const id of playable) {
+      expect(resolveAssetUrl(`/sprites/front_sprites/${id}.png`, '/Arkamon-Beta/', revision, undefined, false, playable))
+        .toBe(`/Arkamon-Beta/sprites/front_sprites/${id}.png`)
+    }
+    for (const id of [1, 111, 150, 501]) {
+      expect(resolveAssetUrl(`/sprites/front_sprites/${id}.png`, '/Arkamon-Beta/', revision, undefined, false, playable))
+        .toBe(`https://raw.githubusercontent.com/Andreatz/Arkamon-Beta/${revision}/public/sprites/front_sprites/${id}.png`)
+      expect(resolveAssetUrl(`/sprites/front_sprites/${id}.png`, '/Arkamon-Beta/', undefined, undefined, false, playable))
+        .toBe(`/Arkamon-Beta/sprites/front_sprites/${id}.png`)
+    }
+    expect(resolveAssetUrl('/sprites/front_sprites/150.png', '/', revision, 'https://media.example/release', false, playable))
+      .toBe('https://media.example/release/sprites/front_sprites/150.png')
+    expect(() => resolveAssetUrl('/sprites/front_sprites/150.png', '/', revision)).toThrow('front sprite catalog')
+    expect(resolveAssetUrl('/sprites/back_sprites/150.png', '/', revision, undefined, false, playable)).toBe('/sprites/back_sprites/150.png')
+  })
   it('uses an explicit CDN without credentials or URL suffixes and encodes filenames once', () => {
     expect(resolveAssetUrl('/sounds/a #1.wav', '/', revision, 'https://media.example/arkamon/v2')).toBe('https://media.example/arkamon/v2/sounds/a%20%231.wav')
     for (const origin of ['javascript:alert(1)', 'https://key@media.example/', 'https://media.example/?key=a', 'https://media.example/#a']) {

@@ -47,6 +47,7 @@ jobs:
 
       - name: Runtime catalog consistency
         run: |
+          npm run assets:catalog:check
           npm run media:catalog
           node scripts/build-runtime-game-data.mjs --check
 
