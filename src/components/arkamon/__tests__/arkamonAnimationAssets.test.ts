@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = Array.from({ length: 116 }, (_, index) => index + 1)
+const SPECIES_IDS = [...Array.from({ length: 131 }, (_, index) => index + 1), 134, 139]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -136,6 +136,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(visiblePixelsDiffer).toBe(false)
     expect(transparent).toBeGreaterThan(info.width * info.height * 0.25)
     expect(opaqueArtwork).toBeGreaterThan(1000)
+    expect(Boolean(conversion.key.preserveSaturatedGreenBody)).toBe([130, 131, 134].includes(speciesId) && animation === 'idle')
     if (speciesId === 5) {
       expect(darkFur).toBeGreaterThan(1000)
       expect(redDetails).toBeGreaterThan(100)
@@ -143,10 +144,22 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)
-      expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106]).toContain(speciesId)
+      expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106, 123, 124, 127]).toContain(speciesId)
       // Reliskull carries small algae patches at logical size 192; the older
       // blue-screen forms have much larger green leaves or body regions.
       if (speciesId <= 82) expect(opaqueGreen).toBeGreaterThan(speciesId === 82 ? 300 : 1000)
+    } else if (conversion.key.preserveSaturatedGreenBody) {
+      expect(nativeGreenAllowed).toBe(true)
+      expect([130, 131, 134]).toContain(speciesId)
+      expect(animation).toBe('idle')
+      expect(conversion.key.preserveSaturatedGreenBody).toEqual({
+        minimumBaseAlpha: .4, interiorErosionPixels: 2, screenRatioDeviationFade: [.12, .22],
+        minimumOtherChannel: 40, minimumGreen: 100, sourceRgbRetainedInOpaqueInteriors: true,
+        screenPocketsAndLowCoverageFadesUnchanged: true,
+      })
+      // These supplied characters have saturated green body regions. A fully
+      // despilled gray body must not pass merely because it has no green spill.
+      expect(opaqueGreen).toBeGreaterThan(0)
     } else if (nativeGreenAllowed) {
       expect([26, 27, 45]).toContain(speciesId)
       expect(conversion.key.preserveGreenBody.screenPocketsExcluded).toBe(true)

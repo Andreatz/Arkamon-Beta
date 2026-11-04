@@ -24,7 +24,7 @@ import subprocess
 import tempfile
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw, ImageFilter, ImageOps
 
 SCREEN_DOMINANCE_CLEANUP = False
 SCREEN_FRINGE_CLEANUP = False
@@ -32,6 +32,7 @@ WARM_DUST_DESPILL = False
 SCREEN_COLOUR = 'green'
 SCREEN_BACKGROUND_FALLBACK = None
 PRESERVE_GREEN_BODY = False
+PRESERVE_SATURATED_GREEN_BODY = False
 SOFT_BLUE_SCREEN_REJECTION = False
 WEBP_METHOD = 1
 
@@ -181,6 +182,18 @@ def key_alpha(image: Image.Image, cutoff: float = 0.08, preserve_effects: bool =
         foreground_max = np.maximum(rgb[:, :, 0], rgb[:, :, 2])
         body_weight = np.clip((.35 - np.maximum(excess, 0) / bg_excess) / .10, 0, 1)
         body_weight *= (~screen_colour) & (foreground_max >= 24)
+        alpha += body_weight * (1 - alpha)
+    if PRESERVE_SATURATED_GREEN_BODY:
+        # Some audited iridescent bodies contain native green gradients. Only
+        # restore their interior: a two-pixel erosion of the existing matte
+        # excludes green edge contamination and every transparent screen hole.
+        # Low-coverage native fades keep their original soft alpha. Nothing is
+        # painted into screen-coloured cutouts between ribbon-shaped wings.
+        interior = np.asarray(Image.fromarray(np.uint8(alpha > .4) * 255)
+                              .filter(ImageFilter.MinFilter(5))) > 0
+        body_weight = np.clip((screen_deviation - .12) / .10, 0, 1)
+        body_weight *= (interior & (excess > 8) & (rgb[:, :, 1] >= 100)
+                        & (np.maximum(rgb[:, :, 0], rgb[:, :, 2]) >= 40))
         alpha += body_weight * (1 - alpha)
     if SCREEN_DOMINANCE_CLEANUP:
         # Some source screens include a nonuniform green haze. Remove its
@@ -460,7 +473,7 @@ def normalize_frame(image: Image.Image, clip: dict, common: dict, cutoff: float)
     # opaque source edge. Remove only dominant green spill left over there.
     channel_max = np.maximum(pixels[:,:,others[0]],pixels[:,:,others[1]]).astype(np.int16)
     spill = pixels[:,:,channel].astype(np.int16) > channel_max + 8
-    if PRESERVE_GREEN_BODY:
+    if PRESERVE_GREEN_BODY or PRESERVE_SATURATED_GREEN_BODY:
         spill &= edge
     pixels[:,:,channel] = np.where(spill,channel_max,pixels[:,:,channel])
     pixels[pixels[:,:,3] == 0,:3] = 0
@@ -600,6 +613,17 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
         metadata['qa']['nativeGreenPixelsAllowed'] = True
         if SOFT_BLUE_SCREEN_REJECTION:
             metadata['key']['softBlueScreenRejection'] = {'screenRatioDeviationStart':.02,'screenRatioDeviationEnd':.12,'nativeGreenUnchanged':True}
+    if PRESERVE_SATURATED_GREEN_BODY:
+        metadata['key']['preserveSaturatedGreenBody'] = {
+            'minimumBaseAlpha': .4,
+            'interiorErosionPixels': 2,
+            'screenRatioDeviationFade': [.12, .22],
+            'minimumOtherChannel': 40,
+            'minimumGreen': 100,
+            'sourceRgbRetainedInOpaqueInteriors': True,
+            'screenPocketsAndLowCoverageFadesUnchanged': True,
+        }
+        metadata['qa']['nativeGreenPixelsAllowed'] = True
     if SCREEN_BACKGROUND_FALLBACK is not None:
         metadata['key']['screenBackgroundFallback'] = list(SCREEN_BACKGROUND_FALLBACK)
         metadata['key']['screenBackgroundFallbackFrames'] = clip.get('screenBackgroundFallbackFrames', [])
@@ -612,7 +636,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
         }
         metadata['qa']['nativeGreenPixelsAllowed'] = True
     screen_count = blue_count if SCREEN_COLOUR == 'blue' else green_count
-    if screen_count and not PRESERVE_GREEN_BODY:
+    if screen_count and not (PRESERVE_GREEN_BODY or PRESERVE_SATURATED_GREEN_BODY):
         raise RuntimeError(f'{action} retains {screen_count} {SCREEN_COLOUR}-dominant pixels.')
     if 'timing' in clip.get('previousMetadata', {}):
         metadata['timing'] = clip['previousMetadata']['timing']
@@ -634,7 +658,7 @@ def convert_clip(clip: dict, common: dict, output: Path, qa: Path | None,
 
 
 def main() -> None:
-    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, WARM_DUST_DESPILL, SCREEN_COLOUR, SCREEN_BACKGROUND_FALLBACK, PRESERVE_GREEN_BODY, SOFT_BLUE_SCREEN_REJECTION, WEBP_METHOD
+    global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, WARM_DUST_DESPILL, SCREEN_COLOUR, SCREEN_BACKGROUND_FALLBACK, PRESERVE_GREEN_BODY, PRESERVE_SATURATED_GREEN_BODY, SOFT_BLUE_SCREEN_REJECTION, WEBP_METHOD
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--species-id',type=int,default=5)
     parser.add_argument('--source-dir',type=Path)
@@ -660,6 +684,10 @@ def main() -> None:
                         help='Audited RGB screen for frames whose native flash covers the corners; used only when corner chroma is unavailable.')
     parser.add_argument('--preserve-green-body',action='store_true',
                         help='Keep audited green-grey body colours distinct from saturated green screen; screen pockets and mixed edges remain keyed.')
+    parser.add_argument('--preserve-saturated-green-body',action='store_true',
+                        help='Retain audited native green gradients inside the existing body matte; keep screen pockets, outer edges and low-coverage fades keyed.')
+    parser.add_argument('--saturated-green-body-actions',nargs='+',choices=['idle','attack','hit','victory','ko'],default=['idle','attack','hit','victory','ko'],
+                        help='Apply the audited native green interior profile only to these actions; use idle when native action effects need the unmodified base key.')
     parser.add_argument('--soft-blue-screen-rejection',action='store_true',
                         help='Fade the blue screen colour-ratio matte to retain an audited weak green aura; only for blue screen clips.')
     parser.add_argument('--screen-dominance-cleanup',action='store_true',
@@ -680,10 +708,11 @@ def main() -> None:
     SCREEN_COLOUR = args.screen_colour
     SCREEN_BACKGROUND_FALLBACK = args.screen_background_fallback
     PRESERVE_GREEN_BODY = args.preserve_green_body
+    PRESERVE_SATURATED_GREEN_BODY = args.preserve_saturated_green_body
     SOFT_BLUE_SCREEN_REJECTION = args.soft_blue_screen_rejection
     if SOFT_BLUE_SCREEN_REJECTION and SCREEN_COLOUR != 'blue':
         parser.error('Soft blue screen rejection requires --screen-colour blue.')
-    if PRESERVE_GREEN_BODY and (SCREEN_COLOUR != 'green' or args.screen_dominance_cleanup or args.screen_fringe_cleanup or args.warm_dust_despill):
+    if (PRESERVE_GREEN_BODY or PRESERVE_SATURATED_GREEN_BODY) and (SCREEN_COLOUR != 'green' or args.screen_dominance_cleanup or args.screen_fringe_cleanup or args.warm_dust_despill):
         parser.error('Green body preservation requires the base green key without aggressive cleanup/despill flags.')
     if SCREEN_BACKGROUND_FALLBACK is not None and any(value < 0 or value > 255 for value in SCREEN_BACKGROUND_FALLBACK):
         parser.error('Screen background fallback RGB values must be in 0..255.')
@@ -691,9 +720,10 @@ def main() -> None:
         parser.error('Green-specific cleanup/despill flags cannot be used with a blue screen.')
     WARM_DUST_DESPILL = args.warm_dust_despill
     def select_key_profile(action: str) -> None:
-        global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP
+        global SCREEN_DOMINANCE_CLEANUP, SCREEN_FRINGE_CLEANUP, PRESERVE_SATURATED_GREEN_BODY
         SCREEN_DOMINANCE_CLEANUP = args.screen_dominance_cleanup and action not in args.base_key_actions
         SCREEN_FRINGE_CLEANUP = args.screen_fringe_cleanup and action not in args.base_key_actions
+        PRESERVE_SATURATED_GREEN_BODY = args.preserve_saturated_green_body and action in args.saturated_green_body_actions
     if args.species_id <= 0:
         parser.error('Species ID must be positive.')
     args.source_dir = args.source_dir or Path(f'animation-source/raw/{args.species_id}/front')

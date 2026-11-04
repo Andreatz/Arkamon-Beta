@@ -1,0 +1,31 @@
+# Animazioni frontali aggiunte il 4 novembre 2026
+
+## Fonti e destinazione
+
+L'utente ha fornito **85 nuovi video**, cinque azioni per ciascuno degli ID **117–131, 134 e 139**, nella cartella `public/sprites/animation/Front` del checkout Desktop. Le azioni sono attesa, attacco, reazione al colpo, vittoria e KO. Tutti i video sono 1920×1080, a 24 FPS, con **94 fotogrammi decodificati ciascuno: 7.990 in totale**, per 233.407.449 byte di sorgenti.
+
+Il confronto SHA-256 trova i 580 video precedenti identici, senza sostituzioni o rimozioni nella cartella Front. Le 110 cancellazioni di small sprite presenti separatamente nel checkout Desktop non fanno parte di questa importazione e non vengono propagate. I video nuovi erano file locali non registrati in quel checkout; le copie con il nome fornito e le copie canoniche vengono conservate byte per byte nel checkout di lavoro.
+
+Le nuove forme hanno già sprite frontali, ma non dati di gioco. Rimangono anteprime grafiche del laboratorio `#arkamon-lab`, senza inventare nomi, tipi, statistiche o mosse e senza introdurre incontri, evoluzioni o nuove definizioni giocabili. Gli ID senza file o video non diventano forme artificiali. Il catalogo grafico conserva 195 ID reali, dei quali 110 giocabili e 85 da definire; le serie animate passano da 116 a **133**.
+
+## Conservazione e riproduzione
+
+Ogni video conserva tutti i fotogrammi decodificati, nello stesso ordine e alla frequenza originale: nessuna interpolazione, ripetizione per raggiungere 96 frame o posa finale sintetica. Il KO conserva il finale reale, compresi fumo, particelle o fotogrammi senza corpo. Il poster corrisponde al primo fotogramma nativo non vuoto.
+
+Le serie 123, 124 e 127 usano un fondale blu; le altre usano il verde. La scala e il punto di appoggio derivano dalla posa di attesa e restano costanti durante ciascuna clip. Il canvas trasparente esterno al viewport conserva le escursioni degli effetti. I marker di attacco e reazione sono indici originali a base zero, scelti esaminando fotogrammi consecutivi della sorgente, senza attribuire loro una mossa di gioco.
+
+Per la sola attesa degli ID 130, 131 e 134 si applica un profilo esplicito che conserva i gradienti verdi all'interno della sagoma. Il profilo esclude bordi, zone trasparenti e dissolvenze a bassa copertura. Le aperture fra le piume e le ali della forma 131 sono spazi negativi presenti anche nello sprite ufficiale e restano trasparenti. Estendere questo recupero alle altre azioni alterava il colore di sfere, scie e rune: attacco, colpo, vittoria e KO mantengono quindi il keying conservativo. Su quelle azioni può rimanere una desaturazione dei verdi sovrapposti al fondale, limite documentato senza inventare colori o disegnare nuovi pixel. Nel KO della forma 121 il video originale mescola il finale al verde: la lieve dominante residua della dissolvenza resta visibile, conservando il fotogramma reale.
+
+Le prime tre serie usano la compressione WebP lossless di livello 1; le altre usano il livello 0, più rapido e verificato sugli stessi pixel RGBA. Il livello modifica dimensione e tempo di codifica, senza perdere fotogrammi o qualità. Le pagine runtime vengono ricodificate e confrontate separatamente con l'atlante.
+
+I cicli di attesa 124 e 125 conservano una discontinuità già presente nelle sorgenti: nella forma 124 cambia bruscamente la fase delle piccole scariche; nella forma 125 la testa torna alla propria inclinazione iniziale. Il confronto degli originali 91–93/0–2 conferma il limite. Anche la forma 134 supera di poco la soglia diagnostica del loop: il confronto mostra piccole differenze di fase del corpo e delle gocce, con posizione e posa generale stabili. Tutte e tre entrano nella coda di revisione, distinguendo le due discontinuità più visibili dalla variazione più sottile della forma 134. Non vengono eliminati fotogrammi, aggiunte interpolazioni o alterate le durate per mascherarle.
+
+L'indice runtime condivide capacità e colonne delle pagine uniformi, conservando il formato esplicito per le geometrie storiche irregolari. Le sequenze di impronte dei nomi WebP vengono codificate come un unico blocco binario in base64url; i nomi storici e le combinazioni PNG/WebP mantengono i token espliciti. Ogni impronta viene ricostruita bit per bit. I percorsi, le estensioni, i frame e le dimensioni decodificate restano esatti; l'ultimo frammento mantiene il proprio conteggio nativo. Il limite di 32 KiB compressi dell'indice e quello di 16 MiB decodificati per pagina restano invariati.
+
+## Verifiche e pubblicazione
+
+L'audit indipendente è superato: **580 clip precedenti profondamente identiche e 7.620 file invariati per byte e SHA-256**. Le 85 nuove clip conservano tutti i 7.990 frame; le 545 pagine aggiunte superano il confronto di tutti i pixel visibili e degli alpha. Il catalogo complessivo comprende **133 forme, 665 clip, 63.595 fotogrammi e 6.810 pagine**. L'indice runtime compresso misura **29.056 byte**, entro il limite di 32 KiB.
+
+La revisione visiva indipendente copre tutte le 85 clip, nei frame 0/47/93 su sfondo chiaro e scuro: 255 frame campionati, 510 composizioni. Non è una visione manuale di ogni fotogramma. I 43 test Python del convertitore e i 26 contratti Node sono superati. La suite unitaria completa e le prove browser del laboratorio e del compilato sono in corso; gli esiti saranno aggiunti dopo la loro conclusione. La baseline e i log sono in `output/animation-import-2026-11-04/`; la provenienza è registrata in `animation-source/audits/front-2026-11-04.json`.
+
+Questo documento non certifica un push, un deploy, la disponibilità online dei nuovi media o un collaudo manuale completo della partita.

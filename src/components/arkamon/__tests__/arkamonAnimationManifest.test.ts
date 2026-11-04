@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getPokemon } from '@/data'
+import sourceCountsNovember4 from './fixtures/native-import-2026-11-04.json'
 import {
   ARKAMON_ANIMATION_MANIFEST,
   getArkamonAnimationAsset,
@@ -14,7 +15,7 @@ const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
 const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
-const PENDING_SPECIES_IDS = [111, 112, 113, 114, 115, 116]
+const PENDING_SPECIES_IDS = [111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 134, 139]
 const SPECIES_IDS = [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]
 const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
@@ -72,6 +73,20 @@ describe('Arkamon animation manifest', () => {
       expect(asset.releaseFrame).toBeUndefined()
       expect(asset.reactionFrame).toBeUndefined()
     }
+  })
+
+  it('retains all 7,990 independently decoded frames of the seventeen November forms', () => {
+    const counts = sourceCountsNovember4 as Record<string, Record<ArkamonBattleAnimation, number>>
+    expect(Object.keys(counts).map(Number)).toEqual([117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 134, 139])
+    let frames = 0
+    for (const [id, actions] of Object.entries(counts)) for (const animation of ANIMATIONS) {
+      const asset = getArkamonAnimationAsset(Number(id), 'front', animation)!
+      expect(asset.frameCount).toBe(actions[animation])
+      expect(asset.fps).toBe(24)
+      expect(asset.durationMs).toBeCloseTo(actions[animation] / 24 * 1000)
+      frames += asset.frameCount
+    }
+    expect(frames).toBe(7_990)
   })
 
   it('retains a view’s idle as the fallback when a dedicated action is unavailable', () => {
@@ -133,7 +148,7 @@ describe('Arkamon animation manifest', () => {
       116: { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 },
     }
     let total = 0
-    for (const speciesId of PENDING_SPECIES_IDS) for (const animation of ANIMATIONS) {
+    for (const speciesId of [111, 112, 113, 114, 115, 116]) for (const animation of ANIMATIONS) {
       const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
       expect(asset.frameCount).toBe(nativeCounts[speciesId][animation])
       expect(asset.fps).toBe(24)

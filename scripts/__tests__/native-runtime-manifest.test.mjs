@@ -11,7 +11,8 @@ function fixture(file) {
 describe('native runtime manifest page filenames', () => {
   it.each([['page-00.webp', ''], ['page-00.png', '.png'], ['page-00-0123456789abcdef.webp', '0123456789abcdef'], ['page-00-fedcba9876543210.png', 'fedcba9876543210.png']])(
     'retains legacy and content fingerprint tokens without changing frame timing: %s', (file, token) => {
-      expect(packNativeRuntimeManifest(fixture(file))[source]).toEqual([512, 512, 16, 24, [[token, 16, 4]]])
+      const encoded = /^[a-f0-9]{16}$/.test(token) ? '!' + Buffer.from(token, 'hex').toString('base64url') : token
+      expect(packNativeRuntimeManifest(fixture(file))[source]).toEqual([512, 512, 16, 24, [16, 4, encoded]])
     },
   )
   it.each(['../attack/page-00.webp', 'page-00-0123.webp', 'page-00-ABCDEF0123456789.webp', 'page-00.svg', '/page-00.webp'])(
@@ -37,5 +38,21 @@ describe('native runtime manifest page filenames', () => {
     const value = fixture('page-00.webp')
     value.clips[source].frameCount = 95
     expect(() => packNativeRuntimeManifest(value)).toThrow('complete clip')
+  })
+  it('shares a uniform grid while preserving a short final page and mixed file formats', () => {
+    const value = fixture('page-00.webp')
+    value.clips[source].frameCount = 19
+    value.clips[source].pages.push({ src: directory + 'page-01-0123456789abcdef.png', firstFrame: 16,
+      frameCount: 3, columns: 4, rows: 1, width: 2048, height: 512, decodedBytes: 4194304 })
+    expect(packNativeRuntimeManifest(value)[source]).toEqual([512, 512, 19, 24, [16, 4, ',0123456789abcdef.png']])
+  })
+  it('retains explicit geometry for historical grids whose capacity changes mid clip', () => {
+    const value = fixture('page-00.webp')
+    value.clips[source].frameCount = 22
+    value.clips[source].pages.push({ src: directory + 'page-01.png', firstFrame: 16,
+      frameCount: 4, columns: 2, rows: 2, width: 1024, height: 1024, decodedBytes: 4194304 },
+      { src: directory + 'page-02.webp', firstFrame: 20, frameCount: 2, columns: 2,
+        rows: 1, width: 1024, height: 512, decodedBytes: 2097152 })
+    expect(packNativeRuntimeManifest(value)[source][4]).toEqual([['', 16, 4], ['.png', 4, 2], ['', 2, 2]])
   })
 })

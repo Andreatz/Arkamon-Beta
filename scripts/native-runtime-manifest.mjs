@@ -7,7 +7,7 @@ const RESOLVED_ID = '\0' + MODULE_ID
 /**
  * The provenance manifest remains authoritative for packaging and pixel checks.
  * The browser needs only frame geometry. Tuples remove repeated property names
- * and derives repeated page geometry and filename prefixes/extensions. Decoded
+ * and derive repeated page geometry and filename prefixes/extensions. Decoded
  * page objects are created on first use, preserving the original runtime URLs.
  * This changes no media, source frames, source contract or atlas format.
  */
@@ -30,7 +30,20 @@ export function packNativeRuntimeManifest(manifest) {
       return [(match[2] ?? '') + (match[3] === 'png' ? '.png' : ''), page.frameCount, page.columns]
     })
     if (firstFrame !== clip.frameCount) throw new Error(`Native pages do not cover the complete clip: ${source}`)
-    return [source, [clip.frameWidth, clip.frameHeight, clip.frameCount, clip.fps, pages]]
+    // Page capacity and columns are constant in generated grids. Store them
+    // once, deriving the short final page from the native clip frame count.
+    // Keep the explicit representation for historical irregular grids.
+    const [, capacity, columns] = pages[0] ?? []
+    const uniform = pages.length > 0 && pages.every((page, index) => page[2] === columns
+      && page[1] === Math.min(capacity, clip.frameCount - index * capacity))
+    const tokens = pages.map(page => page[0])
+    // Consecutive content hashes are eight bytes each. A single base64url
+    // block avoids per-page string/delimiter overhead without losing a bit.
+    // Mixed PNG/legacy filenames keep their explicit tokens.
+    const packedTokens = tokens.length > 0 && tokens.every(token => /^[a-f0-9]{16}$/.test(token))
+      ? '!' + Buffer.from(tokens.join(''), 'hex').toString('base64url') : tokens.join(',')
+    const packedPages = uniform ? [capacity, columns, packedTokens] : pages
+    return [source, [clip.frameWidth, clip.frameHeight, clip.frameCount, clip.fps, packedPages]]
   }))
 }
 

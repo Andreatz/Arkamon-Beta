@@ -9,8 +9,8 @@ import { locateSpritePage, validateSpritePages } from '@/components/vfx/spritePa
 
 describe('generated native pages match original authoritative animation contracts', () => {
   it('has complete pages for every native front clip with identical frame counts, FPS, viewport and cues', () => {
-    expect(Object.keys(paged.clips)).toHaveLength(580)
-    expect(Object.values(paged.clips).reduce((total, clip) => total + clip.frameCount, 0)).toBe(55_605)
+    expect(Object.keys(paged.clips)).toHaveLength(665)
+    expect(Object.values(paged.clips).reduce((total, clip) => total + clip.frameCount, 0)).toBe(63_595)
     const playableClips = Object.values(paged.clips).filter(clip => clip.speciesId <= 110)
     expect(playableClips).toHaveLength(550)
     expect(playableClips.reduce((total, clip) => total + clip.frameCount, 0)).toBe(52_775)

@@ -20,12 +20,12 @@ describe('graphic assets remain separate from playable forms', () => {
     }
     expect(getArkamonAssetEntry(133)).toBeUndefined()
     expect(getArkamonAssetEntry(207)).toBeUndefined()
-    for (const id of [111, 116, 150, 184, 206]) expect(getPokemon(id)).toBeUndefined()
+    for (const id of [111, 116, 117, 131, 134, 139, 150, 184, 206]) expect(getPokemon(id)).toBeUndefined()
   })
 
   it('filters pending and animated assets independently, retaining animated forms without game data', () => {
-    const animated = new Set([1, 111, 116])
-    expect(filterArkamonAssetCatalog('animated', animated).map(entry => entry.id)).toEqual([1, 111, 116])
+    const animated = new Set([1, 111, 116, 117, 134, 139])
+    expect(filterArkamonAssetCatalog('animated', animated).map(entry => entry.id)).toEqual([1, 111, 116, 117, 134, 139])
     expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 111)).toBe(true)
     expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 1)).toBe(false)
     expect(filterArkamonAssetCatalog('all', animated)).toHaveLength(195)

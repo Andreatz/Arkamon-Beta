@@ -110,7 +110,7 @@ for (const species of [107, 108, 109, 110]) test(`compiled ${species}: five nati
   await media.attach()
 })
 
-for (const species of [111, 112, 113, 114, 115, 116]) test(`compiled ${species}: pending form plays five native actions without game data`, async ({ page }, testInfo) => {
+for (const species of [111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 134, 139]) test(`compiled ${species}: pending form plays five native actions without game data`, async ({ page }, testInfo) => {
   const media = await verifyLocalProductionMedia(page, testInfo)
   await media.install
   await page.goto('./#arkamon-lab')

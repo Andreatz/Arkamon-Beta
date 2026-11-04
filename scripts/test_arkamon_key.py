@@ -14,6 +14,7 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -39,7 +40,7 @@ class LosslessEncodingTests(unittest.TestCase):
         pixels[-8:,:,3]=255
         image=Image.fromarray(pixels)
         with tempfile.TemporaryDirectory() as temporary:
-            for method in [1,4]:
+            for method in [0,1,4]:
                 path=Path(temporary)/f'method-{method}.webp'
                 converter.save_lossless_webp(image,path,method)
                 with Image.open(path) as decoded:
@@ -165,6 +166,109 @@ class GreenBodyPreservationTests(unittest.TestCase):
         with patch.object(converter,'PRESERVE_GREEN_BODY',True):
             frame=converter.normalize_frame(image,clip,common,.08)
         np.testing.assert_array_equal(np.asarray(frame)[64,64],[120,140,125,255])
+
+
+class SaturatedGreenBodyPreservationTests(unittest.TestCase):
+    @staticmethod
+    def image(colour: tuple[int, int, int]) -> Image.Image:
+        image = Image.new('RGB', (128, 128), (31, 246, 23))
+        image.paste(colour, (32, 32, 96, 96))
+        return image
+
+    def test_native_green_gradients_keep_exact_opaque_rgb_only_when_opted_in(self) -> None:
+        for colour in [(90, 210, 100), (120, 230, 60), (120, 200, 155)]:
+            with self.subTest(colour=colour):
+                image = self.image(colour)
+                _, legacy, _ = converter.key_alpha(image)
+                self.assertLess(float(legacy[64, 64]), 1)
+                with patch.object(converter, 'PRESERVE_SATURATED_GREEN_BODY', True):
+                    keyed, _ = converter.remove_green(image)
+                np.testing.assert_array_equal(np.asarray(keyed)[64, 64], [*colour, 255])
+
+    def test_uniform_shadowed_and_enclosed_screen_pockets_stay_transparent(self) -> None:
+        image = self.image((120, 230, 60))
+        image.paste((31, 246, 23), (56, 56, 72, 72))
+        image.paste((20, 159, 15), (40, 40, 48, 48))
+        with patch.object(converter, 'PRESERVE_SATURATED_GREEN_BODY', True):
+            keyed, _ = converter.remove_green(image)
+        pixels = np.asarray(keyed)
+        self.assertTrue(np.all(pixels[:24] == 0))
+        self.assertTrue(np.all(pixels[56:72, 56:72] == 0))
+        self.assertTrue(np.all(pixels[40:48, 40:48] == 0))
+
+    def test_mixed_edges_thin_fringe_and_low_coverage_fades_keep_base_alpha(self) -> None:
+        image = self.image((120, 230, 60))
+        image.paste((76, 238, 42), (30, 32, 32, 96))
+        image.paste((120, 230, 60), (24, 32, 26, 96))
+        image.paste((93, 235, 49), (50, 50, 78, 78))
+        _, baseline, _ = converter.key_alpha(image)
+        with patch.object(converter, 'PRESERVE_SATURATED_GREEN_BODY', True):
+            _, actual, _ = converter.key_alpha(image)
+        np.testing.assert_array_equal(actual[32:96, 30:32], baseline[32:96, 30:32])
+        np.testing.assert_array_equal(actual[32:96, 24:26], baseline[32:96, 24:26])
+        np.testing.assert_array_equal(actual[50:78, 50:78], baseline[50:78, 50:78])
+        self.assertGreater(float(actual[42, 42]), float(baseline[42, 42]))
+
+    def test_normalization_despill_retains_opaque_native_green(self) -> None:
+        colour = (120, 230, 60)
+        image = self.image(colour)
+        clip = {'action': 'idle', 'union': (32, 32, 96, 96), 'camera': {'nativeToIdleCoordinateScale': 1, 'nativeToIdleCoordinateOffset': [0, 0]}}
+        common = {'sharedScale': 1, 'logicalCanvasOrigin': [0, 0], 'viewport': {'left': 0, 'top': 0}, 'cellWidth': 128, 'cellHeight': 128}
+        with patch.object(converter, 'PRESERVE_SATURATED_GREEN_BODY', True):
+            frame = converter.normalize_frame(image, clip, common, .08)
+        np.testing.assert_array_equal(np.asarray(frame)[64, 64], [*colour, 255])
+
+    def test_green_profile_rejects_blue_screen_and_aggressive_cleanup(self) -> None:
+        for options in [('--screen-colour', 'blue'), ('--screen-fringe-cleanup',), ('--screen-dominance-cleanup',), ('--warm-dust-despill',)]:
+            with self.subTest(options=options), patch.object(sys, 'argv', ['build-arkamon-idle.py', '--preserve-saturated-green-body', *options]), contextlib.redirect_stderr(io.StringIO()), patch.object(converter, 'PRESERVE_SATURATED_GREEN_BODY', False), patch.object(converter, 'SCREEN_COLOUR', 'green'):
+                with self.assertRaises(SystemExit) as error:
+                    converter.main()
+                self.assertEqual(error.exception.code, 2)
+
+    def test_written_metadata_distinguishes_soft_blue_and_native_green_profiles(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            common = {'cellWidth': 128, 'cellHeight': 128, 'viewport': {'width': 128, 'height': 128, 'left': 0, 'top': 0},
+                      'sharedScale': 1, 'logicalCanvasOrigin': [0, 0], 'groundPivot': [64, 96], 'maxTextureDimension': 8192}
+            for screen, saturated in [('blue', False), ('green', True)]:
+                with self.subTest(screen=screen), contextlib.ExitStack() as stack:
+                    for name, value in [('SCREEN_COLOUR', screen), ('SOFT_BLUE_SCREEN_REJECTION', screen == 'blue'),
+                                        ('PRESERVE_SATURATED_GREEN_BODY', saturated), ('PRESERVE_GREEN_BODY', False),
+                                        ('SCREEN_DOMINANCE_CLEANUP', False), ('SCREEN_FRINGE_CLEANUP', False), ('WEBP_METHOD', 0)]:
+                        stack.enter_context(patch.object(converter, name, value))
+                    stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+                    source = Image.new('RGB', (128, 128), (8, 12, 245) if screen == 'blue' else (31, 246, 23))
+                    source.paste((120, 230, 60), (32, 32, 96, 96))
+                    filename = folder/f'{screen}.png'
+                    source.save(filename)
+                    clip = {'action': 'idle', 'info': {'width': 128, 'height': 128, 'fps': 24}, 'paths': [filename, filename],
+                            'union': (0, 0, 128, 128), 'boxes': [(32, 32, 96, 96)]*2,
+                            'camera': {'nativeToIdleCoordinateScale': 1, 'nativeToIdleCoordinateOffset': [0, 0]}}
+                    metadata, _ = converter.convert_clip(clip, common, folder, None, '', None, .08, 2, None, 130)
+                    self.assertEqual('softBlueScreenRejection' in metadata['key'], screen == 'blue')
+                    self.assertEqual('preserveSaturatedGreenBody' in metadata['key'], saturated)
+                    self.assertTrue(metadata['qa']['nativeGreenPixelsAllowed'])
+
+    def test_action_scope_applies_in_analysis_and_conversion_without_recolouring_fx(self) -> None:
+        observed = []
+        def inspect(_ffmpeg, _source, action, *_rest):
+            observed.append(('analysis', action, converter.PRESERVE_SATURATED_GREEN_BODY))
+            return {'action': action, 'camera': {}}
+        def convert(clip, *_rest):
+            observed.append(('conversion', clip['action'], converter.PRESERVE_SATURATED_GREEN_BODY))
+            return {'action': clip['action']}, Image.new('RGBA', (64, 64))
+        with tempfile.TemporaryDirectory() as tmp, contextlib.ExitStack() as stack:
+            stack.enter_context(patch.object(sys, 'argv', ['converter', '--output', tmp, '--actions', 'idle', 'attack', 'ko',
+                                                         '--preserve-saturated-green-body', '--saturated-green-body-actions', 'idle']))
+            stack.enter_context(patch.object(converter, 'PRESERVE_SATURATED_GREEN_BODY', False))
+            stack.enter_context(patch.object(converter, 'ffmpeg_path', return_value='unused'))
+            stack.enter_context(patch.object(converter, 'inspect_clip', side_effect=inspect))
+            stack.enter_context(patch.object(converter, 'common_plan', return_value={'cellWidth': 64}))
+            stack.enter_context(patch.object(converter, 'convert_clip', side_effect=convert))
+            stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+            converter.main()
+        self.assertEqual(observed, [('analysis', 'idle', True), ('analysis', 'attack', False), ('analysis', 'ko', False),
+                                    ('conversion', 'idle', True), ('conversion', 'attack', False), ('conversion', 'ko', False)])
 
 
 class FringeKeyTests(unittest.TestCase):
