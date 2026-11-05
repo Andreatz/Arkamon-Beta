@@ -20,6 +20,8 @@ interface SourceMetadata {
   sampling: { allSourceFramesPreserved: boolean; sourceFrameIndices: number[] }
   sheet: { frameCount: number; fps: number }
   timing: { releaseFrame: number; reactionFrame: number }
+  transform: { sharedTransform: { scaleReference?: string; idleBodyHeightOutputPixels: number;
+    reference: { bodyHeightFraction: number }; viewport: { height: number } } }
 }
 function sourceMetadata(species: number, action: Animation): SourceMetadata {
   return JSON.parse(readFileSync(resolve(`public/sprites/arkamon/${species}/front/${action}.metadata.json`), 'utf8'))
@@ -134,6 +136,12 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     const sprite = comparison.locator('[data-sprite-renderer="paged-canvas"]')
     await expect(sprite).toBeVisible()
     await expect(sprite).toHaveAttribute('data-sprite-fps', '24')
+    if ([118, 119, 122, 123, 124, 128, 129, 130, 131].includes(species)) {
+      const normalization = sourceMetadata(species, 'idle').transform.sharedTransform
+      expect(normalization.scaleReference).toBe('Initial opaque body; all native motion and effects retained in canvas padding.')
+      expect(normalization.idleBodyHeightOutputPixels).toBeGreaterThanOrEqual(
+        normalization.viewport.height * normalization.reference.bodyHeightFraction * .95)
+    }
     await page.screenshot({ path: testInfo.outputPath('pending-native-laboratory.png'), fullPage: true })
     await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('pending-native-comparison.png') })
     // Scrubbing uses the real source frame count and verifies that the UI can

@@ -108,6 +108,17 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(asset.durationMs).toBeCloseTo(conversion.sheet.durationSeconds * 1000)
   })
 
+  if ([118, 119, 122, 123, 124, 128, 129, 130, 131].includes(speciesId)) {
+    it('fits the character body to its official portrait size while retaining effects in canvas padding', () => {
+      const normalization = readConversion(speciesId, animation).transform.sharedTransform
+      expect(normalization.scaleReference).toBe('Initial opaque body; all native motion and effects retained in canvas padding.')
+      const expectedBodyHeight = normalization.viewport.height * normalization.reference.bodyHeightFraction
+      expect(normalization.idleBodyHeightOutputPixels).toBeGreaterThanOrEqual(expectedBodyHeight * .95)
+      expect(normalization.idleBodyHeightOutputPixels).toBeLessThanOrEqual(expectedBodyHeight * 1.02)
+      expect(normalization).toEqual(readConversion(speciesId, 'idle').transform.sharedTransform)
+    })
+  }
+
   it('makes the opening frame transparent while retaining the original opaque artwork', async () => {
     // Inspect the actual first runtime page; decoding every giant atlas only to
     // crop its opening cell needlessly expands hundreds of megabytes per test.

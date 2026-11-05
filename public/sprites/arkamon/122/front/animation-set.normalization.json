@@ -23,16 +23,16 @@
     846
   ],
   "idleBodyHeightSourcePixels": 608,
-  "idleBodyHeightOutputPixels": 87.38275340393342,
+  "idleBodyHeightOutputPixels": 136.72,
   "idleGroundSourcePixels": 846,
   "sourceCoordinateSystem": [
     1920,
     1080
   ],
-  "sharedScale": 0.1437216338880484,
+  "sharedScale": 0.22486842105263158,
   "logicalCanvasOrigin": [
-    -41.68532526475036,
-    43.41149773071105
+    -119.42394736842104,
+    -25.238684210526316
   ],
   "canonicalUnionAlphaBounds": [
     109.83999999999989,
@@ -41,26 +41,27 @@
     1076.0266666666666
   ],
   "logicalUnionAlphaBounds": [
-    -26,
-    41,
-    236,
-    199
+    -95,
+    -28,
+    314,
+    217
   ],
-  "cellWidth": 320,
-  "cellHeight": 320,
+  "cellWidth": 448,
+  "cellHeight": 448,
   "viewport": {
     "width": 192,
     "height": 192,
-    "left": 55,
-    "top": 52
+    "left": 114,
+    "top": 129
   },
   "groundPivot": [
-    151.0,
-    217
+    210.0,
+    294
   ],
   "paddingPixels": 16,
   "maxTextureDimension": 8192,
   "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+  "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
   "cameraCalibrations": {
     "idle": {
       "nativeToIdleCoordinateScale": 1.0,

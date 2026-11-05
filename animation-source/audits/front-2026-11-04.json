@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "importDate": "2026-11-04",
-  "updatedAt": "2026-11-04T23:08:04.929842+00:00",
+  "updatedAt": "2026-11-05T00:07:24.062109+00:00",
   "sourceCheckoutHeadAtImport": "8129ae42d9a443c611877a1a8cba1f5a54f29ad2",
   "sourceVideoState": "85 user-supplied untracked local MP4s; copied with matching SHA-256 under supplied filenames and canonical raw paths.",
   "speciesIds": [
@@ -44,7 +44,7 @@
     "species": 133,
     "clips": 665,
     "nativeFrames": 63595,
-    "runtimePages": 6810
+    "runtimePages": 6935
   },
   "sourceContract": {
     "width": 1920,
@@ -77,7 +77,7 @@
     "expectedFrames": 7990,
     "verifiedClips": 85,
     "verifiedFrames": 7990,
-    "verifiedPages": 545,
+    "verifiedPages": 670,
     "maxPageDecodedBytes": 16777216
   },
   "baselineManifestCanonicalSha256": "fa80274dfb359b4b0978778a3faef03d7a3599a152f37060151273c4f0ed917b",
@@ -146,8 +146,8 @@
       },
       "118": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "82da9a8d29bb3e3b608c30eedac771b5c9436f202159ecd64e28e7793fc7263b",
-        "reviewImageSha256": "b18098411d22672797ac77ab30258637834127a4b11036a0ea3334fefb227228",
+        "metadataSha256": "818c781984f0b757f75eccade80927d262097df51cfa65fe00a3a69069cc06ae",
+        "reviewImageSha256": "1d64b0ea05e947ef949ee279acc2df5d4804e39f334300676e98b848e0ad547b",
         "sampleFrames": [
           0,
           47,
@@ -167,31 +167,62 @@
         "observation": "Clean light/dark samples; native water orb and blue/white body remain intact. KO final retains only tiny native particles.",
         "atlasFiles": {
           "idle": {
-            "sha256": "c3e3ddac7916bc6c51bbbad30a2d1a6bf3d37f27e88eeac0ff0464c14d4a165c",
-            "bytes": 2926782
+            "sha256": "8fcab2c6ba60417ff10982d064ef21f72074b940867a1ea87ba954e391a1d708",
+            "bytes": 6285394
           },
           "attack": {
-            "sha256": "9854e0e935c285f589ae78ab01ffa0e3a39c439f618bfd75620a5bf704f75e35",
-            "bytes": 4318842
+            "sha256": "db45d1347acb561e82ec30d4e32f7fe1114d4ef6c9a3b06d88716e4e3262d89b",
+            "bytes": 9013630
           },
           "hit": {
-            "sha256": "f740467689ad90788b61788adfbd30082a16f7e09768f37cb02c42d025abfc75",
-            "bytes": 4530474
+            "sha256": "9241c1f5db0dcf31bfb4cd34835cea1510b2929e8092309f894dfb57e5ee0326",
+            "bytes": 10119814
           },
           "victory": {
-            "sha256": "3cbde1a4121f61527870f74c61a0fb5b5c0e49aabfc114ce601c95aa74c65e2d",
-            "bytes": 3599814
+            "sha256": "fb51dd79865bdecc959a98f4c58035d20c9bf2c3965536ec26f349a2a015b680",
+            "bytes": 7955922
           },
           "ko": {
-            "sha256": "6d498a4f149dd88de15ff246c9f91b689e618fa1223a03e2e76d1b0d85fbc84d",
-            "bytes": 5369046
+            "sha256": "f9e32bbceab1bec36094678891cf87865f9c35ed03ebda597f3b8164efcc94ce",
+            "bytes": 11353230
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "c3e3ddac7916bc6c51bbbad30a2d1a6bf3d37f27e88eeac0ff0464c14d4a165c",
+              "bytes": 2926782
+            },
+            "attack": {
+              "sha256": "9854e0e935c285f589ae78ab01ffa0e3a39c439f618bfd75620a5bf704f75e35",
+              "bytes": 4318842
+            },
+            "hit": {
+              "sha256": "f740467689ad90788b61788adfbd30082a16f7e09768f37cb02c42d025abfc75",
+              "bytes": 4530474
+            },
+            "victory": {
+              "sha256": "3cbde1a4121f61527870f74c61a0fb5b5c0e49aabfc114ce601c95aa74c65e2d",
+              "bytes": 3599814
+            },
+            "ko": {
+              "sha256": "6d498a4f149dd88de15ff246c9f91b689e618fa1223a03e2e76d1b0d85fbc84d",
+              "bytes": 5369046
+            }
+          },
+          "metadataSha256": "82da9a8d29bb3e3b608c30eedac771b5c9436f202159ecd64e28e7793fc7263b",
+          "reviewImageSha256": "b18098411d22672797ac77ab30258637834127a4b11036a0ea3334fefb227228"
+        },
+        "finalReviewEvidence": [
+          "fitted/118/qa/light-dark-review.jpg",
+          "fitted/118/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "119": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "7d712cea0afa5c91d6315d609bf53fac3fce7300b5322abccdb546600dfabb49",
-        "reviewImageSha256": "7cc06d3e2b747ac3db74d51463d5d98446a241f8d45abce4fd8c5e75cecbcfe5",
+        "metadataSha256": "5606bb8d222938fdc300ef787dbbee53374290eedf1bc7f70a9c658667616175",
+        "reviewImageSha256": "a7213152050f46265079a16a847a4d6bc078b17a7ba2033146b2e1322a252a54",
         "sampleFrames": [
           0,
           47,
@@ -211,26 +242,57 @@
         "observation": "Clean light/dark samples; dark purple body and smoke remain readable, without green screen patches. Native KO final contains smoke with a transparent centre; retained.",
         "atlasFiles": {
           "idle": {
-            "sha256": "1f9b385169bb6eca3002d18a58242c6cd2ae4b9050700f882a33a3339fa5bb86",
-            "bytes": 3103254
+            "sha256": "6fe47d85a52b491c43121c14d282545749d95f7b4c2197a4e26fe0b9535947b2",
+            "bytes": 6076864
           },
           "attack": {
-            "sha256": "02567a59cdbe0201987f38a91c873f4ea57280d8356c27f37df772ae2e7c8688",
-            "bytes": 5199224
+            "sha256": "7d1a97c62b321b815b7763866c597288220ecba600489d94d21aa6e0db68bad3",
+            "bytes": 10427724
           },
           "hit": {
-            "sha256": "107c828f46e5c0a334bc395dbe9ad7824c42257e68b6b6746f873ed721edfc31",
-            "bytes": 3130054
+            "sha256": "f68b347bda12cd893cee63fbe12bde58b14f61d4f870a00469743244f4a2525f",
+            "bytes": 6331490
           },
           "victory": {
-            "sha256": "9deaa97696020587e62d8a6f3a5c72a2b26677eba3c53610cb5732b1f9cd173c",
-            "bytes": 3446018
+            "sha256": "c9dcf6a7b597e2c90c0b1681b6b142db4717e036aa542458c986150531b587d7",
+            "bytes": 6676932
           },
           "ko": {
-            "sha256": "ebb7f55711db000d407f7e18372731a951b9fe364d78696b106e0c64fee541de",
-            "bytes": 4564668
+            "sha256": "d0a5a86a30ab45f035dba104d898652b449565c5dd8ce7f1393082811dd2780c",
+            "bytes": 9101736
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "1f9b385169bb6eca3002d18a58242c6cd2ae4b9050700f882a33a3339fa5bb86",
+              "bytes": 3103254
+            },
+            "attack": {
+              "sha256": "02567a59cdbe0201987f38a91c873f4ea57280d8356c27f37df772ae2e7c8688",
+              "bytes": 5199224
+            },
+            "hit": {
+              "sha256": "107c828f46e5c0a334bc395dbe9ad7824c42257e68b6b6746f873ed721edfc31",
+              "bytes": 3130054
+            },
+            "victory": {
+              "sha256": "9deaa97696020587e62d8a6f3a5c72a2b26677eba3c53610cb5732b1f9cd173c",
+              "bytes": 3446018
+            },
+            "ko": {
+              "sha256": "ebb7f55711db000d407f7e18372731a951b9fe364d78696b106e0c64fee541de",
+              "bytes": 4564668
+            }
+          },
+          "metadataSha256": "7d712cea0afa5c91d6315d609bf53fac3fce7300b5322abccdb546600dfabb49",
+          "reviewImageSha256": "7cc06d3e2b747ac3db74d51463d5d98446a241f8d45abce4fd8c5e75cecbcfe5"
+        },
+        "finalReviewEvidence": [
+          "fitted/119/qa/light-dark-review.jpg",
+          "fitted/119/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "120": {
         "status": "reviewed-no-rekey-required",
@@ -322,8 +384,8 @@
       },
       "122": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "3954a77d0a9ca11562a8147c2f51c96b9e6d0dd3d9bacad98daeeeebfc18075f",
-        "reviewImageSha256": "e608589a9979dfd0979bb92698a27afaa2a1f5121b359e8e0bd62fed64c22286",
+        "metadataSha256": "39535ae96860d113290101c6bb6c15cec48898c0ef25cd046d0d3ae3cbd343cd",
+        "reviewImageSha256": "8e3463a153c86a4fc4e71ca21a79ce9637a622bf4fd87a199795b87d9d9e3546",
         "sampleFrames": [
           0,
           47,
@@ -343,31 +405,62 @@
         "observation": "Clean samples with base green key. Fine horn/tail lightning, large cyan-white attack arc, yellow bolts and dark smoke remain visible; faint effects are not treated as screen. KO final preserves tiny original traces.",
         "atlasFiles": {
           "idle": {
-            "sha256": "8e70215cc9d5e478cbe05d0a56e1b1b2cd227f6585d87c0f8a995f513b270b8a",
-            "bytes": 3038562
+            "sha256": "b0f4d0fde141feaa6e6b7ab999f02035b0c53f19b45537eccf4c2a54309d8845",
+            "bytes": 4984138
           },
           "attack": {
-            "sha256": "e23e3fd402ab746be2e45e0ab46683ed48ea1833812d62ff6a15d26b2f5927f3",
-            "bytes": 3835588
+            "sha256": "4784e2feb42c4f2528be2bcc3893cf6564232df0a4440c811d9153a6a3b7129d",
+            "bytes": 6470656
           },
           "hit": {
-            "sha256": "34e8d0595dcba874172319dc94368f7509c604a8326afab8003180c1eba029df",
-            "bytes": 3184270
+            "sha256": "23b7ef37b5c2a012ee660eef62219ffa505c519e7c6676f67ea1006860e74e77",
+            "bytes": 5592290
           },
           "victory": {
-            "sha256": "5f1427c8e232981506591839f597336db581ad88ec5aa2cef2fe49f691c4915c",
-            "bytes": 3640392
+            "sha256": "ce28862c34bd108f8c29d198c207220afb9898ca3d98b4df2442a25f3c40baf9",
+            "bytes": 6253646
           },
           "ko": {
-            "sha256": "a83890c1896deaccdd4e5cf3a0ddf3d471931a28d3ff294dd8e495f9012020a6",
-            "bytes": 3679164
+            "sha256": "c2b97eca7379e07bc1014b9ba233b00403bb3004a9ae1527c326e73d04bda918",
+            "bytes": 6395758
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "8e70215cc9d5e478cbe05d0a56e1b1b2cd227f6585d87c0f8a995f513b270b8a",
+              "bytes": 3038562
+            },
+            "attack": {
+              "sha256": "e23e3fd402ab746be2e45e0ab46683ed48ea1833812d62ff6a15d26b2f5927f3",
+              "bytes": 3835588
+            },
+            "hit": {
+              "sha256": "34e8d0595dcba874172319dc94368f7509c604a8326afab8003180c1eba029df",
+              "bytes": 3184270
+            },
+            "victory": {
+              "sha256": "5f1427c8e232981506591839f597336db581ad88ec5aa2cef2fe49f691c4915c",
+              "bytes": 3640392
+            },
+            "ko": {
+              "sha256": "a83890c1896deaccdd4e5cf3a0ddf3d471931a28d3ff294dd8e495f9012020a6",
+              "bytes": 3679164
+            }
+          },
+          "metadataSha256": "3954a77d0a9ca11562a8147c2f51c96b9e6d0dd3d9bacad98daeeeebfc18075f",
+          "reviewImageSha256": "e608589a9979dfd0979bb92698a27afaa2a1f5121b359e8e0bd62fed64c22286"
+        },
+        "finalReviewEvidence": [
+          "fitted/122/qa/light-dark-review.jpg",
+          "fitted/122/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "123": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "37cd872f774a4768509b76e28a2bfc26991bf486d06b589209dcc84e844070b8",
-        "reviewImageSha256": "caf1503870f3f901b366c33a90829b66c9313b49589b6513942eb492450eb624",
+        "metadataSha256": "005298d907362c3185b78f19c0db2c13b42ace7a2f42f6c267f5a7e1817f94f3",
+        "reviewImageSha256": "25d2536c688e65ced12cc679e6e09d367501b0c8ff43b36aa3b879503d7726aa",
         "sampleFrames": [
           0,
           47,
@@ -387,31 +480,62 @@
         "observation": "Blue key correctly retains the intrinsic green-grey body and yellow bolts. Native attack bloom remains as a faint soft halo, without solid blue screen patches. KO final retains the native prone body and smoke.",
         "atlasFiles": {
           "idle": {
-            "sha256": "7cfe4623aa1f33b5b03434534565b7e14dfd3b68011a4a597c92ddcd3623c0c1",
-            "bytes": 2784396
+            "sha256": "2b0e9eca1cf075a776a3d2d436b3970378e676497ea9af604bc6f8b2fc8e57bc",
+            "bytes": 10368330
           },
           "attack": {
-            "sha256": "e6c289bcaea4689e9a20b3a0535c0661484bd64aefb002cd01f49425a2dc46f1",
-            "bytes": 2657346
+            "sha256": "3fadffbf68c7de751e970a6cf4ebd78e74ea241d1cfa789b90b792e021e2db27",
+            "bytes": 10500732
           },
           "hit": {
-            "sha256": "f1409d99bf7758625132a7bacef22faeb83ee161aba4d58e09942483b69dd9b4",
-            "bytes": 2188210
+            "sha256": "9ebcdbc8070ab39b6d0a35473ea3197a89380e3d3d35ae37078074a4864b2e09",
+            "bytes": 7383326
           },
           "victory": {
-            "sha256": "a37e8c537f709290129e958eed404c13f8a47b47caad36ac7d08c578b07e7376",
-            "bytes": 2152096
+            "sha256": "545c0caa480073968f058c1bf50495205cf6189f35b29dd3b66a49a3ce36e51b",
+            "bytes": 8099496
           },
           "ko": {
-            "sha256": "0ae5d2a8e73b167865e350da6dcf087e2a97bb7d0e19d46e83a6ade65f1c765b",
-            "bytes": 3834426
+            "sha256": "1e4a3caa56f59d46d75e76bbc47b9a5f0a9d35431d6ff5d68b483bfdfb7e5e42",
+            "bytes": 14732422
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "7cfe4623aa1f33b5b03434534565b7e14dfd3b68011a4a597c92ddcd3623c0c1",
+              "bytes": 2784396
+            },
+            "attack": {
+              "sha256": "e6c289bcaea4689e9a20b3a0535c0661484bd64aefb002cd01f49425a2dc46f1",
+              "bytes": 2657346
+            },
+            "hit": {
+              "sha256": "f1409d99bf7758625132a7bacef22faeb83ee161aba4d58e09942483b69dd9b4",
+              "bytes": 2188210
+            },
+            "victory": {
+              "sha256": "a37e8c537f709290129e958eed404c13f8a47b47caad36ac7d08c578b07e7376",
+              "bytes": 2152096
+            },
+            "ko": {
+              "sha256": "0ae5d2a8e73b167865e350da6dcf087e2a97bb7d0e19d46e83a6ade65f1c765b",
+              "bytes": 3834426
+            }
+          },
+          "metadataSha256": "37cd872f774a4768509b76e28a2bfc26991bf486d06b589209dcc84e844070b8",
+          "reviewImageSha256": "caf1503870f3f901b366c33a90829b66c9313b49589b6513942eb492450eb624"
+        },
+        "finalReviewEvidence": [
+          "fitted/123/qa/light-dark-review.jpg",
+          "fitted/123/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "124": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "9d24337b229738ec65b088171fc06eeca06ec221ea35faa2cbf427ef2fd2c9d2",
-        "reviewImageSha256": "51b56488b00cc44a2e832fbd36722a824d1e0c31b68ce8b56074fc5e37135b5a",
+        "metadataSha256": "1b583cecd400610e3c0ec38e81cb0a4ffc766ef5383f596d4443625fc3d41232",
+        "reviewImageSha256": "271ec653d2728d7eebbfd1aa4fc3035c618e4cc3a78067e80883cf2f28c3d73e",
         "sampleFrames": [
           0,
           47,
@@ -431,26 +555,57 @@
         "observation": "Blue key retains green-grey body, yellow lightning and purple dark hair. All five sampled actions are clean on light/dark; native KO final consists of the original scattered particles, preserved.",
         "atlasFiles": {
           "idle": {
-            "sha256": "4591f4ab6f68fa1de0b442dd4fa19323068e6bea8712c3b9ff43ee89d208ae4e",
-            "bytes": 5099554
+            "sha256": "96b3c760b8b4b0f34fda53ed2000b9bd34705fa26e245bc27e844af5da7db170",
+            "bytes": 7564264
           },
           "attack": {
-            "sha256": "11b94b3b67cbb3fa6746e7ed2a0d087d002fdf481e39559d29059faaeaca9514",
-            "bytes": 4884748
+            "sha256": "ec65f97514d3b27d20f32d9a793b06f246e93efeca5dfea418eb59acc4caac60",
+            "bytes": 7522358
           },
           "hit": {
-            "sha256": "a17bb868ed126dcac4fa771da0e39a235b70be4d1c24e0d0a5d756bba2f1c30d",
-            "bytes": 5132992
+            "sha256": "784c256f47422301276fa03c9434d59691bbcb4fa0a1fedf91331ecdc8917905",
+            "bytes": 7877826
           },
           "victory": {
-            "sha256": "aa464e5b761194e445286c6297dca855c8a6917dae969e05f41c2a5a492a18b8",
-            "bytes": 6763520
+            "sha256": "bdbb32f6151d3c76db51ad161db9bfadc012a213d64e1291ece79ff8c62a35d2",
+            "bytes": 9431590
           },
           "ko": {
-            "sha256": "b46f59ef1fc4ea734039423fdef47ecb46cf98472faf823d0d8cc94eb2860dbc",
-            "bytes": 4794888
+            "sha256": "a1c8838b4148db61db23dd757a2be6c409b5f833546a2bd655d3a52e9bb928e8",
+            "bytes": 6930354
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "4591f4ab6f68fa1de0b442dd4fa19323068e6bea8712c3b9ff43ee89d208ae4e",
+              "bytes": 5099554
+            },
+            "attack": {
+              "sha256": "11b94b3b67cbb3fa6746e7ed2a0d087d002fdf481e39559d29059faaeaca9514",
+              "bytes": 4884748
+            },
+            "hit": {
+              "sha256": "a17bb868ed126dcac4fa771da0e39a235b70be4d1c24e0d0a5d756bba2f1c30d",
+              "bytes": 5132992
+            },
+            "victory": {
+              "sha256": "aa464e5b761194e445286c6297dca855c8a6917dae969e05f41c2a5a492a18b8",
+              "bytes": 6763520
+            },
+            "ko": {
+              "sha256": "b46f59ef1fc4ea734039423fdef47ecb46cf98472faf823d0d8cc94eb2860dbc",
+              "bytes": 4794888
+            }
+          },
+          "metadataSha256": "9d24337b229738ec65b088171fc06eeca06ec221ea35faa2cbf427ef2fd2c9d2",
+          "reviewImageSha256": "51b56488b00cc44a2e832fbd36722a824d1e0c31b68ce8b56074fc5e37135b5a"
+        },
+        "finalReviewEvidence": [
+          "fitted/124/qa/light-dark-review.jpg",
+          "fitted/124/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "125": {
         "status": "reviewed-no-rekey-required",
@@ -586,8 +741,8 @@
       },
       "128": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "892974032928bfa576c122fe541d011fbbc63591f70226876d202da5f3142682",
-        "reviewImageSha256": "36f8b2a0f9756893edceed64f35c4c558cb10836249d28a0e3d829cbbdea07fb",
+        "metadataSha256": "5a752952aeba2b0a4883ac951036511652bb162b29c9ecc9fe5cbc8834c15adb",
+        "reviewImageSha256": "af9671d04c565a01428dbb715ab458354d7ef6ee5f4fe06327706a8f07301805",
         "sampleFrames": [
           0,
           47,
@@ -607,31 +762,62 @@
         "observation": "Black/purple body, magenta wing membranes and pale violet native sweep retain contrast. KO final preserves the original near-empty tiny traces instead of inventing a held body pose; no green patches observed.",
         "atlasFiles": {
           "idle": {
-            "sha256": "c492d4167735d70514ae3c9aa844c56c437146b612f6eb7f7734ae2ea0d19354",
-            "bytes": 3785036
+            "sha256": "123e2a1770c8a36b625fb2c0402e1e772f1673990fba895f0964b8b364d4f28c",
+            "bytes": 7705888
           },
           "attack": {
-            "sha256": "8d8ffc80fa60d8176901126544bdc0a02294e8823ef4bf30b0d90e904419e890",
-            "bytes": 4800764
+            "sha256": "66758f931596bfdb39438816c07f2a36a3e767599ca71cf89946efa12a76047a",
+            "bytes": 9663728
           },
           "hit": {
-            "sha256": "a0de2963c470ed50188642c5b054d25342afe10a62c4cdf5a0eb14382bb58445",
-            "bytes": 3925468
+            "sha256": "a43b9e3f4314f243ce9758c548ad20648aa0c7a8613bc10585adbbe3e3f1ba01",
+            "bytes": 7779294
           },
           "victory": {
-            "sha256": "03d45e5ff5a1ef237e78601dcccb6cf158d73cc2d9172afef5cf44e1a83ab266",
-            "bytes": 5240122
+            "sha256": "07f8f35092b2d9dcc6298df5dc071fa2aa3bb1ab1a703e0bca3bd9b32ba0ade5",
+            "bytes": 9958042
           },
           "ko": {
-            "sha256": "d90b6f7b4789c3af4641bbb58fc269c7ad69fa49c33a8e2b425101d80a71fc06",
-            "bytes": 4572328
+            "sha256": "052a344cef4d551770861eb9f07a1d1cc7b1db3169dfd540d33e196bf946daea",
+            "bytes": 8665170
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "c492d4167735d70514ae3c9aa844c56c437146b612f6eb7f7734ae2ea0d19354",
+              "bytes": 3785036
+            },
+            "attack": {
+              "sha256": "8d8ffc80fa60d8176901126544bdc0a02294e8823ef4bf30b0d90e904419e890",
+              "bytes": 4800764
+            },
+            "hit": {
+              "sha256": "a0de2963c470ed50188642c5b054d25342afe10a62c4cdf5a0eb14382bb58445",
+              "bytes": 3925468
+            },
+            "victory": {
+              "sha256": "03d45e5ff5a1ef237e78601dcccb6cf158d73cc2d9172afef5cf44e1a83ab266",
+              "bytes": 5240122
+            },
+            "ko": {
+              "sha256": "d90b6f7b4789c3af4641bbb58fc269c7ad69fa49c33a8e2b425101d80a71fc06",
+              "bytes": 4572328
+            }
+          },
+          "metadataSha256": "892974032928bfa576c122fe541d011fbbc63591f70226876d202da5f3142682",
+          "reviewImageSha256": "36f8b2a0f9756893edceed64f35c4c558cb10836249d28a0e3d829cbbdea07fb"
+        },
+        "finalReviewEvidence": [
+          "fitted/128/qa/light-dark-review.jpg",
+          "fitted/128/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "129": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "c8a24bbd904e0e29a0f85df944affdf40e9940a32b9f1839a8460bf3de54e988",
-        "reviewImageSha256": "9f5e621a6d1a3d8f7dabf13b48ef5f9c6ecef6a9c2c01c3dd050d7172f7bc0a1",
+        "metadataSha256": "c0c14656a9e2271867a0fb98891dc4adc63d2f4b25895524970e7823d3b52ade",
+        "reviewImageSha256": "9d6ccd234f2929d9d8710049487180f5e0421ab404974721f1300256ee6937b1",
         "sampleFrames": [
           0,
           47,
@@ -651,31 +837,62 @@
         "observation": "Dark purple body and wings, bright claw arc and cyan/violet victory sweeps remain intact on light/dark. KO ending contains native dim residual energy with no fabricated held pose; no re-key needed.",
         "atlasFiles": {
           "idle": {
-            "sha256": "56744d958d2daa21d58a76abf36573e86f0e860ba80a96f15fa0ad38dcda6cc4",
-            "bytes": 2894060
+            "sha256": "be9266097116cf7dada31401d1a6fc749cf55d60526f3336eab9d1a829f35746",
+            "bytes": 7551384
           },
           "attack": {
-            "sha256": "87d43bdb664bcaad381750e9bd1d4ac6b92c7f929728bbfd2c79daacced60ff2",
-            "bytes": 3316126
+            "sha256": "a79f06267bf765f3b038f51d24f05fcbc93d19bb328f8d6ef5cf7ec882a27bcf",
+            "bytes": 9661098
           },
           "hit": {
-            "sha256": "f2d82c60c47d72a14844ef20bf34fa15364d5ef956ed6e8c39a0d1740837e605",
-            "bytes": 2981622
+            "sha256": "0b3cac7ae45cd65ccd35bd1600fa3e3465ca770bdb1bb647507807cd557b4ff8",
+            "bytes": 8016000
           },
           "victory": {
-            "sha256": "1097f0d16d154008a11d491a4feec620c24db6a3753aa07257d5edc193f8b95a",
-            "bytes": 3214868
+            "sha256": "093eb5b7760bcef26f0c4ea6bc18b4e79fd4ba06eff4ceb72bd767b257215edd",
+            "bytes": 8531546
           },
           "ko": {
-            "sha256": "62b84ec004e944e9365f968cf7ec1ec487fd2fbfbe23821dc6245dc6b93ab707",
-            "bytes": 4173950
+            "sha256": "83b3abd4c351b1317cfb83b60373bbc4e2b041178f0c72756d05c34a76af1a95",
+            "bytes": 12214468
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "56744d958d2daa21d58a76abf36573e86f0e860ba80a96f15fa0ad38dcda6cc4",
+              "bytes": 2894060
+            },
+            "attack": {
+              "sha256": "87d43bdb664bcaad381750e9bd1d4ac6b92c7f929728bbfd2c79daacced60ff2",
+              "bytes": 3316126
+            },
+            "hit": {
+              "sha256": "f2d82c60c47d72a14844ef20bf34fa15364d5ef956ed6e8c39a0d1740837e605",
+              "bytes": 2981622
+            },
+            "victory": {
+              "sha256": "1097f0d16d154008a11d491a4feec620c24db6a3753aa07257d5edc193f8b95a",
+              "bytes": 3214868
+            },
+            "ko": {
+              "sha256": "62b84ec004e944e9365f968cf7ec1ec487fd2fbfbe23821dc6245dc6b93ab707",
+              "bytes": 4173950
+            }
+          },
+          "metadataSha256": "c8a24bbd904e0e29a0f85df944affdf40e9940a32b9f1839a8460bf3de54e988",
+          "reviewImageSha256": "9f5e621a6d1a3d8f7dabf13b48ef5f9c6ecef6a9c2c01c3dd050d7172f7bc0a1"
+        },
+        "finalReviewEvidence": [
+          "fitted/129/qa/light-dark-review.jpg",
+          "fitted/129/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "130": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "5bad6d6402d275d2ef5ed4480c2531f4e7695e0ca114efd2cfe20b8352b31fb9",
-        "reviewImageSha256": "14c38cf68a09ae1215849e58074c711c32969f26f2e0eae67efbeb7ca23497ee",
+        "metadataSha256": "d03021c70337a22f2f6d68fe1df70646942ed272e468b6330647f19d8b8265b7",
+        "reviewImageSha256": "6cf43f2d46ff1242e5994ddc30125883c8e69ed752f873489824f661779ea4c9",
         "sampleFrames": [
           0,
           47,
@@ -695,31 +912,62 @@
         "observation": "Actual encoded atlas reviewed after idle-only profile. Idle native yellow/lime/cyan gradients remain within the body; true gaps between antennae, limbs and wing tips remain clear. Attack47 orb/ribbon is white/cyan rather than the rejected green candidate. Hit/victory and final KO particles retain the base key; no new green spill observed.",
         "atlasFiles": {
           "idle": {
-            "sha256": "f065dd89bf8260dde0cfdb7e2638a6f8e3865164a53ea4a352d878dd1962d351",
-            "bytes": 4832704
+            "sha256": "4909fe75deca92dcaa4f801a1578e616584503df63348923b7df0955817d3f22",
+            "bytes": 6771494
           },
           "attack": {
-            "sha256": "a48abdc93a60a95d7c79f4d5ba7714b969843f776e1af347aa6d80acf73f2eeb",
-            "bytes": 5870706
+            "sha256": "c9321a1f8f752850d968742f50df23913661298680bed52ba636cf15dde961d2",
+            "bytes": 8628260
           },
           "hit": {
-            "sha256": "b6253b72a055349f0430272e717ed1f7da8a8db2ec869cff027dbbd4fd43556d",
-            "bytes": 5220242
+            "sha256": "d5b36843ec3aa5daf76c11dfb9149dd74f3d2903ba363ae97c370252083f6608",
+            "bytes": 7363140
           },
           "victory": {
-            "sha256": "d2f6d66e17a9ce5a0691144ff14a6a3ab81784a796c9f1b92616939dff1f687c",
-            "bytes": 5596104
+            "sha256": "34356abf6029af5b6c5867db880622fe5d7d8600108c6c65f28f7c2a78f141bb",
+            "bytes": 8457200
           },
           "ko": {
-            "sha256": "79b9db63678e6c269d693255671a68d20309af882b8e1f95bd235501c2f5621a",
-            "bytes": 4696078
+            "sha256": "1aed741db7fcc77fcaa5eaf7fec42c58b4cc907850c4a0b5d5f7e137855d7b19",
+            "bytes": 7040302
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "f065dd89bf8260dde0cfdb7e2638a6f8e3865164a53ea4a352d878dd1962d351",
+              "bytes": 4832704
+            },
+            "attack": {
+              "sha256": "a48abdc93a60a95d7c79f4d5ba7714b969843f776e1af347aa6d80acf73f2eeb",
+              "bytes": 5870706
+            },
+            "hit": {
+              "sha256": "b6253b72a055349f0430272e717ed1f7da8a8db2ec869cff027dbbd4fd43556d",
+              "bytes": 5220242
+            },
+            "victory": {
+              "sha256": "d2f6d66e17a9ce5a0691144ff14a6a3ab81784a796c9f1b92616939dff1f687c",
+              "bytes": 5596104
+            },
+            "ko": {
+              "sha256": "79b9db63678e6c269d693255671a68d20309af882b8e1f95bd235501c2f5621a",
+              "bytes": 4696078
+            }
+          },
+          "metadataSha256": "5bad6d6402d275d2ef5ed4480c2531f4e7695e0ca114efd2cfe20b8352b31fb9",
+          "reviewImageSha256": "14c38cf68a09ae1215849e58074c711c32969f26f2e0eae67efbeb7ca23497ee"
+        },
+        "finalReviewEvidence": [
+          "fitted/130/qa/light-dark-review.jpg",
+          "fitted/130/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "131": {
         "status": "reviewed-no-rekey-required",
-        "metadataSha256": "7984c391aaeb8b9c601020d96fe57a0e32c5fffcb64c7a3c7963ca97042d4580",
-        "reviewImageSha256": "72e667039b8fd9eca99509f790567480e3a4df816c1421fb5ae4ff4f138be76f",
+        "metadataSha256": "44e28b4a067f8899d4e2a39691a1106b276d7c344be2f888e88acab1a0999028",
+        "reviewImageSha256": "6163a952ff8a65c1ca9814061da4131eda982bbca9d2aaeba8e6a0a925117600",
         "sampleFrames": [
           0,
           47,
@@ -739,26 +987,57 @@
         "observation": "Actual encoded atlas reviewed after idle-only profile. Idle rainbow ribbons retain native lime/cyan interiors and the official negative-space holes remain clear. Attack arc and victory47 ground rune remain cyan/white, without the green regression from the rejected all-action profile. Native final KO faint particles preserved.",
         "atlasFiles": {
           "idle": {
-            "sha256": "55433f4734f884f7ba5670d867bd0d1d868a4407df4fd21a03a9855facd93529",
-            "bytes": 3695808
+            "sha256": "adfadd6f62eaad93903c87f17d7c50b77e67986e5b2a53218456ca3337f2619f",
+            "bytes": 7191868
           },
           "attack": {
-            "sha256": "b2c1c3ab7d35830dfab8026c8527fd81edfa794069894ac566440acd9d7bf441",
-            "bytes": 5204646
+            "sha256": "79e9786c931e2e8ed3439e6789aa47cb6f2a64750533cd19bfadef8ac71fc3b4",
+            "bytes": 9248422
           },
           "hit": {
-            "sha256": "6030296f253be3419b435207b21863b0d2a1554cfbb080e59b633f867e53e41a",
-            "bytes": 4139392
+            "sha256": "34495fe219e40dac716561d267ea1cd9467a281c787d99ddf1dcf312b5103f85",
+            "bytes": 7055090
           },
           "victory": {
-            "sha256": "5321236af001d5f68e6cff33f9dd13500c5bbb4ffa9651c56bb8407eb1a98704",
-            "bytes": 5003220
+            "sha256": "32609323394ca594cfa239df7a9c6a77219a68f7bca14ff4b349a7b09b31b2f1",
+            "bytes": 9230996
           },
           "ko": {
-            "sha256": "099ae471267d1d4ac92ebfe786072b1d3a5262218745432788ef808a476cc20a",
-            "bytes": 4574956
+            "sha256": "c79d1c66c2d4cb233fed4abc3e04123fa810da240575bf35ec8d407da8614747",
+            "bytes": 7931122
           }
-        }
+        },
+        "priorToBodyFitReview": {
+          "atlasFiles": {
+            "idle": {
+              "sha256": "55433f4734f884f7ba5670d867bd0d1d868a4407df4fd21a03a9855facd93529",
+              "bytes": 3695808
+            },
+            "attack": {
+              "sha256": "b2c1c3ab7d35830dfab8026c8527fd81edfa794069894ac566440acd9d7bf441",
+              "bytes": 5204646
+            },
+            "hit": {
+              "sha256": "6030296f253be3419b435207b21863b0d2a1554cfbb080e59b633f867e53e41a",
+              "bytes": 4139392
+            },
+            "victory": {
+              "sha256": "5321236af001d5f68e6cff33f9dd13500c5bbb4ffa9651c56bb8407eb1a98704",
+              "bytes": 5003220
+            },
+            "ko": {
+              "sha256": "099ae471267d1d4ac92ebfe786072b1d3a5262218745432788ef808a476cc20a",
+              "bytes": 4574956
+            }
+          },
+          "metadataSha256": "7984c391aaeb8b9c601020d96fe57a0e32c5fffcb64c7a3c7963ca97042d4580",
+          "reviewImageSha256": "72e667039b8fd9eca99509f790567480e3a4df816c1421fb5ae4ff4f138be76f"
+        },
+        "finalReviewEvidence": [
+          "fitted/131/qa/light-dark-review.jpg",
+          "fitted/131/qa/body-fit-reference-extra.jpg"
+        ],
+        "bodyFitVisualApproved": true
       },
       "134": {
         "status": "reviewed-no-rekey-required",
@@ -916,17 +1195,41 @@
       "124": {
         "seamToAdjacentMedianRatio": 3.555,
         "bodyChangedPixelFractionOver5Percent": 0.51271,
-        "observation": "Visible effect phase pop at93->0: small remaining fragments switch to full shoulder/arm yellow zigzags. The ground and broad body stance stay largely stable; head and hand phase has a small offset. This is not a large translation of the whole body."
+        "observation": "Visible effect phase pop at93->0: small remaining fragments switch to full shoulder/arm yellow zigzags. The ground and broad body stance stay largely stable; head and hand phase has a small offset. This is not a large translation of the whole body.",
+        "finalEncodedDiagnostic": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.155744,
+          "bodyAlphaMeanAbsoluteDifference": 0.126646,
+          "bodyChangedPixelFractionOver5Percent": 0.51496,
+          "adjacentMedianBodyRgbDifference": 0.046222,
+          "adjacentMaxBodyRgbDifference": 0.190621,
+          "seamToAdjacentMedianRatio": 3.369
+        }
       },
       "125": {
         "seamToAdjacentMedianRatio": 4.243,
         "bodyChangedPixelFractionOver5Percent": 0.571041,
-        "observation": "Noticeable head-tilt reset at93->0: the last frame has a more upright head, the first a tilted one. Paws and ground plane remain broadly stable. Do not claim a seamless idle loop."
+        "observation": "Noticeable head-tilt reset at93->0: the last frame has a more upright head, the first a tilted one. Paws and ground plane remain broadly stable. Do not claim a seamless idle loop.",
+        "finalEncodedDiagnostic": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.171826,
+          "bodyAlphaMeanAbsoluteDifference": 0.083378,
+          "bodyChangedPixelFractionOver5Percent": 0.571041,
+          "adjacentMedianBodyRgbDifference": 0.0405,
+          "adjacentMaxBodyRgbDifference": 0.101491,
+          "seamToAdjacentMedianRatio": 4.243
+        }
       },
       "134": {
         "seamToAdjacentMedianRatio": 3.067,
         "bodyChangedPixelFractionOver5Percent": 0.77299,
-        "observation": "Threshold flagged, with subtle body/head phase, iridescent texture and small surrounding droplet-position differences at93->0. The broad stance and ground remain stable. No obvious large high-contrast pop in the inspected boundary stills comparable to124lightning or125head tilt; this is not proof of a mathematically seamless loop. Retain automatic review-queue entry."
+        "observation": "Threshold flagged, with subtle body/head phase, iridescent texture and small surrounding droplet-position differences at93->0. The broad stance and ground remain stable. No obvious large high-contrast pop in the inspected boundary stills comparable to124lightning or125head tilt; this is not proof of a mathematically seamless loop. Retain automatic review-queue entry.",
+        "finalEncodedDiagnostic": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.211998,
+          "bodyAlphaMeanAbsoluteDifference": 0.196934,
+          "bodyChangedPixelFractionOver5Percent": 0.77299,
+          "adjacentMedianBodyRgbDifference": 0.069115,
+          "adjacentMaxBodyRgbDifference": 0.109084,
+          "seamToAdjacentMedianRatio": 3.067
+        }
       },
       "139Diagnostic": {
         "seamToAdjacentMedianRatio": 0.586,
@@ -957,7 +1260,399 @@
         134
       ]
     },
-    "fingerprintNote": "Visual evidence is tied to final atlas bytes; metadata SHA was refreshed after cue integration where present. Later timing-only metadata edits do not alter reviewed pixels."
+    "fingerprintNote": "All85reviewed atlas SHA256/bytes match current installed public files. For9refitted forms the final samples and logical-reference comparison are isolated fitted output, byte-matched after public installation. Prior review atlas hashes are retained as history. Metadata SHA refreshed after final cue installation; later timing-only metadata edits do not change reviewed pixels.",
+    "bodyFitRevision": {
+      "status": "all-nine-reviewed-and-final-public-atlas-byte-matched",
+      "ids": [
+        118,
+        119,
+        122,
+        123,
+        124,
+        128,
+        129,
+        130,
+        131
+      ],
+      "reason": "Browser comparison revealed several native bodies substantially smaller than official static reference because idle effects enlarged the union used for normalization. Initial chroma/effect reviews remain valid for their recorded atlas hashes, but final body sizing requires a new pass.",
+      "policy": "Fit initial opaque body to official reference slot while preserving all native effects on an expanded padded canvas; no original frames or effects clipped.",
+      "species": {
+        "118": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 129.48432760364003,
+          "bodyHeightPixelsAfter": 176.22966507177034,
+          "referenceBodyHeightPixels": 176.22966507177034,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 192,
+            "top": 185
+          },
+          "canvasEdge": 576,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/118/qa/light-dark-review.jpg",
+            "fitted/118/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "8fcab2c6ba60417ff10982d064ef21f72074b940867a1ea87ba954e391a1d708",
+              "bytes": 6285394
+            },
+            "attack": {
+              "sha256": "db45d1347acb561e82ec30d4e32f7fe1114d4ef6c9a3b06d88716e4e3262d89b",
+              "bytes": 9013630
+            },
+            "hit": {
+              "sha256": "9241c1f5db0dcf31bfb4cd34835cea1510b2929e8092309f894dfb57e5ee0326",
+              "bytes": 10119814
+            },
+            "victory": {
+              "sha256": "fb51dd79865bdecc959a98f4c58035d20c9bf2c3965536ec26f349a2a015b680",
+              "bytes": 7955922
+            },
+            "ko": {
+              "sha256": "f9e32bbceab1bec36094678891cf87865f9c35ed03ebda597f3b8164efcc94ce",
+              "bytes": 11353230
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "119": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 142.5,
+          "bodyHeightPixelsAfter": 185.15625,
+          "referenceBodyHeightPixels": 185.15625,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 160,
+            "top": 157
+          },
+          "canvasEdge": 512,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/119/qa/light-dark-review.jpg",
+            "fitted/119/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "6fe47d85a52b491c43121c14d282545749d95f7b4c2197a4e26fe0b9535947b2",
+              "bytes": 6076864
+            },
+            "attack": {
+              "sha256": "7d1a97c62b321b815b7763866c597288220ecba600489d94d21aa6e0db68bad3",
+              "bytes": 10427724
+            },
+            "hit": {
+              "sha256": "f68b347bda12cd893cee63fbe12bde58b14f61d4f870a00469743244f4a2525f",
+              "bytes": 6331490
+            },
+            "victory": {
+              "sha256": "c9dcf6a7b597e2c90c0b1681b6b142db4717e036aa542458c986150531b587d7",
+              "bytes": 6676932
+            },
+            "ko": {
+              "sha256": "d0a5a86a30ab45f035dba104d898652b449565c5dd8ce7f1393082811dd2780c",
+              "bytes": 9101736
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "122": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 87.38275340393342,
+          "bodyHeightPixelsAfter": 136.72,
+          "referenceBodyHeightPixels": 136.72,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 114,
+            "top": 129
+          },
+          "canvasEdge": 448,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/122/qa/light-dark-review.jpg",
+            "fitted/122/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "b0f4d0fde141feaa6e6b7ab999f02035b0c53f19b45537eccf4c2a54309d8845",
+              "bytes": 4984138
+            },
+            "attack": {
+              "sha256": "4784e2feb42c4f2528be2bcc3893cf6564232df0a4440c811d9153a6a3b7129d",
+              "bytes": 6470656
+            },
+            "hit": {
+              "sha256": "23b7ef37b5c2a012ee660eef62219ffa505c519e7c6676f67ea1006860e74e77",
+              "bytes": 5592290
+            },
+            "victory": {
+              "sha256": "ce28862c34bd108f8c29d198c207220afb9898ca3d98b4df2442a25f3c40baf9",
+              "bytes": 6253646
+            },
+            "ko": {
+              "sha256": "c2b97eca7379e07bc1014b9ba233b00403bb3004a9ae1527c326e73d04bda918",
+              "bytes": 6395758
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "123": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 87.83730158730158,
+          "bodyHeightPixelsAfter": 185.53125,
+          "referenceBodyHeightPixels": 185.53125,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 298,
+            "top": 290
+          },
+          "canvasEdge": 768,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/123/qa/light-dark-review.jpg",
+            "fitted/123/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "2b0e9eca1cf075a776a3d2d436b3970378e676497ea9af604bc6f8b2fc8e57bc",
+              "bytes": 10368330
+            },
+            "attack": {
+              "sha256": "3fadffbf68c7de751e970a6cf4ebd78e74ea241d1cfa789b90b792e021e2db27",
+              "bytes": 10500732
+            },
+            "hit": {
+              "sha256": "9ebcdbc8070ab39b6d0a35473ea3197a89380e3d3d35ae37078074a4864b2e09",
+              "bytes": 7383326
+            },
+            "victory": {
+              "sha256": "545c0caa480073968f058c1bf50495205cf6189f35b29dd3b66a49a3ce36e51b",
+              "bytes": 8099496
+            },
+            "ko": {
+              "sha256": "1e4a3caa56f59d46d75e76bbc47b9a5f0a9d35431d6ff5d68b483bfdfb7e5e42",
+              "bytes": 14732422
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "124": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 134.33367243133264,
+          "bodyHeightPixelsAfter": 187.0396600566572,
+          "referenceBodyHeightPixels": 189.46875,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 191,
+            "top": 190
+          },
+          "canvasEdge": 576,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/124/qa/light-dark-review.jpg",
+            "fitted/124/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "96b3c760b8b4b0f34fda53ed2000b9bd34705fa26e245bc27e844af5da7db170",
+              "bytes": 7564264
+            },
+            "attack": {
+              "sha256": "ec65f97514d3b27d20f32d9a793b06f246e93efeca5dfea418eb59acc4caac60",
+              "bytes": 7522358
+            },
+            "hit": {
+              "sha256": "784c256f47422301276fa03c9434d59691bbcb4fa0a1fedf91331ecdc8917905",
+              "bytes": 7877826
+            },
+            "victory": {
+              "sha256": "bdbb32f6151d3c76db51ad161db9bfadc012a213d64e1291ece79ff8c62a35d2",
+              "bytes": 9431590
+            },
+            "ko": {
+              "sha256": "a1c8838b4148db61db23dd757a2be6c409b5f833546a2bd655d3a52e9bb928e8",
+              "bytes": 6930354
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "128": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 111.6342412451362,
+          "bodyHeightPixelsAfter": 189.0,
+          "referenceBodyHeightPixels": 189.0,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 224,
+            "top": 224
+          },
+          "canvasEdge": 640,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/128/qa/light-dark-review.jpg",
+            "fitted/128/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "123e2a1770c8a36b625fb2c0402e1e772f1673990fba895f0964b8b364d4f28c",
+              "bytes": 7705888
+            },
+            "attack": {
+              "sha256": "66758f931596bfdb39438816c07f2a36a3e767599ca71cf89946efa12a76047a",
+              "bytes": 9663728
+            },
+            "hit": {
+              "sha256": "a43b9e3f4314f243ce9758c548ad20648aa0c7a8613bc10585adbbe3e3f1ba01",
+              "bytes": 7779294
+            },
+            "victory": {
+              "sha256": "07f8f35092b2d9dcc6298df5dc071fa2aa3bb1ab1a703e0bca3bd9b32ba0ade5",
+              "bytes": 9958042
+            },
+            "ko": {
+              "sha256": "052a344cef4d551770861eb9f07a1d1cc7b1db3169dfd540d33e196bf946daea",
+              "bytes": 8665170
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "129": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 84.875,
+          "bodyHeightPixelsAfter": 187.96875,
+          "referenceBodyHeightPixels": 187.96875,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 192,
+            "top": 193
+          },
+          "canvasEdge": 576,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/129/qa/light-dark-review.jpg",
+            "fitted/129/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "be9266097116cf7dada31401d1a6fc749cf55d60526f3336eab9d1a829f35746",
+              "bytes": 7551384
+            },
+            "attack": {
+              "sha256": "a79f06267bf765f3b038f51d24f05fcbc93d19bb328f8d6ef5cf7ec882a27bcf",
+              "bytes": 9661098
+            },
+            "hit": {
+              "sha256": "0b3cac7ae45cd65ccd35bd1600fa3e3465ca770bdb1bb647507807cd557b4ff8",
+              "bytes": 8016000
+            },
+            "victory": {
+              "sha256": "093eb5b7760bcef26f0c4ea6bc18b4e79fd4ba06eff4ceb72bd767b257215edd",
+              "bytes": 8531546
+            },
+            "ko": {
+              "sha256": "83b3abd4c351b1317cfb83b60373bbc4e2b041178f0c72756d05c34a76af1a95",
+              "bytes": 12214468
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "130": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 144.06593406593407,
+          "bodyHeightPixelsAfter": 190.6875,
+          "referenceBodyHeightPixels": 190.6875,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 180,
+            "top": 192
+          },
+          "canvasEdge": 576,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/130/qa/light-dark-review.jpg",
+            "fitted/130/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "4909fe75deca92dcaa4f801a1578e616584503df63348923b7df0955817d3f22",
+              "bytes": 6771494
+            },
+            "attack": {
+              "sha256": "c9321a1f8f752850d968742f50df23913661298680bed52ba636cf15dde961d2",
+              "bytes": 8628260
+            },
+            "hit": {
+              "sha256": "d5b36843ec3aa5daf76c11dfb9149dd74f3d2903ba363ae97c370252083f6608",
+              "bytes": 7363140
+            },
+            "victory": {
+              "sha256": "34356abf6029af5b6c5867db880622fe5d7d8600108c6c65f28f7c2a78f141bb",
+              "bytes": 8457200
+            },
+            "ko": {
+              "sha256": "1aed741db7fcc77fcaa5eaf7fec42c58b4cc907850c4a0b5d5f7e137855d7b19",
+              "bytes": 7040302
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        },
+        "131": {
+          "status": "visual-approved-final-public-atlas-byte-matched",
+          "bodyHeightPixelsBefore": 112.16457960644007,
+          "bodyHeightPixelsAfter": 185.625,
+          "referenceBodyHeightPixels": 185.625,
+          "logicalViewport": {
+            "width": 192,
+            "height": 192,
+            "left": 191,
+            "top": 189
+          },
+          "canvasEdge": 576,
+          "observation": "Fitted logical viewport first-frame body is comparable to the official contained static reference, with consistent ground and initial scale across all five actions. Sampled first47last whole padded canvases retain native effects without observed clipping. Full-canvas thumbnails are not the on-screen logical viewport size.",
+          "evidence": [
+            "fitted/131/qa/light-dark-review.jpg",
+            "fitted/131/qa/body-fit-reference-extra.jpg"
+          ],
+          "fittedAtlasFiles": {
+            "idle": {
+              "sha256": "adfadd6f62eaad93903c87f17d7c50b77e67986e5b2a53218456ca3337f2619f",
+              "bytes": 7191868
+            },
+            "attack": {
+              "sha256": "79e9786c931e2e8ed3439e6789aa47cb6f2a64750533cd19bfadef8ac71fc3b4",
+              "bytes": 9248422
+            },
+            "hit": {
+              "sha256": "34495fe219e40dac716561d267ea1cd9467a281c787d99ddf1dcf312b5103f85",
+              "bytes": 7055090
+            },
+            "victory": {
+              "sha256": "32609323394ca594cfa239df7a9c6a77219a68f7bca14ff4b349a7b09b31b2f1",
+              "bytes": 9230996
+            },
+            "ko": {
+              "sha256": "c79d1c66c2d4cb233fed4abc3e04123fa810da240575bf35ec8d407da8614747",
+              "bytes": 7931122
+            }
+          },
+          "publicAtlasMatchesIsolatedReviewedBytes": true
+        }
+      },
+      "uniqueSampledFrames": 135,
+      "sampleCompositesOnLightAndDark": 270,
+      "initialActionViewportComparisons": 45,
+      "bodyAndEffectScope": "All five actions per form at frames0,47,93 manually inspected on light/dark; first-frame logical viewport compared to official static reference. No claim of manually viewing every original frame. Native full frame preservation is separate."
+    },
+    "finalPublicAtlasFingerprintChecks": 85
   },
   "markerPlan": {
     "schemaVersion": 1,
@@ -1820,15 +2515,16 @@
         "--columns",
         "10",
         "--webp-method",
-        "1",
+        "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\118.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\118\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\118\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\118\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\118",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\118\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -1850,8 +2546,8 @@
           22
         ]
       },
-      "startedAt": "2026-11-04T21:57:34.615893+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:26:17.680910+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "119": {
       "command": [
@@ -1864,15 +2560,16 @@
         "--columns",
         "10",
         "--webp-method",
-        "1",
+        "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\119.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\119\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\119\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\119\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\119",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\119\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -1894,8 +2591,8 @@
           24
         ]
       },
-      "startedAt": "2026-11-04T21:57:34.618400+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:26:17.680910+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "120": {
       "command": [
@@ -1997,14 +2694,15 @@
         "10",
         "--webp-method",
         "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\122.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\122\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\122\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\122\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\122",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\122\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -2026,8 +2724,8 @@
           24
         ]
       },
-      "startedAt": "2026-11-04T22:22:48.663531+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:32:21.243627+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "123": {
       "command": [
@@ -2041,14 +2739,15 @@
         "10",
         "--webp-method",
         "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\123.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\123\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\123\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\123\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\123",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\123\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -2070,8 +2769,8 @@
           245
         ]
       },
-      "startedAt": "2026-11-04T22:22:53.541403+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:32:32.846583+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "124": {
       "command": [
@@ -2085,14 +2784,15 @@
         "10",
         "--webp-method",
         "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\124.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\124\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\124\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\124\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\124",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\124\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -2114,8 +2814,8 @@
           245
         ]
       },
-      "startedAt": "2026-11-04T22:27:43.818781+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:38:01.248173+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "125": {
       "command": [
@@ -2261,14 +2961,15 @@
         "10",
         "--webp-method",
         "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\128.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\128\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\128\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\128\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\128",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\128\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -2290,8 +2991,8 @@
           25
         ]
       },
-      "startedAt": "2026-11-04T22:41:38.718029+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:39:27.834751+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "129": {
       "command": [
@@ -2305,14 +3006,15 @@
         "10",
         "--webp-method",
         "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\129.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\129\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\129\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\129\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\129",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\129\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -2334,8 +3036,8 @@
           24
         ]
       },
-      "startedAt": "2026-11-04T22:41:41.509479+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:44:57.272222+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "130": {
       "command": [
@@ -2349,14 +3051,15 @@
         "10",
         "--webp-method",
         "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\130.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\130\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\130\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\130\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\130",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\130\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -2381,8 +3084,8 @@
           22
         ]
       },
-      "startedAt": "2026-11-04T22:47:30.908124+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:46:35.988456+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "131": {
       "command": [
@@ -2396,14 +3099,15 @@
         "10",
         "--webp-method",
         "0",
+        "--fit-initial-body",
         "--reference",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\front_sprites\\131.png",
         "--source-dir",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\animation-source\\raw\\131\\front",
         "--output",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\public\\sprites\\arkamon\\131\\front",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\131\\front",
         "--qa-dir",
-        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\converted\\131",
+        "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\checkout\\output\\animation-import-2026-11-04\\fitted\\131\\qa",
         "--ffmpeg",
         "C:\\Users\\andre\\Documents\\Codex\\2026-10-19\\https-github-com-andreatz-arkamon-beta\\work\\animation-python\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
         "--screen-colour",
@@ -2428,8 +3132,8 @@
           23
         ]
       },
-      "startedAt": "2026-11-04T22:47:47.170486+00:00",
-      "workerPolicy": "At most two conversion processes after original117worker finishes."
+      "startedAt": "2026-11-04T23:51:50.528022+00:00",
+      "workerPolicy": "At most two isolated fitted conversions, no public/manifest mutation."
     },
     "134": {
       "command": [
@@ -2526,6 +3230,1060 @@
   "converterAtAuditTime": {
     "path": "scripts/build-arkamon-idle.py",
     "sha256": "042b90be3e395bc895cfec80de2278ba177c0890f0129a1f0eff3db9ccaa3863"
+  },
+  "bodyScaleCorrection": {
+    "speciesIds": [
+      118,
+      119,
+      122,
+      123,
+      124,
+      128,
+      129,
+      130,
+      131
+    ],
+    "policy": "Fit initial opaque idle body to official static reference inside the existing 192x192 viewport; preserve all native effects in external transparent canvas. No source frame or timing changes.",
+    "priorBrowserPassWasBeforeFit": true,
+    "geometry": {
+      "schemaVersion": 1,
+      "species": [
+        {
+          "speciesId": 118,
+          "oldCell": 448,
+          "oldBodyPixels": 129.48432760364003,
+          "newCell": 576,
+          "newBodyPixels": 176.22966507177034,
+          "magnification": 1.3610115473682718,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 192,
+            "top": 185
+          },
+          "atlasDimensions": [
+            5760,
+            5760
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                1254,
+                1254
+              ],
+              "alphaBounds": [
+                21,
+                97,
+                1222,
+                1248
+              ],
+              "bodyHeightFraction": 0.9178628389154705,
+              "groundFraction": 0.9952153110047847
+            },
+            "idleBodyCoreBounds": [
+              608,
+              204,
+              1314,
+              878
+            ],
+            "idleBodyHeightSourcePixels": 674,
+            "idleBodyHeightOutputPixels": 176.22966507177034,
+            "idleGroundSourcePixels": 878,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.26146834580381356,
+            "logicalCanvasOrigin": [
+              -155.27108031746482,
+              -38.5692076157483
+            ],
+            "canonicalUnionAlphaBounds": [
+              -0.927191679048974,
+              -1.3046062407132695,
+              1921.925705794948,
+              1080.3001485884101
+            ],
+            "logicalUnionAlphaBounds": [
+              -156,
+              -39,
+              348,
+              244
+            ],
+            "cellWidth": 576,
+            "cellHeight": 576,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 192,
+              "top": 185
+            },
+            "groundPivot": [
+              288.0,
+              376
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 119,
+          "oldCell": 448,
+          "oldBodyPixels": 142.5,
+          "newCell": 512,
+          "newBodyPixels": 185.15625,
+          "magnification": 1.299342105263158,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 160,
+            "top": 157
+          },
+          "atlasDimensions": [
+            5120,
+            5120
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2048,
+                2048
+              ],
+              "alphaBounds": [
+                23,
+                59,
+                2039,
+                2034
+              ],
+              "bodyHeightFraction": 0.96435546875,
+              "groundFraction": 0.9931640625
+            },
+            "idleBodyCoreBounds": [
+              576,
+              162,
+              1346,
+              918
+            ],
+            "idleBodyHeightSourcePixels": 756,
+            "idleBodyHeightOutputPixels": 185.15625,
+            "idleGroundSourcePixels": 918,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.2449156746031746,
+            "logicalCanvasOrigin": [
+              -139.36396329365078,
+              -33.83258928571428
+            ],
+            "canonicalUnionAlphaBounds": [
+              0.0,
+              0.0,
+              1920.0,
+              1080.0
+            ],
+            "logicalUnionAlphaBounds": [
+              -140,
+              -34,
+              331,
+              231
+            ],
+            "cellWidth": 512,
+            "cellHeight": 512,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 160,
+              "top": 157
+            },
+            "groundPivot": [
+              256.0,
+              348
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 122,
+          "oldCell": 320,
+          "oldBodyPixels": 87.38275340393342,
+          "newCell": 448,
+          "newBodyPixels": 136.72,
+          "magnification": 1.5646108033241,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 114,
+            "top": 129
+          },
+          "atlasDimensions": [
+            4480,
+            4480
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2400,
+                1792
+              ],
+              "alphaBounds": [
+                85,
+                46,
+                2319,
+                1755
+              ],
+              "bodyHeightFraction": 0.7120833333333333,
+              "groundFraction": 0.8579166666666667
+            },
+            "idleBodyCoreBounds": [
+              560,
+              238,
+              1356,
+              846
+            ],
+            "idleBodyHeightSourcePixels": 608,
+            "idleBodyHeightOutputPixels": 136.72,
+            "idleGroundSourcePixels": 846,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.22486842105263158,
+            "logicalCanvasOrigin": [
+              -119.42394736842104,
+              -25.238684210526316
+            ],
+            "canonicalUnionAlphaBounds": [
+              109.83999999999989,
+              -10.266666666666765,
+              1926.0922570016473,
+              1076.0266666666666
+            ],
+            "logicalUnionAlphaBounds": [
+              -95,
+              -28,
+              314,
+              217
+            ],
+            "cellWidth": 448,
+            "cellHeight": 448,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 114,
+              "top": 129
+            },
+            "groundPivot": [
+              210.0,
+              294
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 123,
+          "oldCell": 384,
+          "oldBodyPixels": 87.83730158730158,
+          "newCell": 768,
+          "newBodyPixels": 185.53125,
+          "magnification": 2.112214818161283,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 298,
+            "top": 290
+          },
+          "atlasDimensions": [
+            7680,
+            7680
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2048,
+                2048
+              ],
+              "alphaBounds": [
+                128,
+                34,
+                1913,
+                2013
+              ],
+              "bodyHeightFraction": 0.96630859375,
+              "groundFraction": 0.98291015625
+            },
+            "idleBodyCoreBounds": [
+              752,
+              308,
+              1170,
+              774
+            ],
+            "idleBodyHeightSourcePixels": 466,
+            "idleBodyHeightOutputPixels": 185.53125,
+            "idleGroundSourcePixels": 774,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.3981357296137339,
+            "logicalCanvasOrigin": [
+              -286.60843615879827,
+              -119.15705472103002
+            ],
+            "canonicalUnionAlphaBounds": [
+              30.982978723404315,
+              6.5872340425531775,
+              1838.6681614349775,
+              1062.5234042553193
+            ],
+            "logicalUnionAlphaBounds": [
+              -275,
+              -117,
+              446,
+              304
+            ],
+            "cellWidth": 768,
+            "cellHeight": 768,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 298,
+              "top": 290
+            },
+            "groundPivot": [
+              394.0,
+              479
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 124,
+          "oldCell": 448,
+          "oldBodyPixels": 134.33367243133264,
+          "newCell": 576,
+          "newBodyPixels": 187.0396600566572,
+          "magnification": 1.3923512747875353,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 191,
+            "top": 190
+          },
+          "atlasDimensions": [
+            5760,
+            5760
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2048,
+                2048
+              ],
+              "alphaBounds": [
+                0,
+                14,
+                2032,
+                2035
+              ],
+              "bodyHeightFraction": 0.98681640625,
+              "groundFraction": 0.99365234375
+            },
+            "idleBodyCoreBounds": [
+              606,
+              194,
+              1312,
+              889
+            ],
+            "idleBodyHeightSourcePixels": 695,
+            "idleBodyHeightOutputPixels": 187.0396600566572,
+            "idleGroundSourcePixels": 889,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.26912181303116145,
+            "logicalCanvasOrigin": [
+              -162.08781869688386,
+              -48.249291784702535
+            ],
+            "canonicalUnionAlphaBounds": [
+              1.3778735632183725,
+              2.2758620689654663,
+              1918.6192528735633,
+              1080.7241379310344
+            ],
+            "logicalUnionAlphaBounds": [
+              -162,
+              -48,
+              355,
+              243
+            ],
+            "cellWidth": 576,
+            "cellHeight": 576,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 191,
+              "top": 190
+            },
+            "groundPivot": [
+              287.0,
+              381
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 128,
+          "oldCell": 448,
+          "oldBodyPixels": 111.6342412451362,
+          "newCell": 640,
+          "newBodyPixels": 189.0,
+          "magnification": 1.6930289299407457,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 224,
+            "top": 224
+          },
+          "atlasDimensions": [
+            6400,
+            6400
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2048,
+                2048
+              ],
+              "alphaBounds": [
+                81,
+                15,
+                2048,
+                2031
+              ],
+              "bodyHeightFraction": 0.984375,
+              "groundFraction": 0.99169921875
+            },
+            "idleBodyCoreBounds": [
+              664,
+              238,
+              1256,
+              842
+            ],
+            "idleBodyHeightSourcePixels": 604,
+            "idleBodyHeightOutputPixels": 189.0,
+            "idleGroundSourcePixels": 842,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.3129139072847682,
+            "logicalCanvasOrigin": [
+              -204.39735099337747,
+              -73.47350993377484
+            ],
+            "canonicalUnionAlphaBounds": [
+              -1.0,
+              0.0,
+              1919.0,
+              1080.0
+            ],
+            "logicalUnionAlphaBounds": [
+              -205,
+              -74,
+              397,
+              265
+            ],
+            "cellWidth": 640,
+            "cellHeight": 640,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 224,
+              "top": 224
+            },
+            "groundPivot": [
+              320.0,
+              414
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 129,
+          "oldCell": 320,
+          "oldBodyPixels": 84.875,
+          "newCell": 576,
+          "newBodyPixels": 187.96875,
+          "magnification": 2.214653902798233,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 192,
+            "top": 193
+          },
+          "atlasDimensions": [
+            5760,
+            5760
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2048,
+                2048
+              ],
+              "alphaBounds": [
+                20,
+                15,
+                2040,
+                2020
+              ],
+              "bodyHeightFraction": 0.97900390625,
+              "groundFraction": 0.986328125
+            },
+            "idleBodyCoreBounds": [
+              618,
+              200,
+              1302,
+              879
+            ],
+            "idleBodyHeightSourcePixels": 679,
+            "idleBodyHeightOutputPixels": 187.96875,
+            "idleGroundSourcePixels": 879,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.2768317378497791,
+            "logicalCanvasOrigin": [
+              -169.75846833578794,
+              -54.33509756995582
+            ],
+            "canonicalUnionAlphaBounds": [
+              2.231671554252216,
+              0.2941176470587834,
+              1913.7859237536657,
+              1078.7058823529412
+            ],
+            "logicalUnionAlphaBounds": [
+              -170,
+              -55,
+              361,
+              245
+            ],
+            "cellWidth": 576,
+            "cellHeight": 576,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 192,
+              "top": 193
+            },
+            "groundPivot": [
+              288.0,
+              382
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 130,
+          "oldCell": 448,
+          "oldBodyPixels": 144.06593406593407,
+          "newCell": 576,
+          "newBodyPixels": 190.6875,
+          "magnification": 1.323612700228833,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 180,
+            "top": 192
+          },
+          "atlasDimensions": [
+            5760,
+            5760
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2048,
+                2048
+              ],
+              "alphaBounds": [
+                33,
+                7,
+                2017,
+                2041
+              ],
+              "bodyHeightFraction": 0.9931640625,
+              "groundFraction": 0.99658203125
+            },
+            "idleBodyCoreBounds": [
+              692,
+              264,
+              1229,
+              816
+            ],
+            "idleBodyHeightSourcePixels": 552,
+            "idleBodyHeightOutputPixels": 190.6875,
+            "idleGroundSourcePixels": 816,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.3454483695652174,
+            "logicalCanvasOrigin": [
+              -235.8031589673913,
+              -90.88586956521738
+            ],
+            "canonicalUnionAlphaBounds": [
+              253.5,
+              8.53720508166973,
+              1736.4056261343012,
+              1072.0
+            ],
+            "logicalUnionAlphaBounds": [
+              -149,
+              -88,
+              365,
+              280
+            ],
+            "cellWidth": 576,
+            "cellHeight": 576,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 180,
+              "top": 192
+            },
+            "groundPivot": [
+              276.0,
+              383
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        },
+        {
+          "speciesId": 131,
+          "oldCell": 384,
+          "oldBodyPixels": 112.16457960644007,
+          "newCell": 576,
+          "newBodyPixels": 185.625,
+          "magnification": 1.6549342105263158,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 191,
+            "top": 189
+          },
+          "atlasDimensions": [
+            5760,
+            5760
+          ],
+          "normalization": {
+            "schemaVersion": 1,
+            "referenceAction": "idle",
+            "referenceFrameIndex": 0,
+            "reference": {
+              "size": [
+                2048,
+                2048
+              ],
+              "alphaBounds": [
+                8,
+                54,
+                2008,
+                2034
+              ],
+              "bodyHeightFraction": 0.966796875,
+              "groundFraction": 0.9931640625
+            },
+            "idleBodyCoreBounds": [
+              633,
+              211,
+              1286,
+              871
+            ],
+            "idleBodyHeightSourcePixels": 660,
+            "idleBodyHeightOutputPixels": 185.625,
+            "idleGroundSourcePixels": 871,
+            "sourceCoordinateSystem": [
+              1920,
+              1080
+            ],
+            "sharedScale": 0.28125,
+            "logicalCanvasOrigin": [
+              -173.859375,
+              -53.96875
+            ],
+            "canonicalUnionAlphaBounds": [
+              0.0,
+              0.0,
+              1920.0,
+              1081.0
+            ],
+            "logicalUnionAlphaBounds": [
+              -174,
+              -54,
+              367,
+              251
+            ],
+            "cellWidth": 576,
+            "cellHeight": 576,
+            "viewport": {
+              "width": 192,
+              "height": 192,
+              "left": 191,
+              "top": 189
+            },
+            "groundPivot": [
+              287.0,
+              380
+            ],
+            "paddingPixels": 16,
+            "maxTextureDimension": 8192,
+            "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+            "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding."
+          }
+        }
+      ]
+    },
+    "installation": {
+      "species": [
+        118,
+        119,
+        122,
+        123,
+        124,
+        128,
+        129,
+        130,
+        131
+      ],
+      "obsoletePagesRemoved": [
+        "/sprites/arkamon-paged/118/front/idle/page-00-799c8d1a861f4020.webp",
+        "/sprites/arkamon-paged/118/front/idle/page-01-8e39c7e8e50c63b0.webp",
+        "/sprites/arkamon-paged/118/front/idle/page-02-8f0c19cbcf5bffc4.webp",
+        "/sprites/arkamon-paged/118/front/idle/page-03-c6f4e7e6bcf19320.webp",
+        "/sprites/arkamon-paged/118/front/idle/page-04-68c2d45ea903c96d.webp",
+        "/sprites/arkamon-paged/118/front/idle/page-05-c897c6260f6cfe0f.webp",
+        "/sprites/arkamon-paged/118/front/attack/page-00-c9eb5b0b155c283a.webp",
+        "/sprites/arkamon-paged/118/front/attack/page-01-818657cc2e5bba43.webp",
+        "/sprites/arkamon-paged/118/front/attack/page-02-63a3c19a31d81a15.webp",
+        "/sprites/arkamon-paged/118/front/attack/page-03-babec441b9ce7045.webp",
+        "/sprites/arkamon-paged/118/front/attack/page-04-51c5a0fdf4aa4678.webp",
+        "/sprites/arkamon-paged/118/front/attack/page-05-cea74d2b867a92df.webp",
+        "/sprites/arkamon-paged/118/front/hit/page-00-aebdcdcea4a94943.webp",
+        "/sprites/arkamon-paged/118/front/hit/page-01-f0b62ac1400ad1dd.webp",
+        "/sprites/arkamon-paged/118/front/hit/page-02-1e8809e669f7fc96.webp",
+        "/sprites/arkamon-paged/118/front/hit/page-03-226b210c7161b8f7.webp",
+        "/sprites/arkamon-paged/118/front/hit/page-04-e423f7f874a898ed.webp",
+        "/sprites/arkamon-paged/118/front/hit/page-05-2445d96712733ce1.webp",
+        "/sprites/arkamon-paged/118/front/victory/page-00-2a2333e6befb0309.webp",
+        "/sprites/arkamon-paged/118/front/victory/page-01-1140d5e07fc5a5a6.webp",
+        "/sprites/arkamon-paged/118/front/victory/page-02-1225dbacf24070cd.webp",
+        "/sprites/arkamon-paged/118/front/victory/page-03-478ece72699a69de.webp",
+        "/sprites/arkamon-paged/118/front/victory/page-04-6d4dc33a01446506.webp",
+        "/sprites/arkamon-paged/118/front/victory/page-05-a39029f77d986d3d.webp",
+        "/sprites/arkamon-paged/118/front/ko/page-00-a1b2ca6383499abb.webp",
+        "/sprites/arkamon-paged/118/front/ko/page-01-c4b7966e25a9e4dd.webp",
+        "/sprites/arkamon-paged/118/front/ko/page-02-2906a34742ddc780.webp",
+        "/sprites/arkamon-paged/118/front/ko/page-03-a1b944f7cd7b346d.webp",
+        "/sprites/arkamon-paged/118/front/ko/page-04-c97eb272760c8ceb.webp",
+        "/sprites/arkamon-paged/118/front/ko/page-05-46b57818da630a3d.webp",
+        "/sprites/arkamon-paged/119/front/idle/page-00-65a20d117216b232.webp",
+        "/sprites/arkamon-paged/119/front/idle/page-01-c6308d995665d583.webp",
+        "/sprites/arkamon-paged/119/front/idle/page-02-d6a981b079758161.webp",
+        "/sprites/arkamon-paged/119/front/idle/page-03-1855c10d27835e7a.webp",
+        "/sprites/arkamon-paged/119/front/idle/page-04-fa5c7a51b10c1249.webp",
+        "/sprites/arkamon-paged/119/front/idle/page-05-b25600f5114f54a0.webp",
+        "/sprites/arkamon-paged/119/front/attack/page-00-7a4066be8fb02e53.webp",
+        "/sprites/arkamon-paged/119/front/attack/page-01-780932e08deec1df.webp",
+        "/sprites/arkamon-paged/119/front/attack/page-02-d4bb84a6a1d41fc6.webp",
+        "/sprites/arkamon-paged/119/front/attack/page-03-1db6aa173546dcdc.webp",
+        "/sprites/arkamon-paged/119/front/attack/page-04-6193ca29d70aad52.webp",
+        "/sprites/arkamon-paged/119/front/attack/page-05-5d7374deecc6b0cd.webp",
+        "/sprites/arkamon-paged/119/front/hit/page-00-cc60c280fce59179.webp",
+        "/sprites/arkamon-paged/119/front/hit/page-01-9b3d9ca068730b16.webp",
+        "/sprites/arkamon-paged/119/front/hit/page-02-48f387d8ad684c26.webp",
+        "/sprites/arkamon-paged/119/front/hit/page-03-1fa812456a407fe6.webp",
+        "/sprites/arkamon-paged/119/front/hit/page-04-f1b700a4066140d5.webp",
+        "/sprites/arkamon-paged/119/front/hit/page-05-530d21c20120df56.webp",
+        "/sprites/arkamon-paged/119/front/victory/page-00-b26de5db12a1e28a.webp",
+        "/sprites/arkamon-paged/119/front/victory/page-01-633bd87b5be1b008.webp",
+        "/sprites/arkamon-paged/119/front/victory/page-02-0971bd90d06c36de.webp",
+        "/sprites/arkamon-paged/119/front/victory/page-03-997690527d8a42f2.webp",
+        "/sprites/arkamon-paged/119/front/victory/page-04-8cb5faf032f7f906.webp",
+        "/sprites/arkamon-paged/119/front/victory/page-05-28b6494a8794545c.webp",
+        "/sprites/arkamon-paged/119/front/ko/page-00-70b5b63e2fc29b59.webp",
+        "/sprites/arkamon-paged/119/front/ko/page-01-b78a99052a113ca4.webp",
+        "/sprites/arkamon-paged/119/front/ko/page-02-c36d5b51b5665129.webp",
+        "/sprites/arkamon-paged/119/front/ko/page-03-2f7e69f9b5a6e5c2.webp",
+        "/sprites/arkamon-paged/119/front/ko/page-04-c26a5c3a99aaca3e.webp",
+        "/sprites/arkamon-paged/119/front/ko/page-05-5217ac4bdc290fe1.webp",
+        "/sprites/arkamon-paged/122/front/idle/page-00-16ca62f8205340c3.webp",
+        "/sprites/arkamon-paged/122/front/idle/page-01-a51e53f3e255fe2a.webp",
+        "/sprites/arkamon-paged/122/front/idle/page-02-20a1d447feb3ed63.webp",
+        "/sprites/arkamon-paged/122/front/idle/page-03-40d9da6bc15b6ab4.webp",
+        "/sprites/arkamon-paged/122/front/idle/page-04-12015de432f6ce54.webp",
+        "/sprites/arkamon-paged/122/front/idle/page-05-6b3acf1649eac2ba.webp",
+        "/sprites/arkamon-paged/122/front/attack/page-00-957d64605c76f3ca.webp",
+        "/sprites/arkamon-paged/122/front/attack/page-01-17425934a265cb41.webp",
+        "/sprites/arkamon-paged/122/front/attack/page-02-e8381311f3c94b32.webp",
+        "/sprites/arkamon-paged/122/front/attack/page-03-2718189db9f6cf2f.webp",
+        "/sprites/arkamon-paged/122/front/attack/page-04-c9c51f68006e6cd9.webp",
+        "/sprites/arkamon-paged/122/front/attack/page-05-33f0099b67cab953.webp",
+        "/sprites/arkamon-paged/122/front/hit/page-00-2d6c4aa85f32a5e3.webp",
+        "/sprites/arkamon-paged/122/front/hit/page-01-641f58653efaf363.webp",
+        "/sprites/arkamon-paged/122/front/hit/page-02-1b130d00bac6ba0b.webp",
+        "/sprites/arkamon-paged/122/front/hit/page-03-9745213d672d2488.webp",
+        "/sprites/arkamon-paged/122/front/hit/page-04-84f9a6a2e1e8ee03.webp",
+        "/sprites/arkamon-paged/122/front/hit/page-05-71b2154ed8765527.webp",
+        "/sprites/arkamon-paged/122/front/victory/page-00-5dd3354e320fe4d3.webp",
+        "/sprites/arkamon-paged/122/front/victory/page-01-6478e7d7429253fc.webp",
+        "/sprites/arkamon-paged/122/front/victory/page-02-0d6074e2a77befce.webp",
+        "/sprites/arkamon-paged/122/front/victory/page-03-3a48c7b13561c837.webp",
+        "/sprites/arkamon-paged/122/front/victory/page-04-ffdf767d155dac61.webp",
+        "/sprites/arkamon-paged/122/front/victory/page-05-db5a13f9b77f905f.webp",
+        "/sprites/arkamon-paged/122/front/ko/page-00-850e4cdb7517b322.webp",
+        "/sprites/arkamon-paged/122/front/ko/page-01-34199a8e29267ae5.webp",
+        "/sprites/arkamon-paged/122/front/ko/page-02-f72fef2e6eaf39a1.webp",
+        "/sprites/arkamon-paged/122/front/ko/page-03-9b54a5cd6ea805f7.webp",
+        "/sprites/arkamon-paged/122/front/ko/page-04-ca8749baad3f3983.webp",
+        "/sprites/arkamon-paged/122/front/ko/page-05-f3982a6488374d05.webp",
+        "/sprites/arkamon-paged/123/front/idle/page-00-71ad498751b4e162.webp",
+        "/sprites/arkamon-paged/123/front/idle/page-01-5204c33adc4176bf.webp",
+        "/sprites/arkamon-paged/123/front/idle/page-02-3bf053e45b560264.webp",
+        "/sprites/arkamon-paged/123/front/idle/page-03-ab2878e75a4e6d04.webp",
+        "/sprites/arkamon-paged/123/front/idle/page-04-18bf724c4db45213.webp",
+        "/sprites/arkamon-paged/123/front/idle/page-05-4c37b3b71dfdcd97.webp",
+        "/sprites/arkamon-paged/123/front/attack/page-00-a2dbc052db78ee85.webp",
+        "/sprites/arkamon-paged/123/front/attack/page-01-a26117c9f6ed67be.webp",
+        "/sprites/arkamon-paged/123/front/attack/page-02-4b72c7e10cb0a2dd.webp",
+        "/sprites/arkamon-paged/123/front/attack/page-03-5f72229156484676.webp",
+        "/sprites/arkamon-paged/123/front/attack/page-04-8bc6c011f3b8aaff.webp",
+        "/sprites/arkamon-paged/123/front/attack/page-05-d46ddd35b5e2c54b.webp",
+        "/sprites/arkamon-paged/123/front/hit/page-00-ce87bea201bdf605.webp",
+        "/sprites/arkamon-paged/123/front/hit/page-01-4355ec4cf2bc23cf.webp",
+        "/sprites/arkamon-paged/123/front/hit/page-02-c9d0c861bda8e622.webp",
+        "/sprites/arkamon-paged/123/front/hit/page-03-d18a5cc03ec05e68.webp",
+        "/sprites/arkamon-paged/123/front/hit/page-04-47d1ab7592868db9.webp",
+        "/sprites/arkamon-paged/123/front/hit/page-05-1cfcebf6d4864b34.webp",
+        "/sprites/arkamon-paged/123/front/victory/page-00-ae9799801f7f6085.webp",
+        "/sprites/arkamon-paged/123/front/victory/page-01-fff5f5b52ed2e4a2.webp",
+        "/sprites/arkamon-paged/123/front/victory/page-02-2c7fbb02f09cc0a4.webp",
+        "/sprites/arkamon-paged/123/front/victory/page-03-9e79e142fe7230ac.webp",
+        "/sprites/arkamon-paged/123/front/victory/page-04-43430f96314dd160.webp",
+        "/sprites/arkamon-paged/123/front/victory/page-05-4a1ebd6027efb9c0.webp",
+        "/sprites/arkamon-paged/123/front/ko/page-00-9ef352fe76af3dce.webp",
+        "/sprites/arkamon-paged/123/front/ko/page-01-41f7beeb3b0e4c5a.webp",
+        "/sprites/arkamon-paged/123/front/ko/page-02-f098d6b9c777ff15.webp",
+        "/sprites/arkamon-paged/123/front/ko/page-03-e404011132a8ff14.webp",
+        "/sprites/arkamon-paged/123/front/ko/page-04-1e1f229aaaa6ac23.webp",
+        "/sprites/arkamon-paged/123/front/ko/page-05-ce6f952671ab1b24.webp",
+        "/sprites/arkamon-paged/124/front/idle/page-00-01f9c793c9dc5326.webp",
+        "/sprites/arkamon-paged/124/front/idle/page-01-d55c740be7655b64.webp",
+        "/sprites/arkamon-paged/124/front/idle/page-02-0711977a3624b83d.webp",
+        "/sprites/arkamon-paged/124/front/idle/page-03-a3f6514121513aec.webp",
+        "/sprites/arkamon-paged/124/front/idle/page-04-020c6b328a3e74f0.webp",
+        "/sprites/arkamon-paged/124/front/idle/page-05-f07099e471028ae9.webp",
+        "/sprites/arkamon-paged/124/front/attack/page-00-917368ac144248af.webp",
+        "/sprites/arkamon-paged/124/front/attack/page-01-f65a1fe44b247c90.webp",
+        "/sprites/arkamon-paged/124/front/attack/page-02-c8c21a686ef038ef.webp",
+        "/sprites/arkamon-paged/124/front/attack/page-03-c1fa4524614d7929.webp",
+        "/sprites/arkamon-paged/124/front/attack/page-04-8a153e9dcd64057e.webp",
+        "/sprites/arkamon-paged/124/front/attack/page-05-d7327c1a9468be50.webp",
+        "/sprites/arkamon-paged/124/front/hit/page-00-ce645578148c9d67.webp",
+        "/sprites/arkamon-paged/124/front/hit/page-01-588e6b7c695a02dd.webp",
+        "/sprites/arkamon-paged/124/front/hit/page-02-542cdbe8f7b4c104.webp",
+        "/sprites/arkamon-paged/124/front/hit/page-03-a5baaa159ad052a3.webp",
+        "/sprites/arkamon-paged/124/front/hit/page-04-cef3b57ac3e5f8f1.webp",
+        "/sprites/arkamon-paged/124/front/hit/page-05-c79a92b8715e2049.webp",
+        "/sprites/arkamon-paged/124/front/victory/page-00-3c92a78d1e451b26.webp",
+        "/sprites/arkamon-paged/124/front/victory/page-01-9d648932c49b0eed.webp",
+        "/sprites/arkamon-paged/124/front/victory/page-02-563236e293aa2879.webp",
+        "/sprites/arkamon-paged/124/front/victory/page-03-cf562530d8e6cc1b.webp",
+        "/sprites/arkamon-paged/124/front/victory/page-04-f685588150b09d74.webp",
+        "/sprites/arkamon-paged/124/front/victory/page-05-5e49e383ac6b7667.webp",
+        "/sprites/arkamon-paged/124/front/ko/page-00-45c77fa4997b5ff7.webp",
+        "/sprites/arkamon-paged/124/front/ko/page-01-bdf855b1db0e406f.webp",
+        "/sprites/arkamon-paged/124/front/ko/page-02-b4ca2f60b3343c01.webp",
+        "/sprites/arkamon-paged/124/front/ko/page-03-5fe118cc3336339d.webp",
+        "/sprites/arkamon-paged/124/front/ko/page-04-0ecb34ce82566453.webp",
+        "/sprites/arkamon-paged/124/front/ko/page-05-5e759ccd9f5b0edf.webp",
+        "/sprites/arkamon-paged/128/front/idle/page-00-4b18f07cbac1715b.webp",
+        "/sprites/arkamon-paged/128/front/idle/page-01-58096c031989b61c.webp",
+        "/sprites/arkamon-paged/128/front/idle/page-02-50c0db81bf320919.webp",
+        "/sprites/arkamon-paged/128/front/idle/page-03-01fb7cb54d6f8d74.webp",
+        "/sprites/arkamon-paged/128/front/idle/page-04-3be52c7694163b8c.webp",
+        "/sprites/arkamon-paged/128/front/idle/page-05-73e8dac07a86e6b6.webp",
+        "/sprites/arkamon-paged/128/front/attack/page-00-fb1cddebc913d9c2.webp",
+        "/sprites/arkamon-paged/128/front/attack/page-01-b8e57bdf28e682da.webp",
+        "/sprites/arkamon-paged/128/front/attack/page-02-1cda0c1f522785a5.webp",
+        "/sprites/arkamon-paged/128/front/attack/page-03-099f9ab0d5f32462.webp",
+        "/sprites/arkamon-paged/128/front/attack/page-04-9b948e1510d279c9.webp",
+        "/sprites/arkamon-paged/128/front/attack/page-05-e95d4b574ee1de50.webp",
+        "/sprites/arkamon-paged/128/front/hit/page-00-0a553c777fc4f1d3.webp",
+        "/sprites/arkamon-paged/128/front/hit/page-01-62de6b5bf704f42b.webp",
+        "/sprites/arkamon-paged/128/front/hit/page-02-65e717cedfe3353f.webp",
+        "/sprites/arkamon-paged/128/front/hit/page-03-64352744d9826f94.webp",
+        "/sprites/arkamon-paged/128/front/hit/page-04-7ab8d308746d07d2.webp",
+        "/sprites/arkamon-paged/128/front/hit/page-05-82b24d012f137a56.webp",
+        "/sprites/arkamon-paged/128/front/victory/page-00-ace4c47055d435ac.webp",
+        "/sprites/arkamon-paged/128/front/victory/page-01-b6ae0d1009981427.webp",
+        "/sprites/arkamon-paged/128/front/victory/page-02-904aa17f8c0f33be.webp",
+        "/sprites/arkamon-paged/128/front/victory/page-03-6b03dd0a7da5a8fa.webp",
+        "/sprites/arkamon-paged/128/front/victory/page-04-28e24e7d6edc975e.webp",
+        "/sprites/arkamon-paged/128/front/victory/page-05-f3d4c915dfc29b5f.webp",
+        "/sprites/arkamon-paged/128/front/ko/page-00-b82a444f3b4bd9e1.webp",
+        "/sprites/arkamon-paged/128/front/ko/page-01-4d4d2453258d2525.webp",
+        "/sprites/arkamon-paged/128/front/ko/page-02-9b2722d1e58ff1dc.webp",
+        "/sprites/arkamon-paged/128/front/ko/page-03-926169238eac48b9.webp",
+        "/sprites/arkamon-paged/128/front/ko/page-04-4cd65b55544f842e.webp",
+        "/sprites/arkamon-paged/128/front/ko/page-05-8597529dd7aa37da.webp",
+        "/sprites/arkamon-paged/129/front/idle/page-00-54b6d8b856e9b34a.webp",
+        "/sprites/arkamon-paged/129/front/idle/page-01-a7f4a150fe934559.webp",
+        "/sprites/arkamon-paged/129/front/idle/page-02-1f19fd20736f8a46.webp",
+        "/sprites/arkamon-paged/129/front/idle/page-03-27054252474bf9ca.webp",
+        "/sprites/arkamon-paged/129/front/idle/page-04-78639a20c98ef16a.webp",
+        "/sprites/arkamon-paged/129/front/idle/page-05-be5b0b6f7e390611.webp",
+        "/sprites/arkamon-paged/129/front/attack/page-00-e6d1eddc7e9376bc.webp",
+        "/sprites/arkamon-paged/129/front/attack/page-01-a5ed9c273daea9e3.webp",
+        "/sprites/arkamon-paged/129/front/attack/page-02-42f09cad9b41e5b5.webp",
+        "/sprites/arkamon-paged/129/front/attack/page-03-9ef3af906778e269.webp",
+        "/sprites/arkamon-paged/129/front/attack/page-04-a6ce047c54a4677b.webp",
+        "/sprites/arkamon-paged/129/front/attack/page-05-a9ca89ec8d06c98d.webp",
+        "/sprites/arkamon-paged/129/front/hit/page-00-ad4c79c0c0efbbee.webp",
+        "/sprites/arkamon-paged/129/front/hit/page-01-c218ad026d9ae3cd.webp",
+        "/sprites/arkamon-paged/129/front/hit/page-02-6ee3b1d42616e711.webp",
+        "/sprites/arkamon-paged/129/front/hit/page-03-febd3c7154bc58ea.webp",
+        "/sprites/arkamon-paged/129/front/hit/page-04-6711761ba4591526.webp",
+        "/sprites/arkamon-paged/129/front/hit/page-05-ca8319daf7d5a8f1.webp",
+        "/sprites/arkamon-paged/129/front/victory/page-00-d3f0c5cb9ff08b3f.webp",
+        "/sprites/arkamon-paged/129/front/victory/page-01-e5cd17f5c9296a92.webp",
+        "/sprites/arkamon-paged/129/front/victory/page-02-b3247db320ea1541.webp",
+        "/sprites/arkamon-paged/129/front/victory/page-03-1c48d7a27deaba54.webp",
+        "/sprites/arkamon-paged/129/front/victory/page-04-eaa92c3539d77162.webp",
+        "/sprites/arkamon-paged/129/front/victory/page-05-0e22dbd6b1a72606.webp",
+        "/sprites/arkamon-paged/129/front/ko/page-00-b881fe1c738d578c.webp",
+        "/sprites/arkamon-paged/129/front/ko/page-01-94ed4fcae296708b.webp",
+        "/sprites/arkamon-paged/129/front/ko/page-02-d76164add0f0a538.webp",
+        "/sprites/arkamon-paged/129/front/ko/page-03-658df791365acfa8.webp",
+        "/sprites/arkamon-paged/129/front/ko/page-04-e11311a3e29072bf.webp",
+        "/sprites/arkamon-paged/129/front/ko/page-05-3a7dc5e587dcc382.webp",
+        "/sprites/arkamon-paged/130/front/idle/page-00-b69fd4780a92cbf2.webp",
+        "/sprites/arkamon-paged/130/front/idle/page-01-db38551a2a261855.webp",
+        "/sprites/arkamon-paged/130/front/idle/page-02-7e17a15445d5e865.webp",
+        "/sprites/arkamon-paged/130/front/idle/page-03-64ed50ed14da2d73.webp",
+        "/sprites/arkamon-paged/130/front/idle/page-04-14f838a49d7f9ac1.webp",
+        "/sprites/arkamon-paged/130/front/idle/page-05-c0d4fd697cd8d649.webp",
+        "/sprites/arkamon-paged/130/front/attack/page-00-6f51dda7e8d64846.webp",
+        "/sprites/arkamon-paged/130/front/attack/page-01-70dd3768b1ccf9ba.webp",
+        "/sprites/arkamon-paged/130/front/attack/page-02-1d144c52098f473a.webp",
+        "/sprites/arkamon-paged/130/front/attack/page-03-4de0b78b4fb89f7d.webp",
+        "/sprites/arkamon-paged/130/front/attack/page-04-023da48cfef4cce3.webp",
+        "/sprites/arkamon-paged/130/front/attack/page-05-960ec5be163a8cc4.webp",
+        "/sprites/arkamon-paged/130/front/hit/page-00-7ef8caa69582d8de.webp",
+        "/sprites/arkamon-paged/130/front/hit/page-01-ba361cbdb175cc7f.webp",
+        "/sprites/arkamon-paged/130/front/hit/page-02-44759aa83c178a36.webp",
+        "/sprites/arkamon-paged/130/front/hit/page-03-c003011b48d5925e.webp",
+        "/sprites/arkamon-paged/130/front/hit/page-04-c360e78a924475d0.webp",
+        "/sprites/arkamon-paged/130/front/hit/page-05-24405a560db23a57.webp",
+        "/sprites/arkamon-paged/130/front/victory/page-00-f2dd8b29251f5b0d.webp",
+        "/sprites/arkamon-paged/130/front/victory/page-01-fb69bdafd0f49959.webp",
+        "/sprites/arkamon-paged/130/front/victory/page-02-cba74e8f0764436f.webp",
+        "/sprites/arkamon-paged/130/front/victory/page-03-033a029f2afa21e4.webp",
+        "/sprites/arkamon-paged/130/front/victory/page-04-c7f8b325e99146b7.webp",
+        "/sprites/arkamon-paged/130/front/victory/page-05-67fae5fb9cce364d.webp",
+        "/sprites/arkamon-paged/130/front/ko/page-00-40d745653d117e1b.webp",
+        "/sprites/arkamon-paged/130/front/ko/page-01-bf7277ff3bd09df1.webp",
+        "/sprites/arkamon-paged/130/front/ko/page-02-bfde464e70a90f02.webp",
+        "/sprites/arkamon-paged/130/front/ko/page-03-356815932ef51427.webp",
+        "/sprites/arkamon-paged/130/front/ko/page-04-1d3a4481830b99cf.webp",
+        "/sprites/arkamon-paged/130/front/ko/page-05-2808839149cd8257.webp",
+        "/sprites/arkamon-paged/131/front/idle/page-00-becdb163a772d27f.webp",
+        "/sprites/arkamon-paged/131/front/idle/page-01-2240cc54f357258b.webp",
+        "/sprites/arkamon-paged/131/front/idle/page-02-d4b843ea8b56c546.webp",
+        "/sprites/arkamon-paged/131/front/idle/page-03-c2bae567c7bb503a.webp",
+        "/sprites/arkamon-paged/131/front/idle/page-04-067da935e3548c02.webp",
+        "/sprites/arkamon-paged/131/front/idle/page-05-eae980a0fe91c576.webp",
+        "/sprites/arkamon-paged/131/front/attack/page-00-6bd06a2695b3151a.webp",
+        "/sprites/arkamon-paged/131/front/attack/page-01-1118fdcdd62e97da.webp",
+        "/sprites/arkamon-paged/131/front/attack/page-02-c4140cf66b84b5be.webp",
+        "/sprites/arkamon-paged/131/front/attack/page-03-3b9d7ff75286ef20.webp",
+        "/sprites/arkamon-paged/131/front/attack/page-04-e97754c353bb684d.webp",
+        "/sprites/arkamon-paged/131/front/attack/page-05-b438c2ffa5d8b2b4.webp",
+        "/sprites/arkamon-paged/131/front/hit/page-00-2f3eccceb77391a3.webp",
+        "/sprites/arkamon-paged/131/front/hit/page-01-49308d61f0587133.webp",
+        "/sprites/arkamon-paged/131/front/hit/page-02-8b1bc3d49bcf9a02.webp",
+        "/sprites/arkamon-paged/131/front/hit/page-03-cd336ce7ed6deed7.webp",
+        "/sprites/arkamon-paged/131/front/hit/page-04-b3e870b053cb121b.webp",
+        "/sprites/arkamon-paged/131/front/hit/page-05-1d11c1df2525020c.webp",
+        "/sprites/arkamon-paged/131/front/victory/page-00-178d3f7e8eb15db3.webp",
+        "/sprites/arkamon-paged/131/front/victory/page-01-50b934de0b0ed477.webp",
+        "/sprites/arkamon-paged/131/front/victory/page-02-8d559fb4e1580777.webp",
+        "/sprites/arkamon-paged/131/front/victory/page-03-364039e56f0fe6e0.webp",
+        "/sprites/arkamon-paged/131/front/victory/page-04-521a11ea42e22b96.webp",
+        "/sprites/arkamon-paged/131/front/victory/page-05-e08e258dad2023a0.webp",
+        "/sprites/arkamon-paged/131/front/ko/page-00-3e6cc849f2ebc7cc.webp",
+        "/sprites/arkamon-paged/131/front/ko/page-01-27d6661a8eb1a3ab.webp",
+        "/sprites/arkamon-paged/131/front/ko/page-02-b86a153529910c6f.webp",
+        "/sprites/arkamon-paged/131/front/ko/page-03-4b2c4e30a1e1acae.webp",
+        "/sprites/arkamon-paged/131/front/ko/page-04-f43831aabbf7c2c7.webp",
+        "/sprites/arkamon-paged/131/front/ko/page-05-78185a887213b027.webp"
+      ],
+      "catalogClips": 665,
+      "catalogPages": 6935
+    }
   },
   "sources": [
     {
@@ -11960,26 +13718,26 @@
       "fps": 24,
       "sourceSha256": "3d8d4b107189298299ebaa301526745548b7b15a8ffc09c20e7c929e5c0e0c82",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "c3e3ddac7916bc6c51bbbad30a2d1a6bf3d37f27e88eeac0ff0464c14d4a165c",
+      "atlasSha256": "8fcab2c6ba60417ff10982d064ef21f72074b940867a1ea87ba954e391a1d708",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12204,
+      "firstPosterOccupiedPixels": 22219,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12198,
-        "pixelsOver16": 11586,
+        "occupiedPixels": 22238,
+        "pixelsOver16": 21319,
         "alphaBounds": [
-          153,
-          160,
-          295,
-          293
+          192,
+          197,
+          384,
+          377
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -11990,26 +13748,26 @@
       "fps": 24,
       "sourceSha256": "6e29a5cb0fc74bad64c6e2b53106a28ff9caa20603e4beef2dce0c217fd51ed3",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "9854e0e935c285f589ae78ab01ffa0e3a39c439f618bfd75620a5bf704f75e35",
+      "atlasSha256": "db45d1347acb561e82ec30d4e32f7fe1114d4ef6c9a3b06d88716e4e3262d89b",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12131,
+      "firstPosterOccupiedPixels": 22111,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12899,
-        "pixelsOver16": 11983,
+        "occupiedPixels": 23379,
+        "pixelsOver16": 22115,
         "alphaBounds": [
-          54,
-          158,
-          397,
-          329
+          57,
+          195,
+          523,
+          425
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 51,
@@ -12024,26 +13782,26 @@
       "fps": 24,
       "sourceSha256": "ae8cd02c5236dc79a9389b3ae0c30cfaadc56495a9f2a4d144e465301798f1cd",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "f740467689ad90788b61788adfbd30082a16f7e09768f37cb02c42d025abfc75",
+      "atlasSha256": "9241c1f5db0dcf31bfb4cd34835cea1510b2929e8092309f894dfb57e5ee0326",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12227,
+      "firstPosterOccupiedPixels": 22289,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 14113,
-        "pixelsOver16": 12511,
+        "occupiedPixels": 25259,
+        "pixelsOver16": 23067,
         "alphaBounds": [
-          40,
-          123,
-          408,
-          331
+          36,
+          146,
+          539,
+          429
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 31,
@@ -12058,26 +13816,26 @@
       "fps": 24,
       "sourceSha256": "8a19eaba13a88141454f6a6dad1feaaa0d92e9b0bdcddcb03edf29b01faed72a",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "3cbde1a4121f61527870f74c61a0fb5b5c0e49aabfc114ce601c95aa74c65e2d",
+      "atlasSha256": "fb51dd79865bdecc959a98f4c58035d20c9bf2c3965536ec26f349a2a015b680",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12179,
+      "firstPosterOccupiedPixels": 22198,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12240,
-        "pixelsOver16": 11568,
+        "occupiedPixels": 22337,
+        "pixelsOver16": 21343,
         "alphaBounds": [
-          57,
-          148,
-          295,
-          294
+          64,
+          181,
+          384,
+          378
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12088,26 +13846,26 @@
       "fps": 24,
       "sourceSha256": "4d6cf489963d7814a37db3b23a40f8f93f79c951e5b50bb8911ef9eff544877e",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "6d498a4f149dd88de15ff246c9f91b689e618fa1223a03e2e76d1b0d85fbc84d",
+      "atlasSha256": "f9e32bbceab1bec36094678891cf87865f9c35ed03ebda597f3b8164efcc94ce",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12192,
+      "firstPosterOccupiedPixels": 22238,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 2087,
-        "pixelsOver16": 943,
+        "occupiedPixels": 3107,
+        "pixelsOver16": 1671,
         "alphaBounds": [
           47,
-          123,
-          409,
-          330
+          146,
+          538,
+          428
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12118,26 +13876,26 @@
       "fps": 24,
       "sourceSha256": "e04ea4d035ef65fa6fa2305db46bd64dfa67a37c0bda7202dcd09555ee35ad7e",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "1f9b385169bb6eca3002d18a58242c6cd2ae4b9050700f882a33a3339fa5bb86",
+      "atlasSha256": "6fe47d85a52b491c43121c14d282545749d95f7b4c2197a4e26fe0b9535947b2",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12900,
+      "firstPosterOccupiedPixels": 21256,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12902,
-        "pixelsOver16": 11818,
+        "occupiedPixels": 21200,
+        "pixelsOver16": 19737,
         "alphaBounds": [
-          149,
-          151,
-          299,
-          297
+          159,
+          160,
+          353,
+          348
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1572864,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "maxPageDecodedBytes": 16777216,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12148,26 +13906,26 @@
       "fps": 24,
       "sourceSha256": "9a5a231d6b4109f452affeb60add463f7c901c359a02c3c995e1bdac45a68984",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "02567a59cdbe0201987f38a91c873f4ea57280d8356c27f37df772ae2e7c8688",
+      "atlasSha256": "7d1a97c62b321b815b7763866c597288220ecba600489d94d21aa6e0db68bad3",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12941,
+      "firstPosterOccupiedPixels": 21360,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 13944,
-        "pixelsOver16": 12527,
+        "occupiedPixels": 22911,
+        "pixelsOver16": 20983,
         "alphaBounds": [
-          45,
+          24,
           123,
-          405,
-          327
+          491,
+          388
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1572864,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "maxPageDecodedBytes": 16777216,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 48,
@@ -12182,26 +13940,26 @@
       "fps": 24,
       "sourceSha256": "e5c4913c2ab6c3020ea0786c23b1aade4bd5785a6ad750f4f246fb1fea295d3e",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "107c828f46e5c0a334bc395dbe9ad7824c42257e68b6b6746f873ed721edfc31",
+      "atlasSha256": "f68b347bda12cd893cee63fbe12bde58b14f61d4f870a00469743244f4a2525f",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12831,
+      "firstPosterOccupiedPixels": 21177,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12875,
-        "pixelsOver16": 11792,
+        "occupiedPixels": 21316,
+        "pixelsOver16": 19770,
         "alphaBounds": [
-          149,
-          150,
-          300,
-          296
+          159,
+          160,
+          354,
+          349
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1572864,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "maxPageDecodedBytes": 16777216,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 29,
@@ -12216,26 +13974,26 @@
       "fps": 24,
       "sourceSha256": "3443602fb7dd621b35e26f38cdb3227ed07079850bcbdfea2f1da07cee6e370b",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "9deaa97696020587e62d8a6f3a5c72a2b26677eba3c53610cb5732b1f9cd173c",
+      "atlasSha256": "c9dcf6a7b597e2c90c0b1681b6b142db4717e036aa542458c986150531b587d7",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12838,
+      "firstPosterOccupiedPixels": 21295,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12930,
-        "pixelsOver16": 11847,
+        "occupiedPixels": 21480,
+        "pixelsOver16": 19951,
         "alphaBounds": [
-          149,
-          132,
-          300,
-          296
+          159,
+          135,
+          354,
+          348
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1572864,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "maxPageDecodedBytes": 16777216,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12246,26 +14004,26 @@
       "fps": 24,
       "sourceSha256": "5e1c2b3cd99c3a571b69073d93f72437608ed030b639d7e2a63d6757f2cb1e28",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "ebb7f55711db000d407f7e18372731a951b9fe364d78696b106e0c64fee541de",
+      "atlasSha256": "d0a5a86a30ab45f035dba104d898652b449565c5dd8ce7f1393082811dd2780c",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 13000,
+      "firstPosterOccupiedPixels": 21462,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 27463,
-        "pixelsOver16": 21205,
+        "occupiedPixels": 43889,
+        "pixelsOver16": 35267,
         "alphaBounds": [
-          48,
+          27,
           123,
-          398,
-          327
+          482,
+          388
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1572864,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "maxPageDecodedBytes": 16777216,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12592,26 +14350,26 @@
       "fps": 24,
       "sourceSha256": "923fcb6e5f111ace955ea15ac8b47fa4ab5d97c8570ae26436dd3a4fee6631d9",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "8e70215cc9d5e478cbe05d0a56e1b1b2cd227f6585d87c0f8a995f513b270b8a",
+      "atlasSha256": "b0f4d0fde141feaa6e6b7ab999f02035b0c53f19b45537eccf4c2a54309d8845",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5233,
+      "firstPosterOccupiedPixels": 12017,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5080,
-        "pixelsOver16": 4294,
+        "occupiedPixels": 11637,
+        "pixelsOver16": 10232,
         "alphaBounds": [
-          91,
-          126,
-          211,
-          217
+          118,
+          155,
+          303,
+          294
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1204224,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "maxPageDecodedBytes": 12845056,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12622,26 +14380,26 @@
       "fps": 24,
       "sourceSha256": "b8295afab4a07882e40adc31f5af1fa50b68f10cfd13efac930e2f5f77b852a5",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "e23e3fd402ab746be2e45e0ab46683ed48ea1833812d62ff6a15d26b2f5927f3",
+      "atlasSha256": "4784e2feb42c4f2528be2bcc3893cf6564232df0a4440c811d9153a6a3b7129d",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5219,
+      "firstPosterOccupiedPixels": 11987,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 7026,
-        "pixelsOver16": 5806,
+        "occupiedPixels": 15987,
+        "pixelsOver16": 13816,
         "alphaBounds": [
-          91,
-          127,
-          262,
-          220
+          118,
+          154,
+          383,
+          296
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1204224,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "maxPageDecodedBytes": 12845056,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 39,
@@ -12656,26 +14414,26 @@
       "fps": 24,
       "sourceSha256": "e180da40bedf73f95b9ae9057e0a10b5eba339b9e754fd42ed88cb59598213bf",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "34e8d0595dcba874172319dc94368f7509c604a8326afab8003180c1eba029df",
+      "atlasSha256": "23b7ef37b5c2a012ee660eef62219ffa505c519e7c6676f67ea1006860e74e77",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 7134,
+      "firstPosterOccupiedPixels": 16523,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5124,
-        "pixelsOver16": 4307,
+        "occupiedPixels": 11600,
+        "pixelsOver16": 10224,
         "alphaBounds": [
-          81,
-          126,
-          203,
-          218
+          103,
+          154,
+          290,
+          295
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1204224,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "maxPageDecodedBytes": 12845056,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 13,
@@ -12690,26 +14448,26 @@
       "fps": 24,
       "sourceSha256": "4f9298616f0e3da5bdb9200a516b795a7c8b633d3d6eacac974cd12310911983",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "5f1427c8e232981506591839f597336db581ad88ec5aa2cef2fe49f691c4915c",
+      "atlasSha256": "ce28862c34bd108f8c29d198c207220afb9898ca3d98b4df2442a25f3c40baf9",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5371,
+      "firstPosterOccupiedPixels": 12360,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5375,
-        "pixelsOver16": 4608,
+        "occupiedPixels": 12401,
+        "pixelsOver16": 10956,
         "alphaBounds": [
-          90,
-          126,
-          210,
-          220
+          115,
+          152,
+          304,
+          296
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1204224,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "maxPageDecodedBytes": 12845056,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12720,26 +14478,26 @@
       "fps": 24,
       "sourceSha256": "007859397fd61c778cc2980548e06ba35837f6f7406570c08b9a556e2d1f50cc",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "a83890c1896deaccdd4e5cf3a0ddf3d471931a28d3ff294dd8e495f9012020a6",
+      "atlasSha256": "c2b97eca7379e07bc1014b9ba233b00403bb3004a9ae1527c326e73d04bda918",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5254,
+      "firstPosterOccupiedPixels": 12043,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 102,
-        "pixelsOver16": 34,
+        "occupiedPixels": 180,
+        "pixelsOver16": 77,
         "alphaBounds": [
-          95,
-          183,
-          222,
-          206
+          121,
+          241,
+          322,
+          276
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1204224,
       "unusedAtlasCellsTransparent": true,
       "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "maxPageDecodedBytes": 12845056,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12750,26 +14508,26 @@
       "fps": 24,
       "sourceSha256": "28565a5b9fbd385bbd82eb7d92a46fb3dadd9082edd7de072db654b5645499a9",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "7cfe4623aa1f33b5b03434534565b7e14dfd3b68011a4a597c92ddcd3623c0c1",
+      "atlasSha256": "2b0e9eca1cf075a776a3d2d436b3970378e676497ea9af604bc6f8b2fc8e57bc",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5242,
+      "firstPosterOccupiedPixels": 21976,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5803,
-        "pixelsOver16": 5100,
+        "occupiedPixels": 23905,
+        "pixelsOver16": 22338,
         "alphaBounds": [
-          141,
-          152,
-          247,
-          255
+          279,
+          270,
+          497,
+          483
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 3538944,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 16,
+      "maxPageDecodedBytes": 14155776,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12780,26 +14538,26 @@
       "fps": 24,
       "sourceSha256": "e7995599ed8438b6d621d0833ca0880c6eee14ddafab5098df1dcb73c3a2d040",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "e6c289bcaea4689e9a20b3a0535c0661484bd64aefb002cd01f49425a2dc46f1",
+      "atlasSha256": "3fadffbf68c7de751e970a6cf4ebd78e74ea241d1cfa789b90b792e021e2db27",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5759,
+      "firstPosterOccupiedPixels": 24169,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5785,
-        "pixelsOver16": 5195,
+        "occupiedPixels": 24429,
+        "pixelsOver16": 23027,
         "alphaBounds": [
-          140,
-          161,
-          259,
-          254
+          276,
+          292,
+          523,
+          483
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 3538944,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 16,
+      "maxPageDecodedBytes": 14155776,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 46,
@@ -12814,26 +14572,26 @@
       "fps": 24,
       "sourceSha256": "74d91ad797944cddaae2bf31871f5883a0df77e533199f92983657d90fab7fee",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "f1409d99bf7758625132a7bacef22faeb83ee161aba4d58e09942483b69dd9b4",
+      "atlasSha256": "9ebcdbc8070ab39b6d0a35473ea3197a89380e3d3d35ae37078074a4864b2e09",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5769,
+      "firstPosterOccupiedPixels": 24233,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5635,
-        "pixelsOver16": 5123,
+        "occupiedPixels": 23820,
+        "pixelsOver16": 22586,
         "alphaBounds": [
-          155,
-          159,
-          241,
-          254
+          307,
+          288,
+          484,
+          483
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 3538944,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 16,
+      "maxPageDecodedBytes": 14155776,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 22,
@@ -12848,26 +14606,26 @@
       "fps": 24,
       "sourceSha256": "9c7f71b4fbbd1aba19d6268b0a9ac4a9144dd768e38fd9a9235965eb1ea23883",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "a37e8c537f709290129e958eed404c13f8a47b47caad36ac7d08c578b07e7376",
+      "atlasSha256": "545c0caa480073968f058c1bf50495205cf6189f35b29dd3b66a49a3ce36e51b",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5380,
+      "firstPosterOccupiedPixels": 22491,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5491,
-        "pixelsOver16": 4857,
+        "occupiedPixels": 22782,
+        "pixelsOver16": 21428,
         "alphaBounds": [
-          148,
-          157,
-          248,
-          255
+          294,
+          281,
+          501,
+          482
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 3538944,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 16,
+      "maxPageDecodedBytes": 14155776,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12878,26 +14636,26 @@
       "fps": 24,
       "sourceSha256": "d06c61a9fd24da857fe1eda9e7f823636ce301a783a5afd6ad895a557462eb0f",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "0ae5d2a8e73b167865e350da6dcf087e2a97bb7d0e19d46e83a6ade65f1c765b",
+      "atlasSha256": "1e4a3caa56f59d46d75e76bbc47b9a5f0a9d35431d6ff5d68b483bfdfb7e5e42",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5162,
+      "firstPosterOccupiedPixels": 21451,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 9036,
-        "pixelsOver16": 8032,
+        "occupiedPixels": 37519,
+        "pixelsOver16": 35393,
         "alphaBounds": [
-          134,
-          140,
-          321,
-          276
+          262,
+          247,
+          653,
+          530
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 3538944,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 16,
+      "maxPageDecodedBytes": 14155776,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12908,26 +14666,26 @@
       "fps": 24,
       "sourceSha256": "beb32022f2343ce9ee8fd4d065b48351eea63ccfc4c986c0a02213adc7de4437",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "4591f4ab6f68fa1de0b442dd4fa19323068e6bea8712c3b9ff43ee89d208ae4e",
+      "atlasSha256": "96b3c760b8b4b0f34fda53ed2000b9bd34705fa26e245bc27e844af5da7db170",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 14559,
+      "firstPosterOccupiedPixels": 27662,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 14056,
-        "pixelsOver16": 12971,
+        "occupiedPixels": 26580,
+        "pixelsOver16": 24987,
         "alphaBounds": [
-          149,
-          152,
-          296,
-          293
+          184,
+          188,
+          388,
+          382
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -12938,26 +14696,26 @@
       "fps": 24,
       "sourceSha256": "c06e453f210389bc444097d75c32881cab53577b3824ffa9b6f5a95d6f84453a",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "11b94b3b67cbb3fa6746e7ed2a0d087d002fdf481e39559d29059faaeaca9514",
+      "atlasSha256": "ec65f97514d3b27d20f32d9a793b06f246e93efeca5dfea418eb59acc4caac60",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 14336,
+      "firstPosterOccupiedPixels": 27345,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 14404,
-        "pixelsOver16": 13359,
+        "occupiedPixels": 27484,
+        "pixelsOver16": 25836,
         "alphaBounds": [
-          153,
-          155,
-          294,
-          295
+          190,
+          191,
+          384,
+          385
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 45,
@@ -12972,26 +14730,26 @@
       "fps": 24,
       "sourceSha256": "d8e9bcb3f761cc76cf4914f5aacd2d66156fbeee8192e91e53921710e25dd099",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "a17bb868ed126dcac4fa771da0e39a235b70be4d1c24e0d0a5d756bba2f1c30d",
+      "atlasSha256": "784c256f47422301276fa03c9434d59691bbcb4fa0a1fedf91331ecdc8917905",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 15248,
+      "firstPosterOccupiedPixels": 28828,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 13954,
-        "pixelsOver16": 12984,
+        "occupiedPixels": 26532,
+        "pixelsOver16": 25120,
         "alphaBounds": [
-          155,
-          154,
-          296,
-          297
+          193,
+          190,
+          388,
+          387
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 15,
@@ -13006,26 +14764,26 @@
       "fps": 24,
       "sourceSha256": "a0ce597329d4dce525933d019dc9a75d3d4a15ba2c74af477681d961bef6a744",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "aa464e5b761194e445286c6297dca855c8a6917dae969e05f41c2a5a492a18b8",
+      "atlasSha256": "bdbb32f6151d3c76db51ad161db9bfadc012a213d64e1291ece79ff8c62a35d2",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 14487,
+      "firstPosterOccupiedPixels": 27532,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 14484,
-        "pixelsOver16": 13406,
+        "occupiedPixels": 27582,
+        "pixelsOver16": 25819,
         "alphaBounds": [
-          153,
-          155,
-          295,
-          295
+          189,
+          190,
+          385,
+          384
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13036,26 +14794,26 @@
       "fps": 24,
       "sourceSha256": "36ad6a12d23ba10b81243579c40244fd8da2980cac17fadf7f2d81092c6d2ec2",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "b46f59ef1fc4ea734039423fdef47ecb46cf98472faf823d0d8cc94eb2860dbc",
+      "atlasSha256": "a1c8838b4148db61db23dd757a2be6c409b5f833546a2bd655d3a52e9bb928e8",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 14411,
+      "firstPosterOccupiedPixels": 27265,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5660,
-        "pixelsOver16": 3884,
+        "occupiedPixels": 9776,
+        "pixelsOver16": 7371,
         "alphaBounds": [
-          100,
-          136,
-          340,
-          277
+          115,
+          163,
+          447,
+          359
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13540,26 +15298,26 @@
       "fps": 24,
       "sourceSha256": "2e63abcac48a0892bb8fe689914ffe6e7a0a7c87ccd0acf69de605310e3c666e",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "c492d4167735d70514ae3c9aa844c56c437146b612f6eb7f7734ae2ea0d19354",
+      "atlasSha256": "123e2a1770c8a36b625fb2c0402e1e772f1673990fba895f0964b8b364d4f28c",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8060,
+      "firstPosterOccupiedPixels": 22199,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 8116,
-        "pixelsOver16": 7340,
+        "occupiedPixels": 22455,
+        "pixelsOver16": 20850,
         "alphaBounds": [
-          167,
-          174,
-          282,
-          292
+          225,
+          222,
+          417,
+          416
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 2457600,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 11,
+      "maxPageDecodedBytes": 14745600,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13570,26 +15328,26 @@
       "fps": 24,
       "sourceSha256": "9ce7e7dd348c3c4a298be6d6828f087fe2f6436303c59e7355a5f9e7f9c8dc3b",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "8d8ffc80fa60d8176901126544bdc0a02294e8823ef4bf30b0d90e904419e890",
+      "atlasSha256": "66758f931596bfdb39438816c07f2a36a3e767599ca71cf89946efa12a76047a",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8036,
+      "firstPosterOccupiedPixels": 22082,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 8206,
-        "pixelsOver16": 7295,
+        "occupiedPixels": 22443,
+        "pixelsOver16": 20652,
         "alphaBounds": [
-          95,
-          133,
-          303,
-          322
+          102,
+          151,
+          452,
+          470
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 2457600,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 11,
+      "maxPageDecodedBytes": 14745600,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 35,
@@ -13604,26 +15362,26 @@
       "fps": 24,
       "sourceSha256": "0ef1875c36072c95aed9b476284eb87813f513864b6ef52e1732cf74e1d24500",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "a0de2963c470ed50188642c5b054d25342afe10a62c4cdf5a0eb14382bb58445",
+      "atlasSha256": "a43b9e3f4314f243ce9758c548ad20648aa0c7a8613bc10585adbbe3e3f1ba01",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8208,
+      "firstPosterOccupiedPixels": 22448,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 8260,
-        "pixelsOver16": 7427,
+        "occupiedPixels": 22615,
+        "pixelsOver16": 21015,
         "alphaBounds": [
-          164,
-          177,
-          285,
-          295
+          219,
+          225,
+          421,
+          422
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 2457600,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 11,
+      "maxPageDecodedBytes": 14745600,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 22,
@@ -13638,26 +15396,26 @@
       "fps": 24,
       "sourceSha256": "a6ecb7380b2cfdb57d996c114c4f8ed44e8095374429c74aded07fa6c8ab3153",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "03d45e5ff5a1ef237e78601dcccb6cf158d73cc2d9172afef5cf44e1a83ab266",
+      "atlasSha256": "07f8f35092b2d9dcc6298df5dc071fa2aa3bb1ab1a703e0bca3bd9b32ba0ade5",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8101,
+      "firstPosterOccupiedPixels": 22125,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 9137,
-        "pixelsOver16": 7797,
+        "occupiedPixels": 24548,
+        "pixelsOver16": 22045,
         "alphaBounds": [
-          46,
-          133,
-          389,
-          332
+          20,
+          151,
+          602,
+          489
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 2457600,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 11,
+      "maxPageDecodedBytes": 14745600,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13668,26 +15426,26 @@
       "fps": 24,
       "sourceSha256": "efcd1b969a9c474fb2eedd76196ed1b9942f53df4220882e5cca1cf244a245db",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "d90b6f7b4789c3af4641bbb58fc269c7ad69fa49c33a8e2b425101d80a71fc06",
+      "atlasSha256": "052a344cef4d551770861eb9f07a1d1cc7b1db3169dfd540d33e196bf946daea",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8030,
+      "firstPosterOccupiedPixels": 22051,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 669,
-        "pixelsOver16": 195,
+        "occupiedPixels": 1285,
+        "pixelsOver16": 505,
         "alphaBounds": [
-          47,
-          162,
-          395,
-          329
+          20,
+          200,
+          608,
+          480
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 2457600,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 11,
+      "maxPageDecodedBytes": 14745600,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13698,26 +15456,26 @@
       "fps": 24,
       "sourceSha256": "bd868a33d84c0d8686d914a480be4d21a2a6a66a67819fca3dd4081f8bf2979b",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "56744d958d2daa21d58a76abf36573e86f0e860ba80a96f15fa0ad38dcda6cc4",
+      "atlasSha256": "be9266097116cf7dada31401d1a6fc749cf55d60526f3336eab9d1a829f35746",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5333,
+      "firstPosterOccupiedPixels": 24244,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5340,
-        "pixelsOver16": 4717,
+        "occupiedPixels": 24403,
+        "pixelsOver16": 22546,
         "alphaBounds": [
-          114,
-          147,
-          206,
-          237
+          190,
+          191,
+          386,
+          385
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13728,26 +15486,26 @@
       "fps": 24,
       "sourceSha256": "213bbacaa5cd4227c5db5c0375ea33f4164ede626d6e41d1bb16be7c91363f52",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "87d43bdb664bcaad381750e9bd1d4ac6b92c7f929728bbfd2c79daacced60ff2",
+      "atlasSha256": "a79f06267bf765f3b038f51d24f05fcbc93d19bb328f8d6ef5cf7ec882a27bcf",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5341,
+      "firstPosterOccupiedPixels": 24135,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5352,
-        "pixelsOver16": 4703,
+        "occupiedPixels": 24333,
+        "pixelsOver16": 22397,
         "alphaBounds": [
-          114,
-          146,
-          205,
-          237
+          190,
+          191,
+          386,
+          386
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 45,
@@ -13762,26 +15520,26 @@
       "fps": 24,
       "sourceSha256": "bf106f6b6b59f23c28dede7b1f74f291cbfeebcf3b7cc5fa18e81dee236e4fa3",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "f2d82c60c47d72a14844ef20bf34fa15364d5ef956ed6e8c39a0d1740837e605",
+      "atlasSha256": "0b3cac7ae45cd65ccd35bd1600fa3e3465ca770bdb1bb647507807cd557b4ff8",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5338,
+      "firstPosterOccupiedPixels": 24189,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5354,
-        "pixelsOver16": 4722,
+        "occupiedPixels": 24340,
+        "pixelsOver16": 22461,
         "alphaBounds": [
-          114,
-          146,
-          205,
-          237
+          191,
+          191,
+          387,
+          386
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 11,
@@ -13796,26 +15554,26 @@
       "fps": 24,
       "sourceSha256": "1ada636b5e6897d56b93b884b6dcdd88d205a6d576ccf89e14dba8e9360d03f6",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "1097f0d16d154008a11d491a4feec620c24db6a3753aa07257d5edc193f8b95a",
+      "atlasSha256": "093eb5b7760bcef26f0c4ea6bc18b4e79fd4ba06eff4ceb72bd767b257215edd",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5335,
+      "firstPosterOccupiedPixels": 24114,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 5376,
-        "pixelsOver16": 4727,
+        "occupiedPixels": 24231,
+        "pixelsOver16": 22348,
         "alphaBounds": [
-          115,
-          146,
-          206,
-          237
+          190,
+          191,
+          385,
+          385
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13826,26 +15584,26 @@
       "fps": 24,
       "sourceSha256": "8c5a3434c63a175a496423b6c98f216ce9643b3f331f16693cba61ac9d05af8a",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "62b84ec004e944e9365f968cf7ec1ec487fd2fbfbe23821dc6245dc6b93ab707",
+      "atlasSha256": "83b3abd4c351b1317cfb83b60373bbc4e2b041178f0c72756d05c34a76af1a95",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 5297,
+      "firstPosterOccupiedPixels": 24006,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 1748,
-        "pixelsOver16": 880,
+        "occupiedPixels": 6012,
+        "pixelsOver16": 4138,
         "alphaBounds": [
-          81,
-          157,
-          231,
-          250
+          114,
+          214,
+          443,
+          415
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 614400,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 6553600,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13856,26 +15614,26 @@
       "fps": 24,
       "sourceSha256": "4b22c46a7fc504d6196030afd2c380166a92dc56a452fef8f150fe7dee2c2406",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "f065dd89bf8260dde0cfdb7e2638a6f8e3865164a53ea4a352d878dd1962d351",
+      "atlasSha256": "4909fe75deca92dcaa4f801a1578e616584503df63348923b7df0955817d3f22",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12553,
+      "firstPosterOccupiedPixels": 21338,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12677,
-        "pixelsOver16": 11626,
+        "occupiedPixels": 21653,
+        "pixelsOver16": 20223,
         "alphaBounds": [
-          142,
-          153,
-          306,
-          297
+          180,
+          194,
+          395,
+          384
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13886,26 +15644,26 @@
       "fps": 24,
       "sourceSha256": "2eb27189997887354f98b091f6a8a0705b3ce310482b420e6c8d4f7d5c391650",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "a48abdc93a60a95d7c79f4d5ba7714b969843f776e1af347aa6d80acf73f2eeb",
+      "atlasSha256": "c9321a1f8f752850d968742f50df23913661298680bed52ba636cf15dde961d2",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12591,
+      "firstPosterOccupiedPixels": 21504,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12636,
-        "pixelsOver16": 11524,
+        "occupiedPixels": 21492,
+        "pixelsOver16": 20072,
         "alphaBounds": [
-          141,
-          145,
-          290,
-          300
+          178,
+          183,
+          375,
+          386
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 47,
@@ -13920,26 +15678,26 @@
       "fps": 24,
       "sourceSha256": "d9597d8d4495a4ca4414816f98246b1be3c9cc6d1e3cc192e7e10fb4b3cfe099",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "b6253b72a055349f0430272e717ed1f7da8a8db2ec869cff027dbbd4fd43556d",
+      "atlasSha256": "d5b36843ec3aa5daf76c11dfb9149dd74f3d2903ba363ae97c370252083f6608",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12547,
+      "firstPosterOccupiedPixels": 21415,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 12583,
-        "pixelsOver16": 11459,
+        "occupiedPixels": 21461,
+        "pixelsOver16": 19976,
         "alphaBounds": [
-          141,
-          150,
-          288,
-          299
+          180,
+          190,
+          372,
+          386
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 18,
@@ -13954,26 +15712,26 @@
       "fps": 24,
       "sourceSha256": "6b775f1e04c0247e0cbe0732b1ba6a293eefc8a040609b01d5a6afcdacde49b7",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "d2f6d66e17a9ce5a0691144ff14a6a3ab81784a796c9f1b92616939dff1f687c",
+      "atlasSha256": "34356abf6029af5b6c5867db880622fe5d7d8600108c6c65f28f7c2a78f141bb",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12489,
+      "firstPosterOccupiedPixels": 21354,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 14365,
-        "pixelsOver16": 13092,
+        "occupiedPixels": 24607,
+        "pixelsOver16": 22912,
         "alphaBounds": [
-          138,
-          150,
-          296,
-          315
+          175,
+          190,
+          383,
+          407
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -13984,26 +15742,26 @@
       "fps": 24,
       "sourceSha256": "b5be941e7e5acdf341dc154942914be474206196583e6701a6ccea171a1d05c9",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "79b9db63678e6c269d693255671a68d20309af882b8e1f95bd235501c2f5621a",
+      "atlasSha256": "1aed741db7fcc77fcaa5eaf7fec42c58b4cc907850c4a0b5d5f7e137855d7b19",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 12585,
+      "firstPosterOccupiedPixels": 21421,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 3385,
-        "pixelsOver16": 2217,
+        "occupiedPixels": 5387,
+        "pixelsOver16": 3855,
         "alphaBounds": [
-          45,
-          92,
-          416,
-          326
+          51,
+          114,
+          542,
+          422
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 1204224,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 12845056,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -14014,26 +15772,26 @@
       "fps": 24,
       "sourceSha256": "d79d048b42676c753b4184ce3e2a490eb71a6a8b83088d3daae7ed5c3add0c62",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "55433f4734f884f7ba5670d867bd0d1d868a4407df4fd21a03a9855facd93529",
+      "atlasSha256": "adfadd6f62eaad93903c87f17d7c50b77e67986e5b2a53218456ca3337f2619f",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8512,
+      "firstPosterOccupiedPixels": 21907,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 8533,
-        "pixelsOver16": 7444,
+        "occupiedPixels": 22025,
+        "pixelsOver16": 19830,
         "alphaBounds": [
-          133,
-          146,
-          250,
-          262
+          191,
+          191,
+          381,
+          381
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -14044,26 +15802,26 @@
       "fps": 24,
       "sourceSha256": "3558e7f034e63ebdbdf6694eead2e80e3dd25cabbb3911671f41b3c276a4cca9",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "b2c1c3ab7d35830dfab8026c8527fd81edfa794069894ac566440acd9d7bf441",
+      "atlasSha256": "79e9786c931e2e8ed3439e6789aa47cb6f2a64750533cd19bfadef8ac71fc3b4",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8579,
+      "firstPosterOccupiedPixels": 22075,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 8620,
-        "pixelsOver16": 7515,
+        "occupiedPixels": 22301,
+        "pixelsOver16": 20164,
         "alphaBounds": [
-          134,
-          145,
-          251,
-          264
+          192,
+          189,
+          382,
+          383
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "releaseFrame": 52,
@@ -14078,26 +15836,26 @@
       "fps": 24,
       "sourceSha256": "e7e80c46358a67c854f30d04be17f77c5bb7b964ef842bace25772941e683478",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "6030296f253be3419b435207b21863b0d2a1554cfbb080e59b633f867e53e41a",
+      "atlasSha256": "34495fe219e40dac716561d267ea1cd9467a281c787d99ddf1dcf312b5103f85",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8481,
+      "firstPosterOccupiedPixels": 21802,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 8489,
-        "pixelsOver16": 7440,
+        "occupiedPixels": 22025,
+        "pixelsOver16": 19875,
         "alphaBounds": [
-          134,
-          147,
-          250,
-          263
+          192,
+          191,
+          381,
+          383
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": {
         "reactionFrame": 11,
@@ -14112,26 +15870,26 @@
       "fps": 24,
       "sourceSha256": "7085d78f1b8dc885737ed83f82e0afcb91d7cbee827767173b3c74d8af1971c8",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "5321236af001d5f68e6cff33f9dd13500c5bbb4ffa9651c56bb8407eb1a98704",
+      "atlasSha256": "32609323394ca594cfa239df7a9c6a77219a68f7bca14ff4b349a7b09b31b2f1",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8514,
+      "firstPosterOccupiedPixels": 21982,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 8537,
-        "pixelsOver16": 7471,
+        "occupiedPixels": 22190,
+        "pixelsOver16": 20033,
         "alphaBounds": [
-          134,
-          145,
-          250,
-          264
+          192,
+          190,
+          381,
+          383
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -14142,26 +15900,26 @@
       "fps": 24,
       "sourceSha256": "004759677a6556ea45eec5a9c9bd79302775aa9d91c267aca6d1173b967b8669",
       "sourceCopiesVerified": 3,
-      "atlasSha256": "099ae471267d1d4ac92ebfe786072b1d3a5262218745432788ef808a476cc20a",
+      "atlasSha256": "c79d1c66c2d4cb233fed4abc3e04123fa810da240575bf35ec8d407da8614747",
       "posterMatchesFirstFrameExactRgba": true,
-      "firstPosterOccupiedPixels": 8460,
+      "firstPosterOccupiedPixels": 21813,
       "finalFrame": {
         "index": 93,
-        "occupiedPixels": 1182,
-        "pixelsOver16": 494,
+        "occupiedPixels": 2367,
+        "pixelsOver16": 1245,
         "alphaBounds": [
-          38,
-          113,
-          344,
-          295
+          34,
+          137,
+          540,
+          434
         ],
         "preservedInRuntimePage": true
       },
       "unusedAtlasCells": 6,
-      "unusedAtlasPixels": 884736,
+      "unusedAtlasPixels": 1990656,
       "unusedAtlasCellsTransparent": true,
-      "runtimePages": 6,
-      "maxPageDecodedBytes": 9437184,
+      "runtimePages": 8,
+      "maxPageDecodedBytes": 15925248,
       "runtimeCoverageConsecutive": true,
       "timing": null
     },
@@ -14496,8 +16254,8 @@
   },
   "mediaPinAtAuditTime": {
     "version": 1,
-    "revision": "f479e154b80279551ed5c5ba61eeecf8d7430954",
-    "manifestSha256": "fa80274dfb359b4b0978778a3faef03d7a3599a152f37060151273c4f0ed917b",
+    "revision": "3877a6a657fe7ca190401453b997ed8aefa543a3",
+    "manifestSha256": "28ea1184f3b1f2c7552365ac8b90e04c19c9f40abcf043e76bdd80ff267abad1",
     "pendingFrontSpritesSha256": "2fab12a90fccffa6acb2ec8844b001d0177a549997605ae5ed5f80da3217bb69"
   }
 }
