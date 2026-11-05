@@ -28,6 +28,29 @@ L'indice runtime raggruppa le voci per forma, vista e azione. Quando tutte e cin
 
 La baseline di preservazione è acquisita **dopo** l'aggiunta dei PNG forniti: comprende 665 clip, 8.265 file nativi precedenti e i 200 PNG attuali, per 8.465 file. Non viene presentata come prova che il contenitore precedente di 134 sia invariato; la sua ricodifica e l'identità dei pixel sono registrate separatamente.
 
-Le verifiche definitive di preservazione, unità e browser sono in corso. La provenienza dettagliata e gli esiti verranno registrati in `animation-source/audits/front-2026-11-05.json`. I log locali sono in `output/animation-import-2026-11-05/`.
+## Esiti definitivi
 
-L'importazione è locale. Nessun push, deploy o nuovo installer desktop viene dichiarato senza la corrispondente operazione. Le prove sul compilato utilizzano soltanto le copie locali con impronte corrispondenti alla revisione immutabile; non certificano la disponibilità del CDN.
+| Controllo | Esito |
+|---|---|
+| Preservazione indipendente | Superato: 665 clip precedenti profondamente identiche, 8.465 impronte della baseline verificate, 70 nuove clip e 6.580 frame, zero errori. |
+| Suite unitaria completa | **6.334/6.334 test, 183 file**, codice 0, due processi. |
+| Convertitore Python | **43/43**; il convertitore non è stato modificato per questa importazione. |
+| Contratti Node e sicurezza | **12/12** contratti Node della verifica di rilascio e del budget; **9/9** controlli di sicurezza. I contratti del formato runtime sono inclusi anche nella suite unitaria. |
+| Catalogo e TypeScript | Superati: 200 ID reali, 90 senza dati di gioco. |
+| Browser sorgente desktop/mobile | **56/56**, in 5,1 minuti, due processi, zero retry, esclusioni o flaky. Tutte le 14 nuove forme e le cinque azioni, marker, KO, pagine, memoria e laboratorio reale. |
+| Ritratti statici e filtri desktop/mobile | **10/10**, un processo, zero retry o esclusioni. Ritratti originali 205/184/206, errore e nuovo tentativo del PNG mancante, filtri degli ID realmente forniti. |
+| Build di produzione | Codice 0; **742,3 MiB**, entro il limite di 900 MiB. |
+| Budget di avvio | Superato: ingresso 469.597 byte, JavaScript iniziale 729.546 byte, CSS 76.721 byte. |
+| Scenari generali sul compilato | **3/3**, zero retry o esclusioni: sei schermate di gestione, creazione e ripristino partita, profilo broadcast separato. |
+| Animazioni e ritratti sullo stesso compilato | **46/46**, in 8,2 minuti, due processi, zero retry, esclusioni o flaky. Include 37 forme senza dati con animazioni, tre ritratti statici e i flussi nativi/VFX precedenti. |
+| Prova delle 46 verifiche legata al compilato | `readPassingReport` superato contro l'impronta ricalcolata dell'intero artefatto invariato. |
+
+La prima esecuzione unitaria ha rilevato un limite nel test che riuniva cinque repository Git temporanei sotto un'unica scadenza di 15 secondi. I casi sono ora indipendenti, con gli stessi controlli, la stessa scadenza e pulizia separata. Il primo giro browser ha avuto 54 prove superate e due interrotte dal riavvio Vite provocato dal pin dei media, confermato dai trace di connessione persa. L'intero gruppo di 56 prove è stato ripetuto dopo pin e build: la tabella riporta solo gli esiti definitivi. I log dei tentativi precedenti rimangono separati.
+
+La revisione immutabile dei media è `a014a032479c7474417208d68e478a01d6757be1`; il manifest ha impronta canonica `4a99cfb416b9684259782b27b6ee9b0471c5529c35687778f483c5b6ed9ae487`. I PNG senza dati hanno impronta `851558327f3dac48b6783c167aa848838c59d510134749e4719c316db44e1f2e`. Il compilato verificato ha impronta di contenuto `5516abd3224c6c86c582924df5d80508324e8e9af78bb2185da9eaa2744b4caa`.
+
+Confronti reali dell'attesa nel laboratorio, con il ritratto ufficiale a sinistra e l'animazione a destra: [forma 133](ui-previews/native-2026-11-05/133-native-comparison.png), [forma 138](ui-previews/native-2026-11-05/138-native-comparison.png), [forma 150](ui-previews/native-2026-11-05/150-native-comparison.png). Le pose cambiano durante il ciclo nativo, mentre scala e riferimento della camera rimangono costanti.
+
+La provenienza completa e gli esiti sono registrati in [front-2026-11-05.json](../animation-source/audits/front-2026-11-05.json); i log e i report dettagliati locali sono in `output/animation-import-2026-11-05/`.
+
+L'importazione è salvata in commit locali, senza push, deploy o nuovo installer desktop. Le prove sul compilato utilizzano soltanto le copie locali con byte e impronte corrispondenti alla revisione immutabile; non certificano la disponibilità del CDN. La verifica comprende l'intera suite unitaria e gli scenari browser indicati, senza essere una nuova esecuzione dell'intera raccolta E2E o un collaudo manuale completo della partita. Non viene creata una ricevuta di rilascio dell'intero progetto usando soltanto i test mirati dell'importazione.

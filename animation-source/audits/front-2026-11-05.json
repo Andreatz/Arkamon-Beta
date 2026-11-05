@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "importDate": "2026-11-05",
-  "updatedAt": "2026-11-05T13:21:15.695575+00:00",
+  "updatedAt": "2026-11-05T13:54:10.723187+00:00",
   "sourceCheckoutHeadAtImport": "8129ae42d9a443c611877a1a8cba1f5a54f29ad2",
   "sourceVideoState": "70 user-supplied local MP4s copied under original names and canonical paths; all210source-copy SHA/size comparisons passed.",
   "speciesIds": [
@@ -14697,15 +14697,124 @@
       "pendingIds": 90,
       "passed": true
     },
-    "unit": "pending final run after independent Git fixture isolation",
-    "sourceBrowser": "pending final run",
-    "productionBuild": "pending media pin and build",
-    "compiledBrowser": "pending final build"
+    "unit": {
+      "passed": 6334,
+      "failed": 0,
+      "files": 183,
+      "exitCode": 0,
+      "workers": 2
+    },
+    "sourceBrowser": {
+      "passed": 56,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "retries": 0,
+      "workers": 2,
+      "durationMs": 305146.513,
+      "scope": "All14newforms:fiveactions,cues,KOending,pages,memory,andactual laboratory on desktop/mobile; final run after pin and build."
+    },
+    "productionBuild": {
+      "exitCode": 0,
+      "localPackageMiB": 742.3,
+      "startup": {
+        "entryBytes": 469597,
+        "javascriptBytes": 729546,
+        "stylesheetBytes": 76721
+      }
+    },
+    "compiledBrowser": {
+      "nativeScenarios": 46,
+      "generalScenarios": 3,
+      "skipped": 0,
+      "flaky": 0,
+      "retries": 0,
+      "nativeWorkers": 2,
+      "artifact": {
+        "contentSha256": "5516abd3224c6c86c582924df5d80508324e8e9af78bb2185da9eaa2744b4caa",
+        "mediaRevision": "a014a032479c7474417208d68e478a01d6757be1",
+        "manifestSha256": "4a99cfb416b9684259782b27b6ee9b0471c5529c35687778f483c5b6ed9ae487",
+        "nativeClips": 735,
+        "nativeFrames": 70175
+      }
+    },
+    "nodeContracts": {
+      "passed": 12,
+      "failed": 0
+    },
+    "catalogBrowser": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "retries": 0,
+      "workers": 1,
+      "scope": "Static portraits205/184/206,errorretryandreal-IDfilters on desktop/mobile."
+    },
+    "compiledNativeProof": {
+      "kind": "native-compiled",
+      "passed": 46,
+      "skipped": 0,
+      "reportSha256": "468c714bbc39b14cee54e99e665a60df4248b8485cc6ca8631b8b5d457d02d28",
+      "artifact": {
+        "contentSha256": "5516abd3224c6c86c582924df5d80508324e8e9af78bb2185da9eaa2744b4caa",
+        "mediaRevision": "a014a032479c7474417208d68e478a01d6757be1",
+        "manifestSha256": "4a99cfb416b9684259782b27b6ee9b0471c5529c35687778f483c5b6ed9ae487",
+        "nativeClips": 735,
+        "nativeFrames": 70175,
+        "transport": "verified-local-pinned-media",
+        "cdnAvailabilityVerified": false
+      }
+    },
+    "priorNonfinalRuns": {
+      "unit": "6330cases:one combined five-fixture test exceeded15s; isolated into five cases retaining deadlines/assertions. Final full6334run passed.",
+      "sourceBrowser": "54passed/2failed because Vite config restarted after media pin while136KOwasloading;trace confirms connection lost/content length mismatch/connection refused. Entire56case group rerun after build passed without retries."
+    },
+    "scope": "Complete unit suite; targeted56newsource+10catalog+3generalcompiled+46nativecompiled scenarios. Not the entire project E2E collection, CDN check, installer rebuild or complete manual playthrough. No whole-project release receipt sealed from targeted browser tests.",
+    "publication": {
+      "pushPerformed": false,
+      "deployPerformed": false,
+      "cdnAvailabilityVerified": false,
+      "transport": "verified-local-pinned-media"
+    },
+    "completedAt": "2026-11-05T13:50:22.252Z"
   },
   "publication": {
     "pushPerformedForThisImport": false,
     "deployPerformedForThisImport": false,
     "cdnAvailabilityVerified": false,
     "physicalDesktopInstallerRebuilt": false
-  }
+  },
+  "mediaPinAtAuditTime": {
+    "version": 1,
+    "revision": "a014a032479c7474417208d68e478a01d6757be1",
+    "manifestSha256": "4a99cfb416b9684259782b27b6ee9b0471c5529c35687778f483c5b6ed9ae487",
+    "pendingFrontSpritesSha256": "851558327f3dac48b6783c167aa848838c59d510134749e4719c316db44e1f2e"
+  },
+  "browserPreviews": [
+    {
+      "speciesId": 133,
+      "source": "output/animation-import-2026-11-05/browser-results/native-import-132-150-pend-7478a-ithout-invented-battle-data-chromium/pending-native-comparison.png",
+      "target": "docs/ui-previews/native-2026-11-05/133-native-comparison.png",
+      "state": "Actual laboratory idle capture; official static left, native animation right.",
+      "sha256": "043b29de68b0a00ed2aebbf7190c16331889c84710f507a9f6fa80bfd587d95d",
+      "visibleIdLabelManuallyConfirmed": true
+    },
+    {
+      "speciesId": 138,
+      "source": "output/animation-import-2026-11-05/browser-results/native-import-132-150-pend-9d12c-ithout-invented-battle-data-chromium/pending-native-comparison.png",
+      "target": "docs/ui-previews/native-2026-11-05/138-native-comparison.png",
+      "state": "Actual laboratory idle capture; official static left, native animation right.",
+      "sha256": "082f721e166d81f2e09d30ac76206e7b77eab8270baef40740105f997dcfa63c",
+      "visibleIdLabelManuallyConfirmed": true
+    },
+    {
+      "speciesId": 150,
+      "source": "output/animation-import-2026-11-05/browser-results/native-import-132-150-pend-14dbb-ithout-invented-battle-data-chromium/pending-native-comparison.png",
+      "target": "docs/ui-previews/native-2026-11-05/150-native-comparison.png",
+      "state": "Actual laboratory idle capture; official static left, native animation right.",
+      "sha256": "c5c55d847fdc4c98583d51adb4e528c81d4ecb947ec47163f9af3aa02b846316",
+      "visibleIdLabelManuallyConfirmed": true
+    }
+  ]
 }
