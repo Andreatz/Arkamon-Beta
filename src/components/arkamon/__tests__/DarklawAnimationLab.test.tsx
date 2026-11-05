@@ -7,7 +7,7 @@ vi.mock('../ArkamonBattleSprite', () => ({ ArkamonBattleSprite: ({ speciesId }: 
 vi.mock('../ArkamonAttackPreview', () => ({ ArkamonAttackPreview: () => <section data-test-attack-preview="true" /> }))
 
 describe('laboratory for unfinished graphic assets', () => {
-  it.each([150, 184, 206])('shows supplied sprite %s without fake animation controls, battle data or a missing back request', id => {
+  it.each([205, 184, 206])('shows supplied sprite %s without fake animation controls, battle data or a missing back request', id => {
     const markup = renderToStaticMarkup(<DarklawAnimationLab initialSpeciesId={id} />)
     expect(markup).toContain(`data-preview-species="${id}"`)
     expect(markup).toContain('data-asset-status="pending-game-data"')
@@ -22,8 +22,8 @@ describe('laboratory for unfinished graphic assets', () => {
     expect(markup).not.toContain('data-test-attack-preview')
     expect(markup).not.toContain('data-test-native-sprite')
     expect(markup).toContain('Catalogo grafico')
-    expect(markup).toContain('Tutti · 195')
-    expect(markup).toContain('Dati da definire · 85')
+    expect(markup).toContain('Tutti · 200')
+    expect(markup).toContain('Dati da definire · 90')
   })
 
   it('retains complete native actions and the real move preview for playable forms', () => {
@@ -37,7 +37,7 @@ describe('laboratory for unfinished graphic assets', () => {
   })
 
   it('keeps the supplied new animation forms outside move simulation until game data exists', () => {
-    for (const id of [111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 134, 139]) {
+    for (const id of [...Array.from({ length: 35 }, (_, index) => index + 111), 149, 150]) {
       const markup = renderToStaticMarkup(<DarklawAnimationLab initialSpeciesId={id} />)
       expect(markup).toContain('data-asset-status="pending-game-data"')
       expect(markup).toContain('Nome, mosse e attributi da definire')

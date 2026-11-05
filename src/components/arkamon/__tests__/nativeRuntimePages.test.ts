@@ -7,7 +7,9 @@ import { getArkamonRuntimeAsset, ARKAMON_ANIMATION_MANIFEST } from '../arkamonAn
 
 describe('compact native runtime metadata', () => {
   it('preserves every page path and source-frame geometry for all clips without shipping provenance hashes', () => {
-    expect(Object.keys(packed)).toEqual(Object.keys(authoritative.clips))
+    expect(Object.keys(packed).map(Number)).toEqual([...new Set(Object.values(authoritative.clips).map(clip => clip.speciesId))].sort((a, b) => a - b))
+    const count = Object.values(packed).reduce((sum, set) => sum + (set?.reduce((views, view) => views + (!view ? 0 : typeof view[1] === 'string' ? 5 : view.filter(Boolean).length), 0) ?? 0), 0)
+    expect(count).toBe(Object.keys(authoritative.clips).length)
     for (const [source, original] of Object.entries(authoritative.clips)) {
       const runtime = getNativeRuntimeClip(source)!
       expect(runtime).toEqual({ frameWidth: original.frameWidth, frameHeight: original.frameHeight, frameCount: original.frameCount, fps: original.fps,

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 
 const examples = vi.hoisted(() => ({
-  '/sprites/arkamon/90001/front/idle.webp': [512, 512, 16, 24, [16, 4, '']],
-  '/sprites/arkamon/90004/front/idle.webp': [384, 384, 48, 24, [16, 4, ',,']],
+  90001: [[[512, 512, 16, 24, [16, 4, '']]]],
+  90004: [[[384, 384, 48, 24, [16, 4, ',,']]]],
 }))
 vi.mock('virtual:arkamon-runtime-pages', () => ({ default: examples }))
 

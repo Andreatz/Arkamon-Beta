@@ -1,4 +1,5 @@
 import packed from 'virtual:arkamon-runtime-pages'
+import type { PackedNativeClip, PackedNativeUniformView } from 'virtual:arkamon-runtime-pages'
 import type { SpritePage } from '@/components/vfx/spritePages'
 
 export interface NativeRuntimeClip {
@@ -29,7 +30,19 @@ function pageTokens(value: string): string[] {
 export function getNativeRuntimeClip(source: string): NativeRuntimeClip | undefined {
   const cached = clips.get(source)
   if (cached) return cached
-  const entry = packed[source]
+  const identity = /^\/sprites\/arkamon\/(\d+)\/(front|back)\/(idle|attack|hit|victory|ko)\.webp$/.exec(source)
+  if (!identity) return undefined
+  const actionIndex = ['idle', 'attack', 'hit', 'victory', 'ko'].indexOf(identity[3])
+  const view = packed[identity[1]]?.[identity[2] === 'front' ? 0 : 1]
+  if (!view) return undefined
+  let entry: PackedNativeClip | null | undefined
+  if (typeof view[1] === 'string') {
+    const [grid, tokens] = view as PackedNativeUniformView
+    const [width, height, count, fps, capacity, columns] = grid
+    const length = Math.ceil(count / capacity)
+    const selected = pageTokens(tokens).slice(actionIndex * length, (actionIndex + 1) * length)
+    entry = [width, height, count, fps, [capacity, columns, selected.join(',')]]
+  } else entry = (view as (PackedNativeClip | null)[])[actionIndex]
   if (!entry) return undefined
   const [frameWidth, frameHeight, frameCount, fps, pageData] = entry
   const packedPages = typeof pageData[0] === 'number'

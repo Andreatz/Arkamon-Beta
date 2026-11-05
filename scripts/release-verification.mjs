@@ -10,8 +10,8 @@ const manifestName = 'release-verification.json'
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const NATIVE_RELEASE_PROOF = 'Native compiled artifact contract'
 const nativeReleaseSpecies = Object.freeze([107, 108, 109, 110])
-const pendingNativeReleaseSpecies = Object.freeze([111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 134, 139])
-const pendingPortraitReleaseSpecies = Object.freeze([150, 184, 206])
+const pendingNativeReleaseSpecies = Object.freeze([...Array.from({ length: 35 }, (_, index) => index + 111), 149, 150])
+const pendingPortraitReleaseSpecies = Object.freeze([205, 184, 206])
 export const NATIVE_RELEASE_SCENARIOS = Object.freeze([
   ...nativeReleaseSpecies.map(species => `compiled ${species}: five native actions against the pinned local media revision`),
   ...[[107, 110], [108, 109]].map(([attacker, target]) => `compiled ${attacker} versus ${target}: native release and reaction cues complete the real VFX lifecycle`),

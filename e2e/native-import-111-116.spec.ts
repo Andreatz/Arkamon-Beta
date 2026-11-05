@@ -151,7 +151,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     expect(errors).toEqual([])
   })
 
-  for (const species of [150, 184, 206]) test(`sprite-only ${species}: original portrait and explicit missing data/video`, async ({ page }, testInfo) => {
+  for (const species of [205, 184, 206]) test(`sprite-only ${species}: original portrait and explicit missing data/video`, async ({ page }, testInfo) => {
     const errors: string[] = [], unavailableRequests: string[] = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('request', request => {
@@ -186,13 +186,13 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     const errors: string[] = []
     let unavailable = true, failedRequests = 0
     page.on('pageerror', error => errors.push(error.message))
-    await page.route('**/sprites/front_sprites/150.png', async route => {
+    await page.route('**/sprites/front_sprites/205.png', async route => {
       if (!unavailable) return route.continue()
       failedRequests++
       await route.fulfill({ status: 404, contentType: 'text/plain', body: 'Deliberately unavailable pending portrait' })
     })
     await page.goto('/#arkamon-lab')
-    await page.locator('#darklaw-preview-species').selectOption('150')
+    await page.locator('#darklaw-preview-species').selectOption('205')
     const portraits = page.locator('[data-asset-portrait]')
     await expect(portraits).toHaveCount(2)
     for (const portrait of await portraits.all()) {
@@ -209,7 +209,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
       const panel = page.locator(`[data-preview-card="${card}"]`)
       await panel.getByRole('button', { name: 'Riprova sprite', exact: true }).click()
       await expect(panel.locator('[data-asset-portrait]')).toHaveAttribute('data-asset-image-state', 'ready')
-      await expect(panel.locator('[data-asset-portrait] image')).toHaveAttribute('href', /\/sprites\/front_sprites\/150\.png$/)
+      await expect(panel.locator('[data-asset-portrait] image')).toHaveAttribute('href', /\/sprites\/front_sprites\/205\.png$/)
     }
     await expect(page.getByRole('button', { name: 'Riprova sprite', exact: true })).toHaveCount(0)
     await expect(page.getByText('Lo sprite non è stato caricato.', { exact: false })).toHaveCount(0)
@@ -220,29 +220,30 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
   test('filters actual supplied IDs without filling the gaps or changing the playable catalog', async ({ page }) => {
     await page.goto('/#arkamon-lab')
     const select = page.locator('#darklaw-preview-species')
-    await expect(select.locator('option')).toHaveCount(195)
+    await expect(select.locator('option')).toHaveCount(200)
     const suppliedIds = await select.locator('option').evaluateAll(options => options.map(option => Number((option as HTMLOptionElement).value)))
     const gameplayAvailability = await page.evaluate(async ids => {
       const { getPokemon } = await import('/src/data/index.ts')
       return ids.map(id => ({ id, playable: getPokemon(id) !== undefined }))
     }, suppliedIds)
     expect(gameplayAvailability.filter(entry => entry.playable).map(entry => entry.id)).toEqual(Array.from({ length: 110 }, (_, index) => index + 1))
-    expect(gameplayAvailability.filter(entry => !entry.playable)).toHaveLength(85)
+    expect(gameplayAvailability.filter(entry => !entry.playable)).toHaveLength(90)
     expect(gameplayAvailability.filter(entry => !entry.playable).every(entry => entry.id > 110)).toBe(true)
-    await expect(select.locator('option[value="133"]')).toHaveCount(0)
+    await expect(select.locator('option[value="133"]')).toHaveCount(1)
     await expect(select.locator('option[value="179"]')).toHaveCount(0)
     await page.locator('#darklaw-preview-filter').selectOption('pending-game-data')
-    await expect(select.locator('option')).toHaveCount(85)
+    await expect(select.locator('option')).toHaveCount(90)
     await expect(select.locator('option[value="1"]')).toHaveCount(0)
     await expect(select.locator('option[value="206"]')).toHaveCount(1)
     await page.locator('#darklaw-preview-filter').selectOption('animated')
-    await expect(select.locator('option')).toHaveCount(133)
+    await expect(select.locator('option')).toHaveCount(147)
     await expect(select.locator('option[value="206"]')).toHaveCount(0)
     await expect(select.locator('option[value="116"]')).toHaveCount(1)
     await expect(select.locator('option[value="139"]')).toHaveCount(1)
-    await expect(select.locator('option[value="132"]')).toHaveCount(0)
-    await expect(select.locator('option[value="133"]')).toHaveCount(0)
+    await expect(select.locator('option[value="132"]')).toHaveCount(1)
+    await expect(select.locator('option[value="133"]')).toHaveCount(1)
+    await expect(select.locator('option[value="146"]')).toHaveCount(0)
     await page.locator('#darklaw-preview-filter').selectOption('all')
-    await expect(select.locator('option')).toHaveCount(195)
+    await expect(select.locator('option')).toHaveCount(200)
   })
 })

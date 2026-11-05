@@ -4,9 +4,9 @@ import { ARKAMON_ASSET_CATALOG, filterArkamonAssetCatalog, getArkamonAssetEntry,
 
 describe('graphic assets remain separate from playable forms', () => {
   it('exposes all supplied sparse IDs and pending metadata without expanding gameplay', () => {
-    expect(ARKAMON_ASSET_CATALOG).toHaveLength(195)
+    expect(ARKAMON_ASSET_CATALOG).toHaveLength(200)
     expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'game-data-present')).toHaveLength(110)
-    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'pending-game-data')).toHaveLength(85)
+    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'pending-game-data')).toHaveLength(90)
     expect(POKEMON_BASE).toHaveLength(110)
     for (const entry of ARKAMON_ASSET_CATALOG) {
       expect(Object.keys(entry).sort()).toEqual(['id', 'sprites', 'status'])
@@ -18,7 +18,11 @@ describe('graphic assets remain separate from playable forms', () => {
         expect(sprite!.bytes).toBeGreaterThan(0)
       }
     }
-    expect(getArkamonAssetEntry(133)).toBeUndefined()
+    for (const id of [133, 135, 136, 137, 138]) {
+      expect(getArkamonAssetEntry(id)?.status).toBe('pending-game-data')
+      expect(getPokemon(id)).toBeUndefined()
+    }
+    expect(getArkamonAssetEntry(179)).toBeUndefined()
     expect(getArkamonAssetEntry(207)).toBeUndefined()
     for (const id of [111, 116, 117, 131, 134, 139, 150, 184, 206]) expect(getPokemon(id)).toBeUndefined()
   })
@@ -28,7 +32,7 @@ describe('graphic assets remain separate from playable forms', () => {
     expect(filterArkamonAssetCatalog('animated', animated).map(entry => entry.id)).toEqual([1, 111, 116, 117, 134, 139])
     expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 111)).toBe(true)
     expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 1)).toBe(false)
-    expect(filterArkamonAssetCatalog('all', animated)).toHaveLength(195)
+    expect(filterArkamonAssetCatalog('all', animated)).toHaveLength(200)
   })
 
   it('fits all visible pixels, including rectangular artwork, without changing source rasters', () => {

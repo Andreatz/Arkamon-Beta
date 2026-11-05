@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { packNativeRuntimeManifest } from '../native-runtime-manifest.mjs'
+import { packNativeRuntimeManifest, groupNativeRuntimeManifest, compactNativeRuntimeViews } from '../native-runtime-manifest.mjs'
 
 const source = '/sprites/arkamon/79/front/victory.webp'
 const directory = '/sprites/arkamon-paged/79/front/victory/'
@@ -9,6 +9,34 @@ function fixture(file) {
 }
 
 describe('native runtime manifest page filenames', () => {
+  it('shares all five grids without changing hash order and preserves partial or differing views', () => {
+    const hash = '!ASNFZ4mrze8'
+    const clip = [512, 512, 16, 24, [16, 4, hash]]
+    const complete = Array.from({ length: 5 }, () => structuredClone(clip))
+    const partial = [clip, null, clip]
+    const differing = structuredClone(complete)
+    differing[4][2] = 15
+    const legacy = complete.map(value => [...value.slice(0, 4), [16, 4, '']])
+    const sparse = []; sparse[4] = clip
+    const sets = {79: [complete, partial], 80: [differing, legacy], 81: [null, complete], 82: [sparse]}
+    const compact = compactNativeRuntimeViews(sets)
+    expect(compact[79][0]).toEqual([[512, 512, 16, 24, 16, 4], '!' + Buffer.concat(Array.from({ length: 5 }, () => Buffer.from(hash.slice(1), 'base64url'))).toString('base64url')])
+    expect(compact[79][1]).toBe(partial)
+    expect(compact[80]).toEqual([differing, legacy])
+    expect(compact[81]).toEqual([null, compact[79][0]])
+    expect(compact[82][0]).toBe(sparse)
+    expect(sets[79][0]).toEqual(complete)
+  })
+  it('groups independent front/back action slots without losing sparse views or identifiers', () => {
+    const clip = [512, 512, 16, 24, [16, 4, '']]
+    const grouped = JSON.parse(JSON.stringify(groupNativeRuntimeManifest({
+      '/sprites/arkamon/79/front/victory.webp': clip,
+      '/sprites/arkamon/79/back/hit.webp': clip,
+      '/sprites/arkamon/205/back/ko.webp': clip,
+    })))
+    expect(grouped).toEqual({79: [[null, null, null, clip], [null, null, clip]], 205: [null, [null, null, null, null, clip]]})
+    expect(() => groupNativeRuntimeManifest({'/another/path.webp': clip})).toThrow('Invalid native clip identity')
+  })
   it.each([['page-00.webp', ''], ['page-00.png', '.png'], ['page-00-0123456789abcdef.webp', '0123456789abcdef'], ['page-00-fedcba9876543210.png', 'fedcba9876543210.png']])(
     'retains legacy and content fingerprint tokens without changing frame timing: %s', (file, token) => {
       const encoded = /^[a-f0-9]{16}$/.test(token) ? '!' + Buffer.from(token, 'hex').toString('base64url') : token

@@ -1,16 +1,34 @@
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('virtual:arkamon-runtime-pages', () => ({ default: {
-  '/sprites/arkamon/999/front/idle.webp': [10, 20, 9, 24, [
+  999: [[[10, 20, 9, 24, [
     ['', 2, 2], ['.png', 3, 2], ['0123456789abcdef', 1, 1], ['fedcba9876543210.png', 3, 2],
-  ]],
-  '/sprites/arkamon/998/front/ko.webp': [10, 20, 7, 24, [4, 2, ',0123456789abcdef.png']],
-  '/sprites/arkamon/997/front/attack.webp': [10, 20, 7, 24, [4, 2, '!ASNFZ4mrze_-3LqYdlQyEA']],
+  ]]]],
+  998: [[null, null, null, null, [10, 20, 7, 24, [4, 2, ',0123456789abcdef.png']]]],
+  997: [[null, [10, 20, 7, 24, [4, 2, '!ASNFZ4mrze_-3LqYdlQyEA']]]],
+  996: [null, [[10, 20, 7, 24, 4, 2], '!' + btoa(Array.from({length: 80}, (_, index) => String.fromCharCode(index)).join('')).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')]],
 } }))
 
 import { getNativeRuntimeClip } from '../nativeRuntimePages'
 
 describe('native page tokens reconstruct exact URLs and frame geometry', () => {
+  it('selects the exact hash range for every action in a shared back view on first lookup', () => {
+    const actions = ['idle', 'attack', 'hit', 'victory', 'ko']
+    for (const [actionIndex, action] of actions.entries()) {
+      const clip = getNativeRuntimeClip(`/sprites/arkamon/996/back/${action}.webp`)!
+      expect(clip.frameWidth).toBe(10)
+      expect(clip.frameHeight).toBe(20)
+      expect(clip.frameCount).toBe(7)
+      expect(clip.fps).toBe(24)
+      expect(clip.pages.map(page => page.src)).toEqual([0, 1].map(pageIndex => {
+        const hash = Array.from({length: 8}, (_, byte) => (actionIndex * 16 + pageIndex * 8 + byte).toString(16).padStart(2, '0')).join('')
+        return `/sprites/arkamon-paged/996/back/${action}/page-0${pageIndex}-${hash}.webp`
+      }))
+      expect(clip.pages.map(page => [page.firstFrame, page.frameCount, page.width, page.height])).toEqual([[0, 4, 20, 40], [4, 3, 20, 40]])
+      expect(getNativeRuntimeClip(`/sprites/arkamon/996/back/${action}.webp`)).toBe(clip)
+    }
+    expect(getNativeRuntimeClip('/sprites/arkamon/996/front/idle.webp')).toBeUndefined()
+  })
   it('supports original and fingerprinted WebP and PNG pages without changing frame positions', () => {
     const clip = getNativeRuntimeClip('/sprites/arkamon/999/front/idle.webp')!
     expect(clip).toEqual({ frameWidth: 10, frameHeight: 20, frameCount: 9, fps: 24, pages: [

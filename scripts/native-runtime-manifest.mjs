@@ -47,6 +47,33 @@ export function packNativeRuntimeManifest(manifest) {
   }))
 }
 
+/** Repeated source paths are derivable from species, view and action slots. */
+export function groupNativeRuntimeManifest(clips) {
+  const actions = ['idle', 'attack', 'hit', 'victory', 'ko']
+  const sets = {}
+  for (const [source, clip] of Object.entries(clips)) {
+    const match = /^\/sprites\/arkamon\/(\d+)\/(front|back)\/(idle|attack|hit|victory|ko)\.webp$/.exec(source)
+    if (!match) throw new Error(`Invalid native clip identity: ${source}`)
+    const [, species, side, action] = match
+    const sideIndex = side === 'front' ? 0 : 1
+    const set = sets[species] ??= []
+    const view = set[sideIndex] ??= []
+    view[actions.indexOf(action)] = clip
+  }
+  return sets
+}
+
+/** Share one exact grid and hash block only when all five action contracts agree. */
+export function compactNativeRuntimeViews(sets) {
+  return Object.fromEntries(Object.entries(sets).map(([species, sides]) => [species, sides.map(view => {
+    if (!view || view.length !== 5 || Array.from(view).some(clip => !clip || typeof clip[4][2] !== 'string' || !clip[4][2].startsWith('!'))) return view
+    const header = [...view[0].slice(0, 4), ...view[0][4].slice(0, 2)]
+    if (!view.every(clip => [...clip.slice(0, 4), ...clip[4].slice(0, 2)].every((value, index) => value === header[index]))) return view
+    const tokens = Buffer.concat(view.map(clip => Buffer.from(clip[4][2].slice(1), 'base64url')))
+    return [header, '!' + tokens.toString('base64url')]
+  })]))
+}
+
 /** Build-time projection prevents hashes and other verification-only data from entering JS. */
 export function nativeRuntimeManifestPlugin(root) {
   const manifestPath = path.resolve(root, 'src/data/arkamon-paged.json')
@@ -57,7 +84,7 @@ export function nativeRuntimeManifestPlugin(root) {
       if (id !== RESOLVED_ID) return
       this.addWatchFile(manifestPath)
       const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'))
-      return `export default ${JSON.stringify(packNativeRuntimeManifest(manifest))};`
+      return `export default ${JSON.stringify(compactNativeRuntimeViews(groupNativeRuntimeManifest(packNativeRuntimeManifest(manifest))))};`
     },
   }
 }

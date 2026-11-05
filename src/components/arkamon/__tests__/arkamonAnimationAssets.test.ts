@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = [...Array.from({ length: 131 }, (_, index) => index + 1), 134, 139]
+const SPECIES_IDS = [...Array.from({ length: 145 }, (_, index) => index + 1), 149, 150]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -108,7 +108,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(asset.durationMs).toBeCloseTo(conversion.sheet.durationSeconds * 1000)
   })
 
-  if ([118, 119, 122, 123, 124, 128, 129, 130, 131].includes(speciesId)) {
+  if ([118, 119, 122, 123, 124, 128, 129, 130, 131, 132, 133, 135, 136, 137, 138, 140, 141, 142, 143, 144, 145, 149, 150].includes(speciesId)) {
     it('fits the character body to its official portrait size while retaining effects in canvas padding', () => {
       const normalization = readConversion(speciesId, animation).transform.sharedTransform
       expect(normalization.scaleReference).toBe('Initial opaque body; all native motion and effects retained in canvas padding.')
@@ -147,7 +147,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(visiblePixelsDiffer).toBe(false)
     expect(transparent).toBeGreaterThan(info.width * info.height * 0.25)
     expect(opaqueArtwork).toBeGreaterThan(1000)
-    expect(Boolean(conversion.key.preserveSaturatedGreenBody)).toBe([130, 131, 134].includes(speciesId) && animation === 'idle')
+    expect(Boolean(conversion.key.preserveSaturatedGreenBody)).toBe([130, 131, 132, 133, 134, 135, 136].includes(speciesId) && animation === 'idle')
     if (speciesId === 5) {
       expect(darkFur).toBeGreaterThan(1000)
       expect(redDetails).toBeGreaterThan(100)
@@ -161,7 +161,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
       if (speciesId <= 82) expect(opaqueGreen).toBeGreaterThan(speciesId === 82 ? 300 : 1000)
     } else if (conversion.key.preserveSaturatedGreenBody) {
       expect(nativeGreenAllowed).toBe(true)
-      expect([130, 131, 134]).toContain(speciesId)
+      expect([130, 131, 132, 133, 134, 135, 136]).toContain(speciesId)
       expect(animation).toBe('idle')
       expect(conversion.key.preserveSaturatedGreenBody).toEqual({
         minimumBaseAlpha: .4, interiorErosionPixels: 2, screenRatioDeviationFade: [.12, .22],

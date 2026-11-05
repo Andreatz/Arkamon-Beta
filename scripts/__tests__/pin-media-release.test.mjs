@@ -56,8 +56,10 @@ describe('pinning the complete committed media manifest', () => {
     await expect(fs.access(f.pin)).rejects.toMatchObject({ code: 'ENOENT' })
   }, 15_000)
 
-  it('refuses new, replaced, staged or untracked pending sprites and uncommitted catalogs', async () => {
-    for (const change of ['new', 'replaced', 'staged', 'catalog', 'game-catalog']) {
+  // Each independent Git fixture gets the same deadline and its own cleanup.
+  // Combining all five in one case exhausted that deadline on Windows.
+  it.each(['new', 'replaced', 'staged', 'catalog', 'game-catalog'])(
+    'refuses uncommitted pending media or catalog changes: %s', async change => {
       const f = await fixture()
       const file = change === 'catalog' ? 'src/data/arkamon-assets.json' : change === 'game-catalog' ? 'src/data/pokemon.json'
         : `public/sprites/front_sprites/${change === 'new' ? 151 : 150}.png`
@@ -65,6 +67,5 @@ describe('pinning the complete committed media manifest', () => {
       if (change === 'staged') await run('git', ['add', file], { cwd: f.root })
       await expect(run(process.execPath, [script], { cwd: f.root })).rejects.toThrow('Commit the original pending PNGs')
       await expect(fs.access(f.pin)).rejects.toMatchObject({ code: 'ENOENT' })
-    }
   }, 15_000)
 })
