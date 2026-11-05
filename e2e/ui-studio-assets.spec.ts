@@ -168,15 +168,26 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     await original(page)
     await assertBackground(info, '/ui/infobox.png')
 
+    const editorCommand = preview(page).getByRole('button', { name: 'Mosse giocatore', exact: true })
+    await expect(editorCommand).toBeVisible()
+    await expect(editorCommand).toHaveAttribute('data-ui-id', /.+/)
+    const editorBackground = await editorCommand.evaluate(element => getComputedStyle(element).backgroundImage)
     const move = preview(page).locator('.battle-move-button').first()
     const moveId = (await move.getAttribute('data-ui-id'))!
     const moveText = (await move.textContent())!.trim()
     const typeIcon = move.locator('img')
     const typeSource = await typeIcon.getAttribute('src')
     await page.getByLabel('Cerca elemento', { exact: true }).fill(moveId)
-    await page.locator('.uis-layer').first().click()
+    // Layout-editing commands can have an ID containing the move's ID. A
+    // substring search is only a filter; select the exact registered element.
+    const moveLayer = page.locator(`.uis-layer[data-ui-element-id=${JSON.stringify(moveId)}]`)
+    await expect(moveLayer).toHaveCount(1)
+    await moveLayer.click()
+    await expect(moveLayer).toHaveClass(/is-selected/)
+    await expect(page.locator('.uis-element-id')).toHaveText(moveId)
     await chooseAsset(page, 'infobox')
     await assertBackground(move, '/ui/studio/Comuni/infobox.svg')
+    await expect(editorCommand).toHaveCSS('background-image', editorBackground)
     expect((await move.textContent())!.trim()).toBe(moveText)
     await expect(typeIcon).toBeVisible()
     await expect(typeIcon).toHaveAttribute('src', typeSource!)
