@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "importDate": "2026-11-04",
-  "updatedAt": "2026-11-05T00:07:24.062109+00:00",
+  "updatedAt": "2026-11-05T00:26:21.038543+00:00",
   "sourceCheckoutHeadAtImport": "8129ae42d9a443c611877a1a8cba1f5a54f29ad2",
   "sourceVideoState": "85 user-supplied untracked local MP4s; copied with matching SHA-256 under supplied filenames and canonical raw paths.",
   "speciesIds": [
@@ -16242,10 +16242,80 @@
   ],
   "verification": {
     "preservation": "passed",
-    "unit": "pending final run",
-    "sourceBrowser": "pending final run",
-    "productionBuild": "pending media pin and build",
-    "compiledBrowser": "pending final build"
+    "unit": {
+      "passed": 5878,
+      "failed": 0,
+      "files": 183,
+      "exitCode": 0,
+      "bodyFitVerified": true
+    },
+    "sourceBrowser": {
+      "passed": 68,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "retries": 0,
+      "scope": "17 imported sets: five-action playback and actual laboratory, desktop and mobile, after final body fitting.",
+      "workers": 2
+    },
+    "productionBuild": {
+      "exitCode": 0,
+      "localPackageMiB": 741.2,
+      "startup": {
+        "entryBytes": 469597,
+        "javascriptBytes": 729546,
+        "stylesheetBytes": 76721
+      }
+    },
+    "compiledBrowser": {
+      "nativeScenarios": 32,
+      "generalScenarios": 3,
+      "skipped": 0,
+      "flaky": 0,
+      "retries": 0,
+      "artifact": {
+        "contentSha256": "1d7cf78c4be0b621b650ff2a449468ed2d0b1bb7177279b95868131ea7570897",
+        "mediaRevision": "2cb251da0753c53e5a328b1f550abdfb6a6a0318",
+        "manifestSha256": "229b6a9de77f5324b3a6ce23d19bb26c4c7c29b101db0049cf5b20064e858855",
+        "nativeClips": 665,
+        "nativeFrames": 63595
+      }
+    },
+    "python": {
+      "passed": 43,
+      "failed": 0
+    },
+    "nodeContracts": {
+      "passed": 26,
+      "failed": 0
+    },
+    "security": {
+      "passed": 9,
+      "failed": 0
+    },
+    "compiledNativeProof": {
+      "kind": "native-compiled",
+      "passed": 32,
+      "skipped": 0,
+      "reportSha256": "6920c00ca0b54e1e1095a95b25eece9ec911ec690325a409dfb4d165b15e74c4",
+      "artifact": {
+        "contentSha256": "1d7cf78c4be0b621b650ff2a449468ed2d0b1bb7177279b95868131ea7570897",
+        "mediaRevision": "2cb251da0753c53e5a328b1f550abdfb6a6a0318",
+        "manifestSha256": "229b6a9de77f5324b3a6ce23d19bb26c4c7c29b101db0049cf5b20064e858855",
+        "nativeClips": 665,
+        "nativeFrames": 63595,
+        "transport": "verified-local-pinned-media",
+        "cdnAvailabilityVerified": false
+      }
+    },
+    "scope": "Complete unit suite; targeted 68 new source-browser identities plus 3 general and 32 native compiled scenarios. Not the entire project E2E collection or a complete manual playthrough.",
+    "publication": {
+      "pushPerformed": false,
+      "deployPerformed": false,
+      "cdnAvailabilityVerified": false,
+      "transport": "verified-local-pinned-media"
+    },
+    "completedAt": "2026-11-05T00:26:20.891Z"
   },
   "publication": {
     "pushPerformedForThisImport": false,
@@ -16254,8 +16324,8 @@
   },
   "mediaPinAtAuditTime": {
     "version": 1,
-    "revision": "3877a6a657fe7ca190401453b997ed8aefa543a3",
-    "manifestSha256": "28ea1184f3b1f2c7552365ac8b90e04c19c9f40abcf043e76bdd80ff267abad1",
+    "revision": "2cb251da0753c53e5a328b1f550abdfb6a6a0318",
+    "manifestSha256": "229b6a9de77f5324b3a6ce23d19bb26c4c7c29b101db0049cf5b20064e858855",
     "pendingFrontSpritesSha256": "2fab12a90fccffa6acb2ec8844b001d0177a549997605ae5ed5f80da3217bb69"
   }
 }
