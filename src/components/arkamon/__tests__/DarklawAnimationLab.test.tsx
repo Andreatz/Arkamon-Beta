@@ -37,7 +37,7 @@ describe('laboratory for unfinished graphic assets', () => {
   })
 
   it('keeps the supplied new animation forms outside move simulation until game data exists', () => {
-    for (const id of [...Array.from({ length: 35 }, (_, index) => index + 111), 149, 150]) {
+    for (const id of Array.from({ length: 46 }, (_, index) => index + 111)) {
       const markup = renderToStaticMarkup(<DarklawAnimationLab initialSpeciesId={id} />)
       expect(markup).toContain('data-asset-status="pending-game-data"')
       expect(markup).toContain('Nome, mosse e attributi da definire')

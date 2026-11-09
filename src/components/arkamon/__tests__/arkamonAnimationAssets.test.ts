@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
-const SPECIES_IDS = [...Array.from({ length: 145 }, (_, index) => index + 1), 149, 150]
+const SPECIES_IDS = Array.from({ length: 156 }, (_, index) => index + 1)
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -108,7 +108,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(asset.durationMs).toBeCloseTo(conversion.sheet.durationSeconds * 1000)
   })
 
-  if ([118, 119, 122, 123, 124, 128, 129, 130, 131, 132, 133, 135, 136, 137, 138, 140, 141, 142, 143, 144, 145, 149, 150].includes(speciesId)) {
+  if ([118, 119, 122, 123, 124, 128, 129, 130, 131, 132, 133, 135, 136, 137, 138, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156].includes(speciesId)) {
     it('fits the character body to its official portrait size while retaining effects in canvas padding', () => {
       const normalization = readConversion(speciesId, animation).transform.sharedTransform
       expect(normalization.scaleReference).toBe('Initial opaque body; all native motion and effects retained in canvas padding.')

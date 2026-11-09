@@ -20,13 +20,17 @@ describe('compact native runtime metadata', () => {
     const serialized = JSON.stringify(packed)
     expect(serialized).not.toMatch(/sha256|sourceRgba|decodedRgba|encodedBytes|viewport/i)
     // Content-addressed filenames are required runtime URLs, not optional
-    // provenance fields. Budget those names explicitly while retaining the
-    // existing 2% geometry budget and a firm ceiling for the bundled index.
+    // provenance fields. Keep the original ceiling for the 735-clip catalog
+    // and allow nine bytes per additional digest: eight for the hash and one
+    // for encoding overhead. The startup bundle retains its own fixed limits.
     const filenames = Object.values(authoritative.clips).flatMap(clip => clip.pages.map(page => page.src.slice(page.src.lastIndexOf('/') + 1)))
     const filenameBytes = gzipSync(JSON.stringify(filenames)).byteLength
     const runtimeBytes = gzipSync(serialized).byteLength
+    const fingerprintedPages = filenames.filter(filename => /-[a-f0-9]{16}\.(webp|png)$/.test(filename)).length
+    const baselineFingerprintedPages = 3_855
+    const runtimeBudget = 32 * 1024 + Math.max(0, fingerprintedPages - baselineFingerprintedPages) * 9
     expect(runtimeBytes).toBeLessThan(gzipSync(JSON.stringify(authoritative)).byteLength * .02 + filenameBytes)
-    expect(runtimeBytes).toBeLessThan(32 * 1024)
+    expect(runtimeBytes).toBeLessThan(runtimeBudget)
   })
 
   it('synchronously supplies pages on the first lookup, including all original cues and irregular frame counts', () => {

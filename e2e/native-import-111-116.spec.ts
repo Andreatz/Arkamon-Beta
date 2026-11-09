@@ -236,7 +236,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     await expect(select.locator('option[value="1"]')).toHaveCount(0)
     await expect(select.locator('option[value="206"]')).toHaveCount(1)
     await page.locator('#darklaw-preview-filter').selectOption('animated')
-    await expect(select.locator('option')).toHaveCount(147)
+    await expect(select.locator('option')).toHaveCount(156)
     await expect(select.locator('option[value="206"]')).toHaveCount(0)
     await expect(select.locator('option[value="116"]')).toHaveCount(1)
     await expect(select.locator('option[value="139"]')).toHaveCount(1)

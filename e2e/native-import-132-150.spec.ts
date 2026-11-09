@@ -2,10 +2,14 @@ import { expect, test } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-const importedSpecies = [132, 133, 135, 136, 137, 138, 140, 141, 142, 143, 144, 145, 149, 150]
-// Independently decoded source counts, retained outside generated metadata.
-const nativeSourceCounts = JSON.parse(readFileSync(resolve('src/components/arkamon/__tests__/fixtures/native-import-2026-11-05.json'), 'utf8')) as Record<number, Record<Animation, number>>
 type Animation = 'idle' | 'attack' | 'hit' | 'victory' | 'ko'
+
+// Read independently decoded counts outside generated metadata. The latest
+// fixture supplies the counts for the replacement videos of form 149.
+const readSourceCounts = (date: string): Record<number, Record<Animation, number>> =>
+  JSON.parse(readFileSync(resolve(`src/components/arkamon/__tests__/fixtures/native-import-${date}.json`), 'utf8'))
+const nativeSourceCounts = { ...readSourceCounts('2026-11-05'), ...readSourceCounts('2026-11-09') }
+const importedSpecies = Object.keys(nativeSourceCounts).map(Number)
 interface NativeEvent { kind: string; animation: Animation; frame: number; time: number }
 interface ImportHarness {
   events: NativeEvent[]
@@ -136,12 +140,10 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     const sprite = comparison.locator('[data-sprite-renderer="paged-canvas"]')
     await expect(sprite).toBeVisible()
     await expect(sprite).toHaveAttribute('data-sprite-fps', '24')
-    if ([132, 133, 135, 136, 137, 138, 140, 141, 142, 143, 144, 145, 149, 150].includes(species)) {
-      const normalization = sourceMetadata(species, 'idle').transform.sharedTransform
-      expect(normalization.scaleReference).toBe('Initial opaque body; all native motion and effects retained in canvas padding.')
-      expect(normalization.idleBodyHeightOutputPixels).toBeGreaterThanOrEqual(
-        normalization.viewport.height * normalization.reference.bodyHeightFraction * .95)
-    }
+    const normalization = sourceMetadata(species, 'idle').transform.sharedTransform
+    expect(normalization.scaleReference).toBe('Initial opaque body; all native motion and effects retained in canvas padding.')
+    expect(normalization.idleBodyHeightOutputPixels).toBeGreaterThanOrEqual(
+      normalization.viewport.height * normalization.reference.bodyHeightFraction * .95)
     await page.screenshot({ path: testInfo.outputPath('pending-native-laboratory.png'), fullPage: true })
     await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('pending-native-comparison.png') })
     // Scrubbing uses the real source frame count and verifies that the UI can

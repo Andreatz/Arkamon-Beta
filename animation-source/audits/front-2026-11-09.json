@@ -1,0 +1,1355 @@
+{
+  "schemaVersion": 1,
+  "importDate": "2026-11-09",
+  "previousMediaRevision": "a014a032479c7474417208d68e478a01d6757be1",
+  "previousImportBase": "60087d4b3c9ff283759590765f436712f120c8c3",
+  "inventory": {
+    "newClips": 45,
+    "replacementClips": 5,
+    "unchangedClips": 730,
+    "newSpecies": [
+      146,
+      147,
+      148,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156
+    ],
+    "replacementSpecies": [
+      149
+    ],
+    "suppliedFrames": 4700,
+    "clips": [
+      {
+        "speciesId": 146,
+        "action": "idle",
+        "sha256": "7747f44266e64ed0229501489c1e9daea156b9b5f83fa01af9ecc8655accf3c9",
+        "previousSourceSha256": null,
+        "sizeBytes": 1484433,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 146,
+        "action": "attack",
+        "sha256": "5b4a84c35eb6ecfa5d76926aa463fe23f3cb06dc3ca524622377c945d4521a19",
+        "previousSourceSha256": null,
+        "sizeBytes": 1542149,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 146,
+        "action": "hit",
+        "sha256": "4569bf7a27a63c8ad5594b61c3c20149af0452cb7b50aa4784a929f7d737e220",
+        "previousSourceSha256": null,
+        "sizeBytes": 1776769,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 146,
+        "action": "victory",
+        "sha256": "f3fa28a3252b6f6de52ed9d7fab8df969844ee541896099d91ee2ef64270a3aa",
+        "previousSourceSha256": null,
+        "sizeBytes": 1540718,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 146,
+        "action": "ko",
+        "sha256": "d5e835c49b154b071be019143ad15ef6c4752ef7d08969bbd5ccd8402fadabf8",
+        "previousSourceSha256": null,
+        "sizeBytes": 2008198,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 147,
+        "action": "idle",
+        "sha256": "ec3734bf3ece21c7189c0b85ddc39a67562b3779c4c3954a38c8a8e330c9377c",
+        "previousSourceSha256": null,
+        "sizeBytes": 2157639,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 147,
+        "action": "attack",
+        "sha256": "a21a306cb97cdb875ef5d3b84e60c5279ec7435e0425c60fac7611d6e885ab10",
+        "previousSourceSha256": null,
+        "sizeBytes": 2731966,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 147,
+        "action": "hit",
+        "sha256": "2d49dc3f1ca58d73e95f2cf7d6c43b2842fd1c04b9965c824c2d8f45701b6eb2",
+        "previousSourceSha256": null,
+        "sizeBytes": 2185464,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 147,
+        "action": "victory",
+        "sha256": "59aa7b11330df20a582ce8bd46c3fe36c284002bb089e778fa6ac0857d796a03",
+        "previousSourceSha256": null,
+        "sizeBytes": 2586289,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 147,
+        "action": "ko",
+        "sha256": "a32ce271389bf1c560d5997a30227f7a98bb15e2cda7c426c58a9403015cdad8",
+        "previousSourceSha256": null,
+        "sizeBytes": 2843219,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 148,
+        "action": "idle",
+        "sha256": "d2e28db37fb57869c91972022a9e90f56991e353a3a77be790389402b4d7458e",
+        "previousSourceSha256": null,
+        "sizeBytes": 2365210,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 148,
+        "action": "attack",
+        "sha256": "c78ea2cdf0cc5fb5a26e32959fd37e3c6f656143966b4ce2542cb39205232abe",
+        "previousSourceSha256": null,
+        "sizeBytes": 2492934,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 148,
+        "action": "hit",
+        "sha256": "cd2066de822e7571e1b613b61dbd9d5a5ccc835b28d3f60a7f5e1861fc4d708b",
+        "previousSourceSha256": null,
+        "sizeBytes": 2526691,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 148,
+        "action": "victory",
+        "sha256": "6e5f2d9ae8e8313813c758b161bd0dcacaa26c1cf59f16e7e71a33cfde2e4572",
+        "previousSourceSha256": null,
+        "sizeBytes": 2683312,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 148,
+        "action": "ko",
+        "sha256": "c6b3ae332d3a0685776e21d829af4768f66a991ef5672c90b69514c384116865",
+        "previousSourceSha256": null,
+        "sizeBytes": 2957625,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 149,
+        "action": "idle",
+        "sha256": "f9246ab81bc95077196ee9ef53a2d445dcd0dd0147c29b3c2c08cbfe8f238dce",
+        "previousSourceSha256": "12678069d35de824f3b596aade53926ff42b67559e1e3a6821b4696b47300073",
+        "sizeBytes": 1430267,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 149,
+        "action": "attack",
+        "sha256": "cd305e47a1acbc18475b8c3a599365799263530f05790a8cb5de4af727053558",
+        "previousSourceSha256": "0d8fa7619e0360ac6f3d9b2c93bc6553b69cd61a4aa1c9257f64417891b1e5bf",
+        "sizeBytes": 1704242,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 149,
+        "action": "hit",
+        "sha256": "8c005122a4b90ccd29b66ba77382b8711eaf13be03f52ea705b6b45ed86fb635",
+        "previousSourceSha256": "6de50379ebacf408a777f48397f41f6e53b239092e18ff1bc5b0d56c15cddc1c",
+        "sizeBytes": 1750222,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 149,
+        "action": "victory",
+        "sha256": "952de55f9d762d2eb41cd461abf3a8ea93dd9d5677c7a40106d50dcc1f1a7b96",
+        "previousSourceSha256": "b3467b5d5d23d815866f000f5a806c2b89000e4fd132988c5726ea0b99d44863",
+        "sizeBytes": 1892837,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 149,
+        "action": "ko",
+        "sha256": "b109da8ce4dcf2d2f6ae66a762de81156567ee7ea1db00fc58804f3a78867270",
+        "previousSourceSha256": "9806f66f9fb940a8bad20f9fdaa8c4a6e741bfe0b24dc51f69a6860b26d9c7e2",
+        "sizeBytes": 2384907,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 151,
+        "action": "idle",
+        "sha256": "aa344c9c156c359f9150655ace33ea4f76833993e30db4e296b84bb442324afa",
+        "previousSourceSha256": null,
+        "sizeBytes": 937360,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 151,
+        "action": "attack",
+        "sha256": "3baafb6d0d52e01eeff1dedbbd56db8c04f81e121792538c347c4600f5d7cf52",
+        "previousSourceSha256": null,
+        "sizeBytes": 1335154,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 151,
+        "action": "hit",
+        "sha256": "ea7c860fe970bd9148dc0909b411aa5d502bf651d4866901519aab88be1e26f6",
+        "previousSourceSha256": null,
+        "sizeBytes": 1261428,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 151,
+        "action": "victory",
+        "sha256": "b35c71160cacad68d1340b6dcf694da8f4f711ee59cb9ccb284b99b4bdf46318",
+        "previousSourceSha256": null,
+        "sizeBytes": 2186279,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 151,
+        "action": "ko",
+        "sha256": "2ade77c10c2f8c0bb1328353f20e38b84929e6faaa629ea4c8e877e2103b693d",
+        "previousSourceSha256": null,
+        "sizeBytes": 1409367,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 152,
+        "action": "idle",
+        "sha256": "9e2c2b4d2407161bf4d65ef5d4fbb9008eb5dfcad55624ec4277f22b2b966647",
+        "previousSourceSha256": null,
+        "sizeBytes": 1454527,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 152,
+        "action": "attack",
+        "sha256": "8d71ba30b77100b1a5801a1513bad93c6353a24d7d83b372b21597cf831f9f0a",
+        "previousSourceSha256": null,
+        "sizeBytes": 2102428,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 152,
+        "action": "hit",
+        "sha256": "f367b37c417cb25b9d306a95c098229bed76c94afac782999264301f68133492",
+        "previousSourceSha256": null,
+        "sizeBytes": 1933014,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 152,
+        "action": "victory",
+        "sha256": "6544ea825e696ef1b49ff46930cea02d47015f5a8ef7d0b28c6b5aa7d8d2c90d",
+        "previousSourceSha256": null,
+        "sizeBytes": 2233598,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 152,
+        "action": "ko",
+        "sha256": "2f9b52521961347a6a487fc2afd4e5f483329d8b86a4af4f9633a543a537f490",
+        "previousSourceSha256": null,
+        "sizeBytes": 2082590,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 153,
+        "action": "idle",
+        "sha256": "2b574c803616f3b0166d44e4c0937b3fc89543256d631634cd8e2ea848691f2c",
+        "previousSourceSha256": null,
+        "sizeBytes": 1919415,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 153,
+        "action": "attack",
+        "sha256": "d38167b461ca6c3c2c40e1ad3a492376a2db73dc49c42bff9f96ab87cdd5cdd3",
+        "previousSourceSha256": null,
+        "sizeBytes": 2415342,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 153,
+        "action": "hit",
+        "sha256": "e666f66028d602c333eb53814ba0847f8cde230717ef750026202834efe9783b",
+        "previousSourceSha256": null,
+        "sizeBytes": 2614623,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 153,
+        "action": "victory",
+        "sha256": "3e4b1681e168cb593a9c9327aa08795a339d6a6cc228eeefdcfefb335e72dfc8",
+        "previousSourceSha256": null,
+        "sizeBytes": 1931612,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 153,
+        "action": "ko",
+        "sha256": "c584d48d819ab55f3748d2a491d7d7c6d2a4dd6fb15b90f58bba646331f1808d",
+        "previousSourceSha256": null,
+        "sizeBytes": 3588342,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 154,
+        "action": "idle",
+        "sha256": "263e6fa91fa94d2cfb94ed45f22aeb036311472d10817c734ca4f7161827ff9c",
+        "previousSourceSha256": null,
+        "sizeBytes": 1695614,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 154,
+        "action": "attack",
+        "sha256": "da93c0979acd7a10b585cdf181ce28bc4ca2f9ee8ff6b5486266fe66da8876fc",
+        "previousSourceSha256": null,
+        "sizeBytes": 2043738,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 154,
+        "action": "hit",
+        "sha256": "4241d1bfa1dad8b7e19c4f0a524fcacbb64ea6a41d6f7822c775af72945bfb09",
+        "previousSourceSha256": null,
+        "sizeBytes": 2408273,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 154,
+        "action": "victory",
+        "sha256": "7d5a1932a5677aba96afc3497179dacb04ed154397659240d3e050f32ee2a91f",
+        "previousSourceSha256": null,
+        "sizeBytes": 3169725,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 154,
+        "action": "ko",
+        "sha256": "44101c7c02e09cb92f7c75af03cd1d2868327297aa990cc4484d9ffe591f2eee",
+        "previousSourceSha256": null,
+        "sizeBytes": 2748623,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 155,
+        "action": "idle",
+        "sha256": "3bfbb21284ee501c2cc0cc96b4a98cf5e4c6047b2573a142cda9332415cbb0dd",
+        "previousSourceSha256": null,
+        "sizeBytes": 2317884,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 155,
+        "action": "attack",
+        "sha256": "d3de20b22d76d265916a9c0423c4012fcc95cf975149e60700ecc72e7f8cc27b",
+        "previousSourceSha256": null,
+        "sizeBytes": 2931437,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 155,
+        "action": "hit",
+        "sha256": "1af1148f815225aa6ce0a351ac76244d49707b05b5ffdf41f6f5b1ef27994ceb",
+        "previousSourceSha256": null,
+        "sizeBytes": 2819677,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 155,
+        "action": "victory",
+        "sha256": "7ab3b190cafe5c700f431093c03ebf11d103acdf6b3cc006b0935a354ce23225",
+        "previousSourceSha256": null,
+        "sizeBytes": 3369039,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 155,
+        "action": "ko",
+        "sha256": "c3f7fa54497ca2c5ba342f280a0aa78a482c0542d15efdb21657dfc37f470212",
+        "previousSourceSha256": null,
+        "sizeBytes": 3557785,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 156,
+        "action": "idle",
+        "sha256": "8af3b4d08f88232a0b58a2bc2c756ed429a1353c919cdcb1c46db69a8bc627ff",
+        "previousSourceSha256": null,
+        "sizeBytes": 1570221,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 156,
+        "action": "attack",
+        "sha256": "12f856aaf94b75b4c355816b712eba4c8083127f31e44e9733e57bd7038a40a9",
+        "previousSourceSha256": null,
+        "sizeBytes": 2113727,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 156,
+        "action": "hit",
+        "sha256": "b7a0d534b12a6c7217ca29731f6a98d41fae9c994024dff34cd50fb2a110588a",
+        "previousSourceSha256": null,
+        "sizeBytes": 1933610,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 156,
+        "action": "victory",
+        "sha256": "18ee71e61b1527a49c07619e4f9507246f989f6589e4a5e9cc7198cb82972ed4",
+        "previousSourceSha256": null,
+        "sizeBytes": 2801770,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "speciesId": 156,
+        "action": "ko",
+        "sha256": "f454cfbdef77361c4dd5437fe8f69204328dfdd83b7ed61624f85cf45813ab6f",
+        "previousSourceSha256": null,
+        "sizeBytes": 2243765,
+        "decodedFrameCount": 94,
+        "fps": 24,
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "portraits": [
+      {
+        "id": 146,
+        "source": "/sprites/front_sprites/146.png",
+        "width": 2048,
+        "height": 2048,
+        "alphaBounds": [
+          86,
+          265,
+          1993,
+          1852
+        ],
+        "bytes": 2842480,
+        "sha256": "92c60cc113a30086ad81f7085b7d5f0bf7fe3d9ef68a905aeb67e8f9f5ff9803"
+      },
+      {
+        "id": 147,
+        "source": "/sprites/front_sprites/147.png",
+        "width": 2048,
+        "height": 2048,
+        "alphaBounds": [
+          38,
+          54,
+          1997,
+          2019
+        ],
+        "bytes": 2867014,
+        "sha256": "ef8ed31cf22b2bc4793667e54ab091e5c2ca86a651fcc5c68c45ad7e000a0a21"
+      },
+      {
+        "id": 148,
+        "source": "/sprites/front_sprites/148.png",
+        "width": 2400,
+        "height": 1792,
+        "alphaBounds": [
+          61,
+          60,
+          2349,
+          1771
+        ],
+        "bytes": 3247405,
+        "sha256": "22b7923dd458fefbf687dc973a3405d38d2be19b85eb04cca0f8c1bffc297de6"
+      },
+      {
+        "id": 149,
+        "source": "/sprites/front_sprites/149.png",
+        "width": 2048,
+        "height": 2048,
+        "alphaBounds": [
+          92,
+          84,
+          1925,
+          1917
+        ],
+        "bytes": 3102414,
+        "sha256": "e90481b8d7f407d1276e04d438cb8c282e0613fd5c1f4bd611a3560554d60ba7"
+      },
+      {
+        "id": 151,
+        "source": "/sprites/front_sprites/151.png",
+        "width": 2048,
+        "height": 2048,
+        "alphaBounds": [
+          284,
+          459,
+          1428,
+          2031
+        ],
+        "bytes": 1201277,
+        "sha256": "c76d4c35df49bae4d99fab68e6db59eef7e3b4e798917d51eb9a8a6ce2a3c812"
+      }
+    ]
+  },
+  "catalog": {
+    "clips": 780,
+    "forms": 156,
+    "frames": 74405,
+    "pages": 8085,
+    "maxPageDecodedBytes": 16777216,
+    "runtimeGzipBytes": 36286,
+    "fingerprintedPages": 4330,
+    "playable": 110,
+    "pending": 90,
+    "runtimeGzipBudget": 37043
+  },
+  "markers": {
+    "schemaVersion": 1,
+    "reviewDate": "2026-11-09",
+    "frameIndexBase": 0,
+    "species": [
+      {
+        "speciesId": 146,
+        "timing": {
+          "attack": {
+            "releaseFrame": 47,
+            "releaseMs": 1958.3333333333333,
+            "evidence": "The raised claws descend; frame 47 first displays the pale downward slash. Frame 46 is lowered preparation and frame 48 continues the swing.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 19,
+            "reactionMs": 791.6666666666666,
+            "evidence": "Frame 18 remains a tightly closed brace. Frame 19 first displays the yellow impact burst; frame 20 starts the visibly displaced dizzy response.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 46,
+              "observation": "The raised claws descend; frame 47 first displays the pale downward slash. Frame 46 is lowered preparation and frame 48 continues the swing."
+            },
+            {
+              "frame": 47,
+              "observation": "The raised claws descend; frame 47 first displays the pale downward slash. Frame 46 is lowered preparation and frame 48 continues the swing."
+            },
+            {
+              "frame": 48,
+              "observation": "The raised claws descend; frame 47 first displays the pale downward slash. Frame 46 is lowered preparation and frame 48 continues the swing."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 18,
+              "observation": "Frame 18 remains a tightly closed brace. Frame 19 first displays the yellow impact burst; frame 20 starts the visibly displaced dizzy response."
+            },
+            {
+              "frame": 19,
+              "observation": "Frame 18 remains a tightly closed brace. Frame 19 first displays the yellow impact burst; frame 20 starts the visibly displaced dizzy response."
+            },
+            {
+              "frame": 20,
+              "observation": "Frame 18 remains a tightly closed brace. Frame 19 first displays the yellow impact burst; frame 20 starts the visibly displaced dizzy response."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 147,
+        "timing": {
+          "attack": {
+            "releaseFrame": 32,
+            "releaseMs": 1333.3333333333333,
+            "evidence": "Frame 31 has the claws fully extended. Frame 32 first displays the white outward impact accents around the pincers and frame 33 continues the strike.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 19,
+            "reactionMs": 791.6666666666666,
+            "evidence": "Frame 18 is the closed-eye brace. Frame 19 first displays the white impact star and frame 20 expands it as the body begins its recoil.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 31,
+              "observation": "Frame 31 has the claws fully extended. Frame 32 first displays the white outward impact accents around the pincers and frame 33 continues the strike."
+            },
+            {
+              "frame": 32,
+              "observation": "Frame 31 has the claws fully extended. Frame 32 first displays the white outward impact accents around the pincers and frame 33 continues the strike."
+            },
+            {
+              "frame": 33,
+              "observation": "Frame 31 has the claws fully extended. Frame 32 first displays the white outward impact accents around the pincers and frame 33 continues the strike."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 18,
+              "observation": "Frame 18 is the closed-eye brace. Frame 19 first displays the white impact star and frame 20 expands it as the body begins its recoil."
+            },
+            {
+              "frame": 19,
+              "observation": "Frame 18 is the closed-eye brace. Frame 19 first displays the white impact star and frame 20 expands it as the body begins its recoil."
+            },
+            {
+              "frame": 20,
+              "observation": "Frame 18 is the closed-eye brace. Frame 19 first displays the white impact star and frame 20 expands it as the body begins its recoil."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 148,
+        "timing": {
+          "attack": {
+            "releaseFrame": 43,
+            "releaseMs": 1791.6666666666667,
+            "evidence": "Frame 42 is the raised-claw preparation. Frame 43 begins the downward strike and its pale trail; frame 44 continues the descending arm.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 24,
+            "reactionMs": 1000,
+            "evidence": "Frame 23 shows the closed-eye brace and rising body. Frame 24 first displays the bright contact star on the face; frame 25 enlarges the burst with recoil.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 42,
+              "observation": "Frame 42 is the raised-claw preparation. Frame 43 begins the downward strike and its pale trail; frame 44 continues the descending arm."
+            },
+            {
+              "frame": 43,
+              "observation": "Frame 42 is the raised-claw preparation. Frame 43 begins the downward strike and its pale trail; frame 44 continues the descending arm."
+            },
+            {
+              "frame": 44,
+              "observation": "Frame 42 is the raised-claw preparation. Frame 43 begins the downward strike and its pale trail; frame 44 continues the descending arm."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 23,
+              "observation": "Frame 23 shows the closed-eye brace and rising body. Frame 24 first displays the bright contact star on the face; frame 25 enlarges the burst with recoil."
+            },
+            {
+              "frame": 24,
+              "observation": "Frame 23 shows the closed-eye brace and rising body. Frame 24 first displays the bright contact star on the face; frame 25 enlarges the burst with recoil."
+            },
+            {
+              "frame": 25,
+              "observation": "Frame 23 shows the closed-eye brace and rising body. Frame 24 first displays the bright contact star on the face; frame 25 enlarges the burst with recoil."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 149,
+        "timing": {
+          "attack": {
+            "releaseFrame": 32,
+            "releaseMs": 1333.3333333333333,
+            "evidence": "The source has no external attack flash. Frame 31 lowers the raised head; frame 32 enters the horizontal forward extension and frame 33 continues the thrust. This is a physical-pose cue rather than a projectile or game-move assignment.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 22,
+            "reactionMs": 916.6666666666666,
+            "evidence": "Frame 21 finishes the forward movement with no burst. Frame 22 first displays the white impact burst at the face; frame 23 holds and expands it.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 31,
+              "observation": "The source has no external attack flash. Frame 31 lowers the raised head; frame 32 enters the horizontal forward extension and frame 33 continues the thrust. This is a physical-pose cue rather than a projectile or game-move assignment."
+            },
+            {
+              "frame": 32,
+              "observation": "The source has no external attack flash. Frame 31 lowers the raised head; frame 32 enters the horizontal forward extension and frame 33 continues the thrust. This is a physical-pose cue rather than a projectile or game-move assignment."
+            },
+            {
+              "frame": 33,
+              "observation": "The source has no external attack flash. Frame 31 lowers the raised head; frame 32 enters the horizontal forward extension and frame 33 continues the thrust. This is a physical-pose cue rather than a projectile or game-move assignment."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 21,
+              "observation": "Frame 21 finishes the forward movement with no burst. Frame 22 first displays the white impact burst at the face; frame 23 holds and expands it."
+            },
+            {
+              "frame": 22,
+              "observation": "Frame 21 finishes the forward movement with no burst. Frame 22 first displays the white impact burst at the face; frame 23 holds and expands it."
+            },
+            {
+              "frame": 23,
+              "observation": "Frame 21 finishes the forward movement with no burst. Frame 22 first displays the white impact burst at the face; frame 23 holds and expands it."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 151,
+        "timing": {
+          "attack": {
+            "releaseFrame": 38,
+            "releaseMs": 1583.3333333333333,
+            "evidence": "The source has no projectile or attack flash. Frame 37 holds the airborne gathered pose. Frame 38 begins extending the forelegs into the forward lunge; frame 39 advances the same extension. The marker follows the physical lunge.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 13,
+            "reactionMs": 541.6666666666666,
+            "evidence": "Frame 12 shows the incoming dark streak before contact. Frame 13 first displays the white contact star on the head and chest; frame 14 expands the burst and starts recoil.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 37,
+              "observation": "The source has no projectile or attack flash. Frame 37 holds the airborne gathered pose. Frame 38 begins extending the forelegs into the forward lunge; frame 39 advances the same extension. The marker follows the physical lunge."
+            },
+            {
+              "frame": 38,
+              "observation": "The source has no projectile or attack flash. Frame 37 holds the airborne gathered pose. Frame 38 begins extending the forelegs into the forward lunge; frame 39 advances the same extension. The marker follows the physical lunge."
+            },
+            {
+              "frame": 39,
+              "observation": "The source has no projectile or attack flash. Frame 37 holds the airborne gathered pose. Frame 38 begins extending the forelegs into the forward lunge; frame 39 advances the same extension. The marker follows the physical lunge."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 12,
+              "observation": "Frame 12 shows the incoming dark streak before contact. Frame 13 first displays the white contact star on the head and chest; frame 14 expands the burst and starts recoil."
+            },
+            {
+              "frame": 13,
+              "observation": "Frame 12 shows the incoming dark streak before contact. Frame 13 first displays the white contact star on the head and chest; frame 14 expands the burst and starts recoil."
+            },
+            {
+              "frame": 14,
+              "observation": "Frame 12 shows the incoming dark streak before contact. Frame 13 first displays the white contact star on the head and chest; frame 14 expands the burst and starts recoil."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 152,
+        "timing": {
+          "attack": {
+            "releaseFrame": 32,
+            "releaseMs": 1333.3333333333333,
+            "evidence": "The source has no external attack flash. Frame 31 lowers the antlers further. Frame 32 reaches the forward antler-strike pose; frame 33 continues the low forward drive. This physical-pose cue does not invent a game move.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 37,
+            "reactionMs": 1541.6666666666667,
+            "evidence": "Frame 36 is the raised-head reaction before visible contact. Frame 37 first displays the yellow contact streak at the muzzle; frame 38 extends that streak outward.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 31,
+              "observation": "The source has no external attack flash. Frame 31 lowers the antlers further. Frame 32 reaches the forward antler-strike pose; frame 33 continues the low forward drive. This physical-pose cue does not invent a game move."
+            },
+            {
+              "frame": 32,
+              "observation": "The source has no external attack flash. Frame 31 lowers the antlers further. Frame 32 reaches the forward antler-strike pose; frame 33 continues the low forward drive. This physical-pose cue does not invent a game move."
+            },
+            {
+              "frame": 33,
+              "observation": "The source has no external attack flash. Frame 31 lowers the antlers further. Frame 32 reaches the forward antler-strike pose; frame 33 continues the low forward drive. This physical-pose cue does not invent a game move."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 36,
+              "observation": "Frame 36 is the raised-head reaction before visible contact. Frame 37 first displays the yellow contact streak at the muzzle; frame 38 extends that streak outward."
+            },
+            {
+              "frame": 37,
+              "observation": "Frame 36 is the raised-head reaction before visible contact. Frame 37 first displays the yellow contact streak at the muzzle; frame 38 extends that streak outward."
+            },
+            {
+              "frame": 38,
+              "observation": "Frame 36 is the raised-head reaction before visible contact. Frame 37 first displays the yellow contact streak at the muzzle; frame 38 extends that streak outward."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 153,
+        "timing": {
+          "attack": {
+            "releaseFrame": 20,
+            "releaseMs": 833.3333333333334,
+            "evidence": "Frame 19 starts the horizontal acceleration and dark trailing energy. Frame 20 first displays the white forward contact accent around the mask; frame 21 extends the attack trail.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 15,
+            "reactionMs": 625,
+            "evidence": "Frame 14 has incoming dark energy approaching the mask. Frame 15 overlaps the mask and the body starts turning under impact; frame 16 shows the displaced flattened response. Contact is marked before the later red bloom.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 19,
+              "observation": "Frame 19 starts the horizontal acceleration and dark trailing energy. Frame 20 first displays the white forward contact accent around the mask; frame 21 extends the attack trail."
+            },
+            {
+              "frame": 20,
+              "observation": "Frame 19 starts the horizontal acceleration and dark trailing energy. Frame 20 first displays the white forward contact accent around the mask; frame 21 extends the attack trail."
+            },
+            {
+              "frame": 21,
+              "observation": "Frame 19 starts the horizontal acceleration and dark trailing energy. Frame 20 first displays the white forward contact accent around the mask; frame 21 extends the attack trail."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 14,
+              "observation": "Frame 14 has incoming dark energy approaching the mask. Frame 15 overlaps the mask and the body starts turning under impact; frame 16 shows the displaced flattened response. Contact is marked before the later red bloom."
+            },
+            {
+              "frame": 15,
+              "observation": "Frame 14 has incoming dark energy approaching the mask. Frame 15 overlaps the mask and the body starts turning under impact; frame 16 shows the displaced flattened response. Contact is marked before the later red bloom."
+            },
+            {
+              "frame": 16,
+              "observation": "Frame 14 has incoming dark energy approaching the mask. Frame 15 overlaps the mask and the body starts turning under impact; frame 16 shows the displaced flattened response. Contact is marked before the later red bloom."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 154,
+        "timing": {
+          "attack": {
+            "releaseFrame": 28,
+            "releaseMs": 1166.6666666666667,
+            "evidence": "Frame 27 starts the forward arm extension. Frame 28 has the first extended black arm-trail across the front; frame 29 drives the strike fully forward.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 10,
+            "reactionMs": 416.6666666666667,
+            "evidence": "Frame 9 has the unchanged pose with no contact star. Frame 10 first displays the red-white impact star at the torso; frame 11 enlarges it.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 27,
+              "observation": "Frame 27 starts the forward arm extension. Frame 28 has the first extended black arm-trail across the front; frame 29 drives the strike fully forward."
+            },
+            {
+              "frame": 28,
+              "observation": "Frame 27 starts the forward arm extension. Frame 28 has the first extended black arm-trail across the front; frame 29 drives the strike fully forward."
+            },
+            {
+              "frame": 29,
+              "observation": "Frame 27 starts the forward arm extension. Frame 28 has the first extended black arm-trail across the front; frame 29 drives the strike fully forward."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 9,
+              "observation": "Frame 9 has the unchanged pose with no contact star. Frame 10 first displays the red-white impact star at the torso; frame 11 enlarges it."
+            },
+            {
+              "frame": 10,
+              "observation": "Frame 9 has the unchanged pose with no contact star. Frame 10 first displays the red-white impact star at the torso; frame 11 enlarges it."
+            },
+            {
+              "frame": 11,
+              "observation": "Frame 9 has the unchanged pose with no contact star. Frame 10 first displays the red-white impact star at the torso; frame 11 enlarges it."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 155,
+        "timing": {
+          "attack": {
+            "releaseFrame": 30,
+            "releaseMs": 1250,
+            "evidence": "Frame 29 finishes the dark energy preparation. Frame 30 first displays the pale cross-body slash, followed by the wider circular slash at frame 31.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 12,
+            "reactionMs": 500,
+            "evidence": "Frame 11 has no contact flare. Frame 12 first displays the small red-white torso impact; frame 13 expands that impact and starts the recoil.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 29,
+              "observation": "Frame 29 finishes the dark energy preparation. Frame 30 first displays the pale cross-body slash, followed by the wider circular slash at frame 31."
+            },
+            {
+              "frame": 30,
+              "observation": "Frame 29 finishes the dark energy preparation. Frame 30 first displays the pale cross-body slash, followed by the wider circular slash at frame 31."
+            },
+            {
+              "frame": 31,
+              "observation": "Frame 29 finishes the dark energy preparation. Frame 30 first displays the pale cross-body slash, followed by the wider circular slash at frame 31."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 11,
+              "observation": "Frame 11 has no contact flare. Frame 12 first displays the small red-white torso impact; frame 13 expands that impact and starts the recoil."
+            },
+            {
+              "frame": 12,
+              "observation": "Frame 11 has no contact flare. Frame 12 first displays the small red-white torso impact; frame 13 expands that impact and starts the recoil."
+            },
+            {
+              "frame": 13,
+              "observation": "Frame 11 has no contact flare. Frame 12 first displays the small red-white torso impact; frame 13 expands that impact and starts the recoil."
+            }
+          ]
+        }
+      },
+      {
+        "speciesId": 156,
+        "timing": {
+          "attack": {
+            "releaseFrame": 55,
+            "releaseMs": 2291.6666666666665,
+            "evidence": "Frame 54 stretches the side tentacles without speed accents. Frame 55 first displays the pale speed burst behind the extended tentacles; frame 56 enlarges the thrust.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          },
+          "hit": {
+            "reactionFrame": 27,
+            "reactionMs": 1125,
+            "evidence": "Frame 26 holds the closed-eye brace without contact flare. Frame 27 first displays the white body impact; frame 28 expands it while the figure bends and retracts.",
+            "inspection": "Three consecutive original native frames inspected visually at 24 FPS; zero-based frame indices; no game move or gameplay attributes assigned."
+          }
+        },
+        "markerEvidence": {
+          "attack": [
+            {
+              "frame": 54,
+              "observation": "Frame 54 stretches the side tentacles without speed accents. Frame 55 first displays the pale speed burst behind the extended tentacles; frame 56 enlarges the thrust."
+            },
+            {
+              "frame": 55,
+              "observation": "Frame 54 stretches the side tentacles without speed accents. Frame 55 first displays the pale speed burst behind the extended tentacles; frame 56 enlarges the thrust."
+            },
+            {
+              "frame": 56,
+              "observation": "Frame 54 stretches the side tentacles without speed accents. Frame 55 first displays the pale speed burst behind the extended tentacles; frame 56 enlarges the thrust."
+            }
+          ],
+          "hit": [
+            {
+              "frame": 26,
+              "observation": "Frame 26 holds the closed-eye brace without contact flare. Frame 27 first displays the white body impact; frame 28 expands it while the figure bends and retracts."
+            },
+            {
+              "frame": 27,
+              "observation": "Frame 26 holds the closed-eye brace without contact flare. Frame 27 first displays the white body impact; frame 28 expands it while the figure bends and retracts."
+            },
+            {
+              "frame": 28,
+              "observation": "Frame 26 holds the closed-eye brace without contact flare. Frame 27 first displays the white body impact; frame 28 expands it while the figure bends and retracts."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "preservation": {
+    "status": "passed",
+    "baseline": {
+      "expectedClips": 730,
+      "expectedFiles": 9940,
+      "verifiedClips": 730,
+      "verifiedFiles": 9940,
+      "verifiedBytes": 9244563761,
+      "fileGroups": {
+        "arkamon-paged": 7555,
+        "arkamon": 2190,
+        "front_sprites": 195
+      }
+    },
+    "imported": {
+      "expectedSpecies": 10,
+      "expectedClips": 50,
+      "expectedFrames": 4700,
+      "verifiedClips": 50,
+      "verifiedFrames": 4700,
+      "verifiedPages": 530,
+      "maxPageDecodedBytes": 16777216
+    }
+  },
+  "conversion": {
+    "profiles": "Conservative green screen key.",
+    "atlas149": {
+      "width": 8320,
+      "height": 8320,
+      "runtimeCell": 832,
+      "runtimePagesIndependentlyBounded": true
+    },
+    "visualReview": [
+      {
+        "speciesId": 146,
+        "observation": "Brown stone and crystal details remain distinct. KO finishes with small floating particles after the body fades.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 148.78125,
+          "referenceBodyHeight": 148.78125,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 250,
+            "top": 252
+          },
+          "canvas": 704
+        },
+        "idleLoopRatio": 1.277,
+        "koLastFrameVisiblePixels": 3391,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 147,
+        "observation": "White pincer strike and face contact flashes read clearly. KO finishes with a slumped body, rubble, and white smoke.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 184.21875,
+          "referenceBodyHeight": 184.21875,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 192,
+            "top": 191
+          },
+          "canvas": 576
+        },
+        "idleLoopRatio": 1.045,
+        "koLastFrameVisiblePixels": 28484,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 148,
+        "observation": "Amber crystal tips, dust, and ground impact rays remain visible. KO finishes with rubble and a muted smoke cloud.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 136.88,
+          "referenceBodyHeight": 136.88,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 160,
+            "top": 147
+          },
+          "canvas": 512
+        },
+        "idleLoopRatio": 0.733,
+        "koLastFrameVisiblePixels": 38186,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 149,
+        "observation": "The replacement matches the supplied purple portrait at idle, including its pale faceted wings. KO progresses through flying shards, smoke, and a pale ring.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 171.84375,
+          "referenceBodyHeight": 171.84375,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 321,
+            "top": 321
+          },
+          "canvas": 832
+        },
+        "idleLoopRatio": 0.976,
+        "koLastFrameVisiblePixels": 71438,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 151,
+        "observation": "Grey coat, red eyes, and candle flames keep their distinct colors. KO ends with residual smoke and lights.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 147.375,
+          "referenceBodyHeight": 147.375,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 224,
+            "top": 204
+          },
+          "canvas": 640
+        },
+        "idleLoopRatio": 2.295,
+        "koLastFrameVisiblePixels": 22121,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 152,
+        "observation": "Cream flank pattern, narrow dark antlers, and candle flames are legible. The final KO has only sparse residual particles on the transparent canvas.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 180.375,
+          "referenceBodyHeight": 180.375,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 164,
+            "top": 157
+          },
+          "canvas": 512
+        },
+        "idleLoopRatio": 2.462,
+        "koLastFrameVisiblePixels": 531,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 153,
+        "observation": "Fine gray and black ribbons, red eyes, and white strike accents remain distinct. KO flash rays reach the native video boundary at frame 65, visible against a dark backdrop; the source already has this edge.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 185.71875,
+          "referenceBodyHeight": 185.71875,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 255,
+            "top": 256
+          },
+          "canvas": 704
+        },
+        "idleLoopRatio": 2.182,
+        "koLastFrameVisiblePixels": 5977,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 154,
+        "observation": "The dark arm trail, red contact flare, and purple victory effect retain their different hues. KO fades to scattered flecks after the dark splashes.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 187.125,
+          "referenceBodyHeight": 187.125,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 224,
+            "top": 224
+          },
+          "canvas": 640
+        },
+        "idleLoopRatio": 0.309,
+        "koLastFrameVisiblePixels": 1757,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 155,
+        "observation": "The pale circular slash and black wisps remain distinct. KO frame 65 shows a broad flash meeting the upper and lower boundaries of the original video. The dark outline of this original framing is visible in the keyed result.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 186.84375,
+          "referenceBodyHeight": 186.84375,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 192,
+            "top": 191
+          },
+          "canvas": 576
+        },
+        "idleLoopRatio": 1.12,
+        "koLastFrameVisiblePixels": 2173,
+        "screenLikePixelCountAtSamples": 0
+      },
+      {
+        "speciesId": 156,
+        "observation": "Blue, pink, and violet gradients and the tentacle silhouette survive the conservative key. The body dissolves into purple lights and dark smoke. By the final two source frames only a very faint screen-colored shadow remains, which keys to full transparency at indices 92 and 93.",
+        "measurement": {
+          "nativeOpaqueBodyHeight": 187.125,
+          "referenceBodyHeight": 187.125,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 289,
+            "top": 288
+          },
+          "canvas": 768
+        },
+        "idleLoopRatio": 2.116,
+        "koLastFrameVisiblePixels": 0,
+        "screenLikePixelCountAtSamples": 0
+      }
+    ],
+    "sourceCaveat": "KO flashes in forms 153 and 155 have visible boundaries in their source videos. The native frames are retained."
+  }
+}
