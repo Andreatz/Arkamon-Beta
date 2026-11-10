@@ -1,0 +1,101 @@
+name: Arkamon Visual Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      quick:
+        description: 'Quick preview (first five screens only, no labs/videos)'
+        required: false
+        type: boolean
+        default: false
+  pull_request:
+    paths:
+      - '.github/workflows/visual-audit.yml'
+      - 'scripts/visual-audit.mjs'
+      - 'docs/visual-audit.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arkamon-visual-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 95
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start audit-only local Vite server
+        run: |
+          mkdir -p output/visual-audit
+          nohup node node_modules/vite/bin/vite.js --config e2e/vite.config.ts --host 127.0.0.1 --port 3014 > output/visual-audit/vite.log 2>&1 &
+          echo $! > output/visual-audit/vite.pid
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:3014/ -o /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat output/visual-audit/vite.log
+          exit 1
+
+      - name: Capture UI previews, labs and native animation samples
+        id: collect
+        continue-on-error: true
+        env:
+          ARKAMON_AUDIT_LIMIT: ${{ inputs.quick && '5' || '0' }}
+        run: node scripts/visual-audit.mjs
+
+      - name: Exercise existing end-to-end gameplay and UI scenarios
+        id: functional
+        if: ${{ !cancelled() && !inputs.quick }}
+        continue-on-error: true
+        env:
+          CI: ''
+        run: |
+          set +e
+          npx playwright test e2e/player-ui.spec.ts e2e/game-svg-controls.spec.ts e2e/remaining-flows.spec.ts e2e/roadmap-motion.spec.ts e2e/ui-studio-editor.spec.ts --project=chromium --workers=1 --reporter=list --output=output/visual-audit-functional-temp > output/visual-audit/functional.log 2>&1
+          status=$?
+          echo "exit_code=$status" > output/visual-audit/functional-status.txt
+          tail -n 80 output/visual-audit/functional.log
+          exit "$status"
+
+      - name: Summarize evidence
+        if: always()
+        run: |
+          echo "## Arkamon visual audit" >> "$GITHUB_STEP_SUMMARY"
+          if test -f output/visual-audit/SUMMARY.md; then
+            cat output/visual-audit/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "The visual collector did not produce its summary. Inspect vite.log." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if test -f output/visual-audit/functional-status.txt; then
+            cat output/visual-audit/functional-status.txt >> "$GITHUB_STEP_SUMMARY"
+          fi
+          du -sh output/visual-audit || true
+
+      - name: Upload compact visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arkamon-visual-audit
+          path: output/visual-audit/
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 6
