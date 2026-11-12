@@ -8,7 +8,7 @@ type Animation = 'idle' | 'attack' | 'hit' | 'victory' | 'ko'
 // fixture supplies the counts for the replacement videos of form 149.
 const readSourceCounts = (date: string): Record<number, Record<Animation, number>> =>
   JSON.parse(readFileSync(resolve(`src/components/arkamon/__tests__/fixtures/native-import-${date}.json`), 'utf8'))
-const nativeSourceCounts = { ...readSourceCounts('2026-11-05'), ...readSourceCounts('2026-11-09') }
+const nativeSourceCounts = { ...readSourceCounts('2026-11-05'), ...readSourceCounts('2026-11-09'), ...readSourceCounts('2026-11-12') }
 const importedSpecies = Object.keys(nativeSourceCounts).map(Number)
 interface NativeEvent { kind: string; animation: Animation; frame: number; time: number }
 interface ImportHarness {

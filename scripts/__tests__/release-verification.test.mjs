@@ -15,7 +15,7 @@ function nativeReport(artifact) {
   }] })) }] }
 }
 
-async function releaseFixture(t, { species = Array.from({ length: 50 }, (_, index) => index + 107), frames = () => 10 } = {}) {
+async function releaseFixture(t, { species = Array.from({ length: 56 }, (_, index) => index + 107), frames = () => 10 } = {}) {
   const root = await mkdtemp(path.join(os.tmpdir(), 'arkamon-release-'))
   t.after(() => rm(root, { recursive: true, force: true }))
   const dist = path.join(root, 'dist'); await mkdir(dist)
@@ -113,9 +113,9 @@ test('a missing, partial, skipped or unbound native compiled group cannot seal a
 
 test('every pending native form and pinned portrait scenario is required in addition to the six original cases', async t => {
   const fixture = await releaseFixture(t)
-  assert.equal(NATIVE_RELEASE_SCENARIOS.length, 55)
+  assert.equal(NATIVE_RELEASE_SCENARIOS.length, 61)
   const requiredPending = [
-    ...Array.from({ length: 46 }, (_, index) => index + 111).map(id => `compiled ${id}: pending form plays five native actions without game data`),
+    ...Array.from({ length: 52 }, (_, index) => index + 111).map(id => `compiled ${id}: pending form plays five native actions without game data`),
     ...[205, 184, 206].map(id => `compiled ${id}: pending portrait uses the exact pinned original without game data`),
   ]
   assert.deepEqual(NATIVE_RELEASE_SCENARIOS.slice(6), requiredPending)
@@ -163,13 +163,13 @@ test('verification rejects receipts from the old gate and receipts without nativ
 
 test('catalog growth is verified against source metadata and the pin instead of historical totals', async t => {
   const fixture = await releaseFixture(t, {
-    species: Array.from({ length: 156 }, (_, index) => index + 1),
-    frames: index => index === 779 ? 21 : 96,
+    species: Array.from({ length: 162 }, (_, index) => index + 1),
+    frames: index => index === 809 ? 21 : 96,
   })
-  assert.equal(fixture.artifact.nativeClips, 780)
-  assert.equal(fixture.artifact.nativeFrames, 74_805)
+  assert.equal(fixture.artifact.nativeClips, 810)
+  assert.equal(fixture.artifact.nativeFrames, 77_685)
   await sealRelease(fixture)
-  assert.equal((await verifyRelease(fixture.dist, fixture.revision, fixture)).reports.find(report => report.kind === 'native-compiled').artifact.nativeClips, 780)
+  assert.equal((await verifyRelease(fixture.dist, fixture.revision, fixture)).reports.find(report => report.kind === 'native-compiled').artifact.nativeClips, 810)
   const cli = spawnSync(process.execPath, ['scripts/release-verification.mjs', 'verify', '--dist', fixture.dist,
     '--revision', fixture.revision, '--root', fixture.root], { encoding: 'utf8' })
   assert.equal(cli.status, 0, cli.stderr)

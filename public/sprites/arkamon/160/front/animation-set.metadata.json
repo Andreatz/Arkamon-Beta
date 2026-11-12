@@ -1,0 +1,8228 @@
+{
+  "schemaVersion": 1,
+  "speciesId": 160,
+  "view": "front",
+  "normalization": {
+    "schemaVersion": 1,
+    "referenceAction": "idle",
+    "referenceFrameIndex": 0,
+    "reference": {
+      "size": [
+        2048,
+        2048
+      ],
+      "alphaBounds": [
+        123,
+        103,
+        1920,
+        1895
+      ],
+      "bodyHeightFraction": 0.875,
+      "groundFraction": 0.92529296875
+    },
+    "idleBodyCoreBounds": [
+      756,
+      336,
+      1165,
+      744
+    ],
+    "idleBodyHeightSourcePixels": 408,
+    "idleBodyHeightOutputPixels": 168.0,
+    "idleGroundSourcePixels": 744,
+    "sourceCoordinateSystem": [
+      1920,
+      1080
+    ],
+    "sharedScale": 0.4117647058823529,
+    "logicalCanvasOrigin": [
+      -299.5,
+      -128.35294117647055
+    ],
+    "canonicalUnionAlphaBounds": [
+      0.5,
+      0.0,
+      1920.5,
+      1080.0
+    ],
+    "logicalUnionAlphaBounds": [
+      -300,
+      -129,
+      492,
+      317
+    ],
+    "cellWidth": 832,
+    "cellHeight": 832,
+    "viewport": {
+      "width": 192,
+      "height": 192,
+      "left": 320,
+      "top": 322
+    },
+    "groundPivot": [
+      416.0,
+      500
+    ],
+    "paddingPixels": 16,
+    "maxTextureDimension": 12288,
+    "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+    "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+    "cameraCalibrations": {
+      "idle": {
+        "nativeToIdleCoordinateScale": 1.0,
+        "nativeToIdleCoordinateOffset": [
+          0.0,
+          0.0
+        ],
+        "initialBodyCoreBounds": [
+          756,
+          336,
+          1165,
+          744
+        ],
+        "initialBodyHeightInIdleCoordinates": 408,
+        "initialGroundInIdleCoordinates": 744,
+        "constantForEntireClip": true
+      },
+      "attack": {
+        "nativeToIdleCoordinateScale": 1.0049261083743843,
+        "nativeToIdleCoordinateOffset": [
+          -4.731527093596128,
+          -3.665024630541893
+        ],
+        "initialBodyCoreBounds": [
+          754,
+          338,
+          1167,
+          744
+        ],
+        "initialBodyHeightInIdleCoordinates": 408,
+        "initialGroundInIdleCoordinates": 744,
+        "constantForEntireClip": true
+      },
+      "hit": {
+        "nativeToIdleCoordinateScale": 0.9951219512195122,
+        "nativeToIdleCoordinateOffset": [
+          5.680487804877998,
+          3.629268292682923
+        ],
+        "initialBodyCoreBounds": [
+          756,
+          334,
+          1163,
+          744
+        ],
+        "initialBodyHeightInIdleCoordinates": 408,
+        "initialGroundInIdleCoordinates": 744,
+        "constantForEntireClip": true
+      },
+      "victory": {
+        "nativeToIdleCoordinateScale": 0.9951219512195122,
+        "nativeToIdleCoordinateOffset": [
+          4.187804878048837,
+          1.6390243902438897
+        ],
+        "initialBodyCoreBounds": [
+          754,
+          336,
+          1168,
+          746
+        ],
+        "initialBodyHeightInIdleCoordinates": 408,
+        "initialGroundInIdleCoordinates": 744,
+        "constantForEntireClip": true
+      },
+      "ko": {
+        "nativeToIdleCoordinateScale": 1.0,
+        "nativeToIdleCoordinateOffset": [
+          0.5,
+          0.0
+        ],
+        "initialBodyCoreBounds": [
+          756,
+          336,
+          1164,
+          744
+        ],
+        "initialBodyHeightInIdleCoordinates": 408,
+        "initialGroundInIdleCoordinates": 744,
+        "constantForEntireClip": true
+      }
+    }
+  },
+  "actions": {
+    "idle": {
+      "schemaVersion": 1,
+      "speciesId": 160,
+      "view": "front",
+      "action": "idle",
+      "source": {
+        "file": "animation-source/raw/160/front/idle.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.92,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "66f9405e729f7a6c05760714880310419668646a5902ff7183683e3927952f76",
+        "sizeBytes": 1286525,
+        "decodedFrameCount": 94,
+        "durationFromFramesSeconds": 3.9166666666666665
+      },
+      "sampling": {
+        "method": "Every decoded source frame, in original order, at original FPS; no skipping, interpolation, generation, reversal or crossfade.",
+        "allSourceFramesPreserved": true,
+        "sourceFrameIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93
+        ],
+        "sampleTimesSeconds": [
+          0.0,
+          0.041667,
+          0.083333,
+          0.125,
+          0.166667,
+          0.208333,
+          0.25,
+          0.291667,
+          0.333333,
+          0.375,
+          0.416667,
+          0.458333,
+          0.5,
+          0.541667,
+          0.583333,
+          0.625,
+          0.666667,
+          0.708333,
+          0.75,
+          0.791667,
+          0.833333,
+          0.875,
+          0.916667,
+          0.958333,
+          1.0,
+          1.041667,
+          1.083333,
+          1.125,
+          1.166667,
+          1.208333,
+          1.25,
+          1.291667,
+          1.333333,
+          1.375,
+          1.416667,
+          1.458333,
+          1.5,
+          1.541667,
+          1.583333,
+          1.625,
+          1.666667,
+          1.708333,
+          1.75,
+          1.791667,
+          1.833333,
+          1.875,
+          1.916667,
+          1.958333,
+          2.0,
+          2.041667,
+          2.083333,
+          2.125,
+          2.166667,
+          2.208333,
+          2.25,
+          2.291667,
+          2.333333,
+          2.375,
+          2.416667,
+          2.458333,
+          2.5,
+          2.541667,
+          2.583333,
+          2.625,
+          2.666667,
+          2.708333,
+          2.75,
+          2.791667,
+          2.833333,
+          2.875,
+          2.916667,
+          2.958333,
+          3.0,
+          3.041667,
+          3.083333,
+          3.125,
+          3.166667,
+          3.208333,
+          3.25,
+          3.291667,
+          3.333333,
+          3.375,
+          3.416667,
+          3.458333,
+          3.5,
+          3.541667,
+          3.583333,
+          3.625,
+          3.666667,
+          3.708333,
+          3.75,
+          3.791667,
+          3.833333,
+          3.875
+        ],
+        "firstSampleSeconds": 0,
+        "lastSampleSeconds": 3.875
+      },
+      "sheet": {
+        "file": "idle.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "compressionMethod": 0,
+        "cellWidth": 832,
+        "cellHeight": 832,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 94,
+        "fps": 24.0,
+        "durationSeconds": 3.9166666666666665,
+        "durationMs": 3917,
+        "width": 8320,
+        "height": 8320,
+        "sizeBytes": 8045934,
+        "sha256": "d8c34701d23aa621fe6c75448f3bbd5e356b3823c0fd510abc8430df8a2ffc43",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 320,
+          "top": 322
+        }
+      },
+      "poster": {
+        "file": "idle-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 50498,
+        "sha256": "66d59a10ec6cdbb7333aaeb3e23fe85bb3bc814b93f4e9e687e3815270e9d170"
+      },
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 320,
+        "top": 322
+      },
+      "transform": {
+        "fixedTransformAcrossFrames": true,
+        "sharedTransform": {
+          "schemaVersion": 1,
+          "referenceAction": "idle",
+          "referenceFrameIndex": 0,
+          "reference": {
+            "size": [
+              2048,
+              2048
+            ],
+            "alphaBounds": [
+              123,
+              103,
+              1920,
+              1895
+            ],
+            "bodyHeightFraction": 0.875,
+            "groundFraction": 0.92529296875
+          },
+          "idleBodyCoreBounds": [
+            756,
+            336,
+            1165,
+            744
+          ],
+          "idleBodyHeightSourcePixels": 408,
+          "idleBodyHeightOutputPixels": 168.0,
+          "idleGroundSourcePixels": 744,
+          "sourceCoordinateSystem": [
+            1920,
+            1080
+          ],
+          "sharedScale": 0.4117647058823529,
+          "logicalCanvasOrigin": [
+            -299.5,
+            -128.35294117647055
+          ],
+          "canonicalUnionAlphaBounds": [
+            0.5,
+            0.0,
+            1920.5,
+            1080.0
+          ],
+          "logicalUnionAlphaBounds": [
+            -300,
+            -129,
+            492,
+            317
+          ],
+          "cellWidth": 832,
+          "cellHeight": 832,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 320,
+            "top": 322
+          },
+          "groundPivot": [
+            416.0,
+            500
+          ],
+          "paddingPixels": 16,
+          "maxTextureDimension": 12288,
+          "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+          "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+          "cameraCalibrations": {
+            "idle": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.0,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1165,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "attack": {
+              "nativeToIdleCoordinateScale": 1.0049261083743843,
+              "nativeToIdleCoordinateOffset": [
+                -4.731527093596128,
+                -3.665024630541893
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                338,
+                1167,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "hit": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                5.680487804877998,
+                3.629268292682923
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                334,
+                1163,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "victory": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                4.187804878048837,
+                1.6390243902438897
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                336,
+                1168,
+                746
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "ko": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.5,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1164,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            }
+          }
+        },
+        "cameraCalibration": {
+          "nativeToIdleCoordinateScale": 1.0,
+          "nativeToIdleCoordinateOffset": [
+            0.0,
+            0.0
+          ],
+          "initialBodyCoreBounds": [
+            756,
+            336,
+            1165,
+            744
+          ],
+          "initialBodyHeightInIdleCoordinates": 408,
+          "initialGroundInIdleCoordinates": 744,
+          "constantForEntireClip": true
+        },
+        "sourceUnionAlphaBounds": [
+          606,
+          322,
+          1281,
+          768
+        ],
+        "sourceFrameAlphaBounds": [
+          [
+            754,
+            332,
+            1168,
+            748
+          ],
+          [
+            752,
+            332,
+            1168,
+            748
+          ],
+          [
+            751,
+            332,
+            1168,
+            747
+          ],
+          [
+            749,
+            330,
+            1172,
+            746
+          ],
+          [
+            746,
+            330,
+            1174,
+            745
+          ],
+          [
+            740,
+            328,
+            1180,
+            744
+          ],
+          [
+            734,
+            326,
+            1188,
+            742
+          ],
+          [
+            728,
+            325,
+            1192,
+            740
+          ],
+          [
+            720,
+            324,
+            1203,
+            740
+          ],
+          [
+            706,
+            324,
+            1212,
+            738
+          ],
+          [
+            688,
+            324,
+            1228,
+            740
+          ],
+          [
+            670,
+            326,
+            1244,
+            742
+          ],
+          [
+            648,
+            330,
+            1256,
+            746
+          ],
+          [
+            632,
+            332,
+            1260,
+            750
+          ],
+          [
+            624,
+            336,
+            1260,
+            752
+          ],
+          [
+            624,
+            338,
+            1252,
+            755
+          ],
+          [
+            632,
+            342,
+            1238,
+            758
+          ],
+          [
+            634,
+            344,
+            1226,
+            759
+          ],
+          [
+            632,
+            343,
+            1228,
+            759
+          ],
+          [
+            620,
+            342,
+            1248,
+            758
+          ],
+          [
+            608,
+            340,
+            1270,
+            755
+          ],
+          [
+            615,
+            338,
+            1280,
+            752
+          ],
+          [
+            640,
+            336,
+            1264,
+            748
+          ],
+          [
+            684,
+            332,
+            1224,
+            744
+          ],
+          [
+            736,
+            332,
+            1169,
+            758
+          ],
+          [
+            738,
+            332,
+            1136,
+            768
+          ],
+          [
+            738,
+            330,
+            1128,
+            767
+          ],
+          [
+            740,
+            330,
+            1131,
+            764
+          ],
+          [
+            706,
+            330,
+            1156,
+            756
+          ],
+          [
+            704,
+            330,
+            1194,
+            740
+          ],
+          [
+            664,
+            330,
+            1230,
+            744
+          ],
+          [
+            640,
+            330,
+            1252,
+            748
+          ],
+          [
+            631,
+            336,
+            1257,
+            752
+          ],
+          [
+            624,
+            338,
+            1256,
+            754
+          ],
+          [
+            632,
+            342,
+            1241,
+            756
+          ],
+          [
+            640,
+            344,
+            1228,
+            758
+          ],
+          [
+            640,
+            344,
+            1228,
+            758
+          ],
+          [
+            630,
+            342,
+            1240,
+            756
+          ],
+          [
+            616,
+            340,
+            1262,
+            754
+          ],
+          [
+            612,
+            334,
+            1280,
+            752
+          ],
+          [
+            620,
+            332,
+            1276,
+            746
+          ],
+          [
+            652,
+            328,
+            1256,
+            742
+          ],
+          [
+            700,
+            326,
+            1208,
+            744
+          ],
+          [
+            740,
+            324,
+            1162,
+            764
+          ],
+          [
+            748,
+            324,
+            1144,
+            768
+          ],
+          [
+            740,
+            324,
+            1155,
+            760
+          ],
+          [
+            720,
+            326,
+            1177,
+            744
+          ],
+          [
+            688,
+            328,
+            1208,
+            742
+          ],
+          [
+            660,
+            330,
+            1236,
+            746
+          ],
+          [
+            639,
+            334,
+            1254,
+            750
+          ],
+          [
+            628,
+            336,
+            1256,
+            752
+          ],
+          [
+            620,
+            338,
+            1260,
+            756
+          ],
+          [
+            624,
+            340,
+            1252,
+            756
+          ],
+          [
+            626,
+            342,
+            1246,
+            758
+          ],
+          [
+            631,
+            342,
+            1236,
+            758
+          ],
+          [
+            632,
+            342,
+            1230,
+            758
+          ],
+          [
+            632,
+            340,
+            1232,
+            756
+          ],
+          [
+            620,
+            338,
+            1248,
+            754
+          ],
+          [
+            608,
+            336,
+            1268,
+            752
+          ],
+          [
+            606,
+            334,
+            1281,
+            749
+          ],
+          [
+            620,
+            330,
+            1276,
+            746
+          ],
+          [
+            642,
+            328,
+            1257,
+            742
+          ],
+          [
+            682,
+            326,
+            1222,
+            740
+          ],
+          [
+            724,
+            324,
+            1182,
+            754
+          ],
+          [
+            748,
+            324,
+            1146,
+            760
+          ],
+          [
+            748,
+            324,
+            1134,
+            768
+          ],
+          [
+            750,
+            324,
+            1136,
+            764
+          ],
+          [
+            742,
+            324,
+            1158,
+            752
+          ],
+          [
+            716,
+            326,
+            1186,
+            739
+          ],
+          [
+            688,
+            328,
+            1216,
+            742
+          ],
+          [
+            664,
+            330,
+            1240,
+            746
+          ],
+          [
+            642,
+            332,
+            1254,
+            748
+          ],
+          [
+            632,
+            336,
+            1258,
+            752
+          ],
+          [
+            628,
+            340,
+            1256,
+            754
+          ],
+          [
+            629,
+            342,
+            1252,
+            756
+          ],
+          [
+            634,
+            344,
+            1238,
+            758
+          ],
+          [
+            640,
+            344,
+            1232,
+            758
+          ],
+          [
+            638,
+            344,
+            1232,
+            758
+          ],
+          [
+            632,
+            344,
+            1234,
+            758
+          ],
+          [
+            623,
+            340,
+            1248,
+            755
+          ],
+          [
+            615,
+            336,
+            1268,
+            752
+          ],
+          [
+            608,
+            334,
+            1280,
+            750
+          ],
+          [
+            620,
+            332,
+            1272,
+            746
+          ],
+          [
+            644,
+            328,
+            1256,
+            742
+          ],
+          [
+            657,
+            326,
+            1223,
+            738
+          ],
+          [
+            720,
+            324,
+            1184,
+            748
+          ],
+          [
+            744,
+            322,
+            1151,
+            760
+          ],
+          [
+            748,
+            322,
+            1140,
+            760
+          ],
+          [
+            746,
+            322,
+            1148,
+            760
+          ],
+          [
+            730,
+            324,
+            1170,
+            749
+          ],
+          [
+            704,
+            324,
+            1198,
+            736
+          ],
+          [
+            674,
+            328,
+            1224,
+            738
+          ],
+          [
+            652,
+            328,
+            1248,
+            742
+          ],
+          [
+            634,
+            330,
+            1260,
+            744
+          ]
+        ],
+        "outputFrameAlphaBounds": [
+          [
+            328,
+            328,
+            504,
+            504
+          ],
+          [
+            328,
+            328,
+            504,
+            504
+          ],
+          [
+            327,
+            328,
+            504,
+            504
+          ],
+          [
+            327,
+            327,
+            505,
+            503
+          ],
+          [
+            325,
+            327,
+            506,
+            503
+          ],
+          [
+            323,
+            326,
+            509,
+            503
+          ],
+          [
+            320,
+            326,
+            512,
+            502
+          ],
+          [
+            318,
+            326,
+            514,
+            501
+          ],
+          [
+            314,
+            326,
+            518,
+            500
+          ],
+          [
+            309,
+            326,
+            522,
+            500
+          ],
+          [
+            301,
+            326,
+            529,
+            500
+          ],
+          [
+            294,
+            326,
+            535,
+            502
+          ],
+          [
+            285,
+            327,
+            540,
+            503
+          ],
+          [
+            278,
+            328,
+            542,
+            505
+          ],
+          [
+            275,
+            329,
+            542,
+            506
+          ],
+          [
+            275,
+            331,
+            538,
+            507
+          ],
+          [
+            278,
+            332,
+            533,
+            508
+          ],
+          [
+            279,
+            333,
+            528,
+            508
+          ],
+          [
+            279,
+            333,
+            529,
+            508
+          ],
+          [
+            274,
+            333,
+            537,
+            508
+          ],
+          [
+            270,
+            331,
+            545,
+            507
+          ],
+          [
+            271,
+            330,
+            548,
+            506
+          ],
+          [
+            282,
+            329,
+            542,
+            504
+          ],
+          [
+            300,
+            328,
+            527,
+            502
+          ],
+          [
+            321,
+            329,
+            504,
+            508
+          ],
+          [
+            322,
+            328,
+            491,
+            510
+          ],
+          [
+            322,
+            327,
+            487,
+            510
+          ],
+          [
+            323,
+            327,
+            488,
+            510
+          ],
+          [
+            309,
+            327,
+            499,
+            506
+          ],
+          [
+            308,
+            327,
+            515,
+            501
+          ],
+          [
+            292,
+            327,
+            530,
+            502
+          ],
+          [
+            281,
+            327,
+            538,
+            504
+          ],
+          [
+            278,
+            329,
+            540,
+            506
+          ],
+          [
+            275,
+            330,
+            540,
+            507
+          ],
+          [
+            278,
+            332,
+            534,
+            508
+          ],
+          [
+            281,
+            334,
+            529,
+            508
+          ],
+          [
+            283,
+            333,
+            529,
+            508
+          ],
+          [
+            278,
+            332,
+            533,
+            508
+          ],
+          [
+            272,
+            331,
+            543,
+            507
+          ],
+          [
+            270,
+            329,
+            548,
+            506
+          ],
+          [
+            273,
+            328,
+            548,
+            503
+          ],
+          [
+            288,
+            327,
+            540,
+            502
+          ],
+          [
+            306,
+            326,
+            520,
+            503
+          ],
+          [
+            323,
+            326,
+            502,
+            509
+          ],
+          [
+            326,
+            326,
+            494,
+            510
+          ],
+          [
+            323,
+            326,
+            498,
+            509
+          ],
+          [
+            314,
+            326,
+            507,
+            502
+          ],
+          [
+            301,
+            326,
+            520,
+            502
+          ],
+          [
+            290,
+            327,
+            532,
+            503
+          ],
+          [
+            281,
+            329,
+            539,
+            505
+          ],
+          [
+            277,
+            329,
+            540,
+            506
+          ],
+          [
+            273,
+            330,
+            542,
+            507
+          ],
+          [
+            275,
+            331,
+            539,
+            508
+          ],
+          [
+            277,
+            332,
+            535,
+            508
+          ],
+          [
+            278,
+            332,
+            532,
+            508
+          ],
+          [
+            278,
+            332,
+            529,
+            508
+          ],
+          [
+            278,
+            333,
+            530,
+            508
+          ],
+          [
+            273,
+            330,
+            537,
+            507
+          ],
+          [
+            270,
+            329,
+            545,
+            506
+          ],
+          [
+            270,
+            329,
+            548,
+            504
+          ],
+          [
+            273,
+            327,
+            547,
+            503
+          ],
+          [
+            283,
+            327,
+            540,
+            502
+          ],
+          [
+            299,
+            326,
+            526,
+            501
+          ],
+          [
+            316,
+            326,
+            510,
+            506
+          ],
+          [
+            326,
+            326,
+            495,
+            509
+          ],
+          [
+            326,
+            326,
+            490,
+            510
+          ],
+          [
+            327,
+            326,
+            491,
+            509
+          ],
+          [
+            324,
+            326,
+            500,
+            506
+          ],
+          [
+            313,
+            326,
+            511,
+            500
+          ],
+          [
+            301,
+            326,
+            524,
+            502
+          ],
+          [
+            291,
+            327,
+            534,
+            503
+          ],
+          [
+            283,
+            328,
+            539,
+            504
+          ],
+          [
+            279,
+            330,
+            541,
+            506
+          ],
+          [
+            278,
+            331,
+            540,
+            507
+          ],
+          [
+            278,
+            332,
+            538,
+            508
+          ],
+          [
+            280,
+            333,
+            533,
+            508
+          ],
+          [
+            281,
+            333,
+            530,
+            508
+          ],
+          [
+            281,
+            334,
+            529,
+            508
+          ],
+          [
+            278,
+            334,
+            530,
+            508
+          ],
+          [
+            275,
+            331,
+            537,
+            507
+          ],
+          [
+            272,
+            330,
+            545,
+            506
+          ],
+          [
+            270,
+            329,
+            548,
+            505
+          ],
+          [
+            273,
+            328,
+            547,
+            503
+          ],
+          [
+            283,
+            326,
+            540,
+            502
+          ],
+          [
+            290,
+            326,
+            525,
+            500
+          ],
+          [
+            315,
+            326,
+            510,
+            504
+          ],
+          [
+            324,
+            326,
+            497,
+            509
+          ],
+          [
+            326,
+            326,
+            492,
+            509
+          ],
+          [
+            325,
+            326,
+            496,
+            507
+          ],
+          [
+            319,
+            326,
+            505,
+            504
+          ],
+          [
+            308,
+            326,
+            516,
+            499
+          ],
+          [
+            296,
+            326,
+            527,
+            500
+          ],
+          [
+            286,
+            326,
+            537,
+            502
+          ],
+          [
+            279,
+            327,
+            542,
+            503
+          ]
+        ],
+        "scale": 0.4117647058823529,
+        "groundPivot": [
+          416.0,
+          500
+        ]
+      },
+      "key": {
+        "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+        "alphaCutoff": 0.08,
+        "screenColourRatioTolerance": 0.12,
+        "screenDominanceCleanup": false,
+        "screenDominanceRatio": null,
+        "screenFringeCleanup": false,
+        "screenFringeProfile": null,
+        "screenBackgroundFallback": [
+          30,
+          244,
+          19
+        ],
+        "screenBackgroundFallbackFrames": []
+      },
+      "qa": {
+        "losslessDecodedRgbaMatches": true,
+        "remainingGreenDominantPixelsOver8": 0,
+        "yellowGreenDiagnosticPixelsAllFrames": 316664,
+        "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+        "occupiedPixelsAllFrames": 1661454,
+        "redDominantPixelsAllFrames": 7978,
+        "transparentFrameIndices": [],
+        "loopSeam": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.225544,
+          "bodyAlphaMeanAbsoluteDifference": 0.25225,
+          "bodyChangedPixelFractionOver5Percent": 0.583102,
+          "adjacentMedianBodyRgbDifference": 0.145095,
+          "adjacentMaxBodyRgbDifference": 0.203726,
+          "seamToAdjacentMedianRatio": 1.554
+        },
+        "loopSeamPerfect": false,
+        "originalFinalFramePreserved": true,
+        "sourceFramesTouchingEdges": [],
+        "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once."
+      }
+    },
+    "attack": {
+      "schemaVersion": 1,
+      "speciesId": 160,
+      "view": "front",
+      "action": "attack",
+      "source": {
+        "file": "animation-source/raw/160/front/attack.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.92,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "7f2a7562e5ca4ea7b8fe177846478e585424f5b8f3e296272c0e14354d0597c9",
+        "sizeBytes": 1424991,
+        "decodedFrameCount": 94,
+        "durationFromFramesSeconds": 3.9166666666666665
+      },
+      "sampling": {
+        "method": "Every decoded source frame, in original order, at original FPS; no skipping, interpolation, generation, reversal or crossfade.",
+        "allSourceFramesPreserved": true,
+        "sourceFrameIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93
+        ],
+        "sampleTimesSeconds": [
+          0.0,
+          0.041667,
+          0.083333,
+          0.125,
+          0.166667,
+          0.208333,
+          0.25,
+          0.291667,
+          0.333333,
+          0.375,
+          0.416667,
+          0.458333,
+          0.5,
+          0.541667,
+          0.583333,
+          0.625,
+          0.666667,
+          0.708333,
+          0.75,
+          0.791667,
+          0.833333,
+          0.875,
+          0.916667,
+          0.958333,
+          1.0,
+          1.041667,
+          1.083333,
+          1.125,
+          1.166667,
+          1.208333,
+          1.25,
+          1.291667,
+          1.333333,
+          1.375,
+          1.416667,
+          1.458333,
+          1.5,
+          1.541667,
+          1.583333,
+          1.625,
+          1.666667,
+          1.708333,
+          1.75,
+          1.791667,
+          1.833333,
+          1.875,
+          1.916667,
+          1.958333,
+          2.0,
+          2.041667,
+          2.083333,
+          2.125,
+          2.166667,
+          2.208333,
+          2.25,
+          2.291667,
+          2.333333,
+          2.375,
+          2.416667,
+          2.458333,
+          2.5,
+          2.541667,
+          2.583333,
+          2.625,
+          2.666667,
+          2.708333,
+          2.75,
+          2.791667,
+          2.833333,
+          2.875,
+          2.916667,
+          2.958333,
+          3.0,
+          3.041667,
+          3.083333,
+          3.125,
+          3.166667,
+          3.208333,
+          3.25,
+          3.291667,
+          3.333333,
+          3.375,
+          3.416667,
+          3.458333,
+          3.5,
+          3.541667,
+          3.583333,
+          3.625,
+          3.666667,
+          3.708333,
+          3.75,
+          3.791667,
+          3.833333,
+          3.875
+        ],
+        "firstSampleSeconds": 0,
+        "lastSampleSeconds": 3.875
+      },
+      "sheet": {
+        "file": "attack.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "compressionMethod": 0,
+        "cellWidth": 832,
+        "cellHeight": 832,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 94,
+        "fps": 24.0,
+        "durationSeconds": 3.9166666666666665,
+        "durationMs": 3917,
+        "width": 8320,
+        "height": 8320,
+        "sizeBytes": 8380526,
+        "sha256": "5c74e03b18430097d760e549f07f7675abd2ebc81cd2203d52dfa6060cf0aad6",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 320,
+          "top": 322
+        }
+      },
+      "poster": {
+        "file": "attack-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 51110,
+        "sha256": "dbb3eefc0c974a0548a4529d588873d1a48c979f6ffca5abb3c2b113f51532e5"
+      },
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 320,
+        "top": 322
+      },
+      "transform": {
+        "fixedTransformAcrossFrames": true,
+        "sharedTransform": {
+          "schemaVersion": 1,
+          "referenceAction": "idle",
+          "referenceFrameIndex": 0,
+          "reference": {
+            "size": [
+              2048,
+              2048
+            ],
+            "alphaBounds": [
+              123,
+              103,
+              1920,
+              1895
+            ],
+            "bodyHeightFraction": 0.875,
+            "groundFraction": 0.92529296875
+          },
+          "idleBodyCoreBounds": [
+            756,
+            336,
+            1165,
+            744
+          ],
+          "idleBodyHeightSourcePixels": 408,
+          "idleBodyHeightOutputPixels": 168.0,
+          "idleGroundSourcePixels": 744,
+          "sourceCoordinateSystem": [
+            1920,
+            1080
+          ],
+          "sharedScale": 0.4117647058823529,
+          "logicalCanvasOrigin": [
+            -299.5,
+            -128.35294117647055
+          ],
+          "canonicalUnionAlphaBounds": [
+            0.5,
+            0.0,
+            1920.5,
+            1080.0
+          ],
+          "logicalUnionAlphaBounds": [
+            -300,
+            -129,
+            492,
+            317
+          ],
+          "cellWidth": 832,
+          "cellHeight": 832,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 320,
+            "top": 322
+          },
+          "groundPivot": [
+            416.0,
+            500
+          ],
+          "paddingPixels": 16,
+          "maxTextureDimension": 12288,
+          "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+          "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+          "cameraCalibrations": {
+            "idle": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.0,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1165,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "attack": {
+              "nativeToIdleCoordinateScale": 1.0049261083743843,
+              "nativeToIdleCoordinateOffset": [
+                -4.731527093596128,
+                -3.665024630541893
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                338,
+                1167,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "hit": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                5.680487804877998,
+                3.629268292682923
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                334,
+                1163,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "victory": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                4.187804878048837,
+                1.6390243902438897
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                336,
+                1168,
+                746
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "ko": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.5,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1164,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            }
+          }
+        },
+        "cameraCalibration": {
+          "nativeToIdleCoordinateScale": 1.0049261083743843,
+          "nativeToIdleCoordinateOffset": [
+            -4.731527093596128,
+            -3.665024630541893
+          ],
+          "initialBodyCoreBounds": [
+            754,
+            338,
+            1167,
+            744
+          ],
+          "initialBodyHeightInIdleCoordinates": 408,
+          "initialGroundInIdleCoordinates": 744,
+          "constantForEntireClip": true
+        },
+        "sourceUnionAlphaBounds": [
+          464,
+          308,
+          1340,
+          902
+        ],
+        "sourceFrameAlphaBounds": [
+          [
+            750,
+            332,
+            1168,
+            748
+          ],
+          [
+            752,
+            332,
+            1166,
+            748
+          ],
+          [
+            754,
+            330,
+            1162,
+            746
+          ],
+          [
+            758,
+            328,
+            1158,
+            747
+          ],
+          [
+            760,
+            326,
+            1152,
+            750
+          ],
+          [
+            762,
+            322,
+            1146,
+            752
+          ],
+          [
+            762,
+            320,
+            1139,
+            756
+          ],
+          [
+            762,
+            318,
+            1134,
+            758
+          ],
+          [
+            762,
+            316,
+            1131,
+            760
+          ],
+          [
+            762,
+            316,
+            1130,
+            758
+          ],
+          [
+            762,
+            314,
+            1136,
+            760
+          ],
+          [
+            732,
+            318,
+            1180,
+            756
+          ],
+          [
+            686,
+            322,
+            1232,
+            744
+          ],
+          [
+            632,
+            330,
+            1280,
+            746
+          ],
+          [
+            588,
+            336,
+            1308,
+            752
+          ],
+          [
+            572,
+            342,
+            1318,
+            756
+          ],
+          [
+            568,
+            348,
+            1308,
+            760
+          ],
+          [
+            580,
+            354,
+            1288,
+            762
+          ],
+          [
+            590,
+            356,
+            1280,
+            762
+          ],
+          [
+            600,
+            358,
+            1268,
+            763
+          ],
+          [
+            608,
+            358,
+            1257,
+            762
+          ],
+          [
+            532,
+            348,
+            1278,
+            756
+          ],
+          [
+            535,
+            334,
+            1332,
+            748
+          ],
+          [
+            552,
+            322,
+            1324,
+            752
+          ],
+          [
+            555,
+            314,
+            1306,
+            834
+          ],
+          [
+            562,
+            308,
+            1306,
+            902
+          ],
+          [
+            562,
+            308,
+            1284,
+            892
+          ],
+          [
+            648,
+            310,
+            1266,
+            888
+          ],
+          [
+            708,
+            314,
+            1267,
+            862
+          ],
+          [
+            630,
+            321,
+            1306,
+            756
+          ],
+          [
+            572,
+            328,
+            1321,
+            746
+          ],
+          [
+            552,
+            338,
+            1332,
+            752
+          ],
+          [
+            560,
+            344,
+            1320,
+            758
+          ],
+          [
+            576,
+            352,
+            1298,
+            760
+          ],
+          [
+            584,
+            354,
+            1280,
+            762
+          ],
+          [
+            596,
+            354,
+            1270,
+            762
+          ],
+          [
+            580,
+            352,
+            1284,
+            760
+          ],
+          [
+            564,
+            344,
+            1308,
+            756
+          ],
+          [
+            562,
+            336,
+            1328,
+            752
+          ],
+          [
+            580,
+            330,
+            1324,
+            748
+          ],
+          [
+            634,
+            322,
+            1288,
+            740
+          ],
+          [
+            700,
+            320,
+            1228,
+            738
+          ],
+          [
+            738,
+            316,
+            1180,
+            756
+          ],
+          [
+            750,
+            316,
+            1163,
+            762
+          ],
+          [
+            746,
+            317,
+            1166,
+            758
+          ],
+          [
+            734,
+            320,
+            1180,
+            748
+          ],
+          [
+            720,
+            324,
+            1200,
+            744
+          ],
+          [
+            694,
+            330,
+            1224,
+            748
+          ],
+          [
+            651,
+            338,
+            1264,
+            758
+          ],
+          [
+            544,
+            338,
+            1196,
+            770
+          ],
+          [
+            532,
+            342,
+            1170,
+            764
+          ],
+          [
+            553,
+            342,
+            1181,
+            792
+          ],
+          [
+            689,
+            340,
+            1330,
+            804
+          ],
+          [
+            816,
+            339,
+            1340,
+            754
+          ],
+          [
+            818,
+            338,
+            1332,
+            744
+          ],
+          [
+            818,
+            336,
+            1330,
+            744
+          ],
+          [
+            822,
+            332,
+            1304,
+            764
+          ],
+          [
+            656,
+            332,
+            1284,
+            782
+          ],
+          [
+            464,
+            334,
+            1107,
+            800
+          ],
+          [
+            464,
+            334,
+            1060,
+            792
+          ],
+          [
+            464,
+            330,
+            1056,
+            813
+          ],
+          [
+            686,
+            328,
+            1048,
+            820
+          ],
+          [
+            710,
+            328,
+            1070,
+            824
+          ],
+          [
+            718,
+            326,
+            1106,
+            824
+          ],
+          [
+            710,
+            326,
+            1129,
+            813
+          ],
+          [
+            676,
+            326,
+            1164,
+            784
+          ],
+          [
+            632,
+            328,
+            1224,
+            752
+          ],
+          [
+            592,
+            332,
+            1283,
+            745
+          ],
+          [
+            572,
+            336,
+            1304,
+            748
+          ],
+          [
+            573,
+            336,
+            1300,
+            750
+          ],
+          [
+            586,
+            340,
+            1287,
+            750
+          ],
+          [
+            597,
+            342,
+            1273,
+            751
+          ],
+          [
+            591,
+            346,
+            1285,
+            754
+          ],
+          [
+            586,
+            348,
+            1300,
+            756
+          ],
+          [
+            584,
+            350,
+            1308,
+            759
+          ],
+          [
+            588,
+            350,
+            1308,
+            760
+          ],
+          [
+            600,
+            348,
+            1308,
+            761
+          ],
+          [
+            615,
+            348,
+            1304,
+            761
+          ],
+          [
+            632,
+            346,
+            1286,
+            760
+          ],
+          [
+            658,
+            344,
+            1268,
+            757
+          ],
+          [
+            688,
+            338,
+            1240,
+            753
+          ],
+          [
+            716,
+            336,
+            1208,
+            753
+          ],
+          [
+            738,
+            332,
+            1204,
+            764
+          ],
+          [
+            755,
+            328,
+            1156,
+            764
+          ],
+          [
+            758,
+            325,
+            1151,
+            764
+          ],
+          [
+            758,
+            322,
+            1134,
+            762
+          ],
+          [
+            759,
+            320,
+            1132,
+            760
+          ],
+          [
+            760,
+            320,
+            1134,
+            760
+          ],
+          [
+            762,
+            320,
+            1134,
+            758
+          ],
+          [
+            762,
+            320,
+            1137,
+            758
+          ],
+          [
+            764,
+            320,
+            1140,
+            756
+          ],
+          [
+            762,
+            322,
+            1144,
+            754
+          ],
+          [
+            760,
+            322,
+            1148,
+            752
+          ],
+          [
+            758,
+            323,
+            1154,
+            750
+          ]
+        ],
+        "outputFrameAlphaBounds": [
+          [
+            327,
+            328,
+            504,
+            505
+          ],
+          [
+            328,
+            327,
+            504,
+            504
+          ],
+          [
+            328,
+            327,
+            502,
+            504
+          ],
+          [
+            330,
+            326,
+            500,
+            504
+          ],
+          [
+            331,
+            325,
+            498,
+            504
+          ],
+          [
+            332,
+            324,
+            495,
+            504
+          ],
+          [
+            332,
+            323,
+            492,
+            508
+          ],
+          [
+            332,
+            322,
+            490,
+            509
+          ],
+          [
+            332,
+            321,
+            489,
+            508
+          ],
+          [
+            332,
+            321,
+            489,
+            509
+          ],
+          [
+            332,
+            321,
+            490,
+            510
+          ],
+          [
+            319,
+            322,
+            509,
+            508
+          ],
+          [
+            300,
+            324,
+            531,
+            503
+          ],
+          [
+            278,
+            327,
+            551,
+            504
+          ],
+          [
+            260,
+            329,
+            562,
+            506
+          ],
+          [
+            253,
+            332,
+            566,
+            508
+          ],
+          [
+            253,
+            335,
+            562,
+            509
+          ],
+          [
+            256,
+            337,
+            554,
+            510
+          ],
+          [
+            261,
+            338,
+            550,
+            511
+          ],
+          [
+            266,
+            338,
+            546,
+            511
+          ],
+          [
+            268,
+            339,
+            541,
+            511
+          ],
+          [
+            238,
+            334,
+            550,
+            508
+          ],
+          [
+            238,
+            328,
+            572,
+            505
+          ],
+          [
+            246,
+            323,
+            569,
+            505
+          ],
+          [
+            246,
+            321,
+            561,
+            540
+          ],
+          [
+            249,
+            320,
+            561,
+            566
+          ],
+          [
+            249,
+            320,
+            552,
+            562
+          ],
+          [
+            285,
+            320,
+            545,
+            563
+          ],
+          [
+            310,
+            320,
+            545,
+            552
+          ],
+          [
+            277,
+            323,
+            560,
+            508
+          ],
+          [
+            255,
+            326,
+            567,
+            504
+          ],
+          [
+            245,
+            330,
+            572,
+            506
+          ],
+          [
+            249,
+            333,
+            567,
+            509
+          ],
+          [
+            255,
+            336,
+            557,
+            510
+          ],
+          [
+            258,
+            337,
+            551,
+            510
+          ],
+          [
+            263,
+            337,
+            546,
+            510
+          ],
+          [
+            256,
+            336,
+            552,
+            510
+          ],
+          [
+            250,
+            333,
+            562,
+            508
+          ],
+          [
+            250,
+            329,
+            569,
+            506
+          ],
+          [
+            257,
+            327,
+            569,
+            504
+          ],
+          [
+            279,
+            324,
+            553,
+            500
+          ],
+          [
+            306,
+            323,
+            528,
+            500
+          ],
+          [
+            322,
+            321,
+            509,
+            508
+          ],
+          [
+            327,
+            321,
+            502,
+            509
+          ],
+          [
+            325,
+            322,
+            503,
+            509
+          ],
+          [
+            321,
+            324,
+            509,
+            503
+          ],
+          [
+            314,
+            324,
+            518,
+            503
+          ],
+          [
+            304,
+            328,
+            528,
+            505
+          ],
+          [
+            286,
+            330,
+            544,
+            509
+          ],
+          [
+            243,
+            330,
+            516,
+            514
+          ],
+          [
+            238,
+            332,
+            505,
+            509
+          ],
+          [
+            247,
+            333,
+            509,
+            523
+          ],
+          [
+            304,
+            331,
+            571,
+            528
+          ],
+          [
+            354,
+            331,
+            573,
+            506
+          ],
+          [
+            355,
+            330,
+            572,
+            503
+          ],
+          [
+            355,
+            329,
+            571,
+            503
+          ],
+          [
+            358,
+            327,
+            561,
+            510
+          ],
+          [
+            290,
+            327,
+            551,
+            519
+          ],
+          [
+            211,
+            328,
+            479,
+            526
+          ],
+          [
+            211,
+            328,
+            460,
+            523
+          ],
+          [
+            211,
+            327,
+            458,
+            530
+          ],
+          [
+            300,
+            327,
+            454,
+            534
+          ],
+          [
+            310,
+            326,
+            464,
+            536
+          ],
+          [
+            313,
+            325,
+            478,
+            536
+          ],
+          [
+            310,
+            325,
+            488,
+            531
+          ],
+          [
+            296,
+            325,
+            503,
+            520
+          ],
+          [
+            278,
+            326,
+            527,
+            504
+          ],
+          [
+            261,
+            327,
+            550,
+            503
+          ],
+          [
+            254,
+            329,
+            561,
+            505
+          ],
+          [
+            254,
+            330,
+            559,
+            505
+          ],
+          [
+            260,
+            331,
+            552,
+            506
+          ],
+          [
+            264,
+            333,
+            547,
+            506
+          ],
+          [
+            261,
+            333,
+            552,
+            507
+          ],
+          [
+            259,
+            334,
+            559,
+            508
+          ],
+          [
+            258,
+            335,
+            562,
+            509
+          ],
+          [
+            260,
+            335,
+            562,
+            510
+          ],
+          [
+            266,
+            334,
+            562,
+            510
+          ],
+          [
+            271,
+            334,
+            561,
+            510
+          ],
+          [
+            278,
+            333,
+            553,
+            509
+          ],
+          [
+            289,
+            332,
+            546,
+            508
+          ],
+          [
+            301,
+            330,
+            534,
+            505
+          ],
+          [
+            313,
+            329,
+            521,
+            505
+          ],
+          [
+            322,
+            327,
+            519,
+            510
+          ],
+          [
+            329,
+            326,
+            499,
+            510
+          ],
+          [
+            330,
+            325,
+            496,
+            511
+          ],
+          [
+            330,
+            323,
+            490,
+            510
+          ],
+          [
+            331,
+            323,
+            489,
+            510
+          ],
+          [
+            331,
+            322,
+            489,
+            509
+          ],
+          [
+            332,
+            322,
+            490,
+            509
+          ],
+          [
+            332,
+            323,
+            491,
+            509
+          ],
+          [
+            332,
+            323,
+            493,
+            508
+          ],
+          [
+            333,
+            323,
+            494,
+            507
+          ],
+          [
+            331,
+            324,
+            496,
+            504
+          ],
+          [
+            330,
+            324,
+            498,
+            506
+          ]
+        ],
+        "scale": 0.4117647058823529,
+        "groundPivot": [
+          416.0,
+          500
+        ]
+      },
+      "key": {
+        "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+        "alphaCutoff": 0.08,
+        "screenColourRatioTolerance": 0.12,
+        "screenDominanceCleanup": false,
+        "screenDominanceRatio": null,
+        "screenFringeCleanup": false,
+        "screenFringeProfile": null,
+        "screenBackgroundFallback": [
+          30,
+          244,
+          19
+        ],
+        "screenBackgroundFallbackFrames": []
+      },
+      "qa": {
+        "losslessDecodedRgbaMatches": true,
+        "remainingGreenDominantPixelsOver8": 0,
+        "yellowGreenDiagnosticPixelsAllFrames": 315987,
+        "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+        "occupiedPixelsAllFrames": 1842270,
+        "redDominantPixelsAllFrames": 13763,
+        "transparentFrameIndices": [],
+        "loopSeam": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.169006,
+          "bodyAlphaMeanAbsoluteDifference": 0.131531,
+          "bodyChangedPixelFractionOver5Percent": 0.587611,
+          "adjacentMedianBodyRgbDifference": 0.161531,
+          "adjacentMaxBodyRgbDifference": 0.425989,
+          "seamToAdjacentMedianRatio": 1.046
+        },
+        "loopSeamPerfect": false,
+        "originalFinalFramePreserved": true,
+        "sourceFramesTouchingEdges": [],
+        "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
+        "returnToIdleFirst": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.154587,
+          "bodyAlphaMeanAbsoluteDifference": 0.116983,
+          "bodyChangedPixelFractionOver5Percent": 0.559788
+        }
+      },
+      "timing": {
+        "releaseFrame": 21,
+        "releaseMs": 875.0,
+        "evidence": "Frame 20: The wings are raised with no visible attack trails. Frame 21: Thin pale crescents first appear beyond both upper wing tips. Frame 22: The crescents broaden as the wings sweep downward.",
+        "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+      },
+      "calibrationInspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+    },
+    "hit": {
+      "schemaVersion": 1,
+      "speciesId": 160,
+      "view": "front",
+      "action": "hit",
+      "source": {
+        "file": "animation-source/raw/160/front/hit.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.92,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "cf9bfb3ab174f8b9f9d019dd92235e1fc6d14f03c29df0694b2c85d824565d01",
+        "sizeBytes": 2047563,
+        "decodedFrameCount": 94,
+        "durationFromFramesSeconds": 3.9166666666666665
+      },
+      "sampling": {
+        "method": "Every decoded source frame, in original order, at original FPS; no skipping, interpolation, generation, reversal or crossfade.",
+        "allSourceFramesPreserved": true,
+        "sourceFrameIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93
+        ],
+        "sampleTimesSeconds": [
+          0.0,
+          0.041667,
+          0.083333,
+          0.125,
+          0.166667,
+          0.208333,
+          0.25,
+          0.291667,
+          0.333333,
+          0.375,
+          0.416667,
+          0.458333,
+          0.5,
+          0.541667,
+          0.583333,
+          0.625,
+          0.666667,
+          0.708333,
+          0.75,
+          0.791667,
+          0.833333,
+          0.875,
+          0.916667,
+          0.958333,
+          1.0,
+          1.041667,
+          1.083333,
+          1.125,
+          1.166667,
+          1.208333,
+          1.25,
+          1.291667,
+          1.333333,
+          1.375,
+          1.416667,
+          1.458333,
+          1.5,
+          1.541667,
+          1.583333,
+          1.625,
+          1.666667,
+          1.708333,
+          1.75,
+          1.791667,
+          1.833333,
+          1.875,
+          1.916667,
+          1.958333,
+          2.0,
+          2.041667,
+          2.083333,
+          2.125,
+          2.166667,
+          2.208333,
+          2.25,
+          2.291667,
+          2.333333,
+          2.375,
+          2.416667,
+          2.458333,
+          2.5,
+          2.541667,
+          2.583333,
+          2.625,
+          2.666667,
+          2.708333,
+          2.75,
+          2.791667,
+          2.833333,
+          2.875,
+          2.916667,
+          2.958333,
+          3.0,
+          3.041667,
+          3.083333,
+          3.125,
+          3.166667,
+          3.208333,
+          3.25,
+          3.291667,
+          3.333333,
+          3.375,
+          3.416667,
+          3.458333,
+          3.5,
+          3.541667,
+          3.583333,
+          3.625,
+          3.666667,
+          3.708333,
+          3.75,
+          3.791667,
+          3.833333,
+          3.875
+        ],
+        "firstSampleSeconds": 0,
+        "lastSampleSeconds": 3.875
+      },
+      "sheet": {
+        "file": "hit.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "compressionMethod": 0,
+        "cellWidth": 832,
+        "cellHeight": 832,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 94,
+        "fps": 24.0,
+        "durationSeconds": 3.9166666666666665,
+        "durationMs": 3917,
+        "width": 8320,
+        "height": 8320,
+        "sizeBytes": 11472584,
+        "sha256": "501f647c0d5fc2ad6614402ef2a1333929be2b7a71d1c76d5845ed07b598833b",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 320,
+          "top": 322
+        }
+      },
+      "poster": {
+        "file": "hit-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 52026,
+        "sha256": "0f926a483e783bcea41b3a599b7093559fd6a1fc46bdc14e2890a7bca5ae3a45"
+      },
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 320,
+        "top": 322
+      },
+      "transform": {
+        "fixedTransformAcrossFrames": true,
+        "sharedTransform": {
+          "schemaVersion": 1,
+          "referenceAction": "idle",
+          "referenceFrameIndex": 0,
+          "reference": {
+            "size": [
+              2048,
+              2048
+            ],
+            "alphaBounds": [
+              123,
+              103,
+              1920,
+              1895
+            ],
+            "bodyHeightFraction": 0.875,
+            "groundFraction": 0.92529296875
+          },
+          "idleBodyCoreBounds": [
+            756,
+            336,
+            1165,
+            744
+          ],
+          "idleBodyHeightSourcePixels": 408,
+          "idleBodyHeightOutputPixels": 168.0,
+          "idleGroundSourcePixels": 744,
+          "sourceCoordinateSystem": [
+            1920,
+            1080
+          ],
+          "sharedScale": 0.4117647058823529,
+          "logicalCanvasOrigin": [
+            -299.5,
+            -128.35294117647055
+          ],
+          "canonicalUnionAlphaBounds": [
+            0.5,
+            0.0,
+            1920.5,
+            1080.0
+          ],
+          "logicalUnionAlphaBounds": [
+            -300,
+            -129,
+            492,
+            317
+          ],
+          "cellWidth": 832,
+          "cellHeight": 832,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 320,
+            "top": 322
+          },
+          "groundPivot": [
+            416.0,
+            500
+          ],
+          "paddingPixels": 16,
+          "maxTextureDimension": 12288,
+          "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+          "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+          "cameraCalibrations": {
+            "idle": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.0,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1165,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "attack": {
+              "nativeToIdleCoordinateScale": 1.0049261083743843,
+              "nativeToIdleCoordinateOffset": [
+                -4.731527093596128,
+                -3.665024630541893
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                338,
+                1167,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "hit": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                5.680487804877998,
+                3.629268292682923
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                334,
+                1163,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "victory": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                4.187804878048837,
+                1.6390243902438897
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                336,
+                1168,
+                746
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "ko": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.5,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1164,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            }
+          }
+        },
+        "cameraCalibration": {
+          "nativeToIdleCoordinateScale": 0.9951219512195122,
+          "nativeToIdleCoordinateOffset": [
+            5.680487804877998,
+            3.629268292682923
+          ],
+          "initialBodyCoreBounds": [
+            756,
+            334,
+            1163,
+            744
+          ],
+          "initialBodyHeightInIdleCoordinates": 408,
+          "initialGroundInIdleCoordinates": 744,
+          "constantForEntireClip": true
+        },
+        "sourceUnionAlphaBounds": [
+          140,
+          0,
+          1720,
+          1080
+        ],
+        "sourceFrameAlphaBounds": [
+          [
+            744,
+            332,
+            1168,
+            748
+          ],
+          [
+            736,
+            333,
+            1184,
+            748
+          ],
+          [
+            701,
+            336,
+            1224,
+            750
+          ],
+          [
+            656,
+            338,
+            1266,
+            754
+          ],
+          [
+            580,
+            342,
+            1320,
+            756
+          ],
+          [
+            552,
+            343,
+            1326,
+            758
+          ],
+          [
+            552,
+            344,
+            1316,
+            760
+          ],
+          [
+            552,
+            344,
+            1312,
+            760
+          ],
+          [
+            544,
+            342,
+            1324,
+            758
+          ],
+          [
+            532,
+            338,
+            1340,
+            755
+          ],
+          [
+            526,
+            332,
+            1360,
+            750
+          ],
+          [
+            528,
+            328,
+            1362,
+            746
+          ],
+          [
+            530,
+            324,
+            1360,
+            743
+          ],
+          [
+            500,
+            272,
+            1344,
+            888
+          ],
+          [
+            323,
+            72,
+            1457,
+            1072
+          ],
+          [
+            223,
+            0,
+            1584,
+            1080
+          ],
+          [
+            168,
+            0,
+            1662,
+            1080
+          ],
+          [
+            144,
+            0,
+            1706,
+            1080
+          ],
+          [
+            140,
+            0,
+            1718,
+            1080
+          ],
+          [
+            142,
+            0,
+            1720,
+            1080
+          ],
+          [
+            146,
+            0,
+            1714,
+            1080
+          ],
+          [
+            245,
+            0,
+            1698,
+            1080
+          ],
+          [
+            242,
+            0,
+            1704,
+            1080
+          ],
+          [
+            240,
+            0,
+            1710,
+            1080
+          ],
+          [
+            227,
+            0,
+            1719,
+            1080
+          ],
+          [
+            208,
+            0,
+            1718,
+            1080
+          ],
+          [
+            196,
+            0,
+            1720,
+            1080
+          ],
+          [
+            274,
+            18,
+            1710,
+            1060
+          ],
+          [
+            480,
+            100,
+            1416,
+            996
+          ],
+          [
+            568,
+            276,
+            1354,
+            974
+          ],
+          [
+            519,
+            280,
+            1380,
+            752
+          ],
+          [
+            516,
+            282,
+            1356,
+            752
+          ],
+          [
+            540,
+            278,
+            1308,
+            756
+          ],
+          [
+            529,
+            284,
+            1280,
+            760
+          ],
+          [
+            504,
+            288,
+            1300,
+            764
+          ],
+          [
+            490,
+            290,
+            1348,
+            768
+          ],
+          [
+            552,
+            296,
+            1368,
+            824
+          ],
+          [
+            656,
+            302,
+            1316,
+            924
+          ],
+          [
+            641,
+            308,
+            1184,
+            936
+          ],
+          [
+            639,
+            310,
+            1180,
+            926
+          ],
+          [
+            636,
+            316,
+            1222,
+            928
+          ],
+          [
+            635,
+            322,
+            1304,
+            904
+          ],
+          [
+            552,
+            326,
+            1320,
+            816
+          ],
+          [
+            504,
+            328,
+            1280,
+            797
+          ],
+          [
+            496,
+            322,
+            1235,
+            800
+          ],
+          [
+            496,
+            316,
+            1226,
+            800
+          ],
+          [
+            496,
+            312,
+            1220,
+            800
+          ],
+          [
+            496,
+            310,
+            1224,
+            796
+          ],
+          [
+            492,
+            320,
+            1254,
+            794
+          ],
+          [
+            490,
+            316,
+            1302,
+            784
+          ],
+          [
+            508,
+            306,
+            1352,
+            801
+          ],
+          [
+            576,
+            302,
+            1368,
+            886
+          ],
+          [
+            686,
+            296,
+            1296,
+            910
+          ],
+          [
+            704,
+            296,
+            1182,
+            900
+          ],
+          [
+            703,
+            288,
+            1222,
+            888
+          ],
+          [
+            682,
+            288,
+            1232,
+            872
+          ],
+          [
+            624,
+            293,
+            1288,
+            814
+          ],
+          [
+            560,
+            300,
+            1336,
+            762
+          ],
+          [
+            528,
+            310,
+            1355,
+            764
+          ],
+          [
+            520,
+            318,
+            1354,
+            768
+          ],
+          [
+            526,
+            326,
+            1339,
+            772
+          ],
+          [
+            532,
+            332,
+            1328,
+            774
+          ],
+          [
+            535,
+            334,
+            1324,
+            774
+          ],
+          [
+            522,
+            334,
+            1337,
+            772
+          ],
+          [
+            514,
+            334,
+            1356,
+            768
+          ],
+          [
+            512,
+            330,
+            1368,
+            763
+          ],
+          [
+            522,
+            326,
+            1367,
+            764
+          ],
+          [
+            560,
+            322,
+            1344,
+            790
+          ],
+          [
+            609,
+            318,
+            1296,
+            824
+          ],
+          [
+            672,
+            314,
+            1222,
+            858
+          ],
+          [
+            711,
+            314,
+            1170,
+            860
+          ],
+          [
+            712,
+            314,
+            1166,
+            854
+          ],
+          [
+            693,
+            316,
+            1184,
+            832
+          ],
+          [
+            655,
+            318,
+            1224,
+            800
+          ],
+          [
+            598,
+            322,
+            1284,
+            744
+          ],
+          [
+            554,
+            326,
+            1326,
+            749
+          ],
+          [
+            535,
+            332,
+            1340,
+            754
+          ],
+          [
+            532,
+            336,
+            1337,
+            758
+          ],
+          [
+            538,
+            338,
+            1328,
+            760
+          ],
+          [
+            536,
+            340,
+            1332,
+            761
+          ],
+          [
+            524,
+            338,
+            1344,
+            760
+          ],
+          [
+            512,
+            336,
+            1360,
+            758
+          ],
+          [
+            527,
+            330,
+            1364,
+            752
+          ],
+          [
+            568,
+            324,
+            1328,
+            784
+          ],
+          [
+            568,
+            320,
+            1252,
+            843
+          ],
+          [
+            696,
+            316,
+            1190,
+            860
+          ],
+          [
+            701,
+            315,
+            1192,
+            850
+          ],
+          [
+            686,
+            314,
+            1200,
+            824
+          ],
+          [
+            632,
+            316,
+            1256,
+            774
+          ],
+          [
+            568,
+            320,
+            1318,
+            742
+          ],
+          [
+            536,
+            324,
+            1343,
+            747
+          ],
+          [
+            532,
+            328,
+            1335,
+            752
+          ],
+          [
+            538,
+            336,
+            1324,
+            756
+          ],
+          [
+            536,
+            338,
+            1328,
+            759
+          ]
+        ],
+        "outputFrameAlphaBounds": [
+          [
+            325,
+            329,
+            503,
+            503
+          ],
+          [
+            322,
+            329,
+            510,
+            504
+          ],
+          [
+            308,
+            330,
+            526,
+            505
+          ],
+          [
+            289,
+            331,
+            543,
+            507
+          ],
+          [
+            258,
+            333,
+            566,
+            508
+          ],
+          [
+            246,
+            333,
+            566,
+            508
+          ],
+          [
+            246,
+            334,
+            564,
+            509
+          ],
+          [
+            246,
+            335,
+            562,
+            509
+          ],
+          [
+            243,
+            333,
+            566,
+            508
+          ],
+          [
+            240,
+            331,
+            574,
+            507
+          ],
+          [
+            236,
+            331,
+            580,
+            505
+          ],
+          [
+            236,
+            327,
+            583,
+            503
+          ],
+          [
+            237,
+            325,
+            582,
+            502
+          ],
+          [
+            225,
+            304,
+            575,
+            560
+          ],
+          [
+            153,
+            222,
+            621,
+            635
+          ],
+          [
+            112,
+            195,
+            672,
+            638
+          ],
+          [
+            89,
+            195,
+            705,
+            638
+          ],
+          [
+            80,
+            195,
+            723,
+            638
+          ],
+          [
+            80,
+            195,
+            727,
+            638
+          ],
+          [
+            80,
+            195,
+            727,
+            638
+          ],
+          [
+            80,
+            195,
+            727,
+            638
+          ],
+          [
+            121,
+            195,
+            719,
+            638
+          ],
+          [
+            119,
+            195,
+            723,
+            638
+          ],
+          [
+            119,
+            195,
+            724,
+            638
+          ],
+          [
+            113,
+            195,
+            727,
+            638
+          ],
+          [
+            106,
+            195,
+            727,
+            638
+          ],
+          [
+            101,
+            195,
+            727,
+            638
+          ],
+          [
+            133,
+            200,
+            724,
+            630
+          ],
+          [
+            217,
+            235,
+            605,
+            606
+          ],
+          [
+            253,
+            306,
+            580,
+            597
+          ],
+          [
+            233,
+            307,
+            590,
+            506
+          ],
+          [
+            232,
+            308,
+            579,
+            506
+          ],
+          [
+            241,
+            307,
+            561,
+            507
+          ],
+          [
+            237,
+            309,
+            548,
+            509
+          ],
+          [
+            228,
+            312,
+            557,
+            511
+          ],
+          [
+            221,
+            312,
+            577,
+            512
+          ],
+          [
+            246,
+            314,
+            584,
+            534
+          ],
+          [
+            289,
+            317,
+            564,
+            576
+          ],
+          [
+            283,
+            319,
+            510,
+            581
+          ],
+          [
+            282,
+            321,
+            508,
+            577
+          ],
+          [
+            281,
+            322,
+            525,
+            577
+          ],
+          [
+            280,
+            325,
+            559,
+            567
+          ],
+          [
+            246,
+            326,
+            566,
+            532
+          ],
+          [
+            227,
+            327,
+            549,
+            524
+          ],
+          [
+            223,
+            325,
+            530,
+            525
+          ],
+          [
+            223,
+            322,
+            525,
+            526
+          ],
+          [
+            223,
+            320,
+            525,
+            525
+          ],
+          [
+            223,
+            320,
+            526,
+            524
+          ],
+          [
+            222,
+            324,
+            539,
+            523
+          ],
+          [
+            221,
+            322,
+            558,
+            519
+          ],
+          [
+            228,
+            318,
+            579,
+            526
+          ],
+          [
+            256,
+            316,
+            584,
+            561
+          ],
+          [
+            301,
+            315,
+            556,
+            571
+          ],
+          [
+            309,
+            314,
+            509,
+            567
+          ],
+          [
+            308,
+            312,
+            524,
+            562
+          ],
+          [
+            300,
+            311,
+            529,
+            553
+          ],
+          [
+            276,
+            313,
+            553,
+            531
+          ],
+          [
+            250,
+            317,
+            572,
+            510
+          ],
+          [
+            236,
+            321,
+            580,
+            511
+          ],
+          [
+            233,
+            323,
+            579,
+            512
+          ],
+          [
+            236,
+            326,
+            573,
+            514
+          ],
+          [
+            238,
+            329,
+            569,
+            515
+          ],
+          [
+            239,
+            331,
+            567,
+            515
+          ],
+          [
+            234,
+            331,
+            572,
+            514
+          ],
+          [
+            232,
+            330,
+            580,
+            512
+          ],
+          [
+            230,
+            328,
+            584,
+            510
+          ],
+          [
+            234,
+            326,
+            585,
+            511
+          ],
+          [
+            249,
+            325,
+            575,
+            521
+          ],
+          [
+            270,
+            324,
+            556,
+            534
+          ],
+          [
+            295,
+            322,
+            526,
+            549
+          ],
+          [
+            312,
+            321,
+            504,
+            550
+          ],
+          [
+            312,
+            321,
+            503,
+            548
+          ],
+          [
+            304,
+            322,
+            510,
+            539
+          ],
+          [
+            289,
+            323,
+            526,
+            526
+          ],
+          [
+            265,
+            325,
+            551,
+            503
+          ],
+          [
+            247,
+            326,
+            568,
+            504
+          ],
+          [
+            240,
+            329,
+            574,
+            507
+          ],
+          [
+            238,
+            330,
+            572,
+            507
+          ],
+          [
+            240,
+            331,
+            569,
+            509
+          ],
+          [
+            240,
+            332,
+            570,
+            509
+          ],
+          [
+            235,
+            331,
+            575,
+            509
+          ],
+          [
+            230,
+            330,
+            582,
+            508
+          ],
+          [
+            236,
+            329,
+            582,
+            506
+          ],
+          [
+            253,
+            326,
+            569,
+            519
+          ],
+          [
+            255,
+            324,
+            538,
+            542
+          ],
+          [
+            306,
+            323,
+            512,
+            548
+          ],
+          [
+            308,
+            322,
+            513,
+            546
+          ],
+          [
+            301,
+            322,
+            517,
+            534
+          ],
+          [
+            279,
+            322,
+            540,
+            514
+          ],
+          [
+            253,
+            324,
+            565,
+            501
+          ],
+          [
+            240,
+            326,
+            575,
+            504
+          ],
+          [
+            238,
+            327,
+            570,
+            506
+          ],
+          [
+            241,
+            330,
+            566,
+            507
+          ],
+          [
+            240,
+            332,
+            567,
+            509
+          ]
+        ],
+        "scale": 0.4117647058823529,
+        "groundPivot": [
+          416.0,
+          500
+        ]
+      },
+      "key": {
+        "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+        "alphaCutoff": 0.08,
+        "screenColourRatioTolerance": 0.12,
+        "screenDominanceCleanup": false,
+        "screenDominanceRatio": null,
+        "screenFringeCleanup": false,
+        "screenFringeProfile": null,
+        "screenBackgroundFallback": [
+          30,
+          244,
+          19
+        ],
+        "screenBackgroundFallbackFrames": []
+      },
+      "qa": {
+        "losslessDecodedRgbaMatches": true,
+        "remainingGreenDominantPixelsOver8": 0,
+        "yellowGreenDiagnosticPixelsAllFrames": 1161603,
+        "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+        "occupiedPixelsAllFrames": 3208325,
+        "redDominantPixelsAllFrames": 45853,
+        "transparentFrameIndices": [],
+        "loopSeam": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.308644,
+          "bodyAlphaMeanAbsoluteDifference": 0.398172,
+          "bodyChangedPixelFractionOver5Percent": 0.740586,
+          "adjacentMedianBodyRgbDifference": 0.208358,
+          "adjacentMaxBodyRgbDifference": 0.356715,
+          "seamToAdjacentMedianRatio": 1.481
+        },
+        "loopSeamPerfect": false,
+        "originalFinalFramePreserved": true,
+        "sourceFramesTouchingEdges": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26
+        ],
+        "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
+        "returnToIdleFirst": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.31164,
+          "bodyAlphaMeanAbsoluteDifference": 0.399873,
+          "bodyChangedPixelFractionOver5Percent": 0.75
+        }
+      },
+      "timing": {
+        "reactionFrame": 13,
+        "reactionMs": 541.6666666666666,
+        "evidence": "Frame 12: Both wings are extended without any impact light. Frame 13: A bright yellow-white impact star appears across the face and chest. Frame 14: The rays extend beyond the wings and the body remains in the hit pose.",
+        "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+      },
+      "calibrationInspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+    },
+    "victory": {
+      "schemaVersion": 1,
+      "speciesId": 160,
+      "view": "front",
+      "action": "victory",
+      "source": {
+        "file": "animation-source/raw/160/front/victory.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.92,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "758b1e62e8000597213778efeb9068dd4951518baf3a19974998d1315ff38082",
+        "sizeBytes": 1929217,
+        "decodedFrameCount": 94,
+        "durationFromFramesSeconds": 3.9166666666666665
+      },
+      "sampling": {
+        "method": "Every decoded source frame, in original order, at original FPS; no skipping, interpolation, generation, reversal or crossfade.",
+        "allSourceFramesPreserved": true,
+        "sourceFrameIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93
+        ],
+        "sampleTimesSeconds": [
+          0.0,
+          0.041667,
+          0.083333,
+          0.125,
+          0.166667,
+          0.208333,
+          0.25,
+          0.291667,
+          0.333333,
+          0.375,
+          0.416667,
+          0.458333,
+          0.5,
+          0.541667,
+          0.583333,
+          0.625,
+          0.666667,
+          0.708333,
+          0.75,
+          0.791667,
+          0.833333,
+          0.875,
+          0.916667,
+          0.958333,
+          1.0,
+          1.041667,
+          1.083333,
+          1.125,
+          1.166667,
+          1.208333,
+          1.25,
+          1.291667,
+          1.333333,
+          1.375,
+          1.416667,
+          1.458333,
+          1.5,
+          1.541667,
+          1.583333,
+          1.625,
+          1.666667,
+          1.708333,
+          1.75,
+          1.791667,
+          1.833333,
+          1.875,
+          1.916667,
+          1.958333,
+          2.0,
+          2.041667,
+          2.083333,
+          2.125,
+          2.166667,
+          2.208333,
+          2.25,
+          2.291667,
+          2.333333,
+          2.375,
+          2.416667,
+          2.458333,
+          2.5,
+          2.541667,
+          2.583333,
+          2.625,
+          2.666667,
+          2.708333,
+          2.75,
+          2.791667,
+          2.833333,
+          2.875,
+          2.916667,
+          2.958333,
+          3.0,
+          3.041667,
+          3.083333,
+          3.125,
+          3.166667,
+          3.208333,
+          3.25,
+          3.291667,
+          3.333333,
+          3.375,
+          3.416667,
+          3.458333,
+          3.5,
+          3.541667,
+          3.583333,
+          3.625,
+          3.666667,
+          3.708333,
+          3.75,
+          3.791667,
+          3.833333,
+          3.875
+        ],
+        "firstSampleSeconds": 0,
+        "lastSampleSeconds": 3.875
+      },
+      "sheet": {
+        "file": "victory.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "compressionMethod": 0,
+        "cellWidth": 832,
+        "cellHeight": 832,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 94,
+        "fps": 24.0,
+        "durationSeconds": 3.9166666666666665,
+        "durationMs": 3917,
+        "width": 8320,
+        "height": 8320,
+        "sizeBytes": 10895892,
+        "sha256": "5a0670e49d46141e7392a697486ef70b0e5e88419fb245ee388b7c04a045b152",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 320,
+          "top": 322
+        }
+      },
+      "poster": {
+        "file": "victory-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 51168,
+        "sha256": "f661a6e829bf415e09865c966ef32ce8324552e73b739621a280da7d4441f011"
+      },
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 320,
+        "top": 322
+      },
+      "transform": {
+        "fixedTransformAcrossFrames": true,
+        "sharedTransform": {
+          "schemaVersion": 1,
+          "referenceAction": "idle",
+          "referenceFrameIndex": 0,
+          "reference": {
+            "size": [
+              2048,
+              2048
+            ],
+            "alphaBounds": [
+              123,
+              103,
+              1920,
+              1895
+            ],
+            "bodyHeightFraction": 0.875,
+            "groundFraction": 0.92529296875
+          },
+          "idleBodyCoreBounds": [
+            756,
+            336,
+            1165,
+            744
+          ],
+          "idleBodyHeightSourcePixels": 408,
+          "idleBodyHeightOutputPixels": 168.0,
+          "idleGroundSourcePixels": 744,
+          "sourceCoordinateSystem": [
+            1920,
+            1080
+          ],
+          "sharedScale": 0.4117647058823529,
+          "logicalCanvasOrigin": [
+            -299.5,
+            -128.35294117647055
+          ],
+          "canonicalUnionAlphaBounds": [
+            0.5,
+            0.0,
+            1920.5,
+            1080.0
+          ],
+          "logicalUnionAlphaBounds": [
+            -300,
+            -129,
+            492,
+            317
+          ],
+          "cellWidth": 832,
+          "cellHeight": 832,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 320,
+            "top": 322
+          },
+          "groundPivot": [
+            416.0,
+            500
+          ],
+          "paddingPixels": 16,
+          "maxTextureDimension": 12288,
+          "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+          "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+          "cameraCalibrations": {
+            "idle": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.0,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1165,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "attack": {
+              "nativeToIdleCoordinateScale": 1.0049261083743843,
+              "nativeToIdleCoordinateOffset": [
+                -4.731527093596128,
+                -3.665024630541893
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                338,
+                1167,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "hit": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                5.680487804877998,
+                3.629268292682923
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                334,
+                1163,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "victory": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                4.187804878048837,
+                1.6390243902438897
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                336,
+                1168,
+                746
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "ko": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.5,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1164,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            }
+          }
+        },
+        "cameraCalibration": {
+          "nativeToIdleCoordinateScale": 0.9951219512195122,
+          "nativeToIdleCoordinateOffset": [
+            4.187804878048837,
+            1.6390243902438897
+          ],
+          "initialBodyCoreBounds": [
+            754,
+            336,
+            1168,
+            746
+          ],
+          "initialBodyHeightInIdleCoordinates": 408,
+          "initialGroundInIdleCoordinates": 744,
+          "constantForEntireClip": true
+        },
+        "sourceUnionAlphaBounds": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "sourceFrameAlphaBounds": [
+          [
+            750,
+            334,
+            1170,
+            748
+          ],
+          [
+            752,
+            332,
+            1168,
+            748
+          ],
+          [
+            754,
+            332,
+            1164,
+            746
+          ],
+          [
+            756,
+            330,
+            1161,
+            745
+          ],
+          [
+            758,
+            328,
+            1157,
+            746
+          ],
+          [
+            760,
+            328,
+            1153,
+            747
+          ],
+          [
+            762,
+            326,
+            1148,
+            748
+          ],
+          [
+            762,
+            324,
+            1144,
+            752
+          ],
+          [
+            761,
+            322,
+            1136,
+            752
+          ],
+          [
+            760,
+            320,
+            1134,
+            754
+          ],
+          [
+            760,
+            320,
+            1132,
+            756
+          ],
+          [
+            740,
+            318,
+            1130,
+            776
+          ],
+          [
+            738,
+            316,
+            1160,
+            775
+          ],
+          [
+            664,
+            314,
+            1244,
+            738
+          ],
+          [
+            588,
+            312,
+            1308,
+            750
+          ],
+          [
+            564,
+            310,
+            1326,
+            758
+          ],
+          [
+            582,
+            308,
+            1298,
+            764
+          ],
+          [
+            600,
+            308,
+            1280,
+            772
+          ],
+          [
+            608,
+            308,
+            1272,
+            774
+          ],
+          [
+            600,
+            306,
+            1282,
+            772
+          ],
+          [
+            572,
+            290,
+            1312,
+            756
+          ],
+          [
+            544,
+            272,
+            1338,
+            738
+          ],
+          [
+            546,
+            256,
+            1342,
+            712
+          ],
+          [
+            566,
+            238,
+            1319,
+            680
+          ],
+          [
+            640,
+            248,
+            1268,
+            740
+          ],
+          [
+            668,
+            358,
+            1224,
+            792
+          ],
+          [
+            672,
+            398,
+            1160,
+            808
+          ],
+          [
+            724,
+            344,
+            1124,
+            804
+          ],
+          [
+            760,
+            302,
+            1102,
+            836
+          ],
+          [
+            764,
+            306,
+            1132,
+            826
+          ],
+          [
+            740,
+            348,
+            1140,
+            762
+          ],
+          [
+            722,
+            352,
+            1146,
+            896
+          ],
+          [
+            694,
+            354,
+            1166,
+            632
+          ],
+          [
+            594,
+            236,
+            1262,
+            871
+          ],
+          [
+            642,
+            226,
+            1201,
+            898
+          ],
+          [
+            648,
+            258,
+            1202,
+            904
+          ],
+          [
+            568,
+            290,
+            1280,
+            904
+          ],
+          [
+            500,
+            324,
+            1352,
+            908
+          ],
+          [
+            506,
+            353,
+            1360,
+            908
+          ],
+          [
+            578,
+            358,
+            1300,
+            916
+          ],
+          [
+            684,
+            358,
+            1228,
+            966
+          ],
+          [
+            650,
+            362,
+            1260,
+            956
+          ],
+          [
+            634,
+            356,
+            1272,
+            924
+          ],
+          [
+            624,
+            356,
+            1280,
+            910
+          ],
+          [
+            618,
+            352,
+            1288,
+            912
+          ],
+          [
+            612,
+            348,
+            1292,
+            910
+          ],
+          [
+            608,
+            336,
+            1296,
+            912
+          ],
+          [
+            602,
+            318,
+            1300,
+            910
+          ],
+          [
+            582,
+            292,
+            1302,
+            910
+          ],
+          [
+            480,
+            272,
+            1352,
+            910
+          ],
+          [
+            490,
+            260,
+            1340,
+            910
+          ],
+          [
+            498,
+            256,
+            1344,
+            920
+          ],
+          [
+            486,
+            250,
+            1360,
+            920
+          ],
+          [
+            468,
+            248,
+            1384,
+            922
+          ],
+          [
+            456,
+            242,
+            1400,
+            924
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            466,
+            252,
+            1396,
+            910
+          ],
+          [
+            468,
+            256,
+            1394,
+            910
+          ],
+          [
+            472,
+            264,
+            1396,
+            908
+          ],
+          [
+            472,
+            272,
+            1392,
+            906
+          ],
+          [
+            486,
+            284,
+            1380,
+            900
+          ],
+          [
+            514,
+            294,
+            1364,
+            792
+          ],
+          [
+            550,
+            308,
+            1332,
+            792
+          ],
+          [
+            596,
+            320,
+            1296,
+            791
+          ],
+          [
+            646,
+            330,
+            1258,
+            784
+          ],
+          [
+            690,
+            336,
+            1218,
+            776
+          ],
+          [
+            720,
+            338,
+            1190,
+            766
+          ],
+          [
+            748,
+            334,
+            1170,
+            752
+          ],
+          [
+            752,
+            332,
+            1164,
+            748
+          ],
+          [
+            756,
+            330,
+            1160,
+            744
+          ],
+          [
+            758,
+            328,
+            1154,
+            744
+          ],
+          [
+            762,
+            326,
+            1148,
+            746
+          ],
+          [
+            760,
+            324,
+            1146,
+            746
+          ],
+          [
+            760,
+            322,
+            1146,
+            745
+          ],
+          [
+            760,
+            322,
+            1148,
+            743
+          ],
+          [
+            760,
+            324,
+            1154,
+            741
+          ],
+          [
+            758,
+            324,
+            1158,
+            740
+          ]
+        ],
+        "outputFrameAlphaBounds": [
+          [
+            327,
+            329,
+            504,
+            503
+          ],
+          [
+            328,
+            328,
+            503,
+            503
+          ],
+          [
+            329,
+            328,
+            502,
+            502
+          ],
+          [
+            329,
+            327,
+            500,
+            502
+          ],
+          [
+            330,
+            326,
+            499,
+            502
+          ],
+          [
+            331,
+            326,
+            497,
+            503
+          ],
+          [
+            332,
+            325,
+            495,
+            502
+          ],
+          [
+            332,
+            324,
+            493,
+            505
+          ],
+          [
+            332,
+            324,
+            490,
+            505
+          ],
+          [
+            331,
+            323,
+            489,
+            506
+          ],
+          [
+            331,
+            323,
+            488,
+            507
+          ],
+          [
+            324,
+            322,
+            488,
+            515
+          ],
+          [
+            322,
+            321,
+            500,
+            514
+          ],
+          [
+            293,
+            321,
+            534,
+            499
+          ],
+          [
+            261,
+            320,
+            561,
+            504
+          ],
+          [
+            251,
+            319,
+            568,
+            505
+          ],
+          [
+            260,
+            318,
+            556,
+            510
+          ],
+          [
+            265,
+            318,
+            547,
+            513
+          ],
+          [
+            269,
+            318,
+            546,
+            514
+          ],
+          [
+            265,
+            317,
+            549,
+            511
+          ],
+          [
+            254,
+            311,
+            562,
+            507
+          ],
+          [
+            243,
+            304,
+            573,
+            499
+          ],
+          [
+            243,
+            298,
+            574,
+            488
+          ],
+          [
+            252,
+            289,
+            565,
+            474
+          ],
+          [
+            282,
+            293,
+            544,
+            500
+          ],
+          [
+            293,
+            338,
+            526,
+            520
+          ],
+          [
+            295,
+            355,
+            498,
+            527
+          ],
+          [
+            316,
+            334,
+            485,
+            525
+          ],
+          [
+            331,
+            316,
+            476,
+            539
+          ],
+          [
+            333,
+            318,
+            488,
+            533
+          ],
+          [
+            323,
+            334,
+            492,
+            509
+          ],
+          [
+            316,
+            336,
+            494,
+            562
+          ],
+          [
+            304,
+            338,
+            501,
+            456
+          ],
+          [
+            263,
+            288,
+            542,
+            552
+          ],
+          [
+            283,
+            284,
+            517,
+            563
+          ],
+          [
+            285,
+            298,
+            517,
+            566
+          ],
+          [
+            252,
+            312,
+            549,
+            566
+          ],
+          [
+            225,
+            326,
+            579,
+            568
+          ],
+          [
+            228,
+            337,
+            582,
+            569
+          ],
+          [
+            257,
+            339,
+            556,
+            572
+          ],
+          [
+            300,
+            339,
+            528,
+            593
+          ],
+          [
+            286,
+            340,
+            541,
+            589
+          ],
+          [
+            280,
+            338,
+            546,
+            575
+          ],
+          [
+            276,
+            339,
+            549,
+            570
+          ],
+          [
+            273,
+            337,
+            552,
+            570
+          ],
+          [
+            270,
+            335,
+            554,
+            570
+          ],
+          [
+            269,
+            330,
+            556,
+            571
+          ],
+          [
+            266,
+            322,
+            557,
+            570
+          ],
+          [
+            258,
+            312,
+            558,
+            569
+          ],
+          [
+            216,
+            304,
+            579,
+            568
+          ],
+          [
+            220,
+            298,
+            573,
+            568
+          ],
+          [
+            224,
+            297,
+            574,
+            574
+          ],
+          [
+            220,
+            295,
+            582,
+            574
+          ],
+          [
+            212,
+            293,
+            592,
+            575
+          ],
+          [
+            206,
+            291,
+            597,
+            575
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            22,
+            194,
+            809,
+            637
+          ],
+          [
+            211,
+            295,
+            596,
+            570
+          ],
+          [
+            213,
+            297,
+            595,
+            570
+          ],
+          [
+            215,
+            300,
+            596,
+            569
+          ],
+          [
+            213,
+            303,
+            595,
+            566
+          ],
+          [
+            220,
+            308,
+            589,
+            564
+          ],
+          [
+            230,
+            312,
+            584,
+            521
+          ],
+          [
+            245,
+            318,
+            570,
+            521
+          ],
+          [
+            264,
+            325,
+            556,
+            521
+          ],
+          [
+            284,
+            327,
+            539,
+            518
+          ],
+          [
+            302,
+            330,
+            524,
+            514
+          ],
+          [
+            316,
+            330,
+            511,
+            510
+          ],
+          [
+            326,
+            329,
+            504,
+            505
+          ],
+          [
+            328,
+            328,
+            502,
+            503
+          ],
+          [
+            329,
+            327,
+            500,
+            502
+          ],
+          [
+            330,
+            326,
+            497,
+            501
+          ],
+          [
+            332,
+            325,
+            495,
+            502
+          ],
+          [
+            332,
+            324,
+            494,
+            502
+          ],
+          [
+            331,
+            324,
+            494,
+            502
+          ],
+          [
+            331,
+            324,
+            495,
+            501
+          ],
+          [
+            331,
+            324,
+            497,
+            500
+          ],
+          [
+            330,
+            325,
+            499,
+            500
+          ]
+        ],
+        "scale": 0.4117647058823529,
+        "groundPivot": [
+          416.0,
+          500
+        ]
+      },
+      "key": {
+        "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+        "alphaCutoff": 0.08,
+        "screenColourRatioTolerance": 0.12,
+        "screenDominanceCleanup": false,
+        "screenDominanceRatio": null,
+        "screenFringeCleanup": false,
+        "screenFringeProfile": null,
+        "screenBackgroundFallback": [
+          30,
+          244,
+          19
+        ],
+        "screenBackgroundFallbackFrames": []
+      },
+      "qa": {
+        "losslessDecodedRgbaMatches": true,
+        "remainingGreenDominantPixelsOver8": 0,
+        "yellowGreenDiagnosticPixelsAllFrames": 506678,
+        "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+        "occupiedPixelsAllFrames": 3091084,
+        "redDominantPixelsAllFrames": 25702,
+        "transparentFrameIndices": [],
+        "loopSeam": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.149028,
+          "bodyAlphaMeanAbsoluteDifference": 0.106616,
+          "bodyChangedPixelFractionOver5Percent": 0.575903,
+          "adjacentMedianBodyRgbDifference": 0.164536,
+          "adjacentMaxBodyRgbDifference": 0.369803,
+          "seamToAdjacentMedianRatio": 0.906
+        },
+        "loopSeamPerfect": false,
+        "originalFinalFramePreserved": true,
+        "sourceFramesTouchingEdges": [
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72
+        ],
+        "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
+        "returnToIdleFirst": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.146843,
+          "bodyAlphaMeanAbsoluteDifference": 0.098701,
+          "bodyChangedPixelFractionOver5Percent": 0.574269
+        }
+      }
+    },
+    "ko": {
+      "schemaVersion": 1,
+      "speciesId": 160,
+      "view": "front",
+      "action": "ko",
+      "source": {
+        "file": "animation-source/raw/160/front/ko.mp4",
+        "width": 1920,
+        "height": 1080,
+        "fps": 24.0,
+        "durationSeconds": 3.92,
+        "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+        "sha256": "cbf6b4407168aa45605fc4cdd1678efbb6edb4affb1bb98568525c3b1649ee3a",
+        "sizeBytes": 2549439,
+        "decodedFrameCount": 94,
+        "durationFromFramesSeconds": 3.9166666666666665
+      },
+      "sampling": {
+        "method": "Every decoded source frame, in original order, at original FPS; no skipping, interpolation, generation, reversal or crossfade.",
+        "allSourceFramesPreserved": true,
+        "sourceFrameIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93
+        ],
+        "sampleTimesSeconds": [
+          0.0,
+          0.041667,
+          0.083333,
+          0.125,
+          0.166667,
+          0.208333,
+          0.25,
+          0.291667,
+          0.333333,
+          0.375,
+          0.416667,
+          0.458333,
+          0.5,
+          0.541667,
+          0.583333,
+          0.625,
+          0.666667,
+          0.708333,
+          0.75,
+          0.791667,
+          0.833333,
+          0.875,
+          0.916667,
+          0.958333,
+          1.0,
+          1.041667,
+          1.083333,
+          1.125,
+          1.166667,
+          1.208333,
+          1.25,
+          1.291667,
+          1.333333,
+          1.375,
+          1.416667,
+          1.458333,
+          1.5,
+          1.541667,
+          1.583333,
+          1.625,
+          1.666667,
+          1.708333,
+          1.75,
+          1.791667,
+          1.833333,
+          1.875,
+          1.916667,
+          1.958333,
+          2.0,
+          2.041667,
+          2.083333,
+          2.125,
+          2.166667,
+          2.208333,
+          2.25,
+          2.291667,
+          2.333333,
+          2.375,
+          2.416667,
+          2.458333,
+          2.5,
+          2.541667,
+          2.583333,
+          2.625,
+          2.666667,
+          2.708333,
+          2.75,
+          2.791667,
+          2.833333,
+          2.875,
+          2.916667,
+          2.958333,
+          3.0,
+          3.041667,
+          3.083333,
+          3.125,
+          3.166667,
+          3.208333,
+          3.25,
+          3.291667,
+          3.333333,
+          3.375,
+          3.416667,
+          3.458333,
+          3.5,
+          3.541667,
+          3.583333,
+          3.625,
+          3.666667,
+          3.708333,
+          3.75,
+          3.791667,
+          3.833333,
+          3.875
+        ],
+        "firstSampleSeconds": 0,
+        "lastSampleSeconds": 3.875
+      },
+      "sheet": {
+        "file": "ko.webp",
+        "format": "static lossless WebP RGBA",
+        "animated": false,
+        "compressionMethod": 0,
+        "cellWidth": 832,
+        "cellHeight": 832,
+        "columns": 10,
+        "rows": 10,
+        "frameCount": 94,
+        "fps": 24.0,
+        "durationSeconds": 3.9166666666666665,
+        "durationMs": 3917,
+        "width": 8320,
+        "height": 8320,
+        "sizeBytes": 12498090,
+        "sha256": "db3c36afe514389b7f0c376a9ec9a55d5c878c8b77f4b584628ce535539458b7",
+        "viewport": {
+          "width": 192,
+          "height": 192,
+          "left": 320,
+          "top": 322
+        }
+      },
+      "poster": {
+        "file": "ko-poster.webp",
+        "frameIndex": 0,
+        "sizeBytes": 51334,
+        "sha256": "74e27863a16c7efe23c743d98e97d70b0f7725332621201c481880fab56ffc00"
+      },
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 320,
+        "top": 322
+      },
+      "transform": {
+        "fixedTransformAcrossFrames": true,
+        "sharedTransform": {
+          "schemaVersion": 1,
+          "referenceAction": "idle",
+          "referenceFrameIndex": 0,
+          "reference": {
+            "size": [
+              2048,
+              2048
+            ],
+            "alphaBounds": [
+              123,
+              103,
+              1920,
+              1895
+            ],
+            "bodyHeightFraction": 0.875,
+            "groundFraction": 0.92529296875
+          },
+          "idleBodyCoreBounds": [
+            756,
+            336,
+            1165,
+            744
+          ],
+          "idleBodyHeightSourcePixels": 408,
+          "idleBodyHeightOutputPixels": 168.0,
+          "idleGroundSourcePixels": 744,
+          "sourceCoordinateSystem": [
+            1920,
+            1080
+          ],
+          "sharedScale": 0.4117647058823529,
+          "logicalCanvasOrigin": [
+            -299.5,
+            -128.35294117647055
+          ],
+          "canonicalUnionAlphaBounds": [
+            0.5,
+            0.0,
+            1920.5,
+            1080.0
+          ],
+          "logicalUnionAlphaBounds": [
+            -300,
+            -129,
+            492,
+            317
+          ],
+          "cellWidth": 832,
+          "cellHeight": 832,
+          "viewport": {
+            "width": 192,
+            "height": 192,
+            "left": 320,
+            "top": 322
+          },
+          "groundPivot": [
+            416.0,
+            500
+          ],
+          "paddingPixels": 16,
+          "maxTextureDimension": 12288,
+          "notes": "Each clip uses a fixed initial-body camera calibration, then the same idle-derived pixel scale and ground plane. Canvas padding is outside the common logical viewport.",
+          "scaleReference": "Initial opaque body; all native motion and effects retained in canvas padding.",
+          "cameraCalibrations": {
+            "idle": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.0,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1165,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "attack": {
+              "nativeToIdleCoordinateScale": 1.0049261083743843,
+              "nativeToIdleCoordinateOffset": [
+                -4.731527093596128,
+                -3.665024630541893
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                338,
+                1167,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "hit": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                5.680487804877998,
+                3.629268292682923
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                334,
+                1163,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "victory": {
+              "nativeToIdleCoordinateScale": 0.9951219512195122,
+              "nativeToIdleCoordinateOffset": [
+                4.187804878048837,
+                1.6390243902438897
+              ],
+              "initialBodyCoreBounds": [
+                754,
+                336,
+                1168,
+                746
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            },
+            "ko": {
+              "nativeToIdleCoordinateScale": 1.0,
+              "nativeToIdleCoordinateOffset": [
+                0.5,
+                0.0
+              ],
+              "initialBodyCoreBounds": [
+                756,
+                336,
+                1164,
+                744
+              ],
+              "initialBodyHeightInIdleCoordinates": 408,
+              "initialGroundInIdleCoordinates": 744,
+              "constantForEntireClip": true
+            }
+          }
+        },
+        "cameraCalibration": {
+          "nativeToIdleCoordinateScale": 1.0,
+          "nativeToIdleCoordinateOffset": [
+            0.5,
+            0.0
+          ],
+          "initialBodyCoreBounds": [
+            756,
+            336,
+            1164,
+            744
+          ],
+          "initialBodyHeightInIdleCoordinates": 408,
+          "initialGroundInIdleCoordinates": 744,
+          "constantForEntireClip": true
+        },
+        "sourceUnionAlphaBounds": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "sourceFrameAlphaBounds": [
+          [
+            750,
+            332,
+            1170,
+            746
+          ],
+          [
+            744,
+            334,
+            1174,
+            748
+          ],
+          [
+            734,
+            336,
+            1190,
+            750
+          ],
+          [
+            724,
+            340,
+            1206,
+            754
+          ],
+          [
+            708,
+            344,
+            1219,
+            756
+          ],
+          [
+            692,
+            346,
+            1232,
+            760
+          ],
+          [
+            680,
+            350,
+            1240,
+            762
+          ],
+          [
+            670,
+            354,
+            1246,
+            765
+          ],
+          [
+            664,
+            360,
+            1244,
+            768
+          ],
+          [
+            658,
+            360,
+            1242,
+            769
+          ],
+          [
+            658,
+            362,
+            1241,
+            770
+          ],
+          [
+            658,
+            362,
+            1242,
+            771
+          ],
+          [
+            656,
+            364,
+            1241,
+            770
+          ],
+          [
+            612,
+            328,
+            1304,
+            764
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          [
+            16,
+            336,
+            1318,
+            1004
+          ],
+          [
+            34,
+            232,
+            1366,
+            1080
+          ],
+          [
+            572,
+            224,
+            1415,
+            1002
+          ],
+          [
+            546,
+            264,
+            1440,
+            998
+          ],
+          [
+            528,
+            258,
+            1452,
+            992
+          ],
+          [
+            506,
+            242,
+            1504,
+            988
+          ],
+          [
+            486,
+            228,
+            1552,
+            984
+          ],
+          [
+            476,
+            216,
+            1564,
+            982
+          ],
+          [
+            470,
+            206,
+            1546,
+            976
+          ],
+          [
+            460,
+            198,
+            1510,
+            972
+          ],
+          [
+            452,
+            184,
+            1513,
+            968
+          ],
+          [
+            444,
+            184,
+            1422,
+            964
+          ],
+          [
+            435,
+            178,
+            1484,
+            960
+          ],
+          [
+            428,
+            172,
+            1528,
+            956
+          ],
+          [
+            420,
+            168,
+            1550,
+            921
+          ],
+          [
+            416,
+            164,
+            1558,
+            920
+          ],
+          [
+            410,
+            160,
+            1560,
+            902
+          ],
+          [
+            408,
+            304,
+            1562,
+            935
+          ],
+          [
+            510,
+            280,
+            1562,
+            852
+          ],
+          [
+            648,
+            247,
+            1564,
+            939
+          ],
+          [
+            608,
+            250,
+            1565,
+            960
+          ],
+          [
+            588,
+            240,
+            1564,
+            939
+          ],
+          [
+            604,
+            230,
+            1562,
+            933
+          ],
+          [
+            634,
+            222,
+            1560,
+            931
+          ],
+          [
+            648,
+            214,
+            1559,
+            977
+          ],
+          [
+            666,
+            209,
+            1558,
+            988
+          ],
+          [
+            540,
+            204,
+            1556,
+            1000
+          ],
+          [
+            474,
+            200,
+            1540,
+            1022
+          ],
+          [
+            458,
+            226,
+            1488,
+            1048
+          ],
+          [
+            432,
+            241,
+            1490,
+            1074
+          ],
+          [
+            400,
+            240,
+            1490,
+            1080
+          ],
+          [
+            360,
+            659,
+            1440,
+            1080
+          ],
+          [
+            336,
+            640,
+            1460,
+            1080
+          ],
+          [
+            319,
+            504,
+            1476,
+            1080
+          ],
+          [
+            301,
+            368,
+            1494,
+            1080
+          ],
+          [
+            282,
+            294,
+            1510,
+            1080
+          ],
+          [
+            271,
+            250,
+            1520,
+            1080
+          ],
+          [
+            259,
+            218,
+            1532,
+            1080
+          ],
+          [
+            246,
+            194,
+            1544,
+            1080
+          ],
+          [
+            400,
+            181,
+            1472,
+            1008
+          ],
+          [
+            384,
+            176,
+            1486,
+            1012
+          ],
+          [
+            370,
+            176,
+            1499,
+            1016
+          ],
+          [
+            356,
+            190,
+            1510,
+            1016
+          ],
+          [
+            348,
+            218,
+            1517,
+            1010
+          ],
+          [
+            376,
+            262,
+            1516,
+            859
+          ],
+          [
+            480,
+            324,
+            1306,
+            972
+          ],
+          [
+            476,
+            404,
+            1300,
+            986
+          ],
+          [
+            476,
+            492,
+            1303,
+            996
+          ],
+          [
+            440,
+            496,
+            1376,
+            1000
+          ],
+          [
+            422,
+            500,
+            1420,
+            1002
+          ],
+          [
+            414,
+            504,
+            1432,
+            1000
+          ],
+          [
+            414,
+            508,
+            1424,
+            1004
+          ],
+          [
+            414,
+            508,
+            1425,
+            1004
+          ],
+          [
+            414,
+            512,
+            1428,
+            1002
+          ],
+          [
+            412,
+            516,
+            1428,
+            1002
+          ],
+          [
+            412,
+            520,
+            1430,
+            1002
+          ],
+          [
+            412,
+            520,
+            1430,
+            1001
+          ],
+          [
+            412,
+            518,
+            1430,
+            1001
+          ],
+          [
+            412,
+            516,
+            1431,
+            1001
+          ],
+          [
+            412,
+            514,
+            1430,
+            1001
+          ],
+          [
+            412,
+            513,
+            1430,
+            1001
+          ],
+          [
+            412,
+            512,
+            1430,
+            1001
+          ],
+          [
+            412,
+            513,
+            1430,
+            1001
+          ],
+          [
+            412,
+            514,
+            1430,
+            1001
+          ],
+          [
+            412,
+            514,
+            1430,
+            1001
+          ],
+          [
+            412,
+            516,
+            1430,
+            1001
+          ],
+          [
+            412,
+            516,
+            1430,
+            1001
+          ],
+          [
+            412,
+            516,
+            1430,
+            1001
+          ]
+        ],
+        "outputFrameAlphaBounds": [
+          [
+            328,
+            329,
+            505,
+            504
+          ],
+          [
+            325,
+            329,
+            507,
+            505
+          ],
+          [
+            322,
+            330,
+            514,
+            505
+          ],
+          [
+            317,
+            332,
+            520,
+            507
+          ],
+          [
+            310,
+            333,
+            525,
+            508
+          ],
+          [
+            304,
+            334,
+            531,
+            510
+          ],
+          [
+            300,
+            337,
+            534,
+            510
+          ],
+          [
+            296,
+            338,
+            537,
+            512
+          ],
+          [
+            292,
+            340,
+            536,
+            513
+          ],
+          [
+            290,
+            342,
+            535,
+            513
+          ],
+          [
+            290,
+            342,
+            534,
+            514
+          ],
+          [
+            290,
+            342,
+            534,
+            514
+          ],
+          [
+            289,
+            342,
+            535,
+            514
+          ],
+          [
+            272,
+            327,
+            561,
+            511
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            21,
+            194,
+            812,
+            639
+          ],
+          [
+            27,
+            330,
+            566,
+            608
+          ],
+          [
+            34,
+            287,
+            585,
+            639
+          ],
+          [
+            254,
+            285,
+            606,
+            608
+          ],
+          [
+            244,
+            302,
+            617,
+            608
+          ],
+          [
+            236,
+            298,
+            622,
+            603
+          ],
+          [
+            227,
+            291,
+            641,
+            602
+          ],
+          [
+            219,
+            286,
+            663,
+            602
+          ],
+          [
+            215,
+            281,
+            668,
+            601
+          ],
+          [
+            212,
+            277,
+            660,
+            598
+          ],
+          [
+            208,
+            273,
+            644,
+            597
+          ],
+          [
+            205,
+            267,
+            645,
+            595
+          ],
+          [
+            201,
+            267,
+            608,
+            593
+          ],
+          [
+            198,
+            265,
+            635,
+            590
+          ],
+          [
+            195,
+            263,
+            653,
+            589
+          ],
+          [
+            192,
+            261,
+            662,
+            576
+          ],
+          [
+            190,
+            259,
+            665,
+            575
+          ],
+          [
+            188,
+            257,
+            666,
+            568
+          ],
+          [
+            187,
+            317,
+            667,
+            580
+          ],
+          [
+            229,
+            308,
+            667,
+            548
+          ],
+          [
+            285,
+            295,
+            668,
+            582
+          ],
+          [
+            269,
+            295,
+            668,
+            590
+          ],
+          [
+            262,
+            290,
+            668,
+            582
+          ],
+          [
+            268,
+            286,
+            667,
+            579
+          ],
+          [
+            280,
+            283,
+            666,
+            578
+          ],
+          [
+            286,
+            280,
+            666,
+            597
+          ],
+          [
+            293,
+            278,
+            665,
+            602
+          ],
+          [
+            241,
+            276,
+            664,
+            608
+          ],
+          [
+            216,
+            274,
+            658,
+            617
+          ],
+          [
+            207,
+            285,
+            637,
+            627
+          ],
+          [
+            198,
+            291,
+            637,
+            639
+          ],
+          [
+            183,
+            290,
+            637,
+            639
+          ],
+          [
+            167,
+            464,
+            617,
+            639
+          ],
+          [
+            157,
+            455,
+            625,
+            639
+          ],
+          [
+            150,
+            399,
+            631,
+            639
+          ],
+          [
+            143,
+            343,
+            639,
+            639
+          ],
+          [
+            137,
+            313,
+            645,
+            639
+          ],
+          [
+            131,
+            295,
+            650,
+            639
+          ],
+          [
+            127,
+            281,
+            654,
+            639
+          ],
+          [
+            120,
+            271,
+            659,
+            639
+          ],
+          [
+            184,
+            267,
+            630,
+            612
+          ],
+          [
+            178,
+            264,
+            636,
+            612
+          ],
+          [
+            171,
+            264,
+            641,
+            615
+          ],
+          [
+            165,
+            270,
+            645,
+            615
+          ],
+          [
+            162,
+            281,
+            648,
+            613
+          ],
+          [
+            175,
+            300,
+            648,
+            550
+          ],
+          [
+            217,
+            326,
+            561,
+            595
+          ],
+          [
+            216,
+            358,
+            559,
+            603
+          ],
+          [
+            215,
+            394,
+            560,
+            607
+          ],
+          [
+            200,
+            397,
+            590,
+            608
+          ],
+          [
+            193,
+            398,
+            609,
+            609
+          ],
+          [
+            189,
+            399,
+            614,
+            609
+          ],
+          [
+            189,
+            401,
+            610,
+            610
+          ],
+          [
+            190,
+            401,
+            610,
+            610
+          ],
+          [
+            189,
+            402,
+            612,
+            609
+          ],
+          [
+            188,
+            404,
+            612,
+            609
+          ],
+          [
+            188,
+            406,
+            612,
+            609
+          ],
+          [
+            188,
+            406,
+            613,
+            609
+          ],
+          [
+            188,
+            406,
+            613,
+            609
+          ],
+          [
+            188,
+            404,
+            613,
+            609
+          ],
+          [
+            188,
+            403,
+            613,
+            609
+          ],
+          [
+            188,
+            403,
+            613,
+            609
+          ],
+          [
+            188,
+            403,
+            613,
+            609
+          ],
+          [
+            188,
+            403,
+            613,
+            609
+          ],
+          [
+            188,
+            403,
+            613,
+            609
+          ],
+          [
+            188,
+            403,
+            613,
+            609
+          ],
+          [
+            188,
+            404,
+            613,
+            609
+          ],
+          [
+            188,
+            404,
+            613,
+            609
+          ],
+          [
+            188,
+            404,
+            613,
+            609
+          ]
+        ],
+        "scale": 0.4117647058823529,
+        "groundPivot": [
+          416.0,
+          500
+        ]
+      },
+      "key": {
+        "method": "Corner-sampled soft green-excess alpha plus brightness-independent screen-colour ratio rejection; edge despill before and after resampling.",
+        "alphaCutoff": 0.08,
+        "screenColourRatioTolerance": 0.12,
+        "screenDominanceCleanup": false,
+        "screenDominanceRatio": null,
+        "screenFringeCleanup": false,
+        "screenFringeProfile": null,
+        "screenBackgroundFallback": [
+          30,
+          244,
+          19
+        ],
+        "screenBackgroundFallbackFrames": []
+      },
+      "qa": {
+        "losslessDecodedRgbaMatches": true,
+        "remainingGreenDominantPixelsOver8": 0,
+        "yellowGreenDiagnosticPixelsAllFrames": 814197,
+        "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+        "occupiedPixelsAllFrames": 3597143,
+        "redDominantPixelsAllFrames": 50877,
+        "transparentFrameIndices": [],
+        "loopSeam": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.42513,
+          "bodyAlphaMeanAbsoluteDifference": 0.872102,
+          "bodyChangedPixelFractionOver5Percent": 0.973995,
+          "adjacentMedianBodyRgbDifference": 0.237148,
+          "adjacentMaxBodyRgbDifference": 0.407613,
+          "seamToAdjacentMedianRatio": 1.793
+        },
+        "loopSeamPerfect": false,
+        "originalFinalFramePreserved": true,
+        "sourceFramesTouchingEdges": [
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          27,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64
+        ],
+        "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
+        "returnToIdleFirst": {
+          "bodyPremultipliedRgbMeanAbsoluteDifference": 0.424999,
+          "bodyAlphaMeanAbsoluteDifference": 0.873474,
+          "bodyChangedPixelFractionOver5Percent": 0.974407
+        }
+      }
+    }
+  }
+}

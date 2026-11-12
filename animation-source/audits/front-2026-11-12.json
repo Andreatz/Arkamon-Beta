@@ -1,0 +1,593 @@
+{
+  "schemaVersion": 1,
+  "importDate": "2026-11-12",
+  "baseCommit": "935998d99842b1777bef74eb087a1c09dd8df581",
+  "previousMediaRevision": "f84c0d4084e4007d39b1ee3af60338303eb9e298",
+  "newSpecies": [
+    157,
+    158,
+    159,
+    160,
+    161,
+    162
+  ],
+  "newClips": 30,
+  "unchangedSources": 780,
+  "sourceClips": [
+    {
+      "speciesId": 157,
+      "action": "idle",
+      "sha256": "860ddb428d9986f7b2140401491f2ce767ca237064a17c331d6708ef2ab811d9",
+      "sizeBytes": 2172640,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 157,
+      "action": "attack",
+      "sha256": "3cd93a12334d0573ce15974e1d68dd672d896b3a7ead76b324449685bf83c2f1",
+      "sizeBytes": 2533023,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 157,
+      "action": "hit",
+      "sha256": "10536de771882b374aa3f5b45eb622f3c7dde7f53b82a1bbc1eae988c8705b9e",
+      "sizeBytes": 2957549,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 157,
+      "action": "victory",
+      "sha256": "1ab5191f7705ca3de1ac629faa4d4d104f79334db62cb0569ac9524045be5ff8",
+      "sizeBytes": 2936435,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 157,
+      "action": "ko",
+      "sha256": "fa81ff6d50aeae9e13e7ba45a62ef3e53f1ce28cf4d962532f1c60791c00cf5c",
+      "sizeBytes": 2822120,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 158,
+      "action": "idle",
+      "sha256": "5823a0132aa8ceb0448a6396252056974ba5f6428d17da20325f46972795b1ba",
+      "sizeBytes": 2424247,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 158,
+      "action": "attack",
+      "sha256": "ec04f27da36d1ea6f5077e0918dd37962aa7860e2f225f99ef79e171f78ee8a6",
+      "sizeBytes": 3212479,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 158,
+      "action": "hit",
+      "sha256": "9b9fb80427523a5357f9dc5c77c7b58152c6e52ad314e0104fe1aef053275991",
+      "sizeBytes": 3070630,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 158,
+      "action": "victory",
+      "sha256": "dd91d29b7d7fc31d339f4f0386aa8ec2e04200591e080471a3bbc4521d761fee",
+      "sizeBytes": 2955070,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 158,
+      "action": "ko",
+      "sha256": "dde2a6436b32f777a0a51b8b28c298a0f272747cb9364edb3bc78c7309660022",
+      "sizeBytes": 3633472,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 159,
+      "action": "idle",
+      "sha256": "f792e99cc1a961d06911922e99ff1f65fa28544e67244f659055215a59699953",
+      "sizeBytes": 821487,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 159,
+      "action": "attack",
+      "sha256": "84060cefb13a8886388b4c9970c93a2c0806a61832669c3b6a88c7c3f37920dd",
+      "sizeBytes": 1232190,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 159,
+      "action": "hit",
+      "sha256": "5f6e2bb8957253a9bdcdba4ebd8bb2db26701653a39cb61f51e0fb96ef7f3421",
+      "sizeBytes": 1139408,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 159,
+      "action": "victory",
+      "sha256": "14e1846461fecc4aded2d263b8c3172d45001a46d3bd88e3253e9c545855084f",
+      "sizeBytes": 1586137,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 159,
+      "action": "ko",
+      "sha256": "d855db8c89c267dba46c5eb7be9ca595a5eeee537a9c0d6793e7bd4636d8ad85",
+      "sizeBytes": 1317123,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 160,
+      "action": "idle",
+      "sha256": "66f9405e729f7a6c05760714880310419668646a5902ff7183683e3927952f76",
+      "sizeBytes": 1286525,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 160,
+      "action": "attack",
+      "sha256": "7f2a7562e5ca4ea7b8fe177846478e585424f5b8f3e296272c0e14354d0597c9",
+      "sizeBytes": 1424991,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 160,
+      "action": "hit",
+      "sha256": "cf9bfb3ab174f8b9f9d019dd92235e1fc6d14f03c29df0694b2c85d824565d01",
+      "sizeBytes": 2047563,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 160,
+      "action": "victory",
+      "sha256": "758b1e62e8000597213778efeb9068dd4951518baf3a19974998d1315ff38082",
+      "sizeBytes": 1929217,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 160,
+      "action": "ko",
+      "sha256": "cbf6b4407168aa45605fc4cdd1678efbb6edb4affb1bb98568525c3b1649ee3a",
+      "sizeBytes": 2549439,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 161,
+      "action": "idle",
+      "sha256": "bb127b6f64abc8501af56d6f216a328dab11c06bb02821d8359b79f28fdba12f",
+      "sizeBytes": 1836086,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 161,
+      "action": "attack",
+      "sha256": "69438a0dff6eb453a104a0ba40ebbd3c28263561852a988d58f3a7548eb33094",
+      "sizeBytes": 2075486,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 161,
+      "action": "hit",
+      "sha256": "788fb6f706591ae14a5123cbae109b4dffdb00af0515a315de19eccc5ab115cc",
+      "sizeBytes": 2172245,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 161,
+      "action": "victory",
+      "sha256": "a4b81b522d1bddd29f3db584b707219ac24d74661fd50d837d1cb791f0b87e60",
+      "sizeBytes": 2220643,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 161,
+      "action": "ko",
+      "sha256": "8eb4af34a7523522373fa4903975392eeba33cccd44ea42989d89a1d81d0fcc8",
+      "sizeBytes": 2110712,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 162,
+      "action": "idle",
+      "sha256": "cf324b08414e72ee1fecf5ceb4a6016c7ba45e6da4215574ae447222488cb629",
+      "sizeBytes": 2860381,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 162,
+      "action": "attack",
+      "sha256": "a04ad63b2b8b7342b647f425532293da0d37c59da3361c6383c62b6546636904",
+      "sizeBytes": 3559520,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 162,
+      "action": "hit",
+      "sha256": "d7e61e649200d3ea7dca27541d59e51226d9d44429f63bee0112df7f0d80a9c7",
+      "sizeBytes": 2822129,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 162,
+      "action": "victory",
+      "sha256": "1b53c33ecfdb5cfe6427214f73a3032f5f2a6f58ab23204bd230a82e5352df34",
+      "sizeBytes": 2958504,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "speciesId": 162,
+      "action": "ko",
+      "sha256": "07c9ba8886157f1289294fa45d2b22e5c650996705d723f91aebc72d7a55c5d4",
+      "sizeBytes": 3246891,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "markers": [
+    {
+      "speciesId": 157,
+      "timing": {
+        "attack": {
+          "releaseFrame": 27,
+          "releaseMs": 1125,
+          "evidence": "Frame 26: The tentacles remain curled near the body after the wind-up. Frame 27: The first rapid outward sweep lifts both lateral tentacle tips and adds a soft trail at the outer edge. Frame 28: The outward sweep widens and the trailing tip on the right separates further from the body.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 19,
+          "reactionMs": 791.6666666666666,
+          "evidence": "Frame 18: The creature begins to flatten with no impact spark visible. Frame 19: A white star first appears over the head as the body flattens further. Frame 20: The white impact star grows into long rays extending beyond the creature.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 158,
+      "timing": {
+        "attack": {
+          "releaseFrame": 59,
+          "releaseMs": 2458.3333333333335,
+          "evidence": "Frame 58: The four extended tentacle tips are clear after the earlier charge and have no burst. Frame 59: Four pink-white stars ignite at the extended tentacle tips. Frame 60: The four stars grow outward while the tentacles hold their spread pose.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 32,
+          "reactionMs": 1333.3333333333333,
+          "evidence": "Frame 31: The tentacles close in but the center of the body is clear of impact effects. Frame 32: A white-yellow impact star appears in the center of the body. Frame 33: The center star expands as the crown and upper tentacles recoil.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 159,
+      "timing": {
+        "attack": {
+          "releaseFrame": 28,
+          "releaseMs": 1166.6666666666667,
+          "evidence": "Frame 27: The body stays compressed with the appendage poised above it. Frame 28: The creature opens its mouth and starts the forward lunge, stretching the purple body. Frame 29: The creature advances and leaves a visible purple droplet behind the stretched silhouette.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 27,
+          "reactionMs": 1125,
+          "evidence": "Frame 26: The creature holds the pre-impact pose with no white effect. Frame 27: The first white impact ring appears in front of the face as the body stretches backward. Frame 28: The white ring expands while the face stays recoiled.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 160,
+      "timing": {
+        "attack": {
+          "releaseFrame": 21,
+          "releaseMs": 875,
+          "evidence": "Frame 20: The wings are raised with no visible attack trails. Frame 21: Thin pale crescents first appear beyond both upper wing tips. Frame 22: The crescents broaden as the wings sweep downward.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 13,
+          "reactionMs": 541.6666666666666,
+          "evidence": "Frame 12: Both wings are extended without any impact light. Frame 13: A bright yellow-white impact star appears across the face and chest. Frame 14: The rays extend beyond the wings and the body remains in the hit pose.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 161,
+      "timing": {
+        "attack": {
+          "releaseFrame": 31,
+          "releaseMs": 1291.6666666666667,
+          "evidence": "Frame 30: The raised wing is poised above the body without a slash. Frame 31: The first gold slash appears immediately above the raised wing. Frame 32: The slash arcs downward as the attacking wing swings outward.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 17,
+          "reactionMs": 708.3333333333334,
+          "evidence": "Frame 16: The far wing is still partially folded and the creature braces with bent legs. Frame 17: The far wing opens abruptly and the legs spread into the recoil pose. Frame 18: Both wings extend farther and the feet separate as the recoil continues. There is no separate impact flash.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 162,
+      "timing": {
+        "attack": {
+          "releaseFrame": 31,
+          "releaseMs": 1291.6666666666667,
+          "evidence": "Frame 30: The leading claw and wing wind up without a gold arc. Frame 31: The first gold arc appears above the leading claw. Frame 32: The arc sweeps down the left side as the claw extends.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 34,
+          "reactionMs": 1416.6666666666667,
+          "evidence": "Frame 33: The creature is braced with no contact light. Frame 34: A bright gold impact and curved trail appear across the front wing and chest. Frame 35: Multiple rays cross the chest as the wing opens under the impact.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    }
+  ],
+  "conversion": [
+    {
+      "speciesId": 157,
+      "sourceSha256": {
+        "idle": "860ddb428d9986f7b2140401491f2ce767ca237064a17c331d6708ef2ab811d9",
+        "attack": "3cd93a12334d0573ce15974e1d68dd672d896b3a7ead76b324449685bf83c2f1",
+        "hit": "10536de771882b374aa3f5b45eb622f3c7dde7f53b82a1bbc1eae988c8705b9e",
+        "victory": "1ab5191f7705ca3de1ac629faa4d4d104f79334db62cb0569ac9524045be5ff8",
+        "ko": "fa81ff6d50aeae9e13e7ba45a62ef3e53f1ce28cf4d962532f1c60791c00cf5c"
+      },
+      "frames": {
+        "idle": 94,
+        "attack": 94,
+        "hit": 94,
+        "victory": 94,
+        "ko": 94
+      },
+      "cell": 640,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 224,
+        "top": 223
+      },
+      "bodyHeightPixels": 189.37908496732027
+    },
+    {
+      "speciesId": 158,
+      "sourceSha256": {
+        "idle": "5823a0132aa8ceb0448a6396252056974ba5f6428d17da20325f46972795b1ba",
+        "attack": "ec04f27da36d1ea6f5077e0918dd37962aa7860e2f225f99ef79e171f78ee8a6",
+        "hit": "9b9fb80427523a5357f9dc5c77c7b58152c6e52ad314e0104fe1aef053275991",
+        "victory": "dd91d29b7d7fc31d339f4f0386aa8ec2e04200591e080471a3bbc4521d761fee",
+        "ko": "dde2a6436b32f777a0a51b8b28c298a0f272747cb9364edb3bc78c7309660022"
+      },
+      "frames": {
+        "idle": 94,
+        "attack": 94,
+        "hit": 94,
+        "victory": 94,
+        "ko": 94
+      },
+      "cell": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 192
+      },
+      "bodyHeightPixels": 159.66170500676589
+    },
+    {
+      "speciesId": 159,
+      "sourceSha256": {
+        "idle": "f792e99cc1a961d06911922e99ff1f65fa28544e67244f659055215a59699953",
+        "attack": "84060cefb13a8886388b4c9970c93a2c0806a61832669c3b6a88c7c3f37920dd",
+        "hit": "5f6e2bb8957253a9bdcdba4ebd8bb2db26701653a39cb61f51e0fb96ef7f3421",
+        "victory": "14e1846461fecc4aded2d263b8c3172d45001a46d3bd88e3253e9c545855084f",
+        "ko": "d855db8c89c267dba46c5eb7be9ca595a5eeee537a9c0d6793e7bd4636d8ad85"
+      },
+      "frames": {
+        "idle": 94,
+        "attack": 94,
+        "hit": 94,
+        "victory": 94,
+        "ko": 94
+      },
+      "cell": 704,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 274,
+        "top": 252
+      },
+      "bodyHeightPixels": 181.03125
+    },
+    {
+      "speciesId": 160,
+      "sourceSha256": {
+        "idle": "66f9405e729f7a6c05760714880310419668646a5902ff7183683e3927952f76",
+        "attack": "7f2a7562e5ca4ea7b8fe177846478e585424f5b8f3e296272c0e14354d0597c9",
+        "hit": "cf9bfb3ab174f8b9f9d019dd92235e1fc6d14f03c29df0694b2c85d824565d01",
+        "victory": "758b1e62e8000597213778efeb9068dd4951518baf3a19974998d1315ff38082",
+        "ko": "cbf6b4407168aa45605fc4cdd1678efbb6edb4affb1bb98568525c3b1649ee3a"
+      },
+      "frames": {
+        "idle": 94,
+        "attack": 94,
+        "hit": 94,
+        "victory": 94,
+        "ko": 94
+      },
+      "cell": 832,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 320,
+        "top": 322
+      },
+      "bodyHeightPixels": 168
+    },
+    {
+      "speciesId": 161,
+      "sourceSha256": {
+        "idle": "bb127b6f64abc8501af56d6f216a328dab11c06bb02821d8359b79f28fdba12f",
+        "attack": "69438a0dff6eb453a104a0ba40ebbd3c28263561852a988d58f3a7548eb33094",
+        "hit": "788fb6f706591ae14a5123cbae109b4dffdb00af0515a315de19eccc5ab115cc",
+        "victory": "a4b81b522d1bddd29f3db584b707219ac24d74661fd50d837d1cb791f0b87e60",
+        "ko": "8eb4af34a7523522373fa4903975392eeba33cccd44ea42989d89a1d81d0fcc8"
+      },
+      "frames": {
+        "idle": 94,
+        "attack": 94,
+        "hit": 94,
+        "victory": 94,
+        "ko": 94
+      },
+      "cell": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 191
+      },
+      "bodyHeightPixels": 182.71875
+    },
+    {
+      "speciesId": 162,
+      "sourceSha256": {
+        "idle": "cf324b08414e72ee1fecf5ceb4a6016c7ba45e6da4215574ae447222488cb629",
+        "attack": "a04ad63b2b8b7342b647f425532293da0d37c59da3361c6383c62b6546636904",
+        "hit": "d7e61e649200d3ea7dca27541d59e51226d9d44429f63bee0112df7f0d80a9c7",
+        "victory": "1b53c33ecfdb5cfe6427214f73a3032f5f2a6f58ab23204bd230a82e5352df34",
+        "ko": "07c9ba8886157f1289294fa45d2b22e5c650996705d723f91aebc72d7a55c5d4"
+      },
+      "frames": {
+        "idle": 94,
+        "attack": 94,
+        "hit": 94,
+        "victory": 94,
+        "ko": 94
+      },
+      "cell": 576,
+      "viewport": {
+        "width": 192,
+        "height": 192,
+        "left": 192,
+        "top": 192
+      },
+      "bodyHeightPixels": 188.8125
+    }
+  ],
+  "verification": {
+    "status": "passed",
+    "verifiedPreviousManifestClips": 780,
+    "sourceCopies": 90,
+    "newClips": 30,
+    "newFrames": 2820,
+    "newPages": 315,
+    "maxPageDecodedBytes": 16613376,
+    "runtimeIndexGzipBytes": 38890,
+    "runtimeIndexGzipBudget": 39878,
+    "catalogClips": 810,
+    "catalogFrames": 77225,
+    "manifestSha256": "0ec12f4d1574ed318d26fbfd2775d811439c76a1ed2e2aba68482ae33b971a88"
+  },
+  "sourceCaveats": [
+    "The flashes in 157 hit, 160 hit/KO and 162 attack/KO reach the edges of the original source frames.",
+    "The attack trails of 160 are visible on both test backgrounds. The removal of green spill leaves a pale neutral tint.",
+    "In the KO of 162 the translucent smoke becomes lighter after the green screen is removed. The central plume and particles remain visible."
+  ]
+}
