@@ -3,9 +3,9 @@ import { defineConfig, devices } from '@playwright/test'
 // Local proof of the real production bundle against its not-yet-published media
 // revision. The spec substitutes only that exact revision's verified files.
 export default defineConfig({
-  // Sixty-one required cases cover the existing VFX flow, 52 pending native
-  // forms and three original portraits. Keep each case's deadline unchanged.
-  testDir: './e2e-native-release', timeout: 120_000, globalTimeout: 20 * 60_000,
+  // Sixty-five cases include 56 pending forms at native speed, plus VFX and
+  // original portrait coverage. Reserve time for serial playback and decoding.
+  testDir: './e2e-native-release', timeout: 120_000, globalTimeout: 25 * 60_000,
   expect: { timeout: 15_000 }, workers: 1, retries: 0,
   reporter: [['list'], ['json', { outputFile: 'output/ci/compiled-native.json' }]],
   outputDir: 'output/ci/compiled-native-results',

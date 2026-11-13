@@ -1,0 +1,835 @@
+{
+  "schemaVersion": 1,
+  "importDate": "2026-11-13",
+  "baseCommit": "ab0d114ffd5eaace9559e131f62136605d089386",
+  "previousMediaRevision": "3a68262770b115007ad5af5267038e0c4de372d4",
+  "newSpecies": [
+    163,
+    164,
+    165,
+    166
+  ],
+  "sourceClips": [
+    {
+      "speciesId": 161,
+      "action": "victory",
+      "sha256": "74ce6e43386d0b8afb1c2932095a4c901d1fed3bcaf5c861be89b0aa12dd362a",
+      "sizeBytes": 2072745,
+      "status": "replacement",
+      "previousSourceSha256": "a4b81b522d1bddd29f3db584b707219ac24d74661fd50d837d1cb791f0b87e60",
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "green"
+    },
+    {
+      "speciesId": 163,
+      "action": "idle",
+      "sha256": "51c8045d782110e92b2d8658b3682cbe8b1476d15f80245f94bfa7178a13c862",
+      "sizeBytes": 992723,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 163,
+      "action": "attack",
+      "sha256": "857c38ab5819d6d8f9c87573bf705eae70dca29e665761ad887f90fdbb1a247a",
+      "sizeBytes": 1705760,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 163,
+      "action": "hit",
+      "sha256": "896d5d1b1f276151f468b852a2d12fef72ba90a968f477feb03d509da4f0b6d1",
+      "sizeBytes": 1732895,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 163,
+      "action": "victory",
+      "sha256": "94f7b75098c115188087200fdc56fae36ac1935571f590ee0b9bfd4fb9757395",
+      "sizeBytes": 1325943,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 163,
+      "action": "ko",
+      "sha256": "a6194904c2b091f9548d0b5689955e009782cd49449a50ba89364f30099c033e",
+      "sizeBytes": 1483648,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 164,
+      "action": "idle",
+      "sha256": "11c565c4cb909c4b33565b204934656dbf9d233855db95ea1291618b6c9d70d6",
+      "sizeBytes": 1411305,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 164,
+      "action": "attack",
+      "sha256": "e291411b005a7f83b33e121b9734a98209e0c016274f9e355326a6ad1c6954f1",
+      "sizeBytes": 1644526,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 164,
+      "action": "hit",
+      "sha256": "dd43579c1c96251a7d8c8a7b9bba507f68148d37dd181c154dca6cfb2cb4c049",
+      "sizeBytes": 1945986,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 164,
+      "action": "victory",
+      "sha256": "ed905071d21dbb7944e6d52310324f11a04f78ff07db3990e0745a103001767b",
+      "sizeBytes": 3344769,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 164,
+      "action": "ko",
+      "sha256": "be705caf9b67967437f8216899dbd1bb5c02cb0d2d84fe609a1a94fc1d51af34",
+      "sizeBytes": 2280379,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 165,
+      "action": "idle",
+      "sha256": "e7d9545bc8f45f731aa0553f4de26ea8d34433aed754a9b5bb019799819b0a41",
+      "sizeBytes": 2499704,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 165,
+      "action": "attack",
+      "sha256": "1841486eed15ac50fd5d46e9dc900e78e080b96bdb6a4cafe952b325088f4b12",
+      "sizeBytes": 2969106,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 165,
+      "action": "hit",
+      "sha256": "cf8ce36391ec101469a521df4d6a796dfcbf3daa36e4a084b1ca91b7fb1fae74",
+      "sizeBytes": 2300043,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 165,
+      "action": "victory",
+      "sha256": "eea4507f2152356f7f6875c86f63e85133336e8a040b75b718eb5d71301d6073",
+      "sizeBytes": 3003820,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 165,
+      "action": "ko",
+      "sha256": "442d4d8a807f27cf61bef543731624740428976c3f8075dc10589470c4022883",
+      "sizeBytes": 3347982,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 166,
+      "action": "idle",
+      "sha256": "8befd0c16369863d4bd0a2054814cb5a29c0d9c509bd2425bcc39a40a59a8899",
+      "sizeBytes": 848131,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 166,
+      "action": "attack",
+      "sha256": "f0aa5704aba1b2a4c9f61c01e37c5610b2ac37bfb11d28a97dced78d1ad20411",
+      "sizeBytes": 1097028,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 166,
+      "action": "hit",
+      "sha256": "afabd0aa65cc5999357242fa845170dc01adade6accd6ef75ce7a74a07a24bd3",
+      "sizeBytes": 1203595,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 166,
+      "action": "victory",
+      "sha256": "743ecfb459616567fdeabbff056198ffbadbde2ce4e07576cfa1a8f6cce83bf3",
+      "sizeBytes": 1388216,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    },
+    {
+      "speciesId": 166,
+      "action": "ko",
+      "sha256": "da273e5ea41a959037bc06f2a9a895502c15bb5877ffbef74b17a2946634215f",
+      "sizeBytes": 1715475,
+      "status": "new",
+      "previousSourceSha256": null,
+      "decodedFrameCount": 94,
+      "fps": 24,
+      "width": 1920,
+      "height": 1080,
+      "screenColour": "blue"
+    }
+  ],
+  "portraits": [
+    {
+      "speciesId": 163,
+      "sha256": "008ddf901225bcf51f9f36e240299f961a80f7c4d25aa88ea939987d3cd5e6bf",
+      "previousSha256": "235539dd6fcf56903de9e6a6148a4582a24d0544b08cdde504bdf910541797ab",
+      "sourceSize": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "speciesId": 164,
+      "sha256": "03f2627a01e84b7b9a7ed784945dae0ef40f0e6a5f9cbd010c20d980aad62d84",
+      "previousSha256": "8477ca9a82209d4fb97e3c3073f86fae6c0f9cb53b98b36dab91297a6d3c3a62",
+      "sourceSize": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "speciesId": 165,
+      "sha256": "e3475d8c559f08008224fd413fc69b582d0fe24f0957c4ac879d7f9c839ae164",
+      "previousSha256": "fb07fa1e83e1823ede38b5035a2bd9a1349c9d632cf1f75db6c370e3a4a9e8d0",
+      "sourceSize": [
+        2048,
+        2048
+      ]
+    },
+    {
+      "speciesId": 166,
+      "sha256": "5ab13e2615652a16101383968607acae5f920c7a13f7ec1caf254d43cdc74187",
+      "previousSha256": "32d0b0c47ef1a918d30cb665df4c96d2ab55230d396013fa495de91c9a4bbac0",
+      "sourceSize": [
+        2048,
+        2048
+      ]
+    }
+  ],
+  "markers": [
+    {
+      "speciesId": 163,
+      "timing": {
+        "attack": {
+          "releaseFrame": 33,
+          "releaseMs": 1375,
+          "evidence": "Frame 32: The body stays curled after the wind-up, with a faint peripheral fragment but no distinct spin arcs. Frame 33: The body starts the visible roll and distinct pale arcs appear above the shell and below the body. Frame 34: The roll continues and the pale arcs extend around the turning body.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 16,
+          "reactionMs": 666.6666666666666,
+          "evidence": "Frame 15: The face remains lowered, without an impact flash. Frame 16: The first small white burst surrounds the face. Frame 17: The white impact burst expands into a broad ring around the front of the body.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 164,
+      "timing": {
+        "attack": {
+          "releaseFrame": 32,
+          "releaseMs": 1333.3333333333333,
+          "evidence": "Frame 31: The body is curled and the emerging green leaf at the right still touches its edge. Frame 32: The first green leaf detaches from the shell as the roll begins. Frame 33: The first leaf moves farther out and a second leaf appears at the lower left.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 32,
+          "reactionMs": 1333.3333333333333,
+          "evidence": "Frame 31: The creature holds the braced pose without visible contact light. Frame 32: A white impact burst appears at the right side of the shell. Frame 33: The white burst widens on both sides and a pale ground effect appears under the feet.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 165,
+      "timing": {
+        "attack": {
+          "releaseFrame": 40,
+          "releaseMs": 1666.6666666666667,
+          "evidence": "Frame 39: The claws are spread without visible slash trails. Frame 40: The first narrow dark slash trails appear outside the claws. Frame 41: Both dark slash trails expand into bold curved blades.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 10,
+          "reactionMs": 416.6666666666667,
+          "evidence": "Frame 9: The creature is braced without visible contact light. Frame 10: The first yellow-white impact star appears over the chest and leading shoulder. Frame 11: The star expands into long rays around the chest and face.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    },
+    {
+      "speciesId": 166,
+      "timing": {
+        "attack": {
+          "releaseFrame": 33,
+          "releaseMs": 1375,
+          "evidence": "Frame 32: The tail pincer is raised without a distinct sweeping trail. Frame 33: The first lime-green tapered sweep appears as the tail pincer starts to strike. Frame 34: The tail sweep lengthens rapidly behind the pincer.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        },
+        "hit": {
+          "reactionFrame": 14,
+          "reactionMs": 583.3333333333334,
+          "evidence": "Frame 13: The body is compressed and the head is visible without an impact flash. Frame 14: A small white impact burst first appears around the head. Frame 15: The burst expands into a white ring while the body recoils.",
+          "inspection": "Three consecutive original frames inspected visually at 24 FPS. Zero-based frame indices."
+        }
+      }
+    }
+  ],
+  "replacement": {
+    "speciesId": 161,
+    "action": "victory",
+    "previousSourceSha256": "a4b81b522d1bddd29f3db584b707219ac24d74661fd50d837d1cb791f0b87e60",
+    "sourceSha256": "74ce6e43386d0b8afb1c2932095a4c901d1fed3bcaf5c861be89b0aa12dd362a",
+    "previousAtlasSha256": "a3ede748ee4024778d4880e4342239ebaaecd5ff645d513602e0b75a57fd5ea3",
+    "atlasSha256": "da80373a4d7e2259ffd3d42c510a1bced90011e6eacd5276deb8c14f8a37c3db",
+    "frameCount": 94,
+    "cameraChanged": true,
+    "qa": {
+      "losslessDecodedRgbaMatches": true,
+      "remainingGreenDominantPixelsOver8": 0,
+      "yellowGreenDiagnosticPixelsAllFrames": 456724,
+      "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
+      "occupiedPixelsAllFrames": 1545800,
+      "redDominantPixelsAllFrames": 9497,
+      "transparentFrameIndices": [],
+      "loopSeam": {
+        "bodyPremultipliedRgbMeanAbsoluteDifference": 0.169074,
+        "bodyAlphaMeanAbsoluteDifference": 0.195532,
+        "bodyChangedPixelFractionOver5Percent": 0.55402,
+        "adjacentMedianBodyRgbDifference": 0.137772,
+        "adjacentMaxBodyRgbDifference": 0.297958,
+        "seamToAdjacentMedianRatio": 1.227
+      },
+      "loopSeamPerfect": false,
+      "originalFinalFramePreserved": true,
+      "sourceFramesTouchingEdges": [],
+      "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
+      "returnToIdleFirst": {
+        "bodyPremultipliedRgbMeanAbsoluteDifference": 0.172028,
+        "bodyAlphaMeanAbsoluteDifference": 0.20263,
+        "bodyChangedPixelFractionOver5Percent": 0.565532
+      }
+    }
+  },
+  "refinements": [
+    {
+      "speciesId": 164,
+      "action": "ko",
+      "sourceUnchanged": true,
+      "previousAtlasSha256": "11d0aefd98c2ea4775633f335f5e501ce212e705d926c8dc5118f5e5b55a926d",
+      "newAtlasSha256": "7888381bca1c86281304057ef429d08241042966f379571f839d2496e9e7fba9",
+      "alphaCutoff": 0.08,
+      "softBlueScreenRejection": {
+        "screenRatioDeviationStart": 0.02,
+        "screenRatioDeviationEnd": 0.12,
+        "nativeGreenUnchanged": true
+      }
+    },
+    {
+      "speciesId": 165,
+      "action": "ko",
+      "sourceUnchanged": true,
+      "previousAtlasSha256": "9a2bec2b80503db4fe020f04647157872db13d05d3e0735f3eb0ee31c07be0cd",
+      "newAtlasSha256": "7b69d449f53abb75f9bd1b2ad19f37270482134bc6e69009ad745f2b19e2349f",
+      "softBlueScreenRejection": {
+        "screenRatioDeviationStart": 0.02,
+        "screenRatioDeviationEnd": 0.12,
+        "nativeGreenUnchanged": true
+      }
+    }
+  ],
+  "screenAndEdgeReview": [
+    {
+      "speciesId": 163,
+      "action": "attack",
+      "sourceFramesTouchingEdges": [
+        30,
+        31,
+        32,
+        35,
+        37,
+        39,
+        40,
+        42,
+        49,
+        52,
+        55,
+        57,
+        60,
+        71,
+        72,
+        74,
+        84,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 163,
+      "action": "hit",
+      "sourceFramesTouchingEdges": [
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        51,
+        52,
+        53,
+        54,
+        66,
+        67,
+        68,
+        69,
+        71,
+        80,
+        83,
+        84
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 163,
+      "action": "ko",
+      "sourceFramesTouchingEdges": [
+        24,
+        25,
+        27,
+        28,
+        43,
+        44,
+        46,
+        47,
+        48,
+        49,
+        51,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        66,
+        67,
+        70,
+        71,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        87,
+        88,
+        90,
+        91,
+        92,
+        93
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 164,
+      "action": "victory",
+      "sourceFramesTouchingEdges": [
+        27,
+        28,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        88
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 164,
+      "action": "ko",
+      "sourceFramesTouchingEdges": [
+        19,
+        22,
+        23,
+        25,
+        26,
+        32,
+        50,
+        64,
+        65,
+        66,
+        67,
+        70,
+        71,
+        72,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 165,
+      "action": "ko",
+      "sourceFramesTouchingEdges": [
+        2,
+        12,
+        13,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 166,
+      "action": "victory",
+      "sourceFramesTouchingEdges": [
+        43,
+        44,
+        45,
+        47,
+        48,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56
+      ],
+      "transparentFrameIndices": []
+    },
+    {
+      "speciesId": 166,
+      "action": "ko",
+      "sourceFramesTouchingEdges": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "transparentFrameIndices": []
+    }
+  ],
+  "verification": {
+    "baseMediaRevision": "3a68262770b115007ad5af5267038e0c4de372d4",
+    "baselineClipsPreserved": 809,
+    "baselinePagesPreserved": 8392,
+    "newSpecies": [
+      163,
+      164,
+      165,
+      166
+    ],
+    "newClips": 20,
+    "replacedClips": [
+      "/sprites/arkamon/161/front/victory.webp"
+    ],
+    "convertedFrames": 1974,
+    "convertedPages": 233,
+    "clips": 830,
+    "frames": 79105,
+    "pages": 8625,
+    "maxPageDecodedBytes": 16777216,
+    "manifestSha256": "133764bd86e320b33d45291bbd2ee83a71c87d610979759281ca049bba334b85",
+    "runtimeManifestGzipBytes": 40716,
+    "runtimeManifestGzipBudget": 41903,
+    "loopReview": [
+      {
+        "speciesId": 166,
+        "source": "/sprites/arkamon/166/front/idle.metadata.json",
+        "ratio": 4.059,
+        "status": "pending",
+        "sourceFramesPreserved": true
+      }
+    ],
+    "scenariosRequiredByReleaseGate": 65,
+    "obsoletePages": [
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-00-61d18127895dba49.webp",
+        "sha256": "61d18127895dba49c9cd9cad81541d05426395eebaeb41b71ace70db259d298f"
+      },
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-01-714de732bc1e5294.webp",
+        "sha256": "714de732bc1e529472f73e87d25df9db03ae87b404bffd9add6454672a5e56a4"
+      },
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-02-9a6fc6f7e7604417.webp",
+        "sha256": "9a6fc6f7e760441779274aa11691696e89f8638845d978e0e8491995649a4d2a"
+      },
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-03-a0c097a5b6d15293.webp",
+        "sha256": "a0c097a5b6d1529389ac4b17771e552642fbce8fa7134bf47670042bc4d4801d"
+      },
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-04-bd83042709d12a20.webp",
+        "sha256": "bd83042709d12a20c4f27044f454230323f2ab8365b20600d9634e0dd4c4d59e"
+      },
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-05-d4553f15ba361f8c.webp",
+        "sha256": "d4553f15ba361f8c45108b2dfab00a2dc548cf4571240d8d07ac4184e299e70f"
+      },
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-06-7d039a6db7df05b1.webp",
+        "sha256": "7d039a6db7df05b1d3674c8f7d1efee94cf438ef0e9e3df59be7a98f34d9eefa"
+      },
+      {
+        "path": "public/sprites/arkamon-paged/161/front/victory/page-07-9c326821ff96c487.webp",
+        "sha256": "9c326821ff96c48782571b33a08bf78b60edfec72adcf1d179609a419e146fdf"
+      }
+    ]
+  }
+}

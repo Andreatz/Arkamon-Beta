@@ -9,7 +9,7 @@ import {
 import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 
 const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
-const ANIMATED_SPECIES_IDS = Array.from({ length: 162 }, (_, index) => index + 1)
+const ANIMATED_SPECIES_IDS = Array.from({ length: 166 }, (_, index) => index + 1)
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const motionPreference = vi.hoisted(() => ({ reduced: false }))

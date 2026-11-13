@@ -4,8 +4,9 @@ import { resolve } from 'node:path'
 import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
+import { replacement161VictorySha256 } from './fixtures/native-import-2026-11-13.json'
 
-const SPECIES_IDS = Array.from({ length: 162 }, (_, index) => index + 1)
+const SPECIES_IDS = Array.from({ length: 166 }, (_, index) => index + 1)
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -97,6 +98,9 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(video.equals(suppliedVideo)).toBe(true)
     expect(createHash('sha256').update(video).digest('hex')).toBe(conversion.source.sha256)
     expect(createHash('sha256').update(suppliedVideo).digest('hex')).toBe(conversion.source.sha256)
+    if (speciesId === 161 && animation === 'victory') {
+      expect(conversion.source.sha256).toBe(replacement161VictorySha256)
+    }
     expect(video.byteLength).toBe(conversion.source.sizeBytes)
     expect(suppliedVideo.byteLength).toBe(conversion.source.sizeBytes)
     expect(conversion.source.decodedFrameCount).toBe(asset.frameCount)
@@ -108,7 +112,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(asset.durationMs).toBeCloseTo(conversion.sheet.durationSeconds * 1000)
   })
 
-  if ([118, 119, 122, 123, 124, 128, 129, 130, 131, 132, 133, 135, 136, 137, 138, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162].includes(speciesId)) {
+  if (speciesId >= 140 || [118, 119, 122, 123, 124, 128, 129, 130, 131, 132, 133, 135, 136, 137, 138].includes(speciesId)) {
     it('fits the character body to its official portrait size while retaining effects in canvas padding', () => {
       const normalization = readConversion(speciesId, animation).transform.sharedTransform
       expect(normalization.scaleReference).toBe('Initial opaque body; all native motion and effects retained in canvas padding.')
@@ -147,6 +151,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(visiblePixelsDiffer).toBe(false)
     expect(transparent).toBeGreaterThan(info.width * info.height * 0.25)
     expect(opaqueArtwork).toBeGreaterThan(1000)
+    if ([163, 164, 165, 166].includes(speciesId)) expect(blueScreen).toBe(true)
     expect(Boolean(conversion.key.preserveSaturatedGreenBody)).toBe([130, 131, 132, 133, 134, 135, 136].includes(speciesId) && animation === 'idle')
     if (speciesId === 5) {
       expect(darkFur).toBeGreaterThan(1000)
@@ -155,10 +160,14 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)
-      expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106, 123, 124, 127]).toContain(speciesId)
+      expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106, 123, 124, 127, 163, 164, 165, 166]).toContain(speciesId)
+      if (speciesId >= 163) {
+        expect(Boolean(conversion.key.softBlueScreenRejection)).toBe(animation === 'ko' && (speciesId === 164 || speciesId === 165))
+      }
       // Reliskull carries small algae patches at logical size 192; the older
       // blue-screen forms have much larger green leaves or body regions.
       if (speciesId <= 82) expect(opaqueGreen).toBeGreaterThan(speciesId === 82 ? 300 : 1000)
+      if (speciesId === 166) expect(opaqueGreen).toBeGreaterThan(300)
     } else if (conversion.key.preserveSaturatedGreenBody) {
       expect(nativeGreenAllowed).toBe(true)
       expect([130, 131, 132, 133, 134, 135, 136]).toContain(speciesId)

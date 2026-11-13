@@ -4,6 +4,7 @@ import sourceCountsNovember4 from './fixtures/native-import-2026-11-04.json'
 import sourceCountsNovember5 from './fixtures/native-import-2026-11-05.json'
 import sourceCountsNovember9 from './fixtures/native-import-2026-11-09.json'
 import sourceCountsNovember12 from './fixtures/native-import-2026-11-12.json'
+import { sourceCounts as sourceCountsNovember13 } from './fixtures/native-import-2026-11-13.json'
 import {
   ARKAMON_ANIMATION_MANIFEST,
   getArkamonAnimationAsset,
@@ -18,7 +19,7 @@ const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
 const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
-const PENDING_SPECIES_IDS = Array.from({ length: 52 }, (_, index) => index + 111)
+const PENDING_SPECIES_IDS = Array.from({ length: 56 }, (_, index) => index + 111)
 const SPECIES_IDS = [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]
 const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
@@ -132,6 +133,23 @@ describe('Arkamon animation manifest', () => {
       frames += asset.frameCount
     }
     expect(frames).toBe(2_820)
+  })
+
+  it('retains all 1,974 source frames of the four November 13 sets and the replacement 161 victory', () => {
+    expect(Object.keys(sourceCountsNovember13).map(Number)).toEqual([161, 163, 164, 165, 166])
+    expect(sourceCountsNovember13[161]).toEqual({ victory: 94 })
+    let frames = 0
+    for (const [id, actions] of Object.entries(sourceCountsNovember13)) {
+      if (id !== '161') expect(Object.keys(actions).sort()).toEqual([...ANIMATIONS].sort())
+      for (const [animation, frameCount] of Object.entries(actions) as [ArkamonBattleAnimation, number][]) {
+        const asset = getArkamonAnimationAsset(Number(id), 'front', animation)!
+        expect(asset.frameCount).toBe(frameCount)
+        expect(asset.fps).toBe(24)
+        expect(asset.durationMs).toBeCloseTo(frameCount / 24 * 1000)
+        frames += asset.frameCount
+      }
+    }
+    expect(frames).toBe(1_974)
   })
 
   it('retains a view’s idle as the fallback when a dedicated action is unavailable', () => {

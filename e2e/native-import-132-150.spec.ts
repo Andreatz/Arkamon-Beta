@@ -3,12 +3,23 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 type Animation = 'idle' | 'attack' | 'hit' | 'victory' | 'ko'
+type November13Fixture = typeof import('../src/components/arkamon/__tests__/fixtures/native-import-2026-11-13.json')
 
-// Read independently decoded counts outside generated metadata. The latest
-// fixture supplies the counts for the replacement videos of form 149.
+// Read independently decoded counts outside generated metadata. November 9
+// replaced the full set of form 149, and November 13 replaced only 161 victory.
 const readSourceCounts = (date: string): Record<number, Record<Animation, number>> =>
   JSON.parse(readFileSync(resolve(`src/components/arkamon/__tests__/fixtures/native-import-${date}.json`), 'utf8'))
-const nativeSourceCounts = { ...readSourceCounts('2026-11-05'), ...readSourceCounts('2026-11-09'), ...readSourceCounts('2026-11-12') }
+const sourceCountsNovember12 = readSourceCounts('2026-11-12')
+const { sourceCounts: { 161: replacementCounts, ...newSetCounts } } = JSON.parse(
+  readFileSync(resolve('src/components/arkamon/__tests__/fixtures/native-import-2026-11-13.json'), 'utf8'),
+) as November13Fixture
+const nativeSourceCounts: Record<number, Record<Animation, number>> = {
+  ...readSourceCounts('2026-11-05'),
+  ...readSourceCounts('2026-11-09'),
+  ...sourceCountsNovember12,
+  ...newSetCounts,
+  161: { ...sourceCountsNovember12[161], ...replacementCounts },
+}
 const importedSpecies = Object.keys(nativeSourceCounts).map(Number)
 interface NativeEvent { kind: string; animation: Animation; frame: number; time: number }
 interface ImportHarness {

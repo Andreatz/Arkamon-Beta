@@ -231,6 +231,10 @@ export const ARKAMON_ANIMATION_MANIFEST: Partial<Record<number, ArkamonAnimation
   160: frontAnimationSet(160, 832, { width: 192, height: 192, left: 320, top: 322 }, 21, 13, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
   161: frontAnimationSet(161, 576, { width: 192, height: 192, left: 192, top: 191 }, 31, 17, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
   162: frontAnimationSet(162, 576, { width: 192, height: 192, left: 192, top: 192 }, 31, 34, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  163: frontAnimationSet(163, 768, { width: 192, height: 192, left: 292, top: 278 }, 33, 16, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  164: frontAnimationSet(164, 640, { width: 192, height: 192, left: 224, top: 208 }, 32, 32, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  165: frontAnimationSet(165, 512, { width: 192, height: 192, left: 160, top: 157 }, 40, 10, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  166: frontAnimationSet(166, 704, { width: 192, height: 192, left: 310, top: 256 }, 33, 14, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
 }
 
 export function getArkamonAnimationAsset(
