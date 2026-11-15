@@ -2,23 +2,20 @@
   "id": 78,
   "name": "Trippix",
   "type": "Erba",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-21cbafab-7995-49aa-98bb-cb550c06be80.png",
-  "sourceMaster": "output/splash-art/originals/078-trippix-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/078.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/078-trippix.webp",
   "runtimePath": "/backgrounds/arkamon-splash/078-trippix.webp",
-  "promptFile": "art-source/splash/prompts/078-trippix-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 646572,
-  "sha256": "0e873b1b7a4f4db6c4f7cb2c28d02c64aa93b126d5bbb7bfbc9006e7296d8d84",
+  "bytes": 790994,
+  "sha256": "d238d2548420d71f516d0f53e070a68aa7808ee09cf148a9d13fb6880f3398ee",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:51:09.738Z",
-  "reviewedAt": "2026-10-26T00:51:09.740Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.63,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/078-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

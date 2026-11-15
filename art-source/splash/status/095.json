@@ -2,23 +2,20 @@
   "id": 95,
   "name": "Beestrix",
   "type": "Erba",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-c85fc7dd-6d93-4157-9461-23219461ca6f.png",
-  "sourceMaster": "output/splash-art/originals/095-beestrix-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/095.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/095-beestrix.webp",
   "runtimePath": "/backgrounds/arkamon-splash/095-beestrix.webp",
-  "promptFile": "art-source/splash/prompts/095-beestrix-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 604528,
-  "sha256": "407474f308466ba347b6a33cadbe79a75cda43e71d566a01bace3a9fb2be225d",
+  "bytes": 786536,
+  "sha256": "4797469b2c97c82b5972998b317d15d92d19e3821e788ce2ad01782b19b10729",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T01:03:12.035Z",
-  "reviewedAt": "2026-10-26T01:03:12.036Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.645,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/095-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { splashGeometry } from '../e2e/helpers/splashGeometry.ts'
+import { usesApprovedSplashComposition } from '../e2e/helpers/splashReleaseApproval.ts'
 
 const origin = process.env.SPLASH_PREVIEW_URL ?? 'http://127.0.0.1:3055/Arkamon-Beta/'
 const catalogFile = 'ui-source/splash-artwork.generated.json'
@@ -16,7 +17,7 @@ const ids = process.env.SPLASH_ALL_FORMS === '1'
 const viewports = [{ width: 1366, height: 768 }, { width: 1600, height: 900 }, { width: 1920, height: 1080 }]
 const directory = path.resolve('output/splash-art/built-ui')
 await fs.mkdir(directory, { recursive: true })
-const browser = await chromium.launch({ headless: true }), results = [], issues = [], renderIssues = []
+const browser = await chromium.launch({ headless: true }), results = [], issues = [], renderIssues = [], approvedCompositionObservations = []
 const started = new Date().toISOString()
 try {
   await Promise.all(viewports.map(async viewport => {
@@ -42,8 +43,10 @@ try {
         const inside = region.length === 4 && region.every(Number.isFinite)
           && focus.x >= metrics.paint.x + region[0] - 1 && focus.y >= metrics.paint.y + region[1] - 1
           && focus.right <= metrics.paint.x + region[2] + 1 && focus.bottom <= metrics.paint.y + region[3] + 1
-        if (!inside) issues.push(`${viewport.width}/${id}/${screen}: focus leaves the protected opening`)
-        if (metrics.panels.some(panel => panel.overlap.width > 1 && panel.overlap.height > 1)) issues.push(`${viewport.width}/${id}/${screen}: critical region overlaps UI`)
+        const compositionApproved = usesApprovedSplashComposition(artwork)
+        const compositionFindings = compositionApproved ? approvedCompositionObservations : issues
+        if (!inside) compositionFindings.push(`${viewport.width}/${id}/${screen}: focus leaves the protected opening`)
+        if (metrics.panels.some(panel => panel.overlap.width > 1 && panel.overlap.height > 1)) compositionFindings.push(`${viewport.width}/${id}/${screen}: critical region overlaps UI`)
         const mode = await root.getAttribute('data-splash-frame-mode')
         const fullCanvas = {
           mode,
@@ -64,7 +67,7 @@ try {
         if (await page.evaluate(() => localStorage.getItem('arkamon-save')) !== 'protected-built-splash-inspection') issues.push(`${viewport.width}/${id}/${screen}: preview changed protected campaign storage`)
         const screenshot = `${viewport.width}-${String(id).padStart(3, '0')}-${screen}.png`
         await page.screenshot({ path: path.join(directory, screenshot), animations: 'disabled' })
-        results.push({ viewport, id, screen, screenshot, inside, region, fullCanvas, ...metrics })
+        results.push({ viewport, id, screen, screenshot, inside, region, fullCanvas, compositionApproved, ...metrics })
         if (results.length % 66 === 0) console.log(JSON.stringify({ checked: results.length, issues: issues.length, renderIssues: renderIssues.length }))
       } catch (error) {
         issues.push(`${viewport.width}/${id}/${screen}: ${String(error)}`)
@@ -76,7 +79,7 @@ try {
 } finally { await browser.close() }
 if (hash(await fs.readFile(catalogFile)) !== catalogSha256) issues.push('Catalog changed during the built UI audit')
 if (results.length !== ids.length * viewports.length * 2) issues.push('Incomplete built UI audit')
-const report = { date: new Date().toISOString(), started, origin, framingPolicy: 'cover-only-v2', scope: process.env.SPLASH_ALL_FORMS === '1' ? 'all-published-forms' : 'selected-forms', catalogSha256, catalogIds: ids, viewports, inspectedScreens: results.length, issues, renderIssues, results }
+const report = { date: new Date().toISOString(), started, origin, framingPolicy: 'cover-only-v2', scope: process.env.SPLASH_ALL_FORMS === '1' ? 'all-published-forms' : 'selected-forms', catalogSha256, catalogIds: ids, viewports, inspectedScreens: results.length, issues, renderIssues, approvedCompositionObservations, results }
 await fs.writeFile(path.join(directory, 'measurements.json'), JSON.stringify(report, null, 2) + '\n')
 console.log(JSON.stringify({ inspectedScreens: results.length, issues, renderIssues: renderIssues.length, result: 'output/splash-art/built-ui/measurements.json' }))
 if (issues.length || renderIssues.length) process.exitCode = 1

@@ -2,23 +2,20 @@
   "id": 7,
   "name": "Darklaw",
   "type": "Oscurità",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-60f0eb44-fc40-4f9a-be91-731ae1c53ccc.png",
-  "sourceMaster": "output/splash-art/originals/007-darklaw-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/007.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/007-darklaw.webp",
   "runtimePath": "/backgrounds/arkamon-splash/007-darklaw.webp",
-  "promptFile": "art-source/splash/prompts/007-darklaw-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 622158,
-  "sha256": "26d0a70ac3616035fef75843f4b8fb39c28834c6acdd5bc012b4289678b56a3a",
+  "bytes": 784618,
+  "sha256": "d81f8ed579ed8813887253fc56b931ce710db5ce29734915ea46086a97fcf7e6",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:11:35.515Z",
-  "reviewedAt": "2026-10-26T00:11:35.516Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.59,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/007-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

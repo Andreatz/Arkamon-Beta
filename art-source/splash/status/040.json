@@ -2,28 +2,25 @@
   "id": 40,
   "name": "RS-219",
   "type": "Normale",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17579-2baa-7073-88ce-755ca5745e81\\exec-a65c39a0-6d45-4f71-9123-79729cebddab.png",
-  "sourceMaster": "output/splash-art/originals/040-rs-219-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/040.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/040-rs-219.webp",
   "runtimePath": "/backgrounds/arkamon-splash/040-rs-219.webp",
-  "promptFile": "art-source/splash/prompts/040-rs-219-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 753580,
-  "sha256": "feba657b89ec1ca60eb7b889a0594de7f553c141fb834a996919cc0083f33ce4",
+  "bytes": 802364,
+  "sha256": "c7ea5a19155dc3498d9beba79b6fef43a4107148550063b2fb9283e232402966",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:02:17.704Z",
-  "reviewedAt": "2026-10-26T00:02:17.704Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.23,
-    "top": 0.004,
-    "right": 0.785,
+    "left": 0,
+    "top": 0,
+    "right": 1,
     "bottom": 1
   },
   "focusBounds": {
@@ -32,22 +29,8 @@
     "right": 0.585,
     "bottom": 0.79
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/040-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Actual eyes/muzzle fit y .25-.40; upper galaxy dome extends higher. Protect actual face, not all ears/dome."
+    "basis": "retained-framing-anchor"
   }
 }

@@ -2,8 +2,9 @@ import { expect, test, type Locator } from '@playwright/test'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
-import { splashGeometry } from './helpers/splashGeometry'
-const splashCatalog: { speciesId: number; src: string; focusBounds?: { left:number; top:number; right:number; bottom:number } }[] = JSON.parse(readFileSync(new URL('../ui-source/splash-artwork.generated.json', import.meta.url), 'utf8'))
+import { splashGeometry, type SplashBounds } from './helpers/splashGeometry'
+import { usesApprovedSplashComposition } from './helpers/splashReleaseApproval'
+const splashCatalog: { speciesId: number; sha256?: string; src: string; focusBounds?: SplashBounds }[] = JSON.parse(readFileSync(new URL('../ui-source/splash-artwork.generated.json', import.meta.url), 'utf8'))
 
 const query = '/?uiStudioPreview=1&uiConceptFluid=1&uiConcept=aurora&screen='
 const protectedKeys = ['arkamon-save', 'arkamon-preferences-v1', 'arkamon-interactions-v1', 'arkamon-automatic-backups-v1']
@@ -30,7 +31,7 @@ async function expectFallback(root: Locator) {
 }
 
 for (const screen of ['squadra', 'arkadex'] as const) {
-  test(`${screen}: centred Darklaw keeps its face and torso clear of the live interface`, async ({ page, isMobile }, info) => {
+  test(`${screen}: Darklaw's splash follows the selected Arkamon and preserves the live interface`, async ({ page, isMobile }, info) => {
     const errors: string[] = [], imageFailures: { url: string; status?: number; failure?: string }[] = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('response', response => {
@@ -72,7 +73,9 @@ for (const screen of ['squadra', 'arkadex'] as const) {
     await expect(details).toContainText(screen === 'squadra' ? 'Punti vita' : 'HP massimi')
     if (screen === 'arkadex') await expect(root.getByRole('button', { name: 'Mostra animazione', exact: true })).toBeVisible()
     await finishArtwork(root)
-    const metrics = await splashGeometry(root, screen, splashCatalog.find(artwork=>artwork.speciesId===5)?.focusBounds ?? darklawBounds)
+    const artwork = splashCatalog.find(entry => entry.speciesId === 5)
+    const compositionApproved = artwork !== undefined && usesApprovedSplashComposition(artwork)
+    const metrics = { ...await splashGeometry(root, screen, artwork?.focusBounds ?? darklawBounds), compositionApproved }
     const destination = resolve('output/splash-art/ui')
     await mkdir(destination, { recursive: true })
     await page.screenshot({ path: resolve(destination, `${info.project.name}-${screen}.png`), animations: 'disabled' })
@@ -91,12 +94,14 @@ for (const screen of ['squadra', 'arkadex'] as const) {
     expect(metrics.paintedImage.right).toBeGreaterThanOrEqual(metrics.paint.x + metrics.paint.width - 1)
     expect(metrics.paintedImage.bottom).toBeGreaterThanOrEqual(metrics.paint.y + metrics.paint.height - 1)
     expect(metrics.background.opacity).toBe('1')
-    expect(metrics.creature.x).toBeGreaterThanOrEqual(metrics.paint.x - 1)
-    expect(metrics.creature.y).toBeGreaterThanOrEqual(metrics.paint.y - 1)
-    expect(metrics.creature.right).toBeLessThanOrEqual(metrics.paint.x + metrics.paint.width + 1)
-    expect(metrics.creature.bottom).toBeLessThanOrEqual(metrics.paint.y + metrics.paint.height + 1)
-    for (const panel of metrics.panels) expect(panel.overlap.width <= 1 || panel.overlap.height <= 1,
-      `${screen}: painted creature stays clear of ${panel.selector}; overlap ${panel.overlap.width.toFixed(1)}×${panel.overlap.height.toFixed(1)} px`).toBe(true)
+    if (!compositionApproved) {
+      expect(metrics.creature.x).toBeGreaterThanOrEqual(metrics.paint.x - 1)
+      expect(metrics.creature.y).toBeGreaterThanOrEqual(metrics.paint.y - 1)
+      expect(metrics.creature.right).toBeLessThanOrEqual(metrics.paint.x + metrics.paint.width + 1)
+      expect(metrics.creature.bottom).toBeLessThanOrEqual(metrics.paint.y + metrics.paint.height + 1)
+      for (const panel of metrics.panels) expect(panel.overlap.width <= 1 || panel.overlap.height <= 1,
+        `${screen}: painted creature stays clear of ${panel.selector}; overlap ${panel.overlap.width.toFixed(1)}×${panel.overlap.height.toFixed(1)} px`).toBe(true)
+    }
     expect(metrics.layout.rootScrollWidth).toBeLessThanOrEqual(metrics.layout.rootClientWidth + 2)
     expect(metrics.layout.contentScrollWidth).toBeLessThanOrEqual(metrics.layout.contentClientWidth + 2)
     if (!isMobile) {

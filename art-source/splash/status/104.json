@@ -2,47 +2,35 @@
   "id": 104,
   "name": "Boomrock",
   "type": "Terra",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-041e1c10-7c93-41d2-8276-fbb1712add86.png",
-  "sourceMaster": "output/splash-art/originals/104-boomrock-hero-focus-v1.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/104.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/104-boomrock.webp",
   "runtimePath": "/backgrounds/arkamon-splash/104-boomrock.webp",
-  "promptFile": "art-source/splash/prompts/104-boomrock-hero-focus-v1.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 610526,
-  "sha256": "dbba8c528db4665e28f80de890863671edb54a59c948f4ad01d011e97be44e20",
+  "bytes": 825480,
+  "sha256": "311bd2cb1fd52914908d09d40b53265ba31ec1d54d5e4eb00c6b6c0fa9ffaa1b",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T20:39:16.800Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.237,
-    "top": 0.031,
-    "right": 0.817,
-    "bottom": 0.961
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
-    "left": 0.33,
-    "top": 0.255,
-    "right": 0.622,
-    "bottom": 0.727
+    "left": 0.37,
+    "top": 0.17,
+    "right": 0.645,
+    "bottom": 0.76
   },
-  "reviewedAt": "2026-10-25T21:52:12.778Z",
-  "reviewNotes": "Face visibility correction after independent source-image review. The critical rectangle includes the full forehead and main face in addition to the torso. The painting is uniformly reduced and repositioned without changing the original drawing. Runtime UI fit still requires browser verification.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Old focus .11 includes rock crown; actual eyes and mouth at approximately y .26-.49. Recalibrate to actual face/core bust."
+    "basis": "approximate-source-visual-review"
   }
 }

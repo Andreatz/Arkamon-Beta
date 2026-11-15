@@ -2,23 +2,20 @@
   "id": 79,
   "name": "Cellgon",
   "type": "Oscurità",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-bf3b1b87-85c4-4a60-b190-6db332af0fec.png",
-  "sourceMaster": "output/splash-art/originals/079-cellgon-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/079.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/079-cellgon.webp",
   "runtimePath": "/backgrounds/arkamon-splash/079-cellgon.webp",
-  "promptFile": "art-source/splash/prompts/079-cellgon-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 547332,
-  "sha256": "582526f1928ea5f44b098c5314c0ba1d6cd80d7c17ca973d890ed738481b239e",
+  "bytes": 649658,
+  "sha256": "639970c76f95d313702a08b6b7cfcb43d7d1fcc6ed837462b2b11b83fec63e21",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:51:10.489Z",
-  "reviewedAt": "2026-10-26T00:51:10.489Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.63,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/079-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

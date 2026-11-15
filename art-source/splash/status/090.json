@@ -2,23 +2,20 @@
   "id": 90,
   "name": "Espeiry",
   "type": "Psico",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-fe100221-0bce-40bf-9cff-600db4a60847.png",
-  "sourceMaster": "output/splash-art/originals/090-espeiry-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/090.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/090-espeiry.webp",
   "runtimePath": "/backgrounds/arkamon-splash/090-espeiry.webp",
-  "promptFile": "art-source/splash/prompts/090-espeiry-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 638406,
-  "sha256": "350ee7c100d071366f9c3413ba060dd4f44fcb3fd3e352e702eda7af1f7c6587",
+  "bytes": 697698,
+  "sha256": "ab488bbe7d2a15fae3855766541f697fe8165ed8857b434e19f41907ba5d2326",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T01:03:08.453Z",
-  "reviewedAt": "2026-10-26T01:03:08.454Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -27,27 +24,13 @@
     "bottom": 1
   },
   "focusBounds": {
-    "left": 0.31,
-    "top": 0.245,
-    "right": 0.63,
-    "bottom": 0.8
+    "left": 0.405,
+    "top": 0.165,
+    "right": 0.585,
+    "bottom": 0.74
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/090-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "approximate-source-visual-review"
   }
 }

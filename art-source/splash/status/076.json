@@ -2,46 +2,35 @@
   "id": 76,
   "name": "Impise",
   "type": "Fuoco",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-506acc7b-7c53-4ea5-a429-b2255a3239ee.png",
-  "sourceMaster": "output/splash-art/originals/076-impise-hero-focus-v1.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/076.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/076-impise.webp",
   "runtimePath": "/backgrounds/arkamon-splash/076-impise.webp",
-  "promptFile": "art-source/splash/prompts/076-impise-hero-focus-v1.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 650100,
-  "sha256": "f7d69ab7154abcc8800bbb4ebd55c7e0016b50eadaea0f10fcf0e7acd4964431",
+  "bytes": 868924,
+  "sha256": "314d3805e44eb7efb445a72f281aae180e590f8d7a88d1abd9b4a874caf8ab9c",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T20:35:34.790Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.168,
+    "left": 0,
     "top": 0,
-    "right": 0.824,
-    "bottom": 0.9
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
     "left": 0.342,
     "top": 0.235,
-    "right": 0.536,
-    "bottom": 0.779
+    "right": 0.6,
+    "bottom": 0.795
   },
-  "reviewedAt": "2026-10-25T20:36:29.964Z",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    "basis": "approximate-source-visual-review"
   }
 }

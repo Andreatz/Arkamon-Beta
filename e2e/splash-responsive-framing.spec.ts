@@ -3,9 +3,10 @@ import { readFileSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { splashGeometry, type SplashBounds } from './helpers/splashGeometry'
+import { usesApprovedSplashComposition } from './helpers/splashReleaseApproval'
 
 type Screen = 'squadra' | 'arkadex'
-interface ReviewedSplash { speciesId: number; src: string; focusBounds?: SplashBounds; subjectBounds: SplashBounds }
+interface ReviewedSplash { speciesId: number; sha256?: string; src: string; focusBounds?: SplashBounds; subjectBounds: SplashBounds }
 const catalog: ReviewedSplash[] = JSON.parse(readFileSync(new URL('../ui-source/splash-artwork.generated.json', import.meta.url), 'utf8'))
 const regressionIds = [4, 49, 60, 61, 69, 104, 108]
 
@@ -42,20 +43,24 @@ async function expectResponsiveFrame(root: Locator, screen: Screen, artwork: Rev
     await Promise.all([...element.querySelectorAll('img')].map(image => image.decode()))
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
   })
-  // A live resize may still have its previous framing for one animation frame.
-  // Wait for the projected source-image focus to fit the newly measured region.
-  await expect.poll(async () => {
-    const snapshot = await framingSnapshot(root, screen, artwork)
-    return snapshot.focusInsideProtectedRegion && snapshot.overlaps.length === 0
-  }, { message: `Form ${artwork.speciesId}: face and torso remain clear inside the actual gallery iframe` }).toBe(true)
+  const compositionApproved = usesApprovedSplashComposition(artwork)
+  if (!compositionApproved) {
+    // Wait for a pending resize measurement before checking artwork that has no composition approval.
+    await expect.poll(async () => {
+      const snapshot = await framingSnapshot(root, screen, artwork)
+      return snapshot.focusInsideProtectedRegion && snapshot.overlaps.length === 0
+    }, { message: `Form ${artwork.speciesId}: face and torso remain clear inside the actual gallery iframe` }).toBe(true)
+  }
   const snapshot = await framingSnapshot(root, screen, artwork)
   expect(snapshot.region, 'the runtime exposes a valid protected region in canvas pixels').not.toBeNull()
-  expect(snapshot.focusInsideProtectedRegion, 'painted face and torso fit within the region after its safety margin').toBe(true)
-  expect(snapshot.overlaps, 'the actual roster, dossier, headings and controls do not cover the critical artwork').toEqual([])
+  if (!compositionApproved) {
+    expect(snapshot.focusInsideProtectedRegion, 'painted face and torso fit within the region after its safety margin').toBe(true)
+    expect(snapshot.overlaps, 'the actual roster, dossier, headings and controls do not cover the critical artwork').toEqual([])
+  }
   expect(snapshot.background.image).toContain(artwork.src)
   expect(snapshot.layout.rootScrollWidth).toBeLessThanOrEqual(snapshot.layout.rootClientWidth + 2)
   expect(snapshot.layout.contentScrollWidth).toBeLessThanOrEqual(snapshot.layout.contentClientWidth + 2)
-  return snapshot
+  return { ...snapshot, compositionApproved }
 }
 
 async function galleryPlacement(page: Page) {
@@ -118,7 +123,7 @@ async function expectGalleryPlacement(page: Page, mobile = false) {
 
 for (const screen of ['squadra', 'arkadex'] as const) {
   for (const id of regressionIds) {
-    test(`${screen}: form ${id} keeps its face clear in the real reference gallery`, async ({ page, isMobile }, info) => {
+    test(`${screen}: form ${id} renders in the real reference gallery`, async ({ page, isMobile }, info) => {
       const errors: string[] = []
       page.on('pageerror', error => errors.push(error.message))
       const artwork = artworkFor(id)

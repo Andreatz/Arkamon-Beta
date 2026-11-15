@@ -2,34 +2,26 @@
   "id": 72,
   "name": "Blizzaquil",
   "type": "Acqua",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-68fd875c-80f5-4ab1-94cb-fd8f87eae660.png",
-  "sourceMaster": "output/splash-art/originals/072-blizzaquil-hero-focus-v1.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/072.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/072-blizzaquil.webp",
   "runtimePath": "/backgrounds/arkamon-splash/072-blizzaquil.webp",
-  "promptFile": "art-source/splash/prompts/072-blizzaquil-hero-focus-v1.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 670490,
-  "sha256": "9d27ed81980ddb18fa462e7d7838df9a402c5cfedb0a07375a92577c00cfb419",
+  "bytes": 752046,
+  "sha256": "713ce33519a57fff3439d72b3bccc5eec3cbd76fc52061f07c0341c620b43bb6",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:49:44.092Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.132,
+    "left": 0,
     "top": 0,
-    "right": 0.912,
-    "bottom": 0.903
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
     "top": 0.24,
@@ -37,11 +29,8 @@
     "right": 0.58,
     "left": 0.36
   },
-  "reviewNotes": "Le estremita superiori delle ali sono tagliate dal bordo del dipinto; volto e torso sono interamente leggibili nella fascia centrale.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    "basis": "retained-framing-anchor"
   }
 }

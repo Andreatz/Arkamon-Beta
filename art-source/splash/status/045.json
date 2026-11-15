@@ -2,23 +2,20 @@
   "id": 45,
   "name": "Spectron",
   "type": "Oscurità",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-05a55198-e35a-4b2c-a025-76826c924bfe.png",
-  "sourceMaster": "output/splash-art/originals/045-spectron-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/045.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/045-spectron.webp",
   "runtimePath": "/backgrounds/arkamon-splash/045-spectron.webp",
-  "promptFile": "art-source/splash/prompts/045-spectron-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 661846,
-  "sha256": "c6db7ce5725031bfe9b696fa60180ded1aea4223a0022a8d01182159fbd69ad4",
+  "bytes": 630496,
+  "sha256": "e7a5bb1f8c14ac4fbbda6996ed400ed1011813c51e559b5392d656f30dc165b5",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:32:20.294Z",
-  "reviewedAt": "2026-10-26T00:32:20.296Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.63,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/045-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

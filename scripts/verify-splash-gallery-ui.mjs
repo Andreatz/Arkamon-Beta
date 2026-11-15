@@ -2,6 +2,7 @@ import { chromium, expect } from '@playwright/test'
 import fs from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { splashGeometry } from '../e2e/helpers/splashGeometry.ts'
+import { usesApprovedSplashComposition } from '../e2e/helpers/splashReleaseApproval.ts'
 
 // Exercise the real reference gallery iframe, whose opening is smaller than fullscreen.
 const catalogFile = 'ui-source/splash-artwork.generated.json'
@@ -16,7 +17,7 @@ const selected = new Set([4, 22, 36, 37, 38, 41, 42, 48, 49, 60, 61, 69, 82, 83,
 await fs.mkdir(directory, { recursive: true })
 const jobs = catalog.flatMap(art => ['squadra', 'arkadex'].map(screen => ({ art, screen })))
 const viewport = { width: 1366, height: 768 }
-const records = [], faceIssues = [], layoutIssues = [], renderIssues = [], errors = []
+const records = [], faceIssues = [], approvedCompositionObservations = [], layoutIssues = [], renderIssues = [], errors = []
 const started = new Date().toISOString()
 const browser = await chromium.launch({ headless: true })
 let cursor = 0
@@ -45,7 +46,9 @@ try {
           && focus.x >= metrics.paint.x + region[0] - 1 && focus.y >= metrics.paint.y + region[1] - 1
           && focus.right <= metrics.paint.x + region[2] + 1 && focus.bottom <= metrics.paint.y + region[3] + 1
         const hits = metrics.panels.filter(panel => panel.overlap.width > 1 && panel.overlap.height > 1)
-        if (!inside || hits.length) faceIssues.push({ id, screen, inside, region, focus, hits })
+        const compositionApproved = usesApprovedSplashComposition(art)
+        const compositionFindings = compositionApproved ? approvedCompositionObservations : faceIssues
+        if (!inside || hits.length) compositionFindings.push({ id, screen, inside, region, focus, hits })
         const mode = await root.getAttribute('data-splash-frame-mode')
         const fullCanvas = {
           mode,
@@ -69,7 +72,7 @@ try {
         if (Object.values(overflow).some(Boolean)) layoutIssues.push({ id, screen, overflow, layout: metrics.layout })
         if (!metrics.source.endsWith(art.src)) errors.push(`${id}/${screen}: artwork URL differs from catalog`)
         if (await page.evaluate(() => localStorage.getItem('arkamon-save')) !== 'protected-splash-gallery-inspection') errors.push(`${id}/${screen}: gallery changed campaign storage`)
-        records.push({ id, speciesId: id, screen, inside, region, hits: hits.map(hit => hit.selector), overflow, fullCanvas, ...metrics })
+        records.push({ id, speciesId: id, screen, inside, region, compositionApproved, hits: hits.map(hit => hit.selector), overflow, fullCanvas, ...metrics })
         if (selected.has(id) || !inside || hits.length || renderIssues.some(issue => issue.id === id && issue.screen === screen)) await page.screenshot({ path: `${directory}/gallery-${String(id).padStart(3, '0')}-${screen}.png`, animations: 'disabled' })
       } catch (error) {
         errors.push(`${id}/${screen}: ${String(error)}`)
@@ -85,7 +88,7 @@ records.sort((a, b) => a.id - b.id || a.screen.localeCompare(b.screen))
 const date = new Date().toISOString(), catalogSha256 = hash(await fs.readFile(catalogFile))
 if (catalogSha256 !== catalogSha256AtStart) errors.push('Catalog changed during the audit; rerun against a stable catalog')
 if (records.length !== jobs.length) errors.push(`Inspected ${records.length}/${jobs.length} screens`)
-const report = { date, started, completed: date, framingPolicy: 'cover-only-v2', catalogSha256, catalogSha256AtStart, origin, viewport, catalogIds: catalog.map(art => art.speciesId), availableForms: catalog.length, inspectedScreens: records.length, checked: records.length, faceIssues, layoutIssues, renderIssues, errors, records }
+const report = { date, started, completed: date, framingPolicy: 'cover-only-v2', catalogSha256, catalogSha256AtStart, origin, viewport, catalogIds: catalog.map(art => art.speciesId), availableForms: catalog.length, inspectedScreens: records.length, checked: records.length, faceIssues, approvedCompositionObservations, layoutIssues, renderIssues, errors, records }
 await fs.writeFile(resultFile, JSON.stringify(report, null, 2) + '\n')
 console.log(JSON.stringify({ checked: records.length, faceIssues: faceIssues.length, layoutIssues: layoutIssues.length, renderIssues: renderIssues.length, errors, catalogSha256, resultFile }))
 if (faceIssues.length || layoutIssues.length || renderIssues.length || errors.length) process.exitCode = 1

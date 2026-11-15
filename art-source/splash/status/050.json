@@ -2,23 +2,20 @@
   "id": 50,
   "name": "Constrix",
   "type": "Fuoco",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-53438dcb-96a3-4e25-a418-0cc776cd2263.png",
-  "sourceMaster": "output/splash-art/originals/050-constrix-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/050.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/050-constrix.webp",
   "runtimePath": "/backgrounds/arkamon-splash/050-constrix.webp",
-  "promptFile": "art-source/splash/prompts/050-constrix-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 634898,
-  "sha256": "8022bb081ea15a85392c37e3bf2f11578d459702eaacc5475c76309702695153",
+  "bytes": 735516,
+  "sha256": "0993af115a82dbe8c922365b18362419b561d405c4642a23b8b416e913f02fa6",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:37:01.505Z",
-  "reviewedAt": "2026-10-26T00:37:01.506Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.625,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/050-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Long snout begins around x .295. Red crest/gem above is peripheral."
+    "basis": "retained-framing-anchor"
   }
 }

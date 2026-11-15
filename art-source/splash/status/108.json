@@ -2,47 +2,35 @@
   "id": 108,
   "name": "Aka-shin",
   "type": "Normale",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-fec4289f-d35d-4333-b27d-e7bb0da7329e.png",
-  "sourceMaster": "output/splash-art/originals/108-aka-shin-hero-focus-v1.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/108.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/108-aka-shin.webp",
   "runtimePath": "/backgrounds/arkamon-splash/108-aka-shin.webp",
-  "promptFile": "art-source/splash/prompts/108-aka-shin-hero-focus-v1.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 728392,
-  "sha256": "8b37665619313b5eb7ef5d191b5f66866d95c0ed129dea7accc9def3bbf2bcc2",
+  "bytes": 803856,
+  "sha256": "b22eda1786c042ae01e22b438be6bfdc6950a1e72535b8c64a081490d7058eb0",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
+  "compositionPolicy": "full-canvas-focus",
+  "subjectBounds": {
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
+  },
+  "focusBounds": {
+    "left": 0.285,
+    "top": 0.19,
     "right": 0.65,
     "bottom": 0.8
   },
-  "generatedAt": "2026-10-25T20:46:01.928Z",
-  "compositionPolicy": "full-canvas-focus",
-  "subjectBounds": {
-    "left": 0.206,
-    "top": 0.012,
-    "right": 0.893,
-    "bottom": 0.928
-  },
-  "focusBounds": {
-    "left": 0.29,
-    "top": 0.245,
-    "right": 0.619,
-    "bottom": 0.777
-  },
-  "reviewedAt": "2026-10-25T21:52:12.782Z",
-  "reviewNotes": "Face visibility correction after independent source-image review. The critical rectangle includes the full forehead and main face in addition to the torso. The painting is uniformly reduced and repositioned without changing the original drawing. Runtime UI fit still requires browser verification.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Dragon muzzle begins around x .29; actual eyes/mouth at y .25-.45. Existing top .14 includes mane."
+    "basis": "approximate-source-visual-review"
   }
 }

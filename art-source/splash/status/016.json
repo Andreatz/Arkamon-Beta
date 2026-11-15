@@ -2,23 +2,20 @@
   "id": 16,
   "name": "Clastoom",
   "type": "Terra",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-428512f9-3725-495a-8c9c-ef40960f9a3f.png",
-  "sourceMaster": "output/splash-art/originals/016-clastoom-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/016.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/016-clastoom.webp",
   "runtimePath": "/backgrounds/arkamon-splash/016-clastoom.webp",
-  "promptFile": "art-source/splash/prompts/016-clastoom-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 623674,
-  "sha256": "64a626566498976066c2fc16871b7a1425e40bd6ce9eb6c11fc7db34924725ce",
+  "bytes": 741652,
+  "sha256": "cd2d09438ae722a1e533b79880c1014323afe10b669f7f9af32a5bb5dd292d8c",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:18:08.386Z",
-  "reviewedAt": "2026-10-26T00:18:08.387Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.635,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/016-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

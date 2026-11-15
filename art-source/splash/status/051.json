@@ -2,23 +2,20 @@
   "id": 51,
   "name": "Goliash",
   "type": "Fuoco",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-a7ce477e-29f4-4a00-b6aa-6c81800b6640.png",
-  "sourceMaster": "output/splash-art/originals/051-goliash-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/051.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/051-goliash.webp",
   "runtimePath": "/backgrounds/arkamon-splash/051-goliash.webp",
-  "promptFile": "art-source/splash/prompts/051-goliash-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 591246,
-  "sha256": "96945009e6f4ad3566f850bea699b5eb812c26d6f71fe239b2bc491d5a690d57",
+  "bytes": 734908,
+  "sha256": "f8ee09c1a8f51cbf75b5380d44108bf38e137bbefaf8077f782d4345e2e72c1d",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:37:02.216Z",
-  "reviewedAt": "2026-10-26T00:37:02.217Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.635,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/051-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

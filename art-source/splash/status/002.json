@@ -2,29 +2,26 @@
   "id": 2,
   "name": "Vyrath",
   "type": "Normale",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17578-f7c3-78c0-b773-f8ab36a9bbfa\\exec-a7019d24-db62-44f0-b41d-7cc62e199ce7.png",
-  "sourceMaster": "output/splash-art/originals/002-vyrath-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/002.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/002-vyrath.webp",
   "runtimePath": "/backgrounds/arkamon-splash/002-vyrath.webp",
-  "promptFile": "art-source/splash/prompts/002-vyrath-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 650648,
-  "sha256": "071c811f8e2c3973c2f714ac943f1ff5a2d70a842ea9c9b5a3fc20af28b27177",
+  "bytes": 800918,
+  "sha256": "e6890772ba1d62b650ab0a9ed6d712f9c6948e23748497958e449ccc3f7a928b",
   "status": "approved-visual",
-  "generatedAt": "2026-10-25T23:59:49.225Z",
-  "reviewedAt": "2026-10-25T23:59:49.226Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.06,
+    "left": 0,
     "top": 0,
-    "right": 0.93,
-    "bottom": 0.96
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
     "left": 0.315,
@@ -32,22 +29,8 @@
     "right": 0.565,
     "bottom": 0.79
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/002-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

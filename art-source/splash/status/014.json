@@ -2,23 +2,20 @@
   "id": 14,
   "name": "Wormaren",
   "type": "Terra",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-a48a9f2e-0902-4cbd-b826-87a3c4bc496d.png",
-  "sourceMaster": "output/splash-art/originals/014-wormaren-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/014.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/014-wormaren.webp",
   "runtimePath": "/backgrounds/arkamon-splash/014-wormaren.webp",
-  "promptFile": "art-source/splash/prompts/014-wormaren-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 582612,
-  "sha256": "3a18a7685bb6ef0d7bbcf2db08c56accafc7c38b63d3176eb771848f60569344",
+  "bytes": 871780,
+  "sha256": "38dde8e4587dc2a084d80a6d5543a854c02e1dffde16e5830caf526966e41a88",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:14:43.318Z",
-  "reviewedAt": "2026-10-26T00:14:43.319Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -32,22 +29,8 @@
     "right": 0.625,
     "bottom": 0.8
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/014-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Long snout reaches x .295; verify live panel edge."
+    "basis": "retained-framing-anchor"
   }
 }

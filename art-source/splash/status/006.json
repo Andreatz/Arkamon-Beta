@@ -2,29 +2,26 @@
   "id": 6,
   "name": "Darklaw",
   "type": "Oscurità",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17578-f7c3-78c0-b773-f8ab36a9bbfa\\exec-4155b1af-9f8b-4929-8422-966fa857654d.png",
-  "sourceMaster": "output/splash-art/originals/006-darklaw-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/006.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/006-darklaw.webp",
   "runtimePath": "/backgrounds/arkamon-splash/006-darklaw.webp",
-  "promptFile": "art-source/splash/prompts/006-darklaw-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 585984,
-  "sha256": "3c016eae80ecb0b90fe210d7b031b46164b719ba78adc116289b30b9ad6a1d47",
+  "bytes": 758144,
+  "sha256": "c661b1ab5dd41bd909d9f48018338e014d1df5e4e077e3bbef46e7f13725789f",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T00:01:49.543Z",
-  "reviewedAt": "2026-10-26T00:01:49.544Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.22,
+    "left": 0,
     "top": 0,
-    "right": 0.93,
-    "bottom": 0.97
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
     "left": 0.315,
@@ -32,22 +29,8 @@
     "right": 0.61,
     "bottom": 0.77
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/006-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Whole-face and core-bust focus; decorative horns, ears, wings, hands, lower body and tail may extend under UI."
+    "basis": "retained-framing-anchor"
   }
 }

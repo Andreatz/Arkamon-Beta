@@ -2,23 +2,20 @@
   "id": 91,
   "name": "Espeiry",
   "type": "Psico",
-  "version": "hero-source-v2",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-6c99bd12-ffff-4456-88d6-d05a9d5ef622.png",
-  "sourceMaster": "output/splash-art/originals/091-espeiry-hero-source-v2.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/091.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/091-espeiry.webp",
   "runtimePath": "/backgrounds/arkamon-splash/091-espeiry.webp",
-  "promptFile": "art-source/splash/prompts/091-espeiry-hero-source-v2.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 752282,
-  "sha256": "eb5ac101fd281a91aea855fa5ab89148acd5bd57525263df36d709e82f5c1bc7",
+  "bytes": 855136,
+  "sha256": "a07de0936f34e18cf4327da9a4e3a4c29e185b4e7ea5116b910eb60d5c31877b",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T01:03:09.178Z",
-  "reviewedAt": "2026-10-26T01:03:09.179Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
     "left": 0,
@@ -27,27 +24,13 @@
     "bottom": 1
   },
   "focusBounds": {
-    "left": 0.315,
-    "top": 0.24,
-    "right": 0.635,
-    "bottom": 0.8
+    "left": 0.435,
+    "top": 0.11,
+    "right": 0.6,
+    "bottom": 0.65
   },
-  "sourceComposition": "large-central-foreground",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "The source character was too small relative to the environment.",
-    "references": [
-      109,
-      110,
-      30
-    ],
-    "previousStatusFile": "art-source/splash/history/091-before-hero-source-v2.json"
-  },
-  "reviewNotes": "Regenerated painting with a large central character following Oniros/Voider/Eclyps. Official form anatomy and colors visually reviewed. Face bounds include forehead and muzzle; peripheral anatomy may extend under UI. Runtime remains responsible for the measured interface opening. No CSS enlargement above source size is required. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Face eyes and muzzle are at y .25-.43, while white dome forehead is above. Verify title only touches upper skull, not eyes."
+    "basis": "approximate-source-visual-review"
   }
 }

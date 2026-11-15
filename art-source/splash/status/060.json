@@ -2,51 +2,35 @@
   "id": 60,
   "name": "Shabyss",
   "type": "Acqua",
-  "version": "fullscreen-source-v3",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-faee90c6-f084-470b-a042-e512b00d5556.png",
-  "sourceMaster": "output/splash-art/originals/060-shabyss-fullscreen-source-v3.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/060.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/060-shabyss.webp",
   "runtimePath": "/backgrounds/arkamon-splash/060-shabyss.webp",
-  "promptFile": "art-source/splash/prompts/060-shabyss-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 768516,
-  "sha256": "fc0bd894c1d0adb488f2887db01dd6eeec4ab5cfdf0143200108664d6409f573",
+  "bytes": 888932,
+  "sha256": "548c968ec33be57b5d9299b24bb035c13fb91248118602670d95af8c56497108",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T10:58:09.796Z",
-  "reviewedAt": "2026-10-26T10:58:09.796Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.165,
-    "top": 0.022,
-    "right": 0.98,
-    "bottom": 0.987
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
-    "left": 0.329,
-    "top": 0.257,
-    "right": 0.601,
+    "left": 0.266,
+    "top": 0.244,
+    "right": 0.607,
     "bottom": 0.796
   },
-  "sourceComposition": "full-canvas-central-hero",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
-    "references": [
-      36,
-      97
-    ],
-    "previousStatusFile": "art-source/splash/history/060-before-fullscreen-source-v3.json"
-  },
-  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    "basis": "approximate-source-visual-review"
   }
 }

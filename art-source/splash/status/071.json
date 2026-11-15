@@ -2,45 +2,35 @@
   "id": 71,
   "name": "Blizzaquil",
   "type": "Acqua",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a17470-816f-71a2-af66-4945631a2934\\exec-49014b60-767e-4688-a30b-52267885e560.png",
-  "sourceMaster": "output/splash-art/originals/071-blizzaquil-hero-focus-v1.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/071.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/071-blizzaquil.webp",
   "runtimePath": "/backgrounds/arkamon-splash/071-blizzaquil.webp",
-  "promptFile": "art-source/splash/prompts/071-blizzaquil-hero-focus-v1.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 617372,
-  "sha256": "79d46165fa8e13871f42899cacb69ac22d1a9e4fab97634cc5f6b83963520997",
+  "bytes": 767960,
+  "sha256": "8aed36b01469778bfcde5475754fa1c6abdaf0ae33d39580ad79cb434dbf9504",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T19:47:40.912Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.287,
-    "top": 0.17,
-    "right": 0.716,
-    "bottom": 0.845
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
-    "left": 0.37,
-    "right": 0.568,
-    "bottom": 0.77,
-    "top": 0.303
+    "left": 0.34,
+    "top": 0.265,
+    "right": 0.59,
+    "bottom": 0.77
   },
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    "basis": "approximate-source-visual-review"
   }
 }

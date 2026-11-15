@@ -2,46 +2,35 @@
   "id": 109,
   "name": "Oniros",
   "type": "Psico",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-155e3e34-0ba4-4c1b-93e1-6b68727d1f39.png",
-  "sourceMaster": "output/splash-art/originals/109-oniros-hero-focus-v1.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/109.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/109-oniros.webp",
   "runtimePath": "/backgrounds/arkamon-splash/109-oniros.webp",
-  "promptFile": "art-source/splash/prompts/109-oniros-hero-focus-v1.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 714334,
-  "sha256": "aa8defb70abd5b06d78a86f2259363d411a9a8073e14a585cd3d1af49c47c5d0",
+  "bytes": 976598,
+  "sha256": "64d2b27eb789ea450a62cf692a04c76ceffe119216ab79968e70b5a00896f91d",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T20:46:01.910Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.177,
-    "top": 0.028,
-    "right": 0.831,
-    "bottom": 0.863
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
-    "left": 0.365,
+    "left": 0.34,
     "top": 0.235,
-    "right": 0.607,
-    "bottom": 0.725
+    "right": 0.66,
+    "bottom": 0.735
   },
-  "reviewedAt": "2026-10-25T20:46:58.493Z",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    "basis": "approximate-source-visual-review"
   }
 }

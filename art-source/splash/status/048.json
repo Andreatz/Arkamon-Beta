@@ -2,51 +2,35 @@
   "id": 48,
   "name": "Weedrug",
   "type": "Erba",
-  "version": "fullscreen-source-v3",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a177cd-b996-74d0-87d8-1359ea4822e1\\exec-e6e65973-ad51-42c4-89e3-a1151ab5ec76.png",
-  "sourceMaster": "output/splash-art/originals/048-weedrug-fullscreen-source-v3.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/048.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/048-weedrug.webp",
   "runtimePath": "/backgrounds/arkamon-splash/048-weedrug.webp",
-  "promptFile": "art-source/splash/prompts/048-weedrug-fullscreen-source-v3.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 816620,
-  "sha256": "23d61b551f07890cac293e556b34fd1e540eda80093bc22802cc8bcbd43fdf3c",
+  "bytes": 907692,
+  "sha256": "6eab9bdb407a1f798ded08ad7bb6ce2eb1b3977253966f6e42f843b39d93026f",
   "status": "approved-visual",
-  "generatedAt": "2026-10-26T11:52:18.369Z",
-  "reviewedAt": "2026-10-26T11:52:18.369Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.181,
-    "top": 0.119,
-    "right": 0.846,
+    "left": 0,
+    "top": 0,
+    "right": 1,
     "bottom": 1
   },
   "focusBounds": {
-    "left": 0.329,
-    "top": 0.303,
-    "right": 0.667,
-    "bottom": 0.8
+    "left": 0.3,
+    "top": 0.2,
+    "right": 0.64,
+    "bottom": 0.79
   },
-  "sourceComposition": "full-canvas-central-hero",
-  "regeneration": {
-    "date": "2026-10-26",
-    "reason": "Author a complete sharp 16:9 painting with a central readable face and core torso, without shrinking the canvas over a blurred duplicate.",
-    "references": [
-      36,
-      97
-    ],
-    "previousStatusFile": "art-source/splash/history/048-before-fullscreen-source-v3.json"
-  },
-  "reviewNotes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately.",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Built-in image generation; official form anatomy and colors visually reviewed. One coherent full-canvas painting. Reviewed bounds protect the face and core torso; crests, extremities and tail may extend under UI. No display-scale or display-offset compensation. UI validation is recorded separately."
+    "basis": "approximate-source-visual-review"
   }
 }

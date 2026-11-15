@@ -1,5 +1,13 @@
 # Splash art di Arkamon
 
+## Serie attiva dal 15 novembre 2026
+
+Squadra e Arkadex usano le illustrazioni 001–110 della serie approvata con gli sfondi rivisti. Le immagini WebP sono distribuite nel gioco a 1920×1080. La [release delle splash art](https://github.com/Andreatz/Arkamon-Beta/releases/tag/arkamon-splash-art-206-2026-11-15) contiene tutte le 206 forme e la galleria offline. Il [manifest della release](../art-source/splash/releases/2026-11-15-approved.json) identifica i singoli file tramite SHA-256.
+
+L’approvazione comprende le sovrapposizioni con i titoli o i pannelli osservate per alcune forme. Le misure di copertura, caricamento e scorrimento restano parte della verifica.
+
+## Storico del 26 ottobre 2026
+
 Aggiornamento: **26 ottobre 2026**. Il nome del documento mantiene la data originale per conservare i collegamenti esistenti.
 
 Sono disponibili e integrate in Squadra e Arkadex **110 illustrazioni distinte**, una per ciascuna forma del catalogo. Le due splash mancanti **037 e 038 di Chimzap** sono state generate e collegate. La revisione corrente ha ricomposto **21 dipinti esistenti** nei quali il volto era troppo alto, laterale o incompatibile con la visualizzazione dell’intero sfondo; le altre sorgenti sono conservate.

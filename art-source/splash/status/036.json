@@ -2,34 +2,26 @@
   "id": 36,
   "name": "Chimzap",
   "type": "Elettro",
-  "version": "hero-focus-v1",
-  "sourceToolPath": "C:\\Users\\andre\\.codex\\generated_images\\01a155b7-a58e-7233-b1d6-e0f5c51a6891\\exec-d89130ad-af17-493e-8e4a-15eda05d407b.png",
-  "sourceMaster": "output/splash-art/originals/036-chimzap-hero-focus-v1.png",
-  "sourceDimensions": {
-    "width": 1672,
-    "height": 941
+  "version": "approved-2026-11-15",
+  "sourceKind": "approved-release",
+  "sourceRelease": {
+    "file": "art-source/splash/releases/2026-11-15-approved.json",
+    "tag": "arkamon-splash-art-206-2026-11-15",
+    "member": "immagini/036.webp"
   },
   "outputFile": "public/backgrounds/arkamon-splash/036-chimzap.webp",
   "runtimePath": "/backgrounds/arkamon-splash/036-chimzap.webp",
-  "promptFile": "art-source/splash/prompts/036-chimzap-hero-focus-v1.txt",
   "width": 1920,
   "height": 1080,
-  "bytes": 650474,
-  "sha256": "a242c2dd837b6a251e579458768d02909c27d85437b361fb673ddcf9bef93c71",
+  "bytes": 816302,
+  "sha256": "0d4f749c4f0417c7b8dfb7a6be131e3a67c6b3b877207148f18205c1a9fb840d",
   "status": "approved-visual",
-  "subjectSafeZone": {
-    "left": 0.35,
-    "top": 0.28,
-    "right": 0.65,
-    "bottom": 0.8
-  },
-  "generatedAt": "2026-10-25T20:32:26.100Z",
   "compositionPolicy": "full-canvas-focus",
   "subjectBounds": {
-    "left": 0.284,
-    "top": 0.103,
-    "right": 0.797,
-    "bottom": 0.918
+    "left": 0,
+    "top": 0,
+    "right": 1,
+    "bottom": 1
   },
   "focusBounds": {
     "left": 0.374,
@@ -37,11 +29,8 @@
     "right": 0.598,
     "bottom": 0.792
   },
-  "reviewedAt": "2026-10-25T20:33:30.329Z",
-  "framingVersion": "full-canvas-focus-v1",
   "framingReview": {
-    "file": "art-source/splash/fullscreen-composition-review-2026-10-26.json",
     "policy": "cover-only-v2",
-    "notes": "Existing face/core focus is appropriate; preserve approved source composition."
+    "basis": "retained-framing-anchor"
   }
 }
