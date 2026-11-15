@@ -12,6 +12,8 @@
 .battle-result-card ul { margin-top: 10px; display: grid; gap: 5px; }
 .battle-result-card li { font-size: clamp(11px, 1vw, 18px); }
 .battle-result-card .battle-result-progress { color: var(--arka-text-muted); }
+.battle-result-messages { margin-top: 10px; padding-top: 8px; border-top: 1px solid color-mix(in srgb, var(--arka-text-muted) 45%, transparent); }
+.battle-result-messages p { margin-top: 4px; }
 @media (max-width: 640px) {
   .battle-result-card { top: 24%; left: 12%; right: 12%; padding: 10px 14px; }
   .battle-command-cursor { font-size: 12px; left: 4%; }

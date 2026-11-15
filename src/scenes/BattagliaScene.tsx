@@ -294,11 +294,14 @@ export function BattagliaScene() {
   >(initialCheckpoint?.evolutions ?? [])
   const luogoRitornoRef = useRef(battaglia?.luogoRitorno ?? 'mappa-principale')
   const paused = useRegiaStore(state => state.paused)
-  const rivalDisplayName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? 'Rivale'
+  // In un incontro selvatico non c'è alcun rivale: il turno è dell'Arkamon selvatico.
+  const wildDisplayName = battaglia?.tipo === 'Selvatico' && pkmnB ? `${getPokemon(pkmnB.specieId)?.nome ?? 'Arkamon'} selvatico` : null
+  const rivalDisplayName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? wildDisplayName ?? 'Rivale'
   const controlStatus = paused ? 'Pausa di regia' : terminata ? 'Battaglia finita'
     : pendingCaptureSave ? 'Cattura in attesa di salvataggio'
     : audienceChoice ? audienceChoice.request.channel === 'boss' ? `Ospite · ${audienceChoice.request.trainer.name} · sceglie la mossa` : 'Pubblico NPC · votazione in corso'
     : diceRoll ? 'Lancio dei dadi...' : moveVfx ? 'Animazione mossa...'
+    : azioneInCorso ? 'Azione in corso...'
     : attesaAvversario ? `Tocca a ${rivalDisplayName} · avvia il turno avversario`
     : attesaPassaggio ? `Passa il controllo a ${attesaPassaggio.direzione === 'A→B' ? rivalDisplayName : giocatore.nome}`
     : mostraMoseB ? `${rivalDisplayName} · scegli una mossa`
@@ -1660,7 +1663,8 @@ export function BattagliaScene() {
         />
       </BattleLayoutItem>
 
-      {(infoBoxMessaggi.length > 0 || !!attesaAvversario || layoutEditing) && (
+      {/* A battaglia conclusa i messaggi passano nella scheda del risultato: due riquadri sovrapposti erano illeggibili. */}
+      {(layoutEditing || (!terminata && (infoBoxMessaggi.length > 0 || !!attesaAvversario))) && (
         <BattleLayoutItem
           layoutKey="infoBox"
           label="Box messaggi"
@@ -1835,6 +1839,7 @@ export function BattagliaScene() {
       })()}
 
       {terminata && <BattleResultCard chronicle={chronicle} outcome={isSelvatico && esito === 'vittoria' && pkmnB.hp > 0 ? 'cattura' : esito}
+        messages={infoBoxMessaggi}
         gymVictory={esito === 'vittoria' && battaglia?.allenatoreId !== undefined && getAllenatore(battaglia.allenatoreId)?.tipo === 'Capopalestra'} />}
 
       {terminata && (

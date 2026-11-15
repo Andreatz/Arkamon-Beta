@@ -493,7 +493,7 @@ export function MappaPrincipaleScene() {
   if (isSecretLocationPosition(activePosition)) return <section className="local-map-scene" aria-label="Passaggio di ritorno">
     <header className="local-map-toolbar">
       <div className="local-map-heading"><h1>{canAccessSecretLocation(giocatore, activePosition) ? 'Percorso 15' : 'Luogo non disponibile'}</h1><span>G{giocatoreAttivo} · {giocatore.nome}</span></div>
-      <span className="local-map-budget" role="status">{turnoOverworld.azioniRimaste} azioni</span>
+      <span className="local-map-budget" role="status">{turnoOverworld.azioniRimaste} {turnoOverworld.azioniRimaste === 1 ? 'azione' : 'azioni'}</span>
       {canAccessSecretLocation(giocatore, activePosition) && <>
         <GameButton onClick={() => {
           useGameStore.getState().eseguiTransazione(() => {
@@ -681,7 +681,7 @@ export function MappaPrincipaleScene() {
         <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Azioni:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-white">
-            {turnoOverworld.azioniRimaste} azioni · {movimentoDisponibile ? 'Muovi o interagisci' : 'Turno concluso'}
+            {turnoOverworld.azioniRimaste} {turnoOverworld.azioniRimaste === 1 ? 'azione' : 'azioni'} · {movimentoDisponibile ? 'Muovi o interagisci' : 'Turno concluso'}
           </span>
         </div>
       </AdminLayoutItem>

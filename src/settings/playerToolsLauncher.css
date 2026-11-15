@@ -1,0 +1,10 @@
+/*
+ * Il comando "Partita" è fisso in basso a sinistra. Dove quell'angolo è già
+ * occupato da un comando della scena, si sposta invece di coprirlo.
+ */
+
+/* Battaglia: in basso a sinistra c'è "Prosegui"; l'angolo in alto a sinistra è libero. */
+body:has([data-battle-layout-root]) .player-tools-launcher { top: 0.75rem; bottom: auto; }
+
+/* Mappa locale con interfaccia Aurora: il piè di pagina ha già il proprio comando "Menù". */
+body:has(.local-map-scene[data-reference-ui="aurora"] .ref-local-menu) .player-tools-launcher { display: none; }

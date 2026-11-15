@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import type { BattleChronicle, BattleLogEvent } from '@/types'
 import { chronicleText } from './battleChronicle'
 import { makeDialogBackgroundInert } from './modalFocus'
+import { useAdminStore } from '@/store/adminStore'
 
 function EventDetails({ event }: { event: BattleLogEvent }) {
   return <article className="rounded-xl border border-white/15 bg-slate-900 p-4" aria-label={event.title}>
@@ -73,5 +74,7 @@ export function BattleLogDialog({ chronicle, onClose }: { chronicle: BattleChron
 
 export function BattleLogPanel({ chronicle, busy = false }: { chronicle: BattleChronicle; busy?: boolean }) {
   const [open, setOpen] = useState(false)
-  return <><button type="button" disabled={busy} onClick={() => setOpen(true)} data-battle-chronicle-command className="absolute right-3 top-3 z-30 rounded-lg border border-white/35 bg-slate-950/90 px-3 py-2 text-sm font-bold text-white shadow-lg hover:bg-slate-800 disabled:opacity-50">Cronaca · {chronicle.events.length}</button>{open && typeof document !== 'undefined' && <BattleLogDialog chronicle={chronicle} onClose={() => setOpen(false)} />}</>
+  // Il comando Admin occupa lo stesso angolo: quando è visibile la Cronaca si sposta di fianco.
+  const adminToggleVisible = useAdminStore((state) => state.enabled)
+  return <><button type="button" disabled={busy} onClick={() => setOpen(true)} data-battle-chronicle-command className={`absolute ${adminToggleVisible ? 'right-24' : 'right-3'} top-3 z-30 rounded-lg border border-white/35 bg-slate-950/90 px-3 py-2 text-sm font-bold text-white shadow-lg hover:bg-slate-800 disabled:opacity-50`}>Cronaca · {chronicle.events.length}</button>{open && typeof document !== 'undefined' && <BattleLogDialog chronicle={chronicle} onClose={() => setOpen(false)} />}</>
 }

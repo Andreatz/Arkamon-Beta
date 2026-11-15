@@ -46,7 +46,7 @@ export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 
     </select></label>
     <div className="journal-summary"><strong>{player.nome || `Giocatore ${playerId}`}</strong><span>{world.luogo?.replace(/_/g, ' ') ?? 'Posizione non definita'} · {player.monete} monete</span>
       <span>{collectedGymCount(player)} / {gyms.length} medaglie · {player.allenatoriSconfitti.size} allenatori sconfitti · {player.cespugliVisitati.size} cespugli esplorati</span>
-      <span>{remaining} azioni disponibili{turn.giocatoreAttivo !== playerId || active !== playerId ? ' · attendi il tuo turno' : ''}</span>
+      <span>{remaining} {remaining === 1 ? 'azione disponibile' : 'azioni disponibili'}{turn.giocatoreAttivo !== playerId || active !== playerId ? ' · attendi il tuo turno' : ''}</span>
       <small>Due movimenti oppure un movimento e un’interazione. Le posizioni e i progressi dei due giocatori sono indipendenti.</small>
     </div>
     <div className="journal-objective"><strong>Prossimo obiettivo suggerito: {objective.title}</strong><p>{objective.detail}</p>{objective.nextStep && <p>Prossimo luogo lungo le strade: {objective.nextStep.replace(/_/g, ' ')}.</p>}</div>

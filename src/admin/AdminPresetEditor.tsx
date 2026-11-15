@@ -35,9 +35,10 @@ export function AdminPresetEditor() {
               preset.colors.hpHigh,
               preset.colors.hpMid,
               preset.colors.hpLow,
-            ].map((color) => (
+            ].map((color, index) => (
               <span
-                key={color}
+                // Due ruoli possono condividere lo stesso colore: la chiave include la posizione.
+                key={`${index}-${color}`}
                 className="h-5 flex-1 rounded border border-[var(--arka-border)]"
                 style={{ backgroundColor: color }}
               />
