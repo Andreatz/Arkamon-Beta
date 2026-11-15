@@ -360,38 +360,21 @@ function SpriteOrEmoji({
   specieId: number
   fallback: string
 }) {
-  const [sourceIndex, setSourceIndex] = useState(0)
+  const [loadFailed, setLoadFailed] = useState(false)
   const frontSource = `/sprites/front_sprites/${specieId}.png`
   const framing = getPortraitFraming(frontSource)
-  const sources = [
-    assetUrl(`/sprites/front_sprites/${specieId}.png`),
-    assetUrl(`/sprites/small_sprites/Sprite Small ${specieId}.png`),
-  ]
 
   useEffect(() => {
-    setSourceIndex(0)
+    setLoadFailed(false)
   }, [specieId])
 
-  return (
-    <>
-      {sourceIndex === 0 ? <svg className="h-full w-full" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true" data-evolution-species={specieId}>
-        <image href={assetUrl(frontSource)} width={framing.width} height={framing.height} preserveAspectRatio="none" onError={() => setSourceIndex(1)} />
-      </svg> : sourceIndex < sources.length ? (
-        <img
-          key={`${specieId}-${sourceIndex}`}
-          src={sources[sourceIndex]}
-          alt=""
-          className="w-full h-full object-contain"
-          style={{ imageRendering: 'pixelated' }}
-          onError={() => setSourceIndex((index) => index + 1)}
-        />
-      ) : (
-        <span className="flex h-full w-full items-center justify-center text-8xl">
-          {fallback}
-        </span>
-      )}
-    </>
-  )
+  if (loadFailed) {
+    return <span className="flex h-full w-full items-center justify-center text-8xl">{fallback}</span>
+  }
+
+  return <svg className="h-full w-full" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true" data-evolution-species={specieId}>
+    <image key={frontSource} href={assetUrl(frontSource)} width={framing.width} height={framing.height} preserveAspectRatio="none" onError={() => setLoadFailed(true)} />
+  </svg>
 }
 
 function spriteFor(tipo: string): string {

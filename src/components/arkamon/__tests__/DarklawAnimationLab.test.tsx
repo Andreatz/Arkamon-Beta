@@ -22,8 +22,8 @@ describe('laboratory for unfinished graphic assets', () => {
     expect(markup).not.toContain('data-test-attack-preview')
     expect(markup).not.toContain('data-test-native-sprite')
     expect(markup).toContain('Catalogo grafico')
-    expect(markup).toContain('Tutti · 200')
-    expect(markup).toContain('Dati da definire · 90')
+    expect(markup).toContain('Tutti · 204')
+    expect(markup).toContain('Dati da definire · 94')
   })
 
   it('retains complete native actions and the real move preview for playable forms', () => {

@@ -70,7 +70,7 @@ export function ArkadexPanel({ initialPlayerId }: { initialPlayerId?: 1 | 2 } = 
     <p role="status" className="arkadex-result-count">{entries.length} schede corrispondenti. I filtri per nome e tipo includono soltanto specie già scoperte.</p>
     <div className="arkadex-layout">
       <div className="arkadex-grid" aria-label="Specie dell’Arkadex">{entries.map((entry) => <button type="button" key={entry.id} aria-pressed={selected?.id === entry.id} aria-label={`Numero ${entry.id}: ${entry.species?.nome ?? 'specie da scoprire'} · ${statusLabels[entry.status]}`} onClick={() => { setSelectedId(entry.id); setSelectedInstanceId(null); setAnimatedSpeciesId(null) }}>
-        {entry.species ? <img loading="lazy" decoding="async" src={assetUrl(`/sprites/small_sprites/Sprite Small ${entry.id}.png`)} alt="" /> : <span className="arkadex-silhouette" aria-hidden="true">?</span>}
+        {entry.species ? <img loading="lazy" decoding="async" src={assetUrl(`/sprites/front_sprites/${entry.id}.png`)} alt="" /> : <span className="arkadex-silhouette" aria-hidden="true">?</span>}
         <span>#{String(entry.id).padStart(3, '0')}</span><strong>{entry.species?.nome ?? '???'}</strong><small>{statusLabels[entry.status]}</small>
       </button>)}</div>
       {!selected ? <p className="arkadex-detail">Nessuna specie corrisponde ai filtri scelti.</p> : !species || !pokemon ? <article className="arkadex-detail" aria-label="Scheda da scoprire"><span className="arkadex-silhouette arkadex-silhouette--large" aria-hidden="true">?</span><h3>#{String(selected.id).padStart(3, '0')} · Specie da scoprire</h3><p>Incontra questa specie durante la partita per rivelarne nome, tipo e mosse.</p></article> : <article className="arkadex-detail" aria-label={`Scheda di ${species.nome}`}>
