@@ -18,12 +18,14 @@ import { PublicPresentationBridge } from '@/regia/PublicPresentationBridge'
 import { RegiaPause } from '@/regia/RegiaPause'
 import { AppliedUiDesign } from '@/ui-studio/AppliedUiDesign'
 import { isUiStudioPreview } from '@/ui-studio/previewMode'
+import { MotionRoot } from '@/motion/MotionRoot'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
 const SceneTransitionLab = lazy(() => import('@/components/transitions/SceneTransitionLab').then((module) => ({ default: module.SceneTransitionLab })))
 const VfxGallery = lazy(() => import('@/components/vfx/VfxGallery').then((module) => ({ default: module.VfxGallery })))
 const BattleDiceLab = lazy(() => import('@/components/battle/BattleDiceLab').then((module) => ({ default: module.BattleDiceLab })))
+const MotionLab = lazy(() => import('@/motion/MotionLab').then((module) => ({ default: module.MotionLab })))
 const DepositLab = lazy(() => import('@/components/deposit/DepositLab').then((module) => ({ default: module.DepositLab })))
 const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then((module) => ({ default: module.DarklawAnimationLab })))
 const MappaGrigliaScene = lazy(() => import('@scenes/MappaGrigliaScene').then((module) => ({ default: module.MappaGrigliaScene })))
@@ -93,6 +95,10 @@ function App() {
 
   if (hash === '#dice-lab') {
     return <LabShell><BattleDiceLab /></LabShell>
+  }
+
+  if (hash === '#stage-lab') {
+    return <LabShell><MotionLab /></LabShell>
   }
 
   if (hash === '#deposit-lab') {
@@ -165,6 +171,6 @@ function renderScena(scena: SceneId) {
 
 function GameApp() {
   const motion = useGamePreferences((state) => state.reducedMotion)
-  return <MotionConfig reducedMotion={motion === 'system' ? 'user' : motion === 'on' ? 'always' : 'never'}><SessionGate><App /></SessionGate></MotionConfig>
+  return <MotionConfig reducedMotion={motion === 'system' ? 'user' : motion === 'on' ? 'always' : 'never'}><MotionRoot /><SessionGate><App /></SessionGate></MotionConfig>
 }
 export default GameApp
