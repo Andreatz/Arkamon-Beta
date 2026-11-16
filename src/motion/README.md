@@ -90,4 +90,16 @@ await playback.finished   // 'completed' | 'cancelled'
 
 `BattagliaScene` monta il mondo di battaglia in uno `<Stage>`: il fondale è un
 livello lontano con margine e lo shake dei colpi passa da `battleRig.camera`.
-I punti `player` ed `enemy` sono già registrati per le inquadrature della Fase 1.
+
+La regia dell'attacco vive in `src/components/battle`:
+
+- `battleCinematics.ts` — scelte pure: inquadrature, intensità della scossa
+  (`damageTrauma`), dimensione dei dadi, tono di efficacia.
+- `useBattleCinematics.ts` — aggancia cinepresa ed effetti ai momenti della
+  sequenza d'attacco: `attackStart`, `release`, `impact`, `diceStart`,
+  `damageReveal`, `attackEnd`, `outcome`. Nessuna chiamata blocca o modifica
+  il flusso di gioco; nell'editor dei layout e nelle anteprime è inerte.
+- `BattleCinematicLayer.tsx` — fascia con il nome della mossa e numero del danno.
+
+Il danno compare soltanto in `damageReveal`, cioè dopo che i dadi lo hanno
+rivelato: la regola "nessun KO prima dei dadi" resta valida.

@@ -64,4 +64,29 @@ describe('battle dice overlay', () => {
     expect(markup).toContain('Dadi: 2 + 6 + 1 = 9')
     expect(markup).not.toContain('Danno finale')
   })
+
+  it('ingrandisce i dadi quando sono pochi e torna alla griglia compatta quando sono molti', () => {
+    const single = renderToStaticMarkup(<DiceRollOverlay roll={rollWith([4])} />)
+    expect(single).toContain('--battle-dice-cell-width:210px')
+    const three = renderToStaticMarkup(<DiceRollOverlay roll={rollWith([2, 4, 6])} />)
+    expect(three).toContain('--battle-dice-cell-width:168px')
+    const twenty = renderToStaticMarkup(<DiceRollOverlay roll={rollWith(Array.from({ length: 20 }, () => 3))} />)
+    expect(twenty).toContain('--battle-dice-cell-width:80px')
+    expect(twenty).toContain('--battle-dice-mobile-cell-width:50px')
+  })
+
+  it('a risultato rivelato mostra il totale in grande, la riga testuale e l’efficacia', () => {
+    const markup = renderToStaticMarkup(
+      <DiceRollOverlay staticPreview roll={rollWith([2, 4, 6], { damage: 21, tone: 'super' })} />,
+    )
+    expect(markup).toContain('data-dice-tone="super"')
+    // Il numero grande è decorativo; la riga testuale resta la fonte accessibile.
+    expect(markup).toMatch(/<span aria-hidden="true" class="battle-dice-total arka-battle-font"[^>]*>21<\/span>/)
+    expect(markup).toContain('Danno finale: 21')
+    expect(markup).toContain('Superefficace!')
+    const normal = renderToStaticMarkup(<DiceRollOverlay staticPreview roll={rollWith([1], { damage: 3 })} />)
+    expect(normal).toContain('data-dice-tone="normal"')
+    expect(normal).not.toContain('Superefficace!')
+    expect(normal).not.toContain('Poco efficace')
+  })
 })

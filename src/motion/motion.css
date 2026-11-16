@@ -5,6 +5,6 @@
 
 .arka-motion-fx { position: absolute; inset: 0; z-index: 60; overflow: hidden; pointer-events: none; }
 .arka-motion-fx__veil { position: absolute; inset: 0; opacity: 0; }
-.arka-motion-fx__bar { position: absolute; left: 0; right: 0; height: 9%; background: var(--motion-fx-black); }
+.arka-motion-fx__bar { position: absolute; left: 0; right: 0; height: var(--motion-fx-bar-size, 9%); background: var(--motion-fx-black); }
 .arka-motion-fx__bar--top { top: 0; transform-origin: 50% 0; }
 .arka-motion-fx__bar--bottom { bottom: 0; transform-origin: 50% 100%; }

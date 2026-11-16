@@ -13,7 +13,7 @@ export interface ScreenFx {
   cover(color?: ScreenFxColor, ms?: number): Promise<void>
   /** Toglie il velo. */
   reveal(ms?: number): Promise<void>
-  /** Bande cinematografiche in alto e in basso. */
+  /** Bande cinematografiche in alto e in basso. Non compaiono con il movimento ridotto. */
   letterbox(visible: boolean, ms?: number): Promise<void>
   /** Riporta tutto a zero senza animazione. */
   clear(): void
@@ -67,7 +67,11 @@ export function useScreenFx(): ScreenFx {
         return run('veil', veil, 1, ms)
       },
       reveal(ms = 400) { return run('veil', veil, 0, ms) },
-      letterbox(visible, ms = 240) { return run('bars', bars, visible ? 1 : 0, ms) },
+      letterbox(visible, ms = 240) {
+        // Con il movimento ridotto le bande non entrano: comparirebbero di colpo senza aggiungere informazione.
+        if (visible && settings.current.reducedMotion) return Promise.resolve()
+        return run('bars', bars, visible ? 1 : 0, ms)
+      },
       clear() {
         running.current.veil?.(); running.current.bars?.()
         veil.set(0); bars.set(0)

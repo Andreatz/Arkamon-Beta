@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
-import { motion } from 'framer-motion'
+import { animate, motion } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '../vfx/AnimatedSprite'
 import { getBattleDiceSequence } from './battleDiceAssets'
 import { createBattleDiceReveal } from './battleDiceReveal'
 import { playSelectedAudio } from '@/utils/soundManager'
+import { EFFICACY_LABEL, diceCellWidth, type EfficacyTone } from './battleCinematics'
 import './battleDice.css'
 
 const useDiceLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -17,6 +18,8 @@ export interface DiceRollDisplay {
   rolls: number[]
   increment: number
   damage: number
+  /** Efficacia della mossa, già risolta dal motore: colora il risultato. */
+  tone?: EfficacyTone
 }
 
 interface DiceRollOverlayProps {
@@ -67,12 +70,16 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
     }
   }, [diceCount, reducedMotion, staticPreview])
   const total = roll.rolls.reduce((sum, value) => sum + value, 0)
+  // Pochi dadi diventano grandi: sono il momento centrale del turno.
+  const cell = diceCellWidth(roll.rolls.length)
   const gridStyle = {
     '--battle-dice-columns': Math.max(1, Math.min(roll.rolls.length, 6)),
     '--battle-dice-mobile-columns': Math.max(1, Math.min(roll.rolls.length, roll.rolls.length > 9 ? 4 : 3)),
-    '--battle-dice-cell-width': roll.rolls.length > 12 ? '80px' : '106px',
-    '--battle-dice-mobile-cell-width': roll.rolls.length > 12 ? '50px' : '94px',
+    '--battle-dice-cell-width': `${cell.desktop}px`,
+    '--battle-dice-mobile-cell-width': `${cell.mobile}px`,
   } as CSSProperties
+  const tone = roll.tone ?? 'normal'
+  const toneLabel = EFFICACY_LABEL[tone]
 
   return (
     <div
@@ -81,17 +88,17 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
       data-dice-revealed={damageVisible}
     >
       <motion.div
-        initial={reducedMotion ? false : { opacity: 0, scale: 0.88, y: -18 }}
+        initial={reducedMotion ? false : { opacity: 0, scale: 0.72, y: -28 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 12 }}
         transition={{ duration: reducedMotion ? 0 : 0.22 / speed }}
         onAnimationComplete={() => revealRef.current?.panelVisible()}
         className="battle-dice-panel rounded-md border border-white/20 px-5 py-4 text-center text-white shadow-2xl"
       >
-        <p className="text-[11px] font-black uppercase text-blue-300 arka-letter-outline">
+        <p className="battle-dice-kicker font-black uppercase text-blue-300 arka-letter-outline">
           {roll.side === 'A' ? 'Lancio giocatore' : 'Lancio avversario'}
         </p>
-        <h3 className="mt-1 text-lg font-black">{roll.moveName}</h3>
+        <h3 className="battle-dice-move mt-1 font-black">{roll.moveName}</h3>
         <div className="battle-dice-grid" style={gridStyle}>
           {roll.rolls.map((value, index) => (
             <BattleDie
@@ -103,18 +110,53 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
             />
           ))}
         </div>
-        <p className="mt-3 text-xs font-bold leading-relaxed text-slate-200">
+        <p className="battle-dice-sum mt-3 font-bold leading-relaxed text-slate-200">
           Dadi: {roll.rolls.join(' + ')}
           {roll.increment > 0 ? ` + ${roll.increment}` : ''}
           {' = '}{total + roll.increment}
         </p>
-        <div className="mt-1 min-h-6" aria-live="polite">
+        <div className="battle-dice-result mt-1 min-h-6" data-dice-tone={tone} aria-live="polite">
           {damageVisible ? (
-            <p className="text-base font-black text-rose-300">Danno finale: {roll.damage}</p>
+            <>
+              <DiceDamageCounter value={roll.damage} animated={!staticPreview} />
+              <p className="battle-dice-result-label font-black">Danno finale: {roll.damage}</p>
+              {toneLabel && <p className="battle-dice-result-tone font-black uppercase">{toneLabel}</p>}
+            </>
           ) : null}
         </div>
       </motion.div>
     </div>
+  )
+}
+
+/**
+ * Totale in grande con conteggio. È decorativo: il valore testuale accessibile
+ * resta la riga "Danno finale", che non cambia durante l'animazione.
+ */
+function DiceDamageCounter({ value, animated }: { value: number; animated: boolean }) {
+  const { reducedMotion, speed } = useGameMotionPreferences()
+  const element = useRef<HTMLSpanElement | null>(null)
+  useEffect(() => {
+    const node = element.current
+    if (!node || !animated || reducedMotion || value <= 0) return
+    const control = animate(0, value, {
+      duration: Math.min(0.7, 0.25 + value * 0.012) / speed,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (current) => { node.textContent = String(Math.round(current)) },
+    })
+    return () => { control.stop(); node.textContent = String(value) }
+  }, [animated, reducedMotion, speed, value])
+  return (
+    <motion.span
+      ref={element}
+      aria-hidden="true"
+      className="battle-dice-total arka-battle-font"
+      initial={animated && !reducedMotion ? { scale: 0.5, opacity: 0 } : false}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: reducedMotion ? 0 : 0.26 / speed, ease: [0.34, 1.56, 0.64, 1] }}
+    >
+      {value}
+    </motion.span>
   )
 }
 
