@@ -1,6 +1,6 @@
 import { nuovoTurno } from '@/engine/movimento'
 import type { NavigazioneScena, PosizioneAvatar, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
-import { getShopItem, hasArkaStore, isShopItemId, MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, type ShopCart, type ShopInventory, type ShopItemId } from './catalog'
+import { getShopItem, getShopItemsAt, hasArkaStore, isShopItemId, MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, type ShopCart, type ShopInventory, type ShopItemId } from './catalog'
 import { getLocalMap } from '@/data/localMaps'
 import { validateInteraction } from '@/interactions/schema'
 import { interactionRequirementMessage } from '@/interactions/runtime'
@@ -66,14 +66,16 @@ export function resolveShopPurchase(state: ShopRuntimeState, playerId: 1 | 2, ca
   const playerKey = playerId === 1 ? 'giocatore1' : 'giocatore2'
   const player = state[playerKey]
   const items: ShopReceipt['items'] = []
+  const available = getShopItemsAt(location)
   let total = 0
   for (const [id, quantity] of Object.entries(cart)) {
     if (!isShopItemId(id)) return fail('Il carrello contiene un oggetto non disponibile.')
     if (typeof quantity !== 'number' || !Number.isInteger(quantity) || quantity < 0 || quantity > MAX_SHOP_QUANTITY) return fail(`Scegli una quantità intera fra 0 e ${MAX_SHOP_QUANTITY} per ogni oggetto.`)
     if (quantity === 0) continue
+    const item = available.find(entry => entry.id === id)
+    if (!item) return fail(`${getShopItem(id)!.name} non è acquistabile in questo Arkastore.`)
     const held = player.inventario[id] ?? 0
     if (!Number.isSafeInteger(held) || held < 0 || held + quantity > MAX_ITEM_QUANTITY) return fail(`Non puoi portare più di ${MAX_ITEM_QUANTITY} ${getShopItem(id)!.name}.`)
-    const item = getShopItem(id)!
     items.push({ id, quantity, unitPrice: item.price })
     total += quantity * item.price
   }

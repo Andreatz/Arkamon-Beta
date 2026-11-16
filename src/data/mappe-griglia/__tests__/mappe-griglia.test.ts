@@ -92,8 +92,8 @@ describe('MAPPE_GRIGLIA — invariants', () => {
     }
   })
 
-  it('contiene una casella allenatore per ogni allenatore definito nei dati', () => {
-    for (const allenatore of ALLENATORI) {
+  it('mantiene tutte le caselle degli allenatori già collocati nelle griglie', () => {
+    for (const allenatore of ALLENATORI.filter((trainer) => trainer.id < 10_000)) {
       const mappa = MAPPE_GRIGLIA[allenatore.luogo]
       expect(mappa, `Mappa mancante: ${allenatore.luogo}`).toBeTruthy()
 

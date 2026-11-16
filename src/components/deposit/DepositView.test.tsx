@@ -6,6 +6,8 @@ import { createDepositPreview } from './DepositLab'
 import { DepositView, getAdjacentDepositBox } from './DepositView'
 import { DEPOSIT_PORTRAIT_FRAMING } from './depositPortraitFraming'
 import pokemonSpecies from '@/data/pokemon.json'
+import { getPortraitFraming } from '@/player-ui/portraitFraming'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 
 vi.mock('@/admin/AdminLayoutItem', () => ({
   AdminLayoutItem: ({ children }: { children: ReactNode }) => <>{children}</>,
@@ -85,10 +87,11 @@ describe('DepositView', () => {
     expect(buttons).toHaveLength(41)
   })
 
-  it('has a valid face framing for every registered species and evolution', () => {
+  it('preserves every curated face framing and frames expansion portraits from their actual bounds', () => {
     expect(Object.keys(DEPOSIT_PORTRAIT_FRAMING).map(Number).sort((a, b) => a - b))
-      .toEqual(pokemonSpecies.map((species) => species.id).sort((a, b) => a - b))
+      .toEqual(pokemonSpecies.filter((species) => species.id <= 110).map((species) => species.id))
     for (const framing of Object.values(DEPOSIT_PORTRAIT_FRAMING)) {
+      if (!framing) throw new Error('Missing curated portrait framing')
       expect(Number.isFinite(framing.x) && Number.isFinite(framing.y) && Number.isFinite(framing.zoom)).toBe(true)
       expect(framing.x).toBeGreaterThan(0)
       expect(framing.x).toBeLessThan(1)
@@ -96,6 +99,14 @@ describe('DepositView', () => {
       expect(framing.y).toBeLessThan(1)
       expect(framing.zoom).toBeGreaterThanOrEqual(1)
       expect(framing.zoom).toBeLessThanOrEqual(6)
+    }
+    for (const speciesId of [176, 194, 205]) {
+      const instance = { ...createDepositPreview().squadra[0], specieId: speciesId }
+      const source = getArkamonSpriteSource(speciesId)
+      const { viewBox } = getPortraitFraming(source)
+      const markup = renderPreview([instance])
+      expect(markup).toContain(`viewBox="${viewBox}"`)
+      expect(markup).toContain(`href="${source}"`)
     }
   })
 

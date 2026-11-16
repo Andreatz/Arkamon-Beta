@@ -96,7 +96,7 @@ describe('seed challenges and Fanta rules', () => {
     expect(validateFantaTeam([1, 2, 3, 4, 5, 6, 7]).ok).toBe(false)
     const expensive = [...POKEMON_BASE].sort((a, b) => fantaSpeciesCost(b.id) - fantaSpeciesCost(a.id)).slice(0, 6).map((species) => species.id)
     expect(validateFantaTeam(expensive).ok).toBe(false)
-    expect(() => createChallengeSession({ version: 1, seed: 'Roma', mode: 'fanta', speciesIds: expensive })).toThrow(/budget/)
+    expect(() => createChallengeSession({ version: 3, seed: 'Roma', mode: 'fanta', speciesIds: expensive })).toThrow(/budget/)
   })
   it('makes Fanta opponents depend on the seed, with equal levels and fresh HP', () => {
     const team = generateSeedTeam('Uno', 'player', 1)

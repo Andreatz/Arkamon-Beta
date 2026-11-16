@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import authoringMoves from '../mosse.json'
-import authoringVfx from '../move-vfx-assignments.json'
-import { BASE_RUNTIME_MOVES, RUNTIME_STATUS_ASSIGNMENTS } from '../runtimeGameData'
+import authoringSpecies from '../pokemon.json'
+import authoringTrainers from '../allenatori.json'
+import authoringEncounters from '../incontri.json'
+import { BASE_RUNTIME_MOVES, RUNTIME_ENCOUNTERS, RUNTIME_SPECIES, RUNTIME_TRAINERS } from '../runtimeGameData'
 
 describe('compact startup game catalog', () => {
-  it('reproduces all 220 authored definitions and every value at every level', () => {
+  it('reproduces all 516 authored definitions and every value at every level', () => {
     expect(BASE_RUNTIME_MOVES).toEqual(authoringMoves)
-    expect(BASE_RUNTIME_MOVES).toHaveLength(220)
+    expect(BASE_RUNTIME_MOVES.map(move => move.id)).toEqual(Array.from({ length: 516 }, (_, index) => index + 1))
   })
 
   it('does not share mutable level tables between definitions', () => {
@@ -14,11 +16,9 @@ describe('compact startup game catalog', () => {
     expect(new Set(tables).size).toBe(tables.length)
   })
 
-  it('projects exactly the nine authorized status definitions without importing the VFX authoring catalog', () => {
-    const ids = new Set([221, 225, 227, 230, 242, 253, 256, 270, 271])
-    const expected = authoringVfx.moves.filter(move => ids.has(move.sourceMoveId)
-      && move.gameMoveId === null && move.type === 'Status (Paralisi)')
-      .map(({ sourceMoveId, gameMoveId, name, type, element, arkamon }) => ({ sourceMoveId, gameMoveId, name, type, element, arkamon }))
-    expect(RUNTIME_STATUS_ASSIGNMENTS).toEqual(expected)
+  it('reproduces every authored species, trainer and encounter before gameplay filters', () => {
+    expect(RUNTIME_SPECIES).toEqual(authoringSpecies)
+    expect(RUNTIME_TRAINERS).toEqual(authoringTrainers)
+    expect(RUNTIME_ENCOUNTERS).toEqual(authoringEncounters)
   })
 })

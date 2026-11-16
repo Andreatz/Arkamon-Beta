@@ -92,7 +92,7 @@ describe('caricamento salvataggi parziali', () => {
     expect(state.giocatore1.nome).toBe('Andrea')
     expect(state.giocatore1.cespugliVisitati).toEqual(new Set(['Percorso_1:A']))
     expect(state.giocatore1.caselleConsumate).toEqual(new Set())
-    expect(state.giocatore1.inventario).toEqual({ masterball: 1 })
+    expect(state.giocatore1.inventario).toEqual({})
     expect(state.giocatore2.nome).toBe('Giocatore 2')
     expect(state.giocatore2.squadra).toEqual([])
     expect(state.scegliStarter).toBe(useGameStore.getState().scegliStarter)

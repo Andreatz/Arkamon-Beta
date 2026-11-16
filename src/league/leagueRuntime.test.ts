@@ -7,7 +7,7 @@ import { SECRET_LOCATION_GYM_IDS } from '@/data/secretLocation'
 import { calcolaAzioneSuprema, esitoSquadre, risolviAttaccanteDopoMossa } from '@/engine/battleEngine'
 import { createChallengeSession } from '@/challenges/challengeRules'
 import { exitChallenge, launchChallenge } from '@/challenges/challengeRuntime'
-import { draftLeagueConfiguration, leagueConfigurationProblems, type LeagueConfiguration } from './leagueModel'
+import { draftLeagueConfiguration, leagueConfigurationProblems, leagueOpponentFromTrainer, leagueTrainer, workbookLeagueTeams, type LeagueConfiguration } from './leagueModel'
 import type { PokemonIstanza } from '@/types'
 
 vi.hoisted(() => {
@@ -67,6 +67,25 @@ describe('Lega: sequenza, checkpoint e campagna', () => {
     useGameStore.setState({ turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 } })
     expect(useGameStore.getState().iniziaLega().ok).toBe(true)
   })
+  it('uses the configured spreadsheet squad and coins, and resolves the imported Rival with the discarded starter', () => {
+    const first = workbookLeagueTeams.find((trainer) => trainer.idDatabase === 332)!
+    const rival = workbookLeagueTeams.find((trainer) => trainer.idDatabase === 340)!
+    const setup = config('restart', true)
+    setup.opponents[0] = leagueOpponentFromTrainer(first)
+    setup.champion = leagueOpponentFromTrainer(rival)
+    expect(leagueTrainer(setup, 4, 9)).toMatchObject({
+      nome: 'Rivale', guadagno: 32200,
+      squadra: [{ pokemonId: 9, livello: 89 }, { pokemonId: 32, livello: 89 }, { pokemonId: 21, livello: 89 },
+        { pokemonId: 13, livello: 90 }, { pokemonId: 47, livello: 90 }, { pokemonId: 56, livello: 90 }],
+    })
+    expect(useGameStore.getState().configuraLega(setup).ok).toBe(true)
+    expect(useGameStore.getState().iniziaLega().ok).toBe(true)
+    const restored = normalizeGameSave(serializeGameState(useGameStore.getState())).state.battaglia
+    expect(restored?.leagueOpponent?.guadagno).toBe(first.guadagno)
+    const previous = useGameStore.getState().giocatore1.monete
+    expect(finish('vittoria').ok).toBe(true)
+    expect(useGameStore.getState().giocatore1.monete).toBe(previous + first.guadagno!)
+  })
   it('runs all four battles in one turn, preserves HP, persists the first winner once and blocks new racing moves', () => {
     useGameStore.getState().configuraLega(config())
     expect(useGameStore.getState().iniziaLega().ok).toBe(true)
@@ -101,9 +120,11 @@ describe('Lega: sequenza, checkpoint e campagna', () => {
     useGameStore.getState().iniziaLega()
     for (let stage = 0; stage < 4; stage++) { finish('vittoria'); useGameStore.getState().prossimoIncontroLega() }
     expect(useGameStore.getState().league.winner).toBeNull()
+    expect(useGameStore.getState().giocatore1.inventario.masterball).toBeUndefined()
     expect(useGameStore.getState().battaglia?.leagueOpponent?.tipo).toBe('Campione')
     expect(finish('vittoria').ok).toBe(true)
     expect(useGameStore.getState().league.winner?.playerId).toBe(1)
+    expect(useGameStore.getState().giocatore1.inventario.masterball).toBe(1)
   })
   it.each(['restart', 'retry-stage'] as const)('defeat with %s consumes no healing and passes the map turn, then obeys the selected retry rule', (rule) => {
     useGameStore.getState().configuraLega(config(rule)); useGameStore.getState().iniziaLega(); finish('vittoria'); useGameStore.getState().prossimoIncontroLega()

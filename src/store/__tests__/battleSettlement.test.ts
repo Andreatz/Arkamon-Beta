@@ -53,6 +53,12 @@ describe('atomic capture and reward settlement', () => {
     expect(original.concludiCattura(1, b, { checkpoint }, true)).toBe(false)
     expect(useGameStore.getState()).toBe(original)
   })
+  it('matches the active player and the encounter species before committing a capture', () => {
+    const original = useGameStore.getState()
+    expect(original.concludiCattura(2, b, { checkpoint }, false)).toBe(false)
+    expect(original.concludiCattura(1, { ...b, specieId: 2 }, { checkpoint }, true)).toBe(false)
+    expect(useGameStore.getState()).toBe(original)
+  })
   it.each([
     { masterball: false, fullTeam: false }, { masterball: true, fullTeam: false },
     { masterball: false, fullTeam: true }, { masterball: true, fullTeam: true },

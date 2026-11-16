@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react'
 import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
 import { getPokemon, TABELLA_TIPI } from '@data/index'
 import { calcolaHPMax } from '@engine/battleEngine'
+import { battleStatusDescription } from '@/components/battle/battleMoveFacts'
 import { useGameStore } from '@store/gameStore'
 import { HealthBar, KitButton, KitIcon, KitPanel, PokemonHero, PokemonMoves, TypeBadge } from './kit'
 import { liveOwnedPokemon } from './currentRoster'
@@ -71,10 +72,7 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
           </>}
           {tab === 'status' && <>
             <h3>{pokemon.hp <= 0 ? 'Arkamon esausto' : status?.tipo ?? 'In salute'}</h3><HealthBar pokemon={pokemon} />
-            {status?.tipo === 'Paralizzato' && <p className="pu-note">Agisce per secondo. Con 1–2 sul d6 non attacca; con 3–6 attacca. La paralisi termina soltanto con una mossa di cura o un oggetto.</p>}
-            {status?.tipo === 'Addormentato' && <p className="pu-note">Turni di sonno rimasti: {status.turniRimanenti}. Il primo turno è obbligatorio; dal secondo un 4–6 sul d6 permette di svegliarsi.</p>}
-            {status?.tipo === 'Avvelenato' && <p className="pu-note">Turni di veleno già trascorsi: {status.turniTrascorsi ?? 0}. Il danno cresce dal 10% degli HP massimi di altri 10 punti percentuali ogni turno.</p>}
-            {status?.tipo === 'Confuso' && <p className="pu-note">La confusione influenza l’azione durante la battaglia.</p>}
+            {status && <p className="pu-note">{battleStatusDescription(status)}</p>}
             {!status && pokemon.hp > 0 && <p className="pu-note">Nessuno stato alterato attivo.</p>}
             <p className="pu-note">Gli HP residui vengono conservati. Consulta la borsa per usare una cura, oppure raggiungi un Centro Arkamon.</p>
             {species && <div className="pu-status-affinities"><h3>Affinità difensive</h3><div className="pu-affinity-grid pu-affinity-compact">{TABELLA_TIPI.tipi.map((type) => <div key={type}><TypeBadge type={type} /><strong>×{TABELLA_TIPI.efficacia[type]?.[species.tipo] ?? 1}</strong></div>)}</div><p className="pu-note">Danno ricevuto per tipo di attacco.</p></div>}

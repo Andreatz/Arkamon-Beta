@@ -2,6 +2,8 @@
    side in the height available to the real player dialog. */
 .pu-shell .pu-store-dedicated .pu-store-actions>.studio-command{font-size:16px;padding:0 12%;min-width:0}
 .pu-shell .pu-store-dedicated .pu-store-heading>div>p:last-child:not(.pu-kicker){display:block}
+.pu-shell .pu-store-dedicated .pu-store-pages{display:flex;justify-content:center;align-items:center;gap:10px;flex:none;margin:6px 0;color:#d7e5ee;font-size:13px}
+.pu-shell .pu-store-dedicated .pu-store-pages button{min-width:44px;min-height:38px;padding:0 9px}
 @media(min-width:901px){
  .pu-shell .pu-store-screen.pu-store-dedicated{height:100%;min-height:0;gap:0}
  .pu-shell .pu-store-dedicated>.pu-store-heading{flex:none;min-height:0;padding:0 0 10px;margin:0 0 10px;gap:20px}
@@ -12,7 +14,7 @@
  .pu-shell .pu-store-dedicated>.pu-store-layout{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr) minmax(0,1.12fr);gap:18px;flex:1;min-height:0;align-items:stretch}
  .pu-shell .pu-store-dedicated .pu-store-catalog,.pu-shell .pu-store-dedicated .pu-store-detail,.pu-shell .pu-store-dedicated .pu-store-checkout{display:flex;flex-direction:column;min-width:0;min-height:0;padding:16px;gap:0}
  .pu-shell .pu-store-dedicated .pu-store-catalog>h2{flex:none;font-size:23px;margin:0 0 10px;line-height:1.15}
- .pu-shell .pu-store-dedicated .pu-shop-list{display:grid;grid-template-rows:repeat(7,minmax(44px,1fr));gap:5px;flex:1;min-height:0;margin:0}
+ .pu-shell .pu-store-dedicated .pu-shop-list{display:grid;grid-template-rows:repeat(6,minmax(44px,1fr));gap:5px;flex:1;min-height:0;margin:0}
  .pu-shell .pu-store-dedicated .pu-shop-row-compact{height:auto;min-height:0;margin:0;padding:0;gap:7px}
  .pu-shell .pu-store-dedicated .pu-shop-row-main{height:100%;min-height:44px;min-width:0;padding:3px 14px;gap:10px;flex:1;margin:0}
  .pu-shell .pu-store-dedicated .pu-shop-row .pu-kit-icon{width:36px;height:36px;flex:none}

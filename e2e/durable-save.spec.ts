@@ -133,7 +133,7 @@ test('a shop save dialog traps focus above PlayerUi and retries a purchase once'
   await expect(failure).toHaveCount(0)
   await expect(shop).toBeVisible()
   const saved = await snapshot(page)
-  expect(saved.giocatore1.monete).toBe(600)
+  expect(saved.giocatore1.monete).toBe(650)
   expect(saved.giocatore1.inventario.potion).toBe(1)
   expect(saved.giocatore1.squadra).toEqual(before.giocatore1.squadra)
   expect(saved.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
