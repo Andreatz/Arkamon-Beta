@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
-import type { SceneId } from '@/types'
+import type { NavigazioneScena, SceneId } from '@/types'
 import { SceneTransitionOverlay } from './SceneTransitionOverlay'
 import { getSceneTransitionProfile } from './sceneTransitionProfiles'
 import './sceneTransitions.css'
 
-type PreviewChoice = 'ordinary' | 'evolution' | 'battle'
+type PreviewChoice = 'ordinary' | 'zoom-in' | 'zoom-out' | 'diagonal' | 'brush' | 'iris' | 'white' | 'black' | 'evolution' | 'battle'
 
-const SCENARIOS: Record<PreviewChoice, { scena: SceneId; label: string; background: string }> = {
-  ordinary: { scena: 'mappa-principale', label: 'Esplorazione', background: '/maps/Mappa-Finale.jpg' },
-  evolution: { scena: 'evoluzione', label: 'Evoluzione', background: '/backgrounds/evolution.png' },
-  battle: { scena: 'battaglia', label: 'Battaglia', background: '/backgrounds/battle_forest.jpg' },
+const SCENARIOS: Record<PreviewChoice, { scena: SceneId; origin?: NavigazioneScena; payload?: Record<string, unknown>; label: string; option: string; background: string }> = {
+  ordinary: { scena: 'mappa-principale', label: 'Esplorazione', option: 'Dissolvenza breve', background: '/maps/Mappa-Finale.jpg' },
+  'zoom-in': { scena: 'citta', payload: { luogo: 'Venezia' }, origin: { scena: 'mappa-principale' }, label: 'Ingresso a Venezia', option: 'Zoom nel nodo (iride)', background: '/maps/Mappa-Finale.jpg' },
+  'zoom-out': { scena: 'mappa-principale', origin: { scena: 'citta', payload: { luogo: 'Venezia' } }, label: 'Ritorno alla mappa', option: 'Zoom indietro', background: '/maps/Mappa-Finale.jpg' },
+  diagonal: { scena: 'percorso', payload: { luogo: 'Percorso_1' }, origin: { scena: 'citta', payload: { luogo: 'Venezia' } }, label: 'Percorso 1', option: 'Taglio diagonale', background: '/backgrounds/battle_forest.jpg' },
+  brush: { scena: 'laboratorio', origin: { scena: 'titolo' }, label: 'Laboratorio', option: 'Pennellata', background: '/backgrounds/battle_forest.jpg' },
+  iris: { scena: 'mappa-principale', origin: { scena: 'laboratorio' }, label: 'Partenza dal laboratorio', option: 'Iride centrata', background: '/maps/Mappa-Finale.jpg' },
+  white: { scena: 'percorso', payload: { luogo: 'Percorso_1' }, origin: { scena: 'battaglia' }, label: 'Fine della battaglia', option: 'Al bianco', background: '/backgrounds/battle_forest.jpg' },
+  black: { scena: 'titolo', origin: { scena: 'mappa-principale' }, label: 'Titolo', option: 'Al nero', background: '/maps/Mappa-Finale.jpg' },
+  evolution: { scena: 'evoluzione', label: 'Evoluzione', option: 'Evoluzione (D6)', background: '/backgrounds/evolution.png' },
+  battle: { scena: 'battaglia', label: 'Battaglia', option: 'Ingresso in battaglia (VS)', background: '/backgrounds/battle_forest.jpg' },
 }
 
 interface PreviewRun {
@@ -55,7 +62,7 @@ export function SceneTransitionLab() {
           <div className="max-w-2xl space-y-2">
             <p className="text-xs font-bold uppercase tracking-widest text-red-300">Arkamon</p>
             <h1 className="text-2xl font-black sm:text-3xl">Anteprima transizioni</h1>
-            <p className="text-sm leading-relaxed text-slate-300">Passaggi rapidi per il viaggio, D6 cremisi per l’evoluzione e video VS per la battaglia.</p>
+            <p className="text-sm leading-relaxed text-slate-300">La libreria completa: dissolvenze al nero e al bianco, iride, taglio diagonale, pennellata, zoom nei nodi della mappa, D6 per l’evoluzione e scheda VS per la battaglia.</p>
           </div>
           <a href="#" className="rounded-lg border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-300">Torna al gioco</a>
         </header>
@@ -73,9 +80,7 @@ export function SceneTransitionLab() {
               }}
               className="rounded-lg border border-white/20 bg-slate-900 px-3 py-2 text-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-300 disabled:opacity-60"
             >
-              <option value="ordinary">Mappe e schermate</option>
-              <option value="evolution">Evoluzione</option>
-              <option value="battle">Ingresso in battaglia</option>
+              {(Object.keys(SCENARIOS) as PreviewChoice[]).map(id => <option key={id} value={id}>{SCENARIOS[id].option}</option>)}
             </select>
           </label>
           <button
@@ -119,7 +124,7 @@ export function SceneTransitionLab() {
               key={run.revision}
               phase={run.phase}
               startCovered={false}
-              profile={(() => { const profile = getSceneTransitionProfile({ scena: SCENARIOS[run.choice].scena }); return { ...profile, coverMs: profile.coverMs / speed, blendMs: profile.blendMs / speed, durationMs: profile.durationMs / speed, playbackRate: profile.playbackRate * speed } })()}
+              profile={(() => { const preview = SCENARIOS[run.choice]; const profile = getSceneTransitionProfile({ scena: preview.scena, payload: preview.payload }, preview.origin); return { ...profile, coverMs: profile.coverMs / speed, blendMs: profile.blendMs / speed, durationMs: profile.durationMs / speed, playbackRate: profile.playbackRate * speed } })()}
               onCovered={() => {
                 setShowDestination(true)
                 setRun((current) => current?.revision === run.revision ? { ...current, phase: 'reveal' } : current)
@@ -129,7 +134,7 @@ export function SceneTransitionLab() {
           ) : null}
         </div>
 
-        <p className="text-xs leading-relaxed text-slate-400">Il D6 custodisce la forza degli Arkamon e accompagna i momenti speciali. La navigazione ordinaria usa una dissolvenza breve. L’ingresso in battaglia usa esclusivamente il video VS dedicato, con una breve copertura scura durante il caricamento. L’anteprima non avvia una partita.</p>
+        <p className="text-xs leading-relaxed text-slate-400">Ogni passaggio sceglie la propria transizione in base alla scena di partenza e a quella di arrivo. Qui lo zoom mostra soltanto l’iride: nel gioco anche la mappa entra nel nodo. L’elemento condiviso del Deposito usa la View Transitions API e si vede solo nel gioco. L’anteprima non avvia una partita.</p>
       </div>
     </main>
   )

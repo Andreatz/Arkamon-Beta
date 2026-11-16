@@ -271,8 +271,126 @@
 
 @media (prefers-reduced-motion: reduce) {
   .arka-scene-transition, .arka-scene-transition * { animation: none !important; }
+  [data-presented-scene][data-scene-motion] { animation: none !important; }
   .arka-d6-hero, .arka-d6-wordmark { transform: translateX(-50%); }
   .arka-d6-open, .arka-d6-interior-light { display: none; }
 }
 
-.arka-scene-transition[data-transition-mode='fade'] { background:linear-gradient(135deg,#101b2b,#172a45); }
+/* Fase 3 — libreria di transizioni (audit, sezione 8.7). */
+
+.arka-scene-transition[data-transition-mode='fade'] { background: radial-gradient(ellipse at 50% 50%, #12101a, #050409 72%); }
+.arka-scene-transition[data-transition-mode='white'] { background: radial-gradient(ellipse at 50% 50%, #fffdf6, #f1e8d6 78%); }
+
+/* Le modalità disegnate dai propri livelli non sfumano l'intero overlay. */
+.arka-scene-transition:is([data-transition-mode='iris'], [data-transition-mode='zoom-in'], [data-transition-mode='zoom-out'],
+  [data-transition-mode='diagonal'], [data-transition-mode='brush'], [data-transition-mode='shared']) {
+  background: transparent;
+  animation: none;
+  opacity: 1;
+}
+
+/* Iride: un cerchio con un bordo dorato che si chiude e si riapre su --tx-x / --tx-y.
+   Il raggio è una frazione (--arka-iris-t, 0–1) della distanza dall'angolo più lontano
+   (--tx-r-max, misurata dall'overlay), così il cerchio resta visibile per tutta la durata. */
+@property --arka-iris-t {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.arka-tx-iris {
+  --arka-iris-t: 0;
+  --arka-iris: calc(var(--arka-iris-t) * var(--tx-r-max, 125vmax));
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--tx-x, 50%) var(--tx-y, 50%),
+    #f3cf86 var(--arka-iris), #8a5a26 calc(var(--arka-iris) + 3px), #07060b calc(var(--arka-iris) + 9px));
+  -webkit-mask-image: radial-gradient(circle at var(--tx-x, 50%) var(--tx-y, 50%), transparent var(--arka-iris), #000 calc(var(--arka-iris) + 1px));
+  mask-image: radial-gradient(circle at var(--tx-x, 50%) var(--tx-y, 50%), transparent var(--arka-iris), #000 calc(var(--arka-iris) + 1px));
+}
+[data-scene-transition='cover'] > .arka-tx-iris { animation: arka-tx-iris-close var(--scene-cover-ms) cubic-bezier(0.55, 0, 0.75, 0.4) both; }
+[data-scene-transition='reveal'] > .arka-tx-iris { animation: arka-tx-iris-open var(--scene-blend-ms) cubic-bezier(0.35, 0.05, 0.3, 1) both; }
+@keyframes arka-tx-iris-close { from { --arka-iris-t: 1; } to { --arka-iris-t: 0; } }
+@keyframes arka-tx-iris-open { from { --arka-iris-t: 0; } to { --arka-iris-t: 1; } }
+
+/* Taglio diagonale: una lama scura che attraversa lo schermo da sinistra a destra. */
+.arka-tx-diagonal {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: -40%;
+  width: 180%;
+  background: linear-gradient(100deg, #0b0911 0%, #15111f 55%, #0b0911 100%);
+  transform: skewX(-18deg);
+  will-change: transform;
+}
+.arka-tx-diagonal__edge {
+  position: absolute;
+  inset: 0 auto 0 -6px;
+  width: 6px;
+  background: linear-gradient(180deg, #f3cf86, #c48a3c 50%, #f3cf86);
+  box-shadow: 0 0 24px #f3cf86aa;
+}
+.arka-tx-diagonal::after {
+  content: '';
+  position: absolute;
+  inset: 0 -6px 0 auto;
+  width: 6px;
+  background: linear-gradient(180deg, #f3cf86, #c48a3c 50%, #f3cf86);
+  box-shadow: 0 0 24px #f3cf86aa;
+}
+[data-scene-transition='cover'] > .arka-tx-diagonal { animation: arka-tx-slash-in var(--scene-cover-ms) cubic-bezier(0.7, 0, 0.84, 0.3) both; }
+[data-scene-transition='reveal'] > .arka-tx-diagonal { animation: arka-tx-slash-out var(--scene-blend-ms) cubic-bezier(0.16, 0.7, 0.3, 1) both; }
+@keyframes arka-tx-slash-in { from { transform: translateX(-110%) skewX(-18deg); } to { transform: translateX(0) skewX(-18deg); } }
+@keyframes arka-tx-slash-out { from { transform: translateX(0) skewX(-18deg); } to { transform: translateX(110%) skewX(-18deg); } }
+
+/* Pennellate: quattro strisce d'inchiostro sfalsate. */
+.arka-tx-brush { position: absolute; inset: 0; overflow: hidden; }
+.arka-tx-brush__stroke {
+  position: absolute;
+  left: -8%;
+  width: 116%;
+  fill: #0a0810;
+  filter: drop-shadow(0 0 1px #f3cf8655);
+  will-change: transform;
+}
+[data-scene-transition='cover'] .arka-tx-brush__stroke {
+  animation: arka-tx-brush-in calc(var(--scene-cover-ms) * 0.8) cubic-bezier(0.55, 0, 0.75, 0.35) both;
+  animation-delay: calc(var(--scene-cover-ms) * var(--tx-stroke-delay, 0));
+}
+[data-scene-transition='reveal'] .arka-tx-brush__stroke {
+  animation: arka-tx-brush-out calc(var(--scene-blend-ms) * 0.8) cubic-bezier(0.2, 0.65, 0.35, 1) both;
+  animation-delay: calc(var(--scene-blend-ms) * var(--tx-stroke-delay, 0));
+}
+@keyframes arka-tx-brush-in { from { transform: translateX(-108%); } to { transform: translateX(0); } }
+@keyframes arka-tx-brush-out { from { transform: translateX(0); } to { transform: translateX(108%); } }
+
+/* Una transizione che parte coperta (navigazione interrotta) mostra subito i livelli chiusi. */
+.arka-scene-transition[data-start-covered='true'][data-scene-transition='cover'] :is(.arka-tx-iris, .arka-tx-diagonal, .arka-tx-brush__stroke) { animation: none; }
+.arka-scene-transition[data-start-covered='true'][data-scene-transition='cover'] .arka-tx-diagonal { transform: skewX(-18deg); }
+.arka-scene-transition[data-scene-transition='playing'] :is(.arka-tx-iris, .arka-tx-diagonal, .arka-tx-brush__stroke) { animation: none; }
+.arka-scene-transition[data-scene-transition='playing'] .arka-tx-diagonal { transform: skewX(-18deg); }
+.arka-scene-transition[data-transition-mode='brush']:is([data-scene-transition='playing'], [data-start-covered='true'][data-scene-transition='cover']) { background: #0a0810; }
+
+/* Camera di scena: entra nel nodo della mappa e la scena successiva si assesta dallo stesso punto. */
+[data-presented-scene][data-scene-motion] { transform-origin: var(--tx-x, 50%) var(--tx-y, 50%); will-change: transform; }
+[data-presented-scene][data-scene-motion='zoom-in-cover'] { animation: arka-tx-push-in var(--tx-cover-ms) cubic-bezier(0.55, 0, 0.85, 0.4) both; }
+[data-presented-scene][data-scene-motion='zoom-in-reveal'] { animation: arka-tx-settle var(--tx-reveal-ms) cubic-bezier(0.16, 0.84, 0.3, 1) both; }
+[data-presented-scene][data-scene-motion='zoom-out-cover'] { animation: arka-tx-pull-back var(--tx-cover-ms) cubic-bezier(0.55, 0, 0.85, 0.4) both; }
+[data-presented-scene][data-scene-motion='zoom-out-reveal'] { animation: arka-tx-zoom-out var(--tx-reveal-ms) cubic-bezier(0.2, 0.75, 0.25, 1) both; }
+@keyframes arka-tx-push-in { from { transform: scale(1); } to { transform: scale(2.6); } }
+@keyframes arka-tx-settle { from { transform: scale(1.22); } to { transform: scale(1); } }
+@keyframes arka-tx-pull-back { from { transform: scale(1); } to { transform: scale(0.84); } }
+@keyframes arka-tx-zoom-out { from { transform: scale(2.4); } to { transform: scale(1); } }
+
+/* Elemento condiviso (View Transitions API): durata comune a gruppo e istantanee. */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: var(--arka-vt-ms, 380ms);
+  animation-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+/* Preparazione: overlay invisibile e fermo finché la scena non è un livello pronto. */
+.arka-scene-transition[data-scene-transition='prime'] { animation: none !important; opacity: 0 !important; }
+.arka-scene-transition[data-scene-transition='prime'] * { animation: none !important; }

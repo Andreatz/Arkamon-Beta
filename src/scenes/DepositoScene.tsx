@@ -1,7 +1,11 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { useGameStore } from '@store/gameStore'
 
-const PlayerUi = lazy(() => import('@/player-ui/PlayerUi').then(module => ({ default: module.PlayerUi })))
+const loadPlayerUi = () => import('@/player-ui/PlayerUi')
+const PlayerUi = lazy(() => loadPlayerUi().then(module => ({ default: module.PlayerUi })))
+// La scena serve solo a mostrare il deposito: il modulo parte insieme a lei, durante la
+// copertura della transizione, così l'elemento condiviso trova subito il pannello.
+void loadPlayerUi()
 
 /** Studio edits this same composition; the historical deposit remains in its lab. */
 export function DepositoScene() {
@@ -16,6 +20,6 @@ export function DepositoScene() {
     return () => document.removeEventListener('keydown', close)
   }, [scenaIndietro])
   return <div className="pu-scene-host"><Suspense fallback={<p role="status">Caricamento deposito…</p>}>
-    <PlayerUi initialScreen="deposito" initialPlayerId={giocatoreAttivo} onClose={scenaIndietro} />
+    <PlayerUi initialScreen="deposito" initialPlayerId={giocatoreAttivo} onClose={scenaIndietro} sharedElement="deposito" />
   </Suspense></div>
 }

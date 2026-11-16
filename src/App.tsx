@@ -19,6 +19,9 @@ import { RegiaPause } from '@/regia/RegiaPause'
 import { AppliedUiDesign } from '@/ui-studio/AppliedUiDesign'
 import { isUiStudioPreview } from '@/ui-studio/previewMode'
 import { MotionRoot } from '@/motion/MotionRoot'
+import { decodeImage } from '@/components/transitions/sceneTransitionRuntime'
+import { assetUrl } from '@/utils/assetUrl'
+import { getBackground } from '@/data/backgrounds'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
@@ -28,15 +31,27 @@ const BattleDiceLab = lazy(() => import('@/components/battle/BattleDiceLab').the
 const MotionLab = lazy(() => import('@/motion/MotionLab').then((module) => ({ default: module.MotionLab })))
 const DepositLab = lazy(() => import('@/components/deposit/DepositLab').then((module) => ({ default: module.DepositLab })))
 const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then((module) => ({ default: module.DarklawAnimationLab })))
-const MappaGrigliaScene = lazy(() => import('@scenes/MappaGrigliaScene').then((module) => ({ default: module.MappaGrigliaScene })))
-const LaboratorioScene = lazy(() => import('@scenes/LaboratorioScene').then((module) => ({ default: module.LaboratorioScene })))
-const MappaPrincipaleScene = lazy(() => import('@scenes/MappaPrincipaleScene').then((module) => ({ default: module.MappaPrincipaleScene })))
-const BattagliaScene = lazy(() => import('@scenes/BattagliaScene').then((module) => ({ default: module.BattagliaScene })))
-const PercorsoScene = lazy(() => import('@scenes/PercorsoScene').then((module) => ({ default: module.PercorsoScene })))
-const CittaScene = lazy(() => import('@scenes/CittaScene').then((module) => ({ default: module.CittaScene })))
-const DepositoScene = lazy(() => import('@scenes/DepositoScene').then((module) => ({ default: module.DepositoScene })))
-const EvoluzioneScene = lazy(() => import('@scenes/EvoluzioneScene').then((module) => ({ default: module.EvoluzioneScene })))
-const LeagueScene = lazy(() => import('@/league/LeagueScene').then((module) => ({ default: module.LeagueScene })))
+// Caricatori delle scene: condivisi fra `lazy` e il precaricamento delle transizioni.
+const sceneLoaders = {
+  'mappa-griglia': () => import('@scenes/MappaGrigliaScene'),
+  laboratorio: () => import('@scenes/LaboratorioScene'),
+  'mappa-principale': () => import('@scenes/MappaPrincipaleScene'),
+  battaglia: () => import('@scenes/BattagliaScene'),
+  percorso: () => import('@scenes/PercorsoScene'),
+  citta: () => import('@scenes/CittaScene'),
+  deposito: () => import('@scenes/DepositoScene'),
+  evoluzione: () => import('@scenes/EvoluzioneScene'),
+  lega: () => import('@/league/LeagueScene'),
+} satisfies Partial<Record<SceneId, () => Promise<unknown>>>
+const MappaGrigliaScene = lazy(() => sceneLoaders['mappa-griglia']().then((module) => ({ default: module.MappaGrigliaScene })))
+const LaboratorioScene = lazy(() => sceneLoaders.laboratorio().then((module) => ({ default: module.LaboratorioScene })))
+const MappaPrincipaleScene = lazy(() => sceneLoaders['mappa-principale']().then((module) => ({ default: module.MappaPrincipaleScene })))
+const BattagliaScene = lazy(() => sceneLoaders.battaglia().then((module) => ({ default: module.BattagliaScene })))
+const PercorsoScene = lazy(() => sceneLoaders.percorso().then((module) => ({ default: module.PercorsoScene })))
+const CittaScene = lazy(() => sceneLoaders.citta().then((module) => ({ default: module.CittaScene })))
+const DepositoScene = lazy(() => sceneLoaders.deposito().then((module) => ({ default: module.DepositoScene })))
+const EvoluzioneScene = lazy(() => sceneLoaders.evoluzione().then((module) => ({ default: module.EvoluzioneScene })))
+const LeagueScene = lazy(() => sceneLoaders.lega().then((module) => ({ default: module.LeagueScene })))
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
 const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
@@ -119,7 +134,7 @@ function App() {
       <PlayerTools />
       <SaveFailureNotice />
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
-      <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene}>
+      <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene} prepareScene={prepareScene}>
         <AudioController />
       </SceneTransition>
     </div>
@@ -130,6 +145,21 @@ function LabShell({ children }: { children: React.ReactNode }) {
   return <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
     <AdminRuntime /><AppliedUiDesign /><AdminOverlay /><PlayerTools /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
   </div>
+}
+
+/** Sfondo principale della scena di arrivo, da decodificare prima della rivelazione. */
+function sceneArtwork(navigation: NavigazioneScena): string | null {
+  if (navigation.scena === 'mappa-principale') return assetUrl('/maps/Mappa-Finale.jpg')
+  if (navigation.scena !== 'citta' && navigation.scena !== 'percorso') return null
+  const location = String(navigation.payload?.luogo ?? (navigation.scena === 'citta' ? 'Venezia' : 'Percorso_1'))
+  const localMap = getLocalMap(location)
+  return localMap ? assetUrl(localMap.image) : getBackground(location)
+}
+
+function prepareScene(navigation: NavigazioneScena): Promise<unknown> {
+  const loader = (sceneLoaders as Partial<Record<SceneId, () => Promise<unknown>>>)[navigation.scena]
+  const artwork = sceneArtwork(navigation)
+  return Promise.all([loader?.(), artwork ? decodeImage(artwork) : undefined])
 }
 
 function renderPresentedScene(navigation: NavigazioneScena) {

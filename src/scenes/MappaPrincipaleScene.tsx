@@ -730,6 +730,7 @@ export function MappaPrincipaleScene() {
         <GameButton
           onClick={apriDeposito}
           className="h-full w-full overflow-hidden px-2 py-1 text-sm"
+          data-shared-element="deposito"
         >
           <span className="arka-layout-content block truncate">Deposito</span>
         </GameButton>
@@ -831,6 +832,7 @@ export function MappaPrincipaleScene() {
                 }`}
                 style={{ width: iconSize, height: iconSize }}
                 data-world-map-marker
+                data-transition-anchor={luogo.nome}
               >
                 <img
                   src={assetUrl(getMapNodeIcon(luogo.nome, coord.tipo))}
