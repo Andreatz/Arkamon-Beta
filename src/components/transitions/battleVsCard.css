@@ -1,0 +1,118 @@
+/*
+ * Scheda VS. Le durate sono frazioni di --scene-dice-ms (durata della
+ * transizione già scalata dalla velocità): nessun valore assoluto.
+ */
+.battle-vs {
+  --vs-t: var(--scene-dice-ms, 2760ms);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 50%, #1b2a44 0%, #0a0f1c 70%);
+  font-family: var(--arka-font-heading);
+}
+
+.battle-vs__side { position: absolute; top: 0; bottom: 0; width: 62%; overflow: hidden; }
+.battle-vs__side.is-left {
+  left: -6%;
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
+  animation: battle-vs-in-left calc(var(--vs-t) * 0.14) cubic-bezier(0.16, 1, 0.3, 1) both;
+  --vs-accent: #22d3ee;
+}
+.battle-vs__side.is-right {
+  right: -6%;
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+  animation: battle-vs-in-right calc(var(--vs-t) * 0.14) cubic-bezier(0.16, 1, 0.3, 1) calc(var(--vs-t) * 0.05) both;
+  --vs-accent: #f43f5e;
+}
+@keyframes battle-vs-in-left { from { transform: translateX(-70%); } to { transform: none; } }
+@keyframes battle-vs-in-right { from { transform: translateX(70%); } to { transform: none; } }
+
+.battle-vs__art-frame { position: absolute; inset: 0; }
+.battle-vs__art-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #0a0f1cf0 0%, transparent 45%), linear-gradient(90deg, color-mix(in srgb, var(--vs-accent) 28%, transparent), transparent 60%);
+}
+.is-right .battle-vs__art-frame::after { background: linear-gradient(0deg, #0a0f1cf0 0%, transparent 45%), linear-gradient(270deg, color-mix(in srgb, var(--vs-accent) 28%, transparent), transparent 60%); }
+.battle-vs__art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: battle-vs-drift var(--vs-t) linear both;
+}
+.battle-vs__art.is-sprite { object-fit: contain; padding: 12% 18% 26%; }
+.is-right .battle-vs__art { animation-name: battle-vs-drift-right; }
+@keyframes battle-vs-drift { from { transform: scale(1.14) translateX(-3%); } to { transform: scale(1.02) translateX(2%); } }
+@keyframes battle-vs-drift-right { from { transform: scale(1.14) translateX(3%); } to { transform: scale(1.02) translateX(-2%); } }
+
+.battle-vs__plate {
+  position: absolute;
+  bottom: 9%;
+  display: grid;
+  gap: 0.15em;
+  color: #f8fafc;
+  text-shadow: 0 3px 0 #0a0f1c;
+  animation: battle-vs-plate calc(var(--vs-t) * 0.16) cubic-bezier(0.16, 1, 0.3, 1) calc(var(--vs-t) * 0.2) both;
+}
+.is-left .battle-vs__plate { left: 13%; justify-items: start; }
+.is-right .battle-vs__plate { right: 13%; justify-items: end; text-align: right; }
+@keyframes battle-vs-plate { from { opacity: 0; transform: translateY(30%); } to { opacity: 1; transform: none; } }
+.battle-vs__kicker { font-size: clamp(12px, 1.3vw, 24px); letter-spacing: 0.3em; text-transform: uppercase; color: var(--vs-accent); }
+.battle-vs__name { font-size: clamp(30px, 4.6vw, 90px); line-height: 0.95; text-transform: uppercase; }
+.battle-vs__pokemon { font-size: clamp(13px, 1.4vw, 26px); color: #cbd5e1; }
+
+/* Cucitura diagonale: compare quando i due lati si toccano. */
+.battle-vs__seam {
+  position: absolute;
+  left: 50%;
+  top: -10%;
+  width: 6px;
+  height: 120%;
+  margin-left: -3px;
+  background: linear-gradient(180deg, #22d3ee, #f8fafc 50%, #f43f5e);
+  box-shadow: 0 0 24px #f8fafc, 0 0 60px #fbbf24;
+  transform: rotate(12deg) scaleY(0);
+  animation: battle-vs-seam calc(var(--vs-t) * 0.1) cubic-bezier(0.16, 1, 0.3, 1) calc(var(--vs-t) * 0.13) both;
+}
+@keyframes battle-vs-seam { to { transform: rotate(12deg) scaleY(1); } }
+
+.battle-vs__flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  /* forwards e non both: durante il ritardo il lampo deve restare spento. */
+  animation: battle-vs-flash calc(var(--vs-t) * 0.16) ease-out calc(var(--vs-t) * 0.17) forwards;
+}
+@keyframes battle-vs-flash { 0% { opacity: 0.85; } 100% { opacity: 0; } }
+
+.battle-vs__emblem {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  font-size: clamp(64px, 11vw, 220px);
+  line-height: 1;
+  color: #fde68a;
+  -webkit-text-stroke: 0.05em #0a0f1c;
+  paint-order: stroke fill;
+  text-shadow: 0 0 0.25em #f59e0b, 0 0.06em 0 #0a0f1c;
+  transform: translate(-50%, -50%);
+  animation: battle-vs-emblem calc(var(--vs-t) * 0.14) cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--vs-t) * 0.15) both;
+}
+.battle-vs[data-battle-vs='generic'] .battle-vs__emblem { font-size: clamp(40px, 7vw, 140px); }
+@keyframes battle-vs-emblem {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(2.8) rotate(-8deg); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+@media (max-width: 640px) {
+  .battle-vs__side { width: 80%; }
+  .battle-vs__side.is-left { clip-path: polygon(0 0, 100% 0, 100% 50%, 0 62%); left: 0; width: 100%; }
+  .battle-vs__side.is-right { clip-path: polygon(0 62%, 100% 50%, 100% 100%, 0 100%); right: 0; width: 100%; }
+  .battle-vs__plate { bottom: auto; }
+  .is-left .battle-vs__plate { top: 10%; left: 6%; }
+  .is-right .battle-vs__plate { bottom: 8%; right: 6%; }
+  .battle-vs__seam { display: none; }
+}

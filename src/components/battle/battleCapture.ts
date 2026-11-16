@@ -1,0 +1,51 @@
+/**
+ * Messa in scena della cattura come funzione pura.
+ *
+ * Il motore ha già deciso tutto (`tentaCattura`): tre d6, somma, soglia ed
+ * esito. Qui i tre dadi diventano le oscillazioni della sfera: ognuna rivela
+ * un dado e la somma parziale. La sfera si apre al primo dado che porta la
+ * somma oltre la soglia; se resiste a tutti e tre, la cattura riesce.
+ */
+
+export interface CaptureStep {
+  /** Valore del dado rivelato da questa oscillazione (assente con la Masterball). */
+  die: number | null
+  /** Somma parziale dopo questo dado. */
+  total: number
+  /** true se la sfera resiste ancora dopo questo dado. */
+  holds: boolean
+}
+
+export interface CapturePlan {
+  kind: 'dice' | 'master'
+  steps: CaptureStep[]
+  caught: boolean
+  /** Somma massima che consente la cattura (i dadi sono interi). */
+  maxTotal: number | null
+}
+
+/** La soglia del motore può essere decimale: con dadi interi conta la sua parte intera. */
+export function captureMaxTotal(soglia: number): number {
+  if (!Number.isFinite(soglia)) return 0
+  return Math.floor(soglia + 1e-9)
+}
+
+export function planDiceCapture({ tiri, soglia, riuscita }: { tiri: readonly number[]; soglia: number; riuscita: boolean }): CapturePlan {
+  const maxTotal = captureMaxTotal(soglia)
+  const steps: CaptureStep[] = []
+  let total = 0
+  for (const die of tiri.slice(0, 3)) {
+    total += die
+    // Sull'ultimo dado l'esito è quello del motore, anche se una soglia anomala lo contraddicesse.
+    const last = steps.length === Math.min(3, tiri.length) - 1
+    const holds = last ? riuscita : total <= maxTotal
+    steps.push({ die, total, holds })
+    if (!holds) break
+  }
+  return { kind: 'dice', steps, caught: riuscita, maxTotal }
+}
+
+/** Masterball: tre oscillazioni senza dadi, sempre riuscita. */
+export function planMasterCapture(): CapturePlan {
+  return { kind: 'master', steps: [0, 0, 0].map(() => ({ die: null, total: 0, holds: true })), caught: true, maxTotal: null }
+}

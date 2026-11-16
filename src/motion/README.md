@@ -103,3 +103,20 @@ La regia dell'attacco vive in `src/components/battle`:
 
 Il danno compare soltanto in `damageReveal`, cioè dopo che i dadi lo hanno
 rivelato: la regola "nessun KO prima dei dadi" resta valida.
+
+### Momenti speciali (Fase 2)
+
+- **Mossa Suprema** — `attackStart({ suprema: true, speciesId })` mostra prima
+  `SupremeCutIn` (illustrazione dell'Arkamon in una fascia diagonale, linee di
+  velocità nel colore del tipo) e si risolve a fine stacco: solo allora parte
+  l'animazione dell'attacco. Con il movimento ridotto lo stacco non c'è.
+- **Cattura** — `capture(plan)` mette in scena un esito già deciso dal motore:
+  lancio, assorbimento, una oscillazione per dado (`battleCapture.ts`), esito.
+  La sfera si apre al primo dado che porta la somma oltre la soglia. Una
+  cattura riuscita è salvata prima dell'animazione.
+- **Evoluzione** — `evolutionChoreography.ts` calcola l'alternanza sempre più
+  rapida delle sagome; `EvoluzioneScene` aggiunge vortice, lampo bianco e
+  rivelazione con l'illustrazione della nuova specie.
+- **Scheda VS** — modalità di transizione `battle-vs` (`BattleVsCard.tsx`):
+  i due lati entrano in diagonale con l'illustrazione del primo Arkamon. La
+  modalità `battle-video` resta supportata ma non è più usata.
