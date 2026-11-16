@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
+import { forwardRef, useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useAdminStore } from '@/store/adminStore'
 import { getPokemon } from '@/data/index'
@@ -18,23 +18,27 @@ import type { AdminBattleLayoutKey, AdminLayoutRect, AdminBattleLayout } from '@
 import type { PokemonIstanza, MossaDef, Stato, TipoPokemon } from '@/types'
 
 
-export function BattleLayoutItem({
-  layoutKey,
-  label,
-  rect,
-  editing,
-  onChange,
-  children,
-}: {
+interface BattleLayoutItemProps {
   layoutKey: AdminBattleLayoutKey
   label: string
   rect: AdminLayoutRect
   editing: boolean
   onChange: (key: AdminBattleLayoutKey, rect: AdminLayoutRect) => void
   children: ReactNode
-}) {
+}
+
+/** Con il ref inoltrato AnimatePresence può misurare lo sprite che esce quando cambia l'Arkamon in campo. */
+export const BattleLayoutItem = forwardRef<HTMLDivElement, BattleLayoutItemProps>(function BattleLayoutItem({
+  layoutKey,
+  label,
+  rect,
+  editing,
+  onChange,
+  children,
+}, ref) {
   return (
     <AdminLayoutItem
+      ref={ref}
       rootSelector="[data-battle-layout-root]"
       label={label}
       rect={rect}
@@ -47,7 +51,7 @@ export function BattleLayoutItem({
       {children}
     </AdminLayoutItem>
   )
-}
+})
 
 export type ImpactPulseDisplay = {
   id: number

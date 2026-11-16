@@ -212,7 +212,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
       </Suspense>
     </main>
 
-    <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} azioni disponibili` : ''}</span>
+    <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} ${turn.azioniRimaste === 1 ? 'azione disponibile' : 'azioni disponibili'}` : ''}</span>
       <span className="pu-keyboard-hint">↑ ↓ Seleziona · Invio Conferma · Esc Indietro</span><PresentManagementControl screen={visibleTool ?? screen} playerId={playerId} instanceId={instanceId} /><StudioCommand className="pu-resume-command" data-ui-id="resume-journey" selected onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</StudioCommand>
     </footer>
   </div></SplashArtworkProvider>

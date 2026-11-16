@@ -1,0 +1,10 @@
+/* Palco, livelli ed effetti a schermo intero del modulo di regia. */
+.arka-motion-stage { overflow: hidden; }
+.arka-motion-world { position: absolute; inset: 0; transform-origin: 50% 50%; }
+.arka-motion-layer { position: absolute; inset: 0; transform-origin: 50% 50%; }
+
+.arka-motion-fx { position: absolute; inset: 0; z-index: 60; overflow: hidden; pointer-events: none; }
+.arka-motion-fx__veil { position: absolute; inset: 0; opacity: 0; }
+.arka-motion-fx__bar { position: absolute; left: 0; right: 0; height: 9%; background: var(--motion-fx-black); }
+.arka-motion-fx__bar--top { top: 0; transform-origin: 50% 0; }
+.arka-motion-fx__bar--bottom { bottom: 0; transform-origin: 50% 100%; }

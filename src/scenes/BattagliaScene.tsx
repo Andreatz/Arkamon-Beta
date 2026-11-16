@@ -21,7 +21,7 @@ import { useAudienceTurn } from '@/audience/useAudienceTurn'
 import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
-import { useState, useEffect, useRef, useCallback, useContext } from 'react'
+import { useState, useEffect, useRef, useCallback, useContext, useMemo } from 'react'
 import { UiPreviewViewContext } from '@/ui-studio/UiPreviewViewContext'
 import { BattleLayoutProvider, useResolvedBattleLayout } from '@/ui-studio/battleLayout'
 import { useRegiaStore } from '@/regia/regiaStore'
@@ -82,6 +82,9 @@ import {
   prepareMoveVfxPlayback,
 } from '@/components/vfx/preloadVfxAssets'
 import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
+import { getBattleSideCenter } from '@/components/vfx/battleVfxPosition'
+import { Stage, StageLayer } from '@/motion/Stage'
+import { useCameraRig } from '@/motion/useCameraRig'
 import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
 import {
   BATTLE_DICE_ASSET_IDS,
@@ -160,7 +163,7 @@ export function BattagliaScene() {
   const audienceDuration = useAudienceStore((s) => s.durationSeconds)
   const audienceBattleId = useRef(initialCheckpoint?.audienceBattleId ?? createAudienceBattleId())
   const { chronicle, current: chronicleRef, beginAction, append: appendChronicle } = useBattleChronicle(battaglia?.cronaca, audienceBattleId.current)
-  const { reducedMotion, speed: animationSpeed } = useGameMotionPreferences()
+  const { reducedMotion } = useGameMotionPreferences()
   const opponentTurnNumber = useRef(initialCheckpoint?.opponentTurnNumber ?? 0)
   type PendingAudience = NonNullable<BattleCheckpoint['audiencePending']> & { pokemon: PokemonIstanza; messages: string[] }
   const [audienceChoice, setAudienceChoice] = useState<PendingAudience | null>(null)
@@ -225,6 +228,13 @@ export function BattagliaScene() {
   const [bagOpen, setBagOpen] = useState(false)
   const assetReadiness = useBattleAssetReadiness([pkmnA?.specieId ?? 1, pkmnB?.specieId ?? 13], [...squadraA, ...squadraB].map(pokemon => pokemon.specieId))
   const battleLayout = useResolvedBattleLayout(bagOpen ? 'bag' : diceRoll ? 'dice' : previewView)
+  // Cinepresa del mondo di battaglia: l'HUD resta fuori e non viene mai mosso.
+  const battleFocusPoints = useMemo(() => {
+    const player = getBattleSideCenter(battleLayout, 'A')
+    const enemy = getBattleSideCenter(battleLayout, 'B')
+    return { player: { x: player.x / 100, y: player.y / 100 }, enemy: { x: enemy.x / 100, y: enemy.y / 100 } }
+  }, [battleLayout])
+  const battleRig = useCameraRig({ focusPoints: battleFocusPoints })
   const [pendingCaptureSave, setPendingCaptureSave] = useState<{ masterball: boolean } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
@@ -266,7 +276,6 @@ export function BattagliaScene() {
   const [shakeStrengthPx, setShakeStrengthPx] = useState(8)
   const [shakeDurationMs, setShakeDurationMs] = useState(260)
   const [presentationPaused, setPresentationPaused] = useState(false)
-  const [cameraShake, setCameraShake] = useState<{ px: number; ms: number } | null>(null)
   /** In PvP: vero quando si attende la scelta della mossa di B (input umano). */
   const [mostraMoseB, setMostraMoseB] = useState(false)
   const [attesaAvversario, setAttesaAvversario] = useState<PokemonIstanza | null>(null)
@@ -285,11 +294,14 @@ export function BattagliaScene() {
   >(initialCheckpoint?.evolutions ?? [])
   const luogoRitornoRef = useRef(battaglia?.luogoRitorno ?? 'mappa-principale')
   const paused = useRegiaStore(state => state.paused)
-  const rivalDisplayName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? 'Rivale'
+  // In un incontro selvatico non c'è alcun rivale: il turno è dell'Arkamon selvatico.
+  const wildDisplayName = battaglia?.tipo === 'Selvatico' && pkmnB ? `${getPokemon(pkmnB.specieId)?.nome ?? 'Arkamon'} selvatico` : null
+  const rivalDisplayName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? wildDisplayName ?? 'Rivale'
   const controlStatus = paused ? 'Pausa di regia' : terminata ? 'Battaglia finita'
     : pendingCaptureSave ? 'Cattura in attesa di salvataggio'
     : audienceChoice ? audienceChoice.request.channel === 'boss' ? `Ospite · ${audienceChoice.request.trainer.name} · sceglie la mossa` : 'Pubblico NPC · votazione in corso'
     : diceRoll ? 'Lancio dei dadi...' : moveVfx ? 'Animazione mossa...'
+    : azioneInCorso ? 'Azione in corso...'
     : attesaAvversario ? `Tocca a ${rivalDisplayName} · avvia il turno avversario`
     : attesaPassaggio ? `Passa il controllo a ${attesaPassaggio.direzione === 'A→B' ? rivalDisplayName : giocatore.nome}`
     : mostraMoseB ? `${rivalDisplayName} · scegli una mossa`
@@ -636,11 +648,11 @@ export function BattagliaScene() {
     }
 
     if (!reducedMotion && feedback.cameraShakeMs > 0 && feedback.cameraShakePx > 0) {
-      setCameraShake({
-        px: feedback.cameraShakePx,
-        ms: getAnimationDuration(feedback.cameraShakeMs),
+      battleRig.camera.shake({
+        amplitudePx: feedback.cameraShakePx,
+        durationMs: getAnimationDuration(feedback.cameraShakeMs),
+        rotateDeg: Math.min(0.6, feedback.cameraShakePx * 0.04),
       })
-      scheduleFeedbackTimer(() => setCameraShake(null), feedback.cameraShakeMs)
     }
 
     if (playHitSound && !getMoveVfxAssignment(move)) playSound('hit')
@@ -1539,23 +1551,12 @@ export function BattagliaScene() {
         </>
       )}
 
-      <motion.div data-battle-world className="battle-world absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgBattaglia})` }}
-      animate={
-        cameraShake
-          ? {
-              x: [0, -cameraShake.px, cameraShake.px, -cameraShake.px * 0.6, cameraShake.px * 0.4, 0],
-              y: [0, cameraShake.px * 0.25, -cameraShake.px * 0.2, cameraShake.px * 0.15, 0],
-            }
-          : { x: 0, y: 0 }
-      }
-      transition={{
-        duration: cameraShake ? cameraShake.ms / 1000 : 0.08 / animationSpeed,
-        ease: 'easeOut',
-      }}
-      >
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+      <Stage rig={battleRig} data-battle-world className="battle-world absolute inset-0">
+      {/* Il fondale è un livello lontano: nelle inquadrature si muove meno degli Arkamon e il margine copre i bordi durante lo shake. */}
+      <StageLayer depth={0.9} bleed={1.03} className="bg-cover bg-center" style={{ backgroundImage: `url(${bgBattaglia})` }}>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+      </StageLayer>
 
       <AnimatePresence>
         {moveVfx && <MoveVfx key={moveVfx.id} effect={moveVfx} soundEnabled
@@ -1626,7 +1627,7 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       </AnimatePresence>
 
-      </motion.div>
+      </Stage>
 
       <BattleLayoutItem
         layoutKey="enemyHp"
@@ -1662,7 +1663,8 @@ export function BattagliaScene() {
         />
       </BattleLayoutItem>
 
-      {(infoBoxMessaggi.length > 0 || !!attesaAvversario || layoutEditing) && (
+      {/* A battaglia conclusa i messaggi passano nella scheda del risultato: due riquadri sovrapposti erano illeggibili. */}
+      {(layoutEditing || (!terminata && (infoBoxMessaggi.length > 0 || !!attesaAvversario))) && (
         <BattleLayoutItem
           layoutKey="infoBox"
           label="Box messaggi"
@@ -1837,6 +1839,7 @@ export function BattagliaScene() {
       })()}
 
       {terminata && <BattleResultCard chronicle={chronicle} outcome={isSelvatico && esito === 'vittoria' && pkmnB.hp > 0 ? 'cattura' : esito}
+        messages={infoBoxMessaggi}
         gymVictory={esito === 'vittoria' && battaglia?.allenatoreId !== undefined && getAllenatore(battaglia.allenatoreId)?.tipo === 'Capopalestra'} />}
 
       {terminata && (

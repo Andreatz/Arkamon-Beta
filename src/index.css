@@ -60,6 +60,24 @@
   --transition-fast: 0.15s;
   --transition-medium: 0.3s;
   --transition-slow: 0.6s;
+
+  /*
+   * Token di movimento: specchio di src/motion/tokens.ts (un test verifica l'allineamento).
+   * --motion-scale è aggiornato da <MotionRoot />: 1 normale, 0.5 rapida, 0 con movimento ridotto.
+   */
+  --motion-scale: 1;
+  --motion-instant: calc(90ms * var(--motion-scale));
+  --motion-fast: calc(160ms * var(--motion-scale));
+  --motion-base: calc(240ms * var(--motion-scale));
+  --motion-slow: calc(400ms * var(--motion-scale));
+  --motion-scene: calc(700ms * var(--motion-scale));
+  --ease-linear: cubic-bezier(0, 0, 1, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-fx-white: #ffffff;
+  --motion-fx-black: #000000;
 }
 
 html {

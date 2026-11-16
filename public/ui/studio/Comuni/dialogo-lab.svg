@@ -39,8 +39,10 @@
     <text x="115" y="25" font-family="'Segoe UI', sans-serif" font-size="15" font-weight="900" fill="#e0f2fe" text-anchor="middle" letter-spacing="1.2">PROFESSORE</text>
 
     <!-- Testo Dialogo Multi-Riga -->
-    <text x="48" y="82" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="600" fill="#f8fafc">Scegli con cura il tuo compagno d'avventura! Sarà il</text>
-    <text x="48" y="114" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="600" fill="#f8fafc">coraggioso Vyrath, l'oscuro Darklaw, o il misterioso Felyss?</text>
+    <!-- Tre righe corte: il testo resta dentro la cornice anche dove Segoe UI non è installato. -->
+    <text x="48" y="76" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="600" fill="#f8fafc">Scegli con cura il tuo compagno d'avventura!</text>
+    <text x="48" y="106" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="600" fill="#f8fafc">Sarà il coraggioso Vyrath, l'oscuro Darklaw,</text>
+    <text x="48" y="136" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="600" fill="#f8fafc">o il misterioso Felyss?</text>
 
     <!-- Cursore Animato Continua -->
     <polygon points="550,144 568,144 559,158" fill="#67e8f9" filter="url(#cyan-neon)"/>
