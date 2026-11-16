@@ -1,6 +1,6 @@
 import { assetUrl } from '@/utils/assetUrl'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
-import { useMemo } from 'react'
+import { useMemo, type CSSProperties } from 'react'
 import { ALLENATORI, POKEMON_BASE } from '@/data'
 import { deriveArkadexProgress } from '@/arkadex/arkadexModel'
 import { getBackground } from '@/data/backgrounds'
@@ -58,6 +58,7 @@ export function MenuScreen({ playerId, onAuxiliary, onNavigate, onResume }: Menu
 
   return <div className="pu-menu-layout">
     <SpatialNavigation selectOnFocus={false} className="pu-menu-grid">{tiles.map((tile, index) => <button data-rpg-item data-ui-id={`service.${tile.id}`} type="button" key={tile.id} className={`pu-menu-tile ${index === 0 ? 'is-featured' : ''}`}
+      style={{ '--tile-index': index } as CSSProperties}
       aria-label={`Apri ${tile.title}`} disabled={!!context && tile.id !== 'settings' && tile.id !== 'challenges'}
       onClick={() => onAuxiliary(tile.id)}>
       <KitFrame id={index === 0 ? 'panel-wide' : 'panel-medium'} /><KitIcon id={tile.icon} />

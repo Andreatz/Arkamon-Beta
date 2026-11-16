@@ -6,6 +6,24 @@ import { assetUrl } from '@/utils/assetUrl'
 import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from '@/player-ui/uiAppearancePolicy'
 import './studioArtwork.css'
 import './menuArtworkFallback.css'
+import './gameDialogMotion.css'
+
+/**
+ * Finché almeno un dialogo è aperto la scena presentata arretra dietro di esso
+ * (`html[data-arka-dialog-open]`, vedi gameDialogMotion.css). Il contatore regge i dialoghi annidati.
+ */
+let openDialogs = 0
+function holdStageBehindDialog(): () => void {
+  openDialogs += 1
+  document.documentElement.setAttribute('data-arka-dialog-open', '')
+  let released = false
+  return () => {
+    if (released) return
+    released = true
+    openDialogs = Math.max(0, openDialogs - 1)
+    if (!openDialogs) document.documentElement.removeAttribute('data-arka-dialog-open')
+  }
+}
 
 export function GameDialog({ title, onClose, children, className = '', showCloseButton = true }: { title: string; onClose: () => void; children: ReactNode; className?: string; showCloseButton?: boolean }) {
   const root = useRef<HTMLElement>(null)
@@ -17,6 +35,7 @@ export function GameDialog({ title, onClose, children, className = '', showClose
     if (!dialog) return
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const release = makeDialogBackgroundInert(dialog)
+    const releaseStage = holdStageBehindDialog()
     const focusables = () => Array.from(dialog.querySelectorAll<HTMLElement>('button,input,select,textarea,a[href],summary,[tabindex]'))
       .filter(node => node.tabIndex >= 0 && !node.matches(':disabled') && !node.closest('[hidden],[inert]')
         && node.getClientRects().length > 0 && getComputedStyle(node).visibility !== 'hidden')
@@ -38,7 +57,7 @@ export function GameDialog({ title, onClose, children, className = '', showClose
     }
     document.addEventListener('keydown', keys, true)
     document.addEventListener('focusin', refocus)
-    return () => { document.removeEventListener('keydown', keys, true); document.removeEventListener('focusin', refocus); release(); if (previous?.isConnected) previous.focus() }
+    return () => { document.removeEventListener('keydown', keys, true); document.removeEventListener('focusin', refocus); release(); releaseStage(); if (previous?.isConnected) previous.focus() }
   }, [])
   return createPortal(<div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/75 p-3" data-game-dialog>
     <section ref={root} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} className={`flex max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl flex-col rounded-xl border border-violet-400 bg-slate-950 text-white shadow-2xl ${className}`}>

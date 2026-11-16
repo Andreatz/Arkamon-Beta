@@ -1,0 +1,93 @@
+/*
+ * Fase 3 — apertura dei menù (audit, sezione 8.6).
+ * La scena dietro arretra, il dialogo sale dal basso e i pannelli del Menù Partita
+ * entrano dai bordi a cascata; le tessere del menù principale si accendono in sequenza.
+ * Durate e ritardi passano per --motion-scale: 0 con il movimento ridotto.
+ * Le animazioni definiscono solo il fotogramma iniziale e usano `backwards`, così alla fine
+ * restano le trasformazioni proprie degli elementi (hover, layout).
+ */
+
+[data-presented-scene] {
+  transition: transform calc(var(--motion-scale, 1) * 420ms) cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+html[data-arka-dialog-open] [data-presented-scene]:not([data-scene-motion]) {
+  transform: scale(0.955) translateY(1.2%);
+}
+
+[data-game-dialog] {
+  backdrop-filter: blur(3px);
+  animation: arka-dialog-backdrop calc(var(--motion-scale, 1) * 240ms) ease-out backwards;
+}
+[data-game-dialog] > [role='dialog'] {
+  animation: arka-dialog-rise calc(var(--motion-scale, 1) * 380ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards;
+}
+@keyframes arka-dialog-backdrop { from { opacity: 0; } }
+@keyframes arka-dialog-rise { from { opacity: 0; transform: translateY(18px) scale(0.97); } }
+
+/* Menù Partita: ogni fascia entra dal proprio bordo. */
+.player-ui-dialog .pu-topbar { animation: arka-panel-from-top calc(var(--motion-scale, 1) * 420ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; animation-delay: calc(var(--motion-scale, 1) * 70ms); }
+.player-ui-dialog .pu-nav { animation: arka-panel-from-left calc(var(--motion-scale, 1) * 440ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; animation-delay: calc(var(--motion-scale, 1) * 120ms); }
+.player-ui-dialog .pu-page-head { animation: arka-panel-rise calc(var(--motion-scale, 1) * 400ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; animation-delay: calc(var(--motion-scale, 1) * 160ms); }
+.player-ui-dialog .pu-content { animation: arka-panel-rise calc(var(--motion-scale, 1) * 460ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; animation-delay: calc(var(--motion-scale, 1) * 200ms); }
+.player-ui-dialog .pu-footer { animation: arka-panel-from-bottom calc(var(--motion-scale, 1) * 420ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; animation-delay: calc(var(--motion-scale, 1) * 240ms); }
+
+/* Carte allenatore da sinistra, una dopo l'altra. */
+.ref-trainers > * { animation: arka-panel-from-left calc(var(--motion-scale, 1) * 460ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; }
+.ref-trainers > :nth-child(1) { animation-delay: calc(var(--motion-scale, 1) * 220ms); }
+.ref-trainers > :nth-child(2) { animation-delay: calc(var(--motion-scale, 1) * 290ms); }
+.ref-trainers > :nth-child(3) { animation-delay: calc(var(--motion-scale, 1) * 360ms); }
+.ref-trainers > :nth-child(4) { animation-delay: calc(var(--motion-scale, 1) * 420ms); }
+
+/* Tessere: compaiono e si accendono in sequenza secondo --tile-index. */
+.pu-menu-tile {
+  animation: arka-tile-pop calc(var(--motion-scale, 1) * 420ms) cubic-bezier(0.2, 0.9, 0.3, 1.15) backwards;
+  animation-delay: calc(var(--motion-scale, 1) * (260ms + var(--tile-index, 0) * 55ms));
+}
+.ref-menu-glint {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.ref-menu-glint::before {
+  content: '';
+  position: absolute;
+  inset: -10% -70%;
+  background: linear-gradient(105deg, transparent 42%, color-mix(in srgb, var(--ref-gold, #e4bf7f) 70%, transparent) 50%, transparent 58%);
+  opacity: 0;
+  animation: arka-tile-glint calc(var(--motion-scale, 1) * 760ms) ease-out both;
+  animation-delay: calc(var(--motion-scale, 1) * (380ms + var(--tile-index, 0) * 70ms));
+}
+.ref-menu-glint::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--ref-gold, #e4bf7f), inset 0 0 26px color-mix(in srgb, var(--ref-gold, #e4bf7f) 45%, transparent);
+  opacity: 0;
+  animation: arka-tile-light calc(var(--motion-scale, 1) * 640ms) ease-out both;
+  animation-delay: calc(var(--motion-scale, 1) * (380ms + var(--tile-index, 0) * 70ms));
+}
+
+@keyframes arka-panel-from-top { from { opacity: 0; transform: translateY(-28px); } }
+@keyframes arka-panel-from-left { from { opacity: 0; transform: translateX(-40px); } }
+@keyframes arka-panel-from-bottom { from { opacity: 0; transform: translateY(28px); } }
+@keyframes arka-panel-rise { from { opacity: 0; transform: translateY(16px); } }
+@keyframes arka-tile-pop { from { opacity: 0; transform: translateY(14px) scale(0.92); } }
+@keyframes arka-tile-glint {
+  0% { opacity: 1; transform: translateX(-60%); }
+  100% { opacity: 1; transform: translateX(60%); }
+}
+@keyframes arka-tile-light {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-presented-scene] { transition: none; }
+  [data-game-dialog], [data-game-dialog] > [role='dialog'], .player-ui-dialog :is(.pu-topbar, .pu-nav, .pu-page-head, .pu-content, .pu-footer),
+  .ref-trainers > *, .pu-menu-tile, .ref-menu-glint::before, .ref-menu-glint::after { animation: none; }
+}

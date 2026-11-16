@@ -120,3 +120,30 @@ rivelato: la regola "nessun KO prima dei dadi" resta valida.
 - **Scheda VS** — modalità di transizione `battle-vs` (`BattleVsCard.tsx`):
   i due lati entrano in diagonale con l'illustrazione del primo Arkamon. La
   modalità `battle-video` resta supportata ma non è più usata.
+
+## Transizioni di scena (Fase 3)
+
+`getSceneTransitionProfile(arrivo, partenza)` in `src/components/transitions/sceneTransitionProfiles.ts`
+sceglie la transizione dalla coppia di scene:
+
+| Passaggio | Modalità |
+|---|---|
+| Mappa principale → città/percorso | `zoom-in`: la mappa entra nel nodo, l'iride si chiude su di esso, la mappa locale si assesta dallo stesso punto |
+| Città/percorso → mappa principale | `zoom-out`: la mappa riparte stretta sul luogo lasciato e si allarga |
+| Mappa locale → mappa locale | `diagonal` |
+| Mappa principale ↔ Deposito | `shared` (View Transitions API; senza supporto `fade`) |
+| Fine battaglia o evoluzione, Lega | `white` |
+| Dal titolo | `brush` · dal laboratorio `iris` · verso il titolo `fade` |
+| Battaglia / evoluzione | `battle-vs` / `arkamon-dice` (invariati) |
+
+Per agganciare un punto di fuga basta `data-transition-anchor="<nome luogo>"` su un elemento della scena;
+per un elemento condiviso `data-shared-element="<nome>"` sia nella scena che esce sia in quella che entra.
+
+`SceneTransition` precarica modulo e sfondo della scena di arrivo (`prepareScene` in `App.tsx`) e rivela
+solo quando sono pronti (limite 2,5 s). Prima di animare attende che la scena sia davvero pronta: due
+fotogrammi, oppure `Animation.ready` per lo zoom, così un primo fotogramma lento non taglia l'animazione.
+`#transition-lab` mostra ogni modalità.
+
+I dialoghi (`GameDialog`) segnano `html[data-arka-dialog-open]`: la scena arretra, il dialogo sale, il Menù
+Partita entra a cascata dai bordi e le tessere del menù principale si accendono in sequenza
+(`src/components/ui/gameDialogMotion.css`). Tutte le durate passano per `--motion-scale`.

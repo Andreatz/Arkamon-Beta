@@ -66,9 +66,11 @@ export interface PlayerUiProps {
   initialAuxiliary?: PlayerUiAuxiliary
   initialShopInteractionId?: string
   onClose: () => void
+  /** Nome dell'elemento condiviso per le transizioni di scena (View Transitions API). */
+  sharedElement?: string
 }
 
-export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialInstanceId, initialAuxiliary, initialShopInteractionId, onClose }: PlayerUiProps) {
+export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialInstanceId, initialAuxiliary, initialShopInteractionId, onClose, sharedElement }: PlayerUiProps) {
   const [screen, setScreen] = useState<PlayerUiScreen>(initialScreen === 'negozio' && !initialShopInteractionId ? 'partita' : initialScreen)
   const [playerId, setPlayerId] = useState<1 | 2>(() => initialPlayerId ?? useGameStore.getState().giocatoreAttivo)
   const [instanceId, setInstanceId] = useState(initialInstanceId)
@@ -158,7 +160,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   }, [screen, tool])
 
   return <SplashArtworkProvider value={readySplash}><div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ ...(reference ? providedArtworkVariables : {}), '--pu-background': `url("${reference ? referenceScreenBackground(screen, location, readySplash) : screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-position': splashFraming?.position ?? '50% 50%' } as CSSProperties}
-    data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId}
+    data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId} data-shared-element={sharedElement}
     data-splash-frame-ready={readySplash && splashFraming ? 'true' : undefined} data-splash-frame-region={splashFraming?.region}
     data-splash-frame-mode={readySplash ? 'cover' : undefined} data-splash-focus-clear={readySplash && splashFraming ? String(splashFraming.focusFits) : undefined}
     data-reference-splash-species={readySplash?.speciesId} data-reference-splash-ready={readySplash ? 'true' : undefined}
