@@ -10,6 +10,15 @@
   src: url('/ui/studio/fonts/norwester.woff2') format('woff2');
 }
 
+/* Cinzel (OFL, licenza in src/assets/fonts/Cinzel-OFL.txt): titoli dello stile AAA. Sottoinsieme latino, pesi 400–900. */
+@font-face {
+  font-family: 'Arkamon Cinzel';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./assets/fonts/cinzel-latin-variable.woff2') format('woff2');
+}
+
 @font-face {
   font-family: 'Chela One';
   font-style: normal;

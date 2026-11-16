@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import { AppErrorBoundary } from './components/ui/AppErrorBoundary'
 import './index.css'
+import './ui-system/tokens.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

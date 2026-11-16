@@ -1,0 +1,47 @@
+/*
+ * Sistema di design Arkamon (audit UX/UI, fase U0).
+ * Token condivisi da menù, schermate e HUD: colori, scala del testo e titoli dorati.
+ * La scala del testo segue l'altezza dello schermo: a 1080 px il corpo vale 18 px,
+ * e non scende mai sotto i 16 px su schermi più bassi.
+ */
+:root {
+  /* Colori */
+  --arka-ui-night: #061727;
+  --arka-ui-panel: #0b253d;
+  --arka-ui-panel-raised: #12324f;
+  --arka-ui-ink: #fff0d7;
+  --arka-ui-ink-muted: #c9b89c;
+  --arka-ui-gold: #dfbb7b;
+  --arka-ui-gold-bright: #f9db9c;
+  --arka-ui-gold-deep: #95764e;
+  --arka-ui-danger: #e2604f;
+  --arka-ui-success: #7fcf8a;
+
+  /* Font */
+  --arka-ui-font-display: 'Arkamon Cinzel', Georgia, serif;
+  --arka-ui-font-body: Georgia, serif;
+
+  /* Scala del testo legata all'altezza (1vh = 10.8 px a 1080p) */
+  --arka-size-caption: clamp(14px, 1.48vh, 22px);   /* 16 px a 1080p */
+  --arka-size-body: clamp(16px, 1.67vh, 24px);      /* 18 px a 1080p */
+  --arka-size-lead: clamp(18px, 2.04vh, 30px);      /* 22 px a 1080p */
+  --arka-size-heading: clamp(22px, 2.78vh, 40px);   /* 30 px a 1080p */
+  --arka-size-title: clamp(28px, 4.07vh, 58px);     /* 44 px a 1080p */
+  --arka-size-hero: clamp(40px, 7.4vh, 104px);      /* 80 px a 1080p */
+
+  /* Oro dei titoli */
+  --arka-gold-gradient: linear-gradient(180deg, #fff6dc 0%, #f9db9c 38%, #dfbb7b 62%, #9d7642 100%);
+}
+
+/* Titolo dorato: testo con gradiente metallico e ombra scura leggibile su ogni fondale. */
+.arka-gold-title {
+  font-family: var(--arka-ui-font-display);
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--arka-ui-gold);
+  background: var(--arka-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / .6));
+}

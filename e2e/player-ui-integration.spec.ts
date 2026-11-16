@@ -399,14 +399,17 @@ test('six match utilities use their main cards, role-based typography and a sing
     text: getComputedStyle(element.querySelector('.pu-shell')!).fontFamily,
     bodyRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-body-font').trim(),
     displayRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-display-font').trim(),
-    loaded: document.fonts.check('16px Georgia'),
+    titleRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-title-font').trim(),
+    loaded: document.fonts.check('16px Georgia') && document.fonts.check('700 32px "Arkamon Cinzel"'),
   }))
   const normalizeFont = (value: string) => value.replace(/["']/g, '').replace(/\s*,\s*/g, ',').toLowerCase()
   expect(fonts.bodyRole).toMatch(/^Georgia,/)
   expect(fonts.displayRole).toMatch(/^Georgia,/)
   const primaryFont = (value: string) => normalizeFont(value).split(',')[0]
   expect(primaryFont(fonts.button)).toBe(primaryFont(fonts.bodyRole))
-  expect(primaryFont(fonts.title)).toBe(primaryFont(fonts.displayRole))
+  // I titoli di schermata hanno un ruolo proprio: Cinzel (audit UX/UI, decisione 4).
+  expect(fonts.titleRole).toMatch(/Arkamon Cinzel/)
+  expect(primaryFont(fonts.title)).toBe('arkamon cinzel')
   expect(primaryFont(fonts.text)).toBe(primaryFont(fonts.bodyRole))
   expect(fonts.loaded).toBe(true)
   const screenshot = await page.screenshot({ path: test.info().outputPath(isMobile ? 'menu-phone.png' : 'menu-1920x1080.png') })

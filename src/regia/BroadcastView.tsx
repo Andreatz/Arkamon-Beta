@@ -1,3 +1,4 @@
+import { gameArtUrl } from '@/ui-system/GameArt'
 import { useEffect, useState, type CSSProperties } from 'react'
 import { assetUrl } from '@/utils/assetUrl'
 import { getLocalMap } from '@/data/localMaps'
@@ -113,7 +114,7 @@ export function BroadcastView({ publicOnly = false }: { publicOnly?: boolean }) 
         <div className="arka-public-battle-status" role="status">{battle.status}</div>
         {!!battle.messages.length && <div className="arka-public-message">{battle.messages.slice(-2).map((message, i) => <p key={i}>{message}</p>)}</div>}
       </BattleLayoutProvider> : snapshot.scene === 'mappa-principale' || map ? <PublicMap snapshot={snapshot} />
-        : <div className="arka-public-wait"><img className="arka-public-logo" src={assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" /><h1>{snapshot.scene === 'titolo' ? 'La corsa alla Lega' : snapshot.scene === 'laboratorio' ? 'La scelta del primo compagno' : snapshot.scene === 'evoluzione' ? 'Un compagno si sta evolvendo' : snapshot.scene === 'battaglia' ? 'Preparazione della battaglia' : snapshot.place.replace(/_/g, ' ')}</h1><p>{snapshot.scene === 'titolo' ? 'Melia e Maggi · un viaggio, un solo campione' : 'Il viaggio continua'}</p></div>}
+        : <div className="arka-public-wait"><img className="arka-public-logo" src={gameArtUrl('logo') ?? assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" /><h1>{snapshot.scene === 'titolo' ? 'La corsa alla Lega' : snapshot.scene === 'laboratorio' ? 'La scelta del primo compagno' : snapshot.scene === 'evoluzione' ? 'Un compagno si sta evolvendo' : snapshot.scene === 'battaglia' ? 'Preparazione della battaglia' : snapshot.place.replace(/_/g, ' ')}</h1><p>{snapshot.scene === 'titolo' ? 'Melia e Maggi · un viaggio, un solo campione' : 'Il viaggio continua'}</p></div>}
       <aside className="arka-public-race" aria-label="Stato della gara">{snapshot.players.map(player => <div key={player.id} data-active={snapshot.active === player.id}><strong>{player.name}</strong><span>{player.place.replace(/_/g, ' ')} · {player.badges}/8 medaglie{player.leagueWins ? ` · Lega ${player.leagueWins}/${snapshot.leagueTotal}` : ''}</span></div>)}</aside>
       {snapshot.winner && <div className="arka-public-winner">Campione della regione · {snapshot.winner}</div>}
       {snapshot.paused && <div className="arka-public-pause" role="status">Pausa di regia · il viaggio riprende tra poco</div>}

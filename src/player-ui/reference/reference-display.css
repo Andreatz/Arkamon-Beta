@@ -1,0 +1,66 @@
+/*
+ * Rifinitura tipografica e illustrazioni dello stile aurora (audit UX/UI, fase U0).
+ * Caricata per ultima fra le pelli di riferimento: Cinzel per titoli e nomi,
+ * illustrazioni game-art nelle tessere del menù e nelle icone degli oggetti.
+ */
+/* Ruolo tipografico dei titoli (decisione 4: Cinzel). Il testo resta sul ruolo --ui-body-font. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] {
+  --ui-title-font: var(--arka-ui-font-display);
+}
+
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] :is(.ref-screen-title, .ref-menu-tile h2, .ref-trainer-card h2) {
+  font-family: var(--ui-title-font);
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-screen-title {
+  color: var(--arka-ui-gold-bright);
+}
+
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-tile p {
+  font-size: max(var(--arka-size-caption), 1em);
+}
+
+/* Illustrazioni del menù: riempiono la tessera senza deformarsi. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / .45));
+  pointer-events: none;
+}
+
+/* Icone degli oggetti dipinte: stessa scatola dell'icona vettoriale. */
+.pu-kit-icon.pu-kit-icon-art {
+  display: inline-grid;
+  place-items: center;
+  overflow: visible;
+}
+.pu-kit-icon.pu-kit-icon-art > .game-art {
+  width: 118%;
+  height: 118%;
+  max-width: none;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / .5));
+}
+
+/* Testo descrittivo dell'Arkadex (scritto dall'autore in src/data/arkadexTexts.json). */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-entry-text {
+  margin-top: .6em;
+  padding: .55em .8em;
+  border-left: 2px solid var(--arka-ui-gold-deep);
+  font: italic var(--arka-size-body)/1.45 var(--arka-ui-font-body);
+  color: var(--arka-ui-ink);
+}
+
+/* Il cartiglio dell'Arkadex ha larghezza fissa: Cinzel è più largo di Georgia, si stringe per restarci dentro. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"][data-player-ui-screen="arkadex"] .ref-screen-title {
+  font-size: 31px;
+  letter-spacing: .01em;
+}
+@media (max-width: 900px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"][data-player-ui-screen="arkadex"] .ref-screen-title { font-size: 23px; }
+}
