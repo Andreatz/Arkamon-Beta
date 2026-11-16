@@ -18,6 +18,11 @@ import { CreaturePortrait, HealthBar, KitIcon } from '@/player-ui/kit'
 import { assetUrl } from '@/utils/assetUrl'
 import { openPlayerUi } from '@/player-ui/navigation'
 import './referenceLocalMap.css'
+import { nodeKinds } from '@/components/map/localNodeKinds'
+import { ALLENATORI } from '@/data'
+
+const gymLeaders = new Set(ALLENATORI.filter(trainer => trainer.tipo === 'Capopalestra').map(trainer => trainer.id))
+const isGymLeader = (trainerId: number) => gymLeaders.has(trainerId)
 
 function ActivityDialog({ open, onClose, children, title = 'Attività del luogo' }: { open: boolean; onClose: () => void; children: ReactNode; title?: string }) {
   const dialog = useRef<HTMLDivElement>(null)
@@ -96,6 +101,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const currentNode = current ? getLocalMapNode(map, current.nodeId) : null
   const pointInteractions = definitions.filter((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === currentNode?.id)
   const interactionLabels = Object.fromEntries(definitions.filter((entry) => entry.enabled && entry.mapId === map.id).map((entry) => [entry.nodeId, entry.title]))
+  const interactionKinds = nodeKinds(definitions.filter((entry) => entry.enabled && entry.mapId === map.id), isGymLeader)
   const nodeLabel = (id: string) => getLocalMapNode(map, id).label ?? id
   const player = actor === 1 ? player1 : player2
   const actorWorld = actor === 1 ? world1 : world2
@@ -139,11 +145,31 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       <GameButton tone="primary" disabled={blocked} onClick={passTurn}>Passa turno</GameButton>
     </header>
     <div className="local-map-play-area">
-      <LocalMapBoard map={map} players={players} activePlayerId={actor} remainingActions={remaining} canMove={canMove} movementReach={reach}
-        inputBlocked={blocked || activitiesOpen || interactionOpen} interactionLabels={interactionLabels} onMove={moveTo} onSelectNode={(id) => {
+      <LocalMapBoard
+        map={map}
+        players={players}
+        activePlayerId={actor}
+        remainingActions={remaining}
+        canMove={canMove}
+        movementReach={reach}
+        inputBlocked={blocked || activitiesOpen || interactionOpen}
+        interactionLabels={interactionLabels}
+        interactionKinds={interactionKinds}
+        onMove={moveTo}
+        onSelectNode={(id) => {
           setSelected(id)
-          if (definitions.some((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === id)) setInteractionOpen(true)
-        }} />
+          if (
+            definitions.some(
+              (entry) =>
+                entry.enabled &&
+                entry.mapId === map.id &&
+                entry.nodeId === id
+            )
+          ) {
+            setInteractionOpen(true)
+          }
+        }}
+      />
     </div>
     <footer className="local-map-footer">
       {isReferenceUi() && <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`}>{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}`}><CreaturePortrait pokemon={pokemon}/><strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}</div>}

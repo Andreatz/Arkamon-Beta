@@ -1,10 +1,11 @@
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import type { LocalMapDefinition, LocalMapNode, LocalMapPoint } from '@/data/localMaps'
 import { getReachableLocalMapNodes, getLocalTravelPath } from '@/engine/localMapMovement'
 import { assetUrl } from '@/utils/assetUrl'
 import './localMapBoard.css'
+import { LOCAL_NODE_KIND_LABELS, LocalNodeGlyph, type LocalNodeKind } from './localNodeKinds'
 
 export interface LocalMapPlayer {
   id: 1 | 2
@@ -21,6 +22,8 @@ export interface LocalMapBoardProps {
   movementReach?: 1 | 2
   inputBlocked?: boolean
   interactionLabels?: Record<string, string>
+  /** Tipo dell'interazione configurata su ciascun pallino, per l'icona. */
+  interactionKinds?: Record<string, LocalNodeKind>
   onMove: (nodeId: string) => boolean | void
   onSelectNode: (nodeId: string) => void
 }
@@ -165,6 +168,7 @@ export function LocalMapBoard({
   movementReach = 1,
   inputBlocked = false,
   interactionLabels = {},
+  interactionKinds = {},
   onMove,
   onSelectNode,
 }: LocalMapBoardProps) {
@@ -190,6 +194,18 @@ export function LocalMapBoard({
     return () => observer.disconnect()
   }, [])
 
+  // Camera: a ogni spostamento del giocatore di turno la mappa si avvicina al punto
+  // d'arrivo per la durata del cammino e torna larga (mai in moto a riposo).
+  const [cameraShot, setCameraShot] = useState<{ seq: number; x: number; y: number } | null>(null)
+  const lastNode = useRef({ player: activePlayerId, node: currentNode })
+  useEffect(() => {
+    const previous = lastNode.current
+    lastNode.current = { player: activePlayerId, node: currentNode }
+    if (previous.player !== activePlayerId || !previous.node || previous.node === currentNode || !currentNode) return
+    const destination = map.nodes.find(node => node.id === currentNode)
+    if (destination) setCameraShot(shot => ({ seq: (shot?.seq ?? 0) + 1, x: destination.x, y: destination.y }))
+  }, [activePlayerId, currentNode, map.nodes])
+
   const width = Math.min(bounds.width, bounds.height * imageRatio)
   const size = { width, height: width / imageRatio }
   const canChooseCurrent = !inputBlocked
@@ -197,6 +213,8 @@ export function LocalMapBoard({
 
   return (
     <div ref={root} className="local-map-board" data-local-map-root={map.id}>
+      {/* Le bande ai lati diventano la stessa illustrazione, sfocata e scurita. */}
+      <div className="local-map-ambient" style={{ backgroundImage: `url("${assetUrl(map.image)}")` }} aria-hidden="true" />
       <p id={instructionsId} className="sr-only">
         Scegli un pallino vicino evidenziato per muoverti lungo la strada.
         Seleziona il pallino su cui ti trovi per vedere il punto d’interazione.
@@ -204,7 +222,8 @@ export function LocalMapBoard({
       </p>
       <div
         className="local-map-plane"
-        style={{ width: size.width || '100%', height: size.height || '100%' }}
+        style={{ width: size.width || '100%', height: size.height || '100%', '--cam-x': `${cameraShot?.x ?? 50}%`, '--cam-y': `${cameraShot?.y ?? 50}%` } as CSSProperties}
+        data-camera-shot={cameraShot ? (cameraShot.seq % 2 ? 'a' : 'b') : undefined}
         role="group"
         aria-label={`Mappa di ${map.id.replace(/_/g, ' ')}`}
         aria-describedby={instructionsId}
@@ -247,12 +266,14 @@ export function LocalMapBoard({
           const isReachable = movementEnabled && neighbours.includes(node.id)
           const enabled = isCurrent ? canChooseCurrent : isReachable
           const label = node.label ?? `Punto ${index + 1}`
+          const kind = interactionKinds[node.id]
           return (
             <button
               key={node.id}
               type="button"
               data-local-map-node={node.id}
               data-reachable={isReachable ? 'true' : 'false'}
+              data-node-kind={kind}
               className={`local-map-node${isCurrent ? ' local-map-node--current' : ''}${isReachable ? ' local-map-node--reachable' : ''}`}
               style={{ left: `${node.x}%`, top: `${node.y}%` }}
               disabled={!enabled}
@@ -271,6 +292,7 @@ export function LocalMapBoard({
             >
               {node.drawMarker && <span className="local-map-node-marker" aria-hidden="true" />}
               <span className="local-map-node-ring" aria-hidden="true" />
+              {kind && <span className="local-map-node-kind" data-kind={kind} title={LOCAL_NODE_KIND_LABELS[kind]} aria-hidden="true"><LocalNodeGlyph kind={kind} /></span>}
             </button>
           )
         })}
