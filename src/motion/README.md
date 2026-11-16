@@ -147,3 +147,25 @@ fotogrammi, oppure `Animation.ready` per lo zoom, così un primo fotogramma lent
 I dialoghi (`GameDialog`) segnano `html[data-arka-dialog-open]`: la scena arretra, il dialogo sale, il Menù
 Partita entra a cascata dai bordi e le tessere del menù principale si accendono in sequenza
 (`src/components/ui/gameDialogMotion.css`). Tutte le durate passano per `--motion-scale`.
+
+## Interfaccia viva (Fase 4)
+
+Moduli in `src/motion/ui/` e `src/input/`:
+
+- `AnimatedNumber` — numeri che contano fino al nuovo valore (monete nel Menù Partita, nel negozio e sulla
+  mappa; livello e HP nella Squadra). Al montaggio mostra subito il valore; con `key` per creatura o
+  giocatore non conta fra due entità diverse.
+- `TiltController` — un solo ascoltatore globale: tessere e carte (`.pu-menu-tile`, `.ref-trainer-card`,
+  `.pu-team-slot`, `[data-tilt]`…) si inclinano verso il puntatore con le proprietà `rotate`/`scale`,
+  che si sommano al `transform` dei fogli esistenti; riflesso `.arka-tilt-glare` e icona sollevata.
+- `SelectionCursor scope={ref}` — cornice dorata unica che scivola verso l'elemento sotto il puntatore o
+  con il fuoco (tastiera, gamepad). Usata nel Menù Partita e nel titolo.
+- Menù Partita: `navigationDirection` sceglie scorrimento avanti/indietro fra schede e ribaltamento al
+  cambio giocatore (`data-nav-direction` su `.pu-content`); Pagina su/giù cambia scheda; la splash art ha
+  una deriva lenta e un lampo nel colore del tipo (`--arka-type-*`) al cambio creatura; le medaglie
+  ottenute si incastonano.
+- `src/components/ui/gameControls.css` — pelle unica dei controlli nativi (tendine, interruttori, cursori,
+  campi, scelta file) a specificità zero; `useConfirmDialog` sostituisce `window.confirm` (Nuova Partita).
+- `GamepadBridge` — mappatura standard: croce/levetta = frecce (con ripetizione), A conferma, B indietro,
+  Start menù, LB/RB schede, vibrazione breve; senza un gestore delle frecce sposta il fuoco
+  geometricamente. Con il gamepad attivo `html[data-input-mode="gamepad"]` e i suggerimenti a schermo.

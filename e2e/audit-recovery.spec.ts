@@ -137,10 +137,12 @@ for (const both of [false, true]) {
     const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
     const resume = page.getByRole('button', { name: 'Continua', exact: true })
     await expect(resume).toBeVisible()
-    let confirmations = 0
-    page.on('dialog', async dialog => { confirmations++; await dialog.dismiss() })
+    // La conferma è un dialogo del gioco: annullare non cambia il salvataggio.
     await page.getByRole('button', { name: 'Nuova Partita', exact: true }).click()
-    expect(confirmations).toBe(1)
+    const confirmation = page.getByRole('dialog', { name: 'Nuova partita', exact: true })
+    await expect(confirmation).toBeVisible()
+    await confirmation.getByRole('button', { name: 'Annulla', exact: true }).click()
+    await expect(confirmation).toBeHidden()
     expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)).toEqual(before)
     await resume.click()
     await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')

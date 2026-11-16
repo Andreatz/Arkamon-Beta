@@ -1,3 +1,4 @@
+import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { useEffect, useState } from 'react'
@@ -56,7 +57,7 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
   }
 
   return <section className="pu-store-screen pu-store-dedicated arka-store" aria-label={`Arkastore di ${location}`}>
-    <header className="pu-screen-heading pu-store-heading"><div><p className="pu-kicker">Scorte di viaggio · {player.nome || `Giocatore ${playerId}`}</p><h1>Arkastore · {location}</h1><p>La consultazione è libera. Un acquisto conclude il turno e aggiunge gli oggetti a questa borsa.</p></div><strong className="pu-store-balance" aria-label={`Saldo: ${player.monete} monete`}>{player.monete.toLocaleString('it-IT')} ₳</strong></header>
+    <header className="pu-screen-heading pu-store-heading"><div><p className="pu-kicker">Scorte di viaggio · {player.nome || `Giocatore ${playerId}`}</p><h1>Arkastore · {location}</h1><p>La consultazione è libera. Un acquisto conclude il turno e aggiunge gli oggetti a questa borsa.</p></div><strong className="pu-store-balance" aria-label={`Saldo: ${player.monete} monete`}><AnimatedNumber value={player.monete} /> ₳</strong></header>
     <div className="pu-store-layout">
       <KitPanel className="pu-store-catalog"><h2>Catalogo · {availableItems.length} articoli</h2>
         {reference && <nav className="pu-reference-store-categories" aria-label="Categorie del negozio">{storeCategories.map(([id, label]) => <button type="button" key={id} aria-pressed={category === id} onClick={() => setCategory(id)}><KitIcon id={`category-${id}`} />{label}</button>)}</nav>}

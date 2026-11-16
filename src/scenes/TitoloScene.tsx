@@ -8,6 +8,8 @@ import { assetUrl } from '@/utils/assetUrl'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { hasOwnedPokemon } from '@/engine/pokemonOwnership'
 import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { SelectionCursor } from '@/motion/ui/SelectionCursor'
 
 const DEFAULT_TITLE_LOGO = '/ui/logo_arkamon.png'
 const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
@@ -26,6 +28,8 @@ export function TitoloScene() {
   const starterCompletati = useGameStore((s) => hasOwnedPokemon(s.giocatore1) && hasOwnedPokemon(s.giocatore2))
   const titleLogo = useAdminStore((s) => s.theme.assets.titleLogo)
   const titleBackground = useAdminStore((s) => s.theme.assets.titleBackground)
+  const [confirm, confirmDialog] = useConfirmDialog()
+  const commands = useRef<HTMLDivElement>(null)
   const [logoFailed, setLogoFailed] = useState(false)
   const [failedBackgroundPath, setFailedBackgroundPath] = useState<string | null>(null)
 
@@ -96,6 +100,7 @@ export function TitoloScene() {
       <h1 className="sr-only">ARKAMON</h1>
 
       <motion.div
+        ref={commands}
         className="rpg-title-commands relative z-10 flex flex-col"
         onPointerEnter={() => { if (!reducedMotion) preloadSceneTransitionArtwork() }}
         onFocusCapture={() => { if (!reducedMotion) preloadSceneTransitionArtwork() }}
@@ -106,8 +111,13 @@ export function TitoloScene() {
       >
         <GameButton
           tone="primary" className="text-xl"
-          onClick={() => {
-            if (haGiocatori && !window.confirm('Vuoi iniziare una nuova partita? La partita salvata verrà sostituita.')) return
+          onClick={async () => {
+            if (haGiocatori && !await confirm({
+              title: 'Nuova partita',
+              message: 'Vuoi iniziare una nuova partita? La partita salvata verrà sostituita.',
+              confirmLabel: 'Inizia da capo',
+              danger: true,
+            })) return
             useGameStore.getState().eseguiTransazione(() => { reset(); vaiAScena('laboratorio') })
           }}
         >
@@ -122,7 +132,8 @@ export function TitoloScene() {
           </GameButton>
         )}
       </motion.div>
-
+      <SelectionCursor scope={commands} />
+      {confirmDialog}
     </div>
   )
 }

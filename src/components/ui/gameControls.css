@@ -1,0 +1,152 @@
+/*
+ * Fase 4 — controlli di gioco (audit, sezione 4 "Libreria di controlli di gioco").
+ * Un'unica pelle per i controlli nativi delle superfici di gioco: tendine, interruttori,
+ * cursori, campi numerici e di testo, scelta file. I controlli restano nativi (tastiera,
+ * lettori di schermo, menu di piattaforma e test continuano a funzionare).
+ * Tendine e campi sono dentro :where(), quindi hanno specificità zero: ogni regola già
+ * esistente (stile "reference" del Menù Partita, cornici fornite dell'Arkadex e del
+ * Deposito, quantità del negozio) prevale; dentro il Menù Partita le tendine tengono
+ * la freccia nativa. Interruttori e scelte singole, che non avevano un aspetto proprio,
+ * usano selettori più forti. L'Admin resta escluso.
+ */
+
+:where(.arka-stage, [data-game-dialog]) :where(select, input:not([type]), input[type='text'], input[type='search'], input[type='number'], textarea):where(:not(.arka-admin-panel *)) {
+  border: 1px solid color-mix(in srgb, var(--arka-control-gold) 62%, transparent);
+  border-radius: 8px;
+  background-color: var(--arka-control-bg);
+  color: var(--arka-control-text);
+  padding: 0.42em 0.75em;
+  font: inherit;
+  box-shadow: inset 0 1px 0 #ffffff10, inset 0 -8px 16px #00000040;
+  transition: border-color calc(var(--motion-scale, 1) * 160ms) ease, box-shadow calc(var(--motion-scale, 1) * 160ms) ease;
+}
+
+:where(.arka-stage, [data-game-dialog]) :where(select):where(:not(.arka-admin-panel *, .pu-shell *)) {
+  appearance: none;
+  padding-right: 2.3em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23e4bf7f' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8em center;
+  background-size: 0.8em auto;
+  cursor: pointer;
+}
+:where(.arka-stage, [data-game-dialog]) :where(select option) {
+  background: var(--arka-control-bg);
+  color: var(--arka-control-text);
+}
+
+:where(.arka-stage, [data-game-dialog]) :where(select, input, textarea):where(:not(.arka-admin-panel *)):where(:hover:not(:disabled)) {
+  border-color: var(--arka-control-gold);
+}
+:where(.arka-stage, [data-game-dialog]) :where(select, input, textarea, button):where(:not(.arka-admin-panel *)):where(:focus-visible) {
+  outline: 2px solid var(--arka-control-gold);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--arka-control-gold) 25%, transparent), 0 0 18px color-mix(in srgb, var(--arka-control-gold) 35%, transparent);
+}
+:where(.arka-stage, [data-game-dialog]) :where(select, input, textarea):where(:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Interruttore: la casella diventa una levetta con il pomello dorato.
+   Selettore più specifico degli altri: le caselle non avevano un aspetto proprio, e
+   `.pu-shell input` ne azzerava lo sfondo. --toggle-h segue l'altezza scelta altrove
+   (l'interruttore dell'audio è grande), così il pomello resta proporzionato. */
+:is(.arka-stage, [data-game-dialog]) input[type='checkbox']:not(.arka-admin-panel *) {
+  --toggle-h: 1.45em;
+  appearance: none;
+  flex: none;
+  width: calc(var(--toggle-h) * 1.8);
+  height: var(--toggle-h);
+  margin: 0 0.35em 0 0;
+  padding: 0;
+  vertical-align: middle;
+  border: 1px solid color-mix(in srgb, var(--arka-control-gold) 60%, transparent);
+  border-radius: 999px;
+  background: radial-gradient(circle at calc(var(--toggle-h) / 2) 50%, var(--arka-control-knob) 0 calc(var(--toggle-h) * 0.34), transparent calc(var(--toggle-h) * 0.37)),
+    var(--arka-control-bg);
+  box-shadow: inset 0 2px 6px #0008;
+  cursor: pointer;
+}
+:is(.arka-stage, [data-game-dialog]) input[type='checkbox']:checked:not(.arka-admin-panel *) {
+  border-color: var(--arka-control-gold);
+  background: radial-gradient(circle at calc(100% - var(--toggle-h) / 2) 50%, var(--arka-control-gold) 0 calc(var(--toggle-h) * 0.34), transparent calc(var(--toggle-h) * 0.37)),
+    linear-gradient(180deg, color-mix(in srgb, var(--arka-control-on) 80%, #fff 20%), var(--arka-control-on));
+  box-shadow: inset 0 2px 6px #0006, 0 0 12px color-mix(in srgb, var(--arka-control-on) 60%, transparent);
+}
+/* L'interruttore dell'audio (senza le illustrazioni SVG) è disegnato grande. */
+.game-audio-toggle[data-menu-artwork='css'] > input[type='checkbox'] { --toggle-h: 36px; width: 66px; height: 36px; }
+.pu-live-shell .game-settings-artwork .game-audio-toggle[data-menu-artwork='css'] > input[type='checkbox'] { --toggle-h: 40px; width: 74px; height: 40px; }
+
+/* Scelta singola: anello dorato con il punto acceso. */
+:is(.arka-stage, [data-game-dialog]) input[type='radio']:not(.arka-admin-panel *) {
+  appearance: none;
+  flex: none;
+  width: 1.2em;
+  height: 1.2em;
+  margin: 0 0.35em 0 0;
+  vertical-align: middle;
+  border: 2px solid color-mix(in srgb, var(--arka-control-gold) 70%, transparent);
+  border-radius: 50%;
+  background: var(--arka-control-bg);
+  cursor: pointer;
+}
+:is(.arka-stage, [data-game-dialog]) input[type='radio']:checked:not(.arka-admin-panel *) {
+  border-color: var(--arka-control-gold);
+  background: radial-gradient(circle, var(--arka-control-gold) 0 38%, var(--arka-control-bg) 44%);
+}
+
+/* Cursore: binario scuro e rombo dorato. */
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range']):where(:not(.arka-admin-panel *)) {
+  appearance: none;
+  height: 1.6em;
+  background: transparent;
+  cursor: pointer;
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-webkit-slider-runnable-track {
+  height: 0.45em;
+  border: 1px solid color-mix(in srgb, var(--arka-control-gold) 55%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--arka-control-on), var(--arka-control-bg));
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-moz-range-track {
+  height: 0.45em;
+  border: 1px solid color-mix(in srgb, var(--arka-control-gold) 55%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--arka-control-on), var(--arka-control-bg));
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.1em;
+  height: 1.1em;
+  margin-top: -0.38em;
+  border: 2px solid var(--arka-control-text);
+  border-radius: 3px;
+  background: var(--arka-control-gold);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--arka-control-gold) 60%, transparent);
+  transform: rotate(45deg);
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-moz-range-thumb {
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid var(--arka-control-text);
+  border-radius: 3px;
+  background: var(--arka-control-gold);
+  transform: rotate(45deg);
+}
+
+/* Scelta file: il pulsante nativo prende la forma dei comandi di gioco. */
+:where(.arka-stage, [data-game-dialog]) :where(input[type='file']):where(:not(.arka-admin-panel *)) {
+  color: var(--arka-control-text);
+  font: inherit;
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='file'])::file-selector-button {
+  margin-right: 0.8em;
+  padding: 0.45em 1em;
+  border: 1px solid var(--arka-control-gold);
+  border-radius: 8px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--arka-control-on) 85%, #fff 15%), var(--arka-control-on));
+  color: var(--arka-control-text);
+  font: inherit;
+  cursor: pointer;
+}
