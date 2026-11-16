@@ -21,6 +21,11 @@ import { getSplashArtwork, supportsSplashArtwork } from './reference/splashArtwo
 import { SplashArtworkProvider, type ReadySplashArtwork } from './reference/SplashArtworkContext'
 import { createSplashArtworkLoader } from './reference/splashArtworkLoader'
 import { useSplashFraming } from './reference/useSplashFraming'
+import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
+import { SelectionCursor } from '@/motion/ui/SelectionCursor'
+import { navigationDirection, type NavigationDirection } from '@/motion/ui/navigationMotion'
+import { getPokemon } from '@/data'
+import { typeColorVar } from '@/motion/ui/typeColors'
 
 export { PLAYER_UI_SCREENS, PLAYER_UI_OPEN_EVENT, isPlayerUiScreen, openPlayerUi } from './navigation'
 export type { PlayerUiScreen, PlayerUiAuxiliary, PlayerUiOpenRequest } from './navigation'
@@ -159,13 +164,57 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     return () => cancelAnimationFrame(frame)
   }, [screen, tool])
 
-  return <SplashArtworkProvider value={readySplash}><div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }} style={{ ...(reference ? providedArtworkVariables : {}), '--pu-background': `url("${reference ? referenceScreenBackground(screen, location, readySplash) : screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-position': splashFraming?.position ?? '50% 50%' } as CSSProperties}
+  // Cambio scheda direzionale e ribaltamento al cambio giocatore (audit, sezione 8.6).
+  const paneKey = visibleTool ?? screen
+  const navMotion = useRef<{ pane: string; playerId: 1 | 2; direction?: NavigationDirection; flips: number }>({ pane: paneKey, playerId, flips: 0 })
+  if (navMotion.current.pane !== paneKey || navMotion.current.playerId !== playerId) {
+    const previous = navMotion.current
+    const direction = navigationDirection(
+      { pane: previous.pane, playerId: previous.playerId },
+      { pane: paneKey, playerId },
+      PLAYER_UI_SCREENS,
+    )
+    navMotion.current = { pane: paneKey, playerId, direction, flips: previous.flips + (direction === 'flip' ? 1 : 0) }
+  }
+  // Due nomi alternati riavviano l'animazione di ribaltamento senza smontare il contenuto.
+  const paneDirection = navMotion.current.direction === 'flip' && navMotion.current.flips % 2 === 0 ? 'flip-alt' : navMotion.current.direction
+  // Pagina su / giù (e LB / RB del gamepad) scorrono le schede principali.
+  function cycleScreen(step: 1 | -1) {
+    const available = PLAYER_UI_SCREENS.filter(id => !(context && id !== 'partita'))
+    const index = available.indexOf(screen as typeof PLAYER_UI_SCREENS[number])
+    const next = available[(Math.max(0, index) + step + available.length) % available.length]
+    if (next) navigate(next)
+  }
+  const splashSpecies = readySplash ? getPokemon(readySplash.speciesId) : undefined
+  // Se il cambio di scheda smonta l'elemento con il fuoco (tastiera, gamepad), il fuoco
+  // passa al pulsante della scheda attiva invece di perdersi sul documento.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const active = document.activeElement
+      if (active && active !== document.body && active.isConnected) return
+      shell.current?.querySelector<HTMLElement>('.pu-nav-button[aria-pressed="true"]')?.focus({ preventScroll: true })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [paneKey])
+
+  return <SplashArtworkProvider value={readySplash}><div ref={shell} className="pu-shell pu-live-shell" onKeyDownCapture={event => { if (!registerBack && event.key === 'Escape' && goBack(event.nativeEvent)) event.stopPropagation() }}
+    onKeyDown={event => {
+      if ((event.key !== 'PageDown' && event.key !== 'PageUp') || event.defaultPrevented) return
+      if (event.target instanceof Element && event.target.closest('input,select,textarea,[contenteditable="true"]')) return
+      event.preventDefault()
+      cycleScreen(event.key === 'PageDown' ? 1 : -1)
+    }} style={{ ...(reference ? providedArtworkVariables : {}), '--pu-background': `url("${reference ? referenceScreenBackground(screen, location, readySplash) : screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-position': splashFraming?.position ?? '50% 50%' } as CSSProperties}
     data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId} data-shared-element={sharedElement}
     data-splash-frame-ready={readySplash && splashFraming ? 'true' : undefined} data-splash-frame-region={splashFraming?.region}
     data-splash-frame-mode={readySplash ? 'cover' : undefined} data-splash-focus-clear={readySplash && splashFraming ? String(splashFraming.focusFits) : undefined}
     data-reference-splash-species={readySplash?.speciesId} data-reference-splash-ready={readySplash ? 'true' : undefined}
     data-ui-concept={MENU_SVG_ARTWORK_ENABLED ? undefined : reference ? 'aurora' : resolveUiConcept(typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('uiConcept'))}>
     {readySplash && <div className="pu-splash-backdrop" aria-hidden="true" />}
+    {readySplash && <div key={`${readySplash.playerId}:${readySplash.speciesId}`} className="pu-splash-flash" aria-hidden="true"
+      style={{ '--type-flash': splashSpecies ? typeColorVar(splashSpecies.tipo) : undefined } as CSSProperties}>
+      <span className="arka-type-flash" /><span className="arka-type-sweep" />
+    </div>}
+    <SelectionCursor scope={shell} />
     <div className="pu-topbar">
       <KitFrame id="panel-wide" />
       <div className="pu-brand" role="img" aria-label="Arkamon"><img src={assetUrl('/ui/logo_arkamon.png')} className={reference ? 'pu-provided-logo' : undefined} alt="" />{!reference && <b className="pu-wordmark" aria-hidden="true">ARKAMON<span>VIAGGIA. SCOPRI. SFIDA.</span></b>}<small>Strumenti dell’allenatore</small></div>
@@ -178,7 +227,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
           <span>{entry.nome || `Giocatore ${entry.id}`} · G{entry.id}</span>
         </StudioCommand>)}
       </div>
-      <div className="pu-currency" aria-label={`Monete di G${playerId}: ${player.monete}`}><KitIcon id="item-coin" /><div><strong>{formatNumber(player.monete)} ₳</strong><span>Monete</span></div></div>
+      <div className="pu-currency" aria-label={`Monete di G${playerId}: ${player.monete}`}><KitIcon id="item-coin" /><div><strong><AnimatedNumber value={player.monete} format={formatNumber} /> ₳</strong><span>Monete</span></div></div>
     </div>
 
     <nav className="pu-nav" aria-label="Schermate del giocatore">
@@ -195,7 +244,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     </div>
 
     {context && <p className="pu-challenge-notice" role="status">Sfida in corso · seed {context.session.seed}. La campagna è conservata separatamente; deposito, oggetti e acquisti restano bloccati.</p>}
-    <main className={`pu-content ${visibleTool ? 'pu-content-auxiliary' : ''}`}>
+    <main key={paneKey} data-nav-direction={paneDirection} className={`pu-content ${visibleTool ? 'pu-content-auxiliary' : ''}`}>
       <Suspense fallback={<p role="status" className="pu-loading">Caricamento…</p>}>
         {visibleTool === 'settings' ? <GameSettingsPanel />
           : visibleTool === 'challenges' ? <ChallengePanel activeSession={context?.session} onLaunch={session => { const result = launchChallenge(session); if (result.ok) onClose(); return result }} />

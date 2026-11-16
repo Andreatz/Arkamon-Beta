@@ -1,3 +1,4 @@
+import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import type { CSSProperties } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { ALLENATORI, getPokemon } from '@/data'
@@ -65,7 +66,7 @@ export function ReferenceMainMenu({playerId,onAuxiliary,onNavigate,onResume}:Pro
   return <div className="ref-main-menu ref-provided-main-menu">
     <aside className="ref-trainers" aria-label="Allenatori della partita">
       <section className="ref-trainer-card is-primary" aria-label={`Riepilogo della partita di G${playerId}`}>
-        <div className="ref-trainer-identity"><div className="ref-trainer-portrait"><img src={assetUrl(`/ui/player${playerId}_avatar.png`)} alt=""/></div><div className="ref-trainer-copy"><span className="pu-kicker">Allenatore · G{playerId}</span><h2>{player.nome || `Giocatore ${playerId}`}</h2><p><KitIcon id="icon-map"/>{(position.luogo ?? position.mappaId).replace(/_/g,' ')}</p>{medals(player)}<span className="ref-medal-count">Medaglie {badges(player)} / {gyms.length}</span><strong className="ref-trainer-coins"><KitIcon id="item-coin"/>{formatNumber(player.monete)}</strong></div></div>
+        <div className="ref-trainer-identity"><div className="ref-trainer-portrait"><img src={assetUrl(`/ui/player${playerId}_avatar.png`)} alt=""/></div><div className="ref-trainer-copy"><span className="pu-kicker">Allenatore · G{playerId}</span><h2>{player.nome || `Giocatore ${playerId}`}</h2><p><KitIcon id="icon-map"/>{(position.luogo ?? position.mappaId).replace(/_/g,' ')}</p>{medals(player)}<span className="ref-medal-count">Medaglie {badges(player)} / {gyms.length}</span><strong className="ref-trainer-coins"><KitIcon id="item-coin"/><AnimatedNumber value={player.monete} format={formatNumber}/></strong></div></div>
         <div className="ref-trainer-team" aria-label={`Compagni di ${player.nome}`}>{player.squadra.length ? player.squadra.map(pokemon=><span key={pokemon.istanzaId} title={pokemon.nome}><CreaturePortrait pokemon={pokemon}/></span>) : <p>Scegli il tuo starter per iniziare il viaggio.</p>}</div>
       </section>
       <section className="ref-trainer-card is-secondary" aria-label={`Riepilogo della partita di G${other.id}`}><div className="ref-trainer-portrait"><img src={assetUrl(`/ui/player${other.id}_avatar.png`)} alt=""/></div><div><span className="pu-kicker">Allenatore · G{other.id}</span><h2>{other.nome || `Giocatore ${other.id}`}</h2>{medals(other)}<span className="ref-medal-count">Medaglie {badges(other)} / {gyms.length}</span></div></section>

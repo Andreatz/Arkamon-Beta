@@ -1,3 +1,4 @@
+import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { resolveWorldMapHudLayout } from '@/components/map/worldMapHudLayout'
 import { RpgWindow } from '@/components/rpg'
 import './worldMapRpg.css'
@@ -649,7 +650,7 @@ export function MappaPrincipaleScene() {
         <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Monete:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-yellow-300">
-            ₳ {giocatore.monete}
+            ₳ <AnimatedNumber key={turnoOverworld.giocatoreAttivo} value={giocatore.monete} format={String} />
           </span>
         </div>
       </AdminLayoutItem>

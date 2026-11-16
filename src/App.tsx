@@ -22,6 +22,9 @@ import { MotionRoot } from '@/motion/MotionRoot'
 import { decodeImage } from '@/components/transitions/sceneTransitionRuntime'
 import { assetUrl } from '@/utils/assetUrl'
 import { getBackground } from '@/data/backgrounds'
+import '@/components/ui/gameControls.css'
+import { TiltController } from '@/motion/ui/TiltController'
+import { GamepadBridge } from '@/input/GamepadBridge'
 
 const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
 const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
@@ -132,6 +135,8 @@ function App() {
       <PublicPresentationBridge />
       <RegiaPause />
       <PlayerTools />
+      <TiltController />
+      <GamepadBridge />
       <SaveFailureNotice />
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
       <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene} prepareScene={prepareScene}>
