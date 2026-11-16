@@ -19,6 +19,56 @@
 }
 
 /*
+ * Riserve per i font di sistema usati dai menù (Georgia e Arial).
+ * Dove il font è installato (Windows, macOS) si usa quello locale e nulla cambia.
+ * Altrove (Linux, Android, ChromeOS) si caricano Gelasio e Arimo, che hanno le
+ * stesse metriche: i layout restano identici su ogni dispositivo.
+ * Licenze OFL in src/assets/fonts/.
+ */
+@font-face {
+  font-family: 'Georgia';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Georgia'), url('./assets/fonts/gelasio-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Georgia';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Georgia Italic'), local('Georgia-Italic'), url('./assets/fonts/gelasio-latin-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Georgia';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Georgia Bold'), local('Georgia-Bold'), url('./assets/fonts/gelasio-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Georgia';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Georgia Bold Italic'), local('Georgia-BoldItalic'), url('./assets/fonts/gelasio-latin-700-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Arial';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Arial'), local('ArialMT'), url('./assets/fonts/arimo-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Arial';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Arial Bold'), local('Arial-BoldMT'), url('./assets/fonts/arimo-latin-700-normal.woff2') format('woff2');
+}
+
+/*
  * VARIABILI GLOBALI ARKAMON
  * Modifica qui per cambiare l'aspetto generale del gioco.
  * Sono utilizzabili come `var(--arka-primary)` in CSS o

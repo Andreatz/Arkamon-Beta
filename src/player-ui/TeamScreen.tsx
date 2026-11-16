@@ -140,7 +140,8 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
           <div className="pu-tabs pu-reference-dossier-tabs" role="tablist" aria-label="Sezioni del compagno">
             {(['riepilogo', 'mosse', 'statistiche'] as const).map(tab => <button type="button" role="tab" key={tab} id={`pu-team-tab-${tab}`} aria-selected={referenceTab === tab} aria-controls="pu-team-dossier-content" className={referenceTab === tab ? 'is-active' : ''} onClick={() => setReferenceTab(tab)}>{tab === 'riepilogo' ? 'Riepilogo' : tab === 'mosse' ? 'Mosse' : 'Statistiche'}</button>)}
           </div>
-          <div className="pu-reference-dossier-content" id="pu-team-dossier-content" role="tabpanel" aria-labelledby={`pu-team-tab-${referenceTab}`}>
+          {/* Il pannello può scorrere quando il testo va a capo: resta raggiungibile da tastiera. */}
+          <div className="pu-reference-dossier-content" id="pu-team-dossier-content" role="tabpanel" tabIndex={0} aria-labelledby={`pu-team-tab-${referenceTab}`}>
             {current ? <>
               {referenceTab === 'riepilogo' && <>
                 <div className="pu-reference-dossier-name"><h2>{current.nome}</h2><span>Lv. {current.livello}</span></div>
