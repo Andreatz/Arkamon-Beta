@@ -1,0 +1,48 @@
+/* Evoluzione: velo, vortice, sagome, lampo bianco e rivelazione. */
+.evolution-veil { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: color-mix(in srgb, var(--arka-bg) 82%, transparent); }
+.evolution-splash { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.evolution-splash-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--arka-bg) 35%, transparent) 0 22%, color-mix(in srgb, var(--arka-bg) 62%, transparent) 70%),
+    linear-gradient(0deg, color-mix(in srgb, var(--arka-bg) 70%, transparent), transparent 45%);
+}
+.evolution-rays {
+  position: absolute;
+  inset: -30%;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, color-mix(in srgb, var(--arka-primary-hover) 22%, transparent) 0deg 6deg, transparent 6deg 18deg);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 18%, transparent 55%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 18%, transparent 55%);
+  animation: evolution-rays calc(var(--motion-scene) * 20) linear infinite;
+}
+@keyframes evolution-rays { to { transform: rotate(360deg); } }
+.evolution-flash { position: absolute; inset: 0; z-index: 40; pointer-events: none; background: var(--motion-fx-white); }
+
+/* La sagoma è un filtro statico su un'immagine piccola: nessun filtro animato. */
+.evolution-silhouette { filter: brightness(0) invert(1) drop-shadow(0 0 18px color-mix(in srgb, var(--arka-text) 80%, transparent)); }
+
+.evolution-vortex { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
+.evolution-vortex__arm { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.evolution-vortex__mote {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(6px, 0.7vw, 12px);
+  aspect-ratio: 1;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--motion-fx-white);
+  box-shadow: 0 0 12px var(--arka-primary-hover);
+}
+.evolution-spark {
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: var(--arka-primary-hover);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}

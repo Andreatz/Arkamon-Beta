@@ -167,6 +167,16 @@ describe('tentaCattura — formula VBA (3 - hp/hpMax)', () => {
     expect(ris.soglia).toBeCloseTo(12.5)
     expect(ris.riuscita).toBe(true)
   })
+  it('espone i tre tiri singoli, nello stesso ordine e con la stessa somma, senza consumare altri numeri', () => {
+    const v = mkIstanza(1, 5)
+    const sequence = [0.05, 0.55, 0.95, 0.4]
+    let drawn = 0
+    const ris = tentaCattura(v, () => sequence[drawn++])
+    expect(ris.tiri).toEqual([1, 4, 6])
+    expect(ris.roll).toBe(11)
+    expect(drawn).toBe(3)
+    expect(ris.riuscita).toBe(false)
+  })
 })
 
 describe('team outcome after damage and supreme recoil', () => {

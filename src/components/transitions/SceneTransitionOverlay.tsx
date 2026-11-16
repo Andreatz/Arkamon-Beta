@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from 're
 import { assetUrl } from '@/utils/assetUrl'
 import type { SceneTransitionPhase } from './sceneTransitionState'
 import { ArkamonDiceArtwork } from './ArkamonDiceArtwork'
+import { BattleVsCard } from './BattleVsCard'
 import {
   TRANSITION_VIDEO_PATH,
   TRANSITION_VIDEO_START_SECONDS,
@@ -92,6 +93,7 @@ export function SceneTransitionOverlay({ phase, profile, startCovered, onCovered
       aria-hidden="true"
     >
       {profile.mode === 'arkamon-dice' ? <ArkamonDiceArtwork /> : null}
+      {profile.mode === 'battle-vs' ? <BattleVsCard /> : null}
       {profile.mode === 'battle-video' ? (
         <video
           ref={videoRef}

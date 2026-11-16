@@ -89,6 +89,9 @@ import { ScreenFxLayer, useScreenFx } from '@/motion/ScreenFx'
 import { useBattleCinematics } from '@/components/battle/useBattleCinematics'
 import { efficacyTone } from '@/components/battle/battleCinematics'
 import { BattleDamageNumber, BattleMoveBanner } from '@/components/battle/BattleCinematicLayer'
+import { BattleCaptureLayer, captureHidesTarget } from '@/components/battle/BattleCaptureLayer'
+import { planDiceCapture, planMasterCapture } from '@/components/battle/battleCapture'
+import { SupremeCutIn } from '@/components/battle/SupremeCutIn'
 import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
 import {
   BATTLE_DICE_ASSET_IDS,
@@ -779,9 +782,14 @@ export function BattagliaScene() {
     setPendingHealth(target ? { side: targetSide, instanceId: target.istanzaId, hp: target.hp } : null)
     const targetWillKO = !!target && target.hp <= risultato.dannoFinale
     const targetHasHit = target && !!getArkamonAnimationAsset(target.specieId, targetSide === 'A' ? 'back' : 'front', 'hit')
-    cine.attackStart({ side, moveName: risultato.mossa.nome, color: VFX_TYPE_COLORS[risultato.mossa.tipo], suprema: !!risultato.suprema })
+    const attacker = side === 'A' ? pkmnA : pkmnB
+    const intro = cine.attackStart({
+      side, moveName: risultato.mossa.nome, color: VFX_TYPE_COLORS[risultato.mossa.tipo], suprema: !!risultato.suprema,
+      speciesId: attacker?.specieId, pokemonName: attacker?.nome,
+    })
     // The same hit reaction plays for every attack; a fatal result must not reveal KO early.
-    playMoveVisuals(risultato.mossa, side, targetSide, () => {
+    // Lo stacco della Suprema (se c'è) termina prima che parta l'animazione dell'attacco.
+    void intro.then(() => playMoveVisuals(risultato.mossa, side, targetSide, () => {
       playImpactFeedback(risultato.mossa, targetSide, true, !targetHasHit)
       cine.impact()
 
@@ -838,7 +846,7 @@ export function BattagliaScene() {
       activePlaybackRef.current = reveal
       cine.diceStart()
       mostraLancioDadi(risultato, side, reveal.diceVisible, reveal.diceComplete)
-    }, () => cine.release(targetSide))
+    }, () => cine.release(targetSide)))
   }
 
   const eseguiSequenzaCura = (
@@ -850,7 +858,7 @@ export function BattagliaScene() {
     if (isChallenge) challengeActions.current += 1
     actionInProgressRef.current = true
     setAzioneInCorso(true)
-    cine.attackStart({ side, moveName: move.nome, color: VFX_TYPE_COLORS[move.tipo] })
+    void cine.attackStart({ side, moveName: move.nome, color: VFX_TYPE_COLORS[move.tipo] })
     playMoveVisuals(move, side, null, () => {}, () => {
       cine.attackEnd()
       onComplete()
@@ -1192,20 +1200,52 @@ export function BattagliaScene() {
     }, masterball)
   }
 
-  const completaCatturaSalvata = (masterball = false) => {
-    if (!salvaCatturaConclusa(masterball)) {
-      // Keep this resolved action pending: retry persistence without another status tick or RNG draw.
-      setPendingCaptureSave({ masterball })
-      setAzioneInCorso(true)
-      mostraMessaggi(['Cattura non salvata. Squadra, deposito e Masterball restano intatti. Libera spazio per i salvataggi del browser e riprova.'])
-      return false
-    }
+  const segnalaCatturaNonSalvata = (masterball: boolean) => {
+    // Keep this resolved action pending: retry persistence without another status tick or RNG draw.
+    setPendingCaptureSave({ masterball })
+    setAzioneInCorso(true)
+    mostraMessaggi(['Cattura non salvata. Squadra, deposito e Masterball restano intatti. Libera spazio per i salvataggi del browser e riprova.'])
+  }
+
+  const mostraCatturaConclusa = () => {
     setPendingCaptureSave(null)
     setAzioneInCorso(false)
     playSound('capture')
     setEsito('vittoria')
     setTerminata(true)
+  }
+
+  const completaCatturaSalvata = (masterball = false) => {
+    if (!salvaCatturaConclusa(masterball)) {
+      segnalaCatturaNonSalvata(masterball)
+      return false
+    }
+    mostraCatturaConclusa()
     return true
+  }
+
+  /**
+   * Mette in scena una cattura già decisa dal motore. Una cattura riuscita è
+   * salvata prima dell'animazione: ricaricare la pagina a metà non permette
+   * di ritentare il tiro. Durante la scena i comandi restano bloccati.
+   */
+  const presentaCattura = (plan: Parameters<typeof cine.capture>[0], masterball: boolean, onEscaped: () => void, onCaught: () => void) => {
+    if (plan.caught && !salvaCatturaConclusa(masterball)) {
+      segnalaCatturaNonSalvata(masterball)
+      return
+    }
+    actionInProgressRef.current = true
+    setAzioneInCorso(true)
+    void cine.capture(plan).then(() => {
+      actionInProgressRef.current = false
+      if (plan.caught) {
+        mostraCatturaConclusa()
+        onCaught()
+        return
+      }
+      setAzioneInCorso(false)
+      onEscaped()
+    })
   }
 
   const eseguiCattura = () => {
@@ -1217,13 +1257,10 @@ export function BattagliaScene() {
       const ris = tentaCattura(pkmnB, battleRng)
       appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: ris.riuscita ? `${pkmnB.nome} catturato` : `${pkmnB.nome} sfugge alla cattura`, messages: [`Somma reale dei 3d6: ${ris.roll}. Soglia: ${ris.soglia.toLocaleString('it-IT', { maximumFractionDigits: 2 })}.`], target: logPokemon(pkmnB), diceSum: ris.roll }])
       mostraMessaggi([...statusMessages, 'Lanci una pokeball...'])
-      if (ris.riuscita) {
-        if (!completaCatturaSalvata()) return
-        mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
-        return
-      }
-      mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
-      passaTurnoAaB(pkmnB, 0)
+      presentaCattura(planDiceCapture(ris), false, () => {
+        mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
+        passaTurnoAaB(pkmnB, 0)
+      }, () => mostraMessaggi([`${pkmnB.nome} è stato catturato!`]))
     }, undefined, false)
   }
 
@@ -1235,12 +1272,8 @@ export function BattagliaScene() {
     if (masterballRimaste <= 0) return
     preparaTurnoGiocatore((_pokemon, statusMessages) => {
       appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: `${pkmnB.nome}: Masterball`, messages: ['Cattura con Masterball: non vengono lanciati dadi.'], target: logPokemon(pkmnB) }])
-      if (!completaCatturaSalvata(true)) return
-      mostraMessaggi([
-        ...statusMessages,
-        'Lanci una Masterball...',
-        `${pkmnB.nome} è stato catturato!`,
-      ])
+      mostraMessaggi([...statusMessages, 'Lanci una Masterball...'])
+      presentaCattura(planMasterCapture(), true, () => undefined, () => mostraMessaggi([`${pkmnB.nome} è stato catturato!`]))
     }, undefined, false)
   }
 
@@ -1613,6 +1646,14 @@ export function BattagliaScene() {
           editing={layoutEditing}
           onChange={updateBattleLayout}
         >
+          {/* Durante la cattura l'Arkamon selvatico entra nella sfera: si rimpicciolisce verso il suo centro. */}
+          <motion.div
+            className="h-full w-full"
+            data-capture-absorbed={captureHidesTarget(cine.captureDisplay) || undefined}
+            initial={false}
+            animate={captureHidesTarget(cine.captureDisplay) ? { scale: 0.05, opacity: 0 } : { scale: 1, opacity: 1 }}
+            transition={{ duration: getAnimationDuration(reducedMotion ? 0 : 320) / 1000, ease: [0.7, 0, 0.84, 0] }}
+          >
           <PokemonBattleSlot
             presentationPaused={presentationPaused}
             istanza={pkmnB}
@@ -1629,6 +1670,7 @@ export function BattagliaScene() {
             onAnimationCue={(animation, replayKey) => releaseSpriteAction('B', animation, replayKey)}
             onAnimationComplete={(animation, replayKey) => completeSpriteAction('B', animation, replayKey)}
           />
+          </motion.div>
         </BattleLayoutItem>
       </AnimatePresence>
 
@@ -1660,6 +1702,11 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       </AnimatePresence>
 
+      <BattleCaptureLayer
+        capture={cine.captureDisplay}
+        from={{ x: battleFocusPoints.player.x * 100, y: battleFocusPoints.player.y * 100 }}
+        to={{ x: battleFocusPoints.enemy.x * 100, y: battleFocusPoints.enemy.y * 100 }}
+      />
       <BattleDamageNumber
         display={cine.damageNumber}
         position={cine.damageNumber ? { x: battleFocusPoints[cine.damageNumber.side === 'A' ? 'player' : 'enemy'].x * 100, y: battleFocusPoints[cine.damageNumber.side === 'A' ? 'player' : 'enemy'].y * 100 } : null}
@@ -1667,6 +1714,7 @@ export function BattagliaScene() {
       </Stage>
       <ScreenFxLayer fx={battleFx} className="battle-fx-layer" />
       <BattleMoveBanner banner={cine.banner} />
+      <SupremeCutIn display={cine.cutIn} />
 
       <BattleLayoutItem
         layoutKey="enemyHp"
