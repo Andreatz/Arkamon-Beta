@@ -169,3 +169,17 @@ Moduli in `src/motion/ui/` e `src/input/`:
 - `GamepadBridge` — mappatura standard: croce/levetta = frecce (con ripetizione), A conferma, B indietro,
   Start menù, LB/RB schede, vibrazione breve; senza un gestore delle frecce sposta il fuoco
   geometricamente. Con il gamepad attivo `html[data-input-mode="gamepad"]` e i suggerimenti a schermo.
+
+## Mappe vive (Fase 5)
+
+- `WorldMapCamera` (`src/components/map/`) avvolge il mondo della mappa principale (sfondo, strade, pedine,
+  nodi); l'HUD resta fuori. Ogni spostamento stringe la camera sul luogo d'arrivo e la riporta larga; il cambio
+  di turno fa lo stesso sulla pedina di turno, con la fascia "Turno di …". Nuvole su due livelli in deriva con
+  parallasse al puntatore e un riflesso sul mare. In modifica del layout la camera è ferma.
+- La pedina saltella mentre cammina; la strada verso la destinazione si disegna; i nodi raggiungibili pulsano
+  con un anello sul figlio (il pulsante resta fermo).
+- Mappa locale: le bande ai lati sono la stessa illustrazione sfocata; la mappa si avvicina al punto d'arrivo
+  durante ogni passo; i pallini mostrano un'icona per l'interazione configurata (`localNodeKinds.tsx`:
+  palestra, allenatore, erba alta, incontro, cura, negozio, dialogo) e l'erba ondeggia.
+- Regola: nessun movimento continuo sugli elementi cliccabili. Camere e zoom partono solo durante uno
+  spostamento; in moto continuo ci sono solo livelli decorativi (nuvole, riflessi, anelli, glifi).

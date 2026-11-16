@@ -1,0 +1,114 @@
+/* Fase 5 — mappa principale viva (audit, sezione 8.5). Durate su --motion-scale. */
+
+.world-map-camera { transform-origin: var(--cam-x, 50%) var(--cam-y, 50%); }
+.world-map-camera[data-camera-shot='move-a'] { animation: world-camera-move-a calc(var(--motion-scale, 1) * 1900ms) cubic-bezier(0.45, 0, 0.25, 1) both; }
+.world-map-camera[data-camera-shot='move-b'] { animation: world-camera-move-b calc(var(--motion-scale, 1) * 1900ms) cubic-bezier(0.45, 0, 0.25, 1) both; }
+.world-map-camera[data-camera-shot='turn-a'] { animation: world-camera-turn-a calc(var(--motion-scale, 1) * 1500ms) cubic-bezier(0.45, 0, 0.25, 1) both; }
+.world-map-camera[data-camera-shot='turn-b'] { animation: world-camera-turn-b calc(var(--motion-scale, 1) * 1500ms) cubic-bezier(0.45, 0, 0.25, 1) both; }
+/* La camera si stringe sul luogo d'arrivo mentre la pedina cammina, resta, poi torna larga. */
+@keyframes world-camera-move-a { 0% { transform: scale(1); } 38% { transform: scale(1.12); } 72% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes world-camera-move-b { 0% { transform: scale(1); } 38% { transform: scale(1.12); } 72% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes world-camera-turn-a { 0% { transform: scale(1); } 40% { transform: scale(1.07); } 65% { transform: scale(1.07); } 100% { transform: scale(1); } }
+@keyframes world-camera-turn-b { 0% { transform: scale(1); } 40% { transform: scale(1.07); } 65% { transform: scale(1.07); } 100% { transform: scale(1); } }
+
+/* Atmosfera: livelli non interattivi, gli unici in moto continuo. */
+.world-map-atmosphere { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.world-map-clouds {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 200%;
+  height: 120%;
+  background-repeat: repeat-x;
+  will-change: transform;
+}
+.world-map-clouds--far {
+  opacity: 0.32;
+  background-image:
+    radial-gradient(ellipse 9% 6% at 8% 22%, #ffffffcc, transparent 70%),
+    radial-gradient(ellipse 12% 7% at 30% 70%, #ffffffaa, transparent 70%),
+    radial-gradient(ellipse 8% 5% at 44% 38%, #ffffffb0, transparent 70%),
+    radial-gradient(ellipse 11% 6% at 66% 84%, #ffffffa0, transparent 70%),
+    radial-gradient(ellipse 10% 6% at 86% 30%, #ffffffc0, transparent 70%);
+  background-size: 50% 100%;
+  filter: blur(6px);
+  translate: calc(var(--world-px, 0) * -10px) calc(var(--world-py, 0) * -6px);
+  animation: world-clouds-drift calc(var(--motion-scale, 1) * 240s) linear infinite;
+}
+.world-map-clouds--near {
+  opacity: 0.22;
+  background-image:
+    radial-gradient(ellipse 14% 8% at 18% 55%, #ffffff, transparent 70%),
+    radial-gradient(ellipse 16% 9% at 58% 12%, #ffffff, transparent 70%),
+    radial-gradient(ellipse 13% 8% at 80% 64%, #ffffff, transparent 70%);
+  background-size: 50% 100%;
+  filter: blur(10px);
+  translate: calc(var(--world-px, 0) * -26px) calc(var(--world-py, 0) * -14px);
+  animation: world-clouds-drift calc(var(--motion-scale, 1) * 140s) linear infinite;
+}
+@keyframes world-clouds-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.world-map-sea-glint {
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(115deg, transparent 42%, #e8fbff1f 48%, #ffffff33 50%, #e8fbff1f 52%, transparent 58%);
+  animation: world-sea-glint calc(var(--motion-scale, 1) * 11s) ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes world-sea-glint { 0%, 15% { transform: translateX(-45%); } 85%, 100% { transform: translateX(45%); } }
+
+/* Percorso verso la destinazione: la strada si disegna. */
+.world-map-route-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: world-route-draw calc(var(--motion-scale, 1) * 520ms) cubic-bezier(0.3, 0.6, 0.3, 1) forwards; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--arka-primary) 70%, transparent)); }
+@keyframes world-route-draw { to { stroke-dashoffset: 0; } }
+
+/* Nodi raggiungibili: un anello che si allarga (sul figlio, il pulsante resta fermo). */
+.world-map-marker--reachable::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 2px solid #7dd3fc;
+  opacity: 0;
+  pointer-events: none;
+  animation: world-node-pulse calc(var(--motion-scale, 1) * 1600ms) ease-out infinite;
+}
+@keyframes world-node-pulse { 0% { opacity: 0.85; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.7); } }
+
+/* Pedina: saltella di nodo in nodo mentre cammina. */
+.world-map-pawn-body { width: 100%; height: 100%; }
+[data-main-map-player][data-walking='true'] .world-map-pawn-body { animation: world-pawn-hop calc(var(--motion-scale, 1) * 300ms) ease-in-out infinite; }
+@keyframes world-pawn-hop { 0%, 100% { transform: translateY(0) scaleY(1); } 45% { transform: translateY(-12px) scaleY(1.03); } 90% { transform: translateY(0) scaleY(0.94); } }
+
+/* Fascia del turno che attraversa lo schermo. */
+.world-turn-banner {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 18px;
+  padding: 14px 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--arka-bg) 88%, transparent) 18%, color-mix(in srgb, var(--arka-bg) 88%, transparent) 82%, transparent);
+  border-block: 2px solid color-mix(in srgb, var(--arka-primary) 70%, transparent);
+  color: var(--arka-text);
+  text-transform: uppercase;
+  animation: world-turn-sweep calc(var(--motion-scale, 1) * 1700ms) cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+.world-turn-banner small { font: 600 18px/1 var(--arka-font-body); letter-spacing: 0.3em; color: var(--arka-text-muted); }
+.world-turn-banner strong { font: 400 46px/1 var(--arka-font-heading); letter-spacing: 0.06em; color: var(--arka-primary); text-shadow: 0 0 18px color-mix(in srgb, var(--arka-primary) 55%, transparent); }
+@keyframes world-turn-sweep {
+  0% { opacity: 0; transform: translateX(-60%) skewX(-12deg); }
+  22% { opacity: 1; transform: translateX(0) skewX(-12deg); }
+  70% { opacity: 1; transform: translateX(4%) skewX(-12deg); }
+  100% { opacity: 0; transform: translateX(70%) skewX(-12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-map-camera, .world-map-clouds, .world-map-sea-glint, .world-map-route-draw, .world-map-marker--reachable::after,
+  [data-main-map-player] .world-map-pawn-body, .world-turn-banner { animation: none !important; }
+  .world-map-route-draw { stroke-dashoffset: 0; }
+  .world-turn-banner { display: none; }
+}

@@ -1,4 +1,5 @@
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
+import { WorldMapCamera, type WorldCameraFocus } from '@/components/map/WorldMapCamera'
 import { resolveWorldMapHudLayout } from '@/components/map/worldMapHudLayout'
 import { RpgWindow } from '@/components/rpg'
 import './worldMapRpg.css'
@@ -24,7 +25,7 @@ import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { trackAdminPointerDrag } from '@/admin/adminPointerDrag'
 import { MainMapAvatar } from '@/components/map/MainMapAvatar'
 import { getMainMapJourney } from '@/components/map/mapJourney'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react'
 import type {
   AdminLayoutRect,
@@ -277,6 +278,21 @@ export function MappaPrincipaleScene() {
   ) => updateSceneLayout({ scene: 'mainMapUi', key, rect })
 
   useEffect(() => { setSelectedDestination(null); setPreviewDestination(null) }, [activeNodeName, giocatoreAttivo])
+
+  // Regia della mappa: la camera accompagna ogni spostamento e ogni cambio di turno;
+  // la fascia "Turno di …" attraversa lo schermo quando il turno passa.
+  const [cameraFocus, setCameraFocus] = useState<WorldCameraFocus | null>(null)
+  const [turnBanner, setTurnBanner] = useState<{ seq: number; name: string } | null>(null)
+  const lastShot = useRef({ node: activeNodeName, player: giocatoreAttivo, seq: 0 })
+  useEffect(() => {
+    const previous = lastShot.current
+    if (previous.node === activeNodeName && previous.player === giocatoreAttivo) return
+    const seq = previous.seq + 1
+    lastShot.current = { node: activeNodeName, player: giocatoreAttivo, seq }
+    const position = useAdminStore.getState().theme.layouts.mainMapNodes[activeNodeName] ?? COORDS[activeNodeName]
+    if (position) setCameraFocus({ seq, x: position.x, y: position.y, kind: previous.player !== giocatoreAttivo ? 'turn' : 'move' })
+    if (previous.player !== giocatoreAttivo) setTurnBanner({ seq, name: giocatore.nome || `Giocatore ${giocatoreAttivo}` })
+  }, [activeNodeName, giocatoreAttivo, giocatore.nome])
   const interactWithCurrentNode = () => {
     if (layoutEditing) return
     if (activeNodeName === MAIN_MAP_START_NODE && !getLocalMap(activeNodeName)) {
@@ -514,11 +530,15 @@ export function MappaPrincipaleScene() {
       data-world-rpg-map
       data-combined-hud={combinedHud}
       className="relative w-full h-full bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url(${assetUrl('/maps/Mappa-Finale.jpg')})` }}
+      style={{ backgroundColor: 'var(--arka-bg)' }}
     >
+      {/* Mondo della mappa: camera, atmosfera, strade, pedine e nodi. L'HUD resta fuori. */}
+      <WorldMapCamera
+        focus={cameraFocus}
+        disabled={layoutEditing}
+        backgroundImage={assetUrl('/maps/Mappa-Finale.jpg')}
+      >
       <div className="absolute inset-0 bg-black/20" />
-      {combinedHud && <RpgWindow className="world-map-unified-hud" aria-hidden="true" />}
-
       <svg
         className={`absolute inset-0 z-10 h-full w-full ${
           layoutEditing ? 'pointer-events-auto' : 'pointer-events-none'
@@ -622,6 +642,97 @@ export function MappaPrincipaleScene() {
           </g>
         ))}
       </svg>
+      {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <svg
+        className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"
+        data-main-map-road-preview={previewDestination}>
+        <path key={previewDestination} className="world-map-route-draw" pathLength={1} d={roadPath(getMainMapJourney(roadRenderItems, activeNodeName, previewDestination))} fill="none"
+          stroke="var(--arka-primary)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+      </svg>}
+      {player1NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
+        playerId={1}
+        nodeName={player1NodeName}
+        sameNode={player1NodeName === player2NodeName}
+        active={giocatoreAttivo === 1}
+        getPosition={(name) => nodePositions[name] ?? COORDS[name]}
+        roads={roadRenderItems}
+      />}
+      {player2NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
+        playerId={2}
+        nodeName={player2NodeName}
+        sameNode={player1NodeName === player2NodeName}
+        active={giocatoreAttivo === 2}
+        getPosition={(name) => nodePositions[name] ?? COORDS[name]}
+        roads={roadRenderItems}
+      />}
+
+      {MAPPE.map((luogo) => {
+        const coord = COORDS[luogo.nome]
+        if (!coord) return null
+        const position = nodePositions[luogo.nome] ?? coord
+        const isCurrent = luogo.nome === activeNodeName
+        const isReachable =
+          movimentoDisponibile && reachableNodeNames.includes(luogo.nome)
+        const isActionable = isCurrent || isReachable
+        const iconSize = getMapNodeIconSize(luogo.nome, coord.tipo)
+        return (
+          <div
+            key={luogo.nome}
+            className={`absolute z-20 ${
+              layoutEditing ? 'cursor-move' : ''
+            }`}
+            style={{
+              left: `${position.x}%`,
+              top: `${position.y}%`,
+              transform: 'translate(-50%, -22px)',
+            }}
+            onPointerDown={(event) => startNodeDrag(event, luogo.nome)}
+          >
+            <motion.button
+              type="button"
+              disabled={!layoutEditing && !isActionable}
+              whileHover={!layoutEditing && isActionable ? { scale: 1.25 } : {}}
+              whileTap={!layoutEditing && isActionable ? { scale: 0.9 } : {}}
+              onClick={() => click(luogo.nome, coord.tipo)}
+              onMouseEnter={() => setPreviewDestination(isReachable ? luogo.nome : null)}
+              onMouseLeave={() => setPreviewDestination(null)}
+              onFocus={() => setPreviewDestination(isReachable ? luogo.nome : null)}
+              onBlur={() => setPreviewDestination(null)}
+              aria-pressed={selectedDestination === luogo.nome}
+              aria-label={`${luogo.nome.replace('_', ' ')}${isCurrent ? ', posizione attuale' : isReachable ? ', 1 movimento' : ', non raggiungibile'}`}
+              className={`world-map-node flex flex-col items-center justify-center gap-0.5 ${
+                !layoutEditing && !isActionable ? 'cursor-default' : ''
+              }`}
+            >
+              <div
+                className={`relative rounded-full transition ${isReachable && !layoutEditing ? 'world-map-marker--reachable ' : ''}${
+                  layoutEditing ? 'ring-2 ring-amber-300 ring-offset-2 ring-offset-black' : ''
+                } ${isCurrent && !layoutEditing ? 'ring-4 ring-white ring-offset-2 ring-offset-black' : ''} ${
+                  isReachable && !layoutEditing ? 'ring-4 ring-sky-300 ring-offset-2 ring-offset-black' : ''
+                }`}
+                style={{ width: iconSize, height: iconSize }}
+                data-world-map-marker
+                data-transition-anchor={luogo.nome}
+              >
+                <img
+                  src={assetUrl(getMapNodeIcon(luogo.nome, coord.tipo))}
+                  alt=""
+                  className="h-full w-full object-contain drop-shadow-lg"
+                  draggable={false}
+                />
+              </div>
+              <span className={`world-map-node-label arka-layout-content arka-readable-text text-white font-bold whitespace-nowrap leading-tight ${isCurrent || isReachable ? 'is-important' : ''}`}>
+                {luogo.nome.replace('_', ' ')}
+              </span>
+            </motion.button>
+          </div>
+        )
+      })}
+      </WorldMapCamera>
+      {turnBanner && <div key={turnBanner.seq} className="world-turn-banner" aria-hidden="true" onAnimationEnd={() => setTurnBanner(null)}>
+        <small>Turno di</small><strong>{turnBanner.name}</strong>
+      </div>}
+      {combinedHud && <RpgWindow className="world-map-unified-hud" aria-hidden="true" />}
+
 
       <AdminLayoutItem
         rootSelector="[data-main-map-root]"
@@ -763,92 +874,7 @@ export function MappaPrincipaleScene() {
         <GameButton tone="primary" onClick={() => { muoviAvatarMappaPrincipale(giocatoreAttivo, previewDestination); setSelectedDestination(null); setPreviewDestination(null) }}>Conferma movimento</GameButton>
         {selectedDestination && <GameButton onClick={() => setSelectedDestination(null)}>Annulla destinazione</GameButton>}
       </aside>}
-      {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <svg
-        className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"
-        data-main-map-road-preview={previewDestination}>
-        <path d={roadPath(getMainMapJourney(roadRenderItems, activeNodeName, previewDestination))} fill="none"
-          stroke="var(--arka-primary)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-      </svg>}
 
-      {player1NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
-        playerId={1}
-        nodeName={player1NodeName}
-        sameNode={player1NodeName === player2NodeName}
-        active={giocatoreAttivo === 1}
-        getPosition={(name) => nodePositions[name] ?? COORDS[name]}
-        roads={roadRenderItems}
-      />}
-      {player2NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
-        playerId={2}
-        nodeName={player2NodeName}
-        sameNode={player1NodeName === player2NodeName}
-        active={giocatoreAttivo === 2}
-        getPosition={(name) => nodePositions[name] ?? COORDS[name]}
-        roads={roadRenderItems}
-      />}
-
-      {MAPPE.map((luogo) => {
-        const coord = COORDS[luogo.nome]
-        if (!coord) return null
-        const position = nodePositions[luogo.nome] ?? coord
-        const isCurrent = luogo.nome === activeNodeName
-        const isReachable =
-          movimentoDisponibile && reachableNodeNames.includes(luogo.nome)
-        const isActionable = isCurrent || isReachable
-        const iconSize = getMapNodeIconSize(luogo.nome, coord.tipo)
-        return (
-          <div
-            key={luogo.nome}
-            className={`absolute z-20 ${
-              layoutEditing ? 'cursor-move' : ''
-            }`}
-            style={{
-              left: `${position.x}%`,
-              top: `${position.y}%`,
-              transform: 'translate(-50%, -22px)',
-            }}
-            onPointerDown={(event) => startNodeDrag(event, luogo.nome)}
-          >
-            <motion.button
-              type="button"
-              disabled={!layoutEditing && !isActionable}
-              whileHover={!layoutEditing && isActionable ? { scale: 1.25 } : {}}
-              whileTap={!layoutEditing && isActionable ? { scale: 0.9 } : {}}
-              onClick={() => click(luogo.nome, coord.tipo)}
-              onMouseEnter={() => setPreviewDestination(isReachable ? luogo.nome : null)}
-              onMouseLeave={() => setPreviewDestination(null)}
-              onFocus={() => setPreviewDestination(isReachable ? luogo.nome : null)}
-              onBlur={() => setPreviewDestination(null)}
-              aria-pressed={selectedDestination === luogo.nome}
-              aria-label={`${luogo.nome.replace('_', ' ')}${isCurrent ? ', posizione attuale' : isReachable ? ', 1 movimento' : ', non raggiungibile'}`}
-              className={`world-map-node flex flex-col items-center justify-center gap-0.5 ${
-                !layoutEditing && !isActionable ? 'cursor-default' : ''
-              }`}
-            >
-              <div
-                className={`rounded-full transition ${
-                  layoutEditing ? 'ring-2 ring-amber-300 ring-offset-2 ring-offset-black' : ''
-                } ${isCurrent && !layoutEditing ? 'ring-4 ring-white ring-offset-2 ring-offset-black' : ''} ${
-                  isReachable && !layoutEditing ? 'ring-4 ring-sky-300 ring-offset-2 ring-offset-black' : ''
-                }`}
-                style={{ width: iconSize, height: iconSize }}
-                data-world-map-marker
-                data-transition-anchor={luogo.nome}
-              >
-                <img
-                  src={assetUrl(getMapNodeIcon(luogo.nome, coord.tipo))}
-                  alt=""
-                  className="h-full w-full object-contain drop-shadow-lg"
-                  draggable={false}
-                />
-              </div>
-              <span className={`world-map-node-label arka-layout-content arka-readable-text text-white font-bold whitespace-nowrap leading-tight ${isCurrent || isReachable ? 'is-important' : ''}`}>
-                {luogo.nome.replace('_', ' ')}
-              </span>
-            </motion.button>
-          </div>
-        )
-      })}
 
       <AdminLayoutItem
         rootSelector="[data-main-map-root]"
