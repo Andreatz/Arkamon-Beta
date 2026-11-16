@@ -1,0 +1,13 @@
+/* Sfondi 2.5D: il canvas copre l'immagine CSS solo quando è pronto. */
+.arka-depth-background { background-size: cover; background-position: center; }
+.arka-depth-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity calc(var(--motion-scale, 1) * 600ms) ease;
+}
+.arka-depth-background[data-depth-active='true'] > .arka-depth-canvas { opacity: 1; }

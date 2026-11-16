@@ -1,3 +1,4 @@
+import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
 import { RpgCommand as GameButton } from '@/components/rpg'
 import './rpgScenes.css'
 import { useEffect, useRef, useState } from 'react'
@@ -79,6 +80,7 @@ export function TitoloScene() {
       {hasBackground ? (
         <div className="absolute inset-0 bg-[color-mix(in_srgb,var(--arka-bg)_45%,transparent)]" />
       ) : null}
+      <AmbientParticles variant="fireflies" count={26} seed={11} />
 
       <motion.img
         key={logoPath}

@@ -112,7 +112,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     page.on('request', request => {
       if (request.url().includes(`/back_sprites/${species}.png`)) missingBackRequests.push(request.url())
     })
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption(String(species))
     const lab = page.locator('[data-darklaw-lab]')
     await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')
@@ -157,7 +157,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     page.on('request', request => {
       if (request.url().includes(`/back_sprites/${species}.png`) || request.url().includes(`/arkamon-paged/${species}/`)) unavailableRequests.push(request.url())
     })
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption(String(species))
     const lab = page.locator('[data-darklaw-lab]')
     await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')
@@ -191,7 +191,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
       failedRequests++
       await route.fulfill({ status: 404, contentType: 'text/plain', body: 'Deliberately unavailable pending portrait' })
     })
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption('205')
     const portraits = page.locator('[data-asset-portrait]')
     await expect(portraits).toHaveCount(2)
@@ -218,7 +218,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
   })
 
   test('filters actual supplied IDs without filling the gaps or changing the playable catalog', async ({ page }) => {
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     const select = page.locator('#darklaw-preview-species')
     await expect(select.locator('option')).toHaveCount(204)
     const suppliedIds = await select.locator('option').evaluateAll(options => options.map(option => Number((option as HTMLOptionElement).value)))

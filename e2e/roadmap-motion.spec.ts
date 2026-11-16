@@ -67,7 +67,7 @@ test('the world owns motion and effects while HP, commands and messages remain o
 test('source-frame review paints the original last frame and retains all seven pending reviews', async ({ page, isMobile }) => {
   test.skip(isMobile)
   await page.setViewportSize({ width: 1920, height: 1080 })
-  await page.goto('/#arkamon-lab')
+  await page.goto('/dev.html#arkamon-lab')
   await page.getByRole('combobox', { name: 'Arkamon', exact: true }).selectOption('17')
   await page.getByRole('combobox', { name: 'Sfondo', exact: true }).selectOption('light')
   await page.getByRole('button', { name: 'Ultimo fotogramma', exact: true }).click()

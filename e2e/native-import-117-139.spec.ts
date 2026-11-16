@@ -117,7 +117,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     page.on('request', request => {
       if (request.url().includes(`/back_sprites/${species}.png`)) missingBackRequests.push(request.url())
     })
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption(String(species))
     const lab = page.locator('[data-darklaw-lab]')
     await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')

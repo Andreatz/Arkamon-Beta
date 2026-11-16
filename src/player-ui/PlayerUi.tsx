@@ -13,7 +13,6 @@ import { PLAYER_UI_SCREENS, type PlayerUiAuxiliary, type PlayerUiScreen } from '
 import { StudioCommand } from '@/components/ui/StudioArtwork'
 import './playerUiStyles'
 import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
-import { resolveUiConcept } from './concepts/uiConcepts'
 import { isReferenceUi } from './reference/referenceTheme'
 import { referenceScreenBackground } from './reference/referenceBackgrounds'
 import { providedArtworkVariables } from './reference/ProvidedArtwork'
@@ -208,7 +207,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     data-splash-frame-ready={readySplash && splashFraming ? 'true' : undefined} data-splash-frame-region={splashFraming?.region}
     data-splash-frame-mode={readySplash ? 'cover' : undefined} data-splash-focus-clear={readySplash && splashFraming ? String(splashFraming.focusFits) : undefined}
     data-reference-splash-species={readySplash?.speciesId} data-reference-splash-ready={readySplash ? 'true' : undefined}
-    data-ui-concept={MENU_SVG_ARTWORK_ENABLED ? undefined : reference ? 'aurora' : resolveUiConcept(typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('uiConcept'))}>
+    data-ui-concept={reference ? 'aurora' : undefined}>
     {readySplash && <div className="pu-splash-backdrop" aria-hidden="true" />}
     {readySplash && <div key={`${readySplash.playerId}:${readySplash.speciesId}`} className="pu-splash-flash" aria-hidden="true"
       style={{ '--type-flash': splashSpecies ? typeColorVar(splashSpecies.tipo) : undefined } as CSSProperties}>

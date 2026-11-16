@@ -183,3 +183,16 @@ Moduli in `src/motion/ui/` e `src/input/`:
   palestra, allenatore, erba alta, incontro, cura, negozio, dialogo) e l'erba ondeggia.
 - Regola: nessun movimento continuo sugli elementi cliccabili. Camere e zoom partono solo durante uno
   spostamento; in moto continuo ci sono solo livelli decorativi (nuvole, riflessi, anelli, glifi).
+
+## Profondità e ambiente (Fase 6)
+
+- `DepthBackground` (`src/motion/depth/`): se lo sfondo ha una mappa di profondità in
+  `public/backgrounds/depth/<nome>.webp` (elencata in `src/data/depthMaps.json`) e il browser offre WebGL,
+  un canvas sposta i pixel in base alla vicinanza, con il puntatore e una lenta deriva. Altrimenti, e con il
+  movimento ridotto, resta l'immagine CSS. Usato in battaglia, laboratorio ed evoluzione.
+- Mappe generate con `scripts/depth/generate-depth-maps.py` (Depth Anything V2 Small, ONNX, Apache-2.0).
+  Per uno sfondo nuovo: lancia lo script, oppure salva a mano una mappa in scala di grigi (bianco = vicino)
+  con lo stesso nome e aggiungila al JSON.
+- `AmbientParticles` (`src/motion/ambient/`): pulviscolo, lucciole, scintille o braci, deterministiche,
+  solo `transform`/`opacity`, mai interattive. Battaglia, titolo, laboratorio.
+- I laboratori sono in `dev.html#<laboratorio>` (solo `npm run dev`), fuori dalla build del gioco.

@@ -1,3 +1,5 @@
+import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
+import { DepthBackground } from '@/motion/depth/DepthBackground'
 import { useBattleAssetReadiness } from '@/components/battle/useBattleAssetReadiness'
 import { ChallengeBanner } from '@/challenges/ChallengeBanner'
 import { useSettledBattleCheckpoint } from '@/components/battle/useSettledBattleCheckpoint'
@@ -1619,6 +1621,9 @@ export function BattagliaScene() {
       <Stage rig={battleRig} data-battle-world className="battle-world absolute inset-0">
       {/* Il fondale è un livello lontano: nelle inquadrature si muove meno degli Arkamon e il margine copre i bordi durante lo shake. */}
       <StageLayer depth={0.9} bleed={1.03} className="bg-cover bg-center" style={{ backgroundImage: `url(${bgBattaglia})` }}>
+        {/* Con una mappa di profondità il fondale diventa 2.5D (WebGL); altrimenti resta l'immagine. */}
+        <DepthBackground src={bgBattaglia} className="absolute inset-0" />
+        <AmbientParticles variant="motes" count={22} seed={3} />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
         <div className={`battle-knockout-veil ${cine.knockoutSide ? 'is-active' : ''}`} data-battle-knockout-veil={cine.knockoutSide ?? undefined} />

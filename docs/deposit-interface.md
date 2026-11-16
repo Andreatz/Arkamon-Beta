@@ -22,7 +22,7 @@ preferenze, le posizioni che corrispondono al vecchio layout predefinito
 vengono aggiornate; i rettangoli personalizzati e gli offset del testo vengono
 conservati. La migrazione è idempotente.
 
-In sviluppo, `http://localhost:3000/#deposit-lab` mostra la stessa vista con
+In sviluppo, `http://localhost:3000/dev.html#deposit-lab` mostra la stessa vista con
 gli Arkamon del riferimento. Gli spostamenti agiscono solo sui dati locali
 dell'anteprima; «Ripristina anteprima» ripristina squadra, box e selezione.
 

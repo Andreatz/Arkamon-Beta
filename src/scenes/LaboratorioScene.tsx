@@ -1,3 +1,5 @@
+import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
+import { DepthBackground } from '@/motion/depth/DepthBackground'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { StudioCommand, StudioSurface } from '@/components/ui/StudioArtwork'
 import { getPortraitFraming } from '@/player-ui/portraitFraming'
@@ -84,8 +86,10 @@ export function LaboratorioScene() {
     <div
       ref={sceneRef}
       className="live-laboratory-scene"
-      style={{ backgroundImage: `url(${LABORATORY_BG})` }}
+      style={{ backgroundImage: `url(${LABORATORY_BG})`, isolation: 'isolate' }}
     >
+      <DepthBackground src={LABORATORY_BG} className="absolute inset-0" style={{ zIndex: -1 }} />
+      <AmbientParticles variant="sparkles" count={22} seed={5} />
       <div className="live-laboratory-content">
       <header className="live-laboratory-heading">
         <span>LABORATORIO · IL PRIMO COMPAGNO</span>

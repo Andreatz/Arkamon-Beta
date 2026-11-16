@@ -26,17 +26,8 @@ import '@/components/ui/gameControls.css'
 import { TiltController } from '@/motion/ui/TiltController'
 import { GamepadBridge } from '@/input/GamepadBridge'
 
-const AudioLab = lazy(() => import('@/components/audio/AudioLab').then((module) => ({ default: module.AudioLab })))
-const BattleRulesLab = lazy(() => import('@/components/battle/BattleRulesLab').then((module) => ({ default: module.BattleRulesLab })))
-const SceneTransitionLab = lazy(() => import('@/components/transitions/SceneTransitionLab').then((module) => ({ default: module.SceneTransitionLab })))
-const VfxGallery = lazy(() => import('@/components/vfx/VfxGallery').then((module) => ({ default: module.VfxGallery })))
-const BattleDiceLab = lazy(() => import('@/components/battle/BattleDiceLab').then((module) => ({ default: module.BattleDiceLab })))
-const MotionLab = lazy(() => import('@/motion/MotionLab').then((module) => ({ default: module.MotionLab })))
-const DepositLab = lazy(() => import('@/components/deposit/DepositLab').then((module) => ({ default: module.DepositLab })))
-const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then((module) => ({ default: module.DarklawAnimationLab })))
 // Caricatori delle scene: condivisi fra `lazy` e il precaricamento delle transizioni.
 const sceneLoaders = {
-  'mappa-griglia': () => import('@scenes/MappaGrigliaScene'),
   laboratorio: () => import('@scenes/LaboratorioScene'),
   'mappa-principale': () => import('@scenes/MappaPrincipaleScene'),
   battaglia: () => import('@scenes/BattagliaScene'),
@@ -46,7 +37,6 @@ const sceneLoaders = {
   evoluzione: () => import('@scenes/EvoluzioneScene'),
   lega: () => import('@/league/LeagueScene'),
 } satisfies Partial<Record<SceneId, () => Promise<unknown>>>
-const MappaGrigliaScene = lazy(() => sceneLoaders['mappa-griglia']().then((module) => ({ default: module.MappaGrigliaScene })))
 const LaboratorioScene = lazy(() => sceneLoaders.laboratorio().then((module) => ({ default: module.LaboratorioScene })))
 const MappaPrincipaleScene = lazy(() => sceneLoaders['mappa-principale']().then((module) => ({ default: module.MappaPrincipaleScene })))
 const BattagliaScene = lazy(() => sceneLoaders.battaglia().then((module) => ({ default: module.BattagliaScene })))
@@ -58,7 +48,6 @@ const LeagueScene = lazy(() => sceneLoaders.lega().then((module) => ({ default: 
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
 const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
-const UiConceptLab = lazy(() => import('@/ui-studio/UiConceptLab').then(module => ({ default: module.UiConceptLab })))
 const ReferenceUiPreview = lazy(() => import('@/ui-studio/ReferenceUiPreview').then(module => ({ default: module.ReferenceUiPreview })))
 
 /**
@@ -81,11 +70,9 @@ function App() {
     if (!isUiStudioPreview() && !reducedMotion && scenaCorrente.scena !== 'titolo') preloadSceneTransitionArtwork()
   }, [reducedMotion, scenaCorrente.scena])
 
-  if (new URLSearchParams(window.location.search).get('uiReferences') === '1' || new URLSearchParams(window.location.search).get('uiConcepts') === '1' && new URLSearchParams(window.location.search).get('legacyConcepts') !== '1') {
+  // `?uiConcepts=1` resta un alias storico dell'anteprima di riferimento (i concept alternativi sono stati rimossi).
+  if (new URLSearchParams(window.location.search).get('uiReferences') === '1' || new URLSearchParams(window.location.search).get('uiConcepts') === '1') {
     return <Suspense fallback={<div role="status">Preparazione della nuova interfaccia…</div>}><ReferenceUiPreview /></Suspense>
-  }
-  if (new URLSearchParams(window.location.search).get('uiConcepts') === '1') {
-    return <Suspense fallback={<div role="status">Preparazione delle nuove interfacce…</div>}><UiConceptLab /></Suspense>
   }
   if (new URLSearchParams(window.location.search).get('uiStudioPreview') === '1') {
     if (new URLSearchParams(window.location.search).get('assetExamples') === '1') {
@@ -97,35 +84,7 @@ function App() {
     return <Suspense fallback={<div role="status">Caricamento editor interfaccia…</div>}><UiStudioEditor onClose={() => { window.location.hash = '' }} /></Suspense>
   }
 
-  if (hash === '#battle-rules-lab') return <LabShell><BattleRulesLab /></LabShell>
-
-  if (hash === '#audio-lab') {
-    return <LabShell><Suspense fallback={<div role="status">Caricamento laboratorio audio…</div>}><AudioLab /></Suspense></LabShell>
-  }
-
-  if (hash === '#transition-lab') {
-    return <LabShell><SceneTransitionLab /></LabShell>
-  }
-
-  if (hash === '#vfx-lab') {
-    return <LabShell><VfxGallery /></LabShell>
-  }
-
-  if (hash === '#dice-lab') {
-    return <LabShell><BattleDiceLab /></LabShell>
-  }
-
-  if (hash === '#stage-lab') {
-    return <LabShell><MotionLab /></LabShell>
-  }
-
-  if (hash === '#deposit-lab') {
-    return <LabShell><DepositLab /></LabShell>
-  }
-
-  if (hash === '#arkamon-lab') {
-    return <LabShell><DarklawAnimationLab /></LabShell>
-  }
+  // I laboratori vivono in dev.html (solo server di sviluppo), fuori dal pacchetto del gioco.
 
   return (
     <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}${scenaCorrente.scena === 'lega' ? ' arka-stage--league' : ''}`}>
@@ -146,11 +105,6 @@ function App() {
   )
 }
 
-function LabShell({ children }: { children: React.ReactNode }) {
-  return <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
-    <AdminRuntime /><AppliedUiDesign /><AdminOverlay /><PlayerTools /><Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>{children}</Suspense>
-  </div>
-}
 
 /** Sfondo principale della scena di arrivo, da decodificare prima della rivelazione. */
 function sceneArtwork(navigation: NavigazioneScena): string | null {
@@ -183,8 +137,10 @@ function renderScena(scena: SceneId) {
       return <LaboratorioScene />
     case 'mappa-principale':
       return <MappaPrincipaleScene />
+    // La vecchia mappa a griglia è stata rimossa (Fase 6): i salvataggi che la indicano
+    // tornano alla mappa principale.
     case 'mappa-griglia':
-      return <Suspense fallback={<div role="status">Caricamento mappa…</div>}><MappaGrigliaScene /></Suspense>
+      return <MappaPrincipaleScene />
     case 'battaglia':
       return <BattagliaScene />
     case 'percorso':

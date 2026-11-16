@@ -71,7 +71,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     const enemy = preview(page).locator('[data-ui-id="layout.hp-nemico"]')
     const surface = enemy.locator('[data-ui-asset-surface]').first()
     const texture = surface.locator('[data-ui-asset-decoration]')
-    const fill = surface.locator('svg rect')
+    const fill = surface.locator('svg rect:not([data-battle-hp-ghost])')
     const track = surface.locator('[data-ui-hp-track]')
     await assertBackground(surface, '/ui/hp_bar_enemy.png')
     await expect(texture).toBeVisible()
