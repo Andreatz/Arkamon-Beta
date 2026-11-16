@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { counterDurationMs, counterValueAt } from './counter'
-import './liveInterface.css'
+import './counter.css'
 
 const formatItalian = (value: number) => value.toLocaleString('it-IT')
 

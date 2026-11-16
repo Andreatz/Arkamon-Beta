@@ -34,7 +34,9 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     await expect(group).toHaveCSS('background-image', 'none')
     await expect(oldDecoration).toHaveCSS('visibility', 'hidden')
     expect(await hp.innerText()).toBe(text)
-    await expect(hp.locator('svg rect')).toHaveCount(1)
+    // La scia ritardata della Fase 1 è un secondo rettangolo, separato dal riempimento.
+    await expect(hp.locator('svg rect[data-battle-hp-ghost]')).toHaveCount(1)
+    await expect(hp.locator('svg rect:not([data-battle-hp-ghost])')).toHaveCount(1)
     await page.getByRole('button', { name: 'Applica al gioco', exact: true }).click()
     await page.reload()
     await page.getByLabel('Schermata da modificare', { exact: true }).selectOption('battaglia')
@@ -64,7 +66,7 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     await page.getByLabel('Vista interna', { exact: true }).selectOption('default')
     await expect(sprite).toHaveCSS('left', '960px')
     await page.getByRole('button', { name: 'Applica al gioco', exact: true }).click()
-    await page.goto('/#vfx-lab')
+    await page.goto('/dev.html#vfx-lab')
     await page.getByRole('combobox', { name: 'Posizione', exact: true }).selectOption('target')
     await page.getByRole('button', { name: 'Replay sincronizzato', exact: true }).click()
     const effect = page.locator('[data-vfx-anchor="target"]').first()
@@ -75,7 +77,7 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
   for (const viewport of [{ width: 1920, height: 1080 }, { width: 1280, height: 640 }]) {
     test(`screen VFX stay centered in their real container at ${viewport.width}x${viewport.height}`, async ({ page }) => {
       await page.setViewportSize(viewport)
-      await page.goto('/#vfx-lab')
+      await page.goto('/dev.html#vfx-lab')
       await page.getByRole('combobox', { name: 'Posizione', exact: true }).selectOption('screen')
       await page.getByRole('button', { name: 'Replay sincronizzato', exact: true }).click()
       const effect = page.locator('[data-vfx-anchor="screen"]').first()

@@ -6,7 +6,7 @@ test('compact metadata keeps native attack and reaction without requesting prove
   const requests: string[] = [], errors: string[] = []
   page.on('request', request => requests.push(new URL(request.url()).pathname))
   page.on('pageerror', error => errors.push(error.message))
-  await page.goto('/#arkamon-lab')
+  await page.goto('/dev.html#arkamon-lab')
   await page.locator('#darklaw-preview-species').selectOption('52')
   await expect(page.locator('[data-preview-card="animated"] [data-sprite-renderer="paged-canvas"]')).toBeVisible()
   await page.locator('#arkamon-preview-target').selectOption('57')

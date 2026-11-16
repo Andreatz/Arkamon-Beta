@@ -73,8 +73,6 @@ export const INCONTRI: IncontroSelvatico[] = [
 ]
 export const ALLENATORI = RUNTIME_TRAINERS.filter(({ luogo }) => luogo !== 'Nascondiglio')
 
-// Mappe-griglia (Fase E.6+)
-export { MAPPE_GRIGLIA, getMappaGriglia } from './mappe-griglia'
 
 // =============================================================
 // FUNZIONI DI LOOKUP (sostituiscono i Find di VBA su Excel)

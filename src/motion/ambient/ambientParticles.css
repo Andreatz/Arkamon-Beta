@@ -1,0 +1,22 @@
+.arka-ambient { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.arka-ambient__particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation-name: arka-ambient-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@keyframes arka-ambient-float {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  20% { opacity: var(--peak, 0.6); }
+  50% { transform: translate3d(calc(var(--dx) * 0.6), calc(var(--dy) * 0.5), 0); }
+  80% { opacity: var(--peak, 0.6); }
+  100% { opacity: 0; transform: translate3d(var(--dx), var(--dy), 0); }
+}
+.arka-ambient[data-ambient='motes'] .arka-ambient__particle { background: #fff7dd; box-shadow: 0 0 6px #fff3c480; }
+.arka-ambient[data-ambient='fireflies'] .arka-ambient__particle { background: #f4ff9a; box-shadow: 0 0 8px 2px #d9ff6d99, 0 0 18px #c8ff4a55; }
+.arka-ambient[data-ambient='sparkles'] .arka-ambient__particle { background: #a8f0ff; box-shadow: 0 0 6px 1px #58d8ffaa; border-radius: 1px; }
+.arka-ambient[data-ambient='embers'] .arka-ambient__particle { background: #ffb36b; box-shadow: 0 0 8px 2px #ff7a3a99; }
+@media (prefers-reduced-motion: reduce) { .arka-ambient { display: none; } }

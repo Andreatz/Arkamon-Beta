@@ -132,7 +132,7 @@ export function AdminVfxEditor() {
       </p>
       {import.meta.env.DEV && (
         <a
-          href={`${window.location.pathname}${window.location.search}#vfx-lab`}
+          href={`${import.meta.env.BASE_URL}dev.html#vfx-lab`}
           target="_blank"
           rel="noreferrer"
           className="inline-block rounded-md border border-[var(--arka-primary)] px-3 py-2 text-xs font-bold text-[var(--arka-primary-hover)]"

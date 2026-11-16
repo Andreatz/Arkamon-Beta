@@ -11,7 +11,7 @@ $env:GITHUB_PAGES='true'; npm run build
 ## Gallery asset
 
 1. Avviare `npm run dev`.
-2. Aprire `http://localhost:3000/#vfx-lab`.
+2. Aprire `http://localhost:3000/dev.html#vfx-lab`.
 3. Provare ogni asset con replay, lati A/B e anchor disponibili.
 4. Verificare che sprite sheet e GIF non vengano tagliati e che il fallback resti leggibile.
 

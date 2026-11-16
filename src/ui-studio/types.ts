@@ -92,7 +92,7 @@ export type UiPreviewMessage =
 export const UI_STUDIO_SCREENS = [
   ['titolo', 'Titolo'], ['laboratorio', 'Laboratorio'],
   ['mappa-principale', 'Mappa principale'], ['citta', 'Città · Venezia'],
-  ['percorso', 'Percorso 1'], ['mappa-griglia', 'Mappa a griglia'],
+  ['percorso', 'Percorso 1'],
   ['battaglia', 'Battaglia'], ['lega', 'Lega'], ['evoluzione', 'Evoluzione'],
   ['menu', 'Menù Partita'], ['squadra', 'Squadra'], ['deposito', 'Deposito'],
   ['arkadex', 'Arkadex'], ['analisi', 'Analisi'], ['borsa', 'Borsa'],

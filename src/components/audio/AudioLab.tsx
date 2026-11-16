@@ -1,3 +1,4 @@
+import '@/components/ui/rangeInput.css'
 import { getAppliedAudioSnapshot } from '@/presentation/presentationRuntime'
 import { audioWorkspaceBaseline } from './audioWorkspaceModel'
 import { scheduleAudioClip } from '@/utils/soundManager'

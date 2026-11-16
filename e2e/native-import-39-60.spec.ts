@@ -84,7 +84,7 @@ test.describe('native lab preview', () => {
     test.skip(!isMobile, 'Exercises the automatic 32 MiB mobile budget.')
     const errors: string[] = []
     page.on('pageerror', error => errors.push(error.message))
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption('52')
     const comparison = page.locator('[data-preview-card="animated"]')
     await expect(comparison.locator('[data-sprite-renderer="paged-canvas"]')).toBeVisible()
@@ -116,7 +116,7 @@ test.describe('native lab preview', () => {
     test.skip(!isMobile, 'Companion regression for the mobile preview.')
     await page.route('**/arkamon-paged/57/front/hit/**', route => route.fulfill({ status: 404, body: '' }))
     await page.route('**/front_sprites/57.png', route => route.fulfill({ status: 404, body: '' }))
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption('52')
     await page.locator('#arkamon-preview-target').selectOption('57')
     // The loading poster must already have failed before the canvas fails, so

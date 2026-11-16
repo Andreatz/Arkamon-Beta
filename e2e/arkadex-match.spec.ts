@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { readFile } from 'node:fs/promises'
 
 async function openTools(page: Page, tab: 'Arkadex' | 'Registro del match') {
-  await page.getByRole('button', { name: 'Partita', exact: true }).click()
+  await page.getByRole('button', { name: /^(?:Partita|Menù)$/ }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   await dialog.getByRole('button', { name: tab === 'Registro del match' ? 'Apri Registro' : tab, exact: true }).click()
   return dialog

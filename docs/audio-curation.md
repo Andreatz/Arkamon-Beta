@@ -1,6 +1,6 @@
 # Laboratorio audio
 
-Aprire il server di sviluppo con `#audio-lab`, per esempio `http://localhost:3000/#audio-lab`.
+Aprire il server di sviluppo con `dev.html#audio-lab`, per esempio `http://localhost:3000/dev.html#audio-lab`.
 
 La libreria comprende 5.466 file originali in `public/sounds`. Il catalogo è generato separatamente in `public/audio-lab/catalog.json` e caricato solo nel laboratorio. I file originali non vengono modificati. I nomi numerici del pacchetto MapleStory non vengono interpretati come categorie elementali.
 

@@ -13,7 +13,6 @@ import { UI_STUDIO_SCREENS, UI_STUDIO_SCREEN_VIEWS, type UiDesignDocument, type 
 import { isUiStudioPreview } from './previewMode'
 import { UiPreviewViewContext } from './UiPreviewViewContext'
 import { UiDesignPreviewContext } from './battleLayout'
-import { UI_CONCEPTS } from '@/player-ui/concepts/uiConcepts'
 import { useInteractionStore } from '@/interactions/interactionStore'
 import { getLocalMap } from '@/data/localMaps'
 
@@ -22,7 +21,6 @@ const Laboratorio = lazy(() => import('@/scenes/LaboratorioScene').then(module =
 const MainMap = lazy(() => import('@/scenes/MappaPrincipaleScene').then(module => ({ default: module.MappaPrincipaleScene })))
 const City = lazy(() => import('@/scenes/CittaScene').then(module => ({ default: module.CittaScene })))
 const Route = lazy(() => import('@/scenes/PercorsoScene').then(module => ({ default: module.PercorsoScene })))
-const Grid = lazy(() => import('@/scenes/MappaGrigliaScene').then(module => ({ default: module.MappaGrigliaScene })))
 const Battle = lazy(() => import('@/scenes/BattagliaScene').then(module => ({ default: module.BattagliaScene })))
 const League = lazy(() => import('@/league/LeagueScene').then(module => ({ default: module.LeagueScene })))
 const Evolution = lazy(() => import('@/scenes/EvoluzioneScene').then(module => ({ default: module.EvoluzioneScene })))
@@ -34,7 +32,6 @@ function Scene({ screen, onClose = () => {} }: { screen: string; onClose?: () =>
   if (screen === 'mappa-principale') return <MainMap />
   if (screen === 'citta') return <City />
   if (screen === 'percorso') return <Route />
-  if (screen === 'mappa-griglia') return <Grid />
   if (screen === 'battaglia') return <Battle />
   if (screen === 'lega') return <League />
   if (screen === 'evoluzione') return <Evolution />
@@ -44,7 +41,7 @@ function Scene({ screen, onClose = () => {} }: { screen: string; onClose?: () =>
 /** Only the isolated iframe route mounts this component; it never opens PlayerTools. */
 export function UiStudioPreview() {
   const query = new URLSearchParams(window.location.search)
-  const conceptPreview = query.get('uiConceptFluid') === '1' && (query.get('uiConcept') === 'aurora' || UI_CONCEPTS.some(concept => concept.id === query.get('uiConcept')))
+  const conceptPreview = query.get('uiConceptFluid') === '1' && query.get('uiConcept') === 'aurora'
   const [screen, setScreen] = useState(() => {
     const requested = query.get('screen')
     return conceptPreview && UI_STUDIO_SCREENS.some(([id]) => id === requested) ? requested! : 'titolo'

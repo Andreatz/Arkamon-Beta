@@ -1,3 +1,4 @@
+import { DepthBackground } from '@/motion/depth/DepthBackground'
 import { RpgCommand, RpgFrame } from '@/components/rpg'
 import './rpgScenes.css'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
@@ -190,8 +191,9 @@ export function EvoluzioneScene() {
     <div
       data-admin-layout-root
       className="rpg-evolution-scene w-full h-full relative bg-gradient-to-br from-violet-950 via-fuchsia-900 to-indigo-950 overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: `url(${EVOLUTION_BG})` }}
+      style={{ backgroundImage: `url(${EVOLUTION_BG})`, isolation: 'isolate' }}
     >
+      <DepthBackground src={EVOLUTION_BG} className="absolute inset-0" style={{ zIndex: -1 }} />
       {/* Sfondo a stelline animate */}
       {!reducedMotion && <div className="absolute inset-0 opacity-30">
         {Array.from({ length: 30 }).map((_, i) => (

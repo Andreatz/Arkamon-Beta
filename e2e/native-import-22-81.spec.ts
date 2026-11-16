@@ -83,7 +83,7 @@ test.describe('new native lab integration', () => {
   test('lab releases the comparison while a new attacker and defender run their full source cues', async ({ page }) => {
     const errors: string[] = []
     page.on('pageerror', error => errors.push(error.message))
-    await page.goto('/#arkamon-lab')
+    await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption('70')
     const comparison = page.locator('[data-preview-card="animated"]')
     await expect(comparison.locator('[data-sprite-renderer="paged-canvas"]')).toBeVisible()

@@ -96,7 +96,7 @@ test.describe('new native laboratory integration', () => {
       page.on('response', response => {
         if (response.url().includes('/arkamon-paged/') && response.status() >= 400) errors.push(`${response.url()}: HTTP ${response.status()}`)
       })
-      await page.goto('/#arkamon-lab')
+      await page.goto('/dev.html#arkamon-lab')
       await page.locator('#darklaw-preview-species').selectOption(String(attacker))
       const comparison = page.locator('[data-preview-card="animated"]')
       await expect(comparison.locator('[data-sprite-renderer="paged-canvas"]')).toBeVisible()

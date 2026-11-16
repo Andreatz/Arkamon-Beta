@@ -3,10 +3,11 @@
  * not load their own presentation overrides after the active skin: otherwise
  * visiting a lazy screen can change the appearance of a screen already open.
  *
- * Order: primitives -> screen layouts -> shell -> preview concepts -> current
+ * Order: primitives -> screen layouts -> shell -> live shell base -> current
  * reference skin -> supplied artwork -> responsive PNG finish -> splash.
  * The authored rules are kept intact; this module owns their precedence.
  */
+import './playerUiMotion.css'
 import './playerUiPrimitives'
 import './liveTeam.css'
 import './liveBag.css'
@@ -14,9 +15,8 @@ import './liveStore.css'
 import './livePlayerUi.css'
 import './fullscreenLegacy.css'
 import './fullscreenAuxiliary.css'
-import './concepts/concept-base.css'
-import './concepts/concept-dramatic.css'
-import './concepts/concept-editorial.css'
+// Base condivisa dello stile attuale (era la base dei concept; i concept alternativi sono stati rimossi).
+import './liveShellBase.css'
 import './reference/reference-shared.css'
 import './reference/reference-menu.css'
 import './reference/reference-team.css'

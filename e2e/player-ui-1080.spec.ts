@@ -80,7 +80,7 @@ async function savedCampaign(page: Page) {
 }
 
 async function openTools(page: Page) {
-  await page.getByRole('button', { name: 'Partita', exact: true }).click()
+  await page.getByRole('button', { name: /^(?:Partita|Menù)$/ }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   await expect(dialog).toBeVisible()
   return dialog
@@ -159,6 +159,12 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
     const source = svg.getAttribute('data-creature-source')!
     const speciesId = svg.getAttribute('data-species-id')
     const entry = metadata[source]
+    if (source === '/ui/grey_pokeball.png') {
+      const expectedSprite = `/sprites/front_sprites/${speciesId}.png`
+      const href = svg.querySelector('image')?.getAttribute('href')
+      return { source, speciesId, issues: metadata[expectedSprite] || !href?.endsWith(source)
+        ? ['Incorrect placeholder for the species'] : [] }
+    }
     if (!entry) return { source, issues: ['Unrecognized source metadata'] }
     const issues: string[] = []
     if (source !== `/sprites/front_sprites/${speciesId}.png`) issues.push('Portrait does not use the official front sprite')
@@ -329,7 +335,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
     const before = await savedCampaign(page)
     expect(before.giocatore1.squadra).toHaveLength(6)
     expect(Object.keys(before.giocatore1.deposito)).toHaveLength(35)
-    expect(before.arkadex.seen1).toHaveLength(110)
+    expect(before.arkadex.seen1).toHaveLength(pokemonCatalog.length)
     const dialog = await openTools(page)
 
     for (const [name, id] of SCREENS) {
@@ -356,30 +362,37 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
         await dialog.getByRole('button', { name: /^Numero 1:/ }).click()
         const selectedName = await dialog.locator('.pu-dex-detail article').getAttribute('aria-label')
         await expect(previous).toBeDisabled()
+        const pageSize = 6
+        const pageCount = Math.ceil(pokemonCatalog.length / pageSize)
         const visitedSpecies: number[] = []
         const portraitSources = new Set<string>()
-        for (let pageNumber = 1; pageNumber <= 19; pageNumber++) {
-          await expect(pagination).toContainText(`Pagina ${pageNumber} / 19`)
+        for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
+          await expect(pagination).toContainText(`Pagina ${pageNumber} / ${pageCount}`)
           const numbers = await dialog.locator('.pu-dex-list .pu-dex-row').evaluateAll(rows => rows.map(row =>
             Number(row.getAttribute('aria-label')?.match(/^Numero (\d+):/)?.[1])))
-          expect(numbers).toHaveLength(pageNumber === 19 ? 2 : 6)
+          expect(numbers).toHaveLength(Math.min(pageSize, pokemonCatalog.length - (pageNumber - 1) * pageSize))
           visitedSpecies.push(...numbers)
           await expect(dialog.locator('.pu-dex-detail article')).toHaveAttribute('aria-label', selectedName!)
-          const framing = await assertFitsWithoutScroll(dialog, `Arkadex: page ${pageNumber} / 19 and stable selected specimen`)
+          const framing = await assertFitsWithoutScroll(dialog, `Arkadex: page ${pageNumber} / ${pageCount} and stable selected specimen`)
           framing.portraits.forEach(portrait => portraitSources.add(portrait.source))
-          if (pageNumber < 19) await next.click()
+          if (pageNumber < pageCount) await next.click()
         }
         expect(visitedSpecies).toEqual(pokemonCatalog.map(species => species.id))
         expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(0)
-        expect([...portraitSources].filter(source => source.startsWith('/ui/reference-png/')).sort()).toEqual(pokemonCatalog.map(species => `/ui/reference-png/portrait-${String(species.id).padStart(3, '0')}.webp`).sort())
+        const expectedPortraits = new Set(pokemonCatalog.map(({ id }) => {
+          const compact = `/ui/reference-png/portrait-${String(id).padStart(3, '0')}.webp`
+          if (compactPortraitMetadata[compact]) return compact
+          const front = `/sprites/front_sprites/${id}.png`
+          return portraitMetadata[front] ? front : '/ui/grey_pokeball.png'
+        }))
+        expect([...portraitSources].sort()).toEqual([...expectedPortraits].sort())
         // Paging changes only the compact index. The authored fullscreen hero remains species 1.
         await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-reference-splash-ready', 'true')
         await expect(dialog.locator('.pu-dex-hero .pu-splash-hero-presence')).toHaveAttribute('data-splash-species', '1')
         await expect(dialog.locator('.pu-dex-hero .pu-splash-hero-presence')).toHaveAttribute('data-splash-source', /\/backgrounds\/arkamon-splash\/001-vyrath\.webp$/)
-        expect([...portraitSources].filter(source => source.startsWith('/sprites/front_sprites/'))).toEqual([])
         await expect(next).toBeDisabled()
         await previous.click()
-        await expect(pagination).toContainText('Pagina 18 / 19')
+        await expect(pagination).toContainText(`Pagina ${pageCount - 1} / ${pageCount}`)
         await assertFitsWithoutScroll(dialog, 'Arkadex: previous page without scrolling')
         await dialog.getByLabel('Cerca specie scoperta o numero').fill('1')
         await dialog.getByRole('button', { name: /^Numero 1:/ }).click()
@@ -392,7 +405,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
         await dialog.getByRole('button', { name: /^Numero 110:/ }).click()
         await assertFitsWithoutScroll(dialog, 'Arkadex: final species with owned specimen')
         await dialog.getByRole('button', { name: 'Azzera filtri', exact: true }).click()
-        await expect(pagination).toContainText('Pagina 1 / 19')
+        await expect(pagination).toContainText(`Pagina 1 / ${pageCount}`)
         await expect(dialog.getByLabel('Cerca specie scoperta o numero')).toHaveValue('')
         await assertFitsWithoutScroll(dialog, 'Arkadex: filters reset restores the full paginated catalog')
       }
