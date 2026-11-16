@@ -1,3 +1,4 @@
+import { gameArtUrl } from '@/ui-system/GameArt'
 import { lazy, Suspense, useState, useContext, useEffect, useRef, useMemo, type CSSProperties } from 'react'
 import { DialogNavigationContext } from '@/components/ui/DialogNavigation'
 import { useGameStore } from '@/store/gameStore'
@@ -216,7 +217,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     <SelectionCursor scope={shell} />
     <div className="pu-topbar">
       <KitFrame id="panel-wide" />
-      <div className="pu-brand" role="img" aria-label="Arkamon"><img src={assetUrl('/ui/logo_arkamon.png')} className={reference ? 'pu-provided-logo' : undefined} alt="" />{!reference && <b className="pu-wordmark" aria-hidden="true">ARKAMON<span>VIAGGIA. SCOPRI. SFIDA.</span></b>}<small>Strumenti dell’allenatore</small></div>
+      <div className="pu-brand" role="img" aria-label="Arkamon"><img src={reference && gameArtUrl('logo') ? gameArtUrl('logo') : assetUrl('/ui/logo_arkamon.png')} className={reference ? 'pu-provided-logo' : undefined} alt="" />{!reference && <b className="pu-wordmark" aria-hidden="true">ARKAMON<span>VIAGGIA. SCOPRI. SFIDA.</span></b>}<small>Strumenti dell’allenatore</small></div>
       {reference && <h1 className="ref-screen-title"><KitIcon id={visibleTool ? auxiliary.find(entry => entry.id === visibleTool)?.icon ?? page.icon : page.icon} />{visibleTool ? toolLabel : screen === 'partita' ? 'Menù principale' : screen === 'negozio' ? 'Negozio' : screens[screen].label}</h1>}
       <div className="pu-header-meta"><small>Posizione di G{playerId}</small><strong>{location}</strong></div>
       <div className="pu-player-switch" role="group" aria-label="Giocatore degli strumenti">

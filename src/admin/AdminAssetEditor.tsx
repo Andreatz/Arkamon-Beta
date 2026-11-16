@@ -16,7 +16,8 @@ const assetFields: {
     label: 'Logo titolo',
     options: [
       { label: 'Default', value: '' },
-      { label: 'Logo Arkamon', value: '/ui/logo_arkamon.png' },
+      { label: 'Logo Arkamon (dorato)', value: '/ui/game-art/logo.webp' },
+      { label: 'Logo Arkamon (rosso, storico)', value: '/ui/logo_arkamon.png' },
       { label: 'Start button', value: '/ui/start_button.png' },
     ],
   },

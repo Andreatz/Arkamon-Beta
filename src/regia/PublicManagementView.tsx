@@ -1,3 +1,4 @@
+import { gameArtUrl } from '@/ui-system/GameArt'
 import { assetUrl } from '@/utils/assetUrl'
 import { KitIcon, SpeciesPortrait } from '@/player-ui/kit'
 import type { PublicManagement } from './managementPresentation'
@@ -6,7 +7,7 @@ import type { PublicManagement } from './managementPresentation'
 export function PublicManagementView({ view }: { view: PublicManagement }) {
   const creature = view.creature
   return <section className="arka-public-management" aria-label="Scheda presentata dal GM">
-    <header><img src={assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" /><div><small>G{view.playerId} · {view.playerName} · {view.place}</small><h1>{view.title}</h1></div></header>
+    <header><img src={gameArtUrl('logo') ?? assetUrl('/ui/logo_arkamon.png')} alt="Arkamon" /><div><small>G{view.playerId} · {view.playerName} · {view.place}</small><h1>{view.title}</h1></div></header>
     <div className="arka-public-management-body">
       {creature ? <><div className="arka-public-management-hero"><SpeciesPortrait speciesId={creature.speciesId} large /><h2>{creature.name}</h2><span>{creature.type}{creature.level !== undefined ? ` · Lv. ${creature.level}` : ''}</span></div>
         <div className="arka-public-management-detail">{creature.hp !== undefined && creature.maximum !== undefined ? <div className="arka-public-management-health"><strong>{creature.hp} / {creature.maximum} HP</strong><progress max={creature.maximum} value={creature.hp} /><p>{creature.condition}</p></div> : null}<h2>Mosse</h2>{creature.moves.map((move, i) => <div className="arka-public-management-move" key={i}><strong>{move.name}</strong><span>{move.type} · {move.effect}</span></div>)}</div></> : null}

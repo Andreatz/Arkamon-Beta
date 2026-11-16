@@ -12,7 +12,8 @@ import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonD
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { SelectionCursor } from '@/motion/ui/SelectionCursor'
 
-const DEFAULT_TITLE_LOGO = '/ui/logo_arkamon.png'
+// Logo dorato degli atlanti forniti (audit UX/UI); il vecchio logo resta il ripiego.
+const DEFAULT_TITLE_LOGO = '/ui/game-art/logo.webp'
 const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
 
 /**

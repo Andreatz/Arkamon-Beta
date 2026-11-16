@@ -1,3 +1,4 @@
+import { GameArt, gameArtForIcon } from '@/ui-system/GameArt'
 import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { getMossa, getPokemon } from '@/data'
@@ -41,6 +42,9 @@ const ICON_GLYPHS: Record<string, string> = {
   'type-water': 'AC', 'type-grass': 'ER', 'type-dark': 'OS', 'type-psychic': 'PS',
 }
 export function KitIcon({ id, className = '' }: { id: string; className?: string }) {
+  // Illustrazioni dipinte (oggetti e moneta) quando presenti nel catalogo di gioco.
+  const art = isReferenceUi() ? gameArtForIcon(id) : undefined
+  if (art) return <span className={`pu-kit-icon pu-kit-icon-art ${className}`} data-icon={id} aria-hidden="true"><GameArt id={art} /></span>
   const provided = isReferenceUi() ? providedIconAsset(id) : undefined
   if (provided) return <span className={`pu-kit-icon pu-kit-icon-provided ${className}`} data-icon={id} aria-hidden="true"><ProvidedArtwork id={provided} /></span>
   if (!MENU_SVG_ARTWORK_ENABLED && isReferenceUi() && (!id.startsWith('item-') || id === 'item-coin')) return <span className={`pu-kit-icon pu-kit-icon-reference ${className}`} data-icon={id} aria-hidden="true"><ReferenceIcon kind={id} /></span>

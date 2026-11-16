@@ -85,7 +85,10 @@ describe('selected inventory item action view', () => {
     expect(markup).not.toMatch(/<img[^>]+src="[^"]*\/ui\/(?:studio|player-kit|reference-assets)\//)
     expect(markup).not.toContain('data-provided-svg=')
     expect(markup).not.toContain('data-provided-asset="item-potion"')
-    expect(markup).toMatch(/<span(?=[^>]*class="[^"]*pu-kit-icon-css)(?=[^>]*data-icon="item-potion")[^>]*>/)
+    // La Pozione usa l'illustrazione dipinta del catalogo game-art (audit UX/UI, U0).
+    expect(markup).toMatch(/<span(?=[^>]*class="[^"]*pu-kit-icon-art)(?=[^>]*data-icon="item-potion")[^>]*>/)
+    expect(markup).toMatch(/<img(?=[^>]*data-game-art="item-potion")(?=[^>]*src="[^"]*\/ui\/game-art\/item-potion\.webp")[^>]*>/)
+    // Gli oggetti ancora senza illustrazione mantengono il glifo CSS.
     expect(markup).toContain('pu-kit-icon-glyph')
     expect(markup).toContain('data-provided-asset="card-selected"')
     expect(markup).toMatch(/<img(?=[^>]*class="[^"]*pu-provided-slot-frame)(?=[^>]*data-package-asset="[^"]+")(?=[^>]*src="[^"]*\/ui\/reference-png\/[a-z0-9_-]+\.webp")[^>]*>/)
