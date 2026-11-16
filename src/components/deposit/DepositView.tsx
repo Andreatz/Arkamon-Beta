@@ -7,7 +7,9 @@ import { defaultDepositLayout } from '@/theme/defaultAdminTheme'
 import type { AdminDepositLayout, AdminDepositLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import type { PokemonIstanza } from '@/types'
 import { assetUrl } from '@/utils/assetUrl'
-import { getDepositPortraitFraming } from './depositPortraitFraming'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
+import { getPortraitFraming } from '@/player-ui/portraitFraming'
+import { DEPOSIT_PORTRAIT_FRAMING } from './depositPortraitFraming'
 import './deposit.css'
 
 interface DepositViewProps {
@@ -162,11 +164,20 @@ function Portrait({ pokemon, className }: { pokemon?: PokemonIstanza; className:
 
 function PortraitImage({ pokemon }: { pokemon: PokemonIstanza }) {
   const [imageFailed, setImageFailed] = useState(false)
-  const { x, y, zoom } = getDepositPortraitFraming(pokemon.specieId)
-  return imageFailed ? (
-    <span className="deposit-portrait-fallback">{pokemon.nome.slice(0, 1)}</span>
-  ) : (
-    <img src={assetUrl(`/sprites/front_sprites/${pokemon.specieId}.png`)} alt=""
+  if (imageFailed) return <span className="deposit-portrait-fallback">{pokemon.nome.slice(0, 1)}</span>
+
+  const source = getArkamonSpriteSource(pokemon.specieId)
+  const curated = DEPOSIT_PORTRAIT_FRAMING[pokemon.specieId]
+  if (!curated) {
+    const { viewBox, width, height } = getPortraitFraming(source)
+    return <svg width="100%" height="100%" viewBox={viewBox} focusable="false">
+      <image href={assetUrl(source)} width={width} height={height} onError={() => setImageFailed(true)} />
+    </svg>
+  }
+
+  const { x, y, zoom } = curated
+  return (
+    <img src={assetUrl(source)} alt=""
       decoding="async" draggable={false}
       style={{ width: `${zoom * 100}%`, transform: `translate(${-x * 100}%, ${-y * 100}%)` }}
       onError={() => setImageFailed(true)} />

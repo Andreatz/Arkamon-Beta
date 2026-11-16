@@ -41,6 +41,8 @@ export interface Stato {
   turniRimanenti: number
   /** Tick di veleno già applicati; assente nei vecchi salvataggi equivale a 0. */
   turniTrascorsi?: number
+  /** Effetti del nuovo catalogo. Gli stati dei salvataggi precedenti mantengono le loro regole. */
+  regola?: 'database'
 }
 
 // =============================================================
@@ -60,8 +62,8 @@ export interface PokemonSpecie {
   livelloEvoluzione: number | null
   /** ID della specie evoluta, null se non evolve */
   evoluzioneId: number | null
-  /** Tasso base di cattura (0-5, più alto = più facile) */
-  tassoCattura: number
+  /** Tasso base di cattura (0–5), oppure null quando il catalogo non lo specifica. */
+  tassoCattura: number | null
 }
 
 /** Definizione di una mossa (dal foglio Mosse) */
@@ -75,6 +77,10 @@ export interface MossaDef {
   valoreEffetto: number | null
   /** Mossa che applica soltanto uno stato: nessun danno, tiro offensivo o Suprema. */
   soloStato?: boolean
+  /** Percentuale di precisione per le mosse di applicazione status del catalogo. */
+  precisione?: number
+  livelloMinimo?: number
+  stadioMinimo?: number
   /** Numero di dadi D6 per livello {"5": 1, "6": 1, ...} */
   dadiPerLivello: Record<string, number>
   /** Incremento fisso per livello {"5": 0, "6": 0, ...} */
@@ -111,6 +117,10 @@ export interface AllenatoreDef {
   luogo: string
   tipo: TipoAllenatore
   squadra: { pokemonId: number; livello: number }[]
+  idDatabase?: number
+  guadagno?: number
+  perdita?: number
+  livelliRivale?: number[]
 }
 
 // =============================================================
@@ -119,6 +129,8 @@ export interface AllenatoreDef {
 
 /** Istanza viva di un Pokémon (uno dei 6 in squadra o nel deposito) */
 export interface PokemonIstanza {
+  /** Classe del cespuglio originario, usata nella tabella di cattura. */
+  difficoltaCattura?: Probabilita
   /** ID univoco dell'istanza, per distinguere due Vyrath con stessa specie */
   istanzaId: string
   /** ID della specie corrente (cambia se si evolve) */
@@ -132,10 +144,13 @@ export interface PokemonIstanza {
   xp: number
   /** Stato alterato attivo (se presente). Pulito a fine battaglia. */
   stato?: Stato
+  /** Protezione temporanea e utilizzi registrati soltanto durante la battaglia. */
+  immunitaStatus?: number
+  cureLimitateUsate?: number
 }
 
 /** Identificatori degli oggetti supportati. */
-export type OggettoId = 'masterball' | 'potion' | 'super-potion' | 'revive' | 'antidote' | 'paralysis-heal' | 'awakening'
+export type OggettoId = import('@/shop/catalog').ShopItemId
 
 /** Stato di un singolo giocatore */
 export interface StatoGiocatore {
@@ -162,6 +177,7 @@ export interface StatoGiocatore {
 
 /** Stato della battaglia in corso (analogo del foglio Battaglia_Corrente VBA) */
 export interface StatoBattaglia {
+  playerBoosts?: { speed?: true; damage?: true }
   /** League opponents are explicitly configured, not synthetic entries in the campaign catalog. */
   leagueOpponent?: AllenatoreDef
   leagueBattle?: { runId: string; stageIndex: number; playerId: 1 | 2 }

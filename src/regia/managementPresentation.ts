@@ -1,8 +1,10 @@
-import { ALLENATORI, getPokemon, getMossa } from '@/data'
+import { getPokemon, getMossa } from '@/data'
+import { countGymMedals } from '@/data/secretLocation'
 import { calcolaHPMax, getMossaAlLivello, èMossaCura, èMossaSoloStato } from '@/engine/battleEngine'
 import { getShopItem, isShopItemId } from '@/shop/catalog'
 import { deriveArkadexProgress } from '@/arkadex/arkadexModel'
 import { liveOwnedPokemon } from '@/player-ui/currentRoster'
+import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
 import type { GameState } from '@/store/gameStore'
 
 export const PRESENTABLE_SCREENS = ['partita', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa', 'negozio'] as const
@@ -34,7 +36,7 @@ export function buildPublicManagement(game: GameState, request: ManagementReques
   const position = game[request.playerId === 1 ? 'posizione1' : 'posizione2']
   const result: PublicManagement = { title: titles[request.screen], playerId: request.playerId, playerName: player.nome || `Giocatore ${request.playerId}`, place: (position.luogo ?? position.mappaId).replace(/_/g, ' ') }
   if (request.screen === 'partita') {
-    result.progress = { badges: ALLENATORI.filter(a => a.tipo === 'Capopalestra' && player.allenatoriSconfitti.has(a.id)).length,
+    result.progress = { badges: countGymMedals(player),
       leagueWins: game.league.players[request.playerId].completedStages.length, leagueTotal: game.league.config?.championEnabled ? 5 : 4 }
     return result
   }
@@ -42,7 +44,7 @@ export function buildPublicManagement(game: GameState, request: ManagementReques
     if (!request.itemId || !isShopItemId(request.itemId)) return null
     const item = getShopItem(request.itemId)
     if (!item) return null
-    result.item = { id: item.id, name: item.name, description: item.description, ...(request.screen === 'negozio' ? { price: item.price } : {}) }
+    result.item = { id: item.id, name: item.name, description: item.description, ...(request.screen === 'negozio' && item.price !== null ? { price: item.price } : {}) }
     return result
   }
   const owned = [...player.squadra, ...Object.values(player.deposito)].find(p => p.istanzaId === request.instanceId)
@@ -60,6 +62,7 @@ export function buildPublicManagement(game: GameState, request: ManagementReques
     moves: species.mosse.flatMap(id => {
       const move = getMossa(id)
       if (!move) return []
+      if (move.soloStato) return [{ name: move.nome, type: move.tipo, effect: battleMoveFacts(move, specimen?.livello ?? 5).label }]
       const dice = getMossaAlLivello(move, specimen?.livello ?? 1)
       return [{ name: move.nome, type: move.tipo, effect: èMossaCura(move) ? `Cura ${move.valoreEffetto ?? 0}${move.effetto === 'CURA_PCT' ? '%' : ' HP'}`
         : èMossaSoloStato(move) ? 'Stato alterato' : request.screen === 'arkadex' ? 'Mossa offensiva' : `${dice.dadi} D6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}` }]

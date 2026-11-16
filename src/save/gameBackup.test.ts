@@ -282,8 +282,8 @@ describe('backup portabile e ripristino guidato della campagna', () => {
     expect(restored.giocatore1.monete).toBe(expected)
     expect(shopAvailabilityMessage(restored, 1, 'Venezia', { interactionId: shop.id, interactions: [shop] })).toBeNull()
     expect(restored.acquistaOggetti(1, { potion: 1 }, 'Venezia', shop.id).ok).toBe(true)
-    expect(useGameStore.getState().giocatore1.monete).toBe(expected - 100)
-    expect(JSON.parse(localStorage.getItem(GAME_SAVE_STORAGE_KEY)!).state.giocatore1.monete).toBe(expected - 100)
+    expect(useGameStore.getState().giocatore1.monete).toBe(expected - 50)
+    expect(JSON.parse(localStorage.getItem(GAME_SAVE_STORAGE_KEY)!).state.giocatore1.monete).toBe(expected - 50)
   })
 
   it('un ripristino anche nella stessa scena crea una nuova generazione senza importarla dal file', () => {

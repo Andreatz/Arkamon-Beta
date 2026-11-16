@@ -5,6 +5,9 @@ interface ImportMetaEnv {
   readonly VITE_LOCAL_FRONT_SPRITE_IDS: readonly number[]
 }
 
+declare const __ARKAMON_FRONT_SPRITE_IDS__: readonly number[]
+declare const __ARKAMON_BACK_SPRITE_IDS__: readonly number[]
+
 declare module 'virtual:arkamon-runtime-pages' {
   type PackedNativePage = [fileToken: string, frameCount: number, columns: number]
   /** Comma-separated legacy tokens, or ! followed by eight-byte hashes in base64url. */

@@ -65,7 +65,7 @@ describe('store - passaggio segreto individuale di Roma', () => {
 
   it('anche con tutti gli NPC sconfitti resta chiuso se manca il capopalestra di Roma', () => {
     const ultimo = ALLENATORI.find((a) => a.tipo === 'Capopalestra' && a.luogo === 'Roma')!
-    unlock(1, ALLENATORI.filter((a) => a.id !== ultimo.id).map((a) => a.id))
+    unlock(1, ALLENATORI.filter((a) => a.tipo !== 'Capopalestra' || SECRET_LOCATION_GYM_IDS.includes(a.id) && a.id !== ultimo.id).map((a) => a.id))
     expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(false)
   })
 

@@ -4,14 +4,24 @@ import type { PosizioneAvatar, StatoGiocatore } from '@/types'
 export const SECRET_LOCATION_ID = 'Percorso_15'
 export const SECRET_LOCATION_ORIGIN = 'Roma'
 
-/** The unlock follows the actual gym roster, including the final gym in Rome. */
-export const SECRET_LOCATION_GYM_IDS = ALLENATORI
-  .filter((allenatore) => allenatore.tipo === 'Capopalestra')
-  .map((allenatore) => allenatore.id)
+/** The original eight badges remain valid for existing campaigns. */
+export const SECRET_LOCATION_GYM_IDS = [203, 302, 303, 305, 306, 307, 309, 311]
+const DATABASE_GYM_IDS = ALLENATORI
+  .filter((trainer) => trainer.tipo === 'Capopalestra' && trainer.idDatabase !== undefined)
+  .sort((a, b) => a.idDatabase! - b.idDatabase!)
+  .map((trainer) => trainer.id)
+
+export function gymMedalTrack(defeated: ReadonlySet<number>): readonly number[] {
+  const count = (ids: number[]) => ids.filter((id) => defeated.has(id)).length
+  return count(DATABASE_GYM_IDS) > count(SECRET_LOCATION_GYM_IDS) ? DATABASE_GYM_IDS : SECRET_LOCATION_GYM_IDS
+}
+
+export function countGymMedals(player: Pick<StatoGiocatore, 'allenatoriSconfitti'>): number {
+  return gymMedalTrack(player.allenatoriSconfitti).filter((id) => player.allenatoriSconfitti.has(id)).length
+}
 
 export function hasUnlockedSecretLocation(giocatore: Pick<StatoGiocatore, 'allenatoriSconfitti'>): boolean {
-  return SECRET_LOCATION_GYM_IDS.length > 0
-    && SECRET_LOCATION_GYM_IDS.every((id) => giocatore.allenatoriSconfitti.has(id))
+  return countGymMedals(giocatore) >= SECRET_LOCATION_GYM_IDS.length
 }
 
 export function isSecretLocationPosition(posizione: PosizioneAvatar): boolean {

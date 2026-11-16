@@ -235,6 +235,14 @@ export const ARKAMON_ANIMATION_MANIFEST: Partial<Record<number, ArkamonAnimation
   164: frontAnimationSet(164, 640, { width: 192, height: 192, left: 224, top: 208 }, 32, 32, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
   165: frontAnimationSet(165, 512, { width: 192, height: 192, left: 160, top: 157 }, 40, 10, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
   166: frontAnimationSet(166, 704, { width: 192, height: 192, left: 310, top: 256 }, 33, 14, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  169: frontAnimationSet(169, 768, { width: 192, height: 192, left: 291, top: 287 }, 38, 36, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  170: frontAnimationSet(170, 640, { width: 192, height: 192, left: 220, top: 227 }, 28, 14, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  171: frontAnimationSet(171, 448, { width: 192, height: 192, left: 173, top: 135 }, 47, 14, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 96 }),
+  172: frontAnimationSet(172, 320, { width: 192, height: 192, left: 64, top: 64 }, 45, 16, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  173: frontAnimationSet(173, 320, { width: 192, height: 192, left: 79, top: 64 }, 22, 46, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  174: frontAnimationSet(174, 768, { width: 160, height: 160, left: 304, top: 304 }, 41, 14, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  175: frontAnimationSet(175, 512, { width: 192, height: 192, left: 160, top: 159 }, 50, 11, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
+  176: frontAnimationSet(176, 512, { width: 192, height: 192, left: 160, top: 161 }, 44, 14, { idle: 94, attack: 94, hit: 94, victory: 94, ko: 94 }),
 }
 
 export function getArkamonAnimationAsset(

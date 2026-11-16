@@ -12,7 +12,8 @@ import type {
   StatoAlterato,
   Stato,
 } from '@/types'
-import { getPokemon, getMossa, efficaciaTipo, CRESCITA_HP } from '@data/index'
+import { getPokemon, getMossa, efficaciaTipo, mossaDisponibile, CRESCITA_HP } from '@data/index'
+import type { CaptureItemId } from '@/shop/catalog'
 
 // =============================================================
 // STATI ALTERATI (Fase B della roadmap)
@@ -40,6 +41,7 @@ const EFFETTO_TO_STATO: Record<string, StatoAlterato> = {
 
 /** Percentuale del prossimo tick di veleno, condivisa con la sua descrizione nella UI. */
 export function percentualeProssimoTickVeleno(stato: Stato): number {
+  if (stato.regola === 'database') return 12.5
   const turniTrascorsi = typeof stato.turniTrascorsi === 'number' && Number.isFinite(stato.turniTrascorsi)
     ? Math.max(0, Math.floor(stato.turniTrascorsi)) : 0
   return (turniTrascorsi + 1) * 10
@@ -50,13 +52,15 @@ export const percentualeVelenoProssimoTurno = percentualeProssimoTickVeleno
 /** Applica uno stato a un'istanza (sovrascrive eventuale stato precedente). */
 export function applicaStato(
   istanza: PokemonIstanza,
-  tipo: StatoAlterato
+  tipo: StatoAlterato,
+  regola?: Stato['regola'],
 ): PokemonIstanza {
   return {
     ...istanza,
     stato: {
       tipo,
-      turniRimanenti: DURATA_STATO[tipo],
+      turniRimanenti: regola === 'database' && tipo === 'Confuso' ? 3 : DURATA_STATO[tipo],
+      ...(regola ? { regola } : {}),
       ...(tipo === 'Avvelenato' ? { turniTrascorsi: 0 } : {}),
     },
   }
@@ -75,6 +79,9 @@ export function tentaApplicaStato(
   istanza: PokemonIstanza,
   _tipo: StatoAlterato
 ): { applicato: boolean; messaggio?: string } {
+  if ((istanza.immunitaStatus ?? 0) > 0) {
+    return { applicato: false, messaggio: `${istanza.nome} è protetto dagli status.` }
+  }
   if (istanza.stato) {
     return {
       applicato: false,
@@ -111,6 +118,10 @@ export function risolviStatoInizioTurno(
   messaggi: string[]
   tiroStato?: number
 } {
+  if (istanza.immunitaStatus && istanza.hp > 0) {
+    const { immunitaStatus, ...resto } = istanza
+    istanza = immunitaStatus > 1 ? { ...resto, immunitaStatus: immunitaStatus - 1 } : resto
+  }
   if (!istanza.stato || istanza.hp <= 0) {
     return { istanza, puoAgire: istanza.hp > 0, dannoSubito: 0, messaggi: [] }
   }
@@ -133,11 +144,11 @@ export function risolviStatoInizioTurno(
     }
   } else if (stato.tipo === 'Avvelenato') {
     const percentuale = percentualeProssimoTickVeleno(stato)
-    const turniTrascorsi = percentuale / 10
-    dannoSubito = Math.max(1, Math.floor(hpMax * turniTrascorsi / 10))
+    const turniTrascorsi = (stato.turniTrascorsi ?? 0) + 1
+    dannoSubito = Math.max(1, Math.floor(hpMax * percentuale / 100))
     hp = Math.max(0, hp - dannoSubito)
     stato = { ...stato, turniTrascorsi }
-    messaggi.push(`${istanza.nome} subisce ${dannoSubito} danni dal veleno (${percentuale}% degli HP massimi).`)
+    messaggi.push(`${istanza.nome} subisce ${dannoSubito} danni dal veleno (${percentuale.toLocaleString('it-IT')}% degli HP massimi).`)
     // Veleno indefinito: nessun decremento
   } else if (stato.tipo === 'Addormentato') {
     if (stato.turniRimanenti >= DURATA_STATO.Addormentato) {
@@ -145,9 +156,10 @@ export function risolviStatoInizioTurno(
       stato = { ...stato, turniRimanenti: DURATA_STATO.Addormentato - 1 }
       messaggi.push(`${istanza.nome} salta il primo turno di sonno obbligatorio, senza tiro di risveglio.`)
     } else {
-      tiroStato = rollD6(1, rng)
-      messaggi.push(`Tentativo di risveglio: dado ${tiroStato} (4–6 per svegliarsi).`)
-      if (tiroStato >= 4) {
+      const terzoTurnoDatabase = stato.regola === 'database' && stato.turniRimanenti === 1
+      const siSveglia = terzoTurnoDatabase ? rng() < 0.75 : (tiroStato = rollD6(1, rng)) >= 4
+      messaggi.push(terzoTurnoDatabase ? 'Ultimo tentativo di risveglio (75%).' : `Tentativo di risveglio: dado ${tiroStato} (4–6 per svegliarsi).`)
+      if (siSveglia) {
         messaggi.push(`${istanza.nome} si è svegliato!`)
         stato = undefined
       } else {
@@ -161,7 +173,7 @@ export function risolviStatoInizioTurno(
   } else if (stato.tipo === 'Confuso') {
     const tr = stato.turniRimanenti - 1
     if (rng() < 0.5) {
-      dannoSubito = rollD6(1, rng)
+      dannoSubito = stato.regola === 'database' ? Math.max(1, Math.floor(hpMax / 8)) : rollD6(1, rng)
       hp = Math.max(0, hp - dannoSubito)
       messaggi.push(
         `${istanza.nome} è confuso e si è colpito da solo! (${dannoSubito} danni)`
@@ -236,7 +248,19 @@ export function getMossaAlLivello(
       if (dadi !== undefined && incremento !== undefined) break
     }
   }
-  return { dadi: dadi ?? 1, incremento: incremento ?? 0 }
+  return { dadi: dadi ?? Object.values(mossa.dadiPerLivello)[0] ?? 1, incremento: incremento ?? 0 }
+}
+
+/** All live input surfaces use the same species, level and per-battle limits. */
+export function mossaUtilizzabile(istanza: PokemonIstanza, mossa: MossaDef): boolean {
+  return mossaDisponibile(istanza.specieId, mossa, istanza.livello)
+    && (mossa.effetto !== 'CURA_HP_LIMITATA' || (istanza.cureLimitateUsate ?? 0) < 3)
+}
+
+export function clearBattleMoveState(istanza: PokemonIstanza): PokemonIstanza {
+  if (istanza.immunitaStatus === undefined && istanza.cureLimitateUsate === undefined) return istanza
+  const { immunitaStatus: _protezione, cureLimitateUsate: _cure, ...resto } = istanza
+  return resto
 }
 
 // =============================================================
@@ -248,7 +272,8 @@ export function calcolaDanno(
   difensore: PokemonIstanza,
   numeroMossa: 0 | 1 | 2,
   rng: () => number = Math.random,
-  supremaAttiva?: boolean
+  supremaAttiva?: boolean,
+  damageMultiplier = 1,
 ): RisultatoMossa | null {
   const specieAtt = getPokemon(attaccante.specieId)
   const specieDif = getPokemon(difensore.specieId)
@@ -257,10 +282,11 @@ export function calcolaDanno(
   const mossaId = specieAtt.mosse[numeroMossa]
   if (!mossaId) return null
   const mossa = getMossa(mossaId)
-  if (!mossa) return null
+  if (!mossa || !mossaUtilizzabile(attaccante, mossa)) return null
 
   const soloStato = èMossaSoloStato(mossa)
-  const { dadi, incremento } = soloStato ? { dadi: 0, incremento: 0 } : getMossaAlLivello(mossa, attaccante.livello)
+  const fisso = mossa.effetto === 'DANNO_FISSO' ? mossa.valoreEffetto ?? 0 : 0
+  const { dadi, incremento } = soloStato ? { dadi: 0, incremento: fisso } : getMossaAlLivello(mossa, attaccante.livello)
 
   // Tiri singoli (per popolare RisultatoMossa.tiriDado, utile alla UI)
   const tiri: number[] = []
@@ -277,14 +303,14 @@ export function calcolaDanno(
     1,
     roundHalfUp(dannoBase * moltTipo)
   )
-  const dannoFinale = soloStato ? 0 : dannoOrdinario * (suprema ? 2 : 1)
+  const dannoFinale = soloStato ? fisso : roundHalfUp(dannoOrdinario * (suprema ? 2 : 1) * damageMultiplier)
 
   const messaggi: string[] = [`${attaccante.nome} usa ${mossa.nome}!`]
   if (suprema) messaggi.push('💥 MOSSA SUPREMA! 💥')
   if (moltTipo > 1) messaggi.push('È superefficace!')
   else if (moltTipo < 1 && moltTipo > 0) messaggi.push('Non è molto efficace...')
   else if (moltTipo === 0) messaggi.push('Non ha effetto!')
-  if (!soloStato) messaggi.push(`${difensore.nome} subisce ${dannoFinale} danni.`)
+  if (dannoFinale > 0) messaggi.push(`${difensore.nome} subisce ${dannoFinale} danni.`)
 
   // Il costo della Suprema è fisso: 50% degli HP massimi, mai degli HP correnti.
   let autodanno = 0
@@ -297,15 +323,17 @@ export function calcolaDanno(
   const difensoreSvenuto = difensore.hp - dannoFinale <= 0
   if (difensoreSvenuto) messaggi.push(`${difensore.nome} non può più combattere!`)
 
-  // Trigger stato alterato (BR.3: sempre applicato se mossa ha effetto,
-  // salvo immunità da tentaApplicaStato — nessun roll % di probabilità).
+  // Le mosse del catalogo hanno una precisione. Gli effetti legacy
+  // conservano l'applicazione automatica quando il bersaglio è idoneo.
   let statoApplicato: StatoAlterato | undefined
   if (mossa.effetto && EFFETTO_TO_STATO[mossa.effetto] && !difensoreSvenuto) {
     const stato = EFFETTO_TO_STATO[mossa.effetto]
     const tentativo = tentaApplicaStato(difensore, stato)
-    if (tentativo.applicato) {
+    if (tentativo.applicato && (mossa.precisione === undefined || rng() * 100 < mossa.precisione)) {
       statoApplicato = stato
       messaggi.push(`${difensore.nome} è ora ${stato}!`)
+    } else if (tentativo.applicato) {
+      messaggi.push(`${mossa.nome} manca il bersaglio.`)
     } else if (tentativo.messaggio) {
       messaggi.push(tentativo.messaggio)
     }
@@ -346,7 +374,7 @@ export function costoSuprema(hpMaxAttaccante: number): number {
   return Math.max(1, Math.floor(hpMaxAttaccante * RAPPORTO_AUTODANNO_SUPREMA))
 }
 
-/** Uno status puro è un'azione senza dadi offensivi o danno al bersaglio. */
+/** Una mossa Status usa le proprie regole, senza il tiro offensivo standard. */
 export function èMossaSoloStato(mossa: MossaDef): boolean {
   return mossa.soloStato === true
 }
@@ -365,12 +393,13 @@ export function calcolaAzioneSuprema(
   attaccante: PokemonIstanza,
   difensore: PokemonIstanza,
   numeroMossa: 0 | 1 | 2,
-  rng: () => number = Math.random
+  rng: () => number = Math.random,
+  damageMultiplier = 1,
 ): RisultatoMossa | null {
   const mossaId = getPokemon(attaccante.specieId)?.mosse[numeroMossa]
   const mossa = mossaId ? getMossa(mossaId) : undefined
   if (!mossa || èMossaCura(mossa) || èMossaSoloStato(mossa)) return null
-  return calcolaDanno(attaccante, difensore, numeroMossa, rng, true)
+  return calcolaDanno(attaccante, difensore, numeroMossa, rng, true, damageMultiplier)
 }
 
 // =============================================================
@@ -379,7 +408,7 @@ export function calcolaAzioneSuprema(
 //
 // Le cure HP rimuovono anche veleno o paralisi, persino a HP già pieni.
 
-export const EFFETTI_CURA = new Set(['CURA', 'CURA_PCT'])
+export const EFFETTI_CURA = new Set(['CURA', 'CURA_PCT', 'CURA_VELENO_HP', 'CURA_PARALISI', 'CURA_HP_LIMITATA', 'IMMUNITA_STATUS'])
 
 /** True se la mossa è una mossa curativa (non infligge danno). */
 export function èMossaCura(mossa: MossaDef): boolean {
@@ -403,37 +432,47 @@ export function applicaMossaCura(
   tiroStato?: number
 } {
   const messaggi = [`${attaccante.nome} usa ${mossa.nome}!`]
-  if (!èMossaCura(mossa) || mossa.valoreEffetto == null) {
+  if (!èMossaCura(mossa) || !mossaUtilizzabile(attaccante, mossa)) {
     return { istanza: attaccante, hpRecuperato: 0, messaggi }
   }
 
+  if (mossa.effetto === 'IMMUNITA_STATUS') {
+    const durata = mossa.valoreEffetto ?? 0
+    messaggi.push(`${attaccante.nome} è protetto dagli status per ${durata} turni.`)
+    return { istanza: { ...attaccante, stato: undefined, immunitaStatus: durata }, hpRecuperato: 0, messaggi }
+  }
   let amount = 0
-  if (mossa.effetto === 'CURA_PCT') {
-    amount = Math.max(1, Math.floor((hpMax * mossa.valoreEffetto) / 100))
-  } else {
-    amount = Math.max(1, Math.floor(mossa.valoreEffetto))
+  const valore = mossa.valoreEffetto ?? 0
+  if (mossa.effetto === 'CURA_PCT' || mossa.effetto === 'CURA_VELENO_HP' || mossa.effetto === 'CURA_HP_LIMITATA') {
+    amount = Math.max(1, Math.floor((hpMax * valore) / 100))
+  } else if (mossa.effetto === 'CURA') {
+    amount = Math.max(0, Math.floor(valore))
   }
 
   const nuovoHp = Math.min(hpMax, attaccante.hp + amount)
   const recuperato = nuovoHp - attaccante.hp
 
   // La paralisi permanente può essere rimossa solo da una cura esplicita.
-  const haVeleno = attaccante.stato?.tipo === 'Avvelenato'
-  const haParalisi = attaccante.stato?.tipo === 'Paralizzato'
+  const curaLegacy = mossa.effetto === 'CURA' || mossa.effetto === 'CURA_PCT'
+  const haVeleno = attaccante.stato?.tipo === 'Avvelenato' && (curaLegacy || mossa.effetto === 'CURA_VELENO_HP')
+  const haParalisi = attaccante.stato?.tipo === 'Paralizzato' && (curaLegacy || mossa.effetto === 'CURA_PARALISI')
   let istanzaFinale: PokemonIstanza = { ...attaccante, hp: nuovoHp }
+  if (mossa.effetto === 'CURA_HP_LIMITATA') {
+    istanzaFinale.cureLimitateUsate = (attaccante.cureLimitateUsate ?? 0) + 1
+  }
   if (haVeleno || haParalisi) {
     istanzaFinale = { ...istanzaFinale, stato: undefined }
   }
 
   // Nessun effetto solo se non c'è né recupero HP né uno stato curabile.
   if (recuperato <= 0 && !haVeleno && !haParalisi) {
-    messaggi.push(`${attaccante.nome} è già al massimo dell'energia.`)
-    return { istanza: attaccante, hpRecuperato: 0, messaggi }
+    messaggi.push(mossa.effetto === 'CURA_PARALISI' ? 'Nessuna paralisi da curare.' : `${attaccante.nome} è già al massimo dell'energia.`)
+    return { istanza: istanzaFinale, hpRecuperato: 0, messaggi }
   }
 
   if (recuperato > 0) {
     messaggi.push(`${attaccante.nome} recupera ${recuperato} HP.`)
-  } else {
+  } else if (amount > 0) {
     messaggi.push(`${attaccante.nome} è già al massimo dell'energia.`)
   }
   if (haVeleno) {
@@ -463,13 +502,38 @@ export function tentaCattura(
   const specie = getPokemon(bersaglio.specieId)
   if (!specie) return { riuscita: false, roll: 0, soglia: 0, tiri: [0, 0, 0] }
 
-  const tasso = Math.max(1, specie.tassoCattura)
+  const tasso = Math.max(1, specie.tassoCattura ?? 3)
   const hpMax = calcolaHPMax(bersaglio)
   // Stessi tre tiri, nello stesso ordine di prima: i singoli valori servono solo alla presentazione.
   const tiri: [number, number, number] = [rollD6(1, rng), rollD6(1, rng), rollD6(1, rng)]
   const roll = tiri[0] + tiri[1] + tiri[2] // 3..18
   const soglia = tasso * (3 - bersaglio.hp / hpMax)
   return { riuscita: roll <= soglia, roll, soglia, tiri }
+}
+
+const CAPTURE_THRESHOLDS = {
+  arkaball: [[11, 15, 19], [9, 13, 17], [7, 11, 15], [8, 12, 16], [6, 10, 14]],
+  'mega-arkaball': [[9, 13, 17], [7, 11, 15], [5, 9, 13], [6, 10, 14], [4, 8, 12]],
+  'ultra-arkaball': [[7, 9, 11], [5, 7, 9], [3, 5, 7], [4, 6, 8], [2, 4, 6]],
+} as const
+
+export function tentaCatturaConSfera(
+  bersaglio: PokemonIstanza,
+  sfera: CaptureItemId,
+  rng: () => number = Math.random,
+): { riuscita: boolean; roll: number; soglia: number } {
+  const specie = getPokemon(bersaglio.specieId)
+  if (!specie || bersaglio.hp <= 0) return { riuscita: false, roll: 0, soglia: 0 }
+  if (sfera === 'masterball') return { riuscita: true, roll: 0, soglia: 0 }
+  const tasso = specie.tassoCattura
+  const difficolta = bersaglio.difficoltaCattura ?? (tasso === undefined || tasso === null ? 'Medio'
+    : tasso >= 5 ? 'Comune' : tasso >= 3 ? 'Medio' : 'Difficile')
+  const colonna = difficolta === 'Comune' ? 0 : difficolta === 'Medio' ? 1 : 2
+  const hp = bersaglio.hp / calcolaHPMax(bersaglio)
+  const riga = hp <= .25 ? (bersaglio.stato ? 4 : 2) : hp <= .5 ? (bersaglio.stato ? 3 : 1) : 0
+  const soglia = CAPTURE_THRESHOLDS[sfera][riga][colonna]
+  const roll = Math.floor(rng() * 20) + 1
+  return { riuscita: roll >= soglia, roll, soglia }
 }
 
 // =============================================================
@@ -497,22 +561,28 @@ export function scegliMossaIA(
     const mossaId = specie.mosse[idx]
     if (!mossaId) continue
     const mossa = getMossa(mossaId)
-    if (!mossa) continue
+    if (!mossa || !mossaUtilizzabile(attaccante, mossa)) continue
+    if (mossa.effetto === 'CURA_PARALISI' && attaccante.stato?.tipo === 'Paralizzato') return idx
 
     const { dadi, incremento } = getMossaAlLivello(mossa, attaccante.livello)
     let punteggio = dadi * 3.5 + incremento
     punteggio *= efficaciaTipo(mossa.tipo, specieDif.tipo)
-    if (èMossaSoloStato(mossa)) {
+    if (mossa.effetto === 'DANNO_FISSO') {
+      punteggio = mossa.valoreEffetto ?? 0
+    } else if (èMossaSoloStato(mossa)) {
       // La paralisi è utile se sottrae la priorità all'avversario per i round futuri.
       // Con pochi HP residui un attacco resta preferibile; uno stato già presente blocca il nuovo.
       const difensoreHaPriorita = attaccante.stato?.tipo === 'Paralizzato' || difensore.livello > attaccante.livello
-      punteggio = difensore.stato || difensore.hp <= 0 ? Number.NEGATIVE_INFINITY
-        : mossa.effetto === 'PARALISI' && difensoreHaPriorita && difensore.hp > 1 ? difensore.hp : -1
+      const stato = mossa.effetto && EFFETTO_TO_STATO[mossa.effetto]
+      punteggio = !stato || !tentaApplicaStato(difensore, stato).applicato || difensore.hp <= 1 ? Number.NEGATIVE_INFINITY
+        : mossa.effetto === 'PARALISI' && difensoreHaPriorita ? difensore.hp
+          : Math.min(12, difensore.hp / 4) * (mossa.precisione ?? 100) / 100
     }
     if (mossa.effetto && EFFETTI_CURA.has(mossa.effetto)) {
       // La cura esplicita elimina una penalità permanente, anche a HP pieni.
-      punteggio = attaccante.stato?.tipo === 'Paralizzato'
-        ? Number.POSITIVE_INFINITY : hpRatio <= 0.3 ? 100 : -1
+      const applicazione = applicaMossaCura(attaccante, mossa, hpMax)
+      punteggio = attaccante.stato && !applicazione.istanza.stato ? 100
+        : hpRatio <= 0.3 && applicazione.hpRecuperato > 0 ? 100 : -1
     }
     if (èMossaSuprema(mossa)) {
       punteggio = hpRatio > RAPPORTO_AUTODANNO_SUPREMA + 0.05 ? punteggio * 2 : -1

@@ -19,6 +19,7 @@ describe('informazioni sulle mosse del compagno', () => {
     expect(markup).toContain('Soffio')
     expect(markup).toContain('1d6 +1')
     const statuses = renderToStaticMarkup(<PokemonMoves pokemon={{ istanzaId: 'status-facts', specieId: 3, nome: 'Vyrath', livello: 35, hp: 12, xp: 0 }} />)
-    expect(statuses).toContain('Stato')
+    expect(statuses).toContain('Paralisi · 80%')
+    expect(statuses).toContain('Furia Ionica')
   })
 })

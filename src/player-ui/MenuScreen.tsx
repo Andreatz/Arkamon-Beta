@@ -1,7 +1,8 @@
 import { assetUrl } from '@/utils/assetUrl'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { useMemo, type CSSProperties } from 'react'
-import { ALLENATORI, POKEMON_BASE } from '@/data'
+import { ALLENATORI, getAllenatore, POKEMON_BASE } from '@/data'
+import { gymMedalTrack } from '@/data/secretLocation'
 import { deriveArkadexProgress } from '@/arkadex/arkadexModel'
 import { getBackground } from '@/data/backgrounds'
 import { useGameStore } from '@/store/gameStore'
@@ -45,7 +46,10 @@ export function MenuScreen({ playerId, onAuxiliary, onNavigate, onResume }: Menu
   const progress = useMemo(() => deriveArkadexProgress(savedArkadex, { giocatore1: one, giocatore2: two, giocatoreAttivo: active, battaglia: battle }), [savedArkadex, one, two, active, battle])
   const discovered = progress[playerId === 1 ? 'seen1' : 'seen2'].length
   const obtained = progress[playerId === 1 ? 'caught1' : 'caught2'].length
-  const gyms = ALLENATORI.filter(trainer => trainer.tipo === 'Capopalestra')
+  const gyms = gymMedalTrack(player.allenatoriSconfitti).flatMap((id) => {
+    const gym = getAllenatore(id)
+    return gym ? [gym] : []
+  })
   const gymCount = gyms.filter(trainer => player.allenatoriSconfitti.has(trainer.id)).length
   const npcCount = ALLENATORI.filter(trainer => trainer.tipo === 'NPC' && player.allenatoriSconfitti.has(trainer.id)).length
   const location = scene.scena === 'titolo' ? 'Prima dell’avventura' : scene.scena === 'laboratorio' ? 'Laboratorio' : (position.luogo ?? position.mappaId).replace(/_/g, ' ')
