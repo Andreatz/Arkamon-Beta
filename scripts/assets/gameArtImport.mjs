@@ -68,3 +68,20 @@ export function safeArtId(value) {
   if (typeof value !== 'string' || !/^[a-z0-9][a-z0-9-]{0,63}$/.test(value)) throw new Error(`Id di illustrazione non valido: ${value}`)
   return value
 }
+
+/**
+ * Regola di importazione per un file consegnato: prima il nome esatto in `files`,
+ * poi il primo schema di `patterns` (per i ritratti di NPC e allenatori, con l'id
+ * uguale al nome senza estensione). Restituisce undefined per i nomi non previsti.
+ */
+export function ruleForFile(spec, name) {
+  const exact = spec?.files?.[name]
+  if (exact) return exact
+  for (const pattern of spec?.patterns ?? []) {
+    if (new RegExp(pattern.match).test(name)) {
+      const { match: _match, ...rule } = pattern
+      return { ...rule, id: safeArtId(name.replace(/\.png$/i, '')) }
+    }
+  }
+  return undefined
+}

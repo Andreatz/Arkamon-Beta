@@ -13,7 +13,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createRequire } from 'node:module'
-import { gridCells, hasMagentaCorners, keyOutMagenta, mergeCatalog, safeArtId } from './gameArtImport.mjs'
+import { gridCells, hasMagentaCorners, keyOutMagenta, mergeCatalog, safeArtId, ruleForFile } from './gameArtImport.mjs'
 
 const require = createRequire(import.meta.url)
 const sharp = require('sharp')
@@ -60,7 +60,7 @@ async function fromInbox(directory) {
   const entries = []
   const files = (await fs.readdir(directory)).filter(name => /\.png$/i.test(name)).sort()
   for (const name of files) {
-    const rule = spec.files[name]
+    const rule = ruleForFile(spec, name)
     if (!rule) { console.warn(`! ${name}: nome non previsto, ignorato`); continue }
     const image = await loadRaw(path.join(directory, name))
     const { width, height } = image.info
