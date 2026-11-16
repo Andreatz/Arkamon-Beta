@@ -237,7 +237,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     await expect(select.locator('option[value="1"]')).toHaveCount(0)
     await expect(select.locator('option[value="206"]')).toHaveCount(1)
     await page.locator('#darklaw-preview-filter').selectOption('animated')
-    await expect(select.locator('option')).toHaveCount(166)
+    await expect(select.locator('option')).toHaveCount(174)
     await expect(select.locator('option[value="206"]')).toHaveCount(0)
     await expect(select.locator('option[value="116"]')).toHaveCount(1)
     await expect(select.locator('option[value="139"]')).toHaveCount(1)
@@ -248,7 +248,10 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     await expect(select.locator('option[value="162"]')).toHaveCount(1)
     await expect(select.locator('option[value="163"]')).toHaveCount(1)
     await expect(select.locator('option[value="166"]')).toHaveCount(1)
-    await expect(select.locator('option[value="167"]')).toHaveCount(0)
+    for (const id of [167, 168]) await expect(select.locator(`option[value="${id}"]`)).toHaveCount(0)
+    for (const id of [169, 170, 171, 172, 173, 174, 175, 176]) {
+      await expect(select.locator(`option[value="${id}"]`)).toHaveCount(1)
+    }
     await page.locator('#darklaw-preview-filter').selectOption('all')
     await expect(select.locator('option')).toHaveCount(204)
   })

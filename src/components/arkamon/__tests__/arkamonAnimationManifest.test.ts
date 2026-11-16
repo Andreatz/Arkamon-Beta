@@ -5,6 +5,7 @@ import sourceCountsNovember5 from './fixtures/native-import-2026-11-05.json'
 import sourceCountsNovember9 from './fixtures/native-import-2026-11-09.json'
 import sourceCountsNovember12 from './fixtures/native-import-2026-11-12.json'
 import { sourceCounts as sourceCountsNovember13 } from './fixtures/native-import-2026-11-13.json'
+import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
 import {
   ARKAMON_ANIMATION_MANIFEST,
   getArkamonAnimationAsset,
@@ -19,7 +20,10 @@ const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
 const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
-const PENDING_SPECIES_IDS = Array.from({ length: 56 }, (_, index) => index + 111)
+const PENDING_SPECIES_IDS = [
+  ...Array.from({ length: 56 }, (_, index) => index + 111),
+  ...Object.keys(sourceCountsNovember16).map(Number),
+]
 const SPECIES_IDS = [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]
 const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
@@ -150,6 +154,18 @@ describe('Arkamon animation manifest', () => {
       }
     }
     expect(frames).toBe(1_974)
+  })
+
+  it('retains the independently decoded frames of the eight November 16 forms', () => {
+    expect(Object.keys(sourceCountsNovember16).map(Number)).toEqual([169, 170, 171, 172, 173, 174, 175, 176])
+    for (const [species, counts] of Object.entries(sourceCountsNovember16)) {
+      for (const animation of ANIMATIONS) {
+        const asset = getArkamonAnimationAsset(Number(species), 'front', animation)!
+        expect(asset.frameCount).toBe(counts[animation])
+        expect(asset.fps).toBe(24)
+        expect(asset.durationMs).toBeCloseTo(counts[animation] / 24 * 1000)
+      }
+    }
   })
 
   it('retains a view’s idle as the fallback when a dedicated action is unavailable', () => {

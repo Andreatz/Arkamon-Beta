@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { DarklawAnimationLab } from '../DarklawAnimationLab'
+import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
 
 vi.mock('@/settings/gamePreferences', () => ({ useGameMotionPreferences: () => ({ speed: 1, reducedMotion: false }) }))
 vi.mock('../ArkamonBattleSprite', () => ({ ArkamonBattleSprite: ({ speciesId }: { speciesId: number }) => <span data-test-native-sprite={speciesId} /> }))
@@ -37,9 +38,14 @@ describe('laboratory for unfinished graphic assets', () => {
   })
 
   it('keeps the supplied new animation forms outside move simulation until game data exists', () => {
-    for (const id of Array.from({ length: 56 }, (_, index) => index + 111)) {
+    const pendingAnimatedIds = [
+      ...Array.from({ length: 56 }, (_, index) => index + 111),
+      ...Object.keys(sourceCountsNovember16).map(Number),
+    ]
+    for (const id of pendingAnimatedIds) {
       const markup = renderToStaticMarkup(<DarklawAnimationLab initialSpeciesId={id} />)
       expect(markup).toContain('data-asset-status="pending-game-data"')
+      expect(markup).toContain('data-preview-available="true"')
       expect(markup).toContain('Nome, mosse e attributi da definire')
       expect(markup).not.toContain('data-test-attack-preview')
       expect(markup).not.toContain(`/back_sprites/${id}.png`)
