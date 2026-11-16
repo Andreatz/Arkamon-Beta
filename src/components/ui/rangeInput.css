@@ -1,0 +1,38 @@
+/* Cursore: binario scuro e rombo dorato. */
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range']):where(:not(.arka-admin-panel *)) {
+  appearance: none;
+  height: 1.6em;
+  background: transparent;
+  cursor: pointer;
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-webkit-slider-runnable-track {
+  height: 0.45em;
+  border: 1px solid color-mix(in srgb, var(--arka-control-gold) 55%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--arka-control-on), var(--arka-control-bg));
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-moz-range-track {
+  height: 0.45em;
+  border: 1px solid color-mix(in srgb, var(--arka-control-gold) 55%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--arka-control-on), var(--arka-control-bg));
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.1em;
+  height: 1.1em;
+  margin-top: -0.38em;
+  border: 2px solid var(--arka-control-text);
+  border-radius: 3px;
+  background: var(--arka-control-gold);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--arka-control-gold) 60%, transparent);
+  transform: rotate(45deg);
+}
+:where(.arka-stage, [data-game-dialog]) :where(input[type='range'])::-moz-range-thumb {
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid var(--arka-control-text);
+  border-radius: 3px;
+  background: var(--arka-control-gold);
+  transform: rotate(45deg);
+}

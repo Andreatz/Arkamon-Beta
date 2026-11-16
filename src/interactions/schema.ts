@@ -2,7 +2,7 @@ import { getLocalMap } from '@/data/localMaps'
 import { getAllenatore, getIncontri, getPokemon, ALLENATORI } from '@/data'
 import type { InteractionCatalog, InteractionDefinition, InteractionProgress, InteractionResources } from './types'
 import { emptyInteractionProgress } from './types'
-import { hasArkaStore } from '@/shop/catalog'
+import { hasArkaStore, isShopItemId } from '@/shop/catalog'
 
 const object = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
 const integer = (value: unknown, max = 1_000_000): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 && value <= max
@@ -15,7 +15,7 @@ export function completionPrerequisiteOptions(entries: readonly InteractionDefin
 }
 export function validResources(value: unknown): value is InteractionResources {
   if (!object(value) || !integer(value.coins) || !object(value.items)) return false
-  return Object.entries(value.items).every(([id, quantity]) => id === 'masterball' && integer(quantity, 999))
+  return Object.entries(value.items).every(([id, quantity]) => isShopItemId(id) && integer(quantity, 999))
 }
 
 /** Strict import: invalid nodes and unknown game IDs never become executable content. */

@@ -1,4 +1,5 @@
-import { ALLENATORI, MAPPE, POKEMON_BASE } from '@/data'
+import { MAPPE, POKEMON_BASE } from '@/data'
+import { countGymMedals, SECRET_LOCATION_GYM_IDS } from '@/data/secretLocation'
 import { LOCAL_MAPS } from '@/data/localMaps'
 import { leagueConfigurationProblems, leagueOpponents } from '@/league/leagueModel'
 import { validateCatalog } from '@/interactions/schema'
@@ -60,13 +61,12 @@ export function buildReadinessReport(game: GameSaveState, interactions: readonly
 }
 
 export function currentRaceProgress(game: GameSaveState) {
-  const gyms = ALLENATORI.filter(trainer => trainer.tipo === 'Capopalestra')
   return ([1, 2] as const).map(id => {
     const player = game[id === 1 ? 'giocatore1' : 'giocatore2']
     const position = game[id === 1 ? 'posizione1' : 'posizione2']
     const progress = game.league.players[id]
     return { id, name: player.nome, place: position.luogo ?? position.mappaId, team: player.squadra.length,
-      badges: gyms.filter(gym => player.allenatoriSconfitti.has(gym.id)).length, totalBadges: gyms.length,
+      badges: countGymMedals(player), totalBadges: SECRET_LOCATION_GYM_IDS.length,
       leagueStages: progress.completedStages.length, leagueTotal: game.league.config ? leagueOpponents(game.league.config).length : 4, leagueStatus: progress.status }
   })
 }

@@ -1,13 +1,14 @@
 import type { GameState } from '../gameStore'
 import { getPokemon } from '@/data'
-import { calcolaHPMax, clearStoredExperience } from '@/engine/battleEngine'
+import { calcolaHPMax, clearBattleMoveState, clearStoredExperience } from '@/engine/battleEngine'
 import { nuovoTurno } from '@/engine/movimento'
 import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 import { resolveItemEffect } from '@/shop/itemEffects'
-import { isShopItemId } from '@/shop/catalog'
+import { isShopItemId, MAX_ITEM_QUANTITY } from '@/shop/catalog'
 import { appendMatchEvent } from '@/match/matchLog'
 import { hasUnlockedSecretLocation } from '@/data/secretLocation'
 import { emptyLeagueProgress, isLeagueTurnLocked, leagueConfigurationProblems, leagueOpponents, makeLeagueBattle, normalizeLeagueConfiguration } from '@/league/leagueModel'
+import { trainerCoinDelta } from './battleCommands'
 
 type LeagueActions = Pick<GameState, 'configuraLega' | 'iniziaLega' | 'prossimoIncontroLega' | 'concludiBattagliaLega' | 'usaOggettoLega' | 'abbandonaLega'>
 
@@ -42,7 +43,7 @@ export function createLeagueActions(get: () => GameState, set: (patch: Partial<G
         const restart = state.league.config!.defeat === 'restart'
         const progress = { ...(restart ? emptyLeagueProgress() : previous), status: 'running' as const,
           runId: `league-${playerId}-${previous.attempt + 1}-${Date.now()}`, attempt: previous.attempt + 1, stageCompleted: false }
-        const battle = makeLeagueBattle(state.league.config!, progress, playerId, player.squadra)
+        const battle = makeLeagueBattle(state.league.config!, progress, playerId, player.squadra, Math.random, state.rivaleStarterId)
         if (!battle) return { ok: false, message: 'Nessun Arkamon può combattere. Cura esplicitamente la squadra prima di entrare.' }
         const written = set({ league: { ...state.league, players: { ...state.league.players, [playerId]: progress } }, battaglia: battle,
           turnoOverworld: { giocatoreAttivo: playerId, azioniRimaste: 0 }, scenaPrecedente: { scena: 'lega' }, scenaCorrente: { scena: 'battaglia' },
@@ -54,7 +55,7 @@ export function createLeagueActions(get: () => GameState, set: (patch: Partial<G
         if (state.challengeContext || state.battaglia || state.league.winner || progress.status !== 'running' || !state.league.config) return { ok: false, message: 'Non c’è un prossimo incontro pronto.' }
         const player = state[playerId === 1 ? 'giocatore1' : 'giocatore2']
         if (!isTeamWithinLevelCap(player.squadra)) return { ok: false, message: teamCapMessage(player.squadra) }
-        const battle = makeLeagueBattle(state.league.config, progress, playerId, player.squadra)
+        const battle = makeLeagueBattle(state.league.config, progress, playerId, player.squadra, Math.random, state.rivaleStarterId)
         if (!battle) return { ok: false, message: 'Nessun Arkamon può combattere. Usa una cura consentita o termina il tentativo.' }
         const written = set({ battaglia: battle, league: { ...state.league, players: { ...state.league.players, [playerId]: { ...progress, stageCompleted: false } } },
           scenaCorrente: { scena: 'battaglia' }, scenaPrecedente: { scena: 'lega' }, campaignRevision: state.campaignRevision + 1 })
@@ -78,13 +79,15 @@ export function createLeagueActions(get: () => GameState, set: (patch: Partial<G
         const completed = esito === 'vittoria' && nextStage === total
         const next = { ...progress, nextStage, status: completed ? 'completed' as const : esito === 'sconfitta' ? 'defeated' as const : 'running' as const,
           completedStages: esito === 'vittoria' ? [...progress.completedStages, reference.stageIndex] : progress.completedStages, stageCompleted: esito === 'vittoria' }
-        const team = squadra.map(clearStoredExperience).map((p) => {
-          if (p.stato?.tipo === 'Paralizzato') return p
+        const team = squadra.map(clearStoredExperience).map(clearBattleMoveState).map((p) => {
+          if (p.stato?.tipo === 'Paralizzato' && p.stato.regola !== 'database') return p
           const { stato: _status, ...clean } = p
           return clean
         })
         const winner = completed ? { playerId, name: player.nome, team: team.map((p) => ({ ...p })), runId: reference.runId, completedAt: new Date().toISOString() } : null
-        const written = set({ battaglia: null, [key]: { ...player, squadra: team },
+        const coins = battle.leagueOpponent ? trainerCoinDelta(esito, battle.leagueOpponent) : 0
+        const inventory = completed ? { ...player.inventario, masterball: Math.min(MAX_ITEM_QUANTITY, (player.inventario.masterball ?? 0) + 1) } : player.inventario
+        const written = set({ battaglia: null, [key]: { ...player, squadra: team, monete: Math.max(0, player.monete + coins), inventario: inventory },
           league: { ...state.league, players: { ...state.league.players, [playerId]: next }, winner },
           turnoOverworld: esito === 'sconfitta' ? nuovoTurno(playerId) : { giocatoreAttivo: playerId, azioniRimaste: 0 },
           ...(esito === 'sconfitta' ? { giocatoreAttivo: playerId === 1 ? 2 : 1 } : {}),
@@ -92,7 +95,7 @@ export function createLeagueActions(get: () => GameState, set: (patch: Partial<G
           scenaPrecedente: null,
           matchLog: appendMatchEvent(state.matchLog, { id: `${reference.runId}-${reference.stageIndex}-result`, kind: 'battle', playerId,
             title: completed ? `${player.nome} è Campione della regione` : esito === 'vittoria' ? `Lega: incontro ${nextStage}/${total} vinto` : 'Lega: tentativo concluso',
-            message: completed ? 'La corsa alla Lega è conclusa. La squadra del Campione resta nel registro.' : esito === 'vittoria' ? 'Gli HP residui restano nella squadra. Il prossimo incontro usa lo stesso turno.' : 'Gli HP residui restano nella squadra. Il turno passa all’altro giocatore.', place: 'Roma' }) })
+            message: completed ? 'La squadra del Campione resta nel registro. Ricevi una Master Arkaball.' : esito === 'vittoria' ? 'Gli HP residui restano nella squadra. Il prossimo incontro usa lo stesso turno.' : 'Gli HP residui restano nella squadra. Il turno passa all’altro giocatore.', place: 'Roma' }) })
         return { ok: written, message: written ? (completed ? `${player.nome} ha vinto la Lega!` : 'Risultato della Lega salvato.') : 'Risultato non salvato: resta su questa schermata e riprova.' }
       },
       usaOggettoLega: (itemId, instanceId) => {
@@ -102,7 +105,7 @@ export function createLeagueActions(get: () => GameState, set: (patch: Partial<G
         if (!isShopItemId(itemId) || (player.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
         const pokemon = player.squadra.find((p) => p.istanzaId === instanceId)
         if (!pokemon) return { ok: false, message: 'Scegli un Arkamon della squadra.' }
-        const effect = resolveItemEffect(pokemon, itemId)
+        const effect = resolveItemEffect(pokemon, itemId, Math.random())
         if (!effect.ok || !effect.pokemon) return effect
         const written = set({ [key]: { ...player, squadra: player.squadra.map((p) => p.istanzaId === instanceId ? effect.pokemon! : p),
           inventario: { ...player.inventario, [itemId]: player.inventario[itemId]! - 1 } } } as Partial<GameState>)

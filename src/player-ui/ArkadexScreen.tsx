@@ -164,7 +164,7 @@ export function ArkadexScreen({ playerId, onPlayerChange, showPlayerPicker = tru
           </nav>
           <div className="pu-dex-tab-content" data-arkadex-detail={detailTab}>
           {detailTab === 'information' && <>
-            <dl className="pu-facts"><div><dt>Tipo</dt><dd><TypeBadge type={species.tipo} /></dd></div><div><dt>Categoria</dt><dd>{species.categoria}</dd></div><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura} / 5</dd></div><div><dt>Livello</dt><dd>{pokemon.livello}</dd></div></dl>
+            <dl className="pu-facts"><div><dt>Tipo</dt><dd><TypeBadge type={species.tipo} /></dd></div><div><dt>Categoria</dt><dd>{species.categoria}</dd></div><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura === null ? '—' : `${species.tassoCattura} / 5`}</dd></div><div><dt>Livello</dt><dd>{pokemon.livello}</dd></div></dl>
             {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}.</p>}
           </>}
           {detailTab === 'moves' && <><h3>Mosse al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} /></>}

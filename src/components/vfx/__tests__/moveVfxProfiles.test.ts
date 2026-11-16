@@ -5,14 +5,17 @@ import { getMoveVfxAssignment } from '../moveVfxAssignments'
 import { resolveMoveVfxAsset } from '../resolveMoveVfxAsset'
 
 describe('move VFX semantic profiles', () => {
-  it('classifies every configured move semantically instead of relying on type fallback', () => {
+  it('keeps semantic classifications for configured moves and uses a known type effect for the expansion', () => {
     const unresolved = MOSSE.filter(
-      (move) => resolveMoveVfxProfile(move).source === 'type-fallback'
+      (move) => getMoveVfxAssignment(move) && resolveMoveVfxProfile(move).source === 'type-fallback'
     )
 
     expect(
       unresolved.map((move) => `#${move.id} ${move.nome}`)
     ).toEqual([])
+    const imported = MOSSE.find((move) => move.id === 283)!
+    expect(resolveMoveVfxProfile(imported).source).toBe('type-fallback')
+    expect(resolveProfileAssetId(imported)).toBeTruthy()
   })
 
   it('recognizes representative physical and elemental archetypes', () => {
@@ -28,17 +31,17 @@ describe('move VFX semantic profiles', () => {
 
   it('classifies every pure paralysis move by effect and preserves its assigned asset calibration', () => {
     const paralysisMoves = MOSSE.filter((move) => move.soloStato && move.effetto === 'PARALISI')
-    expect(paralysisMoves).toHaveLength(9)
+    expect(paralysisMoves).toHaveLength(16)
     for (const move of paralysisMoves) {
-      const assignment = getMoveVfxAssignment(move)!
-      expect(assignment).toBeDefined()
+      const assignment = getMoveVfxAssignment(move)
       expect(resolveMoveVfxProfile(move)).toMatchObject({
         archetype: 'status', source: 'effect', intensity: 'subtle',
         feedback: { targetShakePx: 0, targetShakeMs: 0, cameraShakePx: 0, cameraShakeMs: 0, hitStopMs: 0 },
       })
-      expect(resolveMoveVfxAsset(move)).toMatchObject({
+      if (assignment) expect(resolveMoveVfxAsset(move)).toMatchObject({
         id: assignment.assetId, anchor: assignment.anchor, scale: assignment.scale,
       })
+      else expect(resolveMoveVfxAsset(move).id).toBe(resolveProfileAssetId(move))
     }
   })
 

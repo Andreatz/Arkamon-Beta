@@ -26,7 +26,7 @@ import { cancelPendingRecoveryCopy, scheduleRecoveryCopy, reportSaveFailure, use
 import { recoverInterruptedBackupRestore, useBackupRestoreRecoveryStatus } from '@/save/restoreJournal'
 import { useRegiaStore } from '@/regia/regiaStore'
 import { resolveShopPurchase, type ShopPurchaseResult } from '@/shop/purchase'
-import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
+import { getShopItem, isCaptureItemId, isShopItemId, localMovementReach, MAX_ITEM_QUANTITY, type CaptureItemId, type ShopCart } from '@/shop/catalog'
 import { resolveItemEffect } from '@/shop/itemEffects'
 import { emptyLeagueState, type LeagueConfiguration } from '@/league/leagueModel'
 import { createLeagueActions } from './game/leagueActions'
@@ -49,7 +49,7 @@ import {
   determinaIniziativa,
   type EsitoBattaglia,
 } from '@engine/battleEngine'
-import { getPokemon, getAllenatore, getIncontri } from '@data/index'
+import { getPokemon, getAllenatore, getIncontri, squadraAllenatore, tipoBattagliaAllenatore } from '@data/index'
 import {
   MAIN_MAP_START_NODE,
   areMainMapNodesConnected,
@@ -67,7 +67,7 @@ import {
   isSecretLocationConnection,
   isSecretLocationPosition,
 } from '@data/secretLocation'
-import { canMoveOnLocalMap, getLocalMapNode } from '@engine/localMapMovement'
+import { getReachableLocalMapNodes, getLocalMapNode } from '@engine/localMapMovement'
 import {
   chiaveCasellaConsumata,
   consumaAzione,
@@ -149,7 +149,7 @@ export interface GameState extends GameSaveState {
   /** Aggiunge un pokemon alla squadra (se piena va in deposito). */
   aggiungiPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
   /** Capture, optional Masterball consumption and the finished battle save form one update. */
-  concludiCattura: (giocatoreId: 1 | 2, istanza: PokemonIstanza, patch: Partial<StatoBattaglia>, masterball?: boolean) => boolean
+  concludiCattura: (giocatoreId: 1 | 2, istanza: PokemonIstanza, patch: Partial<StatoBattaglia>, captureItem?: CaptureItemId | boolean) => boolean
 
   /** Aggiorna un pokemon esistente (HP, livello, evoluzione...) */
   aggiornaPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
@@ -488,16 +488,18 @@ export const useGameStore = create<GameState>()(
           } as Partial<GameState>
         }),
 
-      concludiCattura: (giocatoreId, creature, patch, masterball = false) => {
+      concludiCattura: (giocatoreId, creature, patch, captureItem = false) => {
         const istanza = clearStoredExperience(creature)
         const state = get()
         const battle = state.battaglia
         const key = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
         const player = state[key]
-        if (!battle || battle.tipo !== 'Selvatico' || battle.checkpoint?.phase === 'ended'
-          || battle.pokemonB.istanzaId !== istanza.istanzaId || !haSpazioPokemon(player, istanza)
+        const ball = captureItem === true ? 'masterball' : captureItem || undefined
+        if (giocatoreId !== state.giocatoreAttivo || !battle || battle.tipo !== 'Selvatico' || battle.checkpoint?.phase === 'ended'
+          || battle.pokemonB.istanzaId !== istanza.istanzaId || battle.pokemonB.specieId !== istanza.specieId
+          || !getPokemon(istanza.specieId) || !haSpazioPokemon(player, istanza)
           || battle.pokemonB.hp <= 0 || patch.checkpoint?.phase !== 'ended' || patch.checkpoint.outcome !== 'vittoria'
-          || (masterball && (player.inventario.masterball ?? 0) <= 0)) return false
+          || (ball && (!isCaptureItemId(ball) || (player.inventario[ball] ?? 0) <= 0))) return false
         const eligible = canJoinTeam(player.squadra, istanza)
         const slot = !eligible ? trovaSlotDepositoLibero(player.deposito) : null
         if (!eligible && !slot) return false
@@ -505,8 +507,8 @@ export const useGameStore = create<GameState>()(
           ...player,
           squadra: slot ? player.squadra : [...player.squadra, istanza],
           deposito: slot ? { ...player.deposito, [slot]: istanza } : player.deposito,
-          inventario: masterball
-            ? { ...player.inventario, masterball: (player.inventario.masterball ?? 0) - 1 }
+          inventario: ball
+            ? { ...player.inventario, [ball]: player.inventario[ball]! - 1 }
             : player.inventario,
         }
         return commitDurable({ [key]: nextPlayer, battaglia: clearBattleExperience({ ...battle, ...patch }) } as Partial<GameState>, true)
@@ -617,7 +619,7 @@ export const useGameStore = create<GameState>()(
         if (!isShopItemId(itemId) || (player.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
         const pokemon = player.squadra.find((entry) => entry.istanzaId === instanceId)
         if (!pokemon) return { ok: false, message: 'Scegli un Arkamon della tua squadra.' }
-        const result = resolveItemEffect(pokemon, itemId)
+        const result = resolveItemEffect(pokemon, itemId, Math.random())
         if (!result.ok || !result.pokemon) return result
         const written = commitDurable({ [key]: { ...player, squadra: player.squadra.map((entry) => entry.istanzaId === instanceId ? result.pokemon! : entry),
           inventario: { ...player.inventario, [itemId]: player.inventario[itemId]! - 1 } }, turnoOverworld: nuovoTurno(playerId),
@@ -643,14 +645,7 @@ export const useGameStore = create<GameState>()(
         const pokemonA = giocatore.squadra.find((p) => p.hp > 0)
         if (!pokemonA) return false
 
-        // Per il Rivale (tipo PVP), il primo slot è lo starter scartato
-        // dai giocatori (porting di AssegnaRivaleEVaiAllaMappa).
-        const isRivale = allenatore.tipo === 'PVP'
-        const slotsAllenatore = allenatore.squadra.map((s, i) =>
-          isRivale && i === 0 && state.rivaleStarterId
-            ? { ...s, pokemonId: state.rivaleStarterId }
-            : s
-        )
+        const slotsAllenatore = squadraAllenatore(allenatore, state.rivaleStarterId)
 
         // Crea istanze fresche per tutta la squadra dell'allenatore
         const squadraB: PokemonIstanza[] = []
@@ -673,7 +668,7 @@ export const useGameStore = create<GameState>()(
 
         const pokemonB = squadraB[0]
         const turnoCorrente = determinaIniziativa(pokemonA.livello, pokemonB.livello, Math.random, pokemonA.stato?.tipo, pokemonB.stato?.tipo)
-        const tipo = allenatore.tipo === 'PVP' ? 'PVP' : 'NPC'
+        const tipo = tipoBattagliaAllenatore(allenatore)
 
         return set({
           battaglia: {
@@ -994,7 +989,8 @@ export const useGameStore = create<GameState>()(
           return false
         }
         const from = getLocalMapNode(map, state[positionKey][luogo]).id
-        if (!canMoveOnLocalMap(map, from, nodoDestinazione)) return false
+        const reach = localMovementReach(state[giocatoreId === 1 ? 'giocatore1' : 'giocatore2'].inventario, luogo)
+        if (!getReachableLocalMapNodes(map, from, reach).includes(nodoDestinazione)) return false
         return set({
           [positionKey]: { ...state[positionKey], [luogo]: nodoDestinazione },
           turnoOverworld: consumaAzione(state.turnoOverworld, 'movimento'),

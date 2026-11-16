@@ -53,21 +53,24 @@ test('filters retain box coordinates and a blocked swap previews the cap without
   expect(after.giocatore2).toEqual(before.giocatore2)
 })
 
-test('bag previews exact healing and keeps status until the explicitly requested item is used', async ({ page }) => {
+test('bag previews the healing range and keeps status after using a potion', async ({ page }) => {
   const dialog = await seed(page)
   const before = await read(page)
   await dialog.getByRole('button', { name: 'Borsa', exact: true }).click()
   const preview = dialog.getByLabel('Anteprima su Vyrath squadra', { exact: true })
   await expect(preview.getByRole('progressbar', { name: 'HP di Vyrath squadra: 3 su 34', exact: true })).toBeVisible()
-  await expect(preview.getByRole('progressbar', { name: 'HP di Vyrath squadra: 12 su 34', exact: true })).toBeVisible()
-  await expect(preview).toContainText('+9 HP · Paralizzato')
+  await expect(preview.getByRole('progressbar', { name: 'HP di Vyrath squadra: 23 su 34', exact: true })).toBeVisible()
+  await expect(preview).toContainText('Recupero minimo')
+  await expect(preview).toContainText('+20–25 HP · Paralizzato')
   expect((await read(page)).giocatore1).toEqual(before.giocatore1)
   const screenshot = test.info().outputPath('borsa-rpg-healing-preview.png')
   await page.screenshot({ path: screenshot })
   await test.info().attach('borsa-rpg-healing-preview', { path: screenshot, contentType: 'image/png' })
   await dialog.getByRole('button', { name: 'Usa Pozione', exact: true }).click()
   const after = await read(page)
-  expect(after.giocatore1.squadra[0].hp).toBe(12)
+  const recoveredHp = after.giocatore1.squadra[0].hp - before.giocatore1.squadra[0].hp
+  expect(recoveredHp).toBeGreaterThanOrEqual(20)
+  expect(recoveredHp).toBeLessThanOrEqual(25)
   expect(after.giocatore1.squadra[0].stato).toEqual(before.giocatore1.squadra[0].stato)
   expect(after.giocatore1.inventario.potion).toBe(1)
   expect(after.giocatore2).toEqual(before.giocatore2)

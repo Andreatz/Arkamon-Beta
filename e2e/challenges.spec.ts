@@ -231,7 +231,7 @@ test('Fanta builder persists six budgeted slots, rejects invalid sharing and imp
   await dialog.getByRole('button', { name: 'Crea codice da condividere', exact: true }).click()
   const code = await dialog.getByLabel('Codice della sfida', { exact: true }).inputValue()
   const shared = JSON.parse(code)
-  expect(shared).toMatchObject({ format: 'arkamon-challenge', version: 2, rulesVersion: 2, mode: 'fanta', seed: 'FANTA-ROMA' })
+  expect(shared).toMatchObject({ format: 'arkamon-challenge', version: 3, rulesVersion: 3, mode: 'fanta', seed: 'FANTA-ROMA' })
   expect(shared.speciesIds).toHaveLength(6)
   expect(new Set(shared.speciesIds).size).toBe(6)
   expect(shared.hp).toBeUndefined()

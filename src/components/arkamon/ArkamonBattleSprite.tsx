@@ -7,6 +7,7 @@ import {
 } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { AnimatedSprite } from '@/components/vfx/AnimatedSprite'
 import {
   resolveArkamonAnimationAsset,
@@ -228,7 +229,6 @@ export function ArkamonBattleSprite({
     )
   }
 
-  const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
   const procedural = getProceduralMotion(speciesId, side, animation, !!reduceMotion || !animationEnabled || playbackPaused)
 
   return (
@@ -240,7 +240,7 @@ export function ArkamonBattleSprite({
       data-arkamon-playback={reduceMotion || !animationEnabled || playbackPaused ? 'paused' : 'playing'}
     >
       <motion.img
-        src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
+        src={assetUrl(getArkamonSpriteSource(speciesId, side))}
         alt={name}
         className="h-full w-full object-contain"
         animate={procedural.animate}
@@ -404,7 +404,6 @@ function AnimatedArkamonVisual({
   const aspect = viewport.width / viewport.height
   const paused = playbackPaused || !animationEnabled || reduceMotion || (run.animation === 'ko' && resolved.isIdleFallback)
   const useProcedural = sheetFailed || resolved.isIdleFallback
-  const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
 
   useEffect(() => {
     const neutral = getProceduralMotion(speciesId, side, run.animation, true)
@@ -445,7 +444,7 @@ function AnimatedArkamonVisual({
       {sheetFailed ? (
         <img
           key="procedural-fallback"
-          src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
+          src={assetUrl(getArkamonSpriteSource(speciesId, side))}
           alt=""
           aria-hidden="true"
           className="h-full w-full object-contain"
@@ -457,7 +456,7 @@ function AnimatedArkamonVisual({
         <>
         {!nativeFramePainted && <img
           key="native-loading-poster"
-          src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
+          src={assetUrl(getArkamonSpriteSource(speciesId, side))}
           alt=""
           aria-hidden="true"
           data-arkamon-first-frame-fallback

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import manifest from '@/data/depthMaps.json'
 import { backgroundStem, depthMapFor } from './depthMaps'
 import { coverTransform } from './depthRenderer'
-import { createParticles, seededRandom } from '../ambient/ambientParticles'
+import { createParticles, seededRandom } from '../ambient/particles'
 
 describe('mappe di profondità', () => {
   it('riconosce il nome dello sfondo anche con base, query e codifica', () => {

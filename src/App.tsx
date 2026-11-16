@@ -45,6 +45,7 @@ const CittaScene = lazy(() => sceneLoaders.citta().then((module) => ({ default: 
 const DepositoScene = lazy(() => sceneLoaders.deposito().then((module) => ({ default: module.DepositoScene })))
 const EvoluzioneScene = lazy(() => sceneLoaders.evoluzione().then((module) => ({ default: module.EvoluzioneScene })))
 const LeagueScene = lazy(() => sceneLoaders.lega().then((module) => ({ default: module.LeagueScene })))
+const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then(module => ({ default: module.DarklawAnimationLab })))
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
 const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
@@ -84,7 +85,20 @@ function App() {
     return <Suspense fallback={<div role="status">Caricamento editor interfaccia…</div>}><UiStudioEditor onClose={() => { window.location.hash = '' }} /></Suspense>
   }
 
-  // I laboratori vivono in dev.html (solo server di sviluppo), fuori dal pacchetto del gioco.
+  // La verifica di rilascio usa questo percorso per riprodurre le animazioni nel bundle distribuito.
+  if (hash === '#arkamon-lab') {
+    return (
+      <div className="relative flex h-full w-full min-w-0 shrink-0 items-center justify-center [&>main]:w-full [&>main]:min-w-0 [&>main]:shrink-0">
+        <AdminRuntime />
+        <AppliedUiDesign />
+        <AdminOverlay />
+        <PlayerTools />
+        <Suspense fallback={<div role="status">Caricamento laboratorio…</div>}>
+          <DarklawAnimationLab />
+        </Suspense>
+      </div>
+    )
+  }
 
   return (
     <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}${scenaCorrente.scena === 'lega' ? ' arka-stage--league' : ''}`}>

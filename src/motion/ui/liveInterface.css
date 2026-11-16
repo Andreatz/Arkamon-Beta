@@ -3,15 +3,6 @@
  * Durate e ritardi passano per --motion-scale (0 con il movimento ridotto).
  */
 
-/* ── Contatori ─────────────────────────────────────────────────────────── */
-.arka-counter {
-  display: inline-block;
-  font-variant-numeric: tabular-nums;
-  transition: color calc(var(--motion-scale, 1) * 240ms) ease, text-shadow calc(var(--motion-scale, 1) * 240ms) ease;
-}
-.arka-counter[data-counting='up'] { color: var(--arka-control-gold); text-shadow: 0 0 12px color-mix(in srgb, var(--arka-control-gold) 70%, transparent); }
-.arka-counter[data-counting='down'] { color: var(--arka-type-fuoco); text-shadow: 0 0 10px color-mix(in srgb, var(--arka-type-fuoco) 55%, transparent); }
-
 /* ── Inclinazione 3D ──────────────────────────────────────────────────── */
 :is([data-tilt], .pu-menu-tile, .ref-trainer-card, .pu-team-slot, .ref-team-card, .pu-dex-entry)[data-tilting] {
   rotate: var(--tilt-ax, 1) var(--tilt-ay, 0) 0 var(--tilt-angle, 0deg);
@@ -31,13 +22,6 @@
   transition: opacity calc(var(--motion-scale, 1) * 200ms) ease;
 }
 [data-tilting] > .arka-tilt-glare { opacity: 1; }
-/* L'icona della tessera si solleva verso chi guarda. */
-:is(.pu-menu-tile, .ref-menu-tile) :is(.ref-menu-card-face > :not(h2):not(.ref-menu-card-frame), .kit-icon, svg:not(.ref-menu-card-frame)) {
-  transition: transform calc(var(--motion-scale, 1) * 260ms) cubic-bezier(0.2, 0.9, 0.3, 1.2);
-}
-:is(.pu-menu-tile, .ref-menu-tile)[data-tilting] :is(.ref-menu-card-face > :not(h2):not(.ref-menu-card-frame), .kit-icon) {
-  transform: translateY(-5px) scale(1.07);
-}
 
 /* ── Cursore di selezione ─────────────────────────────────────────────── */
 .arka-selection-cursor {
@@ -66,56 +50,6 @@
 @keyframes arka-cursor-breathe {
   0%, 100% { box-shadow: 0 0 0 1px #00000055, 0 0 14px color-mix(in srgb, var(--arka-control-gold) 35%, transparent), inset 0 0 12px color-mix(in srgb, var(--arka-control-gold) 18%, transparent); }
   50% { box-shadow: 0 0 0 1px #00000055, 0 0 26px color-mix(in srgb, var(--arka-control-gold) 60%, transparent), inset 0 0 18px color-mix(in srgb, var(--arka-control-gold) 30%, transparent); }
-}
-
-/* ── Cambio scheda e cambio giocatore ─────────────────────────────────── */
-.pu-shell .pu-content[data-nav-direction='forward'] { animation: arka-pane-from-right calc(var(--motion-scale, 1) * 360ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; }
-.pu-shell .pu-content[data-nav-direction='back'] { animation: arka-pane-from-left calc(var(--motion-scale, 1) * 360ms) cubic-bezier(0.16, 0.84, 0.3, 1) backwards; }
-.pu-shell .pu-content[data-nav-direction='flip'] { animation: arka-pane-flip calc(var(--motion-scale, 1) * 520ms) cubic-bezier(0.2, 0.75, 0.25, 1) backwards; transform-origin: 50% 50%; }
-@keyframes arka-pane-from-right { from { opacity: 0; transform: translateX(56px); } }
-@keyframes arka-pane-from-left { from { opacity: 0; transform: translateX(-56px); } }
-@keyframes arka-pane-flip { from { opacity: 0; transform: perspective(1400px) rotateY(-82deg); } 55% { opacity: 1; } }
-
-/* ── Splash art: zoom lento, deriva e lampo del colore del tipo ───────── */
-.pu-splash-backdrop { animation: arka-splash-drift calc(var(--motion-scale, 1) * 22s) ease-in-out infinite alternate; }
-@keyframes arka-splash-drift {
-  from { transform: scale(1.02) translate3d(0, 0, 0); }
-  to { transform: scale(1.09) translate3d(-1.2%, -0.8%, 0); }
-}
-.arka-type-flash {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 70% 45%, color-mix(in srgb, var(--type-flash, var(--arka-control-gold)) 55%, transparent), transparent 62%);
-  mix-blend-mode: screen;
-  opacity: 0;
-  animation: arka-type-flash calc(var(--motion-scale, 1) * 620ms) ease-out;
-}
-.arka-type-sweep {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--type-flash, var(--arka-control-gold)) 40%, transparent) 48%, transparent 66%);
-  opacity: 0;
-  animation: arka-type-sweep calc(var(--motion-scale, 1) * 560ms) cubic-bezier(0.3, 0.6, 0.3, 1);
-}
-@keyframes arka-type-flash { 0% { opacity: 0; } 18% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes arka-type-sweep { 0% { opacity: 1; transform: translateX(-60%); } 100% { opacity: 0; transform: translateX(60%); } }
-
-/* ── Medaglie che si incastonano ──────────────────────────────────────── */
-.ref-provided-medals > span[data-earned='true'] { animation: arka-medal-set calc(var(--motion-scale, 1) * 460ms) cubic-bezier(0.3, 1.6, 0.5, 1) backwards; }
-.ref-provided-medals > span[data-earned='true']:nth-child(2) { animation-delay: calc(var(--motion-scale, 1) * 60ms); }
-.ref-provided-medals > span[data-earned='true']:nth-child(3) { animation-delay: calc(var(--motion-scale, 1) * 120ms); }
-.ref-provided-medals > span[data-earned='true']:nth-child(4) { animation-delay: calc(var(--motion-scale, 1) * 180ms); }
-.ref-provided-medals > span[data-earned='true']:nth-child(5) { animation-delay: calc(var(--motion-scale, 1) * 240ms); }
-.ref-provided-medals > span[data-earned='true']:nth-child(6) { animation-delay: calc(var(--motion-scale, 1) * 300ms); }
-.ref-provided-medals > span[data-earned='true']:nth-child(7) { animation-delay: calc(var(--motion-scale, 1) * 360ms); }
-.ref-provided-medals > span[data-earned='true']:nth-child(8) { animation-delay: calc(var(--motion-scale, 1) * 420ms); }
-@keyframes arka-medal-set {
-  0% { opacity: 0; transform: scale(1.9) rotate(-18deg); }
-  70% { opacity: 1; transform: scale(0.92) rotate(2deg); }
 }
 
 /* ── Suggerimenti del gamepad ─────────────────────────────────────────── */
@@ -152,11 +86,6 @@
 @keyframes arka-hints-in { from { opacity: 0; transform: translate(-50%, 12px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .arka-selection-cursor, .pu-splash-backdrop, .pu-content[data-nav-direction], .arka-type-flash, .arka-type-sweep,
-  .ref-provided-medals > span, .arka-gamepad-hints { animation: none !important; }
+  .arka-selection-cursor, .arka-gamepad-hints { animation: none !important; }
   [data-tilting] { transform: none !important; }
 }
-
-.pu-splash-flash { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-.pu-shell .pu-content[data-nav-direction='flip-alt'] { animation: arka-pane-flip-alt calc(var(--motion-scale, 1) * 520ms) cubic-bezier(0.2, 0.75, 0.25, 1) backwards; transform-origin: 50% 50%; }
-@keyframes arka-pane-flip-alt { from { opacity: 0; transform: perspective(1400px) rotateY(82deg); } 55% { opacity: 1; } }
