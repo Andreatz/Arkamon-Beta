@@ -85,6 +85,10 @@ import { DEFAULT_PRELOAD_VFX_ASSET_IDS } from '@/components/vfx/vfxManifest'
 import { getBattleSideCenter } from '@/components/vfx/battleVfxPosition'
 import { Stage, StageLayer } from '@/motion/Stage'
 import { useCameraRig } from '@/motion/useCameraRig'
+import { ScreenFxLayer, useScreenFx } from '@/motion/ScreenFx'
+import { useBattleCinematics } from '@/components/battle/useBattleCinematics'
+import { efficacyTone } from '@/components/battle/battleCinematics'
+import { BattleDamageNumber, BattleMoveBanner } from '@/components/battle/BattleCinematicLayer'
 import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
 import {
   BATTLE_DICE_ASSET_IDS,
@@ -235,6 +239,9 @@ export function BattagliaScene() {
     return { player: { x: player.x / 100, y: player.y / 100 }, enemy: { x: enemy.x / 100, y: enemy.y / 100 } }
   }, [battleLayout])
   const battleRig = useCameraRig({ focusPoints: battleFocusPoints })
+  const battleFx = useScreenFx()
+  // La regia resta ferma nell'editor dei layout e nelle anteprime: lì il mondo non deve muoversi.
+  const cine = useBattleCinematics({ rig: battleRig, fx: battleFx, enabled: !layoutEditing && !previewView })
   const [pendingCaptureSave, setPendingCaptureSave] = useState<{ masterball: boolean } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
@@ -326,6 +333,14 @@ export function BattagliaScene() {
     })
   }, [pkmnA, pkmnB, pendingHealth, customBattleBackground, battleLayout, spriteActions, controlStatus, infoBoxMessaggi, moveVfx, diceRoll, publicDiceId, terminata, esito, previewView])
   useEffect(() => () => { usePublicPresentation.getState().setBattle(null) }, [])
+
+  // Esito: la camera va sul lato vincitore mentre entra la scheda del risultato.
+  const playOutcomeShot = cine.outcome
+  const resumeCinematics = cine.resume
+  useEffect(() => {
+    if (terminata && esito) playOutcomeShot(esito === 'vittoria' ? 'A' : 'B')
+    else if (!terminata) resumeCinematics()
+  }, [terminata, esito, playOutcomeShot, resumeCinematics])
 
   useEffect(() => {
     preloadVfxAssets([...DEFAULT_PRELOAD_VFX_ASSET_IDS, ...BATTLE_DICE_ASSET_IDS])
@@ -527,6 +542,7 @@ export function BattagliaScene() {
       rolls: risultato.tiriDado,
       increment: risultato.incremento,
       damage: risultato.dannoFinale,
+      tone: efficacyTone(risultato.moltiplicatoreTipo),
     })
   }
 
@@ -663,7 +679,8 @@ export function BattagliaScene() {
     side: 'A' | 'B',
     targetSide: 'A' | 'B' | null,
     onImpact: () => void,
-    onComplete: () => void
+    onComplete: () => void,
+    onReleaseCue?: () => void
   ) => {
     const attacker = side === 'A' ? pkmnA : pkmnB
     const target = targetSide === 'A' ? pkmnA : targetSide === 'B' ? pkmnB : null
@@ -684,11 +701,14 @@ export function BattagliaScene() {
     const sequence = createBattleVisualSequence({
       waitForAttacker: dedicatedAttack,
       waitForTarget: !!targetAsset,
-      onRelease: () => mostraVfxMossa(move, side, effectId, {
-        onStart: () => playback.vfxStart(),
-        onImpact: () => sequence.impact(),
-        onComplete: () => sequence.vfxComplete(),
-      }, targetSide ? 'opponent' : 'self'),
+      onRelease: () => {
+        onReleaseCue?.()
+        mostraVfxMossa(move, side, effectId, {
+          onStart: () => playback.vfxStart(),
+          onImpact: () => sequence.impact(),
+          onComplete: () => sequence.vfxComplete(),
+        }, targetSide ? 'opponent' : 'self')
+      },
       onImpact: () => {
         setHeldHitReactions({})
         onImpact()
@@ -759,9 +779,11 @@ export function BattagliaScene() {
     setPendingHealth(target ? { side: targetSide, instanceId: target.istanzaId, hp: target.hp } : null)
     const targetWillKO = !!target && target.hp <= risultato.dannoFinale
     const targetHasHit = target && !!getArkamonAnimationAsset(target.specieId, targetSide === 'A' ? 'back' : 'front', 'hit')
+    cine.attackStart({ side, moveName: risultato.mossa.nome, color: VFX_TYPE_COLORS[risultato.mossa.tipo], suprema: !!risultato.suprema })
     // The same hit reaction plays for every attack; a fatal result must not reveal KO early.
     playMoveVisuals(risultato.mossa, side, targetSide, () => {
       playImpactFeedback(risultato.mossa, targetSide, true, !targetHasHit)
+      cine.impact()
 
       const pulseId = ++impactPulseIdRef.current
       setImpactPulse({
@@ -779,6 +801,7 @@ export function BattagliaScene() {
         appendChronicle(revealedAttackEvents(risultato, side, actionId))
         onDamageReveal()
         setPendingHealth(null)
+        cine.attackEnd()
         onComplete(actionId)
         actionInProgressRef.current = false
         setAzioneInCorso(false)
@@ -798,17 +821,24 @@ export function BattagliaScene() {
           setPendingHealth(null)
           appendChronicle(revealedAttackEvents(risultato, side, actionId))
           onDamageReveal()
+          // Il danno è appena diventato pubblico: solo ora la regia può mostrarlo.
+          cine.damageReveal({
+            targetSide, damage: risultato.dannoFinale, hpMax: target ? calcolaHPMax(target) : 0,
+            ko: targetWillKO, multiplier: risultato.moltiplicatoreTipo,
+          })
         },
         onComplete: () => {
           if (activePlaybackRef.current === reveal) activePlaybackRef.current = null
+          cine.attackEnd()
           onComplete(actionId)
           actionInProgressRef.current = false
           setAzioneInCorso(false)
         },
       })
       activePlaybackRef.current = reveal
+      cine.diceStart()
       mostraLancioDadi(risultato, side, reveal.diceVisible, reveal.diceComplete)
-    })
+    }, () => cine.release(targetSide))
   }
 
   const eseguiSequenzaCura = (
@@ -820,7 +850,9 @@ export function BattagliaScene() {
     if (isChallenge) challengeActions.current += 1
     actionInProgressRef.current = true
     setAzioneInCorso(true)
+    cine.attackStart({ side, moveName: move.nome, color: VFX_TYPE_COLORS[move.tipo] })
     playMoveVisuals(move, side, null, () => {}, () => {
+      cine.attackEnd()
       onComplete()
       actionInProgressRef.current = false
       setAzioneInCorso(false)
@@ -1556,6 +1588,7 @@ export function BattagliaScene() {
       <StageLayer depth={0.9} bleed={1.03} className="bg-cover bg-center" style={{ backgroundImage: `url(${bgBattaglia})` }}>
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/60 pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
+        <div className={`battle-knockout-veil ${cine.knockoutSide ? 'is-active' : ''}`} data-battle-knockout-veil={cine.knockoutSide ?? undefined} />
       </StageLayer>
 
       <AnimatePresence>
@@ -1627,7 +1660,13 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       </AnimatePresence>
 
+      <BattleDamageNumber
+        display={cine.damageNumber}
+        position={cine.damageNumber ? { x: battleFocusPoints[cine.damageNumber.side === 'A' ? 'player' : 'enemy'].x * 100, y: battleFocusPoints[cine.damageNumber.side === 'A' ? 'player' : 'enemy'].y * 100 } : null}
+      />
       </Stage>
+      <ScreenFxLayer fx={battleFx} className="battle-fx-layer" />
+      <BattleMoveBanner banner={cine.banner} />
 
       <BattleLayoutItem
         layoutKey="enemyHp"

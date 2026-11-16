@@ -55,3 +55,20 @@
     gap: 2px 0;
   }
 }
+
+/* Risultato in grande: il totale è il punto d'arrivo del lancio. */
+.battle-dice-result { display: grid; justify-items: center; gap: 2px; }
+.battle-dice-total {
+  display: block;
+  font-size: clamp(40px, 5.2vw, 96px);
+  line-height: 0.95;
+  color: var(--battle-dice-tone, #fda4af);
+  text-shadow: 0 3px 0 color-mix(in srgb, var(--arka-bg) 90%, transparent), 0 0 0.45em color-mix(in srgb, var(--battle-dice-tone, #fda4af) 55%, transparent);
+}
+.battle-dice-result-label { font-size: clamp(13px, 1.15vw, 20px); color: var(--battle-dice-tone, #fda4af); }
+.battle-dice-result-tone { font-size: clamp(11px, 0.95vw, 16px); letter-spacing: 0.12em; color: var(--battle-dice-tone, #fda4af); }
+.battle-dice-result[data-dice-tone="super"] { --battle-dice-tone: var(--arka-primary-hover); }
+.battle-dice-result[data-dice-tone="weak"] { --battle-dice-tone: var(--arka-text-muted); }
+.battle-dice-kicker { font-size: clamp(11px, 0.95vw, 16px); letter-spacing: 0.08em; }
+.battle-dice-move { font-size: clamp(18px, 1.7vw, 30px); line-height: 1.1; }
+.battle-dice-sum { font-size: clamp(12px, 1.05vw, 18px); }
