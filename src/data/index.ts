@@ -13,14 +13,10 @@ import type {
   AllenatoreDef,
 } from '@/types'
 
-import pokemonData from './pokemon.json'
-import { BASE_RUNTIME_MOVES } from './runtimeGameData'
+import { BASE_RUNTIME_MOVES, RUNTIME_ENCOUNTERS, RUNTIME_SPECIES, RUNTIME_TRAINERS } from './runtimeGameData'
 import tipiData from './tipi.json'
 import crescitaData from './crescita_hp.json'
 import mappeData from './mappe.json'
-import incontriData from './incontri.json'
-import allenatoriData from './allenatori.json'
-import { addStatusMovesToPokemon, STATUS_MOVES } from './statusMoves'
 import {
   CESPUGLI_STANDARD,
   POKEMON_INCONTRI_COMUNI,
@@ -31,8 +27,8 @@ import {
 } from './bilanciamento'
 
 // Cast tipizzati (i JSON non hanno tipi inferiti perfetti dal compilatore)
-export const POKEMON_BASE: PokemonSpecie[] = addStatusMovesToPokemon(pokemonData as PokemonSpecie[])
-export const MOSSE: MossaDef[] = [...BASE_RUNTIME_MOVES, ...STATUS_MOVES]
+export const POKEMON_BASE: PokemonSpecie[] = RUNTIME_SPECIES
+export const MOSSE: MossaDef[] = BASE_RUNTIME_MOVES
 export const TABELLA_TIPI: TabellaTipi = tipiData as TabellaTipi
 export const CRESCITA_HP: Record<CategoriaHP, number> =
   crescitaData as Record<CategoriaHP, number>
@@ -67,11 +63,15 @@ const INCONTRI_ROUTE_RESTANTI: IncontroSelvatico[] = ROUTE_GENERATE.flatMap(
     })
 )
 
+const suppliedEncounters = RUNTIME_ENCOUNTERS
+const suppliedBushes = new Set(suppliedEncounters.map(({ luogo, cespuglio }) => `${luogo}:${cespuglio}`))
+const playableSpecies = new Set(POKEMON_BASE.map(({ id }) => id))
+
 export const INCONTRI: IncontroSelvatico[] = [
-  ...(incontriData as IncontroSelvatico[]),
-  ...INCONTRI_ROUTE_RESTANTI,
+  ...suppliedEncounters.filter(({ pokemonId }) => playableSpecies.has(pokemonId)),
+  ...INCONTRI_ROUTE_RESTANTI.filter(({ luogo, cespuglio }) => !suppliedBushes.has(`${luogo}:${cespuglio}`)),
 ]
-export const ALLENATORI: AllenatoreDef[] = allenatoriData as AllenatoreDef[]
+export const ALLENATORI = RUNTIME_TRAINERS.filter(({ luogo }) => luogo !== 'Nascondiglio')
 
 // Mappe-griglia (Fase E.6+)
 export { MAPPE_GRIGLIA, getMappaGriglia } from './mappe-griglia'
@@ -82,6 +82,9 @@ export { MAPPE_GRIGLIA, getMappaGriglia } from './mappe-griglia'
 
 const pokemonById = new Map<number, PokemonSpecie>(
   POKEMON_BASE.map((p) => [p.id, p])
+)
+const previousEvolution = new Map(
+  POKEMON_BASE.filter((species) => species.evoluzioneId).map((species) => [species.evoluzioneId, species.id])
 )
 const mosseById = new Map<number, MossaDef>(MOSSE.map((m) => [m.id, m]))
 const allenatoriById = new Map<number, AllenatoreDef>(
@@ -96,8 +99,32 @@ export function getMossa(id: number): MossaDef | undefined {
   return mosseById.get(id)
 }
 
+export function mossaDisponibile(specieId: number, mossa: MossaDef, livello: number): boolean {
+  if (livello < (mossa.livelloMinimo ?? 0)) return false
+  if (mossa.stadioMinimo === undefined) return true
+  // Pokemon_Base assigns Calma Piatta expressly to the standalone dark Felvex variant.
+  if (specieId === 44 && mossa.id === 226) return true
+  if (!getPokemon(specieId)?.mosse.includes(mossa.id)) return false
+  let ancestor = specieId
+  for (let stage = 1; stage < mossa.stadioMinimo; stage++) {
+    const previous = previousEvolution.get(ancestor)
+    if (previous === undefined) return false
+    ancestor = previous
+  }
+  return true
+}
+
 export function getAllenatore(id: number): AllenatoreDef | undefined {
   return allenatoriById.get(id)
+}
+
+export function squadraAllenatore(trainer: AllenatoreDef, rivaleStarterId?: number | null): AllenatoreDef['squadra'] {
+  if ((trainer.id !== 201 && !trainer.livelliRivale) || !rivaleStarterId) return trainer.squadra
+  return trainer.squadra.map((member, index) => index === 0 ? { ...member, pokemonId: rivaleStarterId } : member)
+}
+
+export function tipoBattagliaAllenatore(trainer: AllenatoreDef): 'NPC' | 'PVP' {
+  return trainer.tipo === 'PVP' || (trainer.tipo === 'Capopalestra' && trainer.idDatabase !== undefined) ? 'PVP' : 'NPC'
 }
 
 /** Ritorna gli incontri possibili in un cespuglio specifico */
@@ -105,6 +132,10 @@ export function getIncontri(luogo: string, cespuglio: string): IncontroSelvatico
   return INCONTRI.filter(
     (i) => i.luogo === luogo && i.cespuglio === cespuglio
   )
+}
+
+export function getCespugliInLuogo(luogo: string): string[] {
+  return Array.from(new Set(INCONTRI.filter((entry) => entry.luogo === luogo).map((entry) => entry.cespuglio))).sort()
 }
 
 /** Ritorna tutti gli allenatori di un luogo */

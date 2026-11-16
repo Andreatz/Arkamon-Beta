@@ -76,7 +76,7 @@ test('a rejected capture save consumes nothing and retries the same action once'
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   await openFixture(page, true, 4, true)
-  const masterball = page.getByRole('button', { name: 'Masterball x1', exact: true })
+  const masterball = page.getByRole('button', { name: 'Master Arkaball x1', exact: true })
   await expect(masterball).toBeEnabled()
   await page.evaluate(() => {
     const original = Storage.prototype.setItem
@@ -165,7 +165,7 @@ test('a full deposit blocks an out-of-range capture before consuming a Masterbal
     localStorage.setItem('arkamon-save', JSON.stringify(save))
   })
   await page.reload()
-  const masterball = page.getByRole('button', { name: 'Masterball x1', exact: true })
+  const masterball = page.getByRole('button', { name: 'Master Arkaball x1', exact: true })
   await expect(masterball).toBeEnabled()
   const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   await masterball.click()

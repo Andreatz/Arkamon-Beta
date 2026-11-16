@@ -2,7 +2,9 @@ import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, typ
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { getMossa, getPokemon } from '@/data'
 import { calcolaHPMax, getMossaAlLivello, èMossaCura, èMossaSoloStato } from '@/engine/battleEngine'
+import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
 import { assetUrl } from '@/utils/assetUrl'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { getPortraitFraming } from './portraitFraming'
 import { RpgFrame, RPG_SKINS } from '@/components/rpg'
 import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
@@ -18,11 +20,15 @@ export const TYPE_ICONS: Record<TipoPokemon, string> = {
 export const ITEM_ICONS: Record<string, string> = {
   potion: 'item-potion', 'super-potion': 'item-superpotion', revive: 'item-revive',
   antidote: 'item-antidote', masterball: 'item-sphere', 'paralysis-heal': 'type-electric', awakening: 'type-psychic',
+  'hyper-potion': 'item-superpotion', 'max-potion': 'item-superpotion', 'full-heal': 'item-antidote',
+  arkaball: 'item-sphere', 'mega-arkaball': 'item-sphere', 'ultra-arkaball': 'item-sphere',
+  'speed-boost': 'type-electric', 'damage-boost': 'type-fire', 'special-perfume': 'item-antidote',
+  bicycle: 'icon-map', scooter: 'icon-map',
 }
 export function itemIconId(itemId: string): string {
   if (isReferenceUi() && itemId === 'awakening') return 'item-awakening'
   if (isReferenceUi() && itemId === 'paralysis-heal') return 'item-paralysis-heal'
-  return ITEM_ICONS[itemId]
+  return ITEM_ICONS[itemId] ?? 'icon-bag'
 }
 export function kitAsset(id: string): string { return assetUrl(`/ui/player-kit/${id}.svg`) }
 const STUDIO_MENU_ICONS: Record<string, string> = {
@@ -81,7 +87,7 @@ export function TypeBadge({ type }: { type: TipoPokemon }) {
 }
 function CreatureImage({ speciesId, large }: { speciesId: number; large: boolean }) {
   const compact = !large && isReferenceUi() ? providedPortraitSource(speciesId) : undefined
-  const source = compact ?? `/sprites/front_sprites/${speciesId}.png`
+  const source = compact ?? getArkamonSpriteSource(speciesId)
   const [loadedSource, setLoadedSource] = useState<string | null>(null)
   const framing = getPortraitFraming(source)
   useEffect(() => {
@@ -123,6 +129,13 @@ export function PokemonMoves({ pokemon, detailed = false }: { pokemon: PokemonIs
   const definition = getPokemon(pokemon.specieId)
   return <div className="pu-moves">{definition?.mosse.filter(id => id > 0).map(id => {
     const move = getMossa(id); if (!move) return null
+    if (move.soloStato) {
+      const facts = battleMoveFacts(move, pokemon.livello)
+      const description = move.livelloMinimo && pokemon.livello < move.livelloMinimo
+        ? `${facts.detail} Disponibile dal livello ${move.livelloMinimo}.` : facts.detail
+      return <div className="pu-move" key={id} data-move-kind={facts.kind}><div><strong>{move.nome}</strong><TypeBadge type={move.tipo} />{detailed && <small className="pu-move-tactical">{description}</small>}</div>
+        <span className="pu-dice" aria-label={description} title={description}>{facts.label}</span></div>
+    }
     const dice = getMossaAlLivello(move, pokemon.livello)
     const healing = èMossaCura(move)
     const effect = healing ? `Cura ${move.valoreEffetto ?? 0}${move.effetto === 'CURA_PCT' ? '%' : ' HP'}`

@@ -3,7 +3,9 @@ import { POKEMON_BASE, TABELLA_TIPI, getMossa } from '@/data'
 import { calcolaHPMax, getMossaAlLivello } from '@/engine/battleEngine'
 import { useGameStore } from '@/store/gameStore'
 import { assetUrl } from '@/utils/assetUrl'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { getArkamonAnimationAsset } from '@/components/arkamon/arkamonAnimationManifest'
+import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
 import type { MossaDef, PokemonIstanza, TipoPokemon } from '@/types'
 import {
   arkadexEvolutionLabel, deriveArkadexProgress, getArkadexEntries, getArkadexSpecimens,
@@ -28,7 +30,7 @@ function moveEffectLabel(move: MossaDef): string {
   }
 }
 
-/** Browse discoveries without changing progress or requesting 110 large animation sheets. */
+/** Browse discoveries without changing progress or preloading animation sheets. */
 export function ArkadexPanel({ initialPlayerId }: { initialPlayerId?: 1 | 2 } = {}) {
   const [playerId, setPlayerId] = useState<1 | 2>(() => initialPlayerId ?? useGameStore.getState().giocatoreAttivo)
   const player1 = useGameStore((state) => state.giocatore1)
@@ -70,23 +72,27 @@ export function ArkadexPanel({ initialPlayerId }: { initialPlayerId?: 1 | 2 } = 
     <p role="status" className="arkadex-result-count">{entries.length} schede corrispondenti. I filtri per nome e tipo includono soltanto specie già scoperte.</p>
     <div className="arkadex-layout">
       <div className="arkadex-grid" aria-label="Specie dell’Arkadex">{entries.map((entry) => <button type="button" key={entry.id} aria-pressed={selected?.id === entry.id} aria-label={`Numero ${entry.id}: ${entry.species?.nome ?? 'specie da scoprire'} · ${statusLabels[entry.status]}`} onClick={() => { setSelectedId(entry.id); setSelectedInstanceId(null); setAnimatedSpeciesId(null) }}>
-        {entry.species ? <img loading="lazy" decoding="async" src={assetUrl(`/sprites/front_sprites/${entry.id}.png`)} alt="" /> : <span className="arkadex-silhouette" aria-hidden="true">?</span>}
+        {entry.species ? <img loading="lazy" decoding="async" src={assetUrl(getArkamonSpriteSource(entry.id))} alt="" /> : <span className="arkadex-silhouette" aria-hidden="true">?</span>}
         <span>#{String(entry.id).padStart(3, '0')}</span><strong>{entry.species?.nome ?? '???'}</strong><small>{statusLabels[entry.status]}</small>
       </button>)}</div>
       {!selected ? <p className="arkadex-detail">Nessuna specie corrisponde ai filtri scelti.</p> : !species || !pokemon ? <article className="arkadex-detail" aria-label="Scheda da scoprire"><span className="arkadex-silhouette arkadex-silhouette--large" aria-hidden="true">?</span><h3>#{String(selected.id).padStart(3, '0')} · Specie da scoprire</h3><p>Incontra questa specie durante la partita per rivelarne nome, tipo e mosse.</p></article> : <article className="arkadex-detail" aria-label={`Scheda di ${species.nome}`}>
-        <div className="arkadex-art">{animated ? <Suspense fallback={<p>Caricamento animazione…</p>}><AnimatedArkamon speciesId={species.id} name={species.nome} side="front" animation="idle" /></Suspense> : <img loading="lazy" decoding="async" src={assetUrl(`/sprites/front_sprites/${species.id}.png`)} alt={species.nome} />}</div>
+        <div className="arkadex-art">{animated ? <Suspense fallback={<p>Caricamento animazione…</p>}><AnimatedArkamon speciesId={species.id} name={species.nome} side="front" animation="idle" /></Suspense> : <img loading="lazy" decoding="async" src={assetUrl(getArkamonSpriteSource(species.id))} alt={species.nome} />}</div>
         <h3>#{String(species.id).padStart(3, '0')} · {species.nome}</h3><p>{species.tipo} · {species.categoria} · {statusLabels[selected.status]}</p>
         {!!getArkamonAnimationAsset(species.id, 'front', 'idle') && <button type="button" onClick={() => setAnimatedSpeciesId(animated ? null : species.id)} aria-pressed={animated}>{animated ? 'Ferma animazione' : 'Mostra animazione'}</button>}
         {specimens.length > 1 && <label>Esemplare<select value={specimen?.pokemon.istanzaId} onChange={(event) => setSelectedInstanceId(event.target.value)}>{specimens.map((entry) => <option key={`${entry.source}-${entry.pokemon.istanzaId}`} value={entry.pokemon.istanzaId}>{entry.pokemon.nome} · Lv. {entry.pokemon.livello} · {entry.source}</option>)}</select></label>}
         <p>{specimen ? `Esemplare in ${specimen.source}: ${pokemon.nome}, livello ${pokemon.livello}.` : 'Dati di riferimento al livello 5: nessun esemplare di questa specie disponibile.'}</p>
-        <dl className="arkadex-stats"><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura} / 5</dd></div></dl>
+        <dl className="arkadex-stats"><div><dt>HP massimi</dt><dd>{calcolaHPMax(pokemon)}</dd></div><div><dt>HP attuali</dt><dd>{specimen ? pokemon.hp : '—'}</dd></div><div><dt>Tasso cattura</dt><dd>{species.tassoCattura === null ? '—' : `${species.tassoCattura} / 5`}</dd></div></dl>
         {specimen && <p>Status: {pokemon.stato?.tipo ?? 'nessuno'}.</p>}
         <h4>Mosse al livello {pokemon.livello}</h4><ul className="arkadex-moves">{species.mosse.filter((id) => id > 0).map((id) => {
           const move = getMossa(id)
           if (!move) return null
+          if (move.soloStato) {
+            const facts = battleMoveFacts(move, pokemon.livello)
+            return <li key={id}><strong>{move.nome} · {move.tipo}</strong><span>{facts.detail}{move.livelloMinimo && pokemon.livello < move.livelloMinimo ? ` Disponibile dal livello ${move.livelloMinimo}.` : ''}</span></li>
+          }
           const stats = getMossaAlLivello(move, pokemon.livello)
           const effect = moveEffectLabel(move)
-          return <li key={id}><strong>{move.nome} · {move.tipo}</strong><span>{move.soloStato ? 'Mossa di status' : move.effetto === 'CURA' || move.effetto === 'CURA_PCT' ? 'Mossa di cura' : `${stats.dadi}d6 ${stats.incremento >= 0 ? '+' : '−'} ${Math.abs(stats.incremento)}`}{effect && ` · ${effect}`}</span></li>
+          return <li key={id}><strong>{move.nome} · {move.tipo}</strong><span>{move.effetto === 'CURA' || move.effetto === 'CURA_PCT' ? 'Mossa di cura' : `${stats.dadi}d6 ${stats.incremento >= 0 ? '+' : '−'} ${Math.abs(stats.incremento)}`}{effect && ` · ${effect}`}</span></li>
         })}</ul><p>{arkadexEvolutionLabel(species, progress, playerId)}</p>
       </article>}
     </div>

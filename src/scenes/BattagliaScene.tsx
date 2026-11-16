@@ -30,8 +30,8 @@ import { teamProgressionLimit } from '@/engine/teamLevelCap'
 import { nextSeededRandom } from '@/challenges/seededRandom'
 import { exitChallenge } from '@/challenges/challengeRuntime'
 import { BattleItemDialog } from '@/shop/BattleItemDialog'
-import { getShopItem, type ShopItemId } from '@/shop/catalog'
-import { resolveItemEffect } from '@/shop/itemEffects'
+import { CAPTURE_ITEM_IDS, getShopItem, type CaptureItemId, type ShopItemId } from '@/shop/catalog'
+import { battleBoostBlock, resolveItemEffect } from '@/shop/itemEffects'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   calcolaDanno,
@@ -39,22 +39,24 @@ import {
   costoSuprema,
   calcolaHPMax,
   scegliMossaIA,
-  tentaCattura,
+  tentaCatturaConSfera,
   applicaXP,
   applicaXPDopoKO,
   risolviStatoInizioTurno,
   èMossaCura,
   èMossaSoloStato,
+  mossaUtilizzabile,
   applicaMossaCura,
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
-import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
+import { trainerCoinDelta } from '@/store/game/battleCommands'
 import type {
   PokemonIstanza,
   MossaDef,
   RisultatoMossa,
   TipoPokemon,
   BattleCheckpoint,
+  StatoBattaglia,
 } from '@/types'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
@@ -148,11 +150,6 @@ export function BattagliaScene() {
   const customBattleBackground = useAdminStore((s) => s.theme.assets.battleBackground)
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const updateBattleLayout = useAdminStore((s) => s.updateBattleLayout)
-  const masterballRimaste = useGameStore((s) =>
-    s.giocatoreAttivo === 1
-      ? s.giocatore1.inventario.masterball ?? 0
-      : s.giocatore2.inventario.masterball ?? 0
-  )
   const [initialCheckpoint] = useState(() => battaglia ? restoreBattleCheckpoint(battaglia) : null)
   const publicAudienceEnabled = useAudienceStore((s) => s.enabled)
   const guestAudienceEnabled = useAudienceStore((s) => s.guestEnabled)
@@ -235,7 +232,12 @@ export function BattagliaScene() {
     return { player: { x: player.x / 100, y: player.y / 100 }, enemy: { x: enemy.x / 100, y: enemy.y / 100 } }
   }, [battleLayout])
   const battleRig = useCameraRig({ focusPoints: battleFocusPoints })
-  const [pendingCaptureSave, setPendingCaptureSave] = useState<{ masterball: boolean } | null>(null)
+  const [pendingCaptureSave, setPendingCaptureSave] = useState<{
+    ball: CaptureItemId
+    active: PokemonIstanza
+    success: boolean
+    messages: string[]
+  } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
   const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && !initialCheckpoint?.openingComplete && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
@@ -258,7 +260,7 @@ export function BattagliaScene() {
   function nextSide(side: 'A' | 'B', a = latestPokemon.current.A, b = latestPokemon.current.B): 'A' | 'B' {
     // La paralisi modifica la priorità finché una cura non la rimuove.
     const initial = initialCheckpoint?.initialPriority ?? 'A'
-    return nextBattleSide(actedThisRound.current, side, initial, a?.stato?.tipo, b?.stato?.tipo)
+    return nextBattleSide(actedThisRound.current, side, initial, a?.stato?.tipo, b?.stato?.tipo, useGameStore.getState().battaglia?.playerBoosts?.speed)
   }
   function presentStatus(result: ReturnType<typeof risolviStatoInizioTurno>, pokemon: PokemonIstanza, done: () => void) {
     statusPending.current = true
@@ -775,7 +777,7 @@ export function BattagliaScene() {
       }, 560)
 
     }, () => {
-      if (èMossaSoloStato(risultato.mossa)) {
+      if (èMossaSoloStato(risultato.mossa) && risultato.dannoFinale === 0) {
         appendChronicle(revealedAttackEvents(risultato, side, actionId))
         onDamageReveal()
         setPendingHealth(null)
@@ -807,7 +809,12 @@ export function BattagliaScene() {
         },
       })
       activePlaybackRef.current = reveal
-      mostraLancioDadi(risultato, side, reveal.diceVisible, reveal.diceComplete)
+      if (risultato.mossa.effetto === 'DANNO_FISSO') {
+        reveal.diceVisible()
+        reveal.diceComplete()
+      } else {
+        mostraLancioDadi(risultato, side, reveal.diceVisible, reveal.diceComplete)
+      }
     })
   }
 
@@ -1051,6 +1058,7 @@ export function BattagliaScene() {
     const mossaScelta = specieA.mosse[numeroMossa]
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
+    if (!mossaScelta || !mossaUtilizzabile(pkmnA, mossaScelta)) return
     preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
     if (mossaScelta && èMossaCura(mossaScelta)) {
       if (suprema) return
@@ -1066,9 +1074,10 @@ export function BattagliaScene() {
       return
     }
 
+    const damageMultiplier = battaglia?.playerBoosts?.damage ? 1.25 : 1
     const ris = suprema
-      ? calcolaAzioneSuprema(pkmnAEffettivo, pkmnB, numeroMossa, battleRng)
-      : calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa, battleRng, false)
+      ? calcolaAzioneSuprema(pkmnAEffettivo, pkmnB, numeroMossa, battleRng, damageMultiplier)
+      : calcolaDanno(pkmnAEffettivo, pkmnB, numeroMossa, battleRng, false, damageMultiplier)
     if (!ris) return
 
     const settlement = resolveBattleAttack(ris, 'A', squadraA, squadraB, teamProgressionLimit(squadraA, pkmnAEffettivo.istanzaId), isChallenge ? teamProgressionLimit(squadraB, pkmnB.istanzaId) : 100)
@@ -1133,108 +1142,109 @@ export function BattagliaScene() {
     }, undefined, !mossaScelta || !èMossaCura(mossaScelta))
   }
 
-  // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
-  const salvaCatturaConclusa = (masterball = false) => {
-    const currentA = latestPokemon.current.A ?? pkmnA
+  const salvaCatturaConclusa = ({ ball, active, success, messages }: NonNullable<typeof pendingCaptureSave>) => {
+    const acted = new Set(actedThisRound.current)
+    const initialPriority = initialCheckpoint?.initialPriority ?? 'A'
+    const side = success ? 'A' : nextBattleSide(acted, 'A', initialPriority, active.stato?.tipo, pkmnB.stato?.tipo, battaglia?.playerBoosts?.speed)
     const checkpoint = settledBattleCheckpoint({
-      initialPriority: initialCheckpoint?.initialPriority ?? 'A',
-      actedThisRound: actedThisRound.current,
-      turnA: true,
+      initialPriority,
+      actedThisRound: acted,
+      turnA: side === 'A',
       pvp: false,
       chooseRivalMove: false,
-      outcome: 'vittoria',
+      outcome: success ? 'vittoria' : null,
       openingComplete: true,
       evolutions: evoluzioniInAttesa,
       rivalMessages: [],
     })
-    return concludiCattura(giocatoreAttivo, pkmnB, {
-      pokemonA: currentA,
+    const patch: Partial<StatoBattaglia> = {
+      pokemonA: active,
       pokemonB: pkmnB,
-      squadraA: updateInSquadra(squadraA, currentA),
+      squadraA: updateInSquadra(squadraA, active),
       squadraB,
-      hpMaxA: calcolaHPMax(currentA),
+      hpMaxA: calcolaHPMax(active),
       hpMaxB,
-      turnoCorrente: 'A',
+      turnoCorrente: side,
       checkpoint,
       cronaca: chronicleRef.current,
-    }, masterball)
+      log: messages,
+      ...(randomState.current ? { seeded: { ...randomState.current } } : {}),
+    }
+    return success ? concludiCattura(giocatoreAttivo, pkmnB, patch, ball)
+      : useGameStore.getState().usaOggetto(giocatoreAttivo, ball, patch)
   }
 
-  const completaCatturaSalvata = (masterball = false) => {
-    if (!salvaCatturaConclusa(masterball)) {
-      // Keep this resolved action pending: retry persistence without another status tick or RNG draw.
-      setPendingCaptureSave({ masterball })
+  const completaCatturaSalvata = (attempt: NonNullable<typeof pendingCaptureSave>) => {
+    if (!salvaCatturaConclusa(attempt)) {
+      // The retry persists the resolved result without throwing another dice.
+      setPendingCaptureSave(attempt)
       setAzioneInCorso(true)
-      mostraMessaggi(['Cattura non salvata. Squadra, deposito e Masterball restano intatti. Libera spazio per i salvataggi del browser e riprova.'])
-      return false
+      mostraMessaggi(['Cattura non salvata. Squadra, deposito e sfere restano intatti. Libera spazio per i salvataggi del browser e riprova.'])
+      return
     }
     setPendingCaptureSave(null)
     setAzioneInCorso(false)
+    mostraMessaggi(attempt.messages)
+    if (!attempt.success) {
+      passaTurnoAaB(pkmnB, 0)
+      return
+    }
     playSound('capture')
     setEsito('vittoria')
     setTerminata(true)
-    return true
   }
 
-  const eseguiCattura = () => {
+  const eseguiCattura = (ball: CaptureItemId) => {
+    if ((giocatore.inventario[ball] ?? 0) <= 0) return
     if (!haSpazioPokemon(giocatore, pkmnB)) {
       mostraMessaggi(['Nessun posto disponibile per questo Arkamon: libera uno slot nel deposito o una posizione compatibile in squadra.'])
       return
     }
-    preparaTurnoGiocatore((_pokemon, statusMessages) => {
-      const ris = tentaCattura(pkmnB, battleRng)
-      appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: ris.riuscita ? `${pkmnB.nome} catturato` : `${pkmnB.nome} sfugge alla cattura`, messages: [`Somma reale dei 3d6: ${ris.roll}. Soglia: ${ris.soglia.toLocaleString('it-IT', { maximumFractionDigits: 2 })}.`], target: logPokemon(pkmnB), diceSum: ris.roll }])
-      mostraMessaggi([...statusMessages, 'Lanci una pokeball...'])
-      if (ris.riuscita) {
-        if (!completaCatturaSalvata()) return
-        mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
-        return
-      }
-      mostraMessaggi([`${pkmnB.nome} è scappato dalla pokeball!`])
-      passaTurnoAaB(pkmnB, 0)
-    }, undefined, false)
-  }
-
-  const eseguiMasterball = () => {
-    if (!haSpazioPokemon(giocatore, pkmnB)) {
-      mostraMessaggi(['Nessun posto disponibile per questo Arkamon: libera uno slot nel deposito o una posizione compatibile in squadra.'])
-      return
-    }
-    if (masterballRimaste <= 0) return
-    preparaTurnoGiocatore((_pokemon, statusMessages) => {
-      appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: `${pkmnB.nome}: Masterball`, messages: ['Cattura con Masterball: non vengono lanciati dadi.'], target: logPokemon(pkmnB) }])
-      if (!completaCatturaSalvata(true)) return
-      mostraMessaggi([
-        ...statusMessages,
-        'Lanci una Masterball...',
-        `${pkmnB.nome} è stato catturato!`,
-      ])
+    preparaTurnoGiocatore((active, statusMessages) => {
+      const { riuscita, roll, soglia } = tentaCatturaConSfera(pkmnB, ball, battleRng)
+      const name = getShopItem(ball)!.name
+      const detail = ball === 'masterball' ? 'Cattura con Master Arkaball: nessun tiro.' : `Tiro reale del d20: ${roll}. Soglia minima: ${soglia}.`
+      appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A',
+        title: riuscita ? `${pkmnB.nome} catturato` : `${pkmnB.nome} sfugge alla cattura`,
+        messages: [detail], target: logPokemon(pkmnB), ...(roll > 0 ? { diceSum: roll } : {}) }])
+      completaCatturaSalvata({ ball, active, success: riuscita, messages: [...statusMessages,
+        `Lanci una ${name}...`, detail, riuscita ? `${pkmnB.nome} è stato catturato!` : `${pkmnB.nome} è scappato dalla sfera!`] })
     }, undefined, false)
   }
 
   const eseguiOggetto = (itemId: ShopItemId, instanceId: string): { ok: boolean; message: string } => {
     if (!turnoA || terminata || azioneInCorso || actionInProgressRef.current || coinOpen || statusRoll || scambioRichiesto || attesaAvversario || attesaPassaggio) return { ok: false, message: 'Attendi il tuo turno.' }
     const target = squadraA.find((pokemon) => pokemon.istanzaId === instanceId)
-    const preview = target && resolveItemEffect(target, itemId)
-    if (!preview?.ok) return { ok: false, message: preview?.message ?? 'Scegli un Arkamon della squadra.' }
+    const item = getShopItem(itemId)
+    const boost = item?.effect.kind === 'boost' ? item.effect.stat : undefined
+    const preview = !boost && target ? resolveItemEffect(target, itemId) : undefined
+    const unavailable = boost ? battleBoostBlock(battaglia, boost, isChallenge)
+      : preview?.ok ? undefined : preview?.message ?? 'Scegli un Arkamon della squadra.'
+    if (unavailable || !item) return { ok: false, message: unavailable ?? 'Questo oggetto non è disponibile.' }
     if ((giocatore.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
     preparaTurnoGiocatore((active, messages) => {
       const currentSquad = updateInSquadra(squadraA, active)
       const currentTarget = currentSquad.find((pokemon) => pokemon.istanzaId === instanceId)!
-      const effect = resolveItemEffect(currentTarget, itemId)
+      const amount = item.effect.kind === 'heal' ? item.effect.amount : undefined
+      const roll = amount && amount !== 'full' && amount[0] !== amount[1] ? battleRng() : 0
+      const effect = boost ? { ok: true, pokemon: active, message: `${item.name} attivo per tutta la squadra.` }
+        : resolveItemEffect(currentTarget, itemId, roll)
       if (!effect.ok || !effect.pokemon) { mostraMessaggi([effect.message]); return }
       const nextSquad = updateInSquadra(currentSquad, effect.pokemon)
-      const nextA = instanceId === active.istanzaId ? effect.pokemon : active
+      const nextA = boost || instanceId === active.istanzaId ? effect.pokemon : active
       const acted = new Set(actedThisRound.current)
-      const side = nextBattleSide(acted, 'A', initialCheckpoint?.initialPriority ?? 'A', nextA.stato?.tipo, pkmnB.stato?.tipo)
+      const playerBoosts = boost ? { ...battaglia?.playerBoosts, [boost]: true as const } : battaglia?.playerBoosts
+      const side = nextBattleSide(acted, 'A', initialCheckpoint?.initialPriority ?? 'A', nextA.stato?.tipo, pkmnB.stato?.tipo, playerBoosts?.speed)
       const checkpoint = settledBattleCheckpoint({ initialPriority: initialCheckpoint?.initialPriority ?? 'A', actedThisRound: acted,
         turnA: side === 'A', pvp: isPvP, chooseRivalMove: false, passDirection: side === 'B' && isPvP ? 'A→B' : undefined,
         outcome: null, openingComplete: true, evolutions: evoluzioniInAttesa, rivalMessages: [], audienceBattleId: audienceBattleId.current, opponentTurnNumber: opponentTurnNumber.current })
       const event = { id: `${chronicleRef.current.battleId}:${chronicleRef.current.nextSequence}:item`, kind: 'heal' as const, side: 'A' as const,
-        title: `${getShopItem(itemId)!.name} su ${effect.pokemon.nome}`, messages: [effect.message], actor: logPokemon(effect.pokemon), hpBefore: currentTarget.hp, hpAfter: effect.pokemon.hp }
+        title: boost ? item.name : `${item.name} su ${effect.pokemon.nome}`, messages: [effect.message], actor: logPokemon(effect.pokemon),
+        ...(boost ? {} : { hpBefore: currentTarget.hp, hpAfter: effect.pokemon.hp }) }
       const candidate = appendBattleEvents({ ...chronicleRef.current, nextSequence: chronicleRef.current.nextSequence + 1 }, [event])
       const committed = useGameStore.getState().usaOggetto(giocatoreAttivo, itemId, { pokemonA: nextA, squadraA: nextSquad, pokemonB: pkmnB, squadraB,
-        turnoCorrente: side, checkpoint, cronaca: candidate, log: [...messages, effect.message], ...(randomState.current ? { seeded: { ...randomState.current }, challengeActionCount: challengeActions.current + 1 } : {}) })
+        turnoCorrente: side, checkpoint, cronaca: candidate, log: [...messages, effect.message], playerBoosts,
+        ...(randomState.current ? { seeded: { ...randomState.current }, challengeActionCount: challengeActions.current + 1 } : {}) })
       if (!committed) { mostraMessaggi(['Oggetto non usato: il browser non può salvare la partita.']); return }
       if (isChallenge) challengeActions.current += 1
       beginAction(); appendChronicle([event])
@@ -1330,6 +1340,10 @@ export function BattagliaScene() {
     const specieB = getPokemon(bEffettivo.specieId)
     const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
+    if (!mossaDefB || !mossaUtilizzabile(bEffettivo, mossaDefB)) {
+      passaTurnoBaA()
+      return
+    }
 
     if (bEffettivo.stato?.tipo === 'Paralizzato' && (!mossaDefB || !èMossaCura(mossaDefB))) {
       const statoRes = resolvedParalysis ?? risolviStatoInizioTurno(bEffettivo, hpMaxBcorrente, battleRng)
@@ -1460,13 +1474,13 @@ export function BattagliaScene() {
   const mosseA = specieA.mosse
     .map((mossaId, i) => {
       const mossa = mossaId ? getMossa(mossaId) : null
-      return mossa ? { mossa, idx: i as 0 | 1 | 2 } : null
+      return mossa && mossaUtilizzabile(pkmnA, mossa) ? { mossa, idx: i as 0 | 1 | 2 } : null
     })
     .filter((entry): entry is { mossa: MossaDef; idx: 0 | 1 | 2 } => entry !== null)
   const mosseB = specieB.mosse
     .map((mossaId, i) => {
       const mossa = mossaId ? getMossa(mossaId) : null
-      return mossa ? { mossa, idx: i as 0 | 1 | 2 } : null
+      return mossa && mossaUtilizzabile(pkmnB, mossa) ? { mossa, idx: i as 0 | 1 | 2 } : null
     })
     .filter((entry): entry is { mossa: MossaDef; idx: 0 | 1 | 2 } => entry !== null)
 
@@ -1497,7 +1511,7 @@ export function BattagliaScene() {
       {previewView === 'dice' && <DiceRollOverlay staticPreview roll={{ id: -1, side: 'A', moveName: 'Attacco di esempio', rolls: [2, 4, 6], increment: 2, damage: 14 }} />}
       {previewView === 'bag' && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={() => ({ ok: false, message: 'Anteprima del layout: nessun oggetto usato.' })} onClose={() => {}} />}
       {!terminata && <button type="button" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
-      {bagOpen && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={eseguiOggetto} onClose={() => setBagOpen(false)} />}
+      {bagOpen && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={eseguiOggetto} onClose={() => setBagOpen(false)} battle={battaglia} challenge={isChallenge} />}
       {audienceChoice && !terminata && <BattleAudienceOverlay
         request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}
         remainingMs={audienceVote.remainingMs} error={audienceVote.error}
@@ -1707,22 +1721,24 @@ export function BattagliaScene() {
             </div>
 
             {isSelvatico && battaglia && (
-              <div className="mt-3 flex justify-end gap-2">
+              <div className="mt-3 flex flex-wrap justify-end gap-2">
                 {pendingCaptureSave && (
                   <ActionButton disabled={false} onClick={() => {
-                    if (completaCatturaSalvata(pendingCaptureSave.masterball)) mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
+                    completaCatturaSalvata(pendingCaptureSave)
                   }}>
                     Riprova salvataggio cattura
                   </ActionButton>
                 )}
-                {!pendingCaptureSave && <><ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiCattura}>
+                {!pendingCaptureSave && <><ActionButton disabled={!turnoA || azioneInCorso || !(giocatore.inventario.arkaball ?? 0)} onClick={() => eseguiCattura('arkaball')}>
                   Cattura
                 </ActionButton>
-                {masterballRimaste > 0 && (
-                  <ActionButton disabled={!turnoA || azioneInCorso} onClick={eseguiMasterball}>
-                    Masterball x{masterballRimaste}
+                {CAPTURE_ITEM_IDS.slice(1).map(ball => {
+                  const count = giocatore.inventario[ball] ?? 0
+                  const name = getShopItem(ball)!.name
+                  return count > 0 && <ActionButton key={ball} disabled={!turnoA || azioneInCorso} onClick={() => eseguiCattura(ball)}>
+                    {name} x{count}
                   </ActionButton>
-                )}</>}
+                })}</>}
               </div>
             )}
           </div>
@@ -1816,23 +1832,17 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       )}
 
-      {terminata && isNPC && !battaglia?.leagueBattle && esito && (() => {
-        const allenatore = battaglia?.allenatoreId !== undefined
+      {terminata && isNPC && esito && (() => {
+        const allenatore = battaglia?.leagueOpponent ?? (battaglia?.allenatoreId !== undefined
           ? getAllenatore(battaglia.allenatoreId)
-          : null
-        const tipoAvv: TipoAvversario =
-          allenatore?.tipo === 'Capopalestra'
-            ? 'Capopalestra'
-            : allenatore?.tipo === 'PVP'
-            ? 'PVP'
-            : 'NPC'
-        const delta = calcolaVariazioneMonete(esito, tipoAvv)
+          : undefined)
+        const delta = trainerCoinDelta(esito, allenatore)
         if (delta === 0) return null
         return (
           <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
             <p className="arka-layout-content text-yellow-300 font-bold text-center">
               {delta > 0 ? `+${delta}₳ guadagnati` : `${delta}₳ persi`}
-              {tipoAvv === 'Capopalestra' && delta > 0 && ' 👑'}
+              {allenatore?.tipo === 'Capopalestra' && delta > 0 && ' 👑'}
             </p>
           </div>
         )

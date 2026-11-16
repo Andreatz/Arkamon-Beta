@@ -206,7 +206,7 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   for (const control of [move,
     page.getByRole('button', { name: 'Mossa Suprema', exact: true }),
     page.getByRole('button', { name: 'Cattura', exact: true }),
-    page.getByRole('button', { name: /^Masterball x/ }),
+    page.getByRole('button', { name: /^Master Arkaball x/ }),
     page.getByRole('button', { name: 'Borsa', exact: true }),
     page.getByRole('button', { name: /^Cronaca ·/ }),
   ]) {

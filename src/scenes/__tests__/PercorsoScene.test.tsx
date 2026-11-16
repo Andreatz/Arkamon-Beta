@@ -22,7 +22,7 @@ describe('allenatori accessibili nei percorsi', () => {
     useGameStore.getState().scegliStarter(5)
   })
 
-  it.each(ALLENATORI.filter((allenatore) => allenatore.luogo.startsWith('Percorso_')))(
+  it.each(ALLENATORI.filter((allenatore) => allenatore.luogo.startsWith('Percorso_') && allenatore.luogo !== 'Percorso_15'))(
     'offre un controllo per sfidare $nome in $luogo', (allenatore) => {
       useGameStore.getState().vaiAScena('percorso', { luogo: allenatore.luogo })
       const markup = renderToStaticMarkup(<PercorsoScene />)

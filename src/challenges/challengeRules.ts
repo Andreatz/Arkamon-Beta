@@ -4,8 +4,9 @@ import type { PokemonIstanza, PokemonSpecie } from '@/types'
 import { createSeededRandomState, hashChallengeText, seededRandom, validateChallengeSeed } from './seededRandom'
 import type { ChallengeDraft, ChallengeRulesVersion, ChallengeSession, ChallengeValidation } from './types'
 import classicCatalog from './classicCatalogV1.json'
+import { CHALLENGE_CATALOG_V2 } from './challengeCatalogV2'
 
-export const CHALLENGE_RULES_VERSION: ChallengeRulesVersion = 2
+export const CHALLENGE_RULES_VERSION: ChallengeRulesVersion = 3
 export const CHALLENGE_LEVEL = 20
 export const FANTA_BUDGET = 100
 export const CHALLENGE_TEAM_SIZE = 6
@@ -13,19 +14,31 @@ export const CHALLENGE_TEAM_SIZE = 6
 const categoryCost: Record<PokemonSpecie['categoria'], number> = { Lenta: 2, Media: 4, Veloce: 7, Leggendaria: 14 }
 const previousSpecies = new Map(POKEMON_BASE.filter((species) => species.evoluzioneId).map((species) => [species.evoluzioneId, species]))
 const classicSpecies = new Map(classicCatalog.species.map((species) => [species.id, species]))
+const v2Species = new Map(CHALLENGE_CATALOG_V2.map(species => [species.id as number, species]))
+
+export function isSpeciesAvailableForChallenge(speciesId: number, rulesVersion: ChallengeRulesVersion): boolean {
+  if (rulesVersion === 1) return classicSpecies.has(speciesId)
+  if (rulesVersion === 2) return v2Species.has(speciesId)
+  return !!getPokemon(speciesId)
+}
 
 export function isChallengeRulesVersion(value: unknown): value is ChallengeRulesVersion {
-  return value === 1 || value === 2
+  return value === 1 || value === 2 || value === 3
 }
 
 export function challengeRulesLabel(version: ChallengeRulesVersion): string {
-  return version === 1 ? 'Regole classiche · v1' : 'Regole aggiornate · v2'
+  return version === 1 ? 'Regole classiche · v1' : version === 2 ? 'Regole aggiornate · v2' : 'Catalogo ampliato · v3'
 }
 
 export function speciesEvolutionStage(speciesId: number, rulesVersion: ChallengeRulesVersion = CHALLENGE_RULES_VERSION): number {
   if (rulesVersion === 1) {
     const species = classicSpecies.get(speciesId)
     if (!species) throw new Error('Specie non disponibile nelle regole classiche.')
+    return species.stage
+  }
+  if (rulesVersion === 2) {
+    const species = v2Species.get(speciesId)
+    if (!species) throw new Error('Specie non disponibile nelle regole v2.')
     return species.stage
   }
   let stage = 0
@@ -39,11 +52,16 @@ export function speciesEvolutionStage(speciesId: number, rulesVersion: Challenge
   return stage
 }
 
-/** Classic prices are a snapshot of the released catalog; updated prices count offensive moves only. */
+/** Previous rules use their released prices; current prices count offensive moves only. */
 export function fantaSpeciesCost(speciesId: number, rulesVersion: ChallengeRulesVersion = CHALLENGE_RULES_VERSION): number {
   if (rulesVersion === 1) {
     const species = classicSpecies.get(speciesId)
     if (!species) throw new Error('Specie non disponibile nelle regole classiche.')
+    return species.cost
+  }
+  if (rulesVersion === 2) {
+    const species = v2Species.get(speciesId)
+    if (!species) throw new Error('Specie non disponibile nelle regole v2.')
     return species.cost
   }
   const species = getPokemon(speciesId)
@@ -69,7 +87,7 @@ export function validateFantaTeam(speciesIds: unknown, requireComplete = true, r
   }
   if (speciesIds.some((id) => !Number.isSafeInteger(id) || !getPokemon(id))) return { ok: false, error: 'La squadra contiene una specie sconosciuta.' }
   if (new Set(speciesIds).size !== speciesIds.length) return { ok: false, error: 'Ogni specie può essere scelta una sola volta.' }
-  if (rulesVersion === 1 && speciesIds.some((id) => !classicSpecies.has(id))) return { ok: false, error: 'La squadra contiene una specie non disponibile nelle regole classiche.' }
+  if (speciesIds.some(id => !isSpeciesAvailableForChallenge(id, rulesVersion))) return { ok: false, error: 'La squadra contiene una specie non disponibile per queste regole.' }
   if (fantaTeamCost(speciesIds, rulesVersion) > FANTA_BUDGET) return { ok: false, error: `La squadra supera il budget di ${FANTA_BUDGET} crediti.` }
   return { ok: true }
 }
@@ -79,16 +97,21 @@ export function generateSeedTeam(seed: string, namespace: 'player' | 'opponent',
   if (!isChallengeRulesVersion(rulesVersion)) throw new Error('Versione delle regole non supportata.')
   const normalized = validateChallengeSeed(seed)
   const rng = seededRandom(`${namespace}:${hashChallengeText(normalized).toString(16)}`)
-  const catalog = rulesVersion === 1 ? classicCatalog.species : POKEMON_BASE.map((species) => ({ id: species.id, type: species.tipo }))
+  const catalog = rulesVersion === 1 ? classicCatalog.species
+    : rulesVersion === 2 ? CHALLENGE_CATALOG_V2 : POKEMON_BASE.map(species => ({ id: species.id, type: species.tipo }))
   const candidates = catalog.map((species) => ({ id: species.id, type: species.type, cost: fantaSpeciesCost(species.id, rulesVersion), tie: rng() }))
     .sort((a, b) => a.tie - b.tie || a.id - b.id)
+  const byCost = [...candidates].sort((a, b) => a.cost - b.cost)
   const selected: number[] = []
   const types = new Set<string>()
   let spent = 0
   for (let slot = 0; slot < CHALLENGE_TEAM_SIZE; slot++) {
-    const affordable = candidates.filter((candidate) => !selected.includes(candidate.id)).filter((candidate) => {
-      const remaining = candidates.filter((other) => other.id !== candidate.id && !selected.includes(other.id)).map((other) => other.cost).sort((a, b) => a - b)
-      const reserve = remaining.slice(0, CHALLENGE_TEAM_SIZE - slot - 1).reduce((sum, cost) => sum + cost, 0)
+    const remainingSlots = CHALLENGE_TEAM_SIZE - slot - 1
+    const cheapest = byCost.filter((candidate) => !selected.includes(candidate.id)).slice(0, remainingSlots + 1)
+    const affordable = candidates.filter((candidate) => {
+      if (selected.includes(candidate.id)) return false
+      const reserve = cheapest.filter((other) => other.id !== candidate.id).slice(0, remainingSlots)
+        .reduce((sum, other) => sum + other.cost, 0)
       return spent + candidate.cost + reserve <= FANTA_BUDGET
     })
     const pick = affordable.find((candidate) => !types.has(candidate.type)) ?? affordable[0]
@@ -100,11 +123,12 @@ export function generateSeedTeam(seed: string, namespace: 'player' | 'opponent',
   return selected
 }
 
-function createTeam(speciesIds: readonly number[], prefix: string): PokemonIstanza[] {
+function createTeam(speciesIds: readonly number[], prefix: string, rulesVersion: ChallengeRulesVersion): PokemonIstanza[] {
   return speciesIds.map((id, index) => {
     const species = getPokemon(id)!
     const pokemon: PokemonIstanza = { istanzaId: `${prefix}-${index}-${id}`, specieId: id, nome: species.nome, livello: CHALLENGE_LEVEL, hp: 1, xp: 0 }
-    return { ...pokemon, hp: calcolaHPMax(pokemon) }
+    const previousHP = rulesVersion <= 2 ? v2Species.get(id)?.hp : undefined
+    return { ...pokemon, hp: previousHP ?? calcolaHPMax(pokemon) }
   })
 }
 
@@ -118,7 +142,7 @@ export function createChallengeSession(draft: ChallengeDraft): ChallengeSession 
   const enemy = generateSeedTeam(seed, 'opponent', rulesVersion)
   const id = `challenge-v${rulesVersion}-${hashChallengeText(JSON.stringify([draft.mode, seed, team])).toString(16).padStart(8, '0')}`
   return { version: rulesVersion, rulesVersion, id, mode: draft.mode, seed,
-    rng: createSeededRandomState(seed), team: createTeam(team, `${id}-A`), enemyTeam: createTeam(enemy, `${id}-B`), budget: FANTA_BUDGET, level: CHALLENGE_LEVEL }
+    rng: createSeededRandomState(seed), team: createTeam(team, `${id}-A`, rulesVersion), enemyTeam: createTeam(enemy, `${id}-B`, rulesVersion), budget: FANTA_BUDGET, level: CHALLENGE_LEVEL }
 }
 
 export const MAX_CHALLENGE_CODE_LENGTH = 8192

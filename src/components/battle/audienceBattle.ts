@@ -1,7 +1,8 @@
 import { getAllenatore, getMossa, getPokemon } from '@/data'
-import { èMossaCura, èMossaSoloStato, getMossaAlLivello, scegliMossaIA } from '@/engine/battleEngine'
+import { mossaUtilizzabile, scegliMossaIA } from '@/engine/battleEngine'
 import type { BattleCheckpoint, PokemonIstanza, StatoBattaglia } from '@/types'
 import type { AudienceChannel, AudienceRoundRequest, AudienceRound } from '@/audience/types'
+import { battleMoveFacts } from './battleMoveFacts'
 
 export function createAudienceBattleId(): string {
   return typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
@@ -23,11 +24,8 @@ export function makeAudienceRoundRequest(
   if (!channel || !species || pokemon.hp <= 0) return null
   const options = species.mosse.flatMap((moveId, index) => {
     const move = moveId ? getMossa(moveId) : undefined
-    if (!move) return []
-    const { dadi, incremento } = getMossaAlLivello(move, pokemon.livello)
-    const description = èMossaCura(move) ? `Cura ${move.valoreEffetto ?? 0}${move.effetto === 'CURA_PCT' ? '% degli HP' : ' HP'} e rimuove veleno e paralisi`
-      : èMossaSoloStato(move) ? 'Applica uno status senza danni diretti'
-      : `${dadi}d6${incremento ? ` + ${incremento}` : ''}`
+    if (!move || !mossaUtilizzabile(pokemon, move)) return []
+    const description = battleMoveFacts(move, pokemon.livello).label
     return [{ index: index as 0 | 1 | 2, moveId, name: move.nome, type: move.tipo, description }]
   })
   if (!options.length) return null
@@ -54,5 +52,7 @@ export function validAudienceWinner(
     || round.winnerIndex === null || ![0, 1, 2].includes(round.winnerIndex)) return null
   const option = pending.request.options.find((item) => item.index === round.winnerIndex)
   const announced = round.options.find((item) => item.index === round.winnerIndex)
-  return option && announced?.moveId === option.moveId && getPokemon(pokemon.specieId)?.mosse[option.index] === option.moveId ? option.index : null
+  const move = option && getMossa(option.moveId)
+  return option && move && announced?.moveId === option.moveId && getPokemon(pokemon.specieId)?.mosse[option.index] === option.moveId
+    && mossaUtilizzabile(pokemon, move) ? option.index : null
 }

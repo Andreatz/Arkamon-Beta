@@ -26,6 +26,19 @@ export function canMoveOnLocalMap(map: LocalMapDefinition, from: string, to: str
   return getAdjacentLocalMapNodes(map, from).includes(to)
 }
 
+export function getReachableLocalMapNodes(map: LocalMapDefinition, from: string, reach: 1 | 2 = 1): string[] {
+  const firstSteps = getAdjacentLocalMapNodes(map, from)
+  if (reach === 1) return firstSteps
+  return [...new Set(firstSteps.concat(firstSteps.flatMap(step => getAdjacentLocalMapNodes(map, step))))].filter(node => node !== from)
+}
+
+export function getLocalTravelPath(map: LocalMapDefinition, from: string, to: string, reach: 1 | 2 = 1): LocalMapPoint[] {
+  const direct = getLocalRoadPath(map, from, to)
+  if (direct.length || reach === 1 || from === to) return direct
+  const midpoint = getAdjacentLocalMapNodes(map, from).find(node => canMoveOnLocalMap(map, node, to))
+  return midpoint ? [...getLocalRoadPath(map, from, midpoint), ...getLocalRoadPath(map, midpoint, to).slice(1)] : []
+}
+
 /** Il percorso grafico comprende gli estremi e segue le curve anche percorrendolo al contrario. */
 export function getLocalRoadPath(map: LocalMapDefinition, from: string, to: string): LocalMapPoint[] {
   if (!canMoveOnLocalMap(map, from, to)) return []

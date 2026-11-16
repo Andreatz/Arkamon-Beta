@@ -54,5 +54,6 @@ export function generaIncontroDaCespuglio(
   // A modulo of six biases ranges of four or five toward lower levels.
   const livello = incontro.livelloMin + Math.floor(rng() * range)
 
-  return creaIstanza(incontro.pokemonId, livello)
+  const pokemon = creaIstanza(incontro.pokemonId, livello)
+  return pokemon ? { ...pokemon, difficoltaCattura: incontro.probabilita } : null
 }

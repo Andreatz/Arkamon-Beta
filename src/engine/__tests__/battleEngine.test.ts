@@ -6,6 +6,7 @@ import {
   rollD6,
   roundHalfUp,
   tentaCattura,
+  tentaCatturaConSfera,
   applicaXP,
   xpGuadagnato,
   xpRichiestoPerLivello,
@@ -58,8 +59,8 @@ describe('calcolaHPMax', () => {
 })
 
 describe('efficaciaTipo (matrice tipi)', () => {
-  it('Acqua → Fuoco === 1.5 (superefficace)', () => {
-    expect(efficaciaTipo('Acqua', 'Fuoco')).toBe(1.5)
+  it('Acqua → Fuoco === 2 (superefficace)', () => {
+    expect(efficaciaTipo('Acqua', 'Fuoco')).toBe(2)
   })
   it('Fuoco → Acqua === 0.5', () => {
     expect(efficaciaTipo('Fuoco', 'Acqua')).toBe(0.5)
@@ -98,8 +99,8 @@ describe('calcolaDanno messaggi', () => {
     const risultato = calcolaDanno(attaccante, difensoreAcqua, 1, () => 0)
 
     expect(risultato?.stab).toBe(true)
-    expect(risultato?.moltiplicatoreTipo).toBe(1.5)
-    expect(risultato?.dannoFinale).toBe(3)
+    expect(risultato?.moltiplicatoreTipo).toBe(2)
+    expect(risultato?.dannoFinale).toBe(4)
     expect(risultato?.messaggi).toContain('È superefficace!')
   })
 })
@@ -166,6 +167,43 @@ describe('tentaCattura — formula VBA (3 - hp/hpMax)', () => {
     const ris = tentaCattura(v, () => 0) // roll=3
     expect(ris.soglia).toBeCloseTo(12.5)
     expect(ris.riuscita).toBe(true)
+  })
+})
+
+describe('d20 delle Arkaball', () => {
+  const rarity = ['Comune', 'Medio', 'Difficile'] as const
+  const hpBands = [
+    { hp: 12 }, { hp: 6 }, { hp: 3 },
+    { hp: 6, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } },
+    { hp: 3, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } },
+  ] satisfies Partial<PokemonIstanza>[]
+  it.each([
+    ['arkaball', [[11, 15, 19], [9, 13, 17], [7, 11, 15], [8, 12, 16], [6, 10, 14]]],
+    ['mega-arkaball', [[9, 13, 17], [7, 11, 15], [5, 9, 13], [6, 10, 14], [4, 8, 12]]],
+    ['ultra-arkaball', [[7, 9, 11], [5, 7, 9], [3, 5, 7], [4, 6, 8], [2, 4, 6]]],
+  ] as const)('%s applica tutte le soglie di difficoltà, HP e status', (ball, matrix) => {
+    for (const [level, target] of hpBands.entries()) {
+      for (const [column, difficulty] of rarity.entries()) {
+        const subject = { ...mkIstanza(1, 5), ...target, difficoltaCattura: difficulty }
+        const soglia = matrix[level][column]
+        expect(tentaCatturaConSfera(subject, ball, () => (soglia - 1 + .5) / 20))
+          .toEqual({ riuscita: true, roll: soglia, soglia })
+        expect(tentaCatturaConSfera(subject, ball, () => (soglia - 2 + .5) / 20))
+          .toEqual({ riuscita: false, roll: soglia - 1, soglia })
+      }
+    }
+  })
+
+  it('garantisce la Master Arkaball soltanto contro un bersaglio vivo e giocabile', () => {
+    const unusedRandom = () => { throw new Error('La Master Arkaball non lancia dadi.') }
+    expect(tentaCatturaConSfera(mkIstanza(1, 5), 'masterball', unusedRandom)).toMatchObject({ riuscita: true, roll: 0 })
+    expect(tentaCatturaConSfera(mkIstanza(1, 5, 0), 'masterball', unusedRandom).riuscita).toBe(false)
+    expect(tentaCatturaConSfera({ ...mkIstanza(1, 5), specieId: 130 }, 'masterball', unusedRandom).riuscita).toBe(false)
+  })
+
+  it('usa il tasso storico o la difficoltà media se manca la provenienza', () => {
+    expect(tentaCatturaConSfera(mkIstanza(1, 5), 'arkaball', () => 0).soglia).toBe(11)
+    expect(tentaCatturaConSfera(mkIstanza(111, 5), 'arkaball', () => 0).soglia).toBe(15)
   })
 })
 

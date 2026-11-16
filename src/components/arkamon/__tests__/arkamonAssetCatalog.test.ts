@@ -5,9 +5,9 @@ import { ARKAMON_ASSET_CATALOG, filterArkamonAssetCatalog, getArkamonAssetEntry,
 describe('graphic assets remain separate from playable forms', () => {
   it('exposes all supplied sparse IDs and pending metadata without expanding gameplay', () => {
     expect(ARKAMON_ASSET_CATALOG).toHaveLength(204)
-    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'game-data-present')).toHaveLength(110)
-    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'pending-game-data')).toHaveLength(94)
-    expect(POKEMON_BASE).toHaveLength(110)
+    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'game-data-present')).toHaveLength(203)
+    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'pending-game-data')).toHaveLength(1)
+    expect(POKEMON_BASE).toHaveLength(205)
     for (const entry of ARKAMON_ASSET_CATALOG) {
       expect(Object.keys(entry).sort()).toEqual(['id', 'sprites', 'status'])
       expect(entry.status === 'game-data-present').toBe(Boolean(getPokemon(entry.id)))
@@ -18,18 +18,18 @@ describe('graphic assets remain separate from playable forms', () => {
         expect(sprite!.bytes).toBeGreaterThan(0)
       }
     }
-    for (const id of [133, 135, 136, 137, 138, 179, 180, 181, 188, 189, 190]) {
+    for (const id of [130]) {
       expect(getArkamonAssetEntry(id)?.status).toBe('pending-game-data')
       expect(getPokemon(id)).toBeUndefined()
     }
     for (const id of [194, 195, 207]) expect(getArkamonAssetEntry(id)).toBeUndefined()
-    for (const id of [111, 116, 117, 131, 134, 139, 150, 184, 206]) expect(getPokemon(id)).toBeUndefined()
+    for (const id of [111, 116, 117, 131, 134, 139, 150, 184, 194, 195, 206]) expect(getPokemon(id)).toBeDefined()
   })
 
   it('filters pending and animated assets independently, retaining animated forms without game data', () => {
     const animated = new Set([1, 111, 116, 117, 134, 139])
     expect(filterArkamonAssetCatalog('animated', animated).map(entry => entry.id)).toEqual([1, 111, 116, 117, 134, 139])
-    expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 111)).toBe(true)
+    expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 130)).toBe(true)
     expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 1)).toBe(false)
     expect(filterArkamonAssetCatalog('all', animated)).toHaveLength(204)
   })

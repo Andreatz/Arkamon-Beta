@@ -1,4 +1,4 @@
-import { MOSSE } from '@data/index'
+import { getMossa } from '@data/index'
 import type { MossaDef, TipoPokemon } from '@/types'
 import data from '@/data/move-vfx-assignments.json'
 import type { VfxAnchor } from './types'
@@ -43,21 +43,7 @@ export const MOVE_VFX_ASSIGNMENT_COUNTS = {
   needsAdaptation: MOVE_VFX_ASSIGNMENTS.filter((entry) => entry.review === 'needs-adaptation').length,
 }
 
-// Extra status/fixed-damage moves are preview definitions only. Importing the
-// supplied moveset does not invent damage tables or alter combat mechanics.
-export const VFX_MOVE_PREVIEWS: MossaDef[] = MOVE_VFX_ASSIGNMENTS.map((entry) => {
-  const existing = entry.gameMoveId === null ? undefined : MOSSE.find((move) => move.id === entry.gameMoveId)
-  return existing ?? {
-    id: entry.sourceMoveId,
-    nome: entry.name,
-    tipo: entry.element,
-    effetto: entry.type.includes('Recupero') || entry.type.includes('Cura') ? 'CURA'
-      : entry.type.includes('Paralisi') ? 'PARALISI'
-      : entry.type.includes('Confusione') ? 'CONFUSIONE'
-      : entry.type.includes('Sonno') ? 'SONNO'
-      : entry.type.includes('Veleno') ? 'VELENO' : null,
-    valoreEffetto: null,
-    dadiPerLivello: {},
-    incrementoPerLivello: {},
-  }
+export const VFX_MOVE_PREVIEWS: MossaDef[] = MOVE_VFX_ASSIGNMENTS.flatMap((entry) => {
+  const move = getMossa(entry.gameMoveId ?? entry.sourceMoveId)
+  return move && normalize(entry.name) === normalize(move.nome) ? [move] : []
 })
