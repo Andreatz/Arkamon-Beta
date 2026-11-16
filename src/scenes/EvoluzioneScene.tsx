@@ -10,6 +10,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { EVOLUTION_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { playSound } from '@/utils/soundManager'
 import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gamePreferences'
 import { getPortraitFraming } from '@/player-ui/portraitFraming'
@@ -402,7 +403,7 @@ function SpriteOrEmoji({
   fallback: string
 }) {
   const [loadFailed, setLoadFailed] = useState(false)
-  const frontSource = `/sprites/front_sprites/${specieId}.png`
+  const frontSource = getArkamonSpriteSource(specieId)
   const framing = getPortraitFraming(frontSource)
 
   useEffect(() => {

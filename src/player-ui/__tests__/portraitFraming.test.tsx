@@ -1,3 +1,4 @@
+import { MISSING_ARKAMON_SPRITE, getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { resolve } from 'node:path'
 import sharp from 'sharp'
@@ -44,9 +45,9 @@ describe('Whole-creature portrait framing', () => {
   })
 
   it('keeps the official full-body front sprite and its own geometry for every large hero', () => {
-    expect(POKEMON_BASE).toHaveLength(110)
+    expect(POKEMON_BASE).toHaveLength(205)
     for (const species of POKEMON_BASE) {
-      const source = `/sprites/front_sprites/${species.id}.png`
+      const source = getArkamonSpriteSource(species.id)
       const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} large selected />)
       expect(markup).toContain(`data-creature-source="${source}"`)
       expect(markup).toContain(`viewBox="${getPortraitFraming(source).viewBox}"`)
@@ -58,7 +59,7 @@ describe('Whole-creature portrait framing', () => {
   })
 
   it('uses each supplied PNG portrait for compact Aurora slots without borrowing full-body framing', async () => {
-    for (const species of POKEMON_BASE) {
+    for (const species of POKEMON_BASE.filter(species => species.id <= 110)) {
       const source = `/ui/reference-png/portrait-${String(species.id).padStart(3, '0')}.webp`
       const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} selected />)
       expect(markup).toMatch(/<img(?=[^>]*class="[^"]*\bpu-creature-art\b)[^>]*>/)
@@ -77,10 +78,19 @@ describe('Whole-creature portrait framing', () => {
     }
   })
 
+  it('uses a neutral marker when no portrait exists and shows the front when rear art is absent', () => {
+    expect(getArkamonSpriteSource(194)).toBe(MISSING_ARKAMON_SPRITE)
+    expect(getArkamonSpriteSource(195, 'back')).toBe(MISSING_ARKAMON_SPRITE)
+    expect(getArkamonSpriteSource(176, 'back')).toBe('/sprites/front_sprites/176.png')
+    const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={194} large />)
+    expect(markup).toContain(MISSING_ARKAMON_SPRITE)
+    expect(markup).not.toContain('/sprites/front_sprites/194.png')
+  })
+
   it('retains official full-body sources in the explicitly requested legacy concepts', () => {
     appearance.reference = false
     for (const species of POKEMON_BASE) {
-      const source = `/sprites/front_sprites/${species.id}.png`
+      const source = getArkamonSpriteSource(species.id)
       const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} selected />)
       expect(markup).toContain(`data-creature-source="${source}"`)
       expect(markup).toContain(`viewBox="${getPortraitFraming(source).viewBox}"`)

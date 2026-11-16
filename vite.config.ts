@@ -1,13 +1,21 @@
 import { defineConfig, type ConfigEnv, type UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { readdirSync } from 'node:fs'
 import mediaRelease from './src/data/media-release.json'
 // @ts-expect-error The packaging utility also runs as a standalone Node ES module.
-import { assertPinnedMediaRevision, readPlayableFrontSpriteIds, webAssetsPlugin } from './scripts/package-web-assets.mjs'
+import { assertPinnedMediaRevision, readLocalFrontSpriteIds, webAssetsPlugin } from './scripts/package-web-assets.mjs'
 // @ts-expect-error Shared Node build utility; emitted runtime data has a typed virtual module.
 import { nativeRuntimeManifestPlugin } from './scripts/native-runtime-manifest.mjs'
 // @ts-expect-error Node packaging module is shared with the release checks.
 import { separateDesktopResources } from './scripts/separate-desktop-resources.mjs'
+
+function spriteIds(side: 'front' | 'back'): number[] {
+  return readdirSync(path.join(__dirname, 'public/sprites', `${side}_sprites`), { withFileTypes: true })
+    .filter(entry => entry.isFile() && /^[1-9]\d*\.png$/.test(entry.name))
+    .map(entry => Number(entry.name.slice(0, -4)))
+    .sort((a, b) => a - b)
+}
 
 // Cambia base se pubblichi su GitHub Pages sotto /Arkamon-Beta/.
 // Il workflow .github/workflows/ci.yml setta GITHUB_PAGES=true al build.
@@ -21,7 +29,9 @@ export function createGameConfig({ command, mode }: ConfigEnv): UserConfig {
     mode === 'desktop' ? path.resolve(__dirname, 'dist-desktop-resources') : undefined)] : [])],
   publicDir: 'public',
   define: { 'import.meta.env.VITE_MEDIA_REVISION': JSON.stringify(mediaRevision), 'import.meta.env.VITE_SPLIT_MEDIA': JSON.stringify(bounded),
-    'import.meta.env.VITE_LOCAL_FRONT_SPRITE_IDS': JSON.stringify(readPlayableFrontSpriteIds(__dirname)) },
+    'import.meta.env.VITE_LOCAL_FRONT_SPRITE_IDS': JSON.stringify(readLocalFrontSpriteIds(__dirname)),
+    __ARKAMON_FRONT_SPRITE_IDS__: JSON.stringify(spriteIds('front')),
+    __ARKAMON_BACK_SPRITE_IDS__: JSON.stringify(spriteIds('back')) },
   base: web ? '/Arkamon-Beta/' : '/',
   resolve: {
     alias: {

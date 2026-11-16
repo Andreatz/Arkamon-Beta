@@ -1,4 +1,4 @@
-import { ALLENATORI } from '@/data'
+import { countGymMedals } from '@/data/secretLocation'
 import type { GameState } from '@/store/gameStore'
 import type { AdminTheme } from '@/theme/adminThemeTypes'
 import type { PublicBattlePresentation } from './publicPresentation'
@@ -45,7 +45,7 @@ export function makePublicSnapshot(game: GameState, theme: AdminTheme, battle: P
       const location = world.luogo ?? ''
       return { id, name: player.nome || `Giocatore ${id}`, place: location,
         node: game[id === 1 ? 'posizioniLocali1' : 'posizioniLocali2'][location],
-        badges: ALLENATORI.filter(gym => gym.tipo === 'Capopalestra' && player.allenatoriSconfitti.has(gym.id)).length,
+        badges: countGymMedals(player),
         leagueWins: game.league.players[id].completedStages.length }
     }),
     battle: game.scenaCorrente.scena === 'battaglia' ? visibleBattle(battle, theme) : null,

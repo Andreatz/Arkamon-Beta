@@ -6,7 +6,7 @@ export interface DepositPortraitFraming {
 }
 
 // Curated for the current front sprites, separately for every evolution and pose.
-export const DEPOSIT_PORTRAIT_FRAMING: Readonly<Record<number, DepositPortraitFraming>> = {
+export const DEPOSIT_PORTRAIT_FRAMING: Readonly<Partial<Record<number, DepositPortraitFraming>>> = {
   1: { x: 0.447, y: 0.35, zoom: 2.1 }, // Vyrath
   2: { x: 0.311, y: 0.367, zoom: 2.35 }, // Vyrath
   3: { x: 0.376, y: 0.259, zoom: 4.0 }, // Vyrath
@@ -117,10 +117,4 @@ export const DEPOSIT_PORTRAIT_FRAMING: Readonly<Record<number, DepositPortraitFr
   108: { x: 0.285, y: 0.29, zoom: 2.6 }, // Aka-shin
   109: { x: 0.5, y: 0.386, zoom: 1.7 }, // Oniros
   110: { x: 0.39, y: 0.31, zoom: 2.0 }, // Voider
-}
-
-const DEFAULT_FRAMING: DepositPortraitFraming = { x: 0.5, y: 0.5, zoom: 1 }
-
-export function getDepositPortraitFraming(speciesId: number): DepositPortraitFraming {
-  return DEPOSIT_PORTRAIT_FRAMING[speciesId] ?? DEFAULT_FRAMING
 }

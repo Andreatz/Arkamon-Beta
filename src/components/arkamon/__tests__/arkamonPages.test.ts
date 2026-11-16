@@ -3,17 +3,18 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
+import { getPokemon } from '@/data'
 import paged from '@/data/arkamon-paged.json'
 import { ARKAMON_ANIMATION_MANIFEST, getArkamonRuntimeAsset } from '../arkamonAnimationManifest'
 import { locateSpritePage, validateSpritePages } from '@/components/vfx/spritePages'
 
 describe('generated native pages match original authoritative animation contracts', () => {
   it('has complete pages for every native front clip with identical frame counts, FPS, viewport and cues', () => {
-    expect(Object.keys(paged.clips)).toHaveLength(830)
-    expect(Object.values(paged.clips).reduce((total, clip) => total + clip.frameCount, 0)).toBe(79_105)
-    const playableClips = Object.values(paged.clips).filter(clip => clip.speciesId <= 110)
-    expect(playableClips).toHaveLength(550)
-    expect(playableClips.reduce((total, clip) => total + clip.frameCount, 0)).toBe(52_775)
+    expect(Object.keys(paged.clips)).toHaveLength(870)
+    expect(Object.values(paged.clips).reduce((total, clip) => total + clip.frameCount, 0)).toBe(82_867)
+    const playableClips = Object.values(paged.clips).filter(clip => getPokemon(clip.speciesId))
+    expect(playableClips).toHaveLength(865)
+    expect(playableClips.reduce((total, clip) => total + clip.frameCount, 0)).toBe(82_397)
     for (const set of Object.values(ARKAMON_ANIMATION_MANIFEST)) for (const native of Object.values(set!.front!)) {
       const runtime = getArkamonRuntimeAsset(native!)
       expect(runtime.pages).toBeDefined()

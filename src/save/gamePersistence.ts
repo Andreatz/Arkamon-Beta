@@ -42,7 +42,7 @@ export const GAME_SAVE_STORAGE_KEY = 'arkamon-save'
 export const PREVIOUS_BACKUP_STORAGE_KEY = 'arkamon-previous-backup-v1'
 export const emptyPlayer = (id: 1 | 2): StatoGiocatore => ({
   id, nome: `Giocatore ${id}`, squadra: [], deposito: {}, cespugliVisitati: new Set(),
-  allenatoriSconfitti: new Set(), monete: 0, inventario: { masterball: 1 }, caselleConsumate: new Set(),
+  allenatoriSconfitti: new Set(), monete: 0, inventario: {}, caselleConsumate: new Set(),
 })
 
 export function mainMapPosition(luogo = MAIN_MAP_START_NODE): PosizioneAvatar {
@@ -92,7 +92,7 @@ function restoreSet<T>(value: unknown, fallback: Set<T>, valid: (item: unknown) 
   return new Set(clean)
 }
 
-function restorePokemon(value: unknown, warn: Warn, label: string): PokemonIstanza | null {
+function restorePokemon(value: unknown, warn: Warn, label: string, inBattle = false): PokemonIstanza | null {
   if (!isSaveRecord(value) || typeof value.istanzaId !== 'string' || !value.istanzaId.trim()
     || !finite(value.specieId) || !getPokemon(value.specieId) || !Number.isInteger(value.livello)
     || (value.livello as number) < 5 || (value.livello as number) > 100 || !finite(value.hp) || value.hp < 0) {
@@ -103,6 +103,9 @@ function restorePokemon(value: unknown, warn: Warn, label: string): PokemonIstan
     istanzaId: value.istanzaId, specieId: value.specieId, livello: value.livello as number, hp: value.hp,
     nome: typeof value.nome === 'string' && value.nome.trim() ? value.nome : getPokemon(value.specieId)!.nome,
     xp: 0,
+  }
+  if (value.difficoltaCattura === 'Comune' || value.difficoltaCattura === 'Medio' || value.difficoltaCattura === 'Difficile') {
+    pokemon.difficoltaCattura = value.difficoltaCattura
   }
   if (pokemon.nome !== value.nome || !finite(value.xp) || value.xp < 0) warn(`${label}: recuperati nome o esperienza mancanti.`)
   else if (value.xp > 0) warn(`${label}: rimossa l’esperienza accumulata dal vecchio salvataggio; livelli, HP e status restano invariati. L’EXP si usa subito e non si accumula.`)
@@ -116,8 +119,15 @@ function restorePokemon(value: unknown, warn: Warn, label: string): PokemonIstan
       && Number.isInteger(status.turniRimanenti) && (status.turniRimanenti as number) >= -1
       && (status.turniTrascorsi === undefined || Number.isInteger(status.turniTrascorsi) && (status.turniTrascorsi as number) >= 0)) {
       pokemon.stato = { tipo: status.tipo as NonNullable<PokemonIstanza['stato']>['tipo'], turniRimanenti: status.turniRimanenti as number,
-        ...(status.turniTrascorsi === undefined ? {} : { turniTrascorsi: status.turniTrascorsi as number }) }
+        ...(status.turniTrascorsi === undefined ? {} : { turniTrascorsi: status.turniTrascorsi as number }),
+        ...(status.regola === 'database' ? { regola: 'database' } : {}) }
     } else warn(`${label}: rimosso uno status non valido.`)
+  }
+  if (inBattle) {
+    if (typeof value.immunitaStatus === 'number' && Number.isInteger(value.immunitaStatus) && value.immunitaStatus > 0 && value.immunitaStatus <= 5)
+      pokemon.immunitaStatus = value.immunitaStatus
+    if (typeof value.cureLimitateUsate === 'number' && Number.isInteger(value.cureLimitateUsate) && value.cureLimitateUsate > 0 && value.cureLimitateUsate <= 3)
+      pokemon.cureLimitateUsate = value.cureLimitateUsate
   }
   return pokemon
 }
@@ -197,10 +207,10 @@ function restoreBattle(value: unknown, warn: Warn): StatoBattaglia | null {
     warn('La battaglia incompleta è stata chiusa; la squadra resta salvata.')
     return null
   }
-  const pokemonA = restorePokemon(value.pokemonA, warn, 'Battaglia A')
-  const pokemonB = restorePokemon(value.pokemonB, warn, 'Battaglia B')
+  const pokemonA = restorePokemon(value.pokemonA, warn, 'Battaglia A', true)
+  const pokemonB = restorePokemon(value.pokemonB, warn, 'Battaglia B', true)
   if (!pokemonA || !pokemonB) { warn('La battaglia incompleta è stata chiusa; la squadra resta salvata.'); return null }
-  const roster = (items: unknown) => Array.isArray(items) ? items.map((p) => restorePokemon(p, warn, 'Squadra in battaglia')).filter((p): p is PokemonIstanza => p !== null) : undefined
+  const roster = (items: unknown) => Array.isArray(items) ? items.map((p) => restorePokemon(p, warn, 'Squadra in battaglia', true)).filter((p): p is PokemonIstanza => p !== null) : undefined
   const battle: StatoBattaglia = {
     tipo: value.tipo as StatoBattaglia['tipo'], pokemonA, pokemonB, hpMaxA: value.hpMaxA, hpMaxB: value.hpMaxB,
     turnoCorrente: value.turnoCorrente as StatoBattaglia['turnoCorrente'], luogoRitorno: value.luogoRitorno,
@@ -212,6 +222,12 @@ function restoreBattle(value: unknown, warn: Warn): StatoBattaglia | null {
     ...(Array.isArray(value.squadraA) ? { squadraA: roster(value.squadraA) } : {}),
     ...(Array.isArray(value.squadraB) ? { squadraB: roster(value.squadraB) } : {}),
     ...(value.cronaca === undefined ? {} : { cronaca: normalizeBattleChronicle(value.cronaca) }),
+  }
+  if (isSaveRecord(value.playerBoosts)) {
+    const { speed, damage } = value.playerBoosts
+    if (speed === true || damage === true) battle.playerBoosts = {
+      ...(speed === true ? { speed: true } : {}), ...(damage === true ? { damage: true } : {}),
+    }
   }
   if (value.leagueBattle !== undefined) {
     const reference = value.leagueBattle
@@ -337,7 +353,7 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
   if (state.battaglia?.leagueBattle) {
     const reference = state.battaglia.leagueBattle
     const progress = state.league.players[reference.playerId]
-    const opponent = state.league.config ? leagueTrainer(state.league.config, reference.stageIndex) : null
+    const opponent = state.league.config ? leagueTrainer(state.league.config, reference.stageIndex, state.rivaleStarterId) : null
     if (!opponent || progress.status !== 'running' || progress.runId !== reference.runId || progress.nextStage !== reference.stageIndex
       || state.giocatoreAttivo !== reference.playerId || state.battaglia.tipo !== 'PVP') {
       state.battaglia = null

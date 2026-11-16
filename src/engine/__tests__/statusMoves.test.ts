@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
-  applicaStato, calcolaAzioneSuprema, calcolaDanno, calcolaHPMax,
-  èMossaSoloStato, getMossaAlLivello, scegliMossaIA,
+  applicaMossaCura, applicaStato, calcolaAzioneSuprema, calcolaDanno, calcolaHPMax,
+  mossaUtilizzabile, risolviStatoInizioTurno, scegliMossaIA,
 } from '../battleEngine'
+import { resolveBattleAttack } from '../battleResolution'
 import { getMossa, getPokemon } from '@data/index'
-import type { PokemonIstanza, StatoAlterato } from '@/types'
+import type { PokemonIstanza } from '@/types'
 
 function pokemon(specieId: number, livello: number, hp?: number): PokemonIstanza {
   const instance: PokemonIstanza = { istanzaId: `status-${specieId}`, specieId, nome: getPokemon(specieId)!.nome, livello, hp: 0, xp: 0 }
@@ -12,65 +13,76 @@ function pokemon(specieId: number, livello: number, hp?: number): PokemonIstanza
   return instance
 }
 
-describe('azione di sola paralisi', () => {
-  it('applica paralisi senza danno, tiro o contraccolpo a qualsiasi livello', () => {
-    for (const level of [5, 40, 100]) {
-      const attacker = pokemon(27, level)
-      const target = pokemon(1, 10)
-      const result = calcolaDanno(attacker, target, 2, () => {
-        throw new Error('Uno status puro non tira dadi offensivi')
-      })!
-      expect(result).toMatchObject({
-        numDadi: 0, incremento: 0, tiriDado: [], dannoBase: 0, dannoFinale: 0,
-        autodanno: 0, suprema: false, statoApplicato: 'Paralizzato', difensoreSvenuto: false,
-      })
-      expect(result.messaggi).toContain(`${target.nome} è ora Paralizzato!`)
-      expect(result.messaggi.some((message) => message.includes('0 danni'))).toBe(false)
-      expect(attacker.hp).toBe(calcolaHPMax(attacker))
-      expect(target.hp).toBe(19)
-      expect(target.stato).toBeUndefined()
+describe('mosse di status del foglio Mosse', () => {
+  it('applica la paralisi con precisione 80%, senza dadi di danno o Suprema', () => {
+    const attacker = pokemon(27, 26)
+    const target = pokemon(1, 10)
+    const result = calcolaDanno(attacker, target, 2, () => .79)!
+    expect(result).toMatchObject({
+      numDadi: 0, incremento: 0, tiriDado: [], dannoBase: 0, dannoFinale: 0,
+      autodanno: 0, suprema: false, statoApplicato: 'Paralizzato', difensoreSvenuto: false,
+    })
+    expect(calcolaDanno(attacker, target, 2, () => .80)?.statoApplicato).toBeUndefined()
+    expect(calcolaAzioneSuprema(attacker, target, 2)).toBeNull()
+  })
+
+  it('non sovrascrive uno status o una protezione attiva e non colpisce un bersaglio KO', () => {
+    const attacker = pokemon(27, 26), target = pokemon(1, 10)
+    const neverRoll = () => { throw new Error('Il bersaglio non è idoneo al tiro') }
+    for (const blocked of [applicaStato(target, 'Confuso'), { ...target, immunitaStatus: 2 }, { ...target, hp: 0 }]) {
+      expect(calcolaDanno(attacker, blocked, 2, neverRoll)?.statoApplicato).toBeUndefined()
+      expect(scegliMossaIA(attacker, blocked, () => .9)).not.toBe(2)
     }
   })
 
-  it('non applica un secondo stato né infligge danno quando il bersaglio è già affetto', () => {
-    for (const status of ['Paralizzato', 'Confuso', 'Addormentato', 'Avvelenato'] as const) {
-      const target = applicaStato(pokemon(1, 10), status)
-      const result = calcolaDanno(pokemon(27, 5), target, 2)!
-      expect(result.statoApplicato).toBeUndefined()
-      expect(result.dannoFinale).toBe(0)
-      expect(result.messaggi).toContain('Ma non ha funzionato...')
-      expect(target.stato?.tipo).toBe(status)
-    }
+  it('rispetta il livello di sblocco e applica il danno fisso anche quando il bersaglio ha un altro tipo', () => {
+    const target = pokemon(1, 10)
+    expect(calcolaDanno(pokemon(21, 21), target, 2, () => 0)).toBeNull()
+    expect(calcolaDanno(pokemon(21, 22), target, 2, () => 0)?.statoApplicato).toBe('Paralizzato')
+    const attacker = pokemon(115, 26)
+    expect(calcolaDanno(attacker, target, 2, () => { throw new Error('Danno fisso con tiro') })).toMatchObject({
+      numDadi: 0, dannoBase: 10, dannoFinale: 10, moltiplicatoreTipo: 1,
+    })
   })
 
-  it('non applica paralisi a un bersaglio già KO', () => {
-    expect(calcolaDanno(pokemon(27, 5), pokemon(1, 5, 0), 2)?.statoApplicato).toBeUndefined()
+  it('conserva la regola del veleno applicato e la durata delle immunità', () => {
+    const attacker = pokemon(22, 22), target = pokemon(1, 60)
+    const result = calcolaDanno(attacker, target, 2, () => 0)!
+    expect(result.statoApplicato).toBe('Avvelenato')
+    const poisoned = resolveBattleAttack(result, 'A', [attacker], [target]).defender
+    expect(poisoned.stato).toMatchObject({ tipo: 'Avvelenato', regola: 'database' })
+    const tick = risolviStatoInizioTurno(poisoned, 80)
+    expect(tick.dannoSubito).toBe(10)
+    expect(risolviStatoInizioTurno(tick.istanza, 80).dannoSubito).toBe(10)
+    const protection = applicaMossaCura(poisoned, getMossa(273)!, 80).istanza
+    expect(protection.stato).toBeUndefined()
+    expect(protection.immunitaStatus).toBe(5)
+    expect(risolviStatoInizioTurno(protection, 80).istanza.immunitaStatus).toBe(4)
   })
 
-  it('resta senza scaling e viene esclusa dalla Suprema', () => {
-    const move = getMossa(225)!
-    expect(èMossaSoloStato(move)).toBe(true)
-    expect(èMossaSoloStato(getMossa(1)!)).toBe(false)
-    expect(getMossaAlLivello(move, 100)).toEqual({ dadi: 0, incremento: 0 })
-    expect(calcolaAzioneSuprema(pokemon(27, 5), pokemon(1, 5), 2)).toBeNull()
-    const forced = calcolaDanno(pokemon(27, 5), pokemon(1, 5), 2, Math.random, true)!
-    expect(forced.suprema).toBe(false)
-    expect(forced.dannoFinale).toBe(0)
-    expect(forced.autodanno).toBe(0)
-  })
-})
-
-describe('IA e priorità per la paralisi', () => {
-  it('usa la paralisi se il bersaglio più alto ha priorità e abbastanza HP', () => {
-    expect(scegliMossaIA(pokemon(27, 5), pokemon(1, 10), () => 0)).toBe(2)
+  it('usa tre turni di confusione e il 75% di risveglio al terzo turno', () => {
+    const base = pokemon(1, 60)
+    const confused = applicaStato(base, 'Confuso', 'database')
+    expect(confused.stato?.turniRimanenti).toBe(3)
+    expect(risolviStatoInizioTurno(confused, 80, () => .1).dannoSubito).toBe(10)
+    const sleep = applicaStato(base, 'Addormentato', 'database')
+    const first = risolviStatoInizioTurno(sleep, 80, () => .60)
+    const second = risolviStatoInizioTurno(first.istanza, 80, () => .40)
+    expect(first.puoAgire).toBe(false)
+    expect(second.puoAgire).toBe(false)
+    expect(risolviStatoInizioTurno(second.istanza, 80, () => .74).puoAgire).toBe(true)
+    expect(risolviStatoInizioTurno(second.istanza, 80, () => .75).puoAgire).toBe(false)
   })
 
-  it('preferisce un attacco se ha già priorità o il bersaglio è a un HP', () => {
-    expect(scegliMossaIA(pokemon(27, 10), pokemon(1, 5), () => 0)).not.toBe(2)
-    expect(scegliMossaIA(pokemon(27, 5), pokemon(1, 10, 1), () => 0)).not.toBe(2)
-  })
-
-  it.each(['Paralizzato', 'Confuso', 'Addormentato', 'Avvelenato'] as StatoAlterato[])('non spreca un nuovo status contro %s', (status) => {
-    expect(scegliMossaIA(pokemon(27, 5), applicaStato(pokemon(1, 10), status), () => 0)).not.toBe(2)
+  it('cura solo le condizioni indicate e conta gli utilizzi per lotta', () => {
+    const state = applicaStato(pokemon(91, 60, 20), 'Avvelenato')
+    const antidote = getMossa(231)!
+    expect(applicaMossaCura(state, antidote, 80)).toMatchObject({ hpRecuperato: 20, istanza: { hp: 40, stato: undefined } })
+    const hp = getMossa(470)!
+    let user = { ...pokemon(119, 25, 20), cureLimitateUsate: 0 } as PokemonIstanza
+    for (let i = 0; i < 3; i++) user = applicaMossaCura({ ...user, hp: 20 }, hp, 80).istanza
+    expect(user.cureLimitateUsate).toBe(3)
+    expect(mossaUtilizzabile(user, hp)).toBe(false)
+    expect(applicaMossaCura({ ...user, hp: 20 }, hp, 80).hpRecuperato).toBe(0)
   })
 })

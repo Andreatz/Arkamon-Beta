@@ -19,8 +19,8 @@ export function resolveAssetUrl(value: string, base: string, mediaRevision?: str
   const clean = value.replace(/^\//, '')
   const front = /^sprites\/front_sprites\/([1-9]\d*)\.png$/.exec(clean)
   if (front && (mediaBase || mediaRevision) && !localFrontSpriteIds) throw new Error('Local front sprite catalog is required for split media')
-  const pendingFront = front && !localFrontSpriteIds?.includes(Number(front[1]))
-  const heavy = pendingFront || /^(sprites\/arkamon-paged\/|sounds\/|vfx\/)/.test(clean)
+  const externalFront = front && !localFrontSpriteIds?.includes(Number(front[1]))
+  const heavy = externalFront || /^(sprites\/arkamon-paged\/|sounds\/|vfx\/)/.test(clean)
   const encoded = clean.split('/').map(part => encodeURIComponent(part)).join('/')
   if (heavy && (mediaBase || mediaRevision)) {
     const origin = mediaBase || `https://raw.githubusercontent.com/Andreatz/Arkamon-Beta/${mediaRevision}/public/`

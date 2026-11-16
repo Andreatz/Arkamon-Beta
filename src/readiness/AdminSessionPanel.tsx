@@ -7,6 +7,7 @@ import { useRegiaStore } from '@/regia/regiaStore'
 import { useAdminStore } from '@/store/adminStore'
 import { getLocalMap } from '@/data/localMaps'
 import { assetUrl } from '@/utils/assetUrl'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { buildReadinessReport, currentRaceProgress, type ReadinessDestination } from './readinessModel'
 import { exportCampaignPackage, parseCampaignPackage, type CampaignPackage } from './campaignPackage'
 import { applyCampaignConfiguration } from './campaignApply'
@@ -42,7 +43,7 @@ export function AdminSessionPanel({ onNavigate }: { onNavigate: (tab: ReadinessD
   async function checkImages() {
     setChecking(true)
     const paths = [...new Set([
-      ...[...game.giocatore1.squadra, ...game.giocatore2.squadra].map(member => `/sprites/front_sprites/${member.specieId}.png`),
+      ...[...game.giocatore1.squadra, ...game.giocatore2.squadra].map(member => getArkamonSpriteSource(member.specieId)),
       ...[game.posizione1, game.posizione2].map(position => getLocalMap(position.luogo ?? position.mappaId)?.image).filter((path): path is string => !!path),
     ])]
     const results = await Promise.all(paths.map(path => new Promise<string | null>(resolve => {

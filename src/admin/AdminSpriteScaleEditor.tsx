@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { POKEMON_BASE } from '@data/index'
 import { useAdminStore } from '@store/adminStore'
 import { assetUrl } from '@/utils/assetUrl'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 
 const MIN_SCALE = 0.35
 const MAX_SCALE = 3
@@ -38,7 +39,7 @@ export function AdminSpriteScaleEditor() {
       <div className="flex h-40 items-center justify-center overflow-visible rounded-md border border-[var(--arka-border)] bg-[var(--arka-bg)]">
         {species ? (
           <img
-            src={assetUrl(`/sprites/front_sprites/${species.id}.png`)}
+            src={assetUrl(getArkamonSpriteSource(species.id))}
             alt={species.nome}
             className="h-28 w-28 object-contain"
             style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}

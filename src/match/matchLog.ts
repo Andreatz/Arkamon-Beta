@@ -1,3 +1,5 @@
+import { getPokemon } from '@/data'
+
 export const MATCH_LOG_LIMIT = 600
 // A corrupted imported counter must never reach unsafe integer arithmetic.
 const MAX_MATCH_SEQUENCE = 1_000_000_000
@@ -48,7 +50,7 @@ export function normalizeMatchLog(value: unknown): MatchLog {
     events.push({ id, sequence: raw.sequence, at: raw.at, kind: raw.kind as MatchEventKind, title, message,
       ...(raw.playerId === undefined ? {} : { playerId: raw.playerId as 1 | 2 }),
       ...(place ? { place } : {}), ...(battleId ? { battleId } : {}),
-      ...(finite(raw.speciesId) && Number.isInteger(raw.speciesId) && raw.speciesId >= 1 && raw.speciesId <= 110 ? { speciesId: raw.speciesId } : {}),
+      ...(finite(raw.speciesId) && getPokemon(raw.speciesId) ? { speciesId: raw.speciesId } : {}),
       ...(finite(raw.amount) ? { amount: raw.amount } : {}),
     })
   }

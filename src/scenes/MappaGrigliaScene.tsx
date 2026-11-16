@@ -32,6 +32,7 @@ import { generaIncontroDaCespuglio } from '@engine/encounters'
 import { getIncontri } from '@data/index'
 import { MAPPE_GRIGLIA, PERCORSO_1 } from '@data/mappe-griglia'
 import { assetUrl } from '@/utils/assetUrl'
+import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import type { AdminLayoutRect, AdminMapGridLayoutKey } from '@/theme/adminThemeTypes'
 import type {
   Casella,
@@ -179,7 +180,7 @@ function AvatarSlot({ giocatoreId, pos, cella, attivo, leader }: AvatarSlotProps
         <div className="absolute inset-0 overflow-hidden rounded-full bg-black/45">
           {leader ? (
             <img
-              src={assetUrl(`/sprites/back_sprites/${leader.specieId}.png`)}
+              src={assetUrl(getArkamonSpriteSource(leader.specieId, 'back'))}
               alt={leader.nome}
               className="h-full w-full object-contain"
               onError={(e) => {

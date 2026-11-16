@@ -10,13 +10,16 @@ const manifestName = 'release-verification.json'
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const NATIVE_RELEASE_PROOF = 'Native compiled artifact contract'
 const nativeReleaseSpecies = Object.freeze([107, 108, 109, 110])
-const pendingNativeReleaseSpecies = Object.freeze(Array.from({ length: 56 }, (_, index) => index + 111))
-const pendingPortraitReleaseSpecies = Object.freeze([205, 184, 206])
+export const EXPANSION_NATIVE_RELEASE_SPECIES = Object.freeze([
+  ...Array.from({ length: 56 }, (_, index) => index + 111),
+  169, 170, 171, 172, 173, 174, 175, 176,
+])
+const expansionPortraitReleaseSpecies = Object.freeze([205, 184, 206])
 export const NATIVE_RELEASE_SCENARIOS = Object.freeze([
   ...nativeReleaseSpecies.map(species => `compiled ${species}: five native actions against the pinned local media revision`),
   ...[[107, 110], [108, 109]].map(([attacker, target]) => `compiled ${attacker} versus ${target}: native release and reaction cues complete the real VFX lifecycle`),
-  ...pendingNativeReleaseSpecies.map(species => `compiled ${species}: pending form plays five native actions without game data`),
-  ...pendingPortraitReleaseSpecies.map(species => `compiled ${species}: pending portrait uses the exact pinned original without game data`),
+  ...EXPANSION_NATIVE_RELEASE_SPECIES.map(species => `compiled ${species}: expansion form plays all five native actions`),
+  ...expansionPortraitReleaseSpecies.map(species => `compiled ${species}: expansion portrait uses the exact supplied original`),
 ])
 
 async function inventory(root, relative = '') {
@@ -50,7 +53,7 @@ async function pinnedNativeCatalog(root) {
   const complete = await validateNativeManifestCompleteness({ root, manifest })
   const { pendingFrontSpritesSha256 } = await pendingFrontSpriteInventory(root)
   if (pin.pendingFrontSpritesSha256 !== pendingFrontSpritesSha256) throw new Error('Pending front sprites differ from the pinned media release')
-  for (const species of [...nativeReleaseSpecies, ...pendingNativeReleaseSpecies]) for (const action of NATIVE_FRONT_ACTIONS) {
+  for (const species of [...nativeReleaseSpecies, ...EXPANSION_NATIVE_RELEASE_SPECIES]) for (const action of NATIVE_FRONT_ACTIONS) {
     if (!Object.hasOwn(manifest.clips, `/sprites/arkamon/${species}/front/${action}.webp`)) {
       throw new Error('The native catalog is missing a required compiled verification action')
     }
@@ -75,7 +78,7 @@ function compiledNativeProof(report, artifact) {
   }
   for (const suite of report.suites ?? []) visit(suite)
   if (scenarios.size !== NATIVE_RELEASE_SCENARIOS.length || NATIVE_RELEASE_SCENARIOS.some(title => !scenarios.has(title))) throw new Error('All required compiled native scenarios must execute')
-  if (!artifact || !Number.isSafeInteger(artifact.nativeClips) || artifact.nativeClips < (nativeReleaseSpecies.length + pendingNativeReleaseSpecies.length) * NATIVE_FRONT_ACTIONS.length
+  if (!artifact || !Number.isSafeInteger(artifact.nativeClips) || artifact.nativeClips < (nativeReleaseSpecies.length + EXPANSION_NATIVE_RELEASE_SPECIES.length) * NATIVE_FRONT_ACTIONS.length
     || artifact.nativeClips % NATIVE_FRONT_ACTIONS.length !== 0 || !Number.isSafeInteger(artifact.nativeFrames) || artifact.nativeFrames < artifact.nativeClips
     || !/^[a-f0-9]{40}$/.test(artifact.mediaRevision ?? '') || !/^[a-f0-9]{64}$/.test(artifact.manifestSha256 ?? '')
     || !/^[a-f0-9]{64}$/.test(artifact.contentSha256 ?? '')) throw new Error('Compiled native evidence requires a complete pinned native artifact')

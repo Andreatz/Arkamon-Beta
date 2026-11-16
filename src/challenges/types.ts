@@ -1,7 +1,7 @@
 import type { PokemonIstanza } from '@/types'
 
 export type ChallengeMode = 'seed' | 'fanta'
-export type ChallengeRulesVersion = 1 | 2
+export type ChallengeRulesVersion = 1 | 2 | 3
 
 export interface SeededRandomState {
   algorithm: 'arkamon-counter-v1'

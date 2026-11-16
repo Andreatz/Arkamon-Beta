@@ -15,8 +15,9 @@ const SCREENS = [
 ] as const
 const ITEMS = [
   ['potion', 'Pozione'], ['super-potion', 'Superpozione'], ['revive', 'Rianimatore'],
-  ['antidote', 'Antidoto'], ['paralysis-heal', 'Antiparalisi'], ['awakening', 'Sveglia'], ['masterball', 'Masterball'],
+  ['antidote', 'Antidoto'], ['paralysis-heal', 'Antiparalisi'], ['awakening', 'Sveglia'], ['masterball', 'Master Arkaball'],
 ] as const
+const VENEZIA_STOCK = ['Pozione', 'Rianimatore', 'Arkaball']
 
 /** Dense but valid portable data exercises layout; UI consultation must never change it. */
 async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directDeposit = false) {
@@ -594,14 +595,14 @@ for (const { width, height } of [{ width: 1920, height: 900 }, { width: 1920, he
       const returnedCampaign = await savedCampaign(page)
       expect(returnedCampaign).toEqual({ ...before, scenaCorrente: before.scenaPrecedente, scenaPrecedente: null })
       const dialog = await openConfiguredShop(page)
-      for (const [, itemName] of ITEMS) {
+      for (const itemName of VENEZIA_STOCK) {
         await dialog.getByRole('button', { name: `Seleziona ${itemName}`, exact: true }).click()
         const quantity = dialog.getByLabel(`Quantità di ${itemName}`, { exact: true })
         await expect(quantity).toBeEnabled()
         await quantity.fill('99')
       }
-      await expect(dialog.locator('.pu-cart-line')).toHaveCount(7)
-      await assertFitsWithoutScroll(dialog, `${height}px returned city, complete seven-item cart and checkout warnings`)
+      await expect(dialog.locator('.pu-cart-line')).toHaveCount(VENEZIA_STOCK.length)
+      await assertFitsWithoutScroll(dialog, `${height}px returned city, complete cart and checkout warnings`)
       expect(await savedCampaign(page)).toEqual(returnedCampaign)
     })
   })
