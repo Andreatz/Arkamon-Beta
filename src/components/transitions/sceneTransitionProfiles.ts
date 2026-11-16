@@ -4,7 +4,7 @@ export const TRANSITION_VIDEO_PATH = '/assets/Transizione Battaglia.mp4'
 export const TRANSITION_VIDEO_START_SECONDS = 5
 export const TRANSITION_VIDEO_SEGMENT_SECONDS = 3
 
-export type SceneTransitionMode = 'arkamon-dice' | 'battle-video' | 'fade'
+export type SceneTransitionMode = 'arkamon-dice' | 'battle-vs' | 'battle-video' | 'fade'
 
 export interface SceneTransitionProfile {
   readonly mode: SceneTransitionMode
@@ -44,17 +44,17 @@ function destinationLabel(destination: NavigazioneScena): string {
   return SCENE_LABELS[destination.scena]
 }
 
-/** The capture D6 joins navigation, creatures and the board; battles retain their VS video. */
+/** The capture D6 joins navigation, creatures and the board; battles open with the live VS card. */
 export function getSceneTransitionProfile(destination: NavigazioneScena): SceneTransitionProfile {
   const battle = destination.scena === 'battaglia'
   const evolution = destination.scena === 'evoluzione'
   const travel = ['mappa-principale', 'citta', 'percorso', 'mappa-griglia'].includes(destination.scena)
-  const durationMs = battle ? 3000 : evolution ? 1900 : travel ? 500 : 120
-  const coverMs = battle ? 180 : evolution ? 240 : travel ? 80 : 20
-  const blendMs = battle ? 950 : evolution ? 400 : travel ? 140 : 70
+  const durationMs = battle ? 2600 : evolution ? 1900 : travel ? 500 : 120
+  const coverMs = battle ? 160 : evolution ? 240 : travel ? 80 : 20
+  const blendMs = battle ? 420 : evolution ? 400 : travel ? 140 : 70
 
   return {
-    mode: battle ? 'battle-video' : evolution ? 'arkamon-dice' : 'fade',
+    mode: battle ? 'battle-vs' : evolution ? 'arkamon-dice' : 'fade',
     playbackRate: 1,
     durationMs,
     coverMs,

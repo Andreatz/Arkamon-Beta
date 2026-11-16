@@ -28,3 +28,23 @@
 .battle-challenge-context>button>span:last-child { font-size:clamp(10px,.9vw,16px); }
 .battle-stage [data-battle-chronicle-command] { max-width:24%; min-height:44px; font-size:clamp(14px,1.15vw,22px); }
 @media(max-width:800px) { .battle-challenge-context { width:33%; } .battle-challenge-context>button>span:last-child { display:none; } }
+
+/* Scia del danno sulla barra HP. */
+.battle-hp-ghost { fill: color-mix(in srgb, var(--arka-text) 82%, transparent); }
+
+/* Entrata della scheda di fine battaglia: il riquadro arriva, poi le righe a cascata. */
+@keyframes battle-result-enter {
+  from { opacity: 0; transform: translateY(18px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes battle-result-line {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.battle-result-card { animation: battle-result-enter var(--motion-slow) var(--ease-back) both; }
+.battle-result-card > * { animation: battle-result-line var(--motion-base) var(--ease-out) both; }
+.battle-result-card > :nth-child(1) { animation-delay: calc(var(--motion-fast) * 1); }
+.battle-result-card > :nth-child(2) { animation-delay: calc(var(--motion-fast) * 1.6); }
+.battle-result-card > :nth-child(3) { animation-delay: calc(var(--motion-fast) * 2.2); }
+.battle-result-card > :nth-child(4) { animation-delay: calc(var(--motion-fast) * 2.8); }
+.battle-result-card > :nth-child(n + 5) { animation-delay: calc(var(--motion-fast) * 3.4); }

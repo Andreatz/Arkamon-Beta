@@ -498,15 +498,17 @@ export function applicaMossaCura(
 export function tentaCattura(
   bersaglio: PokemonIstanza,
   rng: () => number = Math.random
-): { riuscita: boolean; roll: number; soglia: number } {
+): { riuscita: boolean; roll: number; soglia: number; tiri: [number, number, number] } {
   const specie = getPokemon(bersaglio.specieId)
-  if (!specie) return { riuscita: false, roll: 0, soglia: 0 }
+  if (!specie) return { riuscita: false, roll: 0, soglia: 0, tiri: [0, 0, 0] }
 
   const tasso = Math.max(1, specie.tassoCattura ?? 3)
   const hpMax = calcolaHPMax(bersaglio)
-  const roll = rollD6(1, rng) + rollD6(1, rng) + rollD6(1, rng) // 3..18
+  // Stessi tre tiri, nello stesso ordine di prima: i singoli valori servono solo alla presentazione.
+  const tiri: [number, number, number] = [rollD6(1, rng), rollD6(1, rng), rollD6(1, rng)]
+  const roll = tiri[0] + tiri[1] + tiri[2] // 3..18
   const soglia = tasso * (3 - bersaglio.hp / hpMax)
-  return { riuscita: roll <= soglia, roll, soglia }
+  return { riuscita: roll <= soglia, roll, soglia, tiri }
 }
 
 const CAPTURE_THRESHOLDS = {

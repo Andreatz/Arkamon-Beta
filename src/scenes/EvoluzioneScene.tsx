@@ -17,6 +17,10 @@ import { getPortraitFraming } from '@/player-ui/portraitFraming'
 import type { AdminEvolutionLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
 import type { PokemonIstanza } from '@/types'
 import { useRegiaStore } from '@/regia/regiaStore'
+import { getSplashArtwork } from '@/player-ui/reference/splashArtwork'
+import { splashFocusPosition } from '@/components/battle/splashFocus'
+import { EVOLUTION_MORPH_MS, EVOLUTION_WHITE_AT, evolutionAlternation } from './evolutionChoreography'
+import './evolutionScene.css'
 
 /**
  * Scena Evoluzione: animazione per ogni Pokémon che ha raggiunto la
@@ -169,7 +173,7 @@ export function EvoluzioneScene() {
       evoluto.hp = Math.min(istanza.hp, calcolaHPMax(evoluto))
       aggiornaPokemon(giocatoreId, evoluto)
       evolutionTimerRef.current = null
-    }, reducedMotion ? 0 : getAnimationDuration(1800))
+    }, reducedMotion ? 0 : getAnimationDuration(EVOLUTION_MORPH_MS))
   }
 
   const continua = () => {
@@ -211,6 +215,8 @@ export function EvoluzioneScene() {
         ))}
       </div>}
 
+      <EvolutionStageLayers fase={fase} newSpecieId={newSpec.id} reducedMotion={reducedMotion} speed={speed} />
+
       {/* Contatore */}
       <AdminLayoutItem
         rootSelector="[data-admin-layout-root]"
@@ -237,68 +243,38 @@ export function EvoluzioneScene() {
         zIndex={20}
       >
       <div className="relative h-full w-full flex items-center justify-center">
-        <motion.div
-          animate={
-            fase === 'morphing' && !reducedMotion
-              ? {
-                  opacity: 1,
-                  scale: [1, 1.04, 1, 1.08, 1],
-                  filter: [
-                    'brightness(1)',
-                    'brightness(2)',
-                    'brightness(3)',
-                    'brightness(2)',
-                    'brightness(1)',
-                  ],
-                }
-              : {
-                  opacity: 1,
-                  scale: 1,
-                  rotate: 0,
-                  filter: 'brightness(1)',
-                }
-          }
-          transition={
-            fase === 'morphing'
-              ? { duration: reducedMotion ? 0 : 1.8 / speed, ease: 'easeInOut' }
-              : { duration: reducedMotion ? 0 : .35 / speed, ease: 'easeOut' }
-          }
-          className="relative z-10 flex h-full w-full items-center justify-center overflow-visible"
-        >
-          {fase === 'pre' && (
+        {fase === 'pre' && (
+          <motion.div className="relative z-10 h-full w-full" data-evolution-idle
+            animate={reducedMotion ? { y: 0 } : { y: ['0%', '-2.5%', '0%'] }}
+            transition={reducedMotion ? { duration: 0 } : { duration: 2.4 / speed, repeat: Infinity, ease: 'easeInOut' }}>
             <SpriteOrEmoji specieId={oldSpec.id} fallback={spriteFor(oldSpec.tipo)} />
-          )}
-          {fase === 'morphing' && <div className="relative h-full w-full" data-evolution-morph>
-            <motion.div className="absolute inset-0" initial={false} animate={{ opacity: reducedMotion ? 0 : [1, .1, 1, 0], filter: 'brightness(3)' }} transition={{ duration: reducedMotion ? 0 : 1.8 / speed }}>
-              <SpriteOrEmoji specieId={oldSpec.id} fallback={spriteFor(oldSpec.tipo)} />
-            </motion.div>
-            <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: reducedMotion ? 1 : [0, .6, 0, 1], filter: 'brightness(3)' }} transition={{ duration: reducedMotion ? 0 : 1.8 / speed }}>
-              <SpriteOrEmoji specieId={newSpec.id} fallback={spriteFor(newSpec.tipo)} />
-            </motion.div>
-          </div>}
-          {fase === 'post' && (
+          </motion.div>
+        )}
+        {fase === 'morphing' && (
+          <EvolutionMorph oldId={oldSpec.id} newId={newSpec.id} oldFallback={spriteFor(oldSpec.tipo)} newFallback={spriteFor(newSpec.tipo)} reducedMotion={reducedMotion} speed={speed} />
+        )}
+        {fase === 'post' && (
+          <motion.div className="relative z-10 h-full w-full" data-evolution-reveal
+            initial={reducedMotion ? false : { scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: reducedMotion ? 0 : 0.6 / speed, ease: [0.34, 1.56, 0.64, 1] }}>
             <SpriteOrEmoji specieId={newSpec.id} fallback={spriteFor(newSpec.tipo)} />
-          )}
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Particelle che esplodono dal centro all'apparizione del nuovo sprite */}
         {fase === 'post' && !reducedMotion && (
           <div className="absolute inset-0 pointer-events-none">
-            {Array.from({ length: 14 }).map((_, i) => {
-              const angle = (i / 14) * Math.PI * 2
-              const dist = 180 + (i % 3) * 30
+            {Array.from({ length: 18 }).map((_, i) => {
+              const angle = (i / 18) * Math.PI * 2
+              const dist = 200 + (i % 3) * 40
               return (
                 <motion.div
                   key={i}
-                  className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-yellow-300"
-                  initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-                  animate={{
-                    x: Math.cos(angle) * dist,
-                    y: Math.sin(angle) * dist,
-                    opacity: 0,
-                    scale: 0.3,
-                  }}
-                  transition={{ duration: 1.1 / speed, ease: 'easeOut', delay: .1 / speed }}
+                  className="evolution-spark absolute top-1/2 left-1/2"
+                  initial={{ x: 0, y: 0, opacity: 1, scale: 1.2 }}
+                  animate={{ x: Math.cos(angle) * dist, y: Math.sin(angle) * dist, opacity: 0, scale: 0.3 }}
+                  transition={{ duration: 1.2 / speed, ease: [0.16, 1, 0.3, 1], delay: 0.15 / speed }}
                 />
               )
             })}
@@ -338,9 +314,11 @@ export function EvoluzioneScene() {
         )}
         {fase === 'post' && (
           <>
-            <h2 className="arka-layout-content arka-readable-title text-4xl font-black text-yellow-300">
+            <motion.h2 className="arka-layout-content arka-readable-title text-4xl font-black text-yellow-300"
+              initial={reducedMotion ? false : { y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: reducedMotion ? 0 : 0.45 / speed, delay: reducedMotion ? 0 : 0.35 / speed, ease: [0.16, 1, 0.3, 1] }}>
               {oldSpec.nome} si è evoluto in {newSpec.nome}!
-            </h2>
+            </motion.h2>
             <RpgCommand tone="primary" onClick={continua} className="mt-4">
               <span className="arka-layout-content">
                 {indice + 1 < evoluzioni.length ? 'Continua' : 'Fine'}
@@ -350,6 +328,69 @@ export function EvoluzioneScene() {
         )}
       </div>
       </AdminLayoutItem>
+    </div>
+  )
+}
+
+/**
+ * Livelli a tutto schermo: il velo che scurisce la scena durante la
+ * trasformazione, il lampo bianco finale e l'illustrazione della nuova
+ * specie che emerge dal bianco.
+ */
+function EvolutionStageLayers({ fase, newSpecieId, reducedMotion, speed }: { fase: 'pre' | 'morphing' | 'post'; newSpecieId: number; reducedMotion: boolean; speed: number }) {
+  const artwork = getSplashArtwork(newSpecieId)
+  const morph = getAnimationDuration(EVOLUTION_MORPH_MS) / 1000
+  return (
+    <>
+      <motion.div className="evolution-veil" aria-hidden="true" initial={false}
+        animate={{ opacity: fase === 'morphing' ? 1 : 0 }} transition={{ duration: reducedMotion ? 0 : 0.5 / speed }} />
+      {fase === 'post' && artwork && (
+        <motion.img className="evolution-splash" data-evolution-splash={newSpecieId} src={assetUrl(artwork.src)} alt="" aria-hidden="true" draggable={false}
+          style={{ objectPosition: splashFocusPosition(artwork) }}
+          initial={reducedMotion ? { opacity: 1 } : { opacity: 0, scale: 1.14 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: reducedMotion ? 0 : 1.6 / speed, ease: [0.16, 1, 0.3, 1] }} />
+      )}
+      {/* Sfumatura: separa lo sprite dall'illustrazione e lascia leggibile il testo. */}
+      {fase === 'post' && artwork && <div className="evolution-splash-shade" aria-hidden="true" />}
+      {fase === 'post' && !reducedMotion && <div className="evolution-rays" aria-hidden="true" />}
+      {!reducedMotion && fase === 'morphing' && (
+        <motion.div className="evolution-flash" aria-hidden="true" initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0, 1, 1] }} transition={{ duration: morph, times: [0, EVOLUTION_WHITE_AT - 0.08, EVOLUTION_WHITE_AT, 1], ease: 'easeIn' }} />
+      )}
+      {!reducedMotion && fase === 'post' && (
+        <motion.div className="evolution-flash" aria-hidden="true" initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.7 / speed, ease: 'easeOut' }} />
+      )}
+    </>
+  )
+}
+
+/** Sagome bianche che si alternano sempre più in fretta dentro un vortice di luce. */
+function EvolutionMorph({ oldId, newId, oldFallback, newFallback, reducedMotion, speed }: { oldId: number; newId: number; oldFallback: string; newFallback: string; reducedMotion: boolean; speed: number }) {
+  const duration = getAnimationDuration(EVOLUTION_MORPH_MS) / 1000
+  const { times, oldOpacity, newOpacity } = evolutionAlternation()
+  if (reducedMotion) {
+    return <div className="relative h-full w-full" data-evolution-morph><SpriteOrEmoji specieId={newId} fallback={newFallback} /></div>
+  }
+  return (
+    <div className="relative h-full w-full" data-evolution-morph>
+      <div className="evolution-vortex" aria-hidden="true">
+        {Array.from({ length: 16 }, (_, index) => (
+          <motion.span key={index} className="evolution-vortex__arm" style={{ rotate: `${(index / 16) * 360}deg` }}
+            animate={{ rotate: `${(index / 16) * 360 + 540}deg` }} transition={{ duration, ease: [0.65, 0, 0.35, 1] }}>
+            <motion.span className="evolution-vortex__mote" initial={{ x: '46vmin', opacity: 0 }}
+              animate={{ x: ['46vmin', '30vmin', '2vmin'], opacity: [0, 1, 0] }}
+              transition={{ duration, times: [0, 0.4, 0.92], delay: (index % 4) * 0.08 / speed, ease: 'easeIn' }} />
+          </motion.span>
+        ))}
+      </div>
+      <motion.div className="absolute inset-0" animate={{ scale: [1, 1.04, 1.08, 1.16] }} transition={{ duration, times: [0, 0.5, 0.8, 1], ease: 'easeIn' }}>
+        <motion.div className="evolution-silhouette absolute inset-0" initial={{ opacity: 1 }} animate={{ opacity: oldOpacity }} transition={{ duration, times, ease: 'linear' }}>
+          <SpriteOrEmoji specieId={oldId} fallback={oldFallback} />
+        </motion.div>
+        <motion.div className="evolution-silhouette absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: newOpacity }} transition={{ duration, times, ease: 'linear' }}>
+          <SpriteOrEmoji specieId={newId} fallback={newFallback} />
+        </motion.div>
+      </motion.div>
     </div>
   )
 }

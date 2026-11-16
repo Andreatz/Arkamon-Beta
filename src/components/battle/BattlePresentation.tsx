@@ -465,6 +465,10 @@ export function HpBar({
   const barSrc = assetUrl('/ui/hp_bar.png')
   const barClipId = `hp-bar-inner-${side}`
   const fillWidth = pct === 0 ? 0 : 23 + pct * 5
+  // Scia del danno: quando gli HP scendono, una barra chiara resta un attimo sul valore precedente.
+  const previousPct = useRef(pct)
+  const dropping = pct < previousPct.current
+  useEffect(() => { previousPct.current = pct }, [pct])
 
   return (
     <div
@@ -509,6 +513,19 @@ export function HpBar({
               <path d="M 16 3 H 503 V 20 C 503 29 499 35 493 36 H 3 V 20 C 3 12 8 5 16 3 Z" />
             </clipPath>
           </defs>
+          <motion.rect
+            data-battle-hp-ghost=""
+            x="-20"
+            y="3"
+            height="33"
+            clipPath={`url(#${barClipId})`}
+            className="battle-hp-ghost"
+            initial={false}
+            animate={{ width: fillWidth, rx: pct === 100 ? 0 : 16.5 }}
+            transition={dropping
+              ? { duration: getAnimationDuration(650) / 1000, delay: getAnimationDuration(420) / 1000, ease: 'easeOut' }
+              : { duration: 0 }}
+          />
           <motion.rect
             x="-20"
             y="3"

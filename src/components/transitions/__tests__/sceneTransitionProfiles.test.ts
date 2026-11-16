@@ -8,16 +8,20 @@ import {
 } from '../sceneTransitionProfiles'
 
 describe('scene transition profiles', () => {
-  it('keeps the existing battle animation source and its original three-second final segment', () => {
+  it('apre le battaglie con la scheda VS dal vivo, più breve del vecchio video', () => {
     const battle = getSceneTransitionProfile({ scena: 'battaglia' })
+    expect(battle.mode).toBe('battle-vs')
+    expect(battle.durationMs).toBe(2600)
+    expect(battle.coverMs).toBe(160)
+    expect(battle.blendMs).toBe(420)
+    expect(battle.filter).toBe('none')
+    expect(battle.coverMs + battle.durationMs).toBeLessThan(3180)
+  })
+
+  it('conserva i parametri del video, ancora supportato dalla modalità battle-video', () => {
     expect(TRANSITION_VIDEO_PATH).toBe('/assets/Transizione Battaglia.mp4')
     expect(TRANSITION_VIDEO_START_SECONDS).toBe(5)
     expect(TRANSITION_VIDEO_START_SECONDS + TRANSITION_VIDEO_SEGMENT_SECONDS).toBe(8)
-    expect(battle.mode).toBe('battle-video')
-    expect(TRANSITION_VIDEO_SEGMENT_SECONDS / battle.playbackRate).toBe(3)
-    expect(battle.durationMs).toBe(3000)
-    expect(battle.blendMs).toBe(950)
-    expect(battle.filter).toBe('none')
   })
 
   it('keeps routine consultation below 200 ms instead of replaying the D6', () => {
@@ -47,9 +51,9 @@ describe('scene transition profiles', () => {
     'citta', 'palestra', 'centro-pokemon', 'battaglia', 'deposito', 'squadra', 'evoluzione',
   ]
 
-  it('reserves the VS video for battles across all supported destinations', () => {
-    const videoDestinations = scenes.filter((scena) => getSceneTransitionProfile({ scena }).mode === 'battle-video')
-    expect(videoDestinations).toEqual(['battaglia'])
+  it('riserva la scheda VS alle battaglie e non usa più il video', () => {
+    expect(scenes.filter((scena) => getSceneTransitionProfile({ scena }).mode === 'battle-vs')).toEqual(['battaglia'])
+    expect(scenes.filter((scena) => getSceneTransitionProfile({ scena }).mode === 'battle-video')).toEqual([])
   })
 
   it('guarantees bounded fallback and enough time to blend for every destination', () => {
