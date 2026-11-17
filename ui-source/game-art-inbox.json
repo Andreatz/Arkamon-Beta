@@ -1,20 +1,142 @@
 {
   "version": 1,
-  "description": "Nomi attesi nella cartella di consegna (asset-inbox/<lotto>) e destinazione in public/ui/game-art. Vedi il documento di progetto 'Prompt per gli asset, lotto 1'.",
+  "description": "Nomi attesi nella cartella di consegna (asset-inbox/<lotto>) e destinazione in public/ui/game-art. I ritratti npc-*.png e trainer-*.png sono accettati per schema. Vedi i documenti di progetto 'Prompt per gli asset, lotto 1' e 'Prompt per allenatori e NPC'.",
   "files": {
-    "portrait-player-1.png": { "id": "portrait-player-1", "maxSide": 1400 },
-    "portrait-player-2.png": { "id": "portrait-player-2", "maxSide": 1400 },
-    "menu-team-shield.png": { "id": "menu-team-shield" },
-    "item-sacchettino.png": { "id": "item-sacchettino", "maxSide": 900 },
-    "item-sacchettino-supremo.png": { "id": "item-sacchettino-supremo", "maxSide": 900 },
-    "item-antiparalisi.png": { "id": "item-paralysis-heal", "maxSide": 900 },
-    "icon-captured.png": { "id": "icon-captured", "maxSide": 256 },
-    "category-capture.png": { "id": "category-capture", "maxSide": 256 },
-    "pawn-player-1.png": { "grid": [2, 1], "ids": ["pawn-player-1-idle", "pawn-player-1-jump"], "maxSide": 700 },
-    "pawn-player-2.png": { "grid": [2, 1], "ids": ["pawn-player-2-idle", "pawn-player-2-jump"], "maxSide": 700 },
-    "node-markers.png": { "grid": [4, 2], "ids": ["node-gym", "node-trainer", "node-grass", "node-encounter", "node-heal", "node-shop", "node-dialogue", "node-locked"], "maxSide": 256 },
-    "shopkeeper.png": { "id": "shopkeeper", "maxSide": 1400 },
-    "shop-background.png": { "id": "shop-background", "maxSide": 1920, "trim": false, "magenta": false },
-    "title-keyart.png": { "id": "title-keyart", "maxSide": 1920, "trim": false, "magenta": false }
-  }
+    "portrait-player-1.png": {
+      "id": "portrait-player-1",
+      "maxSide": 1400
+    },
+    "portrait-player-2.png": {
+      "id": "portrait-player-2",
+      "maxSide": 1400
+    },
+    "menu-team-shield.png": {
+      "id": "menu-team-shield"
+    },
+    "item-iperpozione.png": {
+      "id": "item-iperpozione",
+      "maxSide": 900
+    },
+    "item-pozione-max.png": {
+      "id": "item-pozione-max",
+      "maxSide": 900
+    },
+    "item-cura-totale.png": {
+      "id": "item-cura-totale",
+      "maxSide": 900
+    },
+    "item-sacchettino.png": {
+      "id": "item-sacchettino",
+      "maxSide": 900
+    },
+    "item-mega-sacchettino.png": {
+      "id": "item-mega-sacchettino",
+      "maxSide": 900
+    },
+    "item-ultra-sacchettino.png": {
+      "id": "item-ultra-sacchettino",
+      "maxSide": 900
+    },
+    "item-sacchettino-supremo.png": {
+      "id": "item-sacchettino-supremo",
+      "maxSide": 900
+    },
+    "item-boost-velocita.png": {
+      "id": "item-boost-velocita",
+      "maxSide": 900
+    },
+    "item-boost-danno.png": {
+      "id": "item-boost-danno",
+      "maxSide": 900
+    },
+    "item-profumo-speciale.png": {
+      "id": "item-profumo-speciale",
+      "maxSide": 900
+    },
+    "item-bicicletta.png": {
+      "id": "item-bicicletta",
+      "maxSide": 900
+    },
+    "item-monopattino.png": {
+      "id": "item-monopattino",
+      "maxSide": 900
+    },
+    "item-antiparalisi.png": {
+      "id": "item-paralysis-heal",
+      "maxSide": 900
+    },
+    "icon-captured.png": {
+      "id": "icon-captured",
+      "maxSide": 256
+    },
+    "category-capture.png": {
+      "id": "category-capture",
+      "maxSide": 256
+    },
+    "pawn-player-1.png": {
+      "grid": [
+        2,
+        1
+      ],
+      "ids": [
+        "pawn-player-1-idle",
+        "pawn-player-1-jump"
+      ],
+      "maxSide": 700
+    },
+    "pawn-player-2.png": {
+      "grid": [
+        2,
+        1
+      ],
+      "ids": [
+        "pawn-player-2-idle",
+        "pawn-player-2-jump"
+      ],
+      "maxSide": 700
+    },
+    "node-markers.png": {
+      "grid": [
+        4,
+        2
+      ],
+      "ids": [
+        "node-gym",
+        "node-trainer",
+        "node-grass",
+        "node-encounter",
+        "node-heal",
+        "node-shop",
+        "node-dialogue",
+        "node-locked"
+      ],
+      "maxSide": 256
+    },
+    "shopkeeper.png": {
+      "id": "shopkeeper",
+      "maxSide": 1400
+    },
+    "shop-background.png": {
+      "id": "shop-background",
+      "maxSide": 1920,
+      "trim": false,
+      "magenta": false
+    },
+    "title-keyart.png": {
+      "id": "title-keyart",
+      "maxSide": 1920,
+      "trim": false,
+      "magenta": false
+    },
+    "category-tools.png": {
+      "id": "category-tools",
+      "maxSide": 256
+    }
+  },
+  "patterns": [
+    {
+      "match": "^(npc|trainer)-[a-z0-9-]+\\.png$",
+      "maxSide": 1400
+    }
+  ]
 }

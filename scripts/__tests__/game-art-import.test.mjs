@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { gridCells, hasMagentaCorners, isMagenta, keyOutMagenta, mergeCatalog, safeArtId } from '../assets/gameArtImport.mjs'
+import { gridCells, hasMagentaCorners, isMagenta, keyOutMagenta, mergeCatalog, ruleForFile, safeArtId } from '../assets/gameArtImport.mjs'
+import inboxSpec from '../../ui-source/game-art-inbox.json'
 
 describe('importazione illustrazioni di gioco', () => {
   it('riconosce il fondo magenta con tolleranza', () => {
@@ -42,5 +43,13 @@ describe('importazione illustrazioni di gioco', () => {
     expect(safeArtId('menu-team')).toBe('menu-team')
     expect(() => safeArtId('../etc')).toThrow()
     expect(() => safeArtId('Logo')).toThrow()
+  })
+
+  it('trova la regola per nome esatto o per schema dei ritratti', () => {
+    expect(ruleForFile(inboxSpec, 'item-antiparalisi.png')?.id).toBe('item-paralysis-heal')
+    expect(ruleForFile(inboxSpec, 'trainer-capopalestra-1.png')).toEqual({ id: 'trainer-capopalestra-1', maxSide: 1400 })
+    expect(ruleForFile(inboxSpec, 'npc-giustina-vecchietta.png')?.id).toBe('npc-giustina-vecchietta')
+    expect(ruleForFile(inboxSpec, 'npc-Nome Sbagliato.png')).toBeUndefined()
+    expect(ruleForFile(inboxSpec, 'foto.png')).toBeUndefined()
   })
 })
