@@ -82,10 +82,12 @@ export function BackupPanel() {
         else { setPreviousAvailable(false); setError('Il backup precedente non è disponibile.') }
       }}>Scarica backup precedente</button>}
     </div>
-    <label className="block text-sm font-semibold">Importa una partita
-      <input type="file" accept=".json,application/json" aria-label="Importa backup partita" className="mt-2 block max-w-full text-sm" onChange={(event) => {
+    {/* Il selettore nativo mostra testi del browser (anche in inglese): un'etichetta italiana lo sostituisce. */}
+    <label className="pu-file-picker block text-sm font-semibold">Importa una partita
+      <input type="file" accept=".json,application/json" aria-label="Importa backup partita" className="sr-only" onChange={(event) => {
         void loadFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''
       }} />
+      <span className="pu-file-picker-button" aria-hidden="true">Scegli un file di backup…</span>
     </label>
     {error && <p role="alert" className="rounded border border-current p-2 text-sm">{error}</p>}
     {message && <p role="status" className="text-sm">{message}</p>}

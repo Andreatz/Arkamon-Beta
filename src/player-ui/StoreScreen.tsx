@@ -11,6 +11,7 @@ import { assetUrl } from '@/utils/assetUrl'
 import { StudioCommand } from '@/components/ui/StudioArtwork'
 import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
 import { isReferenceUi } from './reference/referenceTheme'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
 
 export interface StoreScreenProps { playerId: 1 | 2; inputBlocked?: boolean; shopInteractionId?: string }
 type StoreCategory = 'all' | 'heal' | 'status' | 'capture' | 'tools'
@@ -34,6 +35,8 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
   const [cart, setCart] = useState<ShopCart>({})
   const [message, setMessage] = useState('')
   useEffect(() => { setCart({}); setMessage('') }, [playerId, location, shopInteractionId, state.campaignRevision])
+  // La battuta del negoziante è il dialogo dell'interazione configurata, se c'è.
+  const greeting = interactions.find(entry => entry.id === shopInteractionId)?.dialogue?.trim() || `Benvenuto all'Arkastore di ${location}!`
   const unavailable = shopAvailabilityMessage(state, playerId, location, { interactionId: shopInteractionId, interactions })
   const selected = catalogItems.find((item) => item.id === selectedId) ?? catalogItems[0]
   usePublishPlayerUiSelection(playerId, { itemId: selected.id })
@@ -47,8 +50,14 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
     setMessage('')
   }
 
-  return <section className="pu-store-screen pu-store-dedicated arka-store" aria-label={`Arkastore di ${location}`}>
+  const keeper = reference && hasGameArt('shopkeeper')
+  return <section className={`pu-store-screen pu-store-dedicated arka-store${keeper ? ' pu-u3-store' : ''}`} aria-label={`Arkastore di ${location}`}>
     <header className="pu-screen-heading pu-store-heading"><div><p className="pu-kicker">Scorte di viaggio · {player.nome || `Giocatore ${playerId}`}</p><h1>Arkastore · {location}</h1><p>La consultazione è libera. Un acquisto conclude il turno e aggiunge gli oggetti a questa borsa.</p></div><strong className="pu-store-balance" aria-label={`Saldo: ${player.monete} monete`}><AnimatedNumber value={player.monete} /> ₳</strong></header>
+    {/* Fase U3: il negoziante al bancone, sopra la bottega, con la sua battuta. */}
+    {keeper && <figure className="pu-store-keeper" aria-label="Negoziante dell’Arkastore">
+      <GameArt id="shopkeeper" className="pu-store-keeper-art" />
+      <figcaption className="pu-store-keeper-line">{greeting}</figcaption>
+    </figure>}
     <div className="pu-store-layout">
       <KitPanel className="pu-store-catalog"><h2>Catalogo · {forSale.length} articoli</h2>
         {reference && <nav className="pu-reference-store-categories" aria-label="Categorie del negozio">{storeCategories.map(([id, label]) => <button type="button" key={id} aria-pressed={category === id} onClick={() => setCategory(id)}><KitIcon id={`category-${id}`} />{label}</button>)}</nav>}
@@ -58,7 +67,7 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
             <KitIcon id={itemIconId(item.id)} /><span className="pu-shop-row-copy"><strong>{item.name}</strong><small>{reference ? '' : `${item.price} ₳ · `}In borsa: {player.inventario[item.id] ?? 0}</small></span>
             {reference && <span className="pu-reference-shop-price"><i aria-hidden="true">₳</i>{(item.price ?? 0).toLocaleString('it-IT')}</span>}
           </KitButton>
-          <span className="pu-shop-cart-count" aria-label={`${item.name} nel carrello: ${cart[item.id] ?? 0}`}>×{cart[item.id] ?? 0}</span>
+          <span className="pu-shop-cart-count" data-count={cart[item.id] ?? 0} aria-label={`${item.name} nel carrello: ${cart[item.id] ?? 0}`}>×{cart[item.id] ?? 0}</span>
         </article>)}
       </SpatialNavigation></KitPanel>
 
@@ -70,6 +79,7 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
           <label className="pu-shop-quantity"><span>Quantità di {selected.name}</span><input aria-label={`Quantità di ${selected.name}`} type="number" min={0} max={MAX_SHOP_QUANTITY} step={1} inputMode="numeric" value={cart[selected.id] ?? 0} disabled={editBlocked} data-menu-artwork={MENU_ARTWORK_MODE} style={{ backgroundImage: MENU_SVG_ARTWORK_ENABLED ? `url("${assetUrl('/ui/studio/individuali/Scuro/quantita/display.svg')}")` : 'none' }} onChange={event => setQuantity(selected.id, Number(event.target.value))} /></label>
           <KitButton artwork="increment" aria-label={`Aumenta ${selected.name}`} disabled={editBlocked || (cart[selected.id] ?? 0) >= MAX_SHOP_QUANTITY} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) + 1)}>+</KitButton>
         </div>
+        <p className="pu-store-line-total"><span>Totale</span><strong><i aria-hidden="true">₳</i>{((cart[selected.id] ?? 0) * (selected.price ?? 0)).toLocaleString('it-IT')}</strong></p>
         {(unavailable || insufficient || capacityItem) && <div className="pu-store-notices" aria-live="polite">
           {unavailable && <p className="pu-warning" role="status">{unavailable}</p>}
           {insufficient && <p className="pu-warning">Ti mancano {total - player.monete} monete.</p>}

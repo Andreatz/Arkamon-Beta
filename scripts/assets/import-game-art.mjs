@@ -13,7 +13,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createRequire } from 'node:module'
-import { INBOX_IMAGE, gridCells, hasMagentaCorners, keyOutMagenta, mergeCatalog, safeArtId, ruleForFile } from './gameArtImport.mjs'
+import { INBOX_IMAGE, floodKeyBackground, gridCells, hasMagentaCorners, keyOutMagenta, mergeCatalog, safeArtId, ruleForFile } from './gameArtImport.mjs'
 
 const require = createRequire(import.meta.url)
 const sharp = require('sharp')
@@ -67,6 +67,10 @@ async function fromInbox(directory) {
     if (rule.magenta !== false && hasMagentaCorners(image.data, width, height)) {
       const cleared = keyOutMagenta(image.data)
       console.log(`  ${name}: fondo magenta rimosso (${cleared} px)`)
+    }
+    if (rule.floodKey) {
+      const cleared = floodKeyBackground(image.data, width, height, rule.floodKey === true ? {} : rule.floodKey)
+      console.log(`  ${name}: fondo piatto scontornato dai bordi (${cleared} px)`)
     }
     const options = { maxSide: rule.maxSide ?? 1400, trim: rule.trim !== false }
     if (rule.grid) {

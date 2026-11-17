@@ -11,6 +11,7 @@ import {
   type ArkadexEntry, type ArkadexFilter, type ArkadexSnapshot,
 } from '@/arkadex/arkadexModel'
 import { getBackground } from '@/data/backgrounds'
+import { hasGameArt } from '@/ui-system/GameArt'
 import { useGameStore } from '@/store/gameStore'
 import type { PokemonIstanza, PokemonSpecie, TipoPokemon } from '@/types'
 import { KitButton, KitIcon, KitPanel, PokemonMoves, SpeciesPortrait, TypeBadge, TypeSeal } from './kit'
@@ -66,6 +67,8 @@ function NearViewport({ children, eager = false }: { children: ReactNode; eager?
 }
 
 function DexRowMark({ entry }: { entry: ArkadexEntry }) {
+  // Fase U3: il Sacchettino «catturato» del lotto 1 al posto del pallino pieno.
+  if (entry.status === 'caught' && hasGameArt('icon-captured')) return <span className="pu-discovery-mark is-caught has-art" aria-hidden="true"><KitIcon id="icon-captured" /></span>
   return <span className={`pu-discovery-mark is-${entry.status}`} aria-hidden="true">{entry.status === 'caught' ? '●' : entry.status === 'seen' ? '◐' : '?'}</span>
 }
 
