@@ -28,7 +28,7 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
       await page.getByLabel('Cerca asset', { exact: true }).fill('hp bar enemy')
       await page.getByRole('dialog', { name: 'Scegli asset', exact: true }).getByRole('button', { name: 'hp bar enemy Comuni', exact: true }).click()
     }
-    await expect(hp).toHaveCSS('background-image', /\/ui\/hp_bar_enemy\.png/)
+    await expect(hp).toHaveCSS('background-image', /\/ui\/aurora\/hp-plate\.svg/)
     await selectSkin()
     await expect.poll(selectedSkin).toContain('/ui/studio/Comuni/hp-bar-enemy.svg')
     await expect(group).toHaveCSS('background-image', 'none')
@@ -43,7 +43,7 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     await expect.poll(selectedSkin).toContain('/ui/studio/Comuni/hp-bar-enemy.svg')
     await selectLayer(page, 'HP nemico')
     await page.getByRole('button', { name: 'Originale', exact: true }).click()
-    await expect(hp).toHaveCSS('background-image', /\/ui\/hp_bar_enemy\.png/)
+    await expect(hp).toHaveCSS('background-image', /\/ui\/aurora\/hp-plate\.svg/)
     await expect(oldDecoration).toHaveCSS('visibility', 'visible')
     expect(await hp.innerText()).toBe(text)
   })

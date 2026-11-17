@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { captureMaxTotal, planDiceCapture, planMasterCapture } from './battleCapture'
+import { captureBagArt, captureMaxTotal, planDiceCapture, planMasterCapture } from './battleCapture'
 
 describe('cattura in scena', () => {
   it('usa la parte intera della soglia, perché i dadi sono interi', () => {
@@ -59,5 +59,14 @@ describe('cattura in scena', () => {
     expect(plan).toMatchObject({ kind: 'master', caught: true, maxTotal: null })
     expect(plan.steps).toHaveLength(3)
     expect(plan.steps.every((step) => step.die === null && step.holds)).toBe(true)
+  })
+
+  it('sceglie l’illustrazione del Sacchettino lanciato, con il Supremo per la cattura garantita', () => {
+    expect(captureBagArt('sacchettino', 'dice')).toBe('item-sacchettino')
+    expect(captureBagArt('mega-sacchettino', 'dice')).toBe('item-mega-sacchettino')
+    expect(captureBagArt('ultra-sacchettino', 'dice')).toBe('item-ultra-sacchettino')
+    expect(captureBagArt('masterball', 'master')).toBe('item-sacchettino-supremo')
+    expect(captureBagArt(undefined, 'master')).toBe('item-sacchettino-supremo')
+    expect(captureBagArt(undefined, 'dice')).toBe('item-sacchettino')
   })
 })

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import type { AdminMapRoadPoint } from '@/theme/adminThemeTypes'
 import { getMainMapJourney, mapJourneyTiming, type MapJourneyRoad } from './mapJourney'
 import './worldMapCamera.css'
@@ -62,8 +64,12 @@ export function MainMapAvatar({ playerId, nodeName, sameNode, active, getPositio
     className="pointer-events-none absolute z-30 h-[72px] w-[72px]"
     initial={{ left: `${position.x}%`, top: `${position.y}%` }} animate={controls}
     style={{ marginLeft: offset, marginTop: -81 }}>
-    <div className="world-map-pawn-body"><img src={assetUrl(`/ui/player${playerId}.png`)} alt=""
-      className={`h-full w-full object-contain drop-shadow-2xl ${active ? '' : 'opacity-80 grayscale-[0.25]'}`} draggable={false} /></div>
+    {/* Fase U5: le pedine a figura intera del lotto 1, con la posa in salto mentre camminano. */}
+    <div className="world-map-pawn-body">{isReferenceUi() && hasGameArt(`pawn-player-${playerId}-idle`)
+      ? <GameArt id={`pawn-player-${playerId}-${walking && hasGameArt(`pawn-player-${playerId}-jump`) ? 'jump' : 'idle'}`}
+        className={`world-map-pawn-art h-full w-full drop-shadow-2xl ${active ? '' : 'opacity-80 grayscale-[0.25]'}`} />
+      : <img src={assetUrl(`/ui/player${playerId}.png`)} alt=""
+        className={`h-full w-full object-contain drop-shadow-2xl ${active ? '' : 'opacity-80 grayscale-[0.25]'}`} draggable={false} />}</div>
     <span className={`absolute -bottom-1 left-1/2 -translate-x-1/2 rounded border border-white/70 px-1.5 py-0.5 text-[10px] font-black leading-none text-white shadow ${playerId === 1 ? 'bg-rose-600' : 'bg-sky-600'}`}>G{playerId}</span>
   </motion.div>
 }

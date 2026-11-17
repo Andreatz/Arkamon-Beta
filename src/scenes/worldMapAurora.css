@@ -1,0 +1,107 @@
+/* ======================= Fase U5: mappa principale oro e blu notte ======================= */
+/* Stessa grammatica della mappa locale (U4): pannelli blu notte con filo d'oro, Cinzel per titoli e comandi.
+   Posizioni e dimensioni restano quelle dell'Admin (AdminLayoutItem): qui cambia solo l'aspetto. */
+
+[data-world-rpg-map] {
+  --world-gold: var(--arka-ui-gold, #d9b67b);
+  --world-gold-bright: var(--arka-ui-gold-bright, #f4dca0);
+  --world-display: var(--arka-ui-font-display, Georgia, serif);
+  --world-body: var(--arka-ui-font-body, Georgia, serif);
+}
+
+/* Intestazione unica in alto. */
+[data-world-rpg-map] .world-map-unified-hud {
+  border: 1px solid var(--world-gold) !important;
+  border-radius: 14px !important;
+  background: linear-gradient(100deg, rgb(6 32 58 / 0.94), rgb(4 22 40 / 0.9)) !important;
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 8px 22px #0009 !important;
+}
+[data-world-rpg-map] .world-map-unified-hud .rpg-frame { display: none; }
+[data-world-rpg-map] .world-map-status-window { font-family: var(--world-display); }
+[data-world-rpg-map] .world-map-status-window > .arka-layout-content:first-of-type {
+  color: var(--world-gold) !important;
+  font-family: var(--world-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+[data-world-rpg-map] .world-map-status-window > .arka-layout-content:last-child { color: #fff3d8 !important; font-family: var(--world-display); font-weight: 700; }
+[data-world-rpg-map] .world-map-status-window > .arka-layout-content.text-arka-accent { color: var(--world-gold-bright) !important; }
+[data-world-rpg-map] .world-map-status-window > .arka-layout-content.text-yellow-300 { color: var(--world-gold-bright) !important; }
+/* Ritratto del giocatore di turno accanto al nome. */
+[data-world-rpg-map] .world-map-turn-face {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  transform: translateY(-50%);
+  border: 2px solid var(--world-gold);
+  border-radius: 50%;
+  background: #0b2a44;
+  object-fit: cover !important;
+  object-position: 50% 12%;
+  box-shadow: 0 0 0 2px rgb(6 26 46 / 0.9);
+}
+[data-world-rpg-map] .world-map-status-window:has(.world-map-turn-face) { position: relative; padding-left: 58px !important; }
+
+/* Pannelli separati (quando l'Admin non usa l'intestazione unica) e legenda. */
+[data-world-rpg-map]:not([data-combined-hud=true]) .world-map-status-window.arka-panel,
+[data-world-rpg-map] .world-map-legend.arka-panel {
+  border: 1px solid var(--world-gold);
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgb(8 36 62 / 0.94), rgb(3 18 34 / 0.92));
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.85), 0 8px 22px #0009;
+}
+[data-world-rpg-map] .world-map-legend .arka-layout-content { font-family: var(--world-body); color: #e9dcc0; }
+
+/* Comandi a destra. */
+[data-world-rpg-map] .game-button { font-family: var(--world-display) !important; letter-spacing: 0.02em; }
+[data-world-rpg-map] .game-button .arka-layout-content { font-size: clamp(14px, 1vw, 19px); }
+
+/* Etichette dei luoghi: targhette blu notte con filo d'oro. */
+[data-world-rpg-map] .world-map-node-label {
+  font-family: var(--world-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border: 1px solid rgb(217 182 123 / 0.55);
+  border-radius: 6px;
+  background: rgb(4 22 40 / 0.82);
+  color: #fff3d8;
+  text-shadow: 0 1px 2px #000c;
+}
+[data-world-rpg-map] .world-map-node-label.is-important {
+  border-color: var(--world-gold);
+  background: linear-gradient(100deg, rgb(10 44 72 / 0.96), rgb(4 22 40 / 0.94));
+  color: var(--world-gold-bright);
+  box-shadow: 0 0 10px rgb(110 230 255 / 0.25);
+}
+
+/* Banner del cambio turno e scheda della destinazione. */
+[data-world-rpg-map] .world-turn-banner { font-family: var(--world-display); }
+[data-world-rpg-map] .world-map-destination {
+  border: 1px solid var(--world-gold);
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgb(8 36 62 / 0.96), rgb(3 18 34 / 0.94));
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.85), 0 10px 28px #000a;
+}
+[data-world-rpg-map] .world-map-destination h2 { font-family: var(--world-display); color: var(--world-gold-bright); }
+[data-world-rpg-map] .world-map-destination p { font-family: var(--world-body); }
+
+/* Riepilogo del turno in basso. */
+[data-world-rpg-map] .turn-summary { font-family: var(--world-body); }
+
+/* Pedine a figura intera: i piedi poggiano sul segnalino. */
+[data-world-rpg-map] .world-map-pawn-art { object-position: 50% 100%; }
+
+/* Comandi con il filo d'oro; quello principale in ciano come nel resto del gioco. */
+[data-world-rpg-map] .game-button {
+  border: 1px solid var(--world-gold) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(170deg, rgb(19 64 100 / 0.95), rgb(6 26 46 / 0.95)) !important;
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 6px 16px #0009 !important;
+  color: #fff3d8 !important;
+}
+[data-world-rpg-map] .game-button[data-game-button="primary"] { border-color: #70e4f5 !important; box-shadow: inset 0 0 12px rgb(78 220 251 / 0.3), 0 0 12px rgb(64 232 255 / 0.3), 0 6px 16px #0009 !important; }
+[data-world-rpg-map] .game-button:not(:disabled):is(:hover, :focus-visible) { filter: brightness(1.12); }
+[data-world-rpg-map] .turn-summary { border: 1px solid rgb(217 182 123 / 0.6); border-radius: 8px; background: rgb(4 22 40 / 0.88); color: #e9dcc0; }

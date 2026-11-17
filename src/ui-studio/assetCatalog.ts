@@ -809,6 +809,237 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "kind": "image"
   },
   {
+    "id": "builtin:backgrounds/depth/battle_forest.webp",
+    "name": "battle_forest",
+    "source": "/backgrounds/depth/battle_forest.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/cagliari.webp",
+    "name": "cagliari",
+    "source": "/backgrounds/depth/cagliari.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/civitavecchia.webp",
+    "name": "civitavecchia",
+    "source": "/backgrounds/depth/civitavecchia.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/deposit.webp",
+    "name": "deposit",
+    "source": "/backgrounds/depth/deposit.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/deposito.webp",
+    "name": "deposito",
+    "source": "/backgrounds/depth/deposito.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/evolution.webp",
+    "name": "evolution",
+    "source": "/backgrounds/depth/evolution.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/foggia.webp",
+    "name": "foggia",
+    "source": "/backgrounds/depth/foggia.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/grosseto.webp",
+    "name": "grosseto",
+    "source": "/backgrounds/depth/grosseto.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/laboratory.webp",
+    "name": "laboratory",
+    "source": "/backgrounds/depth/laboratory.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/milano.webp",
+    "name": "milano",
+    "source": "/backgrounds/depth/milano.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/molise.webp",
+    "name": "molise",
+    "source": "/backgrounds/depth/molise.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/napoli.webp",
+    "name": "napoli",
+    "source": "/backgrounds/depth/napoli.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/padova.webp",
+    "name": "padova",
+    "source": "/backgrounds/depth/padova.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/palermo.webp",
+    "name": "palermo",
+    "source": "/backgrounds/depth/palermo.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/pescara.webp",
+    "name": "pescara",
+    "source": "/backgrounds/depth/pescara.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/reggio_calabria.webp",
+    "name": "reggio_calabria",
+    "source": "/backgrounds/depth/reggio_calabria.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/roma.webp",
+    "name": "roma",
+    "source": "/backgrounds/depth/roma.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_1.webp",
+    "name": "route_1",
+    "source": "/backgrounds/depth/route_1.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_10.webp",
+    "name": "route_10",
+    "source": "/backgrounds/depth/route_10.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_11.webp",
+    "name": "route_11",
+    "source": "/backgrounds/depth/route_11.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_12.webp",
+    "name": "route_12",
+    "source": "/backgrounds/depth/route_12.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_13.webp",
+    "name": "route_13",
+    "source": "/backgrounds/depth/route_13.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_14.webp",
+    "name": "route_14",
+    "source": "/backgrounds/depth/route_14.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_2.webp",
+    "name": "route_2",
+    "source": "/backgrounds/depth/route_2.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_3.webp",
+    "name": "route_3",
+    "source": "/backgrounds/depth/route_3.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_4.webp",
+    "name": "route_4",
+    "source": "/backgrounds/depth/route_4.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_5.webp",
+    "name": "route_5",
+    "source": "/backgrounds/depth/route_5.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_6.webp",
+    "name": "route_6",
+    "source": "/backgrounds/depth/route_6.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_7.webp",
+    "name": "route_7",
+    "source": "/backgrounds/depth/route_7.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_8.webp",
+    "name": "route_8",
+    "source": "/backgrounds/depth/route_8.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/route_9.webp",
+    "name": "route_9",
+    "source": "/backgrounds/depth/route_9.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/torino.webp",
+    "name": "torino",
+    "source": "/backgrounds/depth/torino.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:backgrounds/depth/venezia.webp",
+    "name": "venezia",
+    "source": "/backgrounds/depth/venezia.webp",
+    "category": "Sfondi del gioco",
+    "kind": "image"
+  },
+  {
     "id": "builtin:backgrounds/evolution.png",
     "name": "evolution",
     "source": "/backgrounds/evolution.png",
@@ -1008,6 +1239,27 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "id": "builtin:ui/acqua.png",
     "name": "acqua",
     "source": "/ui/acqua.png",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/aurora/hp-plate.svg",
+    "name": "hp plate",
+    "source": "/ui/aurora/hp-plate.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/aurora/infobox.svg",
+    "name": "infobox",
+    "source": "/ui/aurora/infobox.svg",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/aurora/move-frame.svg",
+    "name": "move frame",
+    "source": "/ui/aurora/move-frame.svg",
     "category": "Asset originali",
     "kind": "image"
   },
@@ -1551,16 +1803,359 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "kind": "image"
   },
   {
-    "id": "builtin:ui/general_button.png",
-    "name": "general_button",
-    "source": "/ui/general_button.png",
+    "id": "builtin:ui/game-art/category-capture.webp",
+    "name": "category capture",
+    "source": "/ui/game-art/category-capture.webp",
     "category": "Asset originali",
     "kind": "image"
   },
   {
-    "id": "builtin:ui/grey_pokeball.png",
-    "name": "grey_pokeball",
-    "source": "/ui/grey_pokeball.png",
+    "id": "builtin:ui/game-art/category-tools.webp",
+    "name": "category tools",
+    "source": "/ui/game-art/category-tools.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/coin.webp",
+    "name": "coin",
+    "source": "/ui/game-art/coin.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/icon-captured.webp",
+    "name": "icon captured",
+    "source": "/ui/game-art/icon-captured.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-antidote.webp",
+    "name": "item antidote",
+    "source": "/ui/game-art/item-antidote.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-awakening.webp",
+    "name": "item awakening",
+    "source": "/ui/game-art/item-awakening.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-bicicletta.webp",
+    "name": "item bicicletta",
+    "source": "/ui/game-art/item-bicicletta.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-boost-danno.webp",
+    "name": "item boost danno",
+    "source": "/ui/game-art/item-boost-danno.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-boost-velocita.webp",
+    "name": "item boost velocita",
+    "source": "/ui/game-art/item-boost-velocita.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-cura-totale.webp",
+    "name": "item cura totale",
+    "source": "/ui/game-art/item-cura-totale.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-iperpozione.webp",
+    "name": "item iperpozione",
+    "source": "/ui/game-art/item-iperpozione.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-mega-sacchettino.webp",
+    "name": "item mega sacchettino",
+    "source": "/ui/game-art/item-mega-sacchettino.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-monopattino.webp",
+    "name": "item monopattino",
+    "source": "/ui/game-art/item-monopattino.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-paralysis-heal.webp",
+    "name": "item paralysis heal",
+    "source": "/ui/game-art/item-paralysis-heal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-potion.webp",
+    "name": "item potion",
+    "source": "/ui/game-art/item-potion.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-pozione-max.webp",
+    "name": "item pozione max",
+    "source": "/ui/game-art/item-pozione-max.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-profumo-speciale.webp",
+    "name": "item profumo speciale",
+    "source": "/ui/game-art/item-profumo-speciale.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-revive.webp",
+    "name": "item revive",
+    "source": "/ui/game-art/item-revive.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-sacchettino-supremo.webp",
+    "name": "item sacchettino supremo",
+    "source": "/ui/game-art/item-sacchettino-supremo.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-sacchettino.webp",
+    "name": "item sacchettino",
+    "source": "/ui/game-art/item-sacchettino.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-superpotion.webp",
+    "name": "item superpotion",
+    "source": "/ui/game-art/item-superpotion.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/item-ultra-sacchettino.webp",
+    "name": "item ultra sacchettino",
+    "source": "/ui/game-art/item-ultra-sacchettino.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/logo.webp",
+    "name": "logo",
+    "source": "/ui/game-art/logo.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-arkadex.webp",
+    "name": "menu arkadex",
+    "source": "/ui/game-art/menu-arkadex.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-bag.webp",
+    "name": "menu bag",
+    "source": "/ui/game-art/menu-bag.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-deposit.webp",
+    "name": "menu deposit",
+    "source": "/ui/game-art/menu-deposit.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-diary.webp",
+    "name": "menu diary",
+    "source": "/ui/game-art/menu-diary.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-map.webp",
+    "name": "menu map",
+    "source": "/ui/game-art/menu-map.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-register.webp",
+    "name": "menu register",
+    "source": "/ui/game-art/menu-register.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-save.webp",
+    "name": "menu save",
+    "source": "/ui/game-art/menu-save.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-settings.webp",
+    "name": "menu settings",
+    "source": "/ui/game-art/menu-settings.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-team-shield.webp",
+    "name": "menu team shield",
+    "source": "/ui/game-art/menu-team-shield.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/menu-team.webp",
+    "name": "menu team",
+    "source": "/ui/game-art/menu-team.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-dialogue.webp",
+    "name": "node dialogue",
+    "source": "/ui/game-art/node-dialogue.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-encounter.webp",
+    "name": "node encounter",
+    "source": "/ui/game-art/node-encounter.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-grass.webp",
+    "name": "node grass",
+    "source": "/ui/game-art/node-grass.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-gym.webp",
+    "name": "node gym",
+    "source": "/ui/game-art/node-gym.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-heal.webp",
+    "name": "node heal",
+    "source": "/ui/game-art/node-heal.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-locked.webp",
+    "name": "node locked",
+    "source": "/ui/game-art/node-locked.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-shop.webp",
+    "name": "node shop",
+    "source": "/ui/game-art/node-shop.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/node-trainer.webp",
+    "name": "node trainer",
+    "source": "/ui/game-art/node-trainer.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/pawn-player-1-idle.webp",
+    "name": "pawn player 1 idle",
+    "source": "/ui/game-art/pawn-player-1-idle.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/pawn-player-1-jump.webp",
+    "name": "pawn player 1 jump",
+    "source": "/ui/game-art/pawn-player-1-jump.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/pawn-player-2-idle.webp",
+    "name": "pawn player 2 idle",
+    "source": "/ui/game-art/pawn-player-2-idle.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/pawn-player-2-jump.webp",
+    "name": "pawn player 2 jump",
+    "source": "/ui/game-art/pawn-player-2-jump.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/portrait-player-1.webp",
+    "name": "portrait player 1",
+    "source": "/ui/game-art/portrait-player-1.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/portrait-player-2.webp",
+    "name": "portrait player 2",
+    "source": "/ui/game-art/portrait-player-2.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/shop-background.webp",
+    "name": "shop background",
+    "source": "/ui/game-art/shop-background.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/shopkeeper.webp",
+    "name": "shopkeeper",
+    "source": "/ui/game-art/shopkeeper.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/game-art/summoning-ring.webp",
+    "name": "summoning ring",
+    "source": "/ui/game-art/summoning-ring.webp",
+    "category": "Asset originali",
+    "kind": "image"
+  },
+  {
+    "id": "builtin:ui/general_button.png",
+    "name": "general_button",
+    "source": "/ui/general_button.png",
     "category": "Asset originali",
     "kind": "image"
   },
@@ -2006,13 +2601,6 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "kind": "image"
   },
   {
-    "id": "builtin:ui/player1_pokeball.png",
-    "name": "player1_pokeball",
-    "source": "/ui/player1_pokeball.png",
-    "category": "Asset originali",
-    "kind": "image"
-  },
-  {
     "id": "builtin:ui/player1.png",
     "name": "player1",
     "source": "/ui/player1.png",
@@ -2023,13 +2611,6 @@ export const UI_BUILTIN_ASSETS: UiBuiltinAsset[] = [
     "id": "builtin:ui/player2_avatar.png",
     "name": "player2_avatar",
     "source": "/ui/player2_avatar.png",
-    "category": "Asset originali",
-    "kind": "image"
-  },
-  {
-    "id": "builtin:ui/player2_pokeball.png",
-    "name": "player2_pokeball",
-    "source": "/ui/player2_pokeball.png",
     "category": "Asset originali",
     "kind": "image"
   },

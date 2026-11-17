@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 879 493" preserveAspectRatio="none">
+  <!-- Fase U5, cornice provvisoria in attesa del lotto 3: pulsante della mossa. -->
+  <defs>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17486e"/>
+      <stop offset="0.6" stop-color="#0b2b49"/>
+      <stop offset="1" stop-color="#05182b"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4dca0"/>
+      <stop offset="0.5" stop-color="#b8925a"/>
+      <stop offset="1" stop-color="#f4dca0"/>
+    </linearGradient>
+  </defs>
+  <path d="M40 8 H839 L871 40 V453 L839 485 H40 L8 453 V40 Z" fill="url(#panel)" stroke="url(#gold)" stroke-width="3" vector-effect="non-scaling-stroke"/>
+  <path d="M50 26 H829 L853 50 V443 L829 467 H50 L26 443 V50 Z" fill="none" stroke="#f4dca0" stroke-opacity="0.4" stroke-width="1" vector-effect="non-scaling-stroke"/>
+  <path d="M26 300 H853 V443 L829 467 H50 L26 443 Z" fill="#020c18" fill-opacity="0.5"/>
+  <path d="M60 300 H819" stroke="url(#gold)" stroke-opacity="0.75" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  <path d="M439 288 L451 300 L439 312 L427 300 Z" fill="#f4dca0"/>
+  <path d="M60 34 H819" stroke="#9ff3ff" stroke-opacity="0.35" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</svg>

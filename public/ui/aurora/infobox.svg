@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2331 1218" preserveAspectRatio="none">
+  <!-- Fase U5, cornice provvisoria in attesa del lotto 3: riquadro dei messaggi di battaglia. -->
+  <defs>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d3352" stop-opacity="0.93"/>
+      <stop offset="1" stop-color="#04162a" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9c7a45"/>
+      <stop offset="0.5" stop-color="#f4dca0"/>
+      <stop offset="1" stop-color="#9c7a45"/>
+    </linearGradient>
+  </defs>
+  <rect x="14" y="14" width="2303" height="1190" rx="60" fill="url(#panel)" stroke="url(#gold)" stroke-width="3" vector-effect="non-scaling-stroke"/>
+  <rect x="60" y="60" width="2211" height="1098" rx="36" fill="none" stroke="#f4dca0" stroke-opacity="0.35" stroke-width="1" vector-effect="non-scaling-stroke"/>
+  <path d="M1165 0 L1215 30 L1165 60 L1115 30 Z" fill="#f4dca0"/>
+  <path d="M1165 1158 L1215 1188 L1165 1218 L1115 1188 Z" fill="#f4dca0"/>
+</svg>

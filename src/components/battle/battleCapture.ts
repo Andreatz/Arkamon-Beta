@@ -16,8 +16,13 @@ export interface CaptureStep {
   holds: boolean
 }
 
+/** Sacchettino lanciato: decide l'illustrazione del sacchetto (fase U5). */
+export type CaptureBag = 'sacchettino' | 'mega-sacchettino' | 'ultra-sacchettino' | 'masterball'
+
 export interface CapturePlan {
   kind: 'dice' | 'master'
+  /** Sacchettino usato; senza indicazione si deduce dal tipo di cattura. */
+  item?: CaptureBag
   steps: CaptureStep[]
   caught: boolean
   /** Somma massima che consente la cattura (i dadi sono interi). */
@@ -58,4 +63,10 @@ export function planD20Capture({ roll, soglia, riuscita }: { roll: number; sogli
 /** Sacchettino Supremo: tre oscillazioni senza dadi, sempre riuscita. */
 export function planMasterCapture(): CapturePlan {
   return { kind: 'master', steps: [0, 0, 0].map(() => ({ die: null, total: 0, holds: true })), caught: true, maxTotal: null }
+}
+
+/** Illustrazione del lotto 1 per il sacchetto lanciato. */
+export function captureBagArt(item: CaptureBag | undefined, kind: CapturePlan['kind']): string {
+  const bag = item ?? (kind === 'master' ? 'masterball' : 'sacchettino')
+  return bag === 'masterball' ? 'item-sacchettino-supremo' : `item-${bag}`
 }

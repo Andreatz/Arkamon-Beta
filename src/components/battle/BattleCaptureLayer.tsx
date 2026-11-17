@@ -2,7 +2,8 @@ import { useId } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { motionTransition, resolveDuration } from '@/motion/tokens'
-import type { CaptureStep } from './battleCapture'
+import { captureBagArt, type CaptureBag, type CaptureStep } from './battleCapture'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
 import './battleCapture.css'
 
 export type CapturePhase = 'throw' | 'absorb' | 'settle' | 'shake' | 'caught' | 'escaped'
@@ -10,6 +11,8 @@ export type CapturePhase = 'throw' | 'absorb' | 'settle' | 'shake' | 'caught' | 
 export interface CaptureDisplay {
   id: number
   kind: 'dice' | 'master'
+  /** Sacchettino lanciato (fase U5): sceglie l'illustrazione. */
+  item?: CaptureBag
   phase: CapturePhase
   /** Numero di oscillazioni avviate: ogni valore nuovo fa ripartire il dondolio. */
   shake: number
@@ -29,7 +32,8 @@ export function captureHidesTarget(capture: CaptureDisplay | null): boolean {
 }
 
 /**
- * Sfera di cattura, dadi delle oscillazioni ed esito. Vive nel mondo di
+ * Sacchettino di cattura (decisione 5 dell'audit UX/UI): viene lanciato, si apre,
+ * risucchia la creatura, si chiude e oscilla con i dadi. Vive nel mondo di
  * battaglia, quindi segue la cinepresa. Le coordinate sono percentuali del palco.
  */
 export function BattleCaptureLayer({ capture, from, to }: { capture: CaptureDisplay | null; from: Point; to: Point }) {
@@ -41,11 +45,17 @@ export function BattleCaptureLayer({ capture, from, to }: { capture: CaptureDisp
         <motion.div key={capture.id} className="battle-capture" data-battle-capture={capture.phase} data-capture-kind={capture.kind}
           aria-hidden="true" exit={{ opacity: 0, transition: motionTransition('fast', 'in', settings) }}>
           <CaptureOrb capture={capture} from={from} target={to} ground={ground} />
-          {(capture.phase === 'absorb') && (
-            <motion.span className="battle-capture__ring" style={{ left: `${to.x}%`, top: `${to.y}%` }}
-              initial={{ x: '-50%', y: '-50%', scale: 0.2, opacity: 0.95 }} animate={{ scale: 2.4, opacity: 0 }}
+          {(capture.phase === 'absorb') && <>
+            {/* Il sacchetto si apre: un bagliore dalla bocca e anelli che si stringono verso di essa. */}
+            <motion.span className="battle-capture__mouth" style={{ left: `${to.x}%`, top: `${to.y}%` }}
+              initial={{ x: '-50%', y: '-50%', scale: 0.3, opacity: 0 }} animate={{ scale: [0.3, 1.5, 1.1], opacity: [0, 1, 0.85] }}
               transition={motionTransition(CAPTURE_TIMING.absorb, 'out', settings)} />
-          )}
+            {[0, 1].map((ring) => (
+              <motion.span key={ring} className="battle-capture__ring is-suction" style={{ left: `${to.x}%`, top: `${to.y}%` }}
+                initial={{ x: '-50%', y: '-50%', scale: 2.6 - ring * 0.7, opacity: 0 }} animate={{ scale: 0.15, opacity: [0, 0.95, 0] }}
+                transition={{ ...motionTransition(CAPTURE_TIMING.absorb, 'in', settings), delay: settings.reducedMotion ? 0 : ring * 0.08 }} />
+            ))}
+          </>}
           {capture.phase === 'escaped' && (
             <motion.span className="battle-capture__ring is-burst" style={{ left: `${ground.x}%`, top: `${ground.y}%` }}
               initial={{ x: '-50%', y: '-50%', scale: 0.4, opacity: 1 }} animate={{ scale: 3, opacity: 0 }}
@@ -64,15 +74,18 @@ function CaptureOrb({ capture, from, target, ground }: { capture: CaptureDisplay
   const settings = useGameMotionPreferences()
   const { phase } = capture
   const apex = Math.max(4, Math.min(from.y, target.y) - 26)
+  // Il sacchetto ruota in volo, si gonfia aprendosi, si chiude con un rimbalzo e oscilla sulla base.
   const animate = phase === 'throw'
-    ? { left: [`${from.x}%`, `${(from.x + target.x) / 2}%`, `${target.x}%`], top: [`${from.y}%`, `${apex}%`, `${target.y}%`], rotate: [0, 360, 720], scale: [0.7, 1, 0.9], opacity: 1 }
+    ? { left: [`${from.x}%`, `${(from.x + target.x) / 2}%`, `${target.x}%`], top: [`${from.y}%`, `${apex}%`, `${target.y}%`], rotate: [-20, 250, 540], scale: [0.6, 0.95, 0.9], scaleY: 1, opacity: 1 }
     : phase === 'absorb'
-      ? { left: `${target.x}%`, top: `${target.y}%`, rotate: 720, scale: [0.9, 1.25, 1], opacity: 1 }
+      ? { left: `${target.x}%`, top: `${target.y}%`, rotate: 720, scale: [0.9, 1.3, 1.18], scaleY: [1, 0.86, 1.08], opacity: 1 }
       : phase === 'escaped'
-        ? { left: `${ground.x}%`, top: `${ground.y}%`, rotate: 0, scale: 1.6, opacity: 0 }
+        ? { left: `${ground.x}%`, top: `${ground.y}%`, rotate: [0, -12, 14], scale: [1, 1.25, 1.7], scaleY: 1, opacity: [1, 1, 0] }
         : phase === 'shake'
-          ? { left: `${ground.x}%`, top: `${ground.y}%`, rotate: [0, -24, 18, -10, 4, 0], scale: 1, opacity: 1 }
-          : { left: `${ground.x}%`, top: `${ground.y}%`, rotate: 0, scale: 1, opacity: 1 }
+          ? { left: `${ground.x}%`, top: `${ground.y}%`, rotate: [0, -18, 14, -8, 3, 0], scale: 1, scaleY: [1, 0.94, 1.02, 0.97, 1, 1], opacity: 1 }
+          : phase === 'settle'
+            ? { left: `${ground.x}%`, top: `${ground.y}%`, rotate: 0, scale: 1, scaleY: [1.12, 0.78, 1.06, 1], opacity: 1 }
+            : { left: `${ground.x}%`, top: `${ground.y}%`, rotate: 0, scale: [1, 1.12, 1], scaleY: 1, opacity: 1 }
   const duration = phase === 'throw' ? CAPTURE_TIMING.throw
     : phase === 'absorb' ? CAPTURE_TIMING.absorb
       : phase === 'settle' ? CAPTURE_TIMING.settle
@@ -81,7 +94,8 @@ function CaptureOrb({ capture, from, target, ground }: { capture: CaptureDisplay
   return (
     <motion.div
       key={phase === 'shake' ? `shake-${capture.shake}` : 'orb'}
-      className={`battle-capture__orb ${phase === 'caught' ? 'is-sealed' : ''}`}
+      className={`battle-capture__orb ${phase === 'caught' ? 'is-sealed' : ''}${phase === 'escaped' ? ' is-torn' : ''}`}
+      data-capture-bag={capture.item ?? (capture.kind === 'master' ? 'masterball' : 'sacchettino')}
       initial={false}
       animate={animate}
       transition={{
@@ -91,7 +105,9 @@ function CaptureOrb({ capture, from, target, ground }: { capture: CaptureDisplay
       }}
       style={{ x: '-50%', y: '-50%' }}
     >
-      <CaptureOrbArt kind={capture.kind} />
+      {hasGameArt(captureBagArt(capture.item, capture.kind))
+        ? <GameArt id={captureBagArt(capture.item, capture.kind)} className="battle-capture__bag-art" />
+        : <CaptureOrbArt kind={capture.kind} />}
     </motion.div>
   )
 }

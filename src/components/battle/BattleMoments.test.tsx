@@ -42,6 +42,19 @@ describe('momenti speciali della battaglia', () => {
     expect(master).not.toContain('battle-capture__total')
   })
 
+  it('lancia il Sacchettino dipinto scelto dalla borsa, con il Supremo per la cattura garantita', () => {
+    const mega = renderToStaticMarkup(<BattleCaptureLayer capture={display({ item: 'mega-sacchettino', phase: 'throw' })} {...points} />)
+    expect(mega).toContain('data-capture-bag="mega-sacchettino"')
+    expect(mega).toContain('data-game-art="item-mega-sacchettino"')
+    expect(mega).not.toContain('<svg')
+    const master = renderToStaticMarkup(<BattleCaptureLayer capture={display({ kind: 'master', phase: 'absorb', maxTotal: null })} {...points} />)
+    expect(master).toContain('data-game-art="item-sacchettino-supremo"')
+    expect(master).toContain('battle-capture__mouth')
+    expect(master.match(/battle-capture__ring is-suction/g)).toHaveLength(2)
+    const torn = renderToStaticMarkup(<BattleCaptureLayer capture={display({ item: 'sacchettino', phase: 'escaped' })} {...points} />)
+    expect(torn).toContain('is-torn')
+  })
+
   it('lo stacco della Suprema usa l’illustrazione della specie e il colore del tipo', () => {
     expect(renderToStaticMarkup(<SupremeCutIn display={null} />)).toBe('')
     const markup = renderToStaticMarkup(<SupremeCutIn display={{ id: 4, side: 'A', speciesId: 9, pokemonName: 'Felyss', moveName: 'Sesto Senso', color: 'rgb(232, 121, 249)' }} />)

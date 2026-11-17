@@ -73,7 +73,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     const texture = surface.locator('[data-ui-asset-decoration]')
     const fill = surface.locator('svg rect:not([data-battle-hp-ghost])')
     const track = surface.locator('[data-ui-hp-track]')
-    await assertBackground(surface, '/ui/hp_bar_enemy.png')
+    await assertBackground(surface, '/ui/aurora/hp-plate.svg')
     await expect(texture).toBeVisible()
     const labels = (await surface.textContent())!.trim()
     const originalFillWidth = await fill.getAttribute('width')
@@ -107,7 +107,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     expect((await surface.textContent())!.trim()).toBe(labels)
 
     await original(page)
-    await assertBackground(surface, '/ui/hp_bar_enemy.png')
+    await assertBackground(surface, '/ui/aurora/hp-plate.svg')
     await expect(texture).toBeVisible()
     await expect(texture).toHaveAttribute('src', originalTexture!)
     await expect(fill).toHaveCSS('fill', 'rgb(17, 34, 238)')
@@ -116,7 +116,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     await assertBackground(surface, '/ui/studio/Comuni/hp-bar-enemy.svg')
     await expect(texture).toBeHidden()
     await page.getByRole('button', { name: '↷ Ripeti', exact: true }).click()
-    await assertBackground(surface, '/ui/hp_bar_enemy.png')
+    await assertBackground(surface, '/ui/aurora/hp-plate.svg')
     await expect(texture).toBeVisible()
 
     const player = preview(page).locator('[data-ui-id="layout.hp-giocatore"]')
@@ -130,7 +130,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     await expect(playerSurface.locator('svg[viewBox="0 0 507 40"]')).toBeVisible()
     expect((await playerSurface.textContent())!.trim()).toBe(playerLabels)
     await original(page)
-    await assertBackground(playerSurface, '/ui/hp_bar_player.png')
+    await assertBackground(playerSurface, '/ui/aurora/hp-plate.svg')
     await expect(playerSurface.locator('[data-ui-asset-decoration]')).toBeVisible()
 
     await selectLayer(page, 'HP nemico')
@@ -157,7 +157,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     })
     const infoGroup = preview(page).locator('[data-ui-id="layout.box-messaggi"]')
     const info = infoGroup.locator('[data-ui-asset-surface]').first()
-    await assertBackground(info, '/ui/infobox.png')
+    await assertBackground(info, '/ui/aurora/infobox.svg')
     const messageLines = info.locator('.battle-message-lines')
     await expect(messageLines).toBeAttached()
     await selectLayer(page, 'Box messaggi', 'Gruppo')
@@ -166,7 +166,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     await expect(infoGroup).toHaveCSS('background-image', 'none')
     await expect(messageLines).toBeAttached()
     await original(page)
-    await assertBackground(info, '/ui/infobox.png')
+    await assertBackground(info, '/ui/aurora/infobox.svg')
 
     const editorCommand = preview(page).getByRole('button', { name: 'Mosse giocatore', exact: true })
     await expect(editorCommand).toBeVisible()
@@ -192,7 +192,7 @@ test.describe('Studio UI artwork replaces the existing artwork', () => {
     await expect(typeIcon).toBeVisible()
     await expect(typeIcon).toHaveAttribute('src', typeSource!)
     await original(page)
-    await assertBackground(move, '/ui/move_button.png')
+    await assertBackground(move, '/ui/aurora/move-frame.svg')
     await expect(typeIcon).toBeVisible()
   })
 

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Nomi attesi (anche in JPG o WebP) nella cartella di consegna (asset-inbox/<lotto>) e destinazione in public/ui/game-art. I ritratti npc-*.png e trainer-*.png sono accettati per schema. Vedi i documenti di progetto 'Prompt per gli asset, lotto 1' e 'Prompt per allenatori e NPC'.",
+  "description": "Nomi attesi (anche in JPG o WebP) nella cartella di consegna (asset-inbox/<lotto>) e destinazione in public/ui/game-art. I ritratti npc-*.png e trainer-*.png sono accettati per schema. Vedi i documenti di progetto 'Prompt per gli asset, lotto 1', 'Prompt per gli asset, lotto 3' e 'Prompt per allenatori e NPC'.",
   "files": {
     "portrait-player-1.png": {
       "id": "portrait-player-1",
@@ -139,6 +139,72 @@
     },
     "category-tools.png": {
       "id": "category-tools",
+      "maxSide": 256
+    },
+    "battle-hp-banner.png": {
+      "id": "battle-hp-banner",
+      "maxSide": 1600
+    },
+    "battle-hp-medallion.png": {
+      "id": "battle-hp-medallion",
+      "maxSide": 400
+    },
+    "battle-hp-track.png": {
+      "id": "battle-hp-track",
+      "maxSide": 1600
+    },
+    "battle-move-frame.png": {
+      "id": "battle-move-frame",
+      "maxSide": 1200
+    },
+    "battle-move-frame-selected.png": {
+      "id": "battle-move-frame-selected",
+      "maxSide": 1200
+    },
+    "battle-message-frame.png": {
+      "id": "battle-message-frame",
+      "maxSide": 1600
+    },
+    "battle-supreme-frame.png": {
+      "id": "battle-supreme-frame",
+      "maxSide": 900
+    },
+    "battle-turn-banner.png": {
+      "id": "battle-turn-banner",
+      "maxSide": 1600
+    },
+    "battle-dice-tray.png": {
+      "id": "battle-dice-tray",
+      "maxSide": 1600
+    },
+    "status-tokens.png": {
+      "grid": [
+        4,
+        1
+      ],
+      "ids": [
+        "status-poison",
+        "status-paralysis",
+        "status-sleep",
+        "status-confusion"
+      ],
+      "maxSide": 256
+    },
+    "type-emblems.png": {
+      "grid": [
+        4,
+        2
+      ],
+      "ids": [
+        "type-normale",
+        "type-elettro",
+        "type-fuoco",
+        "type-terra",
+        "type-acqua",
+        "type-erba",
+        "type-oscurita",
+        "type-psico"
+      ],
       "maxSide": 256
     }
   },
