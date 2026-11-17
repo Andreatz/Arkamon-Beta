@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, realpathSync } from 'node:fs'
 import path from 'node:path'
 // @ts-expect-error Shared standalone Node release verification utility.
-import { fingerprintRelease, NATIVE_RELEASE_PROOF } from '../scripts/release-verification.mjs'
+import { fingerprintRelease, NATIVE_RELEASE_PROOF, PENDING_NATIVE_RELEASE_SPECIES } from '../scripts/release-verification.mjs'
 
 type Animation = 'idle' | 'attack' | 'hit' | 'victory' | 'ko'
 interface PageRecord { src: string; encodedBytes: number; sha256: string }
@@ -110,7 +110,7 @@ for (const species of [107, 108, 109, 110]) test(`compiled ${species}: five nati
   await media.attach()
 })
 
-for (const species of Array.from({ length: 56 }, (_, index) => index + 111)) test(`compiled ${species}: pending form plays five native actions without game data`, async ({ page }, testInfo) => {
+for (const species of PENDING_NATIVE_RELEASE_SPECIES as readonly number[]) test(`compiled ${species}: pending form plays five native actions without game data`, async ({ page }, testInfo) => {
   const media = await verifyLocalProductionMedia(page, testInfo)
   await media.install
   await page.goto('./#arkamon-lab')

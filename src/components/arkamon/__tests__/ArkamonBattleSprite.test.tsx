@@ -7,9 +7,13 @@ import {
   type ArkamonPlaybackState,
 } from '../ArkamonBattleSprite'
 import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
+import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
 
 const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
-const ANIMATED_SPECIES_IDS = Array.from({ length: 166 }, (_, index) => index + 1)
+const ANIMATED_SPECIES_IDS = [
+  ...Array.from({ length: 166 }, (_, index) => index + 1),
+  ...Object.keys(sourceCountsNovember16).map(Number),
+]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const motionPreference = vi.hoisted(() => ({ reduced: false }))

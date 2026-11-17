@@ -5,8 +5,12 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 import { replacement161VictorySha256 } from './fixtures/native-import-2026-11-13.json'
+import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
 
-const SPECIES_IDS = Array.from({ length: 166 }, (_, index) => index + 1)
+const SPECIES_IDS = [
+  ...Array.from({ length: 166 }, (_, index) => index + 1),
+  ...Object.keys(sourceCountsNovember16).map(Number),
+]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -152,6 +156,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(transparent).toBeGreaterThan(info.width * info.height * 0.25)
     expect(opaqueArtwork).toBeGreaterThan(1000)
     if ([163, 164, 165, 166].includes(speciesId)) expect(blueScreen).toBe(true)
+    if (speciesId >= 169) expect(blueScreen).toBe(speciesId <= 170)
     expect(Boolean(conversion.key.preserveSaturatedGreenBody)).toBe([130, 131, 132, 133, 134, 135, 136].includes(speciesId) && animation === 'idle')
     if (speciesId === 5) {
       expect(darkFur).toBeGreaterThan(1000)
@@ -160,14 +165,15 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)
-      expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106, 123, 124, 127, 163, 164, 165, 166]).toContain(speciesId)
-      if (speciesId >= 163) {
+      expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106, 123, 124, 127, 163, 164, 165, 166, 169, 170]).toContain(speciesId)
+      if (speciesId >= 163 && speciesId <= 166) {
         expect(Boolean(conversion.key.softBlueScreenRejection)).toBe(animation === 'ko' && (speciesId === 164 || speciesId === 165))
       }
       // Reliskull carries small algae patches at logical size 192; the older
       // blue-screen forms have much larger green leaves or body regions.
       if (speciesId <= 82) expect(opaqueGreen).toBeGreaterThan(speciesId === 82 ? 300 : 1000)
       if (speciesId === 166) expect(opaqueGreen).toBeGreaterThan(300)
+      if ((speciesId === 169 || speciesId === 170) && animation === 'idle') expect(opaqueGreen).toBeGreaterThan(1000)
     } else if (conversion.key.preserveSaturatedGreenBody) {
       expect(nativeGreenAllowed).toBe(true)
       expect([130, 131, 132, 133, 134, 135, 136]).toContain(speciesId)
