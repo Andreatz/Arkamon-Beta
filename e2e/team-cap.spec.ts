@@ -11,7 +11,7 @@ test('team level cap discards KO experience through reload and team changes, and
     const player = (id: number) => ({ id, nome: `Cap ${id}`, squadra: id === 1 ? [a, mate] : [], deposito: id === 1 ? { '1:1': boxed } : {},
       monete: 200, inventario: { masterball: 1 }, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [] })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {},
       scenaCorrente: { scena: 'battaglia' }, scenaPrecedente: { scena: 'mappa-principale' }, audioMuted: true, rivaleStarterId: 9,
       battaglia: { tipo: 'NPC', pokemonA: a, pokemonB: enemy, squadraA: [a, mate], squadraB: [enemy], hpMaxA: 19, hpMaxB: 12,

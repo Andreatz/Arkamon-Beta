@@ -61,7 +61,9 @@ describe('Real player team tools', () => {
     fixture.state.giocatore1 = player(1, [], {})
     const markup = renderToStaticMarkup(<TeamScreen playerId={1} onAnalyse={() => {}} onBag={() => {}} onDeposit={() => {}} />)
     expect(markup).toContain('La tua squadra apparirà qui dopo la scelta dello starter.')
-    expect(markup.match(/class="pu-team-slot"/g)).toHaveLength(6)
+    // U1: nessun posto vuoto inventato; l'invito al Deposito compare solo dopo lo starter.
+    expect(markup.match(/class="pu-team-slot"/g)).toBeNull()
+    expect(markup).not.toContain('Aggiungi dal Deposito')
     expect(markup).not.toContain('Arkamon selezionato:')
     expect(markup).not.toContain('Ombra')
   })

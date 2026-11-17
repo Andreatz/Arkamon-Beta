@@ -7,7 +7,7 @@ async function seedTwoPlayers(page: Page) {
     const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Ada' : 'Bruno', squadra: [pokemon(id)], deposito: {},
       cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 735 : 490, inventario: { potion: id }, caselleConsumate: [] })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position('Milano'), posizione2: position('Torino'), turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null,

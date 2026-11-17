@@ -107,8 +107,9 @@ test('eight reference screens fit and preserve real storage',async({page,isMobil
       await root.getByRole('button',{name:/Squadra, posto 1:/}).click()
     }
     if(screen==='negozio') {
-      await expect(root.locator('.pu-shop-row')).toHaveCount(7)
-      await root.getByRole('button',{name:'Cure',exact:true}).click();await expect(root.locator('.pu-shop-row')).toHaveCount(3)
+      // Venezia (catalogo del Database): Pozione, Rianimatore, Sacchettino.
+      await expect(root.locator('.pu-shop-row')).toHaveCount(3)
+      await root.getByRole('button',{name:'Cure',exact:true}).click();await expect(root.locator('.pu-shop-row')).toHaveCount(2)
       await root.getByRole('button',{name:'Cattura',exact:true}).click();await expect(root.locator('.pu-shop-row')).toHaveCount(1)
       await root.getByRole('button',{name:'Tutti',exact:true}).click()
     }

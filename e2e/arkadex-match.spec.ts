@@ -36,7 +36,7 @@ async function battleFixture(page: Page, fixture: 'battle' | 'evolution' | 'fina
     const secondStarter = { istanzaId: 'arkadex-player2', specieId: 5, nome: 'Darklaw Dex', livello: 5, hp: 12, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Dex ${id}`, squadra: id === 1 ? [attacker] : [secondStarter], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { masterball: 1 }, caselleConsumate: [] })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,
@@ -61,7 +61,7 @@ test('Arkadex keeps starter discoveries personal, locks unknown search and is ac
   await startCampaign(page)
   const dialog = await openTools(page, 'Arkadex')
   const dex = dialog.getByRole('region', { name: 'Arkadex', exact: true })
-  await expect(dex).toContainText('1 / 110 viste · 1 / 110 ottenute')
+  await expect(dex).toContainText('1 / 206 viste · 1 / 206 ottenute')
   await expect(dex.getByRole('button', { name: 'Numero 1: Vyrath · Ottenuto', exact: true })).toBeVisible()
   await expect(dex.getByRole('button', { name: 'Numero 5: specie da scoprire · Da scoprire', exact: true })).toBeVisible()
   await dex.getByLabel('Cerca specie scoperta o numero').fill('Voider')
@@ -123,7 +123,7 @@ test('match register records actual campaign start and starters and exports the 
 test('Masterball capture records one event, persists discovered species and leaves G2 locked', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', (error) => errors.push(error.message))
   await battleFixture(page)
-  await page.getByRole('button', { name: 'Masterball x1', exact: true }).click()
+  await page.getByRole('button', { name: 'Sacchettino Supremo ×1', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Prosegui', exact: true })).toBeVisible()
   const captured = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   expect(captured.arkadex.caught1).toEqual([1, 13]); expect(captured.arkadex.caught2).toEqual([5])
@@ -139,12 +139,12 @@ test('Masterball capture records one event, persists discovered species and leav
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')
   const dialog = await openTools(page, 'Arkadex')
   const dex = dialog.getByRole('region', { name: 'Arkadex', exact: true })
-  await expect(dex).toContainText('2 / 110 viste · 2 / 110 ottenute')
+  await expect(dex).toContainText('2 / 206 viste · 2 / 206 ottenute')
   await dex.getByLabel('Cerca specie scoperta o numero').fill('#13')
   await expect(dex.getByRole('button', { name: 'Numero 13: Wormaren · Ottenuto', exact: true })).toBeVisible()
   await expect(dex.getByRole('article', { name: 'Scheda di Wormaren', exact: true })).toContainText('livello 5')
   await page.getByRole('group', { name: 'Giocatore degli strumenti', exact: true }).getByRole('button').nth(1).click()
-  await expect(dex).toContainText('1 / 110 viste · 1 / 110 ottenute')
+  await expect(dex).toContainText('1 / 206 viste · 1 / 206 ottenute')
   await dex.getByLabel('Cerca specie scoperta o numero').fill('#13')
   await expect(dex.getByRole('button', { name: 'Numero 13: specie da scoprire · Da scoprire', exact: true })).toBeVisible()
   await dialog.getByRole('button', { name: 'Menù Partita', exact: true }).click()

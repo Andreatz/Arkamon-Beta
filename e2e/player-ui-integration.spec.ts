@@ -38,7 +38,7 @@ async function seedCampaign(page: Page, location: 'map' | 'city' | 'route' | 'de
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
     const place = location === 'city' || location === 'deposit' ? 'Venezia' : location === 'route' ? 'Percorso_1' : 'Milano'
-    localStorage.setItem(key, JSON.stringify({ version: 0, state: {
+    localStorage.setItem(key, JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null,
       posizione1: position(place), posizione2: position('Torino'), turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: location === 'city' ? { Venezia: 'n56' } : {}, posizioniLocali2: {},
@@ -337,17 +337,18 @@ test('the integrated city checkout charges the real cart once without healing or
   const dialog = await openConfiguredShop(page)
   const shop = dialog.getByRole('region', { name: 'Arkastore di Venezia', exact: true })
   await shop.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
-  await shop.getByRole('button', { name: 'Seleziona Antiparalisi', exact: true }).click()
-  await shop.getByLabel('Quantità di Antiparalisi', { exact: true }).fill('1')
-  await expect(shop).toContainText('Carrello: 2 oggetti · 180 ₳')
+  // Venezia vende Pozione, Rianimatore e Sacchettino (catalogo del Database).
+  await shop.getByRole('button', { name: 'Seleziona Sacchettino', exact: true }).click()
+  await shop.getByLabel('Quantità di Sacchettino', { exact: true }).fill('1')
+  await expect(shop).toContainText('Carrello: 2 oggetti · 100 ₳')
   await shop.getByRole('button', { name: 'Acquista carrello', exact: true }).click()
-  await expect.poll(async () => (await campaign(page)).giocatore1.monete).toBe(520)
+  await expect.poll(async () => (await campaign(page)).giocatore1.monete).toBe(600)
   const after = await campaign(page)
-  expect(after.giocatore1.inventario).toMatchObject({ potion: 3, 'paralysis-heal': 2 })
+  expect(after.giocatore1.inventario).toMatchObject({ potion: 3, 'paralysis-heal': 1, sacchettino: 1 })
   expect(after.giocatore1.squadra).toEqual(before.giocatore1.squadra)
   expect(after.giocatore2).toEqual(before.giocatore2)
   expect(after.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
-  await expect(shop.getByLabel('Quantità di Antiparalisi', { exact: true })).toBeDisabled()
+  await expect(shop.getByLabel('Quantità di Sacchettino', { exact: true })).toBeDisabled()
   await expect(shop.getByRole('button', { name: 'Acquista carrello', exact: true })).toBeDisabled()
   await page.reload()
   await expect(page.locator('[data-presented-scene]')).toHaveAttribute('aria-busy', 'false')

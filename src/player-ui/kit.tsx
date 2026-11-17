@@ -1,3 +1,4 @@
+import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
 import { GameArt, gameArtForIcon } from '@/ui-system/GameArt'
 import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
@@ -132,14 +133,10 @@ export function PokemonMoves({ pokemon, detailed = false }: { pokemon: PokemonIs
   const definition = getPokemon(pokemon.specieId)
   return <div className="pu-moves">{definition?.mosse.filter(id => id > 0).map(id => {
     const move = getMossa(id); if (!move) return null
-    const dice = getMossaAlLivello(move, pokemon.livello)
     const healing = èMossaCura(move)
-    const effect = healing ? `Cura ${move.valoreEffetto ?? 0}${move.effetto === 'CURA_PCT' ? '%' : ' HP'}`
-      : èMossaSoloStato(move) ? 'Stato' : `${dice.dadi}d6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}`
-    const statusName: Record<string, string> = { PARALISI: 'Paralisi', PARALIZZATO: 'Paralisi', VELENO: 'Veleno', SONNO: 'Sonno', CONFUSIONE: 'Confusione' }
-    const description = healing ? `${effect}${move.effetto === 'CURA_PCT' ? ' degli HP massimi' : ''} e rimuove veleno e paralisi`
-      : èMossaSoloStato(move) ? `${statusName[move.effetto ?? ''] ?? 'Stato alterato'} · Nessun danno e nessuna Suprema`
-        : 'Dadi e bonus al livello attuale · Il tipo del bersaglio modifica il danno'
+    const facts = battleMoveFacts(move, pokemon.livello)
+    const effect = facts.kind === 'attack' && !èMossaSoloStato(move) ? (() => { const dice = getMossaAlLivello(move, pokemon.livello); return `${dice.dadi}d6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}` })() : facts.label
+    const description = facts.kind === 'attack' && !èMossaSoloStato(move) ? 'Dadi e bonus al livello attuale · Il tipo del bersaglio modifica il danno' : facts.detail
     return <div className="pu-move" key={id} data-move-kind={healing ? 'heal' : èMossaSoloStato(move) ? 'status' : 'attack'}><div><strong>{move.nome}</strong><TypeBadge type={move.tipo} />{detailed && <small className="pu-move-tactical">{description}</small>}</div>
       <span className="pu-dice" role={healing ? 'note' : undefined} aria-label={description} title={description}>{effect}</span></div>
   })}</div>

@@ -13,7 +13,7 @@ test('a route wild encounter retains reserves through a poison KO, reload, captu
     const player = (id: 1 | 2) => ({ id, nome: `Audit G${id}`, squadra: id === 1 ? [lead, reserve] : [{ ...reserve, istanzaId: 'legacy-player2' }],
       deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 300, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Percorso_1', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, scenaCorrente: { scena: 'percorso', payload: { luogo: 'Percorso_1' } },
@@ -46,7 +46,7 @@ test('a route wild encounter retains reserves through a poison KO, reload, captu
   await expect(page.getByRole('heading', { name: 'Scegli un Pokemon', exact: true })).toBeVisible()
   expect((await snapshot()).battaglia.squadraA).toEqual(checkpoint.battaglia.squadraA)
   await page.getByRole('button').filter({ hasText: 'Darklaw riserva' }).click()
-  const masterball = page.getByRole('button', { name: /Masterball x1/ })
+  const masterball = page.getByRole('button', { name: /Sacchettino Supremo ×1/ })
   const canCapture = async () => await masterball.count() > 0 && await masterball.isEnabled()
   for (let action = 0; action < 3; action++) {
     const opponent = page.getByRole('button', { name: 'AVVERSARIO', exact: true })

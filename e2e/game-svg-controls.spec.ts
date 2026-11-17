@@ -28,7 +28,7 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
       inventario: { masterball: 3 },
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position(place), posizione2: position('Pordenone'),
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
@@ -205,8 +205,8 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   })
   for (const control of [move,
     page.getByRole('button', { name: 'Mossa Suprema', exact: true }),
-    page.getByRole('button', { name: 'Cattura', exact: true }),
-    page.getByRole('button', { name: /^Masterball x/ }),
+    // Un pulsante per ogni Sacchettino posseduto (Database 16/11).
+    page.getByRole('button', { name: /^Sacchettino Supremo ×/ }),
     page.getByRole('button', { name: 'Borsa', exact: true }),
     page.getByRole('button', { name: /^Cronaca ·/ }),
   ]) {

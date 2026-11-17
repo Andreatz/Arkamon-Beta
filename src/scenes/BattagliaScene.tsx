@@ -248,7 +248,7 @@ export function BattagliaScene() {
   const battleFx = useScreenFx()
   // La regia resta ferma nell'editor dei layout e nelle anteprime: lì il mondo non deve muoversi.
   const cine = useBattleCinematics({ rig: battleRig, fx: battleFx, enabled: !layoutEditing && !previewView })
-  const [pendingCaptureSave, setPendingCaptureSave] = useState<{ masterball: boolean } | null>(null)
+  const [pendingCaptureSave, setPendingCaptureSave] = useState<{ itemId: CaptureItemId } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
   const [coinOpen, setCoinOpen] = useState(() => Boolean(battaglia && !initialCheckpoint?.openingComplete && battaglia.pokemonA.livello === battaglia.pokemonB.livello && (battaglia.pokemonA.stato?.tipo === 'Paralizzato') === (battaglia.pokemonB.stato?.tipo === 'Paralizzato')))
@@ -1179,7 +1179,7 @@ export function BattagliaScene() {
   }
 
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
-  const salvaCatturaConclusa = (masterball = false) => {
+  const salvaCatturaConclusa = (itemId: CaptureItemId) => {
     const currentA = latestPokemon.current.A ?? pkmnA
     const checkpoint = settledBattleCheckpoint({
       initialPriority: battlePriority(),
@@ -1202,12 +1202,12 @@ export function BattagliaScene() {
       turnoCorrente: 'A',
       checkpoint,
       cronaca: chronicleRef.current,
-    }, masterball)
+    }, itemId)
   }
 
-  const segnalaCatturaNonSalvata = (masterball: boolean) => {
+  const segnalaCatturaNonSalvata = (itemId: CaptureItemId) => {
     // Keep this resolved action pending: retry persistence without another status tick or RNG draw.
-    setPendingCaptureSave({ masterball })
+    setPendingCaptureSave({ itemId })
     setAzioneInCorso(true)
     mostraMessaggi(['Cattura non salvata. Squadra e deposito restano intatti. Libera spazio per i salvataggi del browser e riprova.'])
   }
@@ -1220,9 +1220,9 @@ export function BattagliaScene() {
     setTerminata(true)
   }
 
-  const completaCatturaSalvata = (masterball = false) => {
-    if (!salvaCatturaConclusa(masterball)) {
-      segnalaCatturaNonSalvata(masterball)
+  const completaCatturaSalvata = (itemId: CaptureItemId) => {
+    if (!salvaCatturaConclusa(itemId)) {
+      segnalaCatturaNonSalvata(itemId)
       return false
     }
     mostraCatturaConclusa()
@@ -1234,9 +1234,9 @@ export function BattagliaScene() {
    * salvata prima dell'animazione: ricaricare la pagina a metà non permette
    * di ritentare il tiro. Durante la scena i comandi restano bloccati.
    */
-  const presentaCattura = (plan: Parameters<typeof cine.capture>[0], masterball: boolean, onEscaped: () => void, onCaught: () => void) => {
-    if (plan.caught && !salvaCatturaConclusa(masterball)) {
-      segnalaCatturaNonSalvata(masterball)
+  const presentaCattura = (plan: Parameters<typeof cine.capture>[0], itemId: CaptureItemId, onEscaped: () => void, onCaught: () => void) => {
+    if (plan.caught && !salvaCatturaConclusa(itemId)) {
+      segnalaCatturaNonSalvata(itemId)
       return
     }
     actionInProgressRef.current = true
@@ -1253,7 +1253,7 @@ export function BattagliaScene() {
     })
   }
 
-  /** Cattura con un Sacchettino della borsa: il sacchetto si consuma al lancio, riuscito o no. */
+  /** Cattura con un Sacchettino della borsa: il sacchetto si consuma sempre, insieme all'esito salvato. */
   const eseguiCattura = (itemId: CaptureItemId) => {
     if (!haSpazioPokemon(giocatore, pkmnB)) {
       mostraMessaggi(['Nessun posto disponibile per questo Arkamon: libera uno slot nel deposito o una posizione compatibile in squadra.'])
@@ -1263,18 +1263,20 @@ export function BattagliaScene() {
     if (!item || item.effect.kind !== 'capture' || (inventarioAttivo[itemId] ?? 0) <= 0) return
     const tier = item.effect.tier
     preparaTurnoGiocatore((_pokemon, statusMessages) => {
-      if (!useGameStore.getState().spendiOggetto(giocatoreAttivo, itemId)) {
+      const ris = tentaCatturaSacchettino(pkmnB, tier, battleRng)
+      // Riuscita: il Sacchettino si consuma insieme alla cattura (un salvataggio rifiutato non toglie nulla).
+      // Fallita: si consuma subito, prima della scena; se il browser rifiuta, il lancio non avviene.
+      if (!ris.riuscita && !useGameStore.getState().spendiOggetto(giocatoreAttivo, itemId)) {
         mostraMessaggi([`${item.name} non usato: il browser non può salvare la partita.`])
         return
       }
-      const ris = tentaCatturaSacchettino(pkmnB, tier, battleRng)
       const detail = ris.roll === null
         ? `${item.name}: cattura garantita, nessun dado.`
         : `d20: ${ris.roll}. Serve ${ris.soglia} o più (Arkamon ${ris.difficolta}, ${ris.fascia.replace('pieno', 'HP sopra il 50%').replace('+status', ' con status').replace(/^(25|50)/, 'HP al $1%')}).`
       appendChronicle([{ id: `${beginAction()}:capture`, kind: 'capture', side: 'A', title: ris.riuscita ? `${pkmnB.nome} catturato` : `${pkmnB.nome} sfugge alla cattura`, messages: [detail], target: logPokemon(pkmnB), ...(ris.roll === null ? {} : { diceSum: ris.roll }) }])
       mostraMessaggi([...statusMessages, `Lanci un ${item.name}...`])
       const plan = ris.roll === null ? planMasterCapture() : planD20Capture({ roll: ris.roll, soglia: ris.soglia!, riuscita: ris.riuscita })
-      presentaCattura(plan, false, () => {
+      presentaCattura(plan, itemId, () => {
         mostraMessaggi([`${pkmnB.nome} è scappato dal ${item.name}!`])
         passaTurnoAaB(pkmnB, 0)
       }, () => mostraMessaggi([`${pkmnB.nome} è stato catturato!`]))
@@ -1836,7 +1838,7 @@ export function BattagliaScene() {
               <div className="mt-3 flex justify-end gap-2">
                 {pendingCaptureSave && (
                   <ActionButton disabled={false} onClick={() => {
-                    if (completaCatturaSalvata(pendingCaptureSave.masterball)) mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
+                    if (completaCatturaSalvata(pendingCaptureSave.itemId)) mostraMessaggi([`${pkmnB.nome} è stato catturato!`])
                   }}>
                     Riprova salvataggio cattura
                   </ActionButton>

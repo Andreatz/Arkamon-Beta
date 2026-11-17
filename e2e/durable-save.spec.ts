@@ -15,7 +15,7 @@ async function fixture(page: Page, scenario: 'battle' | 'city' | 'evolution' | '
       deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: id === 1 ? 700 : 125,
       inventario: { masterball: id, ...(scenario === 'item' && id === 1 ? { potion: 2 } : {}) } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    const campaign = { giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
+    const campaign = { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: scenario === 'turn' ? { ...position, luogo: 'Pordenone' } : position, posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, audioMuted: true, scenaPrecedente: { scena: 'mappa-principale' },
       scenaCorrente: scenario === 'city' || scenario === 'turn' ? { scena: 'citta', payload: { luogo: 'Venezia' } } : scenario === 'names' ? { scena: 'laboratorio' } : scenario === 'evolution'

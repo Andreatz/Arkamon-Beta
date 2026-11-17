@@ -47,6 +47,17 @@ describe('atomic capture and reward settlement', () => {
     expect(state.concludiCattura(1, b, { checkpoint })).toBe(false)
     expect(useGameStore.getState().giocatore1.squadra).toHaveLength(2)
   })
+  it('consuma il Sacchettino lanciato insieme alla cattura salvata', () => {
+    useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, inventario: { sacchettino: 2, masterball: 1 } } }))
+    expect(useGameStore.getState().concludiCattura(1, b, { checkpoint }, 'sacchettino')).toBe(true)
+    expect(useGameStore.getState().giocatore1.inventario).toMatchObject({ sacchettino: 1, masterball: 1 })
+  })
+  it('rifiuta una cattura con un Sacchettino che non è più nella borsa', () => {
+    useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, inventario: { 'mega-sacchettino': 0 } } }))
+    const original = useGameStore.getState()
+    expect(original.concludiCattura(1, b, { checkpoint }, 'mega-sacchettino')).toBe(false)
+    expect(useGameStore.getState()).toBe(original)
+  })
   it('keeps item, squad and battle intact when an unavailable Masterball is requested', () => {
     useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, inventario: { masterball: 0 } } }))
     const original = useGameStore.getState()

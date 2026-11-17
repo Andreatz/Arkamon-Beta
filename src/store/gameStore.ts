@@ -149,7 +149,8 @@ export interface GameState extends GameSaveState {
   /** Aggiunge un pokemon alla squadra (se piena va in deposito). */
   aggiungiPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
   /** Capture, optional Masterball consumption and the finished battle save form one update. */
-  concludiCattura: (giocatoreId: 1 | 2, istanza: PokemonIstanza, patch: Partial<StatoBattaglia>, masterball?: boolean) => boolean
+  /** `oggetto`: il Sacchettino lanciato (true = Sacchettino Supremo, per compatibilità); si consuma insieme alla cattura. */
+  concludiCattura: (giocatoreId: 1 | 2, istanza: PokemonIstanza, patch: Partial<StatoBattaglia>, oggetto?: boolean | OggettoId) => boolean
 
   /** Aggiorna un pokemon esistente (HP, livello, evoluzione...) */
   aggiornaPokemon: (giocatoreId: 1 | 2, istanza: PokemonIstanza) => void
@@ -490,7 +491,8 @@ export const useGameStore = create<GameState>()(
           } as Partial<GameState>
         }),
 
-      concludiCattura: (giocatoreId, creature, patch, masterball = false) => {
+      concludiCattura: (giocatoreId, creature, patch, oggetto = false) => {
+        const itemId: OggettoId | null = oggetto === true ? 'masterball' : oggetto === false ? null : oggetto
         const istanza = clearStoredExperience(creature)
         const state = get()
         const battle = state.battaglia
@@ -499,7 +501,7 @@ export const useGameStore = create<GameState>()(
         if (!battle || battle.tipo !== 'Selvatico' || battle.checkpoint?.phase === 'ended'
           || battle.pokemonB.istanzaId !== istanza.istanzaId || !haSpazioPokemon(player, istanza)
           || battle.pokemonB.hp <= 0 || patch.checkpoint?.phase !== 'ended' || patch.checkpoint.outcome !== 'vittoria'
-          || (masterball && (player.inventario.masterball ?? 0) <= 0)) return false
+          || (itemId && (player.inventario[itemId] ?? 0) <= 0)) return false
         const eligible = canJoinTeam(player.squadra, istanza)
         const slot = !eligible ? trovaSlotDepositoLibero(player.deposito) : null
         if (!eligible && !slot) return false
@@ -507,8 +509,8 @@ export const useGameStore = create<GameState>()(
           ...player,
           squadra: slot ? player.squadra : [...player.squadra, istanza],
           deposito: slot ? { ...player.deposito, [slot]: istanza } : player.deposito,
-          inventario: masterball
-            ? { ...player.inventario, masterball: (player.inventario.masterball ?? 0) - 1 }
+          inventario: itemId
+            ? { ...player.inventario, [itemId]: (player.inventario[itemId] ?? 0) - 1 }
             : player.inventario,
         }
         return commitDurable({ [key]: nextPlayer, battaglia: clearBattleExperience({ ...battle, ...patch }) } as Partial<GameState>, true)

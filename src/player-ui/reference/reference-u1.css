@@ -1,0 +1,236 @@
+/*
+ * Fase U1 (audit UX/UI): Menù principale e Squadra ricomposti sui mockup.
+ * Caricato per ultimo fra le pelli di riferimento; solo layout, scala del testo e illustrazioni.
+ */
+
+/* ---------------- Menù principale ---------------- */
+
+/* Tessere: l'illustrazione occupa la maggior parte della carta, il titolo resta in basso. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-card-face {
+  padding: 6% 6% 7%;
+  gap: 1%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-art {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  transition: scale 180ms ease, filter 180ms ease;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-provided-menu-tile:not(:disabled):is(:hover, :focus-visible) .ref-menu-art {
+  scale: calc(1 + .05 * var(--motion-scale, 1));
+  filter: drop-shadow(0 8px 14px rgb(0 0 0 / .5)) brightness(1.06);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-tile h2 {
+  font-size: clamp(20px, 2.2vh, 32px);
+  margin: 0;
+  text-shadow: 0 2px 3px rgb(0 0 0 / .7);
+}
+
+/* Carta allenatore: sei posti con il sigillo del tipo, come nel mockup. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-team {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-team > .ref-team-slot {
+  position: relative;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--arka-ui-gold-deep);
+  border-radius: 4px;
+  background: radial-gradient(ellipse at 50% 35%, #1a5b78aa, #081b2d 75%);
+  box-shadow: inset 0 0 0 2px #081b2d;
+  overflow: visible;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-team > .ref-team-slot.is-empty {
+  background: #081b2d88;
+  border-style: dashed;
+  opacity: .55;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-team > .ref-team-slot .pu-creature-portrait {
+  width: 100%;
+  height: 100%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-team-type {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: 50%;
+  background: var(--arka-ui-night);
+  font-style: normal;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-team-type .pu-kit-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Striscia del Game Master con gli strumenti della partita. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-gm-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--arka-ui-gold-deep);
+  border-radius: 4px;
+  background: linear-gradient(90deg, #0b253df2, #0b253d99);
+  box-shadow: inset 0 0 0 3px #081b2d;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-gm-strip .ref-gm-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--arka-size-body);
+  color: var(--arka-ui-ink-muted);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-gm-strip .ref-gm-note strong {
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-lead);
+  color: var(--arka-ui-gold-bright);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-gm-seal {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: 50%;
+  background: var(--arka-ui-night);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-gm-strip .ref-menu-utilities {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-gm-strip .ref-menu-utilities > button {
+  min-height: 34px;
+  padding: 4px 10px;
+  font-size: var(--arka-size-caption);
+}
+
+/* ---------------- Squadra ---------------- */
+
+/* Righe dei compagni più larghe solo dove sei righe stanno in colonna senza scorrere. */
+@media (min-width: 1500px) and (min-height: 1040px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-slot {
+    width: min(100%, 300px);
+  }
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-slot-title strong {
+  font-family: var(--arka-ui-font-display);
+  font-size: clamp(15px, 1.9vh, 20px);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-slot-title > span,
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-slot .pu-health > span {
+  font-size: clamp(12px, 1.4vh, 15px);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-slot .pu-health progress {
+  height: 7px;
+}
+
+/* Un solo invito al posto dei posti vuoti. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-invite {
+  --collection-row-art: var(--provided-team-row-disabled);
+  opacity: .85;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-invite .pu-team-slot-content strong {
+  font-family: var(--arka-ui-font-display);
+  font-size: clamp(13px, 1.6vh, 17px);
+  line-height: 1.1;
+  color: var(--arka-ui-gold-bright);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-invite .pu-team-slot-content span {
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink-muted);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-invite:is(:hover, :focus-visible) {
+  --collection-row-art: var(--provided-team-row-hover);
+  opacity: 1;
+}
+
+/* Piedistallo runico sotto la creatura quando non c'è una splash art. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-portrait-space {
+  position: relative;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-team-pedestal {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  z-index: 0;
+  width: 92%;
+  height: auto;
+  translate: -50% 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 18px #29ceff55);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-portrait-space .pu-live-team-portrait {
+  position: relative;
+  z-index: 1;
+}
+
+/* Riepilogo: le mosse in una striscia compatta a tre colonne (nome e dadi al livello attuale);
+   tipo e dettagli restano nella scheda Mosse. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #b8965d55;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves .pu-moves {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves .pu-move {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  justify-items: start;
+  min-width: 0;
+  padding: 4px 6px;
+  border: 1px solid #b8965d33;
+  border-radius: 4px;
+  background: #081b2d66;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves .pu-move > div {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves .pu-move strong {
+  display: block;
+  font-size: clamp(12px, 1.35vh, 15px);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves .pu-type {
+  display: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves .pu-dice {
+  max-width: 100%;
+  padding: 1px 6px;
+  font-size: var(--arka-size-caption);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1100px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-team-layout {
+    grid-template-columns: minmax(220px, .95fr) minmax(200px, 1fr) minmax(260px, 1.1fr);
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-gm-strip { flex-wrap: wrap; }
+}
+
+/* Sotto i 1000px di altezza la scheda Mosse resta l'unico posto per le mosse: il riepilogo non scorre. */
+@media (max-height: 999px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves { display: none; }
+}

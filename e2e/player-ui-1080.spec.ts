@@ -65,7 +65,7 @@ async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directD
   }
   await page.addInitScript(({ key, state }) => {
     if (localStorage.getItem(key)) return
-    localStorage.setItem(key, JSON.stringify({ version: 0, state }))
+    localStorage.setItem(key, JSON.stringify({ version: 0, state: { ...state, dataVersion: 2 } }))
     localStorage.setItem('arkamon-preferences-v1', JSON.stringify({ version: 1, state: {
       musicVolume: 0, effectsVolume: 0, animationSpeed: 'fast', reducedMotion: 'on',
     } }))

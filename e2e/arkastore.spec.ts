@@ -18,10 +18,10 @@ async function seedCityCampaign(page: Page) {
       id, nome: id === 1 ? 'Cliente Uno' : 'Cliente Due',
       squadra: id === 1 ? [{ ...pokemon('shop-player-one', 1, 'Vyrath', 3), stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }] : [pokemon('shop-player-two', 5, 'Darklaw', 8)],
       deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [],
-      monete: id === 1 ? 300 : 40, inventario: { masterball: id === 1 ? 1 : 4 },
+      monete: id === 1 ? 300 : 40, inventario: id === 1 ? { masterball: 1, 'paralysis-heal': 1 } : { masterball: 4 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: { Venezia: 'n56' },
@@ -66,9 +66,10 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   await expect(shop).toBeVisible()
 
   // An unaffordable cart never charges anything and cannot consume the interaction.
-  await shop.getByRole('button', { name: 'Seleziona Masterball', exact: true }).click()
-  await shop.getByLabel('Quantità di Masterball', { exact: true }).fill('1')
-  await expect(shop).toContainText('Ti mancano 1200 monete.')
+  // Catalogo del Database: a Venezia si vendono Pozione, Rianimatore e Sacchettino.
+  await shop.getByRole('button', { name: 'Seleziona Sacchettino', exact: true }).click()
+  await shop.getByLabel('Quantità di Sacchettino', { exact: true }).fill('7')
+  await expect(shop).toContainText('Ti mancano 50 monete.')
   await expect(shop.getByRole('button', { name: 'Acquista carrello', exact: true })).toBeDisabled()
   let saved = await readCampaign(page)
   expect(saved.giocatore1.monete).toBe(300)
@@ -79,16 +80,16 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
 
   await shop.getByRole('button', { name: 'Seleziona Pozione', exact: true }).click()
   await shop.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
-  await shop.getByRole('button', { name: 'Seleziona Antiparalisi', exact: true }).click()
-  await shop.getByLabel('Quantità di Antiparalisi', { exact: true }).fill('1')
-  await expect(shop).toContainText('Carrello: 2 oggetti · 180 ₳')
+  await shop.getByRole('button', { name: 'Seleziona Sacchettino', exact: true }).click()
+  await shop.getByLabel('Quantità di Sacchettino', { exact: true }).fill('1')
+  await expect(shop).toContainText('Carrello: 2 oggetti · 100 ₳')
   const shopA11y = await new AxeBuilder({ page }).include('.arka-store').analyze()
   expect(shopA11y.violations).toEqual([])
   await test.info().attach('Arkastore e carrello prima dell’acquisto', { body: await page.screenshot(), contentType: 'image/png' })
   await shop.getByRole('button', { name: 'Acquista carrello', exact: true }).click()
-  await expect.poll(async () => (await readCampaign(page)).giocatore1.monete).toBe(120)
+  await expect.poll(async () => (await readCampaign(page)).giocatore1.monete).toBe(200)
   saved = await readCampaign(page)
-  expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, 'paralysis-heal': 1, masterball: 1 })
+  expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, 'paralysis-heal': 1, masterball: 1, sacchettino: 1 })
   expect(saved.giocatore1.squadra[0]).toMatchObject({ hp: 3, livello: 5, xp: 0, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } })
   expect(saved.giocatore2).toEqual(playerTwoBefore)
   expect(saved.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
@@ -96,7 +97,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   await page.reload()
   await expect(page.locator(sceneSelector)).toHaveAttribute('aria-busy', 'false')
   saved = await readCampaign(page)
-  expect(saved.giocatore1.monete).toBe(120)
+  expect(saved.giocatore1.monete).toBe(200)
   expect(saved.giocatore1.inventario['paralysis-heal']).toBe(1)
   expect(saved.giocatore1.squadra[0].stato.tipo).toBe('Paralizzato')
   expect(saved.giocatore2).toEqual(playerTwoBefore)
@@ -104,8 +105,8 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
 
   let bag = await openBag(page)
   await expect(bag.getByLabel('Arkamon da curare')).toHaveValue('shop-player-one')
-  await bag.getByRole('button', { name: 'Masterball: 1 disponibili', exact: true }).click()
-  await expect(bag.getByRole('button', { name: 'Usa Masterball', exact: true })).toBeDisabled()
+  await bag.getByRole('button', { name: 'Sacchettino Supremo: 1 disponibili', exact: true }).click()
+  await expect(bag.getByRole('button', { name: 'Usa Sacchettino Supremo', exact: true })).toBeDisabled()
   await bag.getByRole('button', { name: 'Antiparalisi: 1 disponibili', exact: true }).click()
   const bagA11y = await new AxeBuilder({ page }).include('.arka-item-bag').analyze()
   expect(bagA11y.violations).toEqual([])
@@ -115,7 +116,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   saved = await readCampaign(page)
   expect(saved.giocatore1.squadra[0].stato).toBeUndefined()
   expect(saved.giocatore1.squadra[0].hp).toBe(3)
-  expect(saved.giocatore1.monete).toBe(120)
+  expect(saved.giocatore1.monete).toBe(200)
   expect(saved.giocatore1.inventario.potion).toBe(1)
   expect(saved.giocatore2).toEqual(playerTwoBefore)
   expect(saved.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
@@ -129,7 +130,8 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   bag = await openBag(page)
   await bag.getByRole('button', { name: 'Pozione: 1 disponibili', exact: true }).click()
   await bag.getByRole('button', { name: 'Usa Pozione', exact: true }).click()
-  await expect.poll(async () => (await readCampaign(page)).giocatore1.squadra[0].hp).toBe(6)
+  // Pozione 19 + 1d6: a livello 5 riporta sempre al massimo di 12 HP.
+  await expect.poll(async () => (await readCampaign(page)).giocatore1.squadra[0].hp).toBe(12)
   saved = await readCampaign(page)
   expect(saved.giocatore1.inventario.potion).toBe(0)
   expect(saved.giocatore1.squadra[0].stato).toBeUndefined()
@@ -139,7 +141,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   await page.keyboard.press('Escape')
   await page.reload()
   await expect(page.locator(sceneSelector)).toHaveAttribute('aria-busy', 'false')
-  expect((await readCampaign(page)).giocatore1.squadra[0].hp).toBe(6)
+  expect((await readCampaign(page)).giocatore1.squadra[0].hp).toBe(12)
   expect((await readCampaign(page)).giocatore1.inventario.potion).toBe(0)
   expect(errors).toEqual([])
 })
@@ -169,7 +171,7 @@ test('the map editor assigns an Arkastore to a point and the authored access sur
   await expect(dialog.getByRole('button', { name: 'Negozio', exact: true })).toHaveCount(0)
   await dialog.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
   await dialog.getByRole('button', { name: 'Acquista carrello', exact: true }).click()
-  await expect.poll(async () => (await readCampaign(page)).giocatore1.monete).toBe(200)
+  await expect.poll(async () => (await readCampaign(page)).giocatore1.monete).toBe(250)
   expect((await readCampaign(page)).giocatore2).toEqual(before.giocatore2)
   await dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true }).click()
   await expect(page.getByRole('dialog', { name: 'Interazioni del punto', exact: true })).toBeHidden()
@@ -187,7 +189,7 @@ test('a battle item heals once, consumes the move and resumes at the opponent tu
       inventario: id === 1 ? { potion: 1 } : { masterball: 1 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: {}, audioMuted: true,
@@ -216,40 +218,40 @@ test('a battle item heals once, consumes the move and resumes at the opponent tu
   await expect(target).toHaveAttribute('aria-pressed', 'true')
   await target.click()
   await expect(target).toHaveAttribute('aria-pressed', 'true')
-  await expect(bag.getByRole('status')).toContainText('Vyrath Borsa · 3 → 6 HP')
+  await expect(bag.getByRole('status')).toContainText('Vyrath Borsa · 3 → 12 HP')
   const a11y = await new AxeBuilder({ page }).include('[data-game-dialog]').analyze()
   expect(a11y.violations).toEqual([])
   await test.info().attach('Borsa durante il turno di battaglia', { body: await page.screenshot(), contentType: 'image/png' })
   await bag.getByRole('button', { name: 'Usa Pozione', exact: true }).click()
   await expect(bag).toHaveCount(0)
-  await expect(page.locator('[data-battle-hp-side="player"]')).toHaveAttribute('data-battle-hp', '6')
+  await expect(page.locator('[data-battle-hp-side="player"]')).toHaveAttribute('data-battle-hp', '12')
   await expect(battleScene.getByRole('button', { name: 'AVVERSARIO', exact: true })).toBeVisible()
   await expect(battleScene.getByRole('button', { name: 'Borsa', exact: true })).toBeDisabled()
   await expect.poll(async () => (await readCampaign(page)).battaglia.checkpoint.phase).toBe('opponent')
   const saved = await readCampaign(page)
   expect(saved.giocatore1.inventario.potion).toBe(0)
-  expect(saved.battaglia.pokemonA.hp).toBe(6)
+  expect(saved.battaglia.pokemonA.hp).toBe(12)
   expect(saved.battaglia.pokemonB.hp).toBe(12)
   expect(saved.battaglia.turnoCorrente).toBe('B')
   expect(saved.battaglia.checkpoint.actedThisRound).toEqual(['A'])
   expect(saved.battaglia.cronaca.events.filter((event: { kind: string }) => event.kind === 'heal')).toEqual([
-    expect.objectContaining({ kind: 'heal', side: 'A', hpBefore: 3, hpAfter: 6, title: 'Pozione su Vyrath Borsa' }),
+    expect.objectContaining({ kind: 'heal', side: 'A', hpBefore: 3, hpAfter: 12, title: 'Pozione su Vyrath Borsa' }),
   ])
   await page.reload()
   await expect(battleScene).toHaveAttribute('aria-busy', 'false')
   await expect(battleScene.getByRole('button', { name: 'AVVERSARIO', exact: true })).toBeVisible()
   await expect(battleScene.getByRole('button', { name: 'Borsa', exact: true })).toBeDisabled()
-  await expect(page.locator('[data-battle-hp-side="player"]')).toHaveAttribute('data-battle-hp', '6')
+  await expect(page.locator('[data-battle-hp-side="player"]')).toHaveAttribute('data-battle-hp', '12')
   await expect(page.locator('[data-battle-hp-side="enemy"]')).toHaveAttribute('data-battle-hp', '12')
   const resumed = await readCampaign(page)
   expect(resumed.giocatore1.inventario.potion).toBe(0)
-  expect(resumed.battaglia.pokemonA.hp).toBe(6)
+  expect(resumed.battaglia.pokemonA.hp).toBe(12)
   expect(resumed.battaglia.pokemonB.hp).toBe(12)
   expect(resumed.battaglia.cronaca.events).toEqual(saved.battaglia.cronaca.events)
   await battleScene.getByRole('button', { name: /^Cronaca/ }).click()
   const chronicle = page.getByRole('dialog', { name: 'Cronaca della battaglia', exact: true })
   await expect(chronicle).toContainText('Pozione su Vyrath Borsa')
-  await expect(chronicle).toContainText('HP: 3 → 6')
+  await expect(chronicle).toContainText('HP: 3 → 12')
   await page.keyboard.press('Escape')
   await expect(chronicle).toHaveCount(0)
   // Do not press AVVERSARIO: the rival's untouched HP prove no attack or duplicate item happened on reload.

@@ -42,7 +42,7 @@ for (const scenario of [{ label: 'piccola', deposits: 0 }, { label: 'media', dep
         cespugliVisitati: ['Percorso_1:A'], allenatoriSconfitti: [], caselleConsumate: [], monete: id * 125,
         inventario: { potion: 2, masterball: 1 } })
       const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-      localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+      localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
         giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
         posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {},
         scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, audioMuted: true,

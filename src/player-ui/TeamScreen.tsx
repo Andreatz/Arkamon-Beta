@@ -1,3 +1,4 @@
+import { GameArt } from '@/ui-system/GameArt'
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
@@ -99,7 +100,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
         <aside className="pu-reference-roster" aria-label={`Compagni di ${player.nome}`}>
           <div className="pu-reference-column-heading"><span>La squadra</span><span>{player.squadra.length} / {SQUADRA_MAX}</span></div>
           <SpatialNavigation columns={1} selectOnFocus={!movingId} className="pu-team-list" role="group" aria-label={`Squadra di ${player.nome}`}>
-            {Array.from({ length: SQUADRA_MAX }, (_, index) => {
+            {player.squadra.map((_, index) => {
               const owned = player.squadra[index]
               const pokemon = owned ? liveOwnedPokemon(owned, battle) : undefined
               const selectedSlot = !!pokemon && pokemon.istanzaId === current?.istanzaId
@@ -117,6 +118,11 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
                 <span className="pu-reference-slot-arrow" aria-hidden="true">›</span>
               </button>
             })}
+            {player.squadra.length > 0 && player.squadra.length < SQUADRA_MAX && <button data-rpg-item type="button" className="pu-team-slot pu-team-invite" onClick={onDeposit}
+              aria-label={`Aggiungi dal Deposito: ${SQUADRA_MAX - player.squadra.length} posti liberi`}>
+              <span className="pu-live-team-slot-art" aria-hidden="true"><span className="pu-reference-slot-empty">+</span></span>
+              <span className="pu-team-slot-content"><strong>Aggiungi dal Deposito</strong><span>{SQUADRA_MAX - player.squadra.length} {SQUADRA_MAX - player.squadra.length === 1 ? 'posto libero' : 'posti liberi'}</span></span>
+            </button>}
           </SpatialNavigation>
           <p className="pu-reference-roster-hint">{movingId ? 'Scegli il compagno con cui scambiare il posto.' : 'Seleziona un Arkamon per conoscerlo meglio.'}</p>
         </aside>
@@ -127,6 +133,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
             <div className="pu-reference-portrait-space">
               {splash ? <div className="pu-splash-hero-presence" role="img" aria-label={splash.label} data-splash-species={current.specieId} data-splash-source={splash.src} /> : <>
                 <div className="pu-reference-portrait-orbit" aria-hidden="true" />
+                <GameArt id="summoning-ring" className="pu-team-pedestal" />
                 <div className="pu-live-team-portrait"><CreaturePortrait pokemon={current} large /></div>
                 <span className="pu-reference-portrait-ground" aria-hidden="true" />
               </>}
@@ -152,7 +159,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
                   <div><dt>Condizione</dt><dd>{condition}</dd></div>
                   <div><dt>Crescita</dt><dd>{currentSpecies?.categoria ?? 'Non disponibile'}</dd></div>
                 </dl>
-                <p className="pu-reference-dossier-note">Gli HP restano dopo ogni scontro. Cura il tuo compagno dalla borsa o presso un Centro Arkamon.</p>
+                <div className="pu-reference-summary-moves" aria-label={`Mosse di ${current.nome}`}><PokemonMoves pokemon={current} /></div>
               </>}
               {referenceTab === 'mosse' && <><div className="pu-reference-dossier-name"><h2>Mosse disponibili</h2><span>Lv. {current.livello}</span></div><PokemonMoves pokemon={current} detailed /></>}
               {referenceTab === 'statistiche' && <>
