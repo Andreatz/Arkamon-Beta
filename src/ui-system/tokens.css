@@ -16,6 +16,11 @@
   --arka-ui-gold-deep: #95764e;
   --arka-ui-danger: #e2604f;
   --arka-ui-success: #7fcf8a;
+  /* Selezione e fuoco (il ciano dei mockup) e linee sottili dei pannelli (fase U2) */
+  --arka-ui-cyan: #4fd8ff;
+  --arka-ui-cyan-glow: rgb(79 216 255 / .45);
+  --arka-ui-line: rgb(223 187 123 / .38);
+  --arka-ui-tile: linear-gradient(160deg, #173a55 0%, #0b2338 70%, #081a2b 100%);
 
   /* Font */
   --arka-ui-font-display: 'Arkamon Cinzel', Georgia, serif;

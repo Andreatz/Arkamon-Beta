@@ -89,6 +89,13 @@ export function KitButton({ active = false, asset, artwork, children, className 
 export function TypeBadge({ type }: { type: TipoPokemon }) {
   return <span className="pu-type"><KitIcon id={TYPE_ICONS[type]} />{type}</span>
 }
+/**
+ * Sigillo rotondo del tipo, senza testo visibile. Il nome resta per i lettori di schermo,
+ * tranne dentro un comando che ha già un'etichetta accessibile (`labelled={false}`).
+ */
+export function TypeSeal({ type, className = '', labelled = true }: { type: TipoPokemon; className?: string; labelled?: boolean }) {
+  return <span className={`pu-type-seal ${className}`} data-type={type} title={type} aria-hidden={labelled ? undefined : true}><KitIcon id={TYPE_ICONS[type]} />{labelled && <span className="sr-only">{type}</span>}</span>
+}
 function CreatureImage({ speciesId, large }: { speciesId: number; large: boolean }) {
   const compact = !large && isReferenceUi() ? providedPortraitSource(speciesId) : undefined
   const source = compact ?? `/sprites/front_sprites/${speciesId}.png`

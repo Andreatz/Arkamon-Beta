@@ -30,17 +30,17 @@ function campaign(): GameState {
 beforeEach(() => { runtime.state = campaign() })
 
 describe('real catalog screen visibility and action boundaries', () => {
-  it('limits the initial index to six species while retaining the complete catalog count and page boundaries', () => {
+  it('lists the whole catalog in a scrolling index without loading artwork before a row comes near the view', () => {
     const state = runtime.state as GameState
     const before = JSON.stringify(state)
     const markup = renderToStaticMarkup(<ArkadexScreen playerId={1} />)
     const listedIds = [...markup.matchAll(/aria-label="Numero (\d+):/g)].map((match) => Number(match[1]))
-    expect(listedIds).toEqual([1, 2, 3, 4, 5, 6])
+    // Fase U2: lista scorrevole al posto delle pagine da sei.
+    expect(listedIds).toEqual(Array.from({ length: 206 }, (_, index) => index + 1))
     expect(markup).toContain('206 schede corrispondenti.')
-    expect(markup).toContain('Pagina 1 / 35')
-    expect(markup).toContain('1–6 di 206')
-    expect(markup).toMatch(/<button(?=[^>]*aria-label="Pagina precedente dell’Arkadex")(?=[^>]*disabled="")[^>]*>/)
-    expect(markup).not.toMatch(/<button(?=[^>]*aria-label="Pagina successiva dell’Arkadex")(?=[^>]*disabled="")[^>]*>/)
+    expect(markup).not.toContain('Pagina successiva dell’Arkadex')
+    // In un render statico nessuna riga è «vicina alla vista»: solo la scheda selezionata carica il ritratto.
+    expect(markup.match(/class="pu-dex-row-art"><span class="pu-creature-portrait/g)?.length ?? 0).toBeLessThanOrEqual(1)
     expect(JSON.stringify(state)).toBe(before)
   })
 
@@ -62,7 +62,7 @@ describe('real catalog screen visibility and action boundaries', () => {
     const markup = renderToStaticMarkup(<ArkadexScreen playerId={2} />)
     expect(markup).toContain('0 / 206 viste · 0 / 206 ottenute')
     expect(markup).toContain('aria-label="Scheda da scoprire"')
-    expect(markup.match(/aria-label="Numero \d+: specie da scoprire · Da scoprire"/g)).toHaveLength(6)
+    expect(markup.match(/aria-label="Numero \d+: specie da scoprire · Da scoprire"/g)).toHaveLength(206)
     expect(markup).not.toContain('data-arkadex-detail=')
     expect(markup).not.toContain('Dati di riferimento al livello 5')
     expect(markup).not.toContain('class="pu-creature-art"')

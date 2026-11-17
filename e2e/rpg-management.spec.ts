@@ -74,3 +74,23 @@ test('bag previews exact healing and keeps status until the explicitly requested
   expect(after.giocatore1.inventario.potion).toBe(1)
   expect(after.giocatore2).toEqual(before.giocatore2)
 })
+
+test('dragging between the box and the team uses the same move rules, including the level cap', async ({ page }) => {
+  const dialog = await seed(page)
+  const before = await read(page)
+  await dialog.getByRole('button', { name: 'Deposito', exact: true }).click()
+  const reserve = dialog.getByRole('button', { name: 'Box 1, posto 1: Darklaw riserva, livello 26', exact: true })
+  await expect(reserve).toHaveAttribute('draggable', 'true')
+  // Lv. 26 accanto a Lv. 20: il trascinamento viene rifiutato come «Sposta o scambia».
+  await reserve.dragTo(dialog.getByRole('button', { name: 'Squadra, posto 3: vuoto', exact: true }))
+  expect((await read(page)).giocatore1).toEqual(before.giocatore1)
+  // Riporre un compagno della squadra in un posto libero del box è consentito.
+  await dialog.getByRole('button', { name: 'Squadra, posto 2: Felyss squadra, livello 25', exact: true })
+    .dragTo(dialog.getByRole('button', { name: 'Box 1, posto 2: vuoto', exact: true }))
+  await expect.poll(async () => (await read(page)).giocatore1.deposito['1:2']?.istanzaId).toBe('Felyss squadra')
+  const after = await read(page)
+  expect(after.giocatore1.squadra.map((entry: { istanzaId: string }) => entry.istanzaId)).toEqual(['Vyrath squadra'])
+  expect(after.giocatore1.deposito['1:2']).toEqual(before.giocatore1.squadra[1])
+  expect(after.giocatore2).toEqual(before.giocatore2)
+  await expect(dialog.getByRole('button', { name: 'Box 1, posto 2: Felyss squadra, livello 25', exact: true })).toBeVisible()
+})
