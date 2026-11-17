@@ -114,7 +114,16 @@
     },
     "shopkeeper.png": {
       "id": "shopkeeper",
-      "maxSide": 1400
+      "maxSide": 1400,
+      "magenta": false,
+      "floodKey": {
+        "tolerance": 26,
+        "edges": [
+          "top",
+          "left",
+          "right"
+        ]
+      }
     },
     "shop-background.png": {
       "id": "shop-background",

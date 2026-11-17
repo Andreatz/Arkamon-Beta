@@ -1,0 +1,281 @@
+/*
+ * Fase U3 (audit UX/UI): Negozio sul mockup, strumenti nella stessa grammatica di menù e schede.
+ * Caricato per ultimo fra le pelli di riferimento.
+ */
+
+/* ======================= Negozio ======================= */
+
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store {
+  position: relative;
+  --store-keeper-height: clamp(170px, 29vh, 320px);
+}
+/* La bottega si vede: meno velo scuro che sulle altre schermate. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"][data-player-ui-screen="negozio"]:has(.pu-u3-store)::before { opacity: 1; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"][data-player-ui-screen="negozio"]:has(.pu-u3-store)::after {
+  background: linear-gradient(90deg, rgb(3 17 36 / .62), rgb(3 17 36 / .12) 45%, transparent 70%), linear-gradient(rgb(3 17 36 / .05), rgb(3 17 36 / .35));
+  box-shadow: inset 0 0 80px rgb(2 16 33 / .55);
+}
+/* Il saldo è già nella barra superiore: qui resta per i lettori di schermo. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-balance {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store > .pu-store-heading { position: relative; z-index: 2; max-width: 56%; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-heading h1 {
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-title);
+  text-shadow: 0 2px 6px rgb(0 0 0 / .7);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-heading .pu-kicker { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-heading > div > p:last-child {
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink);
+  text-shadow: 0 1px 3px rgb(0 0 0 / .8);
+}
+
+/* Negoziante al bancone, in alto a destra; il bancone poggia sul bordo della scheda. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-keeper {
+  position: absolute;
+  right: 1%;
+  top: 0;
+  z-index: 1;
+  width: min(44%, calc(var(--store-keeper-height) * 1376 / 670));
+  height: var(--store-keeper-height);
+  margin: 0;
+  pointer-events: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-keeper-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-position: center bottom;
+  filter: drop-shadow(0 10px 16px rgb(0 0 0 / .55));
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-keeper-line {
+  position: absolute;
+  left: -2%;
+  top: 6%;
+  max-width: 36%;
+  padding: 10px 14px;
+  border: 1px solid var(--arka-ui-gold-deep);
+  border-radius: 12px 12px 12px 2px;
+  background: rgb(255 248 228 / .94);
+  font: var(--arka-size-caption) / 1.3 var(--arka-ui-font-body);
+  color: #2b2116;
+  box-shadow: 0 6px 14px rgb(0 0 0 / .4);
+}
+/* La colonna destra scende sotto il bancone; il catalogo resta alto quanto lo schermo. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store > .pu-store-layout {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  grid-template-rows: calc(var(--store-keeper-height) * .62) minmax(0, 1fr) auto;
+  row-gap: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-catalog { grid-row: 1 / -1; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-detail { grid-row: 2; position: relative; z-index: 2; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-checkout { grid-row: 3; position: relative; z-index: 2; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store > .pu-store-layout { margin-top: calc(var(--store-keeper-height) * -.38); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-catalog { margin-top: calc(var(--store-keeper-height) * .38); }
+
+/* Categorie su una riga, come le schede del mockup. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-reference-store-categories {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-reference-store-categories > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  font-size: var(--arka-size-caption);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-reference-store-categories .pu-kit-icon { width: 24px; height: 24px; flex: none; }
+
+/* Righe del catalogo: nessun «×0»; la quantità compare solo quando l'oggetto è nel carrello. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-shop-cart-count[data-count="0"] { visibility: hidden; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-shop-cart-count:not([data-count="0"]) {
+  top: 8px;
+  right: 12px;
+  transform: none;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--arka-ui-cyan);
+  color: var(--arka-ui-night);
+  font: 700 var(--arka-size-caption) / 1.3 var(--arka-ui-font-body);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-shop-row .pu-kit-icon { width: 58px; height: 58px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-shop-row-copy > strong { font-family: var(--arka-ui-font-display); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-shop-row-copy > small { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-reference-shop-price { font-size: var(--arka-size-lead); }
+
+/* Scheda dell'oggetto: titolo, descrizione, quantità e totale come nel mockup. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-detail { gap: 6px; padding-top: 14px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary .pu-item-hero { min-height: 120px; max-height: 200px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary h2 {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-title);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary .pu-description { font-size: var(--arka-size-body); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary .pu-item-held { margin-top: 8px; padding-top: 8px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-quantity-control { margin: 2px 0; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-line-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--arka-ui-line);
+  border-radius: 4px;
+  background: rgb(6 23 39 / .55);
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-lead);
+  color: var(--arka-ui-ink);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-line-total strong { display: flex; align-items: center; gap: 8px; font-weight: 400; color: var(--arka-ui-gold-bright); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-line-total i { font-style: normal; color: var(--arka-ui-gold); }
+
+/* Carrello: riepilogo compatto e un grande «Acquista carrello». */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-checkout > h3 { font-family: var(--arka-ui-font-display); font-size: var(--arka-size-body); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-cart-line strong { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-checkout .pu-empty { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-totals strong { font-family: var(--arka-ui-font-display); font-size: var(--arka-size-lead); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-totals span { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-actions {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: 10px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-actions > * { min-height: 50px; font-size: var(--arka-size-body); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-actions > .pu-reference-purchase { font-size: var(--arka-size-lead); }
+
+/* Schermi bassi (768–820 px): negoziante più piccolo e scheda compatta, così nulla deborda. */
+@media (max-height: 820px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store { --store-keeper-height: clamp(120px, 20vh, 170px); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-detail { gap: 4px; padding-top: 8px; padding-bottom: 8px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary .pu-item-hero { min-height: 0; max-height: 84px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary h2 { margin-bottom: 4px; padding-bottom: 4px; font-size: var(--arka-size-heading); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary .pu-description { font-size: var(--arka-size-caption); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary .pu-item-held { margin-top: 4px; padding-top: 4px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-line-total { padding: 3px 12px; font-size: var(--arka-size-body); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-actions > * { min-height: 40px; }
+}
+
+/* ======================= Strumenti: Registro, Diario, Backup, Impostazioni ======================= */
+/* Una sola grammatica: carte blu notte con filo d'oro, titoli in Cinzel, comandi come quelli del menù. */
+
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary {
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :is(h2, h3) {
+  font-family: var(--arka-ui-font-display);
+  font-weight: 400;
+  letter-spacing: .03em;
+  color: var(--arka-ui-gold-bright);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary h2 { font-size: var(--arka-size-heading); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary h3 { font-size: var(--arka-size-lead); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :is(p, li, label, small) { font-size: var(--arka-size-caption); line-height: 1.45; }
+
+/* Carte: articoli, riepiloghi, obiettivi, riquadri del backup. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :is(article, .match-summary, .journal-summary, .journal-objective, .journal-section-content, .pu-backup-screen [class~="border-current"]:not(button), .match-events > li, .match-history li) {
+  border: 1px solid var(--arka-ui-line) !important;
+  border-radius: 6px;
+  background: linear-gradient(160deg, rgb(18 50 79 / .78), rgb(6 23 39 / .82));
+  box-shadow: inset 0 0 0 2px rgb(6 23 39 / .55);
+  color: var(--arka-ui-ink);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary .journal-objective { border-left: 3px solid var(--arka-ui-gold) !important; }
+
+/* Comandi generici (non del kit): bordo oro, fondo notte, selezione ciano. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button) {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--arka-ui-gold-deep) !important;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--arka-ui-panel-raised), var(--arka-ui-night));
+  font: var(--arka-size-caption) / 1.2 var(--arka-ui-font-body);
+  color: var(--arka-ui-ink);
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button):is(:hover, :focus-visible):not(:disabled) {
+  border-color: var(--arka-ui-gold) !important;
+  box-shadow: 0 0 0 2px var(--arka-ui-cyan-glow);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button):is([aria-pressed="true"], [aria-selected="true"]) {
+  border-color: var(--arka-ui-cyan) !important;
+  background: linear-gradient(180deg, rgb(36 92 120 / .95), rgb(12 40 62 / .95));
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:disabled { opacity: .45; cursor: default; }
+
+/* Campi: stessa altezza e colori dei filtri delle altre schermate. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :is(select, input[type="search"], input[type="text"], input[type="number"]) {
+  min-height: 42px;
+  border: 1px solid var(--arka-ui-line);
+  border-radius: 4px;
+  background: var(--arka-ui-night);
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary input[type="range"] { accent-color: var(--arka-ui-cyan); }
+
+/* Schede del Registro: come le schede delle altre schermate. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary .pu-register-tabs .pu-button {
+  min-height: 46px;
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-body);
+}
+
+/* Backup: il selettore di file diventa un comando in italiano. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-file-picker { display: grid; gap: 6px; justify-items: start; cursor: pointer; }
+.pu-file-picker-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 6px 16px;
+  border: 1px solid var(--arka-ui-gold-deep);
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--arka-ui-panel-raised), var(--arka-ui-night));
+  font-weight: 400;
+  color: var(--arka-ui-ink);
+}
+.pu-file-picker:hover .pu-file-picker-button { border-color: var(--arka-ui-gold); }
+.pu-file-picker:focus-within .pu-file-picker-button { border-color: var(--arka-ui-cyan); box-shadow: 0 0 0 2px var(--arka-ui-cyan-glow); }
+
+/* ======================= Analisi ======================= */
+/* Stessa scala del testo delle altre schede: etichette leggibili, valori e nome in Cinzel. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-detail-heading h2,
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-hero-caption h2 {
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-title);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-stat > span { font-size: var(--arka-size-caption); color: var(--arka-ui-ink-muted); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-stat > strong { font-family: var(--arka-ui-font-display); font-size: var(--arka-size-heading); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-facts :is(dt, dd) { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-facts dd { font-size: var(--arka-size-body); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-tabs .pu-button { min-height: 44px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen :is(.pu-note, .pu-kicker, .pu-analysis-selector) { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-selector select { min-height: 42px; font-size: var(--arka-size-caption); }
+
+/* ======================= Arkadex: segno di cattura illustrato ======================= */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-row .pu-discovery-mark.has-art { display: grid; place-items: center; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-row .pu-discovery-mark.has-art .pu-kit-icon { width: 30px; height: 30px; }
+
+/* ======================= Borsa su telefono ======================= */
+/* Con le icone dipinte di Cattura e Strumenti le cinque schede non stanno su una riga: vanno su tre colonne. */
+@media (max-width: 640px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-bag-dedicated .pu-live-bag-categories {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    max-width: 100%;
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-bag-dedicated .pu-live-bag-category { min-width: 0; font-size: var(--arka-size-caption); }
+}

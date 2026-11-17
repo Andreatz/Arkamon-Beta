@@ -1,5 +1,6 @@
 import { BATTLE_BG_DEFAULT, DEPOSIT_BG, getBackground } from '@/data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
+import { gameArtUrl } from '@/ui-system/GameArt'
 import type { PlayerUiScreen } from '../navigation'
 import type { ReadySplashArtwork } from './SplashArtworkContext'
 import { supportsSplashArtwork } from './splashArtwork'
@@ -16,6 +17,8 @@ export const REFERENCE_BACKGROUNDS: Partial<Record<PlayerUiScreen, string>> = {
 }
 export function referenceScreenBackground(screen: PlayerUiScreen, location: string, splash?: ReadySplashArtwork | null): string {
   if (supportsSplashArtwork(screen) && splash) return splash.src
+  // Fase U3: la bottega del lotto 1 fa da sfondo al Negozio, quando c'è.
+  if (screen === 'negozio') { const shop = gameArtUrl('shop-background'); if (shop) return shop }
   const source = REFERENCE_BACKGROUNDS[screen]
   return source ? assetUrl(source) : getBackground(location) ?? (screen === 'deposito' ? DEPOSIT_BG : BATTLE_BG_DEFAULT)
 }

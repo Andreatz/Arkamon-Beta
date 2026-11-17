@@ -91,3 +91,41 @@ export function ruleForFile(spec, name) {
   }
   return undefined
 }
+
+/**
+ * Scontorna un fondo piatto non magenta (es. il crema del negoziante): riempimento dai bordi
+ * dell'immagine sui pixel simili al colore dell'angolo in alto a sinistra. Solo l'area collegata
+ * ai bordi diventa trasparente, quindi i colori uguali dentro la figura restano. I pixel di
+ * confine ricevono un'alfa graduale. Modifica il buffer RGBA sul posto e restituisce i pixel tolti.
+ * `edges` sceglie da quali bordi partire (di norma solo i tre lati liberi, non quello del bancone).
+ */
+export function floodKeyBackground(data, width, height, { tolerance = 26, edges = ['top', 'left', 'right'] } = {}) {
+  const base = [data[0], data[1], data[2]]
+  const distance = (index) => Math.max(Math.abs(data[index] - base[0]), Math.abs(data[index + 1] - base[1]), Math.abs(data[index + 2] - base[2]))
+  const visited = new Uint8Array(width * height)
+  const queue = []
+  const seed = (x, y) => { const p = y * width + x; if (!visited[p] && distance(p * 4) <= tolerance) { visited[p] = 1; queue.push(p) } }
+  if (edges.includes('top')) for (let x = 0; x < width; x++) seed(x, 0)
+  if (edges.includes('bottom')) for (let x = 0; x < width; x++) seed(x, height - 1)
+  if (edges.includes('left')) for (let y = 0; y < height; y++) seed(0, y)
+  if (edges.includes('right')) for (let y = 0; y < height; y++) seed(width - 1, y)
+  let cleared = 0
+  for (let head = 0; head < queue.length; head++) {
+    const p = queue[head], x = p % width, y = (p - x) / width
+    data[p * 4 + 3] = 0; cleared++
+    if (x > 0) seed(x - 1, y)
+    if (x < width - 1) seed(x + 1, y)
+    if (y > 0) seed(x, y - 1)
+    if (y < height - 1) seed(x, y + 1)
+  }
+  // Bordo morbido: un pixel opaco accanto al fondo tolto prende un'alfa in base alla somiglianza.
+  for (let p = 0; p < width * height; p++) {
+    if (visited[p]) continue
+    const x = p % width, y = (p - x) / width
+    const touches = (x > 0 && visited[p - 1]) || (x < width - 1 && visited[p + 1]) || (y > 0 && visited[p - width]) || (y < height - 1 && visited[p + width])
+    if (!touches) continue
+    const d = distance(p * 4)
+    if (d < tolerance * 2.5) data[p * 4 + 3] = Math.round(data[p * 4 + 3] * Math.min(1, (d - tolerance) / (tolerance * 1.5)))
+  }
+  return cleared
+}

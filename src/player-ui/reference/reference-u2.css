@@ -468,9 +468,37 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposi
     display: flex;
     flex-direction: column;
   }
-  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-grid-panel .pu-box-grid { max-height: 60vh; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-grid-panel .pu-box-grid { max-height: 60vh; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: auto; }
+  /* Su cinque colonne l'altezza viene dalla cornice stessa (226×206), non dal calcolo a sette colonne. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot { height: auto; aspect-ratio: 226 / 206; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-medallion { height: 260px; }
+}
+
+/* Il testo per i lettori di schermo nella barra dei box resta largo 1 px anche dove le vecchie regole allargano gli span. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-toolbar > .sr-only { width: 1px; margin: -1px; }
+
+/* Telefono: ricerca, tipo e «Filtri» vanno a capo; il pannello dei filtri resta dentro lo schermo. */
+@media (max-width: 640px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-filters { flex-wrap: wrap; max-width: 100%; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-filters > label { flex: 1 1 140px; min-width: 0; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit :is(.pu-deposit-search input, .pu-deposit-type select) { width: 100%; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more-fields {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(320px, calc(100vw - 48px));
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid { gap: 6px; padding: 6px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot .pu-box-slot-level {
+    top: auto;
+    left: auto;
+    right: 4%;
+    bottom: 4%;
+    padding: 0 3px;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-type-seal { width: 18px; height: 18px; }
 }
 
 /* ======================= Arkadex ======================= */

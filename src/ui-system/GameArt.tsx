@@ -42,6 +42,8 @@ const ICON_ART: Record<string, string> = {
   'item-sacchettino': 'item-sacchettino', 'item-mega-sacchettino': 'item-mega-sacchettino', 'item-ultra-sacchettino': 'item-ultra-sacchettino',
   'item-boost-speed': 'item-boost-velocita', 'item-boost-damage': 'item-boost-danno', 'item-scent': 'item-profumo-speciale',
   'item-bicycle': 'item-bicicletta', 'item-scooter': 'item-monopattino',
+  // Fase U3: categorie e segno di cattura del lotto 1.
+  'category-capture': 'category-capture', 'category-tools': 'category-tools', 'icon-captured': 'icon-captured',
 }
 export function gameArtForIcon(iconId: string): string | undefined {
   const art = ICON_ART[iconId]

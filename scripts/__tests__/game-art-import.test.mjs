@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { gridCells, hasMagentaCorners, isMagenta, keyOutMagenta, mergeCatalog, ruleForFile, safeArtId } from '../assets/gameArtImport.mjs'
+import { floodKeyBackground, gridCells, hasMagentaCorners, isMagenta, keyOutMagenta, mergeCatalog, ruleForFile, safeArtId } from '../assets/gameArtImport.mjs'
 import inboxSpec from '../../ui-source/game-art-inbox.json'
 
 describe('importazione illustrazioni di gioco', () => {
@@ -55,5 +55,20 @@ describe('importazione illustrazioni di gioco', () => {
     expect(ruleForFile(inboxSpec, 'item-sacchettino.jpg')?.id).toBe('item-sacchettino')
     expect(ruleForFile(inboxSpec, 'pawn-player-1.jpeg')?.ids).toEqual(['pawn-player-1-idle', 'pawn-player-1-jump'])
     expect(ruleForFile(inboxSpec, 'item-profump-speciale.jpg')?.id).toBe('item-profumo-speciale')
+  })
+
+  it('scontorna un fondo piatto collegato ai bordi e lascia lo stesso colore chiuso dentro la figura', () => {
+    // 5×5: fondo crema, cornice scura 3×3 al centro con un pixel crema chiuso dentro.
+    const cream = [236, 229, 213, 255], dark = [40, 30, 20, 255]
+    const data = new Uint8ClampedArray(5 * 5 * 4)
+    for (let p = 0; p < 25; p++) {
+      const x = p % 5, y = Math.floor(p / 5)
+      const inFrame = x >= 1 && x <= 3 && y >= 1 && y <= 3
+      data.set(inFrame && !(x === 2 && y === 2) ? dark : cream, p * 4)
+    }
+    expect(floodKeyBackground(data, 5, 5, { edges: ['top', 'left', 'right', 'bottom'] })).toBe(16)
+    expect(data[3]).toBe(0)
+    expect(data[(2 * 5 + 2) * 4 + 3]).toBe(255)
+    expect(data[(1 * 5 + 1) * 4 + 3]).toBe(255)
   })
 })
