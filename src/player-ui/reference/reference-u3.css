@@ -279,3 +279,12 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-row .pu-discovery
   }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-bag-dedicated .pu-live-bag-category { min-width: 0; font-size: var(--arka-size-caption); }
 }
+
+/* ======================= Illustrazioni dipinte ======================= */
+/* Le vecchie sagome CSS (boccetta, cristallo, sfera…) si agganciano a data-icon:
+   sopra un'illustrazione dipinta non devono comparire, altrimenti le immagini si sovrappongono. */
+html .pu-shell.pu-live-shell[data-ui-concept] .pu-kit-icon:is(.pu-kit-icon-art, .pu-kit-icon-provided)::before,
+html .pu-shell.pu-live-shell[data-ui-concept] .pu-kit-icon:is(.pu-kit-icon-art, .pu-kit-icon-provided)::after {
+  content: none !important;
+  display: none !important;
+}
