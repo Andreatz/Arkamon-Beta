@@ -208,3 +208,144 @@
 @media (prefers-reduced-motion: reduce) {
   .local-map-plane[data-camera-shot], .local-map-node-kind > .local-map-node-glyph { animation: none !important; }
 }
+
+/* ======================= Fase U4: palco a tutto schermo ======================= */
+/* La mappa copre la vista e la camera la trasla: la pedina di turno resta al centro. */
+.local-map-board--stage { display: block; background: var(--arka-ui-night, #031124); }
+.local-map-board--stage > .local-map-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-shadow: none;
+  will-change: transform;
+  transition: transform calc(var(--motion-scale, 1) * 760ms) cubic-bezier(0.3, 0.72, 0.2, 1),
+    width calc(var(--motion-scale, 1) * 420ms) ease, height calc(var(--motion-scale, 1) * 420ms) ease;
+}
+.local-map-board--stage[data-camera='overview'] > .local-map-plane { box-shadow: 0 0 0 1px #00000080, 0 18px 60px #000a; }
+/* Oltre i bordi della mappa resta la stessa illustrazione, sfocata e meno scura, sotto l'HUD. */
+.local-map-board--stage[data-camera='follow'] > .local-map-ambient { filter: blur(16px) saturate(0.9) brightness(0.62); }
+.local-map-board--stage[data-camera='follow'] > .local-map-plane { box-shadow: 0 0 24px 2px rgb(2 12 26 / 0.35); }
+
+/* Nodi in pietra: un ovale disegnato copre il pallino rosso dipinto alle stesse coordinate. */
+.local-map-board--stage .local-map-node { width: 3.4cqw; height: 2.4cqw; min-width: 40px; min-height: 30px; border-radius: 50%; }
+.local-map-node-stone {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.2cqw;
+  height: 1.38cqw;
+  min-width: 24px;
+  min-height: 15px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 50% 38%, #f6e2b0 0 30%, #d8b878 58%, #9c7a45 100%);
+  box-shadow:
+    0 0 0 max(1.5px, 0.12cqw) #5b3f1d,
+    0 0 0 max(2.5px, 0.2cqw) #f3dca2,
+    0 max(2px, 0.22cqw) 0 max(2px, 0.18cqw) #3f2a12,
+    0 max(4px, 0.4cqw) max(6px, 0.5cqw) #0008;
+  transition: transform calc(var(--motion-scale, 1) * 160ms) ease, box-shadow calc(var(--motion-scale, 1) * 160ms) ease;
+  pointer-events: none;
+}
+.local-map-board--stage .local-map-node--current .local-map-node-stone { transform: translate(-50%, -38%) scale(0.96, 0.9); }
+.local-map-board--stage .local-map-node-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3.1cqw;
+  height: 2cqw;
+  min-width: 32px;
+  min-height: 20px;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 50%;
+  outline: 0;
+}
+.local-map-board--stage .local-map-node--reachable .local-map-node-ring {
+  border: max(2px, 0.2cqw) solid var(--arka-ui-cyan, #6df1ff);
+  background: rgb(76 230 255 / 0.28);
+  box-shadow: 0 0 max(8px, 0.8cqw) var(--arka-ui-cyan-glow, #4ee6ffcc), inset 0 0 max(6px, 0.5cqw) rgb(160 250 255 / 0.6);
+  animation: local-stage-reach calc(var(--motion-scale, 1) * 1600ms) ease-in-out infinite;
+}
+.local-map-board--stage .local-map-node--current .local-map-node-ring {
+  border: max(2px, 0.18cqw) solid #fff;
+  background: rgb(76 230 255 / 0.18);
+  box-shadow: 0 0 max(10px, 0.9cqw) var(--arka-ui-cyan, #44e7ff);
+}
+.local-map-board--stage .local-map-node:not(:disabled):is(:hover, :focus-visible) .local-map-node-ring { outline: 0; transform: translate(-50%, -50%) scale(1.14); }
+.local-map-board--stage .local-map-node:focus-visible { outline: 0; }
+.local-map-board--stage .local-map-node:focus-visible .local-map-node-ring { box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--arka-ui-cyan, #3bceff); }
+@keyframes local-stage-reach { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+
+/* Segnalini dipinti del lotto 1 sopra i punti con un'interazione. */
+.local-map-node-medal {
+  position: absolute;
+  left: 50%;
+  bottom: 62%;
+  width: 3.3cqw;
+  min-width: 34px;
+  max-width: 76px;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 4px 5px #000a);
+  pointer-events: none;
+}
+.local-map-node-medal > .game-art { display: block; width: 100%; height: auto; }
+.local-map-node-medal[data-kind='grass'] > .game-art { transform-origin: 50% 90%; animation: local-medal-sway calc(var(--motion-scale, 1) * 2600ms) ease-in-out infinite; }
+@keyframes local-medal-sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+
+/* Pedine a figura intera: posano i piedi sul nodo, saltano di nodo in nodo. */
+.local-map-avatar--pawn { transform: translate(-50%, -88%); }
+.local-map-pawn-body { position: absolute; inset: 0; display: block; transform-origin: 50% 100%; }
+.local-map-pawn-art { display: block; width: 100%; height: 100%; object-position: 50% 100%; filter: drop-shadow(0 3px 3px #000b); }
+.local-map-avatar--pawn:not(.local-map-avatar--active) .local-map-pawn-art { filter: drop-shadow(0 3px 3px #000b) saturate(0.82) brightness(0.9); }
+.local-map-avatar--active .local-map-pawn-art { filter: drop-shadow(0 0 4px #fff4c4) drop-shadow(0 3px 3px #000c); }
+.local-map-pawn-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 70%;
+  height: 12%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #000a, transparent 70%);
+}
+.local-map-avatar[data-jumping='true'] .local-map-pawn-shadow { opacity: 0.55; transform: translateX(-50%) scale(0.75); }
+.local-map-pawn-dust {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: 120%;
+  height: 26%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(247 232 196 / 0.75), rgb(247 232 196 / 0) 68%);
+  animation: local-pawn-dust calc(var(--motion-scale, 1) * 520ms) ease-out forwards;
+  pointer-events: none;
+}
+@keyframes local-pawn-dust { 0% { opacity: 0.9; transform: translateX(-50%) scale(0.4, 0.5); } 100% { opacity: 0; transform: translateX(-50%) scale(1.25, 1); } }
+/* Indicatore ciano sopra la pedina di turno, come nel mockup. */
+.local-map-pawn-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 102%;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 12px solid var(--arka-ui-cyan, #6df1ff);
+  filter: drop-shadow(0 0 5px var(--arka-ui-cyan-glow, #4ee6ff));
+  transform: translateX(-50%);
+  animation: local-pawn-cue calc(var(--motion-scale, 1) * 1200ms) ease-in-out infinite;
+}
+@keyframes local-pawn-cue { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -6px); } }
+.local-map-avatar--pawn .local-map-avatar-label { bottom: -2px; font-size: 11px; padding: 1px 4px; }
+
+/* Anteprima del movimento: sul palco sta in basso al centro della vista, non della mappa. */
+.local-map-board--stage > .local-map-move-preview { position: absolute; bottom: 196px; z-index: 6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .local-map-board--stage > .local-map-plane { transition: none; }
+  .local-map-board--stage .local-map-node--reachable .local-map-node-ring,
+  .local-map-node-medal > .game-art, .local-map-pawn-cue, .local-map-pawn-dust { animation: none !important; }
+}
