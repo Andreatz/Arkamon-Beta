@@ -2,11 +2,32 @@
   "version": 1,
   "assets": [
     {
+      "id": "category-capture",
+      "file": "category-capture.webp",
+      "width": 256,
+      "height": 256,
+      "source": "inbox/category-capture.jpg"
+    },
+    {
+      "id": "category-tools",
+      "file": "category-tools.webp",
+      "width": 254,
+      "height": 256,
+      "source": "inbox/category-tools.jpg"
+    },
+    {
       "id": "coin",
       "file": "coin.webp",
       "width": 256,
       "height": 238,
       "source": "reference-assets/coin"
+    },
+    {
+      "id": "icon-captured",
+      "file": "icon-captured.webp",
+      "width": 256,
+      "height": 256,
+      "source": "inbox/icon-captured.jpg"
     },
     {
       "id": "item-antidote",
@@ -23,11 +44,81 @@
       "source": "reference-assets/item-awakening"
     },
     {
+      "id": "item-bicicletta",
+      "file": "item-bicicletta.webp",
+      "width": 900,
+      "height": 838,
+      "source": "inbox/item-bicicletta.jpg"
+    },
+    {
+      "id": "item-boost-danno",
+      "file": "item-boost-danno.webp",
+      "width": 828,
+      "height": 900,
+      "source": "inbox/item-boost-danno.jpg"
+    },
+    {
+      "id": "item-boost-velocita",
+      "file": "item-boost-velocita.webp",
+      "width": 900,
+      "height": 786,
+      "source": "inbox/item-boost-velocita.jpg"
+    },
+    {
+      "id": "item-cura-totale",
+      "file": "item-cura-totale.webp",
+      "width": 612,
+      "height": 900,
+      "source": "inbox/item-cura-totale.jpg"
+    },
+    {
+      "id": "item-iperpozione",
+      "file": "item-iperpozione.webp",
+      "width": 464,
+      "height": 900,
+      "source": "inbox/item-iperpozione.jpg"
+    },
+    {
+      "id": "item-mega-sacchettino",
+      "file": "item-mega-sacchettino.webp",
+      "width": 772,
+      "height": 900,
+      "source": "inbox/item-mega-sacchettino.jpg"
+    },
+    {
+      "id": "item-monopattino",
+      "file": "item-monopattino.webp",
+      "width": 618,
+      "height": 900,
+      "source": "inbox/item-monopattino.jpg"
+    },
+    {
+      "id": "item-paralysis-heal",
+      "file": "item-paralysis-heal.webp",
+      "width": 598,
+      "height": 900,
+      "source": "inbox/item-antiparalisi.jpg"
+    },
+    {
       "id": "item-potion",
       "file": "item-potion.webp",
       "width": 503,
       "height": 720,
       "source": "reference-assets/item-potion"
+    },
+    {
+      "id": "item-pozione-max",
+      "file": "item-pozione-max.webp",
+      "width": 691,
+      "height": 900,
+      "source": "inbox/item-pozione-max.jpg"
+    },
+    {
+      "id": "item-profumo-speciale",
+      "file": "item-profumo-speciale.webp",
+      "width": 825,
+      "height": 900,
+      "source": "inbox/item-profump-speciale.jpg"
     },
     {
       "id": "item-revive",
@@ -37,11 +128,32 @@
       "source": "reference-assets/item-revive"
     },
     {
+      "id": "item-sacchettino",
+      "file": "item-sacchettino.webp",
+      "width": 769,
+      "height": 900,
+      "source": "inbox/item-sacchettino.jpg"
+    },
+    {
+      "id": "item-sacchettino-supremo",
+      "file": "item-sacchettino-supremo.webp",
+      "width": 747,
+      "height": 900,
+      "source": "inbox/item-sacchettino-supremo.jpg"
+    },
+    {
       "id": "item-superpotion",
       "file": "item-superpotion.webp",
       "width": 566,
       "height": 720,
       "source": "reference-assets/item-superpotion"
+    },
+    {
+      "id": "item-ultra-sacchettino",
+      "file": "item-ultra-sacchettino.webp",
+      "width": 752,
+      "height": 900,
+      "source": "inbox/item-ultra-sacchettino.jpg"
     },
     {
       "id": "logo",
@@ -112,6 +224,125 @@
       "width": 720,
       "height": 691,
       "source": "reference-assets/menu-team-art"
+    },
+    {
+      "id": "menu-team-shield",
+      "file": "menu-team-shield.webp",
+      "width": 1228,
+      "height": 1400,
+      "source": "inbox/menu-team-shield.jpg"
+    },
+    {
+      "id": "node-dialogue",
+      "file": "node-dialogue.webp",
+      "width": 256,
+      "height": 219,
+      "source": "inbox/node-markers.jpg#6"
+    },
+    {
+      "id": "node-encounter",
+      "file": "node-encounter.webp",
+      "width": 256,
+      "height": 256,
+      "source": "inbox/node-markers.jpg#3"
+    },
+    {
+      "id": "node-grass",
+      "file": "node-grass.webp",
+      "width": 256,
+      "height": 256,
+      "source": "inbox/node-markers.jpg#2"
+    },
+    {
+      "id": "node-gym",
+      "file": "node-gym.webp",
+      "width": 256,
+      "height": 256,
+      "source": "inbox/node-markers.jpg#0"
+    },
+    {
+      "id": "node-heal",
+      "file": "node-heal.webp",
+      "width": 255,
+      "height": 256,
+      "source": "inbox/node-markers.jpg#4"
+    },
+    {
+      "id": "node-locked",
+      "file": "node-locked.webp",
+      "width": 255,
+      "height": 256,
+      "source": "inbox/node-markers.jpg#7"
+    },
+    {
+      "id": "node-shop",
+      "file": "node-shop.webp",
+      "width": 256,
+      "height": 219,
+      "source": "inbox/node-markers.jpg#5"
+    },
+    {
+      "id": "node-trainer",
+      "file": "node-trainer.webp",
+      "width": 256,
+      "height": 218,
+      "source": "inbox/node-markers.jpg#1"
+    },
+    {
+      "id": "pawn-player-1-idle",
+      "file": "pawn-player-1-idle.webp",
+      "width": 479,
+      "height": 700,
+      "source": "inbox/pawn-player-1.jpg#0"
+    },
+    {
+      "id": "pawn-player-1-jump",
+      "file": "pawn-player-1-jump.webp",
+      "width": 486,
+      "height": 700,
+      "source": "inbox/pawn-player-1.jpg#1"
+    },
+    {
+      "id": "pawn-player-2-idle",
+      "file": "pawn-player-2-idle.webp",
+      "width": 478,
+      "height": 700,
+      "source": "inbox/pawn-player-2.jpg#0"
+    },
+    {
+      "id": "pawn-player-2-jump",
+      "file": "pawn-player-2-jump.webp",
+      "width": 480,
+      "height": 700,
+      "source": "inbox/pawn-player-2.jpg#1"
+    },
+    {
+      "id": "portrait-player-1",
+      "file": "portrait-player-1.webp",
+      "width": 961,
+      "height": 1400,
+      "source": "inbox/portrait-player-1.jpg"
+    },
+    {
+      "id": "portrait-player-2",
+      "file": "portrait-player-2.webp",
+      "width": 874,
+      "height": 1400,
+      "source": "inbox/portrait-player-2.jpg"
+    },
+    {
+      "id": "shop-background",
+      "file": "shop-background.webp",
+      "width": 1920,
+      "height": 1072,
+      "source": "inbox/shop-background.jpg"
+    },
+    {
+      "id": "shopkeeper",
+      "file": "shopkeeper.webp",
+      "width": 1376,
+      "height": 768,
+      "source": "inbox/shopkeeper.jpg"
     },
     {
       "id": "summoning-ring",

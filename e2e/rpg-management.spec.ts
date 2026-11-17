@@ -13,7 +13,7 @@ async function seed(page: Page) {
       cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 500, inventario: { potion: 2, masterball: 1 } }
     const two = { id: 2, nome: 'Maggi', squadra: [creature('Vyrath Maggi', 1, 20, 20)], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 300, inventario: {} }
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { giocatore1: one, giocatore2: two, giocatoreAttivo: 1,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: one, giocatore2: two, giocatoreAttivo: 1,
       rivaleStarterId: 5, battaglia: null, posizione1: position('Venezia'), posizione2: position('Torino'),
       posizioniLocali1: {}, posizioniLocali2: {}, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null, audioMuted: true,
@@ -53,25 +53,44 @@ test('filters retain box coordinates and a blocked swap previews the cap without
   expect(after.giocatore2).toEqual(before.giocatore2)
 })
 
-test('bag previews the healing range and keeps status after using a potion', async ({ page }) => {
+test('bag previews exact healing and keeps status until the explicitly requested item is used', async ({ page }) => {
   const dialog = await seed(page)
   const before = await read(page)
   await dialog.getByRole('button', { name: 'Borsa', exact: true }).click()
   const preview = dialog.getByLabel('Anteprima su Vyrath squadra', { exact: true })
   await expect(preview.getByRole('progressbar', { name: 'HP di Vyrath squadra: 3 su 34', exact: true })).toBeVisible()
+  // Pozione del Database: 19 + 1d6 HP, l'anteprima mostra il minimo garantito.
   await expect(preview.getByRole('progressbar', { name: 'HP di Vyrath squadra: 23 su 34', exact: true })).toBeVisible()
-  await expect(preview).toContainText('Recupero minimo')
-  await expect(preview).toContainText('+20–25 HP · Paralizzato')
+  await expect(preview).toContainText('+20 HP · Paralizzato')
   expect((await read(page)).giocatore1).toEqual(before.giocatore1)
   const screenshot = test.info().outputPath('borsa-rpg-healing-preview.png')
   await page.screenshot({ path: screenshot })
   await test.info().attach('borsa-rpg-healing-preview', { path: screenshot, contentType: 'image/png' })
   await dialog.getByRole('button', { name: 'Usa Pozione', exact: true }).click()
   const after = await read(page)
-  const recoveredHp = after.giocatore1.squadra[0].hp - before.giocatore1.squadra[0].hp
-  expect(recoveredHp).toBeGreaterThanOrEqual(20)
-  expect(recoveredHp).toBeLessThanOrEqual(25)
+  expect(after.giocatore1.squadra[0].hp).toBeGreaterThanOrEqual(23)
+  expect(after.giocatore1.squadra[0].hp).toBeLessThanOrEqual(28)
   expect(after.giocatore1.squadra[0].stato).toEqual(before.giocatore1.squadra[0].stato)
   expect(after.giocatore1.inventario.potion).toBe(1)
   expect(after.giocatore2).toEqual(before.giocatore2)
+})
+
+test('dragging between the box and the team uses the same move rules, including the level cap', async ({ page }) => {
+  const dialog = await seed(page)
+  const before = await read(page)
+  await dialog.getByRole('button', { name: 'Deposito', exact: true }).click()
+  const reserve = dialog.getByRole('button', { name: 'Box 1, posto 1: Darklaw riserva, livello 26', exact: true })
+  await expect(reserve).toHaveAttribute('draggable', 'true')
+  // Lv. 26 accanto a Lv. 20: il trascinamento viene rifiutato come «Sposta o scambia».
+  await reserve.dragTo(dialog.getByRole('button', { name: 'Squadra, posto 3: vuoto', exact: true }))
+  expect((await read(page)).giocatore1).toEqual(before.giocatore1)
+  // Riporre un compagno della squadra in un posto libero del box è consentito.
+  await dialog.getByRole('button', { name: 'Squadra, posto 2: Felyss squadra, livello 25', exact: true })
+    .dragTo(dialog.getByRole('button', { name: 'Box 1, posto 2: vuoto', exact: true }))
+  await expect.poll(async () => (await read(page)).giocatore1.deposito['1:2']?.istanzaId).toBe('Felyss squadra')
+  const after = await read(page)
+  expect(after.giocatore1.squadra.map((entry: { istanzaId: string }) => entry.istanzaId)).toEqual(['Vyrath squadra'])
+  expect(after.giocatore1.deposito['1:2']).toEqual(before.giocatore1.squadra[1])
+  expect(after.giocatore2).toEqual(before.giocatore2)
+  await expect(dialog.getByRole('button', { name: 'Box 1, posto 2: Felyss squadra, livello 25', exact: true })).toBeVisible()
 })

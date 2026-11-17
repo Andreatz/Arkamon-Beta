@@ -1,11 +1,10 @@
-import { ALLENATORI, getAllenatore, getPokemon, squadraAllenatore } from '@/data'
+import { getPokemon } from '@/data'
 import { calcolaHPMax, determinaIniziativa } from '@/engine/battleEngine'
 import type { AllenatoreDef, PokemonIstanza, StatoBattaglia } from '@/types'
 
 export interface LeagueOpponent {
   name: string
   team: { pokemonId: number; livello: number }[]
-  catalogTrainerId?: number
 }
 export interface LeagueConfiguration {
   version: 1
@@ -44,13 +43,6 @@ export const emptyLeagueState = (): LeagueState => ({ version: 1, config: null, 
 export const draftLeagueConfiguration = (): LeagueConfiguration => ({ version: 1,
   opponents: [{ name: '', team: [] }, { name: '', team: [] }, { name: '', team: [] }, { name: '', team: [] }],
   champion: null, defeat: null, betweenBattleItems: true, championEnabled: null })
-
-export function leagueOpponentFromTrainer(trainer: AllenatoreDef): LeagueOpponent {
-  return { name: trainer.nome, team: trainer.squadra.map((member) => ({ ...member })),
-    ...(trainer.luogo === 'Lega' && trainer.idDatabase !== undefined ? { catalogTrainerId: trainer.id } : {}) }
-}
-
-export const workbookLeagueTeams = ALLENATORI.filter((trainer) => trainer.luogo === 'Lega')
 const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const bounded = (v: unknown, min: number, max: number): v is number => Number.isSafeInteger(v) && (v as number) >= min && (v as number) <= max
 
@@ -62,11 +54,7 @@ export function validateLeagueOpponent(value: unknown): LeagueOpponent | null {
     if (!record(entry) || typeof entry.pokemonId !== 'number' || !getPokemon(entry.pokemonId) || !bounded(entry.livello, 5, 100)) return null
     team.push({ pokemonId: entry.pokemonId, livello: entry.livello })
   }
-  const name = value.name.trim()
-  const trainer = typeof value.catalogTrainerId === 'number' ? getAllenatore(value.catalogTrainerId) : undefined
-  const sameRoster = trainer?.luogo === 'Lega' && trainer.nome === name && trainer.squadra.length === team.length
-    && trainer.squadra.every((member, index) => member.pokemonId === team[index].pokemonId && member.livello === team[index].livello)
-  return { name, team, ...(sameRoster ? { catalogTrainerId: trainer.id } : {}) }
+  return { name: value.name.trim(), team }
 }
 
 /** Partial configuration is kept as a draft and can never start a campaign run. */
@@ -95,13 +83,10 @@ export function leagueConfigurationProblems(config: LeagueConfiguration | null):
 export function leagueOpponents(config: LeagueConfiguration): LeagueOpponent[] {
   return config.championEnabled && config.champion ? [...config.opponents, config.champion] : config.opponents
 }
-export function leagueTrainer(config: LeagueConfiguration, index: number, rivaleStarterId?: number | null): AllenatoreDef | null {
+export function leagueTrainer(config: LeagueConfiguration, index: number): AllenatoreDef | null {
   const opponent = leagueOpponents(config)[index]
   if (!opponent || !validateLeagueOpponent(opponent)) return null
-  const authored = opponent.catalogTrainerId === undefined ? undefined : getAllenatore(opponent.catalogTrainerId)
-  return { id: 1_000_001 + index, nome: opponent.name, luogo: 'Roma', tipo: index === 4 ? 'Campione' : 'Superquattro',
-    squadra: authored ? squadraAllenatore(authored, rivaleStarterId) : opponent.team,
-    ...(authored ? { guadagno: authored.guadagno, perdita: authored.perdita } : {}) }
+  return { id: 1_000_001 + index, nome: opponent.name, luogo: 'Roma', tipo: index === 4 ? 'Campione' : 'Superquattro', squadra: opponent.team }
 }
 
 export function normalizeLeagueState(value: unknown, restorePokemon: (v: unknown) => PokemonIstanza | null, warn: (message: string) => void): LeagueState {
@@ -142,8 +127,8 @@ export function normalizeLeagueState(value: unknown, restorePokemon: (v: unknown
   return { version: 1, config, players, winner }
 }
 
-export function makeLeagueBattle(config: LeagueConfiguration, progress: LeagueProgress, playerId: 1 | 2, team: PokemonIstanza[], rng = Math.random, rivaleStarterId?: number | null): StatoBattaglia | null {
-  const trainer = leagueTrainer(config, progress.nextStage, rivaleStarterId)
+export function makeLeagueBattle(config: LeagueConfiguration, progress: LeagueProgress, playerId: 1 | 2, team: PokemonIstanza[], rng = Math.random): StatoBattaglia | null {
+  const trainer = leagueTrainer(config, progress.nextStage)
   const pokemonA = team.find((p) => p.hp > 0)
   if (!trainer || !pokemonA || !progress.runId) return null
   const squadraB = trainer.squadra.map((slot, index) => {

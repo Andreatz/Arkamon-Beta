@@ -1,3 +1,4 @@
+import { getShopItem } from '@/shop/catalog'
 import { useEffect, useState } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { useInteractionStore } from './interactionStore'
@@ -5,14 +6,6 @@ import { interactionRequirementMessage, isInteractionComplete } from './runtime'
 import './interactions.css'
 import { openPlayerUi } from '@/player-ui/navigation'
 import { GameButton } from '@/components/ui/GameButton'
-import { getShopItem } from '@/shop/catalog'
-import type { InteractionResources } from './types'
-
-function resourceText(resources: InteractionResources): string {
-  const labels = Object.entries(resources.items).filter(([, quantity]) => quantity).map(([id, quantity]) => `${quantity} ${getShopItem(id)?.name ?? id}`)
-  if (resources.coins) labels.unshift(`${resources.coins} monete`)
-  return labels.join(' e ')
-}
 
 export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false, onShopOpened }: { mapId: string; nodeId: string; inputBlocked?: boolean; onShopOpened?: () => void }) {
   const definitions = useInteractionStore((s) => s.interactions)
@@ -30,14 +23,16 @@ export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false
   return <div className="configured-interactions">
     {!available.length && <p>Non ci sono interazioni definite su questo pallino.</p>}
     {available.map((entry) => {
-      const player = state[playerId === 1 ? 'giocatore1' : 'giocatore2']
-      const visitedBush = entry.action.kind === 'bush' && player.cespugliVisitati.has(`${mapId}:${entry.action.bush}`)
-      const canRetryBush = visitedBush && (player.inventario['special-perfume'] ?? 0) > (entry.cost.items['special-perfume'] ?? 0)
-      const done = !canRetryBush && (visitedBush || !entry.repeatable && isInteractionComplete(progress, entry, playerId))
+      const owner = playerId === 1 ? player1 : player2
+      const explored = entry.action.kind === 'bush' && (owner.cespugliVisitati.has(`${entry.mapId}:${entry.action.bush}`) || isInteractionComplete(progress, entry, playerId))
+      const scent = explored && (owner.inventario['special-scent'] ?? 0) > 0
+      const done = !scent && !entry.repeatable && (explored || isInteractionComplete(progress, entry, playerId))
       const requirement = interactionRequirementMessage(state, entry, playerId)
       const disabled = inputBlocked || !!battle || !!progress.pendingBattle || done || !!requirement || turn.giocatoreAttivo !== playerId || turn.azioniRimaste <= 0
-      const reward = resourceText(entry.reward)
-      const cost = resourceText(entry.cost)
+      const resources = (value: typeof entry.reward) => [value.coins ? `${value.coins} monete` : '',
+        ...Object.entries(value.items).filter(([, quantity]) => (quantity ?? 0) > 0).map(([id, quantity]) => `${quantity} ${getShopItem(id)?.name ?? id}`)].filter(Boolean).join(' e ')
+      const reward = resources(entry.reward)
+      const cost = resources(entry.cost)
       return <article key={entry.id} className="configured-interaction">
         <h3>{entry.title}</h3><p>{entry.dialogue}</p>
         <small>{entry.scope === 'shared' ? 'Si completa una volta per la partita; il premio va a chi la completa.' : 'Completamento indipendente per questo giocatore.'}{entry.repeatable ? ' Attività ripetibile.' : ''}</small>
@@ -51,7 +46,7 @@ export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false
             openPlayerUi('negozio', { playerId, shopInteractionId: entry.id })
           }
         }}>
-          {canRetryBush ? 'Riprova con Profumo speciale' : done ? 'Completata' : entry.action.kind === 'shop' ? 'Apri Arkastore' : entry.action.kind === 'heal' ? 'Cura la squadra' : ['trainer', 'bush', 'encounter'].includes(entry.action.kind) ? 'Avvia incontro' : 'Interagisci'}
+          {done ? 'Completata' : scent ? 'Usa Profumo speciale' : entry.action.kind === 'shop' ? 'Apri Arkastore' : entry.action.kind === 'heal' ? 'Cura la squadra' : ['trainer', 'bush', 'encounter'].includes(entry.action.kind) ? 'Avvia incontro' : 'Interagisci'}
         </GameButton>
       </article>
     })}

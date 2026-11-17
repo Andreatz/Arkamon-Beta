@@ -1,4 +1,3 @@
-import '@/components/ui/rangeInput.css'
 import { useGameStore } from '@/store/gameStore'
 import { useGamePreferences } from './gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'

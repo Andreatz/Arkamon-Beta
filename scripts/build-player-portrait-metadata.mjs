@@ -47,13 +47,10 @@ async function exists(sourcePath) {
 
 const catalog = JSON.parse(await fs.readFile(path.join(repositoryRoot, 'src/data/pokemon.json'), 'utf8'))
 const metadata = {}
-let portraitCount = 0, posterCount = 0
+let posterCount = 0
 for (const species of catalog) {
   const sourcePath = `/sprites/front_sprites/${species.id}.png`
-  if (await exists(sourcePath)) {
-    metadata[sourcePath] = await measurePortrait(sourcePath)
-    portraitCount++
-  }
+  metadata[sourcePath] = await measurePortrait(sourcePath)
   const posterPath = `/sprites/arkamon/${species.id}/front/idle-poster.webp`
   if (await exists(posterPath)) {
     metadata[posterPath] = await measurePortrait(posterPath)
@@ -70,4 +67,4 @@ if (checkOnly) {
 } else {
   await fs.writeFile(outputPath, contents)
 }
-console.log(`${checkOnly ? 'Verified' : 'Measured'} ${portraitCount} original portraits and ${posterCount} idle posters; artwork files remain unchanged.`)
+console.log(`${checkOnly ? 'Verified' : 'Measured'} ${catalog.length} original portraits and ${posterCount} idle posters; artwork files remain unchanged.`)

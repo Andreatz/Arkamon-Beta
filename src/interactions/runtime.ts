@@ -1,12 +1,11 @@
-import { getAllenatore, getIncontri, getPokemon, squadraAllenatore, tipoBattagliaAllenatore } from '@/data'
+import { ALLENATORI, getAllenatore, getIncontri, getPokemon, squadraAllenatore } from '@/data'
 import { getLocalMap } from '@/data/localMaps'
-import { SECRET_LOCATION_ID, canAccessSecretLocation, countGymMedals } from '@/data/secretLocation'
+import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
 import { calcolaHPMax, determinaIniziativa } from '@/engine/battleEngine'
 import { nuovoTurno } from '@/engine/movimento'
 import type { NavigazioneScena, PokemonIstanza, PosizioneAvatar, PosizioniMappeLocali, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
 import { validateInteraction } from './schema'
 import type { InteractionDefinition, InteractionLogEntry, InteractionProgress, InteractionResources, PendingInteractionBattle } from './types'
-import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY } from '@/shop/catalog'
 
 /** Structural input lets the game store commit all changes in a single persisted update. */
 export interface InteractionRuntimeState {
@@ -40,19 +39,15 @@ export function interactionRequirementMessage(
   if (missingGyms.length) return `Richiede le medaglie di: ${missingGyms.map((id) => getAllenatore(id)?.luogo ?? id).join(', ')}.`
   if (r.minLevel && !player.squadra.some((pokemon) => pokemon.livello >= r.minLevel)) return `Serve almeno un Arkamon in squadra di livello ${r.minLevel}.`
   if (player.monete < Math.max(r.minCoins, definition.cost.coins)) return `Servono almeno ${Math.max(r.minCoins, definition.cost.coins)} monete.`
-  for (const [id, quantity] of Object.entries(r.items)) {
-    if (isShopItemId(id) && (player.inventario[id] ?? 0) < Number(quantity)) return `Servono ${quantity} ${getShopItem(id)!.name}.`
-  }
-  for (const [id, quantity] of Object.entries(definition.cost.items)) {
-    if (isShopItemId(id) && (player.inventario[id] ?? 0) < Number(quantity)) return `Il costo è ${quantity} ${getShopItem(id)!.name}.`
-  }
+  for (const [id, quantity] of Object.entries(r.items)) if ((player.inventario.masterball ?? 0) < Number(quantity) && id === 'masterball') return `Servono ${quantity} Masterball.`
+  if ((player.inventario.masterball ?? 0) < (definition.cost.items.masterball ?? 0)) return `Il costo è ${definition.cost.items.masterball} Masterball.`
   if (r.completedInteractions.some((id) => !isInteractionComplete(state.interactionProgress, { id, scope: 'player' }, playerId))) return 'Completa prima le tappe precedenti indicate nel diario.'
   return null
 }
 function changeResources(player: StatoGiocatore, resources: InteractionResources, sign: 1 | -1): StatoGiocatore {
   const inventory = { ...player.inventario }
   for (const [id, quantity] of Object.entries(resources.items)) {
-    if (isShopItemId(id)) inventory[id] = Math.min(MAX_ITEM_QUANTITY, Math.max(0, (inventory[id] ?? 0) + sign * Number(quantity)))
+    if (id === 'masterball') inventory.masterball = Math.min(999_999, Math.max(0, (inventory.masterball ?? 0) + sign * Number(quantity)))
   }
   return { ...player, monete: Math.min(Number.MAX_SAFE_INTEGER, Math.max(0, player.monete + sign * resources.coins)), inventario: inventory }
 }
@@ -82,7 +77,7 @@ function makeBattle(state: InteractionRuntimeState, definition: InteractionDefin
   if (a.kind === 'trainer') {
     const trainer = getAllenatore(a.trainerId)
     if (!trainer) return null
-    trainerId = trainer.id; type = tipoBattagliaAllenatore(trainer); intro = `${trainer.nome} ti sfida!`
+    trainerId = trainer.id; type = trainer.tipo === 'PVP' ? 'PVP' : 'NPC'; intro = `${trainer.nome} ti sfida!`
     opponents = squadraAllenatore(trainer, state.rivaleStarterId).flatMap((slot, index) => {
       const pokemon = makePokemon(slot.pokemonId, slot.livello, `interaction-${definition.id}-${player.id}-${index}`)
       return pokemon ? [pokemon] : []
@@ -98,7 +93,7 @@ function makeBattle(state: InteractionRuntimeState, definition: InteractionDefin
     if (entry) {
       const level = entry.livelloMin + Math.floor(Math.min(.99999999, Math.max(0, rng())) * (entry.livelloMax - entry.livelloMin + 1))
       const pokemon = makePokemon(entry.pokemonId, level, `interaction-${definition.id}-${player.id}`)
-      if (pokemon) opponents = [{ ...pokemon, difficoltaCattura: entry.probabilita }]
+      if (pokemon) opponents = [pokemon]
     }
   }
   if (!opponents.length) return null
@@ -124,14 +119,15 @@ export function resolveConfiguredInteraction(state: InteractionRuntimeState, def
   if (state.giocatoreAttivo !== playerId || state.turnoOverworld.giocatoreAttivo !== playerId || state.turnoOverworld.azioniRimaste <= 0) return failure('Il turno di questo giocatore è concluso.')
   if (world.mappaId !== 'mappa-principale' || world.luogo !== definition.mapId || (positions[map.id] ?? map.startNode) !== definition.nodeId) return failure('Raggiungi il pallino di questa interazione.')
   if (definition.mapId === SECRET_LOCATION_ID && !canAccessSecretLocation(player, world)) return failure('Il passaggio segreto non è ancora disponibile.')
-  const a = definition.action
-  const visitedBush = a.kind === 'bush' && player.cespugliVisitati.has(`${map.id}:${a.bush}`)
-  if (visitedBush && (player.inventario['special-perfume'] ?? 0) <= (definition.cost.items['special-perfume'] ?? 0)) {
-    return failure('Questo cespuglio è già stato esplorato. Per riprovare serve un Profumo speciale.')
-  }
-  if (!visitedBush && !definition.repeatable && isInteractionComplete(state.interactionProgress, definition, playerId)) return failure('Questa interazione è già stata completata.')
+  const bushKey = definition.action.kind === 'bush' ? `${map.id}:${definition.action.bush}` : null
+  const bushExplored = !!bushKey && (player.cespugliVisitati.has(bushKey) || isInteractionComplete(state.interactionProgress, definition, playerId))
+  // Profumo speciale (Database): permette di esplorare di nuovo un cespuglio già visitato.
+  const useScent = bushExplored && (player.inventario['special-scent'] ?? 0) > 0
+  if (bushExplored && !useScent) return failure('Questo cespuglio è già stato esplorato. Un Profumo speciale permette di esplorarlo di nuovo.')
+  if (!bushKey && !definition.repeatable && isInteractionComplete(state.interactionProgress, definition, playerId)) return failure('Questa interazione è già stata completata.')
   const requirement = interactionRequirementMessage(state, definition, playerId)
   if (requirement) return failure(requirement)
+  const a = definition.action
   // Opening a shop is free. The atomic checkout validates the same point again.
   if (a.kind === 'shop') {
     if (state.scenaCorrente.scena !== 'citta' || state.scenaCorrente.payload?.luogo !== map.id) return failure('Apri la mappa della città e raggiungi il pallino dell’Arkastore.')
@@ -142,7 +138,7 @@ export function resolveConfiguredInteraction(state: InteractionRuntimeState, def
   const battle = startsBattle ? makeBattle(state, definition, player, rng) : null
   if (startsBattle && !battle) return failure('Serve un Arkamon vivo in squadra per affrontare questo incontro.')
   let updatedPlayer = changeResources(player, definition.cost, -1)
-  if (visitedBush) updatedPlayer = changeResources(updatedPlayer, { coins: 0, items: { 'special-perfume': 1 } }, -1)
+  if (useScent) updatedPlayer = { ...updatedPlayer, inventario: { ...updatedPlayer.inventario, 'special-scent': (updatedPlayer.inventario['special-scent'] ?? 1) - 1 } }
   let progress = state.interactionProgress
   const pending: PendingInteractionBattle = { interactionId: definition.id, playerId, title: definition.title, mapId: map.id, nodeId: definition.nodeId, scope: definition.scope, reward: structuredClone(definition.reward) }
   if (battle) {
@@ -158,7 +154,7 @@ export function resolveConfiguredInteraction(state: InteractionRuntimeState, def
     progress = appendLog(progress, playerId, { interactionId: definition.id, title: definition.title, mapId: map.id, nodeId: definition.nodeId, message: definition.dialogue || (a.kind === 'heal' ? 'La squadra è stata curata.' : 'Interazione completata.') })
   }
   return {
-    ok: true, message: definition.dialogue || (battle ? 'La sfida ha inizio.' : a.kind === 'heal' ? 'La squadra è stata curata.' : 'Interazione completata.'),
+    ok: true, message: useScent ? 'Usi un Profumo speciale: il cespuglio si anima di nuovo.' : definition.dialogue || (battle ? 'La sfida ha inizio.' : a.kind === 'heal' ? 'La squadra è stata curata.' : 'Interazione completata.'),
     patch: {
       [playerKey]: updatedPlayer, interactionProgress: progress, turnoOverworld: nuovoTurno(playerId),
       ...(battle ? { battaglia: battle, scenaPrecedente: state.scenaCorrente, scenaCorrente: { scena: 'battaglia' as const } } : {}),
@@ -190,5 +186,5 @@ export function finalizeConfiguredBattle(state: InteractionRuntimeState): Intera
 }
 
 export function collectedGymCount(player: Pick<StatoGiocatore, 'allenatoriSconfitti'>): number {
-  return countGymMedals(player)
+  return ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra' && player.allenatoriSconfitti.has(trainer.id)).length
 }

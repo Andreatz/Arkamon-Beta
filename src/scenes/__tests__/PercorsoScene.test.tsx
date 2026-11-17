@@ -22,6 +22,7 @@ describe('allenatori accessibili nei percorsi', () => {
     useGameStore.getState().scegliStarter(5)
   })
 
+  // Il Percorso 15 è il luogo segreto: ha una scena propria e resta chiuso fino alle otto palestre.
   it.each(ALLENATORI.filter((allenatore) => allenatore.luogo.startsWith('Percorso_') && allenatore.luogo !== 'Percorso_15'))(
     'offre un controllo per sfidare $nome in $luogo', (allenatore) => {
       useGameStore.getState().vaiAScena('percorso', { luogo: allenatore.luogo })
@@ -32,12 +33,12 @@ describe('allenatori accessibili nei percorsi', () => {
 
   it('marca un allenatore già sconfitto e conserva gli altri incontri disponibili', () => {
     useGameStore.setState((state) => ({
-      giocatore1: { ...state.giocatore1, allenatoriSconfitti: new Set([201]) },
+      giocatore1: { ...state.giocatore1, allenatoriSconfitti: new Set([204]) },
     }))
     useGameStore.getState().vaiAScena('percorso', { luogo: 'Percorso_1' })
     const markup = renderToStaticMarkup(<PercorsoScene />)
-    expect(markup).toContain('aria-label="Rivale, già sconfitto"')
-    expect(markup).toContain('aria-label="Sfida Gennaro Bullo"')
+    expect(markup).toContain('aria-label="Alvise seguace, già sconfitto"')
+    expect(markup).toContain('aria-label="Sfida Bianca seguace"')
     expect(markup).toContain('aria-label="Cespuglio A"')
   })
 

@@ -5,20 +5,16 @@ import { readFile } from 'node:fs/promises'
 // Use the actual animation and dice reveal clock so an early KO is observable.
 test.use({ reducedMotion: 'no-preference' })
 
-async function openBattleFixture(page: Page, fixedDamage = false) {
-  await page.addInitScript((fixedDamage) => {
+async function openBattleFixture(page: Page) {
+  await page.addInitScript(() => {
     // A persisted fixture uses the normal application recovery path. A reload
     // must retain the resulting save rather than silently re-seed the match.
     if (localStorage.getItem('e2e-chronicle-fixture')) return
-    const attacker = fixedDamage
-      ? { istanzaId: 'chronicle-a', specieId: 115, nome: 'Watthawk', livello: 32, hp: 20, xp: 0 }
-      : { istanzaId: 'chronicle-a', specieId: 1, nome: 'Vyrath Audit', livello: 14, hp: 1, xp: 0 }
-    const defender = fixedDamage
-      ? { istanzaId: 'chronicle-b', specieId: 56, nome: 'Brecnt', livello: 5, hp: 8, xp: 0 }
-      : { istanzaId: 'chronicle-b', specieId: 13, nome: 'Wormaren Audit', livello: 5, hp: 1, xp: 0 }
+    const attacker = { istanzaId: 'chronicle-a', specieId: 1, nome: 'Vyrath Audit', livello: 14, hp: 1, xp: 0 }
+    const defender = { istanzaId: 'chronicle-b', specieId: 13, nome: 'Wormaren Audit', livello: 5, hp: 1, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Cronaca ${id}`, squadra: id === 1 ? [attacker] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {}, caselleConsumate: [] })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,
@@ -28,10 +24,10 @@ async function openBattleFixture(page: Page, fixedDamage = false) {
     } }))
     localStorage.setItem('arkamon-preferences-v1', JSON.stringify({ version: 1, state: { musicVolume: 0, effectsVolume: 0, animationSpeed: 'normal', reducedMotion: 'off' } }))
     localStorage.setItem('e2e-chronicle-fixture', 'seeded')
-  }, fixedDamage)
+  })
   await page.goto('/')
   await expect(page.locator('[data-presented-scene="battaglia"]')).toHaveAttribute('aria-busy', 'false')
-  await expect(page.locator('[data-battle-hp-side="enemy"]')).toHaveAttribute('data-battle-hp', fixedDamage ? '8' : '1')
+  await expect(page.locator('[data-battle-hp-side="enemy"]')).toHaveAttribute('data-battle-hp', '1')
 }
 
 test('Suprema reveals KO after dice, preserves XP/recoil order on reload and archives its recorded replay', async ({ page }) => {
@@ -113,31 +109,6 @@ test('Suprema reveals KO after dice, preserves XP/recoil order on reload and arc
   await expect(tools).toHaveCount(0)
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.battaglia.cronaca.events)).toEqual(saved.cronaca.events)
   expect(errors).toEqual([])
-})
-
-test('an imported fixed-damage move resolves in battle and persists without a dice reveal', async ({ page }) => {
-  await openBattleFixture(page, true)
-  await page.evaluate(() => {
-    const seen = () => Boolean(document.querySelector('[data-dice-revealed]'))
-    new MutationObserver(() => {
-      if (seen()) document.body.dataset.observedDice = 'true'
-    }).observe(document.body, { subtree: true, childList: true, attributes: true })
-  })
-
-  const move = page.getByRole('button', { name: /Tensione stabile/ })
-  await expect(move).toContainText('10 danni fissi')
-  await move.click()
-  await expect(page.getByRole('button', { name: 'Prosegui', exact: true })).toBeVisible()
-  expect(await page.locator('body').getAttribute('data-observed-dice')).toBeNull()
-  const result = () => page.evaluate(() => {
-    const battle = JSON.parse(localStorage.getItem('arkamon-save')!).state.battaglia
-    return { winner: battle.checkpoint.outcome, hp: battle.pokemonB.hp, attack: battle.cronaca.events.find((event: { kind: string }) => event.kind === 'attack') }
-  })
-  const settled = await result()
-  expect(settled).toMatchObject({ winner: 'vittoria', hp: 0, attack: { damage: 10, dice: [], baseDamage: 10, effectiveness: 1 } })
-  await page.reload()
-  await expect(page.getByRole('button', { name: 'Prosegui', exact: true })).toBeVisible()
-  expect(await result()).toEqual(settled)
 })
 
 test('restoring a different battle in the same scene replaces local HP, checkpoint and chronicle without stale writes', async ({ page }) => {

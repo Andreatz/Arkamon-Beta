@@ -1,5 +1,6 @@
+import { isShopItemId, SHOP_ITEMS, type ShopItemId } from '@/shop/catalog'
 import { useState } from 'react'
-import { ALLENATORI, POKEMON_BASE, getAllenatoriInLuogo, getCespugliInLuogo } from '@/data'
+import { ALLENATORI, INCONTRI, POKEMON_BASE, getAllenatoriInLuogo } from '@/data'
 import { LOCAL_MAPS } from '@/data/localMaps'
 import { assetUrl } from '@/utils/assetUrl'
 import { useInteractionStore } from './interactionStore'
@@ -17,6 +18,11 @@ function download(filename: string, content: string) {
   const anchor = document.createElement('a'); anchor.href = url; anchor.download = filename; anchor.click()
   setTimeout(() => URL.revokeObjectURL(url), 0)
 }
+/** Un tipo di oggetto per costo o premio: quello già scelto, altrimenti il Sacchettino Supremo. */
+function sectionItem(items: Partial<Record<ShopItemId, number>>): ShopItemId {
+  return (Object.keys(items).find((id) => isShopItemId(id)) as ShopItemId | undefined) ?? 'masterball'
+}
+
 export function AdminInteractionEditor() {
   const interactions = useInteractionStore((s) => s.interactions)
   const save = useInteractionStore((s) => s.saveInteraction)
@@ -33,12 +39,13 @@ export function AdminInteractionEditor() {
   const [message, setMessage] = useState('')
   const [dimensions, setDimensions] = useState({ width: 1619, height: 971 })
   const change = (patch: Partial<InteractionDefinition>) => setDraft((current) => ({ ...current, ...patch }))
-  const changeNumber = (section: 'cost' | 'reward', key: 'coins' | 'masterball' | 'special-perfume', value: string) => {
+  const changeNumber = (section: 'cost' | 'reward', key: 'coins' | 'items', value: string, itemId?: ShopItemId) => {
     const number = Number(value)
-    change({ [section]: key === 'coins' ? { ...draft[section], coins: number } : { ...draft[section], items: { ...draft[section].items, [key]: number } } })
+    const current = sectionItem(draft[section].items)
+    change({ [section]: key === 'coins' ? { ...draft[section], coins: number } : { ...draft[section], items: number > 0 ? { [itemId ?? current]: number } : {} } })
   }
   const trainers = getAllenatoriInLuogo(mapId)
-  const bushes = getCespugliInLuogo(mapId)
+  const bushes = [...new Set(INCONTRI.filter((entry) => entry.luogo === mapId).map((entry) => entry.cespuglio))].sort()
   const selectPoint = (nodeId: string) => {
     const existing = interactions.find((entry) => entry.mapId === mapId && entry.nodeId === nodeId)
     setDraft(existing ? structuredClone(existing) : createDraft(mapId, nodeId)); setMessage('')
@@ -95,14 +102,15 @@ export function AdminInteractionEditor() {
       <fieldset><legend>Requisiti, controllati prima di consumare il turno</legend>
         <label>Livello minimo in squadra<input type="number" min={0} max={100} value={draft.requirements.minLevel} onChange={(e) => change({ requirements: { ...draft.requirements, minLevel: Number(e.target.value) } })} /></label>
         <label>Monete minime possedute<input type="number" min={0} max={1000000} value={draft.requirements.minCoins} onChange={(e) => change({ requirements: { ...draft.requirements, minCoins: Number(e.target.value) } })} /></label>
-        <label>Masterball minime possedute<input type="number" min={0} max={999} value={draft.requirements.items.masterball ?? 0} onChange={(e) => change({ requirements: { ...draft.requirements, items: { ...draft.requirements.items, masterball: Number(e.target.value) } } })} /></label>
+        <label>Sacchettini Supremi minimi posseduti<input type="number" min={0} max={999} value={draft.requirements.items.masterball ?? 0} onChange={(e) => change({ requirements: { ...draft.requirements, items: { masterball: Number(e.target.value) } } })} /></label>
         <div>Medaglie richieste</div>{ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra').map((trainer) => <label key={trainer.id} className="interaction-check"><input type="checkbox" checked={draft.requirements.gymIds.includes(trainer.id)} onChange={(e) => change({ requirements: { ...draft.requirements, gymIds: e.target.checked ? [...draft.requirements.gymIds, trainer.id] : draft.requirements.gymIds.filter((id) => id !== trainer.id) } })} />{trainer.luogo}</label>)}
         <div>Tappe precedenti (anche in altre città)</div><p className="interaction-note">Sono selezionabili solo attività che registrano un completamento. Dialoghi e cure ripetibili, come i negozi, non possono essere prerequisiti.</p>{completionPrerequisiteOptions(interactions, draft).map((entry) => <label key={entry.id} className="interaction-check"><input type="checkbox" checked={draft.requirements.completedInteractions.includes(entry.id)} onChange={(e) => change({ requirements: { ...draft.requirements, completedInteractions: e.target.checked ? [...draft.requirements.completedInteractions, entry.id] : draft.requirements.completedInteractions.filter((id) => id !== entry.id) } })} />{entry.mapId.replace(/_/g, ' ')} · {entry.title}{entry.repeatable ? ' · Requisito storico impossibile: deselezionalo per correggerlo.' : ''}</label>)}
       </fieldset>
       {(['cost', 'reward'] as const).map((section) => <fieldset key={section} disabled={draft.action.kind === 'shop'}><legend>{section === 'cost' ? 'Costo all’avvio' : 'Ricompensa al completamento'}</legend>
         <label>{section === 'cost' ? 'Monete da spendere' : 'Monete da assegnare'}<input type="number" min={0} max={1000000} value={draft[section].coins} onChange={(e) => changeNumber(section, 'coins', e.target.value)} /></label>
-        <label>{section === 'cost' ? 'Masterball da spendere' : 'Masterball da assegnare'}<input type="number" min={0} max={999} value={draft[section].items.masterball ?? 0} onChange={(e) => changeNumber(section, 'masterball', e.target.value)} /></label>
-        {section === 'reward' && <label>Profumi speciali da assegnare<input type="number" min={0} max={999} value={draft.reward.items['special-perfume'] ?? 0} onChange={(e) => changeNumber('reward', 'special-perfume', e.target.value)} /></label>}
+        <label>{section === 'cost' ? 'Oggetto da spendere' : 'Oggetto da assegnare'}<select value={sectionItem(draft[section].items)} onChange={(e) => changeNumber(section, 'items', String(draft[section].items[sectionItem(draft[section].items)] ?? 0), e.target.value as ShopItemId)}>
+          {SHOP_ITEMS.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+        <label>Quantità<input type="number" min={0} max={999} value={draft[section].items[sectionItem(draft[section].items)] ?? 0} onChange={(e) => changeNumber(section, 'items', e.target.value)} /></label>
       </fieldset>)}
       <p className="interaction-note">L’interazione conclude il turno: due movimenti oppure un movimento e un’interazione. L’Arkastore si apre gratuitamente; solo l’acquisto del carrello conclude il turno. Negli incontri il costo viene speso all’avvio; il premio aggiuntivo arriva solo alla vittoria o cattura. Restano le ricompense ordinarie degli allenatori.</p>
       <div className="interaction-actions"><button className="arka-button" disabled={!!recovery} onClick={() => setMessage(save(draft) ?? 'Interazione salvata.')}>Salva interazione</button>

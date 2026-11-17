@@ -5,7 +5,7 @@ test('reacquiring a changed checkpoint discards an unsaved retry calculated from
     if(localStorage.getItem('arkamon-save'))return
     const player=(id:1|2)=>({id,nome:id===1?'Melia':'Maggi',squadra:[{istanzaId:`recovery-${id}`,specieId:id===1?1:5,nome:id===1?'Vyrath':'Darklaw',livello:5,hp:12,xp:0}],deposito:{},cespugliVisitati:[],allenatoriSconfitti:[],caselleConsumate:[],monete:700,inventario:{}})
     const position={mappaId:'mappa-principale',luogo:'Venezia',x:0,y:0,direzione:'S'}
-    localStorage.setItem('arkamon-save',JSON.stringify({version:0,state:{giocatore1:player(1),giocatore2:player(2),giocatoreAttivo:1,posizione1:position,posizione2:position,scenaCorrente:{scena:'mappa-principale'},turnoOverworld:{giocatoreAttivo:1,azioniRimaste:2},audioMuted:true}}))
+    localStorage.setItem('arkamon-save',JSON.stringify({version:0,state:{dataVersion:2,giocatore1:player(1),giocatore2:player(2),giocatoreAttivo:1,posizione1:position,posizione2:position,scenaCorrente:{scena:'mappa-principale'},turnoOverworld:{giocatoreAttivo:1,azioniRimaste:2},audioMuted:true}}))
     localStorage.setItem('arkamon-preferences-v1',JSON.stringify({version:1,state:{musicVolume:0,effectsVolume:0,reducedMotion:'on'}}))
   })
   await page.goto('/')

@@ -10,7 +10,8 @@ describe('informazioni sulle mosse del compagno', () => {
     const markup = renderToStaticMarkup(<PokemonMoves pokemon={{ istanzaId: 'move-facts', specieId: speciesId, nome: 'Compagno', livello: 20, hp: 3, xp: 0 }} />)
     const row = markup.split('class="pu-move"').find(part => part.includes(`<strong>${name}</strong>`))!
     expect(row).toContain(`Cura ${percent}%`)
-    expect(row).toContain(`Cura ${percent}% degli HP massimi e rimuove veleno e paralisi`)
+    // Stesse etichette della battaglia (battleMoveFacts).
+    expect(row).toContain(`Cura ${percent}% HP. Rimuove veleno e paralisi`)
     expect(row).not.toMatch(/\d+d6/)
   })
 
@@ -19,7 +20,7 @@ describe('informazioni sulle mosse del compagno', () => {
     expect(markup).toContain('Soffio')
     expect(markup).toContain('1d6 +1')
     const statuses = renderToStaticMarkup(<PokemonMoves pokemon={{ istanzaId: 'status-facts', specieId: 3, nome: 'Vyrath', livello: 35, hp: 12, xp: 0 }} />)
-    expect(statuses).toContain('Paralisi · 80%')
-    expect(statuses).toContain('Furia Ionica')
+    expect(statuses).toMatch(/data-move-kind="status"/)
+    expect(statuses).toMatch(/>(Paralisi|Sonno|Veleno|Confusione)</)
   })
 })

@@ -3,14 +3,13 @@ import { getPokemon, POKEMON_BASE } from '@/data'
 import { ARKAMON_ASSET_CATALOG, filterArkamonAssetCatalog, getArkamonAssetEntry, getAssetPortraitViewBox } from '../arkamonAssetCatalog'
 
 describe('graphic assets remain separate from playable forms', () => {
-  it('exposes all supplied sparse IDs and pending metadata without expanding gameplay', () => {
-    expect(ARKAMON_ASSET_CATALOG).toHaveLength(204)
-    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'game-data-present')).toHaveLength(203)
-    expect(ARKAMON_ASSET_CATALOG.filter(entry => entry.status === 'pending-game-data')).toHaveLength(1)
-    expect(POKEMON_BASE).toHaveLength(205)
+  it('catalogs a front sprite for every one of the 206 playable species', () => {
+    expect(ARKAMON_ASSET_CATALOG).toHaveLength(206)
+    expect(POKEMON_BASE).toHaveLength(206)
+    expect(ARKAMON_ASSET_CATALOG.every(entry => entry.status === 'game-data-present')).toBe(true)
     for (const entry of ARKAMON_ASSET_CATALOG) {
       expect(Object.keys(entry).sort()).toEqual(['id', 'sprites', 'status'])
-      expect(entry.status === 'game-data-present').toBe(Boolean(getPokemon(entry.id)))
+      expect(Boolean(getPokemon(entry.id))).toBe(true)
       expect(entry.sprites.front).toBeDefined()
       for (const sprite of Object.values(entry.sprites)) {
         expect(sprite!.source).toMatch(/^\/sprites\/(front_sprites|back_sprites|small_sprites)\/.+\.png$/)
@@ -18,20 +17,16 @@ describe('graphic assets remain separate from playable forms', () => {
         expect(sprite!.bytes).toBeGreaterThan(0)
       }
     }
-    for (const id of [130]) {
-      expect(getArkamonAssetEntry(id)?.status).toBe('pending-game-data')
-      expect(getPokemon(id)).toBeUndefined()
-    }
-    for (const id of [194, 195, 207]) expect(getArkamonAssetEntry(id)).toBeUndefined()
-    for (const id of [111, 116, 117, 131, 134, 139, 150, 184, 194, 195, 206]) expect(getPokemon(id)).toBeDefined()
+    // 194 e 195 (Flastorm) usano un segnaposto finché non arriva lo sprite.
+    for (const id of [194, 195]) expect(getArkamonAssetEntry(id)?.sprites.front).toBeDefined()
+    expect(getArkamonAssetEntry(207)).toBeUndefined()
   })
 
-  it('filters pending and animated assets independently, retaining animated forms without game data', () => {
+  it('filters animated assets; no species is still waiting for game data', () => {
     const animated = new Set([1, 111, 116, 117, 134, 139])
     expect(filterArkamonAssetCatalog('animated', animated).map(entry => entry.id)).toEqual([1, 111, 116, 117, 134, 139])
-    expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 130)).toBe(true)
-    expect(filterArkamonAssetCatalog('pending-game-data', animated).some(entry => entry.id === 1)).toBe(false)
-    expect(filterArkamonAssetCatalog('all', animated)).toHaveLength(204)
+    expect(filterArkamonAssetCatalog('pending-game-data', animated)).toEqual([])
+    expect(filterArkamonAssetCatalog('all', animated)).toHaveLength(206)
   })
 
   it('fits all visible pixels, including rectangular artwork, without changing source rasters', () => {

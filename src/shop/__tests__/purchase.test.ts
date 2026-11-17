@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { initialGameSave } from '@/save/gamePersistence'
 import { resolveShopPurchase as resolvePurchaseAtPoint, shopAvailabilityMessage, shopCartTotal, type ShopRuntimeState } from '../purchase'
 import { newInteractionDefinition } from '@/interactions/types'
-import { getShopItemsAt, hasArkaStore, MAX_ITEM_QUANTITY, normalizeShopInventory, SHOP_ITEMS } from '../catalog'
+import { hasArkaStore, isKeyItem, MAX_ITEM_QUANTITY, normalizeShopInventory, SHOP_ITEMS, shopItemsAt } from '../catalog'
 
 const shop = { ...newInteractionDefinition('Venezia', 'n56', 'test-shop'), title: 'Arkastore', repeatable: true, action: { kind: 'shop' as const } }
 const point = { interactionId: shop.id, interactions: [shop] }
@@ -46,10 +46,10 @@ describe('checkout Arkastore', () => {
   it('commits a complete cart, charges catalog prices and closes the interaction turn once', () => {
     const state = campaign()
     const before = structuredClone(state)
-    const result = resolveShopPurchase(state, 1, { potion: 2, arkaball: 1 }, 'Venezia')
+    const result = resolveShopPurchase(state, 1, { potion: 2, revive: 1, sacchettino: 1 }, 'Venezia')
     expect(result.ok).toBe(true)
-    expect(result.receipt).toMatchObject({ total: 150, balance: 3850, location: 'Venezia', playerId: 1 })
-    expect(result.patch?.giocatore1?.inventario).toEqual({ potion: 2, arkaball: 1 })
+    expect(result.receipt).toMatchObject({ total: 450, balance: 3550, location: 'Venezia', playerId: 1 })
+    expect(result.patch?.giocatore1?.inventario).toEqual({ potion: 2, revive: 1, masterball: 1, sacchettino: 6 })
     expect(result.patch?.giocatore1?.squadra).toEqual(state.giocatore1.squadra)
     expect(result.patch?.giocatore2).toBeUndefined()
     expect(result.patch?.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
@@ -60,12 +60,11 @@ describe('checkout Arkastore', () => {
 
   it('keeps inventories and wallets independent for player two', () => {
     const state = campaign(2)
-    state.giocatore1.inventario.masterball = 1
-    const result = resolveShopPurchase(state, 2, { potion: 1, arkaball: 2 }, 'Venezia')
+    const result = resolveShopPurchase(state, 2, { potion: 1, sacchettino: 2 }, 'Venezia')
     expect(result.patch?.giocatore1).toBeUndefined()
     expect(result.patch?.giocatore2?.monete).toBe(3850)
-    expect(result.patch?.giocatore2?.inventario).toEqual({ potion: 1, arkaball: 2 })
-    expect(state.giocatore1.inventario).toEqual({ masterball: 1 })
+    expect(result.patch?.giocatore2?.inventario).toEqual({ masterball: 1, sacchettino: 7, potion: 1 })
+    expect(state.giocatore1.inventario).toEqual({ masterball: 1, sacchettino: 5 })
     expect(result.patch?.turnoOverworld?.giocatoreAttivo).toBe(1)
   })
 
@@ -88,9 +87,9 @@ describe('checkout Arkastore', () => {
   it('does not partially buy affordable articles when the total exceeds the wallet', () => {
     const state = campaign()
     state.giocatore1.monete = 200
-    const result = resolveShopPurchase(state, 1, { potion: 1, arkaball: 4 }, 'Venezia')
+    const result = resolveShopPurchase(state, 1, { potion: 1, revive: 1 }, 'Venezia')
     expect(result.ok).toBe(false)
-    expect(result.message).toContain('250')
+    expect(result.message).toContain('350')
     expect(result.patch).toBeUndefined()
     expect(state.giocatore1.monete).toBe(200)
   })
@@ -103,10 +102,10 @@ describe('checkout Arkastore', () => {
 
   it('rejects stock overflow and accepts the exact inventory boundary', () => {
     const state = campaign()
-    state.giocatore1.inventario.arkaball = MAX_ITEM_QUANTITY
-    expect(resolveShopPurchase(state, 1, { potion: 1, arkaball: 1 }, 'Venezia').patch).toBeUndefined()
-    state.giocatore1.inventario.arkaball--
-    expect(resolveShopPurchase(state, 1, { arkaball: 1 }, 'Venezia').patch?.giocatore1?.inventario.arkaball).toBe(MAX_ITEM_QUANTITY)
+    state.giocatore1.inventario.sacchettino = MAX_ITEM_QUANTITY
+    expect(resolveShopPurchase(state, 1, { potion: 1, sacchettino: 1 }, 'Venezia').patch).toBeUndefined()
+    state.giocatore1.inventario.sacchettino--
+    expect(resolveShopPurchase(state, 1, { sacchettino: 1 }, 'Venezia').patch?.giocatore1?.inventario.sacchettino).toBe(MAX_ITEM_QUANTITY)
   })
 
   it('checks actor, real position, city scene and interaction budget', () => {
@@ -151,23 +150,21 @@ describe('checkout Arkastore', () => {
 })
 
 describe('catalogo e inventario Arkastore', () => {
-  it('keeps unique identifiers and positive integer prices on sellable items', () => {
+  it('has one positive integer price and unique identifier per article', () => {
     expect(new Set(SHOP_ITEMS.map((item) => item.id)).size).toBe(SHOP_ITEMS.length)
     expect(SHOP_ITEMS.every((item) => item.price === null || (Number.isInteger(item.price) && item.price > 0))).toBe(true)
+    expect(SHOP_ITEMS.filter((item) => item.price === null).map((item) => item.id)).toEqual(['masterball', 'special-scent'])
     expect(shopCartTotal({ potion: 2, awakening: 3 })).toBe(250)
   })
 
-  it('checks the progression of authored shop stock and excludes non-sellable items', () => {
-    const ids = (location: string) => getShopItemsAt(location).map((item) => item.id)
-    expect(ids('Venezia')).toEqual(['potion', 'revive', 'arkaball'])
-    expect(ids('Piacenza')).toEqual(expect.arrayContaining(['antidote', 'paralysis-heal', 'awakening']))
-    expect(ids('Milano')).toEqual(expect.arrayContaining(['bicycle', 'scooter', 'super-potion']))
-    expect(ids('Torino')).toEqual(expect.arrayContaining(['mega-arkaball', 'speed-boost', 'full-heal']))
-    expect(ids('Grosseto')).toContain('hyper-potion')
-    expect(ids('Cagliari')).toEqual(expect.arrayContaining(['ultra-arkaball', 'damage-boost']))
-    expect(ids('Foggia')).toContain('max-potion')
-    expect(ids('Roma')).not.toContain('masterball')
-    expect(ids('Roma')).not.toContain('special-perfume')
+  it('sells each article from its Database city onward and refuses items not sold here', () => {
+    expect(shopItemsAt('Venezia').map((item) => item.id)).toEqual(['potion', 'revive', 'sacchettino'])
+    expect(shopItemsAt('Piacenza').map((item) => item.id)).toContain('antidote')
+    expect(shopItemsAt('Torino').map((item) => item.id)).toEqual(expect.arrayContaining(['full-heal', 'mega-sacchettino', 'boost-speed', 'bicycle']))
+    expect(shopItemsAt('Roma').some((item) => item.id === 'masterball')).toBe(false)
+    expect(resolveShopPurchase(campaign(), 1, { antidote: 1 }, 'Venezia').message).toContain('non è in vendita')
+    const rich = campaign(); rich.giocatore1.monete = 300000
+    expect(isKeyItem('bicycle')).toBe(true)
   })
 
   it('preserves known items and existing Masterballs when normalizing portable saves', () => {

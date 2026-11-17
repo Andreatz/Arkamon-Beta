@@ -1,36 +1,39 @@
 import { describe, expect, it } from 'vitest'
-import authoringSpecies from '../pokemon.json'
-import { getMossa, getPokemon, MOSSE, POKEMON_BASE, mossaDisponibile } from '../index'
+import { MOSSE, POKEMON_BASE, getMossa } from '..'
+import rules from '../statusMoveRules.json'
+import { resolveStatusMove } from '../statusMoves'
+import type { MossaDef } from '@/types'
 
-describe('mosse nel catalogo del gioco', () => {
-  it('carica i 106 status con la stessa definizione usata dalle specie', () => {
-    expect(MOSSE.filter(move => move.soloStato)).toHaveLength(106)
-    expect(getMossa(225)).toMatchObject({ nome: 'Impatto Voltaico', effetto: 'PARALISI', precisione: 80 })
-    expect(getMossa(467)).toMatchObject({ nome: 'Canto paralizzante', effetto: 'PARALISI', stadioMinimo: 2 })
-    expect(getMossa(516)).toMatchObject({ nome: 'Raggio bloccante gamma', effetto: 'IMMUNITA_STATUS', livelloMinimo: 22, valoreEffetto: 5 })
-    expect(POKEMON_BASE).toEqual(authoringSpecies)
-    expect(POKEMON_BASE.every(species => species.mosse.every(id => id === 0 || getMossa(id) !== undefined))).toBe(true)
+describe('mosse Status del Database', () => {
+  const status = MOSSE.filter(move => move.soloStato)
+
+  it('sono 106 e hanno tutte una regola esistente', () => {
+    expect(status).toHaveLength(106)
+    for (const move of status) {
+      expect(rules.regole, `${move.id} ${move.nome}`).toHaveProperty(move.regolaStato!)
+      expect(move.effetto).toBe(rules.regole[move.regolaStato as keyof typeof rules.regole].effetto)
+    }
   })
 
-  it('rispetta gli slot espliciti e i livelli minimi del foglio', () => {
-    expect(getPokemon(43)?.mosse[2]).toBe(226)
-    expect(getPokemon(44)?.mosse[2]).toBe(226)
-    expect(mossaDisponibile(43, getMossa(226)!, 26)).toBe(true)
-    expect(mossaDisponibile(44, getMossa(226)!, 26)).toBe(true)
-    expect(mossaDisponibile(25, getMossa(227)!, 26)).toBe(true)
-    expect(mossaDisponibile(24, getMossa(227)!, 26)).toBe(false)
-    expect(getMossa(256)?.nome).toBe('Stasi Elettrica')
-    expect(POKEMON_BASE.some(species => species.mosse.includes(256))).toBe(false)
-    expect(mossaDisponibile(21, getMossa(230)!, 21)).toBe(false)
-    expect(mossaDisponibile(21, getMossa(230)!, 22)).toBe(true)
-    expect(mossaDisponibile(112, getMossa(467)!, 22)).toBe(true)
-    expect(getPokemon(111)?.mosse[2]).toBe(0)
-    expect(mossaDisponibile(111, getMossa(467)!, 22)).toBe(false)
+  it('prendono effetto e valore dalla regola, senza dadi', () => {
+    const fixed = status.find(move => move.regolaStato === 'danno-fisso')!
+    expect(fixed).toMatchObject({ effetto: 'DANNO_FISSO', valoreEffetto: 10 })
+    expect(status.find(move => move.regolaStato === 'ripristina-hp')).toMatchObject({ effetto: 'CURA_PCT', valoreEffetto: 50 })
+    expect(status.find(move => move.regolaStato === 'cura-veleno-hp')).toMatchObject({ effetto: 'CURA_PCT', valoreEffetto: 25 })
+    expect(status.every(move => move.dadiPerLivello['5'] === 0)).toBe(true)
   })
 
-  it('mantiene gli ID storici delle quattro mosse leggendarie rimappate', () => {
-    expect([107, 108, 109, 110].map(id => getMossa(id)?.nome)).toEqual([
-      'Vortice divino', 'Fiamma celestiale', 'Sguardo glaciale', 'Ordine sovrano',
-    ])
+  it('una regola sconosciuta lascia la mossa invariata', () => {
+    const move = { id: 1, nome: 'X', tipo: 'Normale', effetto: null, valoreEffetto: null, soloStato: true, regolaStato: 'boh', dadiPerLivello: {}, incrementoPerLivello: {} } as MossaDef
+    expect(resolveStatusMove(move)).toBe(move)
+  })
+
+  it('il terzo slot degli stadi successivi punta a una mossa Status', () => {
+    expect(getMossa(POKEMON_BASE.find(p => p.id === 3)!.mosse[2])).toMatchObject({ id: 221, effetto: 'PARALISI', soloStato: true })
+    expect(getMossa(230)).toMatchObject({ livelloMinimo: 22 })
+  })
+
+  it('ogni mossa assegnata a una specie esiste', () => {
+    for (const species of POKEMON_BASE) for (const id of species.mosse) if (id) expect(getMossa(id), `${species.id}`).toBeDefined()
   })
 })

@@ -8,33 +8,35 @@ function pokemon(patch: Partial<PokemonIstanza> = {}): PokemonIstanza {
 }
 
 describe('effetti espliciti degli oggetti', () => {
-  it.each([['potion', 0, 20], ['potion', .999, 25], ['super-potion', .5, 60],
-    ['hyper-potion', 0, 150], ['hyper-potion', .999, 200]] as const)('%s at roll %s heals %s HP while preserving levels, XP and statuses', (item, roll, recovered) => {
-    const target = pokemon({ specieId: 206, livello: 100, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } })
+  it('heals with the Database amounts: Pozione 19 + 1d6, Superpozione 60, Iperpozione 140 + 10d6, Pozione Max tutto', () => {
+    const target = pokemon({ specieId: 107, nome: 'Ao-shin', livello: 100, hp: 1, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } })
     const before = structuredClone(target)
-    const result = resolveItemEffect(target, item, roll)
-    expect(result).toMatchObject({ ok: true, recoveredHp: recovered, pokemon: { ...target, hp: 1 + recovered } })
+    expect(resolveItemEffect(target, 'potion', () => 0).recoveredHp).toBe(20)
+    expect(resolveItemEffect(target, 'potion', () => 0.999).recoveredHp).toBe(25)
+    expect(resolveItemEffect(target, 'super-potion').recoveredHp).toBe(60)
+    expect(resolveItemEffect(target, 'hyper-potion', () => 0).recoveredHp).toBe(150)
+    expect(resolveItemEffect(target, 'hyper-potion', () => 0.999).recoveredHp).toBe(200)
+    expect(resolveItemEffect(target, 'max-potion').pokemon?.hp).toBe(calcolaHPMax(target))
+    expect(resolveItemEffect(target, 'potion', () => 0).pokemon?.stato?.tipo).toBe('Paralizzato')
     expect(target).toEqual(before)
   })
 
-  it('caps fixed healing at HP maximum and fills HP with a Max Potion', () => {
+  it('previews dice healing with its range and caps recovery at HP maximum', () => {
     const target = pokemon({ livello: 6 })
     expect(calcolaHPMax(target)).toBe(13)
-    expect(resolveItemEffect(target, 'potion').recoveredHp).toBe(12)
+    expect(resolveItemEffect(target, 'potion').message).toContain('20–25')
+    expect(resolveItemEffect(target, 'potion', () => 0).pokemon?.hp).toBe(13)
     expect(resolveItemEffect({ ...target, hp: 12 }, 'super-potion').pokemon?.hp).toBe(13)
     expect(resolveItemEffect({ ...target, hp: 13 }, 'potion').ok).toBe(false)
-    const legendary = pokemon({ specieId: 206, livello: 100 })
-    expect(resolveItemEffect(legendary, 'max-potion').pokemon?.hp).toBe(calcolaHPMax(legendary))
   })
 
-  it('shows a variable healing preview only when the HP cap allows distinct results', () => {
-    const target = pokemon({ livello: 35, hp: 18 })
-    const hpMax = calcolaHPMax(target)
-    expect(resolveItemEffect(target, 'potion')).toMatchObject({
-      possibleRecovery: [20, Math.min(25, hpMax - target.hp)],
-    })
-    expect(resolveItemEffect(target, 'potion', 0)).not.toHaveProperty('possibleRecovery')
-    expect(resolveItemEffect({ ...target, hp: hpMax - 10 }, 'potion')).not.toHaveProperty('possibleRecovery')
+  it('Cura totale removes any status, including confusion', () => {
+    expect(resolveItemEffect(pokemon({ stato: { tipo: 'Confuso', turniRimanenti: 2 } }), 'full-heal').pokemon).toEqual(pokemon())
+    expect(resolveItemEffect(pokemon(), 'full-heal').ok).toBe(false)
+  })
+
+  it('capture, boost, scent and vehicles are not used on a team member', () => {
+    for (const id of ['sacchettino', 'boost-speed', 'special-scent', 'bicycle'] as const) expect(resolveItemEffect(pokemon(), id).ok).toBe(false)
   })
 
   it('does not heal KO Arkamon and revives only KO without an implicit status cure', () => {
@@ -60,11 +62,6 @@ describe('effetti espliciti degli oggetti', () => {
   it('does not consume a Masterball as a normal healing item or recognize invented items', () => {
     expect(resolveItemEffect(pokemon(), 'masterball').ok).toBe(false)
     expect(resolveItemEffect(pokemon(), 'unknown').ok).toBe(false)
-  })
-
-  it('cures Confusion with Cura totale while preserving the original HP', () => {
-    const target = pokemon({ hp: 5, stato: { tipo: 'Confuso', turniRimanenti: 2 } })
-    expect(resolveItemEffect(target, 'full-heal').pokemon).toEqual(pokemon({ hp: 5 }))
   })
 
   it.each([{ hp: -1 }, { hp: Infinity }, { hp: 999 }, { livello: 101 }, { livello: 4 }, { livello: 5.5 }, { specieId: 1000 }])('rejects invalid targets %j without mutation', (patch) => {

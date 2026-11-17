@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { getPokemon, POKEMON_BASE, TABELLA_TIPI } from '@/data'
 import type { PokemonIstanza } from '@/types'
-import { CHALLENGE_LEVEL, CHALLENGE_TEAM_SIZE, FANTA_BUDGET, challengeRulesLabel, createChallengeSession, exportChallengeCode, fantaSpeciesCost, fantaTeamCost, generateSeedTeam, importChallengeCode, isSpeciesAvailableForChallenge, speciesEvolutionStage, validateFantaTeam } from './challengeRules'
+import { CHALLENGE_LEVEL, CHALLENGE_TEAM_SIZE, FANTA_BUDGET, challengeRulesLabel, createChallengeSession, exportChallengeCode, fantaSpeciesCost, fantaTeamCost, generateSeedTeam, importChallengeCode, speciesEvolutionStage, validateFantaTeam } from './challengeRules'
 import { challengeLeaderboard, useChallengeStore } from './challengeStore'
 import { validateChallengeSeed } from './seededRandom'
 import type { ChallengeDraft, ChallengeMode, ChallengeRulesVersion, ChallengeSession } from './types'
@@ -52,8 +52,8 @@ export function ChallengePanel({ onLaunch, activeSession, onResume }: ChallengeP
   const [rankingPage, setRankingPage] = useState(0)
   const [builderView, setBuilderView] = useState<'team' | 'catalog'>('team')
   const spent = fantaTeamCost(speciesIds, rulesVersion)
-  const visibleSpecies = useMemo(() => POKEMON_BASE.filter((species) => isSpeciesAvailableForChallenge(species.id, rulesVersion) && (typeFilter === 'all' || species.tipo === typeFilter)
-    && `${species.nome} ${species.id} ${species.tipo}`.toLocaleLowerCase('it-IT').includes(query.trim().toLocaleLowerCase('it-IT'))), [query, rulesVersion, typeFilter])
+  const visibleSpecies = useMemo(() => POKEMON_BASE.filter((species) => (typeFilter === 'all' || species.tipo === typeFilter)
+    && `${species.nome} ${species.id} ${species.tipo}`.toLocaleLowerCase('it-IT').includes(query.trim().toLocaleLowerCase('it-IT'))), [query, typeFilter])
   const leaderboard = preview ? challengeLeaderboard(results, preview) : []
   const currentRankingPage = Math.min(rankingPage, Math.max(0, Math.ceil(leaderboard.length / 3) - 1))
   const catalogPageSize = 3, resultPageSize = 3
@@ -122,8 +122,8 @@ export function ChallengePanel({ onLaunch, activeSession, onResume }: ChallengeP
     {activeSession && <div className="rounded-lg border border-violet-300 bg-violet-950 p-3"><p className="text-sm">Sfida in corso: {activeSession.seed}</p>{onResume && <button type="button" className={`${buttonClass} mt-2`} onClick={onResume}>Riprendi la sfida</button>}</div>}
     <div className="challenge-setup" hidden={view !== 'setup'}><div className="challenge-config">
     <div className="challenge-mode-actions"><nav aria-label="Modalità della sfida" className="grid grid-cols-2 gap-2"><button type="button" aria-pressed={mode === 'seed'} onClick={() => changeMode('seed')} className={`${buttonClass} ${mode === 'seed' ? 'border-violet-300 bg-violet-800' : ''}`}>Sfida a seed</button><button type="button" aria-pressed={mode === 'fanta'} onClick={() => changeMode('fanta')} className={`${buttonClass} ${mode === 'fanta' ? 'border-violet-300 bg-violet-800' : ''}`}>Fanta-Team Builder</button></nav>    <button type="button" className={`${buttonClass} border-violet-300 bg-violet-800`} onClick={generate} disabled={mode === 'fanta' && !validateFantaTeam(speciesIds, true, rulesVersion).ok}>{mode === 'seed' ? 'Genera sfida' : 'Prepara Fanta-Team'}</button></div>
-    <label className="block text-sm font-semibold">Regole della sfida<select aria-label="Regole della sfida" className={`${fieldClass} mt-2`} value={rulesVersion} onChange={(event) => changeRules(Number(event.target.value) as ChallengeRulesVersion)}>{([3, 2, 1] as const).map(version => <option key={version} value={version}>{challengeRulesLabel(version)}</option>)}</select></label>
-    <p className="text-sm text-slate-300">{rulesVersion !== 1 ? 'Le regole aggiornate calcolano i crediti usando le mosse offensive: cure e status puri non aumentano il prezzo.' : 'Le regole classiche conservano i prezzi delle sfide precedenti, compresi i valori delle cure nel vecchio calcolo.'} I risultati si confrontano soltanto con lo stesso seed, squadra e versione delle regole.</p>
+    <label className="block text-sm font-semibold">Regole della sfida<select aria-label="Regole della sfida" className={`${fieldClass} mt-2`} value={rulesVersion} onChange={(event) => changeRules(Number(event.target.value) as ChallengeRulesVersion)}><option value={3}>Regole del Database · v3</option><option value={2}>Regole aggiornate · v2</option><option value={1}>Regole classiche · v1</option></select></label>
+    <p className="text-sm text-slate-300">{rulesVersion >= 2 ? 'Le regole aggiornate calcolano i crediti usando le mosse offensive: cure e status puri non aumentano il prezzo.' : 'Le regole classiche conservano i prezzi delle sfide precedenti, compresi i valori delle cure nel vecchio calcolo.'} I risultati si confrontano soltanto con lo stesso seed, squadra e versione delle regole.</p>
     <label className="block text-sm font-semibold">Seed della sfida<input maxLength={64} className={`${fieldClass} mt-2`} value={seed} onChange={(event) => { setSeed(event.target.value); setPreview(null); setError(null) }} onBlur={() => { try { const normalized = validateChallengeSeed(seed); setSeed(normalized); persist({ version: rulesVersion, seed: normalized, mode, speciesIds }) } catch { /* Editing an incomplete seed is allowed; generation validates it. */ } }} /></label>
     <p className="text-sm text-slate-300">Lo stesso seed, le stesse regole e la stessa sequenza di scelte riproducono squadre e tiri. Cambiare una scelta può consumare dadi diversi. {challengeRulesLabel(rulesVersion)}.</p>
     {mode === 'fanta' && <>      <button type="button" className={buttonClass} onClick={() => { try { updateTeam(generateSeedTeam(seed, 'player', rulesVersion)) } catch (failure) { setError((failure as Error).message) } }}>Squadra suggerita dal seed</button></>}

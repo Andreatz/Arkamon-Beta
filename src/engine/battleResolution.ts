@@ -7,9 +7,7 @@ export const updateBattleSquad = (squad: PokemonIstanza[], updated: PokemonIstan
 /** Shared A/B settlement, with target KO and progression strictly before recoil. No randomness. */
 export function resolveBattleAttack(result: RisultatoMossa, side: Lato, squadA: PokemonIstanza[], squadB: PokemonIstanza[], maxLevelA = 100, maxLevelB = 100) {
   let defender = { ...result.difensore, hp: Math.max(0, result.difensore.hp - result.dannoFinale) }
-  if (result.statoApplicato && defender.hp > 0) {
-    defender = applicaStato(defender, result.statoApplicato, result.mossa.precisione === undefined ? undefined : 'database')
-  }
+  if (result.statoApplicato && defender.hp > 0) defender = applicaStato(defender, result.statoApplicato)
   const defenderAfterImpact = defender
   const attackerProgression = risolviAttaccanteDopoMossa(result, side === 'A' ? maxLevelA : maxLevelB)
   const attacker = attackerProgression.istanza

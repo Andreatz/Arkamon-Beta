@@ -25,7 +25,7 @@ beforeEach(() => {
 })
 
 describe('player menu navigation and progression facts', () => {
-  it('shows the earned Venice water medal and never counts an ordinary trainer as a gym victory', () => {
+  it('shows the earned Venice medal (Normale) and never counts an ordinary trainer as a gym victory', () => {
     const veniceGym = ALLENATORI.find(trainer => trainer.tipo === 'Capopalestra' && trainer.luogo === 'Venezia')!
     const ordinaryTrainer = ALLENATORI.find(trainer => trainer.tipo === 'NPC')!
     runtime.state.giocatore1.allenatoriSconfitti = new Set([ordinaryTrainer.id])
@@ -38,7 +38,7 @@ describe('player menu navigation and progression facts', () => {
     const markup = renderToStaticMarkup(<MenuScreen playerId={1} onAuxiliary={vi.fn()} />)
     expect(markup).toContain('aria-label="1 medaglie su 8"')
     expect(markup.match(/data-earned="true"/g)).toHaveLength(1)
-    expect(markup).toMatch(/<span(?=[^>]*data-earned="true")(?=[^>]*title="Venezia: ottenuta")[^>]*><img(?=[^>]*data-provided-asset="medal-water")(?=[^>]*src="[^"]*\/ui\/reference-png\/medal-water\.webp")[^>]*>/)
+    expect(markup).toMatch(/<span(?=[^>]*data-earned="true")(?=[^>]*title="Venezia: ottenuta")[^>]*><img(?=[^>]*data-provided-asset="medal-normal")(?=[^>]*src="[^"]*\/ui\/reference-png\/medal-normal\.webp")[^>]*>/)
     expect(runtime.state.giocatore1).toEqual(before)
   })
 

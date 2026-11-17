@@ -9,7 +9,7 @@ test('a late file read cannot replace the automatic backup selected afterward', 
     const player = (id: number) => ({ id, nome: `Campagna attuale ${id}`, squadra: [{ ...pokemon, istanzaId: `backup-audit-${id}` }], deposito: {},
       cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 321, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    const campaign = { giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
+    const campaign = { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {}, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null, audioMuted: true }
     const copy = { ...campaign, giocatore1: { ...campaign.giocatore1, nome: 'Copia automatica scelta' } }

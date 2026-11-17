@@ -18,10 +18,10 @@ async function seedCityCampaign(page: Page) {
       id, nome: id === 1 ? 'Cliente Uno' : 'Cliente Due',
       squadra: id === 1 ? [{ ...pokemon('shop-player-one', 1, 'Vyrath', 3), stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }] : [pokemon('shop-player-two', 5, 'Darklaw', 8)],
       deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [],
-      monete: id === 1 ? 300 : 40, inventario: { masterball: id === 1 ? 1 : 4, ...(id === 1 ? { 'paralysis-heal': 1 } : {}) },
+      monete: id === 1 ? 300 : 40, inventario: id === 1 ? { masterball: 1, 'paralysis-heal': 1 } : { masterball: 4 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: { Venezia: 'n56' },
@@ -47,7 +47,7 @@ async function returnControlToPlayerOne(page: Page) {
 }
 
 async function openBag(page: Page) {
-  await page.locator(sceneSelector).getByRole('button', { name: 'Menù', exact: true }).click()
+  await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita' })
   await dialog.getByRole('button', { name: 'Borsa', exact: true }).click()
   await expect(dialog.getByRole('region', { name: 'Borsa degli oggetti' })).toBeVisible()
@@ -66,9 +66,10 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   await expect(shop).toBeVisible()
 
   // An unaffordable cart never charges anything and cannot consume the interaction.
-  await expect(shop.getByRole('button', { name: 'Seleziona Master Arkaball', exact: true })).toHaveCount(0)
-  await shop.getByLabel('Quantità di Pozione', { exact: true }).fill('8')
-  await expect(shop).toContainText('Ti mancano 100 monete.')
+  // Catalogo del Database: a Venezia si vendono Pozione, Rianimatore e Sacchettino.
+  await shop.getByRole('button', { name: 'Seleziona Sacchettino', exact: true }).click()
+  await shop.getByLabel('Quantità di Sacchettino', { exact: true }).fill('7')
+  await expect(shop).toContainText('Ti mancano 50 monete.')
   await expect(shop.getByRole('button', { name: 'Acquista carrello', exact: true })).toBeDisabled()
   let saved = await readCampaign(page)
   expect(saved.giocatore1.monete).toBe(300)
@@ -79,8 +80,8 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
 
   await shop.getByRole('button', { name: 'Seleziona Pozione', exact: true }).click()
   await shop.getByLabel('Quantità di Pozione', { exact: true }).fill('1')
-  await shop.getByRole('button', { name: 'Seleziona Arkaball', exact: true }).click()
-  await shop.getByLabel('Quantità di Arkaball', { exact: true }).fill('1')
+  await shop.getByRole('button', { name: 'Seleziona Sacchettino', exact: true }).click()
+  await shop.getByLabel('Quantità di Sacchettino', { exact: true }).fill('1')
   await expect(shop).toContainText('Carrello: 2 oggetti · 100 ₳')
   const shopA11y = await new AxeBuilder({ page }).include('.arka-store').analyze()
   expect(shopA11y.violations).toEqual([])
@@ -88,7 +89,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   await shop.getByRole('button', { name: 'Acquista carrello', exact: true }).click()
   await expect.poll(async () => (await readCampaign(page)).giocatore1.monete).toBe(200)
   saved = await readCampaign(page)
-  expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, arkaball: 1, 'paralysis-heal': 1, masterball: 1 })
+  expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, 'paralysis-heal': 1, masterball: 1, sacchettino: 1 })
   expect(saved.giocatore1.squadra[0]).toMatchObject({ hp: 3, livello: 5, xp: 0, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } })
   expect(saved.giocatore2).toEqual(playerTwoBefore)
   expect(saved.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
@@ -104,8 +105,8 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
 
   let bag = await openBag(page)
   await expect(bag.getByLabel('Arkamon da curare')).toHaveValue('shop-player-one')
-  await bag.getByRole('button', { name: 'Master Arkaball: 1 disponibili', exact: true }).click()
-  await expect(bag.getByRole('button', { name: 'Usa Master Arkaball', exact: true })).toBeDisabled()
+  await bag.getByRole('button', { name: 'Sacchettino Supremo: 1 disponibili', exact: true }).click()
+  await expect(bag.getByRole('button', { name: 'Usa Sacchettino Supremo', exact: true })).toBeDisabled()
   await bag.getByRole('button', { name: 'Antiparalisi: 1 disponibili', exact: true }).click()
   const bagA11y = await new AxeBuilder({ page }).include('.arka-item-bag').analyze()
   expect(bagA11y.violations).toEqual([])
@@ -129,6 +130,7 @@ test('Arkastore checkout and explicit item cures persist without changing the ot
   bag = await openBag(page)
   await bag.getByRole('button', { name: 'Pozione: 1 disponibili', exact: true }).click()
   await bag.getByRole('button', { name: 'Usa Pozione', exact: true }).click()
+  // Pozione 19 + 1d6: a livello 5 riporta sempre al massimo di 12 HP.
   await expect.poll(async () => (await readCampaign(page)).giocatore1.squadra[0].hp).toBe(12)
   saved = await readCampaign(page)
   expect(saved.giocatore1.inventario.potion).toBe(0)
@@ -187,7 +189,7 @@ test('a battle item heals once, consumes the move and resumes at the opponent tu
       inventario: id === 1 ? { potion: 1 } : { masterball: 1 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: {}, audioMuted: true,

@@ -1,65 +1,25 @@
 [
   {
     "id": 201,
-    "nome": "Rivale",
-    "luogo": "Percorso_1",
-    "tipo": "PVP",
+    "nome": "Mascherato 1",
+    "luogo": "Venezia",
+    "tipo": "NPC",
     "squadra": [
       {
-        "pokemonId": 1,
-        "livello": 5
-      },
-      {
-        "pokemonId": 32,
-        "livello": 5
-      },
-      {
-        "pokemonId": 21,
-        "livello": 5
-      },
-      {
-        "pokemonId": 13,
-        "livello": 5
-      },
-      {
-        "pokemonId": 47,
-        "livello": 5
-      },
-      {
-        "pokemonId": 56,
+        "pokemonId": 101,
         "livello": 5
       }
     ]
   },
   {
     "id": 202,
-    "nome": "Gennaro Bullo",
-    "luogo": "Percorso_1",
+    "nome": "Mascherato 2",
+    "luogo": "Venezia",
     "tipo": "NPC",
     "squadra": [
       {
-        "pokemonId": 47,
+        "pokemonId": 101,
         "livello": 5
-      },
-      {
-        "pokemonId": 32,
-        "livello": 5
-      }
-    ]
-  },
-  {
-    "id": 301,
-    "nome": "Luca",
-    "luogo": "Piacenza",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 13,
-        "livello": 8
-      },
-      {
-        "pokemonId": 47,
-        "livello": 8
       }
     ]
   },
@@ -77,570 +37,10 @@
         "pokemonId": 185,
         "livello": 10
       }
-    ],
-    "guadagno": 400,
-    "perdita": -200,
-    "idDatabase": 203
-  },
-  {
-    "id": 302,
-    "nome": "Capopalestra 2",
-    "luogo": "Milano",
-    "tipo": "Capopalestra",
-    "squadra": [
-      {
-        "pokemonId": 47,
-        "livello": 18
-      },
-      {
-        "pokemonId": 95,
-        "livello": 18
-      },
-      {
-        "pokemonId": 53,
-        "livello": 19
-      }
-    ],
-    "guadagno": 1100,
-    "perdita": -550,
-    "idDatabase": 220
-  },
-  {
-    "id": 303,
-    "nome": "Capopalestra 3",
-    "luogo": "Torino",
-    "tipo": "Capopalestra",
-    "squadra": [
-      {
-        "pokemonId": 14,
-        "livello": 25
-      },
-      {
-        "pokemonId": 17,
-        "livello": 25
-      },
-      {
-        "pokemonId": 104,
-        "livello": 26
-      }
-    ],
-    "guadagno": 1520,
-    "perdita": -760,
-    "idDatabase": 233
-  },
-  {
-    "id": 304,
-    "nome": "Gianni il Pescatore",
-    "luogo": "Grosseto",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 56,
-        "livello": 24
-      },
-      {
-        "pokemonId": 58,
-        "livello": 25
-      }
     ]
   },
   {
-    "id": 305,
-    "nome": "Selene Marea",
-    "luogo": "Civitavecchia",
-    "tipo": "Capopalestra",
-    "squadra": [
-      {
-        "pokemonId": 56,
-        "livello": 28
-      },
-      {
-        "pokemonId": 58,
-        "livello": 28
-      },
-      {
-        "pokemonId": 69,
-        "livello": 29
-      },
-      {
-        "pokemonId": 71,
-        "livello": 29
-      },
-      {
-        "pokemonId": 82,
-        "livello": 30
-      },
-      {
-        "pokemonId": 60,
-        "livello": 31
-      }
-    ]
-  },
-  {
-    "id": 306,
-    "nome": "Capopalestra 5",
-    "luogo": "Cagliari",
-    "tipo": "Capopalestra",
-    "squadra": [
-      {
-        "pokemonId": 61,
-        "livello": 36
-      },
-      {
-        "pokemonId": 70,
-        "livello": 36
-      },
-      {
-        "pokemonId": 118,
-        "livello": 36
-      },
-      {
-        "pokemonId": 59,
-        "livello": 37
-      },
-      {
-        "pokemonId": 126,
-        "livello": 37
-      }
-    ],
-    "guadagno": 3640,
-    "perdita": -1820,
-    "idDatabase": 253
-  },
-  {
-    "id": 307,
-    "nome": "Capopalestra 6",
-    "luogo": "Palermo",
-    "tipo": "Capopalestra",
-    "squadra": [
-      {
-        "pokemonId": 68,
-        "livello": 40
-      },
-      {
-        "pokemonId": 85,
-        "livello": 40
-      },
-      {
-        "pokemonId": 91,
-        "livello": 40
-      },
-      {
-        "pokemonId": 150,
-        "livello": 40
-      },
-      {
-        "pokemonId": 155,
-        "livello": 40
-      }
-    ],
-    "guadagno": 4000,
-    "perdita": -2000,
-    "idDatabase": 258
-  },
-  {
-    "id": 308,
-    "nome": "Erika Foresta",
-    "luogo": "Foggia",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 28,
-        "livello": 42
-      },
-      {
-        "pokemonId": 52,
-        "livello": 43
-      }
-    ]
-  },
-  {
-    "id": 309,
-    "nome": "Capopalestra 8",
-    "luogo": "Napoli",
-    "tipo": "Capopalestra",
-    "squadra": [
-      {
-        "pokemonId": 22,
-        "livello": 60
-      },
-      {
-        "pokemonId": 25,
-        "livello": 60
-      },
-      {
-        "pokemonId": 124,
-        "livello": 60
-      },
-      {
-        "pokemonId": 23,
-        "livello": 60
-      },
-      {
-        "pokemonId": 88,
-        "livello": 60
-      },
-      {
-        "pokemonId": 132,
-        "livello": 60
-      }
-    ],
-    "guadagno": 7200,
-    "perdita": -3600,
-    "idDatabase": 296
-  },
-  {
-    "id": 310,
-    "nome": "Ettore Tempesta",
-    "luogo": "Pescara",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 22,
-        "livello": 50
-      },
-      {
-        "pokemonId": 26,
-        "livello": 51
-      }
-    ]
-  },
-  {
-    "id": 311,
-    "nome": "Imperatore Notturno",
-    "luogo": "Roma",
-    "tipo": "Capopalestra",
-    "squadra": [
-      {
-        "pokemonId": 8,
-        "livello": 56
-      },
-      {
-        "pokemonId": 30,
-        "livello": 57
-      },
-      {
-        "pokemonId": 45,
-        "livello": 57
-      },
-      {
-        "pokemonId": 79,
-        "livello": 58
-      },
-      {
-        "pokemonId": 101,
-        "livello": 59
-      },
-      {
-        "pokemonId": 110,
-        "livello": 60
-      }
-    ]
-  },
-  {
-    "id": 250,
-    "nome": "Pendolare Lia",
-    "luogo": "Percorso_2",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 13,
-        "livello": 12
-      },
-      {
-        "pokemonId": 47,
-        "livello": 12
-      }
-    ]
-  },
-  {
-    "id": 251,
-    "nome": "Camionista Tito",
-    "luogo": "Percorso_3",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 32,
-        "livello": 18
-      },
-      {
-        "pokemonId": 26,
-        "livello": 18
-      }
-    ]
-  },
-  {
-    "id": 252,
-    "nome": "Studente Bilo",
-    "luogo": "Percorso_4",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 21,
-        "livello": 19
-      },
-      {
-        "pokemonId": 22,
-        "livello": 19
-      }
-    ]
-  },
-  {
-    "id": 253,
-    "nome": "Naturista Selva",
-    "luogo": "Percorso_5",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 28,
-        "livello": 20
-      },
-      {
-        "pokemonId": 52,
-        "livello": 20
-      }
-    ]
-  },
-  {
-    "id": 254,
-    "nome": "Operaio Bruno",
-    "luogo": "Percorso_6",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 13,
-        "livello": 21
-      },
-      {
-        "pokemonId": 16,
-        "livello": 21
-      }
-    ]
-  },
-  {
-    "id": 255,
-    "nome": "Esploratore Tom",
-    "luogo": "Percorso_7",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 56,
-        "livello": 32
-      },
-      {
-        "pokemonId": 49,
-        "livello": 32
-      }
-    ]
-  },
-  {
-    "id": 256,
-    "nome": "Pescatrice Rina",
-    "luogo": "Percorso_8",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 58,
-        "livello": 38
-      },
-      {
-        "pokemonId": 60,
-        "livello": 38
-      }
-    ]
-  },
-  {
-    "id": 257,
-    "nome": "Geologo Pietro",
-    "luogo": "Percorso_9",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 17,
-        "livello": 43
-      },
-      {
-        "pokemonId": 16,
-        "livello": 43
-      }
-    ]
-  },
-  {
-    "id": 258,
-    "nome": "Cuoca Rosa",
-    "luogo": "ReggioCalabria",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 50,
-        "livello": 44
-      },
-      {
-        "pokemonId": 51,
-        "livello": 44
-      }
-    ]
-  },
-  {
-    "id": 259,
-    "nome": "Pescatore Calò",
-    "luogo": "ReggioCalabria",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 56,
-        "livello": 45
-      },
-      {
-        "pokemonId": 60,
-        "livello": 45
-      }
-    ]
-  },
-  {
-    "id": 260,
-    "nome": "Vagabondo Gino",
-    "luogo": "Percorso_10",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 32,
-        "livello": 44
-      },
-      {
-        "pokemonId": 33,
-        "livello": 44
-      }
-    ]
-  },
-  {
-    "id": 261,
-    "nome": "Cantante Lola",
-    "luogo": "Percorso_11",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 21,
-        "livello": 44
-      },
-      {
-        "pokemonId": 12,
-        "livello": 44
-      }
-    ]
-  },
-  {
-    "id": 262,
-    "nome": "Botanico Aldo",
-    "luogo": "Percorso_12",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 28,
-        "livello": 45
-      },
-      {
-        "pokemonId": 52,
-        "livello": 45
-      }
-    ]
-  },
-  {
-    "id": 263,
-    "nome": "Tassista Mira",
-    "luogo": "Molisnt",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 22,
-        "livello": 49
-      },
-      {
-        "pokemonId": 26,
-        "livello": 49
-      }
-    ]
-  },
-  {
-    "id": 264,
-    "nome": "Cacciatore Olmo",
-    "luogo": "Molisnt",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 8,
-        "livello": 49
-      },
-      {
-        "pokemonId": 33,
-        "livello": 49
-      }
-    ]
-  },
-  {
-    "id": 265,
-    "nome": "Custode Filo",
-    "luogo": "Percorso_13",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 56,
-        "livello": 49
-      },
-      {
-        "pokemonId": 7,
-        "livello": 49
-      }
-    ]
-  },
-  {
-    "id": 266,
-    "nome": "Pellegrina Sara",
-    "luogo": "Percorso_14",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 30,
-        "livello": 53
-      },
-      {
-        "pokemonId": 12,
-        "livello": 53
-      }
-    ]
-  },
-  {
-    "id": 10201,
-    "nome": "Mascherato 1",
-    "luogo": "Venezia",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 101,
-        "livello": 5
-      }
-    ],
-    "guadagno": 50,
-    "perdita": -25,
-    "idDatabase": 201
-  },
-  {
-    "id": 10202,
-    "nome": "Mascherato 2",
-    "luogo": "Venezia",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 101,
-        "livello": 5
-      }
-    ],
-    "guadagno": 50,
-    "perdita": -25,
-    "idDatabase": 202
-  },
-  {
-    "id": 10204,
+    "id": 204,
     "nome": "Alvise seguace",
     "luogo": "Percorso_1",
     "tipo": "NPC",
@@ -653,13 +53,10 @@
         "pokemonId": 56,
         "livello": 5
       }
-    ],
-    "guadagno": 100,
-    "perdita": -50,
-    "idDatabase": 204
+    ]
   },
   {
-    "id": 10205,
+    "id": 205,
     "nome": "Bianca seguace",
     "luogo": "Percorso_1",
     "tipo": "NPC",
@@ -672,13 +69,10 @@
         "pokemonId": 56,
         "livello": 5
       }
-    ],
-    "guadagno": 100,
-    "perdita": -50,
-    "idDatabase": 205
+    ]
   },
   {
-    "id": 10206,
+    "id": 206,
     "nome": "Veronica seguace",
     "luogo": "Percorso_1",
     "tipo": "NPC",
@@ -691,13 +85,10 @@
         "pokemonId": 89,
         "livello": 6
       }
-    ],
-    "guadagno": 120,
-    "perdita": -60,
-    "idDatabase": 206
+    ]
   },
   {
-    "id": 10207,
+    "id": 207,
     "nome": "Daniele seguace",
     "luogo": "Percorso_1",
     "tipo": "NPC",
@@ -710,13 +101,10 @@
         "pokemonId": 89,
         "livello": 6
       }
-    ],
-    "guadagno": 120,
-    "perdita": -60,
-    "idDatabase": 207
+    ]
   },
   {
-    "id": 10208,
+    "id": 208,
     "nome": "Antonino operaio",
     "luogo": "Piacenza",
     "tipo": "NPC",
@@ -729,13 +117,10 @@
         "pokemonId": 71,
         "livello": 9
       }
-    ],
-    "guadagno": 180,
-    "perdita": -90,
-    "idDatabase": 208
+    ]
   },
   {
-    "id": 10209,
+    "id": 209,
     "nome": "Giustina la vecchietta",
     "luogo": "Piacenza",
     "tipo": "NPC",
@@ -748,13 +133,10 @@
         "pokemonId": 71,
         "livello": 9
       }
-    ],
-    "guadagno": 180,
-    "perdita": -90,
-    "idDatabase": 209
+    ]
   },
   {
-    "id": 10210,
+    "id": 210,
     "nome": "Fausto il vecchietto",
     "luogo": "Piacenza",
     "tipo": "NPC",
@@ -767,13 +149,10 @@
         "pokemonId": 36,
         "livello": 10
       }
-    ],
-    "guadagno": 200,
-    "perdita": -100,
-    "idDatabase": 210
+    ]
   },
   {
-    "id": 10211,
+    "id": 211,
     "nome": "Federica volantini",
     "luogo": "Piacenza",
     "tipo": "NPC",
@@ -786,13 +165,10 @@
         "pokemonId": 36,
         "livello": 10
       }
-    ],
-    "guadagno": 200,
-    "perdita": -100,
-    "idDatabase": 211
+    ]
   },
   {
-    "id": 10212,
+    "id": 212,
     "nome": "Alberto lavoratore",
     "luogo": "Percorso_2",
     "tipo": "NPC",
@@ -809,13 +185,10 @@
         "pokemonId": 78,
         "livello": 11
       }
-    ],
-    "guadagno": 310,
-    "perdita": -155,
-    "idDatabase": 212
+    ]
   },
   {
-    "id": 10213,
+    "id": 213,
     "nome": "Francesca manager",
     "luogo": "Percorso_2",
     "tipo": "NPC",
@@ -832,13 +205,10 @@
         "pokemonId": 78,
         "livello": 11
       }
-    ],
-    "guadagno": 310,
-    "perdita": -155,
-    "idDatabase": 213
+    ]
   },
   {
-    "id": 10214,
+    "id": 214,
     "nome": "Rosa fioraia",
     "luogo": "Percorso_2",
     "tipo": "NPC",
@@ -855,13 +225,10 @@
         "pokemonId": 78,
         "livello": 12
       }
-    ],
-    "guadagno": 350,
-    "perdita": -175,
-    "idDatabase": 214
+    ]
   },
   {
-    "id": 10215,
+    "id": 215,
     "nome": "Angelo studente",
     "luogo": "Percorso_2",
     "tipo": "NPC",
@@ -878,13 +245,10 @@
         "pokemonId": 78,
         "livello": 12
       }
-    ],
-    "guadagno": 350,
-    "perdita": -175,
-    "idDatabase": 215
+    ]
   },
   {
-    "id": 10216,
+    "id": 216,
     "nome": "Salvatore turista",
     "luogo": "Milano",
     "tipo": "NPC",
@@ -901,13 +265,10 @@
         "pokemonId": 199,
         "livello": 14
       }
-    ],
-    "guadagno": 400,
-    "perdita": -200,
-    "idDatabase": 216
+    ]
   },
   {
-    "id": 10217,
+    "id": 217,
     "nome": "Valeria guida turistica",
     "luogo": "Milano",
     "tipo": "NPC",
@@ -924,13 +285,10 @@
         "pokemonId": 160,
         "livello": 14
       }
-    ],
-    "guadagno": 400,
-    "perdita": -200,
-    "idDatabase": 217
+    ]
   },
   {
-    "id": 10218,
+    "id": 218,
     "nome": "Luca",
     "luogo": "Milano",
     "tipo": "PVP",
@@ -947,13 +305,10 @@
         "pokemonId": 30,
         "livello": 15
       }
-    ],
-    "guadagno": 860,
-    "perdita": -430,
-    "idDatabase": 218
+    ]
   },
   {
-    "id": 10219,
+    "id": 219,
     "nome": "Matteo",
     "luogo": "Milano",
     "tipo": "PVP",
@@ -970,13 +325,30 @@
         "pokemonId": 45,
         "livello": 15
       }
-    ],
-    "guadagno": 860,
-    "perdita": -430,
-    "idDatabase": 219
+    ]
   },
   {
-    "id": 10221,
+    "id": 220,
+    "nome": "Capopalestra 2",
+    "luogo": "Milano",
+    "tipo": "Capopalestra",
+    "squadra": [
+      {
+        "pokemonId": 47,
+        "livello": 18
+      },
+      {
+        "pokemonId": 95,
+        "livello": 18
+      },
+      {
+        "pokemonId": 53,
+        "livello": 19
+      }
+    ]
+  },
+  {
+    "id": 221,
     "nome": "Erwin Rudolf",
     "luogo": "Percorso_4",
     "tipo": "NPC",
@@ -989,13 +361,10 @@
         "pokemonId": 16,
         "livello": 19
       }
-    ],
-    "guadagno": 370,
-    "perdita": -185,
-    "idDatabase": 221
+    ]
   },
   {
-    "id": 10222,
+    "id": 222,
     "nome": "Josef Alexander",
     "luogo": "Percorso_4",
     "tipo": "NPC",
@@ -1008,13 +377,10 @@
         "pokemonId": 16,
         "livello": 19
       }
-    ],
-    "guadagno": 370,
-    "perdita": -185,
-    "idDatabase": 222
+    ]
   },
   {
-    "id": 10223,
+    "id": 223,
     "nome": "Giovy studioso",
     "luogo": "Percorso_4",
     "tipo": "NPC",
@@ -1027,13 +393,10 @@
         "pokemonId": 151,
         "livello": 20
       }
-    ],
-    "guadagno": 390,
-    "perdita": -195,
-    "idDatabase": 223
+    ]
   },
   {
-    "id": 10224,
+    "id": 224,
     "nome": "Amalia trekkinista",
     "luogo": "Percorso_4",
     "tipo": "NPC",
@@ -1046,13 +409,10 @@
         "pokemonId": 151,
         "livello": 20
       }
-    ],
-    "guadagno": 390,
-    "perdita": -195,
-    "idDatabase": 224
+    ]
   },
   {
-    "id": 10225,
+    "id": 225,
     "nome": "Amedeo vinellista",
     "luogo": "Percorso_6",
     "tipo": "NPC",
@@ -1065,13 +425,10 @@
         "pokemonId": 144,
         "livello": 22
       }
-    ],
-    "guadagno": 420,
-    "perdita": -210,
-    "idDatabase": 225
+    ]
   },
   {
-    "id": 10226,
+    "id": 226,
     "nome": "Camilla escursionista",
     "luogo": "Percorso_6",
     "tipo": "NPC",
@@ -1084,13 +441,10 @@
         "pokemonId": 144,
         "livello": 22
       }
-    ],
-    "guadagno": 420,
-    "perdita": -210,
-    "idDatabase": 226
+    ]
   },
   {
-    "id": 10227,
+    "id": 227,
     "nome": "Pablo spazzino",
     "luogo": "Percorso_6",
     "tipo": "NPC",
@@ -1103,13 +457,10 @@
         "pokemonId": 87,
         "livello": 23
       }
-    ],
-    "guadagno": 450,
-    "perdita": -225,
-    "idDatabase": 227
+    ]
   },
   {
-    "id": 10228,
+    "id": 228,
     "nome": "Danilo culturista",
     "luogo": "Percorso_6",
     "tipo": "NPC",
@@ -1122,13 +473,10 @@
         "pokemonId": 87,
         "livello": 23
       }
-    ],
-    "guadagno": 450,
-    "perdita": -225,
-    "idDatabase": 228
+    ]
   },
   {
-    "id": 10229,
+    "id": 229,
     "nome": "Michela",
     "luogo": "Torino",
     "tipo": "NPC",
@@ -1145,13 +493,10 @@
         "pokemonId": 120,
         "livello": 22
       }
-    ],
-    "guadagno": 660,
-    "perdita": -330,
-    "idDatabase": 229
+    ]
   },
   {
-    "id": 10230,
+    "id": 230,
     "nome": "Martina",
     "luogo": "Torino",
     "tipo": "NPC",
@@ -1168,13 +513,10 @@
         "pokemonId": 169,
         "livello": 22
       }
-    ],
-    "guadagno": 660,
-    "perdita": -330,
-    "idDatabase": 230
+    ]
   },
   {
-    "id": 10231,
+    "id": 231,
     "nome": "Tabernacolo (Eddy)",
     "luogo": "Torino",
     "tipo": "PVP",
@@ -1191,13 +533,10 @@
         "pokemonId": 149,
         "livello": 23
       }
-    ],
-    "guadagno": 1380,
-    "perdita": -690,
-    "idDatabase": 231
+    ]
   },
   {
-    "id": 10232,
+    "id": 232,
     "nome": "Bradipop (Paz)",
     "luogo": "Torino",
     "tipo": "PVP",
@@ -1214,13 +553,30 @@
         "pokemonId": 125,
         "livello": 23
       }
-    ],
-    "guadagno": 1380,
-    "perdita": -690,
-    "idDatabase": 232
+    ]
   },
   {
-    "id": 10234,
+    "id": 233,
+    "nome": "Capopalestra 3",
+    "luogo": "Torino",
+    "tipo": "Capopalestra",
+    "squadra": [
+      {
+        "pokemonId": 14,
+        "livello": 25
+      },
+      {
+        "pokemonId": 17,
+        "livello": 25
+      },
+      {
+        "pokemonId": 104,
+        "livello": 26
+      }
+    ]
+  },
+  {
+    "id": 234,
     "nome": "Leonardo Tirchio",
     "luogo": "Percorso_5",
     "tipo": "NPC",
@@ -1233,13 +589,10 @@
         "pokemonId": 147,
         "livello": 23
       }
-    ],
-    "guadagno": 460,
-    "perdita": -230,
-    "idDatabase": 234
+    ]
   },
   {
-    "id": 10235,
+    "id": 235,
     "nome": "Sofia Tirchia",
     "luogo": "Percorso_5",
     "tipo": "NPC",
@@ -1252,13 +605,10 @@
         "pokemonId": 147,
         "livello": 23
       }
-    ],
-    "guadagno": 460,
-    "perdita": -230,
-    "idDatabase": 235
+    ]
   },
   {
-    "id": 10236,
+    "id": 236,
     "nome": "Dante Scrittore",
     "luogo": "Percorso_5",
     "tipo": "NPC",
@@ -1275,13 +625,10 @@
         "pokemonId": 67,
         "livello": 23
       }
-    ],
-    "guadagno": 690,
-    "perdita": -345,
-    "idDatabase": 236
+    ]
   },
   {
-    "id": 10237,
+    "id": 237,
     "nome": "Beatrice Musa",
     "luogo": "Percorso_5",
     "tipo": "NPC",
@@ -1298,13 +645,10 @@
         "pokemonId": 67,
         "livello": 23
       }
-    ],
-    "guadagno": 690,
-    "perdita": -345,
-    "idDatabase": 237
+    ]
   },
   {
-    "id": 10238,
+    "id": 238,
     "nome": "Leonardo Inventore",
     "luogo": "Percorso_5",
     "tipo": "NPC",
@@ -1321,13 +665,10 @@
         "pokemonId": 169,
         "livello": 24
       }
-    ],
-    "guadagno": 720,
-    "perdita": -360,
-    "idDatabase": 238
+    ]
   },
   {
-    "id": 10239,
+    "id": 239,
     "nome": "Massimiliano Esperto Ippico",
     "luogo": "Percorso_5",
     "tipo": "NPC",
@@ -1344,13 +685,10 @@
         "pokemonId": 169,
         "livello": 24
       }
-    ],
-    "guadagno": 720,
-    "perdita": -360,
-    "idDatabase": 239
+    ]
   },
   {
-    "id": 10240,
+    "id": 240,
     "nome": "Matteo Politico",
     "luogo": "Grosseto",
     "tipo": "NPC",
@@ -1371,13 +709,10 @@
         "pokemonId": 75,
         "livello": 27
       }
-    ],
-    "guadagno": 1070,
-    "perdita": -535,
-    "idDatabase": 240
+    ]
   },
   {
-    "id": 10241,
+    "id": 241,
     "nome": "Margherita Astrofisica",
     "luogo": "Grosseto",
     "tipo": "NPC",
@@ -1398,13 +733,10 @@
         "pokemonId": 59,
         "livello": 27
       }
-    ],
-    "guadagno": 1070,
-    "perdita": -535,
-    "idDatabase": 241
+    ]
   },
   {
-    "id": 10242,
+    "id": 242,
     "nome": "Capopalestra 4",
     "luogo": "Grosseto",
     "tipo": "Capopalestra",
@@ -1425,13 +757,10 @@
         "pokemonId": 51,
         "livello": 31
       }
-    ],
-    "guadagno": 2440,
-    "perdita": -1220,
-    "idDatabase": 242
+    ]
   },
   {
-    "id": 10243,
+    "id": 243,
     "nome": "Trono",
     "luogo": "Civitavecchia",
     "tipo": "PVP",
@@ -1452,13 +781,10 @@
         "pokemonId": 35,
         "livello": 29
       }
-    ],
-    "guadagno": 2300,
-    "perdita": -1150,
-    "idDatabase": 243
+    ]
   },
   {
-    "id": 10244,
+    "id": 244,
     "nome": "Veronica",
     "luogo": "Civitavecchia",
     "tipo": "PVP",
@@ -1479,14 +805,11 @@
         "pokemonId": 124,
         "livello": 29
       }
-    ],
-    "guadagno": 2300,
-    "perdita": -1150,
-    "idDatabase": 244
+    ]
   },
   {
-    "id": 10245,
-    "nome": "Allenatore #245",
+    "id": 245,
+    "nome": "Allenatore di Percorso 7 1",
     "luogo": "Percorso_7",
     "tipo": "NPC",
     "squadra": [
@@ -1502,14 +825,11 @@
         "pokemonId": 144,
         "livello": 30
       }
-    ],
-    "guadagno": 900,
-    "perdita": -450,
-    "idDatabase": 245
+    ]
   },
   {
-    "id": 10246,
-    "nome": "Allenatore #246",
+    "id": 246,
+    "nome": "Allenatore di Percorso 7 2",
     "luogo": "Percorso_7",
     "tipo": "NPC",
     "squadra": [
@@ -1525,14 +845,11 @@
         "pokemonId": 144,
         "livello": 30
       }
-    ],
-    "guadagno": 900,
-    "perdita": -450,
-    "idDatabase": 246
+    ]
   },
   {
-    "id": 10247,
-    "nome": "Allenatore #247",
+    "id": 247,
+    "nome": "Allenatore di Percorso 7 3",
     "luogo": "Percorso_7",
     "tipo": "NPC",
     "squadra": [
@@ -1548,14 +865,11 @@
         "pokemonId": 59,
         "livello": 31
       }
-    ],
-    "guadagno": 930,
-    "perdita": -465,
-    "idDatabase": 247
+    ]
   },
   {
-    "id": 10248,
-    "nome": "Allenatore #248",
+    "id": 248,
+    "nome": "Allenatore di Percorso 7 4",
     "luogo": "Percorso_7",
     "tipo": "NPC",
     "squadra": [
@@ -1571,14 +885,11 @@
         "pokemonId": 59,
         "livello": 31
       }
-    ],
-    "guadagno": 930,
-    "perdita": -465,
-    "idDatabase": 248
+    ]
   },
   {
-    "id": 10249,
-    "nome": "Allenatore #249",
+    "id": 249,
+    "nome": "Allenatore di Cagliari 1",
     "luogo": "Cagliari",
     "tipo": "NPC",
     "squadra": [
@@ -1598,14 +909,11 @@
         "pokemonId": 93,
         "livello": 32
       }
-    ],
-    "guadagno": 1280,
-    "perdita": -640,
-    "idDatabase": 249
+    ]
   },
   {
-    "id": 10250,
-    "nome": "Allenatore #250",
+    "id": 250,
+    "nome": "Allenatore di Cagliari 2",
     "luogo": "Cagliari",
     "tipo": "NPC",
     "squadra": [
@@ -1625,13 +933,10 @@
         "pokemonId": 93,
         "livello": 32
       }
-    ],
-    "guadagno": 1280,
-    "perdita": -640,
-    "idDatabase": 250
+    ]
   },
   {
-    "id": 10251,
+    "id": 251,
     "nome": "Ettore",
     "luogo": "Cagliari",
     "tipo": "PVP",
@@ -1656,13 +961,10 @@
         "pokemonId": 154,
         "livello": 33
       }
-    ],
-    "guadagno": 3240,
-    "perdita": -1620,
-    "idDatabase": 251
+    ]
   },
   {
-    "id": 10252,
+    "id": 252,
     "nome": "Marco Cugia",
     "luogo": "Cagliari",
     "tipo": "PVP",
@@ -1687,14 +989,39 @@
         "pokemonId": 31,
         "livello": 33
       }
-    ],
-    "guadagno": 3240,
-    "perdita": -1620,
-    "idDatabase": 252
+    ]
   },
   {
-    "id": 10254,
-    "nome": "Allenatore #254",
+    "id": 253,
+    "nome": "Capopalestra 5",
+    "luogo": "Cagliari",
+    "tipo": "Capopalestra",
+    "squadra": [
+      {
+        "pokemonId": 61,
+        "livello": 36
+      },
+      {
+        "pokemonId": 70,
+        "livello": 36
+      },
+      {
+        "pokemonId": 118,
+        "livello": 36
+      },
+      {
+        "pokemonId": 59,
+        "livello": 37
+      },
+      {
+        "pokemonId": 126,
+        "livello": 37
+      }
+    ]
+  },
+  {
+    "id": 254,
+    "nome": "Allenatore di Palermo 1",
     "luogo": "Palermo",
     "tipo": "NPC",
     "squadra": [
@@ -1714,14 +1041,11 @@
         "pokemonId": 175,
         "livello": 34
       }
-    ],
-    "guadagno": 1360,
-    "perdita": -680,
-    "idDatabase": 254
+    ]
   },
   {
-    "id": 10255,
-    "nome": "Allenatore #255",
+    "id": 255,
+    "nome": "Allenatore di Palermo 2",
     "luogo": "Palermo",
     "tipo": "NPC",
     "squadra": [
@@ -1741,19 +1065,16 @@
         "pokemonId": 175,
         "livello": 34
       }
-    ],
-    "guadagno": 1360,
-    "perdita": -680,
-    "idDatabase": 255
+    ]
   },
   {
-    "id": 10256,
+    "id": 256,
     "nome": "Edo (rivale)",
     "luogo": "Palermo",
     "tipo": "PVP",
     "squadra": [
       {
-        "pokemonId": 1,
+        "pokemonId": 0,
         "livello": 35
       },
       {
@@ -1769,18 +1090,10 @@
         "livello": 35
       }
     ],
-    "guadagno": 2800,
-    "perdita": -1400,
-    "idDatabase": 256,
-    "livelliRivale": [
-      35,
-      35,
-      35,
-      35
-    ]
+    "rivale": true
   },
   {
-    "id": 10257,
+    "id": 257,
     "nome": "Luchino",
     "luogo": "Palermo",
     "tipo": "PVP",
@@ -1801,14 +1114,39 @@
         "pokemonId": 150,
         "livello": 35
       }
-    ],
-    "guadagno": 2800,
-    "perdita": -1400,
-    "idDatabase": 257
+    ]
   },
   {
-    "id": 10259,
-    "nome": "Allenatore #259",
+    "id": 258,
+    "nome": "Capopalestra 6",
+    "luogo": "Palermo",
+    "tipo": "Capopalestra",
+    "squadra": [
+      {
+        "pokemonId": 68,
+        "livello": 40
+      },
+      {
+        "pokemonId": 85,
+        "livello": 40
+      },
+      {
+        "pokemonId": 91,
+        "livello": 40
+      },
+      {
+        "pokemonId": 150,
+        "livello": 40
+      },
+      {
+        "pokemonId": 155,
+        "livello": 40
+      }
+    ]
+  },
+  {
+    "id": 259,
+    "nome": "Allenatore di Percorso 9 1",
     "luogo": "Percorso_9",
     "tipo": "NPC",
     "squadra": [
@@ -1832,14 +1170,11 @@
         "pokemonId": 27,
         "livello": 38
       }
-    ],
-    "guadagno": 1900,
-    "perdita": -950,
-    "idDatabase": 259
+    ]
   },
   {
-    "id": 10260,
-    "nome": "Allenatore #260",
+    "id": 260,
+    "nome": "Allenatore di Percorso 9 2",
     "luogo": "Percorso_9",
     "tipo": "NPC",
     "squadra": [
@@ -1863,14 +1198,11 @@
         "pokemonId": 27,
         "livello": 38
       }
-    ],
-    "guadagno": 1900,
-    "perdita": -950,
-    "idDatabase": 260
+    ]
   },
   {
-    "id": 10261,
-    "nome": "Allenatore #261",
+    "id": 261,
+    "nome": "Allenatore di Percorso 9 3",
     "luogo": "Percorso_9",
     "tipo": "NPC",
     "squadra": [
@@ -1894,14 +1226,11 @@
         "pokemonId": 72,
         "livello": 39
       }
-    ],
-    "guadagno": 1950,
-    "perdita": -975,
-    "idDatabase": 261
+    ]
   },
   {
-    "id": 10262,
-    "nome": "Allenatore #262",
+    "id": 262,
+    "nome": "Allenatore di Percorso 9 4",
     "luogo": "Percorso_9",
     "tipo": "NPC",
     "squadra": [
@@ -1925,14 +1254,11 @@
         "pokemonId": 72,
         "livello": 39
       }
-    ],
-    "guadagno": 1950,
-    "perdita": -975,
-    "idDatabase": 262
+    ]
   },
   {
-    "id": 10263,
-    "nome": "Allenatore #263",
+    "id": 263,
+    "nome": "Allenatore di Percorso 9 5",
     "luogo": "Percorso_9",
     "tipo": "NPC",
     "squadra": [
@@ -1956,14 +1282,11 @@
         "pokemonId": 48,
         "livello": 40
       }
-    ],
-    "guadagno": 2000,
-    "perdita": -1000,
-    "idDatabase": 263
+    ]
   },
   {
-    "id": 10264,
-    "nome": "Allenatore #264",
+    "id": 264,
+    "nome": "Allenatore di Percorso 9 6",
     "luogo": "Percorso_9",
     "tipo": "NPC",
     "squadra": [
@@ -1987,14 +1310,11 @@
         "pokemonId": 48,
         "livello": 40
       }
-    ],
-    "guadagno": 2000,
-    "perdita": -1000,
-    "idDatabase": 264
+    ]
   },
   {
-    "id": 10265,
-    "nome": "Allenatore #265",
+    "id": 265,
+    "nome": "Allenatore di Reggio Calabria 1",
     "luogo": "ReggioCalabria",
     "tipo": "NPC",
     "squadra": [
@@ -2018,14 +1338,11 @@
         "pokemonId": 116,
         "livello": 43
       }
-    ],
-    "guadagno": 2110,
-    "perdita": -1055,
-    "idDatabase": 265
+    ]
   },
   {
-    "id": 10266,
-    "nome": "Allenatore #266",
+    "id": 266,
+    "nome": "Allenatore di Reggio Calabria 2",
     "luogo": "ReggioCalabria",
     "tipo": "NPC",
     "squadra": [
@@ -2049,13 +1366,10 @@
         "pokemonId": 116,
         "livello": 43
       }
-    ],
-    "guadagno": 2110,
-    "perdita": -1055,
-    "idDatabase": 266
+    ]
   },
   {
-    "id": 10267,
+    "id": 267,
     "nome": "Luca",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2084,13 +1398,10 @@
         "pokemonId": 15,
         "livello": 44
       }
-    ],
-    "guadagno": 5280,
-    "perdita": -2640,
-    "idDatabase": 267
+    ]
   },
   {
-    "id": 10268,
+    "id": 268,
     "nome": "Matteo",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2119,13 +1430,10 @@
         "pokemonId": 15,
         "livello": 44
       }
-    ],
-    "guadagno": 5280,
-    "perdita": -2640,
-    "idDatabase": 268
+    ]
   },
   {
-    "id": 10269,
+    "id": 269,
     "nome": "Bradipop (Paz)",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2154,13 +1462,10 @@
         "pokemonId": 29,
         "livello": 45
       }
-    ],
-    "guadagno": 5400,
-    "perdita": -2700,
-    "idDatabase": 269
+    ]
   },
   {
-    "id": 10270,
+    "id": 270,
     "nome": "Tabernacolo (Eddy)",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2189,13 +1494,10 @@
         "pokemonId": 29,
         "livello": 45
       }
-    ],
-    "guadagno": 5400,
-    "perdita": -2700,
-    "idDatabase": 270
+    ]
   },
   {
-    "id": 10271,
+    "id": 271,
     "nome": "Sciortino",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2224,13 +1526,10 @@
         "pokemonId": 88,
         "livello": 46
       }
-    ],
-    "guadagno": 5520,
-    "perdita": -2760,
-    "idDatabase": 271
+    ]
   },
   {
-    "id": 10272,
+    "id": 272,
     "nome": "Maronn",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2259,13 +1558,10 @@
         "pokemonId": 88,
         "livello": 46
       }
-    ],
-    "guadagno": 5520,
-    "perdita": -2760,
-    "idDatabase": 272
+    ]
   },
   {
-    "id": 10273,
+    "id": 273,
     "nome": "Sara",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2294,13 +1590,10 @@
         "pokemonId": 155,
         "livello": 48
       }
-    ],
-    "guadagno": 5700,
-    "perdita": -2850,
-    "idDatabase": 273
+    ]
   },
   {
-    "id": 10274,
+    "id": 274,
     "nome": "Abicocca",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2329,13 +1622,10 @@
         "pokemonId": 155,
         "livello": 48
       }
-    ],
-    "guadagno": 5700,
-    "perdita": -2850,
-    "idDatabase": 274
+    ]
   },
   {
-    "id": 10275,
+    "id": 275,
     "nome": "Jack",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2364,13 +1654,10 @@
         "pokemonId": 129,
         "livello": 50
       }
-    ],
-    "guadagno": 5940,
-    "perdita": -2970,
-    "idDatabase": 275
+    ]
   },
   {
-    "id": 10276,
+    "id": 276,
     "nome": "Frank",
     "luogo": "Nascondiglio",
     "tipo": "PVP",
@@ -2399,14 +1686,11 @@
         "pokemonId": 129,
         "livello": 50
       }
-    ],
-    "guadagno": 5940,
-    "perdita": -2970,
-    "idDatabase": 276
+    ]
   },
   {
-    "id": 10277,
-    "nome": "Allenatore #277",
+    "id": 277,
+    "nome": "Allenatore di Percorso 10 1",
     "luogo": "Percorso_10",
     "tipo": "NPC",
     "squadra": [
@@ -2426,14 +1710,11 @@
         "pokemonId": 202,
         "livello": 48
       }
-    ],
-    "guadagno": 1920,
-    "perdita": -960,
-    "idDatabase": 277
+    ]
   },
   {
-    "id": 10278,
-    "nome": "Allenatore #278",
+    "id": 278,
+    "nome": "Allenatore di Percorso 10 2",
     "luogo": "Percorso_10",
     "tipo": "NPC",
     "squadra": [
@@ -2453,14 +1734,11 @@
         "pokemonId": 202,
         "livello": 48
       }
-    ],
-    "guadagno": 1920,
-    "perdita": -960,
-    "idDatabase": 278
+    ]
   },
   {
-    "id": 10279,
-    "nome": "Allenatore #279",
+    "id": 279,
+    "nome": "Allenatore di Percorso 10 3",
     "luogo": "Percorso_10",
     "tipo": "NPC",
     "squadra": [
@@ -2480,14 +1758,11 @@
         "pokemonId": 142,
         "livello": 49
       }
-    ],
-    "guadagno": 1960,
-    "perdita": -980,
-    "idDatabase": 279
+    ]
   },
   {
-    "id": 10280,
-    "nome": "Allenatore #280",
+    "id": 280,
+    "nome": "Allenatore di Percorso 10 4",
     "luogo": "Percorso_10",
     "tipo": "NPC",
     "squadra": [
@@ -2507,14 +1782,11 @@
         "pokemonId": 142,
         "livello": 49
       }
-    ],
-    "guadagno": 1960,
-    "perdita": -980,
-    "idDatabase": 280
+    ]
   },
   {
-    "id": 10281,
-    "nome": "Allenatore #281",
+    "id": 281,
+    "nome": "Allenatore di Percorso 10 5",
     "luogo": "Percorso_10",
     "tipo": "NPC",
     "squadra": [
@@ -2542,14 +1814,11 @@
         "pokemonId": 119,
         "livello": 50
       }
-    ],
-    "guadagno": 2970,
-    "perdita": -1485,
-    "idDatabase": 281
+    ]
   },
   {
-    "id": 10282,
-    "nome": "Allenatore #282",
+    "id": 282,
+    "nome": "Allenatore di Percorso 10 6",
     "luogo": "Percorso_10",
     "tipo": "NPC",
     "squadra": [
@@ -2577,14 +1846,11 @@
         "pokemonId": 121,
         "livello": 50
       }
-    ],
-    "guadagno": 2970,
-    "perdita": -1485,
-    "idDatabase": 282
+    ]
   },
   {
-    "id": 10283,
-    "nome": "Allenatore #283",
+    "id": 283,
+    "nome": "Allenatore di Foggia 1",
     "luogo": "Foggia",
     "tipo": "NPC",
     "squadra": [
@@ -2612,14 +1878,11 @@
         "pokemonId": 142,
         "livello": 52
       }
-    ],
-    "guadagno": 3090,
-    "perdita": -1545,
-    "idDatabase": 283
+    ]
   },
   {
-    "id": 10284,
-    "nome": "Allenatore #284",
+    "id": 284,
+    "nome": "Allenatore di Foggia 2",
     "luogo": "Foggia",
     "tipo": "NPC",
     "squadra": [
@@ -2647,14 +1910,11 @@
         "pokemonId": 142,
         "livello": 52
       }
-    ],
-    "guadagno": 3090,
-    "perdita": -1545,
-    "idDatabase": 284
+    ]
   },
   {
-    "id": 10285,
-    "nome": "Allenatore #285",
+    "id": 285,
+    "nome": "Allenatore di Foggia 3",
     "luogo": "Foggia",
     "tipo": "NPC",
     "squadra": [
@@ -2682,14 +1942,11 @@
         "pokemonId": 81,
         "livello": 53
       }
-    ],
-    "guadagno": 3150,
-    "perdita": -1575,
-    "idDatabase": 285
+    ]
   },
   {
-    "id": 10286,
-    "nome": "Allenatore #286",
+    "id": 286,
+    "nome": "Allenatore di Foggia 4",
     "luogo": "Foggia",
     "tipo": "NPC",
     "squadra": [
@@ -2717,13 +1974,10 @@
         "pokemonId": 81,
         "livello": 53
       }
-    ],
-    "guadagno": 3150,
-    "perdita": -1575,
-    "idDatabase": 286
+    ]
   },
   {
-    "id": 10287,
+    "id": 287,
     "nome": "Capopalestra 7",
     "luogo": "Foggia",
     "tipo": "Capopalestra",
@@ -2752,14 +2006,11 @@
         "pokemonId": 176,
         "livello": 55
       }
-    ],
-    "guadagno": 6600,
-    "perdita": -3300,
-    "idDatabase": 287
+    ]
   },
   {
-    "id": 10288,
-    "nome": "Allenatore #288",
+    "id": 288,
+    "nome": "Allenatore di Percorso 12 1",
     "luogo": "Percorso_12",
     "tipo": "NPC",
     "squadra": [
@@ -2775,14 +2026,11 @@
         "pokemonId": 57,
         "livello": 55
       }
-    ],
-    "guadagno": 1630,
-    "perdita": -815,
-    "idDatabase": 288
+    ]
   },
   {
-    "id": 10289,
-    "nome": "Allenatore #289",
+    "id": 289,
+    "nome": "Allenatore di Percorso 12 2",
     "luogo": "Percorso_12",
     "tipo": "NPC",
     "squadra": [
@@ -2798,14 +2046,11 @@
         "pokemonId": 57,
         "livello": 55
       }
-    ],
-    "guadagno": 1630,
-    "perdita": -815,
-    "idDatabase": 289
+    ]
   },
   {
-    "id": 10290,
-    "nome": "Allenatore #290",
+    "id": 290,
+    "nome": "Allenatore di Percorso 12 3",
     "luogo": "Percorso_12",
     "tipo": "NPC",
     "squadra": [
@@ -2821,14 +2066,11 @@
         "pokemonId": 81,
         "livello": 56
       }
-    ],
-    "guadagno": 1660,
-    "perdita": -830,
-    "idDatabase": 290
+    ]
   },
   {
-    "id": 10291,
-    "nome": "Allenatore #291",
+    "id": 291,
+    "nome": "Allenatore di Percorso 12 4",
     "luogo": "Percorso_12",
     "tipo": "NPC",
     "squadra": [
@@ -2844,14 +2086,11 @@
         "pokemonId": 81,
         "livello": 56
       }
-    ],
-    "guadagno": 1660,
-    "perdita": -830,
-    "idDatabase": 291
+    ]
   },
   {
-    "id": 10292,
-    "nome": "Allenatore #292",
+    "id": 292,
+    "nome": "Allenatore di Napoli 1",
     "luogo": "Napoli",
     "tipo": "NPC",
     "squadra": [
@@ -2871,14 +2110,11 @@
         "pokemonId": 148,
         "livello": 56
       }
-    ],
-    "guadagno": 2240,
-    "perdita": -1120,
-    "idDatabase": 292
+    ]
   },
   {
-    "id": 10293,
-    "nome": "Allenatore #293",
+    "id": 293,
+    "nome": "Allenatore di Napoli 2",
     "luogo": "Napoli",
     "tipo": "NPC",
     "squadra": [
@@ -2898,14 +2134,11 @@
         "pokemonId": 148,
         "livello": 56
       }
-    ],
-    "guadagno": 2240,
-    "perdita": -1120,
-    "idDatabase": 293
+    ]
   },
   {
-    "id": 10294,
-    "nome": "Allenatore #294",
+    "id": 294,
+    "nome": "Allenatore di Napoli 3",
     "luogo": "Napoli",
     "tipo": "NPC",
     "squadra": [
@@ -2925,14 +2158,11 @@
         "pokemonId": 131,
         "livello": 56
       }
-    ],
-    "guadagno": 2240,
-    "perdita": -1120,
-    "idDatabase": 294
+    ]
   },
   {
-    "id": 10295,
-    "nome": "Allenatore #295",
+    "id": 295,
+    "nome": "Allenatore di Napoli 4",
     "luogo": "Napoli",
     "tipo": "NPC",
     "squadra": [
@@ -2952,14 +2182,43 @@
         "pokemonId": 131,
         "livello": 56
       }
-    ],
-    "guadagno": 2240,
-    "perdita": -1120,
-    "idDatabase": 295
+    ]
   },
   {
-    "id": 10297,
-    "nome": "Allenatore #297",
+    "id": 296,
+    "nome": "Capopalestra 8",
+    "luogo": "Napoli",
+    "tipo": "Capopalestra",
+    "squadra": [
+      {
+        "pokemonId": 22,
+        "livello": 60
+      },
+      {
+        "pokemonId": 25,
+        "livello": 60
+      },
+      {
+        "pokemonId": 124,
+        "livello": 60
+      },
+      {
+        "pokemonId": 23,
+        "livello": 60
+      },
+      {
+        "pokemonId": 88,
+        "livello": 60
+      },
+      {
+        "pokemonId": 132,
+        "livello": 60
+      }
+    ]
+  },
+  {
+    "id": 297,
+    "nome": "Allenatore di Percorso 13 1",
     "luogo": "Percorso_13",
     "tipo": "NPC",
     "squadra": [
@@ -2983,14 +2242,11 @@
         "pokemonId": 57,
         "livello": 58
       }
-    ],
-    "guadagno": 2900,
-    "perdita": -1450,
-    "idDatabase": 297
+    ]
   },
   {
-    "id": 10298,
-    "nome": "Allenatore #298",
+    "id": 298,
+    "nome": "Allenatore di Percorso 13 2",
     "luogo": "Percorso_13",
     "tipo": "NPC",
     "squadra": [
@@ -3014,49 +2270,11 @@
         "pokemonId": 57,
         "livello": 58
       }
-    ],
-    "guadagno": 2900,
-    "perdita": -1450,
-    "idDatabase": 298
+    ]
   },
   {
-    "id": 10299,
-    "nome": "Allenatore #299",
-    "luogo": "Percorso_13",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 190,
-        "livello": 59
-      },
-      {
-        "pokemonId": 148,
-        "livello": 59
-      },
-      {
-        "pokemonId": 118,
-        "livello": 59
-      },
-      {
-        "pokemonId": 131,
-        "livello": 59
-      },
-      {
-        "pokemonId": 81,
-        "livello": 59
-      },
-      {
-        "pokemonId": 165,
-        "livello": 59
-      }
-    ],
-    "guadagno": 3540,
-    "perdita": -1770,
-    "idDatabase": 299
-  },
-  {
-    "id": 10300,
-    "nome": "Allenatore #300",
+    "id": 299,
+    "nome": "Allenatore di Percorso 13 3",
     "luogo": "Percorso_13",
     "tipo": "NPC",
     "squadra": [
@@ -3084,14 +2302,43 @@
         "pokemonId": 165,
         "livello": 59
       }
-    ],
-    "guadagno": 3540,
-    "perdita": -1770,
-    "idDatabase": 300
+    ]
   },
   {
-    "id": 10301,
-    "nome": "Allenatore #301",
+    "id": 300,
+    "nome": "Allenatore di Percorso 13 4",
+    "luogo": "Percorso_13",
+    "tipo": "NPC",
+    "squadra": [
+      {
+        "pokemonId": 190,
+        "livello": 59
+      },
+      {
+        "pokemonId": 148,
+        "livello": 59
+      },
+      {
+        "pokemonId": 118,
+        "livello": 59
+      },
+      {
+        "pokemonId": 131,
+        "livello": 59
+      },
+      {
+        "pokemonId": 81,
+        "livello": 59
+      },
+      {
+        "pokemonId": 165,
+        "livello": 59
+      }
+    ]
+  },
+  {
+    "id": 301,
+    "nome": "Allenatore di Percorso 13 5",
     "luogo": "Percorso_13",
     "tipo": "NPC",
     "squadra": [
@@ -3119,14 +2366,11 @@
         "pokemonId": 198,
         "livello": 60
       }
-    ],
-    "guadagno": 3600,
-    "perdita": -1800,
-    "idDatabase": 301
+    ]
   },
   {
-    "id": 10302,
-    "nome": "Allenatore #302",
+    "id": 302,
+    "nome": "Allenatore di Percorso 13 6",
     "luogo": "Percorso_13",
     "tipo": "NPC",
     "squadra": [
@@ -3154,14 +2398,11 @@
         "pokemonId": 198,
         "livello": 60
       }
-    ],
-    "guadagno": 3600,
-    "perdita": -1800,
-    "idDatabase": 302
+    ]
   },
   {
-    "id": 10303,
-    "nome": "Allenatore #303",
+    "id": 303,
+    "nome": "Allenatore di Percorso 14 1",
     "luogo": "Percorso_14",
     "tipo": "NPC",
     "squadra": [
@@ -3185,14 +2426,11 @@
         "pokemonId": 190,
         "livello": 61
       }
-    ],
-    "guadagno": 3050,
-    "perdita": -1525,
-    "idDatabase": 303
+    ]
   },
   {
-    "id": 10304,
-    "nome": "Allenatore #304",
+    "id": 304,
+    "nome": "Allenatore di Percorso 14 2",
     "luogo": "Percorso_14",
     "tipo": "NPC",
     "squadra": [
@@ -3216,14 +2454,11 @@
         "pokemonId": 190,
         "livello": 61
       }
-    ],
-    "guadagno": 3050,
-    "perdita": -1525,
-    "idDatabase": 304
+    ]
   },
   {
-    "id": 10305,
-    "nome": "Allenatore #305",
+    "id": 305,
+    "nome": "Allenatore di Percorso 14 3",
     "luogo": "Percorso_14",
     "tipo": "NPC",
     "squadra": [
@@ -3251,14 +2486,11 @@
         "pokemonId": 148,
         "livello": 62
       }
-    ],
-    "guadagno": 3720,
-    "perdita": -1860,
-    "idDatabase": 305
+    ]
   },
   {
-    "id": 10306,
-    "nome": "Allenatore #306",
+    "id": 306,
+    "nome": "Allenatore di Percorso 14 4",
     "luogo": "Percorso_14",
     "tipo": "NPC",
     "squadra": [
@@ -3286,14 +2518,11 @@
         "pokemonId": 148,
         "livello": 62
       }
-    ],
-    "guadagno": 3720,
-    "perdita": -1860,
-    "idDatabase": 306
+    ]
   },
   {
-    "id": 10307,
-    "nome": "Allenatore #307",
+    "id": 307,
+    "nome": "Allenatore di Pescara 1",
     "luogo": "Pescara",
     "tipo": "NPC",
     "squadra": [
@@ -3321,14 +2550,11 @@
         "pokemonId": 159,
         "livello": 64
       }
-    ],
-    "guadagno": 3840,
-    "perdita": -1920,
-    "idDatabase": 307
+    ]
   },
   {
-    "id": 10308,
-    "nome": "Allenatore #308",
+    "id": 308,
+    "nome": "Allenatore di Pescara 2",
     "luogo": "Pescara",
     "tipo": "NPC",
     "squadra": [
@@ -3356,14 +2582,11 @@
         "pokemonId": 159,
         "livello": 64
       }
-    ],
-    "guadagno": 3840,
-    "perdita": -1920,
-    "idDatabase": 308
+    ]
   },
   {
-    "id": 10309,
-    "nome": "Allenatore #309",
+    "id": 309,
+    "nome": "Allenatore di Pescara 3",
     "luogo": "Pescara",
     "tipo": "NPC",
     "squadra": [
@@ -3391,14 +2614,11 @@
         "pokemonId": 158,
         "livello": 65
       }
-    ],
-    "guadagno": 3900,
-    "perdita": -1950,
-    "idDatabase": 309
+    ]
   },
   {
-    "id": 10310,
-    "nome": "Allenatore #310",
+    "id": 310,
+    "nome": "Allenatore di Pescara 4",
     "luogo": "Pescara",
     "tipo": "NPC",
     "squadra": [
@@ -3426,14 +2646,11 @@
         "pokemonId": 158,
         "livello": 65
       }
-    ],
-    "guadagno": 3900,
-    "perdita": -1950,
-    "idDatabase": 310
+    ]
   },
   {
-    "id": 10311,
-    "nome": "Allenatore #311",
+    "id": 311,
+    "nome": "Allenatore di Pescara 5",
     "luogo": "Pescara",
     "tipo": "NPC",
     "squadra": [
@@ -3461,14 +2678,11 @@
         "pokemonId": 139,
         "livello": 67
       }
-    ],
-    "guadagno": 4020,
-    "perdita": -2010,
-    "idDatabase": 311
+    ]
   },
   {
-    "id": 10312,
-    "nome": "Allenatore #312",
+    "id": 312,
+    "nome": "Allenatore di Pescara 6",
     "luogo": "Pescara",
     "tipo": "NPC",
     "squadra": [
@@ -3496,19 +2710,16 @@
         "pokemonId": 158,
         "livello": 67
       }
-    ],
-    "guadagno": 4020,
-    "perdita": -2010,
-    "idDatabase": 312
+    ]
   },
   {
-    "id": 10313,
+    "id": 313,
     "nome": "Rivale",
     "luogo": "Percorso_15",
     "tipo": "PVP",
     "squadra": [
       {
-        "pokemonId": 1,
+        "pokemonId": 0,
         "livello": 70
       },
       {
@@ -3532,21 +2743,31 @@
         "livello": 71
       }
     ],
-    "guadagno": 6344,
-    "perdita": -3172,
-    "idDatabase": 313,
-    "livelliRivale": [
-      70,
-      70,
-      70,
-      71,
-      71,
-      71
+    "rivale": true
+  },
+  {
+    "id": 314,
+    "nome": "Allenatore di Percorso 15 1",
+    "luogo": "Percorso_15",
+    "tipo": "NPC",
+    "squadra": [
+      {
+        "pokemonId": 195,
+        "livello": 70
+      },
+      {
+        "pokemonId": 139,
+        "livello": 70
+      },
+      {
+        "pokemonId": 158,
+        "livello": 70
+      }
     ]
   },
   {
-    "id": 10314,
-    "nome": "Allenatore #314",
+    "id": 315,
+    "nome": "Allenatore di Percorso 15 2",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3562,37 +2783,11 @@
         "pokemonId": 158,
         "livello": 70
       }
-    ],
-    "guadagno": 2100,
-    "perdita": -1050,
-    "idDatabase": 314
+    ]
   },
   {
-    "id": 10315,
-    "nome": "Allenatore #315",
-    "luogo": "Percorso_15",
-    "tipo": "NPC",
-    "squadra": [
-      {
-        "pokemonId": 195,
-        "livello": 70
-      },
-      {
-        "pokemonId": 139,
-        "livello": 70
-      },
-      {
-        "pokemonId": 158,
-        "livello": 70
-      }
-    ],
-    "guadagno": 2100,
-    "perdita": -1050,
-    "idDatabase": 315
-  },
-  {
-    "id": 10316,
-    "nome": "Allenatore #316",
+    "id": 316,
+    "nome": "Allenatore di Percorso 15 3",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3608,14 +2803,11 @@
         "pokemonId": 193,
         "livello": 70
       }
-    ],
-    "guadagno": 2100,
-    "perdita": -1050,
-    "idDatabase": 316
+    ]
   },
   {
-    "id": 10317,
-    "nome": "Allenatore #317",
+    "id": 317,
+    "nome": "Allenatore di Percorso 15 4",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3631,14 +2823,11 @@
         "pokemonId": 193,
         "livello": 70
       }
-    ],
-    "guadagno": 2100,
-    "perdita": -1050,
-    "idDatabase": 317
+    ]
   },
   {
-    "id": 10318,
-    "nome": "Allenatore #318",
+    "id": 318,
+    "nome": "Allenatore di Percorso 15 5",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3654,14 +2843,11 @@
         "pokemonId": 76,
         "livello": 71
       }
-    ],
-    "guadagno": 2130,
-    "perdita": -1065,
-    "idDatabase": 318
+    ]
   },
   {
-    "id": 10319,
-    "nome": "Allenatore #319",
+    "id": 319,
+    "nome": "Allenatore di Percorso 15 6",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3677,14 +2863,11 @@
         "pokemonId": 76,
         "livello": 71
       }
-    ],
-    "guadagno": 2130,
-    "perdita": -1065,
-    "idDatabase": 319
+    ]
   },
   {
-    "id": 10320,
-    "nome": "Allenatore #320",
+    "id": 320,
+    "nome": "Allenatore di Percorso 15 7",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3700,14 +2883,11 @@
         "pokemonId": 98,
         "livello": 71
       }
-    ],
-    "guadagno": 2130,
-    "perdita": -1065,
-    "idDatabase": 320
+    ]
   },
   {
-    "id": 10321,
-    "nome": "Allenatore #321",
+    "id": 321,
+    "nome": "Allenatore di Percorso 15 8",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3723,14 +2903,11 @@
         "pokemonId": 98,
         "livello": 71
       }
-    ],
-    "guadagno": 2130,
-    "perdita": -1065,
-    "idDatabase": 321
+    ]
   },
   {
-    "id": 10322,
-    "nome": "Allenatore #322",
+    "id": 322,
+    "nome": "Allenatore di Percorso 15 9",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3746,14 +2923,11 @@
         "pokemonId": 193,
         "livello": 73
       }
-    ],
-    "guadagno": 2190,
-    "perdita": -1095,
-    "idDatabase": 322
+    ]
   },
   {
-    "id": 10323,
-    "nome": "Allenatore #323",
+    "id": 323,
+    "nome": "Allenatore di Percorso 15 10",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3769,14 +2943,11 @@
         "pokemonId": 193,
         "livello": 73
       }
-    ],
-    "guadagno": 2190,
-    "perdita": -1095,
-    "idDatabase": 323
+    ]
   },
   {
-    "id": 10324,
-    "nome": "Allenatore #324",
+    "id": 324,
+    "nome": "Allenatore di Percorso 15 11",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3792,14 +2963,11 @@
         "pokemonId": 138,
         "livello": 73
       }
-    ],
-    "guadagno": 2190,
-    "perdita": -1095,
-    "idDatabase": 324
+    ]
   },
   {
-    "id": 10325,
-    "nome": "Allenatore #325",
+    "id": 325,
+    "nome": "Allenatore di Percorso 15 12",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3815,14 +2983,11 @@
         "pokemonId": 138,
         "livello": 73
       }
-    ],
-    "guadagno": 2190,
-    "perdita": -1095,
-    "idDatabase": 325
+    ]
   },
   {
-    "id": 10326,
-    "nome": "Allenatore #326",
+    "id": 326,
+    "nome": "Allenatore di Percorso 15 13",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3842,14 +3007,11 @@
         "pokemonId": 132,
         "livello": 76
       }
-    ],
-    "guadagno": 3020,
-    "perdita": -1510,
-    "idDatabase": 326
+    ]
   },
   {
-    "id": 10327,
-    "nome": "Allenatore #327",
+    "id": 327,
+    "nome": "Allenatore di Percorso 15 14",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3869,14 +3031,11 @@
         "pokemonId": 132,
         "livello": 76
       }
-    ],
-    "guadagno": 3020,
-    "perdita": -1510,
-    "idDatabase": 327
+    ]
   },
   {
-    "id": 10328,
-    "nome": "Allenatore #328",
+    "id": 328,
+    "nome": "Allenatore di Percorso 15 15",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3896,14 +3055,11 @@
         "pokemonId": 138,
         "livello": 76
       }
-    ],
-    "guadagno": 3020,
-    "perdita": -1510,
-    "idDatabase": 328
+    ]
   },
   {
-    "id": 10329,
-    "nome": "Allenatore #329",
+    "id": 329,
+    "nome": "Allenatore di Percorso 15 16",
     "luogo": "Percorso_15",
     "tipo": "NPC",
     "squadra": [
@@ -3923,14 +3079,11 @@
         "pokemonId": 158,
         "livello": 76
       }
-    ],
-    "guadagno": 3020,
-    "perdita": -1510,
-    "idDatabase": 329
+    ]
   },
   {
-    "id": 10330,
-    "nome": "Allenatore #330",
+    "id": 330,
+    "nome": "Allenatore di Roma 1",
     "luogo": "Roma",
     "tipo": "NPC",
     "squadra": [
@@ -3958,14 +3111,11 @@
         "pokemonId": 193,
         "livello": 78
       }
-    ],
-    "guadagno": 4650,
-    "perdita": -2325,
-    "idDatabase": 330
+    ]
   },
   {
-    "id": 10331,
-    "nome": "Allenatore #331",
+    "id": 331,
+    "nome": "Allenatore di Roma 2",
     "luogo": "Roma",
     "tipo": "NPC",
     "squadra": [
@@ -3993,13 +3143,10 @@
         "pokemonId": 193,
         "livello": 78
       }
-    ],
-    "guadagno": 4650,
-    "perdita": -2325,
-    "idDatabase": 331
+    ]
   },
   {
-    "id": 10332,
+    "id": 332,
     "nome": "Superquattro 1",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4028,13 +3175,10 @@
         "pokemonId": 140,
         "livello": 81
       }
-    ],
-    "guadagno": 24150,
-    "perdita": -12075,
-    "idDatabase": 332
+    ]
   },
   {
-    "id": 10333,
+    "id": 333,
     "nome": "Superquattro 1",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4063,13 +3207,10 @@
         "pokemonId": 19,
         "livello": 81
       }
-    ],
-    "guadagno": 24150,
-    "perdita": -12075,
-    "idDatabase": 333
+    ]
   },
   {
-    "id": 10334,
+    "id": 334,
     "nome": "Superquattro 2",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4098,13 +3239,10 @@
         "pokemonId": 122,
         "livello": 83
       }
-    ],
-    "guadagno": 24750,
-    "perdita": -12375,
-    "idDatabase": 334
+    ]
   },
   {
-    "id": 10335,
+    "id": 335,
     "nome": "Superquattro 2",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4133,13 +3271,10 @@
         "pokemonId": 23,
         "livello": 83
       }
-    ],
-    "guadagno": 24750,
-    "perdita": -12375,
-    "idDatabase": 335
+    ]
   },
   {
-    "id": 10336,
+    "id": 336,
     "nome": "Superquattro 3",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4168,13 +3303,10 @@
         "pokemonId": 83,
         "livello": 85
       }
-    ],
-    "guadagno": 25350,
-    "perdita": -12675,
-    "idDatabase": 336
+    ]
   },
   {
-    "id": 10337,
+    "id": 337,
     "nome": "Superquattro 3",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4203,13 +3335,10 @@
         "pokemonId": 152,
         "livello": 85
       }
-    ],
-    "guadagno": 25350,
-    "perdita": -12675,
-    "idDatabase": 337
+    ]
   },
   {
-    "id": 10338,
+    "id": 338,
     "nome": "Superquattro 4",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4238,13 +3367,10 @@
         "pokemonId": 192,
         "livello": 87
       }
-    ],
-    "guadagno": 25950,
-    "perdita": -12975,
-    "idDatabase": 338
+    ]
   },
   {
-    "id": 10339,
+    "id": 339,
     "nome": "Superquattro 4",
     "luogo": "Lega",
     "tipo": "Superquattro",
@@ -4273,19 +3399,16 @@
         "pokemonId": 190,
         "livello": 87
       }
-    ],
-    "guadagno": 25950,
-    "perdita": -12975,
-    "idDatabase": 339
+    ]
   },
   {
-    "id": 10340,
+    "id": 340,
     "nome": "Rivale",
     "luogo": "Lega",
     "tipo": "PVP",
     "squadra": [
       {
-        "pokemonId": 1,
+        "pokemonId": 0,
         "livello": 89
       },
       {
@@ -4309,16 +3432,6 @@
         "livello": 90
       }
     ],
-    "guadagno": 32200,
-    "perdita": -16100,
-    "idDatabase": 340,
-    "livelliRivale": [
-      89,
-      89,
-      89,
-      90,
-      90,
-      90
-    ]
+    "rivale": true
   }
 ]

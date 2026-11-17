@@ -11,13 +11,12 @@ import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { LABORATORY_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
-import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
 
 const capsuleColors = ['blu', 'nera', 'viola'] as const
 
 function LaboratorySprite({ speciesId }: { speciesId: number }) {
-  const source = getArkamonSpriteSource(speciesId)
+  const source = `/sprites/front_sprites/${speciesId}.png`
   const framing = getPortraitFraming(source)
   return <svg className="live-laboratory-sprite" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
     <image href={assetUrl(source)} width={framing.width} height={framing.height} />

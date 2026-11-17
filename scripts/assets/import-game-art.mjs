@@ -5,7 +5,7 @@
  *   node scripts/assets/import-game-art.mjs --reference [--max 720] menu-map-art:menu-map coin ...
  *     converte asset già presenti in public/ui/reference-assets (id[:nuovo-id]), lato massimo 720 px;
  *   node scripts/assets/import-game-art.mjs --inbox asset-inbox/lotto-1
- *     elabora i PNG consegnati secondo ui-source/game-art-inbox.json: toglie il fondo
+ *     elabora le immagini consegnate (PNG, JPG o WebP) secondo ui-source/game-art-inbox.json: toglie il fondo
  *     magenta, ritaglia i margini trasparenti, taglia le griglie, ridimensiona, salva WebP.
  *
  * I file sconosciuti vengono segnalati e ignorati; un file mancante non blocca gli altri.
@@ -13,7 +13,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createRequire } from 'node:module'
-import { gridCells, hasMagentaCorners, keyOutMagenta, mergeCatalog, safeArtId, ruleForFile } from './gameArtImport.mjs'
+import { INBOX_IMAGE, gridCells, hasMagentaCorners, keyOutMagenta, mergeCatalog, safeArtId, ruleForFile } from './gameArtImport.mjs'
 
 const require = createRequire(import.meta.url)
 const sharp = require('sharp')
@@ -58,7 +58,7 @@ async function fromReference(args) {
 async function fromInbox(directory) {
   const spec = JSON.parse(await fs.readFile(specPath, 'utf8'))
   const entries = []
-  const files = (await fs.readdir(directory)).filter(name => /\.png$/i.test(name)).sort()
+  const files = (await fs.readdir(directory)).filter(name => INBOX_IMAGE.test(name)).sort()
   for (const name of files) {
     const rule = ruleForFile(spec, name)
     if (!rule) { console.warn(`! ${name}: nome non previsto, ignorato`); continue }
@@ -82,7 +82,8 @@ async function fromInbox(directory) {
       console.log(`${name} -> ${rule.id}`)
     }
   }
-  const missing = Object.keys(spec.files).filter(name => !files.includes(name))
+  const delivered = new Set(files.map(name => { const canonical = name.replace(INBOX_IMAGE, '.png'); return spec.aliases?.[canonical] ?? canonical }))
+  const missing = Object.keys(spec.files).filter(name => !delivered.has(name))
   if (missing.length) console.log(`Non ancora consegnati: ${missing.join(', ')}`)
   return entries
 }

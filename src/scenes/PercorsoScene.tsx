@@ -2,19 +2,30 @@ import { GameButton } from '@/components/ui/GameButton'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
-import { getAllenatoriInLuogo, getCespugliInLuogo } from '@data/index'
+import { getAllenatoriInLuogo, getIncontri } from '@data/index'
+import { calcolaHPMax, determinaIniziativa } from '@engine/battleEngine'
+import { generaIncontroDaCespuglio } from '@engine/encounters'
 import { useAdminStore } from '@store/adminStore'
 import { useGameStore } from '@store/gameStore'
 import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTypes'
+import type { StatoBattaglia } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
 import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
 import { LocalMapScene } from './LocalMapScene'
-import { WildEncounterButtons } from './WildEncounterButtons'
 import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 
+const CESPUGLI = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const
+
+/**
+ * Scena percorso: 7 cespugli A-G visitabili una volta per giocatore.
+ * Il layout admin è condiviso da tutti i percorsi.
+ */
 export function PercorsoScene() {
   const scenaCorrente = useSceneNavigation()
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
+  const cespuglioVisitato = useGameStore((s) => s.cespuglioVisitato)
+  const segnaCespuglioVisitato = useGameStore((s) => s.segnaCespuglioVisitato)
+  const iniziaBattaglia = useGameStore((s) => s.iniziaBattaglia)
   const iniziaBattagliaNPC = useGameStore((s) => s.iniziaBattagliaNPC)
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const consumaInterazione = useGameStore((s) => s.consumaInterazioneMappaLocale)
@@ -36,7 +47,7 @@ export function PercorsoScene() {
   const allenatori = getAllenatoriInLuogo(luogo)
   const secret = luogo === SECRET_LOCATION_ID
   const secretAccess = !secret || canAccessSecretLocation(giocatore, posizione)
-  const hasDefinedActivities = allenatori.length > 0 || getCespugliInLuogo(luogo).length > 0
+  const hasDefinedActivities = allenatori.length > 0 || CESPUGLI.some((c) => getIncontri(luogo, c).length > 0)
   const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
 
   const sfidaAllenatore = (allenatoreId: number) => {
@@ -45,6 +56,35 @@ export function PercorsoScene() {
     useGameStore.getState().eseguiTransazione(() => {
       if (!consumaInterazione(giocatoreAttivo, luogo)) return
       if (iniziaBattagliaNPC(allenatoreId, luogo)) vaiAScena('battaglia')
+    })
+  }
+
+  const apriCespuglio = (cespuglio: string) => {
+    if (layoutEditing || !interazioneDisponibile) return
+    if (!isTeamWithinLevelCap(giocatore.squadra)) { useGameStore.getState().aggiornaStato({ teamRuleMessage: teamCapMessage(giocatore.squadra) }); return }
+    if (cespuglioVisitato(giocatoreAttivo, luogo, cespuglio)) return
+    const incontri = getIncontri(luogo, cespuglio)
+    const selvatico = generaIncontroDaCespuglio(incontri)
+    if (!selvatico) return
+
+    const primoDellaSquadra = giocatore.squadra.find((pokemon) => pokemon.hp > 0)
+    if (!primoDellaSquadra) return
+    const battaglia: StatoBattaglia = {
+      tipo: 'Selvatico',
+      pokemonA: primoDellaSquadra,
+      pokemonB: selvatico,
+      hpMaxA: calcolaHPMax(primoDellaSquadra),
+      hpMaxB: calcolaHPMax(selvatico),
+      turnoCorrente: determinaIniziativa(primoDellaSquadra.livello, selvatico.livello, Math.random, primoDellaSquadra.stato?.tipo, selvatico.stato?.tipo),
+      luogoRitorno: luogo,
+      log: [`Appare ${selvatico.nome} selvatico!`],
+      evoluzioneInAttesa: null,
+    }
+    useGameStore.getState().eseguiTransazione(() => {
+      if (!consumaInterazione(giocatoreAttivo, luogo)) return
+      segnaCespuglioVisitato(giocatoreAttivo, luogo, cespuglio)
+      iniziaBattaglia(battaglia)
+      vaiAScena('battaglia')
     })
   }
 
@@ -60,7 +100,30 @@ export function PercorsoScene() {
               La squadra è esausta. Visita un Centro Pokémon prima di affrontare un incontro.
             </p>
           )}
-          <WildEncounterButtons place={luogo} disabled={layoutEditing || !interazioneDisponibile || !haPokemonVivi} />
+          {hasDefinedActivities && <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
+          {CESPUGLI.map((c) => {
+            const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
+            const haIncontri = getIncontri(luogo, c).length > 0
+            const disabled = !interazioneDisponibile || visited || !haIncontri || !haPokemonVivi
+            return (
+              <GameButton
+                key={c}
+                disabled={layoutEditing || disabled}
+                aria-label={`Cespuglio ${c}${visited ? ', esplorato' : ''}`}
+                onClick={() => apriCespuglio(c)}
+                className={`flex aspect-square flex-col items-center justify-center
+                  ${disabled ? 'cursor-not-allowed opacity-30' : 'cursor-pointer hover:border-arka-accent'}
+                `}
+              >
+                <span className="arka-layout-content mb-2 text-5xl">{visited ? '🌾' : '🌳'}</span>
+                <span className="arka-layout-content text-lg font-bold">{c}</span>
+                <span className="arka-layout-content text-xs text-arka-text-muted">
+                  {visited ? 'esplorato' : haIncontri ? 'cespuglio' : '—'}
+                </span>
+              </GameButton>
+            )
+          })}
+          </div>}
           {allenatori.length > 0 && (
             <section className="shrink-0" aria-label="Allenatori del percorso">
               <h3 className="arka-readable-title mb-3 text-xl font-bold text-white">Allenatori del percorso</h3>

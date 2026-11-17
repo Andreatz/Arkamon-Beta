@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { getPokemon, POKEMON_BASE } from '@/data'
+import { getPokemon, INCONTRI, POKEMON_BASE } from '@/data'
 import type { PokemonIstanza, StatoBattaglia } from '@/types'
 import {
   arkadexEvolutionLabel, deriveArkadexProgress, emptyArkadexProgress, getArkadexEntries,
-  getArkadexSpecimens, normalizeArkadexProgress, recordArkadex, type ArkadexSnapshot,
+  getArkadexHabitats, getArkadexSpecimens, placeLabel, normalizeArkadexProgress, recordArkadex, type ArkadexSnapshot,
 } from '../arkadexModel'
 
 const pokemon = (specieId: number, livello = 5, istanzaId = `p-${specieId}`): PokemonIstanza => ({ istanzaId, specieId, livello, hp: 3, xp: 1, nome: getPokemon(specieId)?.nome ?? 'Test' })
@@ -49,13 +49,12 @@ describe('Arkadex progress and private discoveries', () => {
   it('locks unknown names and types in data as well as in UI filtering', () => {
     const empty = emptyArkadexProgress()
     const entries = getArkadexEntries(empty, 1)
-    expect(entries).toHaveLength(205)
-    expect(POKEMON_BASE).toHaveLength(205)
+    expect(entries).toHaveLength(206)
+    expect(POKEMON_BASE).toHaveLength(206)
     expect(entries.every((entry) => entry.status === 'unknown' && entry.species === undefined)).toBe(true)
     expect(getArkadexEntries(empty, 1, { search: 'Darklaw' })).toHaveLength(0)
     expect(getArkadexEntries(empty, 1, { type: 'Oscurità' })).toHaveLength(0)
-    expect(getArkadexEntries(empty, 1, { search: '#206' }).map((entry) => entry.id)).toEqual([206])
-    expect(getArkadexEntries(empty, 1, { search: '#130' })).toEqual([])
+    expect(getArkadexEntries(empty, 1, { search: '#110' }).map((entry) => entry.id)).toEqual([110])
   })
 
   it('searches discovered names and filters obtained separately from seen-only', () => {
@@ -81,5 +80,31 @@ describe('Arkadex progress and private discoveries', () => {
     expect(unknownEvolution).not.toContain(getPokemon(2)!.nome)
     expect(arkadexEvolutionLabel(species, recordArkadex(emptyArkadexProgress(), 1, 2), 1)).toContain(getPokemon(2)!.nome)
     expect(arkadexEvolutionLabel(species, recordArkadex(emptyArkadexProgress(), 1, 2), 2)).not.toContain(getPokemon(2)!.nome)
+  })
+})
+
+describe('Arkadex habitat (fase U2)', () => {
+  it('turns internal place names into readable labels', () => {
+    expect(placeLabel('Percorso_3')).toBe('Percorso 3')
+    expect(placeLabel('ReggioCalabria')).toBe('Reggio Calabria')
+    expect(placeLabel('Venezia')).toBe('Venezia')
+  })
+
+  it('lists every place where a species appears in the bushes, once, in map order, with its most common rarity', () => {
+    const speciesId = INCONTRI[0].pokemonId
+    const habitats = getArkadexHabitats(speciesId)
+    const places = new Set(INCONTRI.filter((encounter) => encounter.pokemonId === speciesId).map((encounter) => encounter.luogo))
+    expect(habitats.map((habitat) => habitat.place).sort()).toEqual([...places].sort())
+    for (const habitat of habitats) {
+      const rarities = INCONTRI.filter((encounter) => encounter.pokemonId === speciesId && encounter.luogo === habitat.place).map((encounter) => encounter.probabilita)
+      const expected = rarities.includes('Comune') ? 'Comune' : rarities.includes('Medio') ? 'Medio' : 'Difficile'
+      expect(habitat.rarity).toBe(expected)
+    }
+  })
+
+  it('returns no habitat for forms that are never found in the bushes', () => {
+    const encountered = new Set(INCONTRI.map((encounter) => encounter.pokemonId))
+    const evolutionOnly = POKEMON_BASE.find((species) => !encountered.has(species.id))!
+    expect(getArkadexHabitats(evolutionOnly.id)).toEqual([])
   })
 })

@@ -7,7 +7,6 @@
  * reference skin -> supplied artwork -> responsive PNG finish -> splash.
  * The authored rules are kept intact; this module owns their precedence.
  */
-import './playerUiMotion.css'
 import './playerUiPrimitives'
 import './liveTeam.css'
 import './liveBag.css'
@@ -30,3 +29,5 @@ import './reference/reference-artwork-controls.css'
 import './reference/reference-png.css'
 import './reference/reference-splash.css'
 import './reference/reference-display.css'
+import './reference/reference-u1.css'
+import './reference/reference-u2.css'

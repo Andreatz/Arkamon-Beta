@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
-import { assertPinnedMediaRevision, packageWebAssets, pendingFrontSpriteInventory, readLocalFrontSpriteIds, readPlayableFrontSpriteIds } from '../package-web-assets.mjs'
+import { assertPinnedMediaRevision, packageWebAssets, pendingFrontSpriteInventory, readPlayableFrontSpriteIds } from '../package-web-assets.mjs'
 
 const directories = []
 afterEach(async () => { await Promise.all(directories.splice(0).map(root => fs.rm(root, { recursive: true, force: true }))) })
@@ -23,9 +23,7 @@ async function fixture() {
 }
 describe('bounded web asset packaging', () => {
   it('ships playable portraits locally and pins pending front sprites with heavy media without modifying originals', async () => {
-    const f = await fixture()
-    await f.write('public/sounds/.DS_Store')
-    const proof = await packageWebAssets(f.args)
+    const f = await fixture(), proof = await packageWebAssets(f.args)
     expect(proof.localAssets.map(file => file.path)).toContain('sprites/arkamon/1/front/idle-poster.webp')
     expect(proof.localAssets.map(file => file.path)).toContain('sprites/front_sprites/13.png')
     expect(proof.externalAssets.map(file => file.path)).toContain('sprites/front_sprites/150.png')
@@ -51,12 +49,6 @@ describe('bounded web asset packaging', () => {
     }
     await fs.rm(path.join(f.root, 'src/data/pokemon.json'))
     await expect(packageWebAssets(f.args)).rejects.toThrow()
-  })
-  it('skips unavailable portraits and stops local expansion at the byte limit', async () => {
-    const f = await fixture()
-    await f.write('src/data/pokemon.json', JSON.stringify([{ id: 150 }, { id: 16 }, { id: 13 }]))
-    expect(readLocalFrontSpriteIds(f.root, 13)).toEqual([13])
-    expect(readLocalFrontSpriteIds(f.root, 14)).toEqual([13, 150])
   })
   it('refuses partial native manifests, mutable revisions and an oversized Pages package', async () => {
     const f = await fixture()

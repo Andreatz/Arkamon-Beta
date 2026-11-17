@@ -19,13 +19,14 @@ export interface LocalMapBoardProps {
   activePlayerId: 1 | 2
   remainingActions: number
   canMove: boolean
-  movementReach?: 1 | 2
   inputBlocked?: boolean
   interactionLabels?: Record<string, string>
   /** Tipo dell'interazione configurata su ciascun pallino, per l'icona. */
   interactionKinds?: Record<string, LocalNodeKind>
   onMove: (nodeId: string) => boolean | void
   onSelectNode: (nodeId: string) => void
+  /** Pallini per movimento: 2 con Bicicletta (percorsi) o Monopattino (città). */
+  moveRange?: number
 }
 
 interface BoardSize {
@@ -62,7 +63,6 @@ function LocalMapAvatar({
   active,
   sameNode,
   size,
-  movementReach,
 }: {
   map: LocalMapDefinition
   player: LocalMapPlayer
@@ -70,7 +70,6 @@ function LocalMapAvatar({
   active: boolean
   sameNode: boolean
   size: BoardSize
-  movementReach: 1 | 2
 }) {
   const controls = useAnimationControls()
   const { reducedMotion, speed } = useGameMotionPreferences()
@@ -99,7 +98,7 @@ function LocalMapAvatar({
   }, [controls])
 
   useEffect(() => {
-    const points = getLocalTravelPath(map, previousNode.current, node.id, movementReach)
+    const points = getLocalTravelPath(map, previousNode.current, node.id, 2)
     previousNode.current = node.id
     if (!points.length || reducedMotion) {
       animationVersion.current += 1
@@ -165,12 +164,12 @@ export function LocalMapBoard({
   activePlayerId,
   remainingActions,
   canMove,
-  movementReach = 1,
   inputBlocked = false,
   interactionLabels = {},
   interactionKinds = {},
   onMove,
   onSelectNode,
+  moveRange = 1,
 }: LocalMapBoardProps) {
   const root = useRef<HTMLDivElement>(null)
   const [bounds, setBounds] = useState<BoardSize>({ width: 0, height: 0 })
@@ -179,7 +178,7 @@ export function LocalMapBoard({
   const instructionsId = useId()
   const activePlayer = players.find((player) => player.id === activePlayerId)
   const currentNode = activePlayer?.nodeId
-  const neighbours = currentNode ? getReachableLocalMapNodes(map, currentNode, movementReach) : []
+  const neighbours = currentNode ? getReachableLocalMapNodes(map, currentNode, moveRange) : []
 
   useEffect(() => {
     const element = root.current
@@ -245,7 +244,7 @@ export function LocalMapBoard({
           aria-hidden="true"
         >
           {movementEnabled && currentNode && neighbours.map((nextNode) => {
-            const points = getLocalTravelPath(map, currentNode, nextNode, movementReach)
+            const points = getLocalTravelPath(map, currentNode, nextNode, moveRange)
             return points.length ? (
               <path
                 key={nextNode}
@@ -310,7 +309,6 @@ export function LocalMapBoard({
               active={player.id === activePlayerId}
               sameNode={sameNode}
               size={size}
-              movementReach={player.id === activePlayerId ? movementReach : 1}
             />
           )
         })}

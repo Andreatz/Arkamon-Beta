@@ -108,10 +108,10 @@ for (const species of importedSpecies) test(`import ${species}: all five supplie
   await page.evaluate(() => window.nativeImportNovember4.close())
 })
 
-test.describe('expanded Arkamon catalog in the actual laboratory', () => {
+test.describe('pending Arkamon graphic catalog in the actual laboratory', () => {
   test.use({ reducedMotion: 'no-preference' })
 
-  for (const species of importedSpecies) test(`laboratory ${species}: native preview with imported game data where available`, async ({ page }, testInfo) => {
+  for (const species of importedSpecies) test(`laboratory ${species}: native preview without invented battle data`, async ({ page }, testInfo) => {
     const errors: string[] = [], missingBackRequests: string[] = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('request', request => {
@@ -120,19 +120,18 @@ test.describe('expanded Arkamon catalog in the actual laboratory', () => {
     await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption(String(species))
     const lab = page.locator('[data-darklaw-lab]')
-    const playable = species !== 130
-    await expect(lab).toHaveAttribute('data-asset-status', playable ? 'game-data-present' : 'pending-game-data')
+    await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')
     await expect(lab).toHaveAttribute('data-preview-available', 'true')
-    await expect(page.locator('[data-asset-pending]')).toHaveCount(playable ? 0 : 1)
+    await expect(page.locator('[data-asset-pending]')).toContainText('Nome, mosse e attributi da definire')
     const reference = page.locator('[data-preview-card="static"] img')
     await expect(reference).toHaveAttribute('src', new RegExp(`/sprites/front_sprites/${species}\\.png$`))
     await expect.poll(() => reference.evaluate(element => (element as HTMLImageElement).complete && (element as HTMLImageElement).naturalWidth > 0)).toBe(true)
     await reference.evaluate(element => (element as HTMLImageElement).decode())
-    await expect(page.locator('#arkamon-preview-move')).toHaveCount(playable ? 1 : 0)
-    await expect(page.locator('#arkamon-preview-target')).toHaveCount(playable ? 1 : 0)
-    await expect(page.getByRole('button', { name: 'Prova attacco con VFX', exact: true })).toHaveCount(playable ? 1 : 0)
+    await expect(page.locator('#arkamon-preview-move')).toHaveCount(0)
+    await expect(page.locator('#arkamon-preview-target')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Prova attacco con VFX', exact: true })).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
-    expect(await page.evaluate(async id => !!(await import('/src/data/index.ts')).getPokemon(id), species)).toBe(playable)
+    expect(await page.evaluate(async id => (await import('/src/data/index.ts')).getPokemon(id), species)).toBeUndefined()
     const comparison = page.locator('[data-preview-card="animated"]')
     const sprite = comparison.locator('[data-sprite-renderer="paged-canvas"]')
     await expect(sprite).toBeVisible()
@@ -143,8 +142,8 @@ test.describe('expanded Arkamon catalog in the actual laboratory', () => {
       expect(normalization.idleBodyHeightOutputPixels).toBeGreaterThanOrEqual(
         normalization.viewport.height * normalization.reference.bodyHeightFraction * .95)
     }
-    await page.screenshot({ path: testInfo.outputPath('expansion-native-laboratory.png'), fullPage: true })
-    await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('expansion-native-comparison.png') })
+    await page.screenshot({ path: testInfo.outputPath('pending-native-laboratory.png'), fullPage: true })
+    await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('pending-native-comparison.png') })
     // Scrubbing uses the real source frame count and verifies that the UI can
     // inspect the final frame, rather than a padded 96th frame.
     await page.getByRole('button', { name: 'KO', exact: true }).click()

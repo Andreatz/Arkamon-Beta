@@ -15,7 +15,7 @@ async function fixture(page: Page, scenario: 'battle' | 'city' | 'evolution' | '
       deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: id === 1 ? 700 : 125,
       inventario: { masterball: id, ...(scenario === 'item' && id === 1 ? { potion: 2 } : {}) } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    const campaign = { giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
+    const campaign = { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: scenario === 'turn' ? { ...position, luogo: 'Pordenone' } : position, posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, audioMuted: true, scenaPrecedente: { scena: 'mappa-principale' },
       scenaCorrente: scenario === 'city' || scenario === 'turn' ? { scena: 'citta', payload: { luogo: 'Venezia' } } : scenario === 'names' ? { scena: 'laboratorio' } : scenario === 'evolution'
@@ -133,7 +133,7 @@ test('a shop save dialog traps focus above PlayerUi and retries a purchase once'
   await expect(failure).toHaveCount(0)
   await expect(shop).toBeVisible()
   const saved = await snapshot(page)
-  expect(saved.giocatore1.monete).toBe(650)
+  expect(saved.giocatore1.monete).toBe(600)
   expect(saved.giocatore1.inventario.potion).toBe(1)
   expect(saved.giocatore1.squadra).toEqual(before.giocatore1.squadra)
   expect(saved.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })

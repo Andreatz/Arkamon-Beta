@@ -1,0 +1,774 @@
+/*
+ * Fase U2 (audit UX/UI): Deposito e Arkadex ricomposti sui mockup.
+ * Caricato per ultimo fra le pelli di riferimento. Le cornici delle caselle restano quelle del
+ * pacchetto PNG fornito (--provided-creature-tile-*); qui cambiano composizione, scala e stati.
+ */
+
+/* ======================= Deposito ======================= */
+
+/* Il titolo «Deposito» sta già nella barra superiore: l'intestazione resta solo per i lettori di schermo. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit > .pu-screen-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(300px, .9fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: "grid detail" "team team";
+  gap: 14px 18px;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+
+/* --- Pannello del box --- */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-grid-panel {
+  grid-area: grid;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 14px 16px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  flex-wrap: wrap;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  min-height: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-title {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 190px;
+  height: 46px;
+  padding: 0 18px;
+  border: 1px solid var(--arka-ui-line);
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--arka-ui-panel-raised), var(--arka-ui-night));
+  box-shadow: inset 0 0 0 2px rgb(6 23 39 / .8);
+  cursor: pointer;
+}
+/* Il select nativo resta sopra il titolo, trasparente: tastiera, lettori di schermo e test lo usano invariato. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-title > select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-title:focus-within {
+  border-color: var(--arka-ui-cyan);
+  box-shadow: 0 0 0 2px var(--arka-ui-cyan-glow);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-title-text {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-lead);
+  color: var(--arka-ui-gold-bright);
+  letter-spacing: .04em;
+  pointer-events: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-title-text small {
+  font-family: var(--arka-ui-font-body);
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink-muted);
+  letter-spacing: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-toolbar .pu-next-match {
+  min-height: 40px;
+  padding: 6px 12px;
+  font-size: var(--arka-size-caption);
+}
+
+/* Ricerca e tipo sempre visibili; condizione e livelli nel pannello «Filtri». */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-filters {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-filters > label {
+  display: block;
+  font-size: var(--arka-size-caption);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-search input { width: clamp(150px, 12vw, 220px); min-height: 42px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-type select { width: clamp(130px, 10vw, 180px); min-height: 42px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more > summary {
+  display: grid;
+  place-items: center;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--arka-ui-line);
+  border-radius: 4px;
+  background: var(--arka-ui-night);
+  color: var(--arka-ui-gold);
+  font-size: var(--arka-size-caption);
+  list-style: none;
+  cursor: pointer;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more > summary::-webkit-details-marker { display: none; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more > summary:focus-visible { outline: 2px solid var(--arka-ui-cyan); outline-offset: 2px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more[open] > summary { border-color: var(--arka-ui-cyan); color: var(--arka-ui-ink); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more-fields {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(110px, 1fr));
+  gap: 10px;
+  width: min(560px, 80vw);
+  padding: 14px;
+  border: 1px solid var(--arka-ui-gold-deep);
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--arka-ui-panel-raised), var(--arka-ui-night));
+  box-shadow: 0 14px 30px rgb(0 0 0 / .55);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more-fields label {
+  display: grid;
+  gap: 4px;
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink-muted);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-more-fields :is(input, select) { min-height: 38px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-reset { min-height: 42px; padding: 0 12px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-filter-result {
+  margin: 0;
+  font: var(--arka-size-caption) / 1.3 var(--arka-ui-font-body);
+  color: var(--arka-ui-ink-muted);
+}
+
+/* Griglia: sette colonne di caselle grandi, lo scorrimento resta dentro il box. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-grid-panel .pu-box-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: none;
+  /* Altezza della riga dalla larghezza della colonna: le cornici fornite sono 226×206. */
+  grid-auto-rows: calc((100cqw - 32px - 22px - 60px) / 7 * 206 / 226);
+  align-content: start;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 10px 12px 10px 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--arka-ui-gold-deep) transparent;
+  scrollbar-width: thin;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot {
+  position: relative;
+  justify-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+  padding: 7%;
+  transition: transform 140ms ease, filter 140ms ease, opacity 140ms ease;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot > .pu-creature-portrait {
+  width: 100%;
+  height: 100%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot:not(:disabled):is(:hover, :focus-visible) {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 6px var(--arka-ui-cyan-glow));
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot.is-selected {
+  filter: drop-shadow(0 0 8px var(--arka-ui-cyan));
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot.is-empty { opacity: .62; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot.is-empty .pu-empty-slot {
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink-muted);
+  opacity: .7;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot.is-filtered-out {
+  opacity: .28;
+  filter: grayscale(.8);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-slot.is-dragging { opacity: .45; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-slot.is-drop-target {
+  opacity: 1;
+  outline: 2px dashed var(--arka-ui-cyan);
+  outline-offset: 2px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-slot[draggable="true"] { cursor: grab; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-box-slot .pu-box-slot-level {
+  position: absolute;
+  right: 8%;
+  bottom: 8%;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgb(6 23 39 / .86);
+  font-size: var(--arka-size-caption);
+  line-height: 1.25;
+  color: var(--arka-ui-ink);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-box-grid .pu-type-seal {
+  position: absolute;
+  left: 8%;
+  top: 8%;
+}
+
+/* Sigillo del tipo (anche in Arkadex e nelle carte della squadra). */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-type-seal {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: 50%;
+  background: var(--arka-ui-night);
+  box-shadow: 0 1px 3px rgb(0 0 0 / .6);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-type-seal .pu-kit-icon { width: 17px; height: 17px; }
+
+/* --- Scheda --- */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-detail {
+  grid-area: detail;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 16px 18px;
+  overflow: hidden;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-detail .pu-deposit-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+  background: none;
+  background-image: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-hero .pu-hero-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px 12px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-hero .pu-hero-caption h2 {
+  margin: 0;
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-title);
+  line-height: 1.05;
+  color: var(--arka-ui-ink);
+  text-shadow: 0 2px 3px rgb(0 0 0 / .6);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-hero .pu-hero-caption > .pu-kicker {
+  width: 100%;
+  font-size: var(--arka-size-body);
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--arka-ui-gold);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-stage {
+  display: grid;
+  place-items: center;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-medallion {
+  position: relative;
+  height: 100%;
+  max-height: 360px;
+  max-width: 100%;
+  aspect-ratio: 676 / 720;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 18px rgb(0 0 0 / .5));
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-medallion .pu-creature-portrait.is-large {
+  position: absolute;
+  inset: 15% 15% 16%;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 60%, rgb(79 216 255 / .22), transparent 70%);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-detail > .pu-health span { font-size: var(--arka-size-body); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--arka-ui-line);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-facts > div {
+  display: grid;
+  gap: 2px;
+  padding: 8px 6px 0;
+  text-align: center;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-facts > div + div { border-left: 1px solid var(--arka-ui-line); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-facts dt { font-size: var(--arka-size-caption); color: var(--arka-ui-ink-muted); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-facts dd { margin: 0; font-size: var(--arka-size-lead); color: var(--arka-ui-ink); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-detail :is(.pu-note, .pu-readonly) { font-size: var(--arka-size-caption); line-height: 1.3; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-detail > .pu-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  flex: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-detail > .pu-actions .pu-button { min-height: 48px; font-size: var(--arka-size-body); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-swap-preview { font-size: var(--arka-size-caption); }
+
+/* --- Squadra: sei carte complete --- */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-strip {
+  grid-area: team;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 6px 14px;
+  min-width: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-strip > h3 {
+  grid-column: 1;
+  margin: 0;
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-lead);
+  color: var(--arka-ui-gold-bright);
+  white-space: nowrap;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-strip > .pu-note {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  margin: 0;
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-ink-muted);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  height: auto;
+  margin: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot {
+  position: relative;
+  display: grid;
+  grid-template-columns: 38% minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  grid-template-rows: none;
+  height: clamp(84px, 11vh, 120px);
+  padding: 6px 10px 6px 4px;
+  border: 1px solid var(--arka-ui-line);
+  border-radius: 6px;
+  background: var(--arka-ui-tile);
+  box-shadow: inset 0 0 0 2px rgb(6 23 39 / .7);
+  text-align: left;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot:is(:hover, :focus-visible) { border-color: var(--arka-ui-cyan); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot.is-selected {
+  border-color: var(--arka-ui-cyan);
+  box-shadow: inset 0 0 0 2px rgb(6 23 39 / .7), 0 0 12px var(--arka-ui-cyan-glow);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot.is-empty {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  border-style: dashed;
+  background: rgb(6 23 39 / .55);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot :is(.pu-deposit-team-name, .pu-box-slot-level, .pu-health) {
+  grid-column: auto;
+  grid-row: auto;
+  align-self: auto;
+  justify-self: stretch;
+  max-width: 100%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-creature-portrait {
+  grid-row: auto;
+  width: 100%;
+  height: 100%;
+  scale: 1.12;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-deposit-team-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-family: var(--arka-ui-font-display);
+  font-size: clamp(14px, 1.6vh, 19px);
+  line-height: 1.15;
+  color: var(--arka-ui-ink);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-type-seal { width: 22px; height: 22px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-box-slot-level {
+  position: static;
+  margin: 0;
+  padding: 0;
+  background: none;
+  font-size: var(--arka-size-caption);
+  color: var(--arka-ui-gold);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-health { display: grid; gap: 2px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-health progress { width: 100%; height: 6px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-health span { justify-self: end; font-size: clamp(12px, 1.3vh, 15px); color: var(--arka-ui-ink-muted); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team-slot .pu-empty-slot { font-size: var(--arka-size-caption); color: var(--arka-ui-ink-muted); }
+
+/* Schermi stretti: la scheda va sotto la griglia, la squadra su tre colonne. */
+@media (max-width: 1100px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-grid-panel .pu-box-grid { max-height: 60vh; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-team { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-deposit .pu-deposit-medallion { height: 260px; }
+}
+
+/* ======================= Arkadex ======================= */
+
+/* Contatori «Visti · Catturati» al posto della riga di testo. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex > .pu-screen-toolbar {
+  align-self: stretch;
+  width: 100%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-discovery-count {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  font-size: var(--arka-size-caption);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-discovery-count > strong {
+  margin-right: auto;
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-heading);
+  color: var(--arka-ui-gold-bright);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid var(--arka-ui-line);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--arka-ui-panel-raised), var(--arka-ui-night));
+  font-size: var(--arka-size-body);
+  color: var(--arka-ui-ink-muted);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-counter b {
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-lead);
+  color: var(--arka-ui-gold-bright);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-counter small { font-size: var(--arka-size-caption); opacity: .75; }
+
+/* --- Indice: filtri compatti e lista scorrevole a righe larghe --- */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-layout {
+  grid-template-columns: minmax(300px, .95fr) minmax(260px, 1.05fr) minmax(320px, .95fr);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-index { padding: 14px; gap: 6px; container-type: inline-size; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-index .pu-filter-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px 8px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-index .pu-filter-grid > label { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-index .pu-filter-grid :is(input, select) { min-height: 40px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-index .pu-filter-reset { grid-column: 1 / -1; min-height: 32px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-index .pu-result-count { margin: 2px 0 4px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: none;
+  grid-auto-rows: clamp(58px, 8vh, 88px);
+  align-content: start;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+  padding: 2px 8px 8px 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--arka-ui-gold-deep) transparent;
+  scrollbar-width: thin;
+}
+/* Righe disegnate in CSS: la cornice fornita (3:1) non copre righe larghe come nel mockup. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-list .pu-dex-row {
+  --collection-row-art: none;
+  grid-template-columns: clamp(52px, 7vh, 78px) minmax(0, 1fr) 30px;
+  gap: 12px;
+  align-items: center;
+  justify-self: stretch;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  flex: none;
+  padding: 4px 12px 4px 6px;
+  border: 1px solid var(--arka-ui-line) !important;
+  border-radius: 6px;
+  background: linear-gradient(100deg, rgb(23 58 85 / .92), rgb(8 26 43 / .92)) !important;
+  box-shadow: inset 0 0 0 2px rgb(6 23 39 / .6);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-list .pu-dex-row:is(:hover, :focus-visible) {
+  border-color: var(--arka-ui-gold) !important;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-list .pu-dex-row.is-active {
+  border-color: var(--arka-ui-cyan) !important;
+  background: linear-gradient(100deg, rgb(36 92 120 / .95), rgb(12 40 62 / .95)) !important;
+  box-shadow: inset 0 0 0 2px rgb(6 23 39 / .6), 0 0 12px var(--arka-ui-cyan-glow);
+  filter: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-list .pu-dex-row::before { content: none; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-discovery-mark {
+  position: static;
+  transform: none;
+  width: auto;
+  height: auto;
+  justify-self: center;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row-copy { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; gap: 2px; min-width: 0; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-dex-row-title { flex-direction: row; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row-number {
+  font-family: var(--arka-ui-font-display);
+  font-size: clamp(12px, 1.3vh, 15px);
+  letter-spacing: .06em;
+  color: var(--arka-ui-gold);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row-art {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-creature-portrait { width: 100%; height: 100%; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-unknown-portrait {
+  display: grid;
+  place-items: center;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(6 23 39 / .7);
+  font-size: var(--arka-size-lead);
+  color: var(--arka-ui-ink-muted);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-dex-row-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-dex-row-title strong {
+  font-family: var(--arka-ui-font-display);
+  font-size: clamp(15px, 1.9vh, 22px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-dex-row-copy > small { font-size: clamp(12px, 1.3vh, 15px); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-type-seal { width: 24px; height: 24px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-discovery-mark { font-size: var(--arka-size-lead); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-row .pu-discovery-mark.is-caught { color: var(--arka-ui-cyan); }
+
+/* --- Centro: numero, nome, tipo e striscia dell'habitat --- */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-hero-number {
+  display: block;
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-body);
+  letter-spacing: .12em;
+  color: var(--arka-ui-gold);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-hero .pu-hero-caption h2 {
+  font-family: var(--arka-ui-font-display);
+  font-size: var(--arka-size-hero);
+  line-height: 1;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitat {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 10px;
+  z-index: 3;
+  height: clamp(86px, 13vh, 150px);
+  border: 1px solid var(--arka-ui-gold-deep);
+  border-radius: 6px;
+  background: var(--arka-ui-night);
+  box-shadow: inset 0 0 0 2px rgb(6 23 39 / .7), 0 8px 20px rgb(0 0 0 / .5);
+  overflow: hidden;
+}
+/* Senza luoghi (starter e forme evolute) resta solo l'etichetta, senza riquadro vuoto. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitat:not(:has(.pu-dex-habitat-art)) {
+  left: 50%;
+  right: auto;
+  height: auto;
+  translate: -50% 0;
+  border-radius: 999px;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitat:not(:has(.pu-dex-habitat-art)) .pu-dex-habitat-label {
+  position: static;
+  display: block;
+  padding: 6px 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitat-art {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 60%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitat-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 6px 14px;
+  border-bottom-right-radius: 6px;
+  background: linear-gradient(90deg, rgb(6 23 39 / .92), rgb(6 23 39 / .6));
+  font-size: var(--arka-size-body);
+  color: var(--arka-ui-ink);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitat-label strong { font-weight: 400; color: var(--arka-ui-gold-bright); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitat-label small { font-size: var(--arka-size-caption); color: var(--arka-ui-ink-muted); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-animation-toggle { min-height: 38px; font-size: var(--arka-size-caption); }
+
+/* --- Pergamena: testo più grande, habitat ed evoluzioni a carte --- */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail h2 { font-family: var(--arka-ui-font-display); font-size: var(--arka-size-title); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail h3 { font-family: var(--arka-ui-font-display); font-size: var(--arka-size-lead); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail p { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-kicker { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-tabs .pu-button { min-height: 40px; font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-facts dt { font-size: var(--arka-size-caption); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-facts dd { font-size: var(--arka-size-lead); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-move strong { font-size: var(--arka-size-body); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitats h3 { margin: 12px 0 6px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitats ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitats li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid rgb(140 120 76 / .5);
+  border-radius: 999px;
+  background: rgb(255 248 228 / .45);
+  font-size: var(--arka-size-caption);
+  color: var(--collection-paper-text, #2b3540);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-habitats li small { font-size: .82em; color: var(--collection-paper-muted, #5d625f); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-evolution {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  margin: 12px 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-evolution-step {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 4px;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 4px;
+  border: 1px solid rgb(140 120 76 / .55);
+  border-radius: 6px;
+  background: rgb(255 248 228 / .35);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-evolution-step.is-current {
+  border-color: var(--arka-ui-gold-deep);
+  box-shadow: 0 0 0 2px rgb(223 187 123 / .5);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-evolution .pu-creature-portrait { width: 100%; max-width: 110px; height: auto; aspect-ratio: 1; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-evolution-step strong { font-size: var(--arka-size-caption); text-align: center; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-evolution-step small { font-size: clamp(12px, 1.3vh, 15px); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-evolution-arrow {
+  position: absolute;
+  left: -9px;
+  top: 38%;
+  font-size: var(--arka-size-lead);
+  color: var(--arka-ui-gold-deep);
+}
+/* Sagoma bloccata: riquadro scuro con un lucchetto disegnato in CSS, senza immagini. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-evolution-lock {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 110px;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: radial-gradient(circle at 50% 45%, #3a3f46, #15191e 75%);
+  font-size: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-evolution-lock::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: 22%;
+  height: 20%;
+  translate: -50% 0;
+  border: 3px solid var(--arka-ui-ink-muted);
+  border-bottom: 0;
+  border-radius: 999px 999px 0 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-evolution-lock::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 34%;
+  height: 26%;
+  translate: -50% 0;
+  border-radius: 3px;
+  background: var(--arka-ui-ink-muted);
+}

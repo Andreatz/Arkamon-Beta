@@ -1,12 +1,10 @@
 import fs from 'node:fs/promises'
-import { readFileSync, statSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { validateNativeManifestCompleteness } from './native-manifest-completeness.mjs'
 
 export const MAX_WEB_BYTES = 900 * 1024 * 1024
-// Preserve the starting roster's local sprites and bound growth of the original PNGs.
-export const MAX_LOCAL_FRONT_BYTES = 384 * 1024 * 1024
 export const STATIC_DIRS = ['ui', 'maps', 'backgrounds', 'assets', 'sprites/back_sprites', 'sprites/small_sprites', 'audio', 'audio-lab']
 /** The authored game catalog decides which portraits are needed locally during play. */
 export function readPlayableFrontSpriteIds(root) {
@@ -16,26 +14,15 @@ export function readPlayableFrontSpriteIds(root) {
   }
   const ids = species.map(entry => entry.id).sort((a, b) => a - b)
   if (new Set(ids).size !== ids.length) throw new Error('Playable species IDs must be distinct for front sprite distribution')
-  return ids
+  // Elenco esplicito (facoltativo) di specie giocabili i cui sprite frontali restano nel media
+  // release fissato invece che nel sito, per stare sotto il limite di GitHub Pages.
+  const distribution = path.join(root, 'src/data/front-sprite-distribution.json')
+  const remote = existsSync(distribution) ? new Set(JSON.parse(readFileSync(distribution, 'utf8')).remote ?? []) : new Set()
+  return ids.filter(id => !remote.has(id))
 }
-/** Keep the lower catalog IDs local up to the portrait share of the web package. */
-export function readLocalFrontSpriteIds(root, maxBytes = MAX_LOCAL_FRONT_BYTES) {
-  const ids = []
-  let used = 0
-  for (const id of readPlayableFrontSpriteIds(root)) {
-    const file = path.join(root, 'public/sprites/front_sprites', `${id}.png`)
-    const stat = statSync(file, { throwIfNoEntry: false })
-    if (!stat?.isFile()) continue
-    if (used + stat.size > maxBytes) break
-    ids.push(id)
-    used += stat.size
-  }
-  return ids
-}
-
-/** Fingerprint all externally served original PNGs. The release field keeps its historical name. */
+/** Hash the original pending PNGs, including identity and length, without converting them. */
 export async function pendingFrontSpriteInventory(root) {
-  const localIds = new Set(readLocalFrontSpriteIds(root)), files = []
+  const localIds = new Set(readPlayableFrontSpriteIds(root)), files = []
   const directory = path.join(root, 'public/sprites/front_sprites')
   for (const entry of (await fs.readdir(directory, { withFileTypes: true })).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
     const identity = /^([1-9]\d*)\.png$/.exec(entry.name)
@@ -71,7 +58,7 @@ export async function packageWebAssets({ root, output, revision, requireComplete
   const publicRoot = path.join(root, 'public')
   const manifest = JSON.parse(await fs.readFile(path.join(root, 'src/data/arkamon-paged.json'), 'utf8'))
   const clips = Object.values(manifest.clips ?? {})
-  const localFrontSpriteIds = new Set(readLocalFrontSpriteIds(root))
+  const localFrontSpriteIds = new Set(readPlayableFrontSpriteIds(root))
   const { pendingFrontSpritesSha256 } = await pendingFrontSpriteInventory(root)
   if (requireComplete) await validateNativeManifestCompleteness({ root, manifest })
   if (requireComplete) {
@@ -83,7 +70,6 @@ export async function packageWebAssets({ root, output, revision, requireComplete
   }
   const records = [], locals = [], excluded = []
   for (const relative of await listFiles(publicRoot)) {
-    if (path.posix.basename(relative) === '.DS_Store') continue
     safeRelative(relative)
     const file = path.join(publicRoot, relative), stat = await fs.stat(file)
     const front = /^sprites\/front_sprites\/([1-9]\d*)\.png$/.exec(relative)

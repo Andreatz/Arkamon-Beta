@@ -22,6 +22,8 @@ export interface CapturePlan {
   caught: boolean
   /** Somma massima che consente la cattura (i dadi sono interi). */
   maxTotal: number | null
+  /** Tiro d20 del Sacchettino: risultato minimo per catturare. */
+  minRoll?: number
 }
 
 /** La soglia del motore può essere decimale: con dadi interi conta la sua parte intera. */
@@ -45,7 +47,15 @@ export function planDiceCapture({ tiri, soglia, riuscita }: { tiri: readonly num
   return { kind: 'dice', steps, caught: riuscita, maxTotal }
 }
 
-/** Masterball: tre oscillazioni senza dadi, sempre riuscita. */
+/** Sacchettino (tabella d20 del Database): due oscillazioni di attesa, poi il d20 decide. */
+export function planD20Capture({ roll, soglia, riuscita }: { roll: number; soglia: number; riuscita: boolean }): CapturePlan {
+  return {
+    kind: 'dice', caught: riuscita, maxTotal: null, minRoll: soglia,
+    steps: [{ die: null, total: 0, holds: true }, { die: null, total: 0, holds: true }, { die: roll, total: roll, holds: riuscita }],
+  }
+}
+
+/** Sacchettino Supremo: tre oscillazioni senza dadi, sempre riuscita. */
 export function planMasterCapture(): CapturePlan {
   return { kind: 'master', steps: [0, 0, 0].map(() => ({ die: null, total: 0, holds: true })), caught: true, maxTotal: null }
 }

@@ -1,4 +1,3 @@
-import '@/components/ui/rangeInput.css'
 import loopReviewQueue from '@/data/animation-loop-review.json'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'

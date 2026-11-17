@@ -59,22 +59,24 @@ describe('individual moveset VFX assignments', () => {
     }
   })
 
-  it('preserves the Stasi Elettrica effect for previews without filling any species move slot', () => {
+  it('includes Stasi Elettrica for Felvex Oscurità as an authorized pure paralysis move', () => {
     const move = VFX_MOVE_PREVIEWS.find((item) => item.id === 256)!
     const entry = getMoveVfxAssignment(move)!
     expect(entry).toMatchObject({ name: 'Stasi Elettrica', type: 'Status (Paralisi)', tier: 'status', gameMoveId: null, arkamon: [{ id: 44, name: 'Felvex' }] })
     expect(move.tipo).toBe('Oscurità')
     expect(move.effetto).toBe('PARALISI')
-    expect(move).toMatchObject({ effetto: 'PARALISI', soloStato: true, precisione: 80, dadiPerLivello: { '5': 0 }, incrementoPerLivello: { '5': 0 } })
+    expect(move.dadiPerLivello).toEqual({})
+    expect(MOSSE.find((item) => item.id === 256)).toMatchObject({ effetto: 'PARALISI', soloStato: true, dadiPerLivello: { '5': 0 }, incrementoPerLivello: { '5': 0 } })
     expect(resolveMoveVfxProfile(move).feedback.targetShakePx).toBe(0)
   })
 
-  it('uses the active move data for all reserved status and fixed-damage effects', () => {
+  it('integrates all 56 Status moves of the catalog (221–276) as pure status actions with their VFX', () => {
+    expect(MOSSE).toHaveLength(516)
     for (const entry of MOVE_VFX_ASSIGNMENTS.filter((item) => item.sourceMoveId >= 221)) {
       expect(entry.gameMoveId).toBeNull()
-      const preview = VFX_MOVE_PREVIEWS.find((move) => move.id === entry.sourceMoveId)!
-      expect(preview).toBe(MOSSE.find((move) => move.id === entry.sourceMoveId))
-      expect(preview).toMatchObject({ soloStato: true, dadiPerLivello: { '5': 0 }, incrementoPerLivello: { '5': 0 } })
+      const move = MOSSE.find((item) => item.id === entry.sourceMoveId)!
+      expect(move).toMatchObject({ soloStato: true })
+      const preview = VFX_MOVE_PREVIEWS.find((item) => item.id === entry.sourceMoveId)!
       expect(resolveMoveVfxAsset(preview).id).toBe(entry.assetId)
     }
   })

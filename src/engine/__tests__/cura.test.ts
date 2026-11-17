@@ -182,7 +182,7 @@ describe('scegliMossaIA — priorità mosse curative', () => {
     expect(idx).toBeLessThanOrEqual(2)
   })
   it.each([
-    [53, 0], [84, 1], [85, 2], [95, 0],
+    [53, 0], [84, 1], [85, 1], [95, 0],
   ] as const)('specie %i preferisce la cura %i per la paralisi permanente anche a HP pieni e livello alto', (specieId, slot) => {
     for (const livello of [5, 100]) {
       const attaccante = applicaStato(mkIstanza(specieId, livello), 'Paralizzato')

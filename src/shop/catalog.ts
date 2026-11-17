@@ -1,57 +1,64 @@
 import { MAPPE } from '@/data'
 import type { StatoAlterato } from '@/types'
 
-export const CAPTURE_ITEM_IDS = ['arkaball', 'mega-arkaball', 'ultra-arkaball', 'masterball'] as const
-export type CaptureItemId = typeof CAPTURE_ITEM_IDS[number]
 export const SHOP_ITEM_IDS = [
   'potion', 'super-potion', 'hyper-potion', 'max-potion', 'revive',
   'antidote', 'paralysis-heal', 'awakening', 'full-heal',
-  ...CAPTURE_ITEM_IDS, 'speed-boost', 'damage-boost', 'special-perfume', 'bicycle', 'scooter',
+  'sacchettino', 'mega-sacchettino', 'ultra-sacchettino', 'masterball',
+  'boost-speed', 'boost-damage', 'special-scent', 'bicycle', 'scooter',
 ] as const
 export type ShopItemId = typeof SHOP_ITEM_IDS[number]
 export type ShopInventory = Partial<Record<ShopItemId, number>>
 export type ShopCart = Partial<Record<ShopItemId, number>>
+export type CaptureTier = 'base' | 'mega' | 'ultra' | 'master'
 
 export type ShopItemEffect =
-  | { kind: 'heal'; amount: readonly [number, number] | 'full' }
+  /** HP: frazione degli HP massimi, valore fisso, oppure base + dadi d6 (es. Pozione 19 + 1d6 = 20–25). */
+  | { kind: 'heal'; fraction?: number; fixed?: number; base?: number; dice?: number }
   | { kind: 'revive'; fraction: number }
-  | { kind: 'status'; status?: StatoAlterato }
-  | { kind: 'capture' }
-  | { kind: 'boost'; stat: 'speed' | 'damage' }
-  | { kind: 'retry-encounter' }
-  | { kind: 'transport'; terrain: 'route' | 'city' }
+  | { kind: 'status'; status: StatoAlterato | 'tutti' }
+  | { kind: 'capture'; tier: CaptureTier }
+  | { kind: 'boost'; boost: 'velocita' | 'danno' }
+  | { kind: 'scent' }
+  | { kind: 'vehicle'; terrain: 'percorso' | 'citta' }
 
 export interface ShopItem {
   id: ShopItemId
   name: string
   description: string
+  /** null = non in vendita (premi della regia o progressione). */
   price: number | null
-  availableFrom?: string
+  /** Primo Arkastore che lo vende ("Punto di partenza" del Database); quelli successivi lo vendono a loro volta. */
+  sinceCity: string | null
   icon: string
   effect: ShopItemEffect
 }
 
-/** Prezzi e disponibilità del catalogo, con gli identificatori dei salvataggi esistenti. */
+/** Oggetti, prezzi e città del foglio "Oggetti e Tassi cattura" del Database. Rianimatore: oggetto storico del gioco. */
 export const SHOP_ITEMS: readonly ShopItem[] = [
-  { id: 'potion', name: 'Pozione', description: 'Ripristina da 20 a 25 HP a un Arkamon vivo.', price: 50, availableFrom: 'Venezia', icon: '🧪', effect: { kind: 'heal', amount: [20, 25] } },
-  { id: 'super-potion', name: 'Superpozione', description: 'Ripristina 60 HP a un Arkamon vivo.', price: 150, availableFrom: 'Milano', icon: '⚗️', effect: { kind: 'heal', amount: [60, 60] } },
-  { id: 'hyper-potion', name: 'Iperpozione', description: 'Ripristina da 150 a 200 HP a un Arkamon vivo.', price: 300, availableFrom: 'Grosseto', icon: '⚗️', effect: { kind: 'heal', amount: [150, 200] } },
-  { id: 'max-potion', name: 'Pozione Max', description: 'Ripristina tutti gli HP di un Arkamon vivo.', price: 600, availableFrom: 'Foggia', icon: '⚗️', effect: { kind: 'heal', amount: 'full' } },
-  { id: 'revive', name: 'Rianimatore', description: 'Rianima un Arkamon KO con il 50% degli HP massimi. Gli status restano.', price: 300, icon: '💎', effect: { kind: 'revive', fraction: .5 } },
-  { id: 'antidote', name: 'Antidoto', description: 'Rimuove lo status Avvelenato da un Arkamon vivo.', price: 50, availableFrom: 'Piacenza', icon: '🌿', effect: { kind: 'status', status: 'Avvelenato' } },
-  { id: 'paralysis-heal', name: 'Antiparalisi', description: 'Rimuove lo status Paralizzato da un Arkamon vivo.', price: 50, availableFrom: 'Piacenza', icon: '⚡', effect: { kind: 'status', status: 'Paralizzato' } },
-  { id: 'awakening', name: 'Sveglia', description: 'Rimuove lo status Addormentato da un Arkamon vivo.', price: 50, availableFrom: 'Piacenza', icon: '☀️', effect: { kind: 'status', status: 'Addormentato' } },
-  { id: 'full-heal', name: 'Cura totale', description: 'Rimuove lo status alterato di un Arkamon vivo.', price: 200, availableFrom: 'Torino', icon: '✚', effect: { kind: 'status' } },
-  { id: 'arkaball', name: 'Arkaball', description: 'Cattura un Arkamon selvatico con un tiro di d20.', price: 50, availableFrom: 'Venezia', icon: '🔴', effect: { kind: 'capture' } },
-  { id: 'mega-arkaball', name: 'Mega Arkaball', description: 'Cattura un Arkamon selvatico con una soglia ridotta sul d20.', price: 150, availableFrom: 'Torino', icon: '🔵', effect: { kind: 'capture' } },
-  { id: 'ultra-arkaball', name: 'Ultra Arkaball', description: 'Cattura un Arkamon selvatico con la migliore soglia sul d20.', price: 300, availableFrom: 'Cagliari', icon: '🟡', effect: { kind: 'capture' } },
-  { id: 'masterball', name: 'Master Arkaball', description: 'Cattura garantita di un Arkamon selvatico. Disponibile dopo la Lega.', price: null, icon: '🔮', effect: { kind: 'capture' } },
-  { id: 'speed-boost', name: 'Boost velocità', description: 'Dà la priorità alla squadra del giocatore per la durata di una sfida ordinaria.', price: 300, availableFrom: 'Torino', icon: '⚡', effect: { kind: 'boost', stat: 'speed' } },
-  { id: 'damage-boost', name: 'Boost danno', description: 'Aumenta del 25% i danni della squadra del giocatore per la durata di una sfida ordinaria.', price: 400, availableFrom: 'Cagliari', icon: '⚔', effect: { kind: 'boost', stat: 'damage' } },
-  { id: 'special-perfume', name: 'Profumo speciale', description: 'Permette di riprovare la cattura in un cespuglio già visitato.', price: null, icon: '✧', effect: { kind: 'retry-encounter' } },
-  { id: 'bicycle', name: 'Bicicletta', description: 'Raddoppia la velocità di movimento sui percorsi.', price: 100_000, availableFrom: 'Milano', icon: '🚲', effect: { kind: 'transport', terrain: 'route' } },
-  { id: 'scooter', name: 'Monopattino', description: 'Raddoppia la velocità di movimento nelle città.', price: 100_000, availableFrom: 'Milano', icon: '🛴', effect: { kind: 'transport', terrain: 'city' } },
+  { id: 'potion', name: 'Pozione', description: 'Recupera 20–25 HP (19 + 1d6) di un Arkamon vivo. Non cura gli status.', price: 50, sinceCity: 'Venezia', icon: '🧪', effect: { kind: 'heal', base: 19, dice: 1 } },
+  { id: 'super-potion', name: 'Superpozione', description: 'Recupera 60 HP di un Arkamon vivo. Non cura gli status.', price: 150, sinceCity: 'Milano', icon: '⚗️', effect: { kind: 'heal', fixed: 60 } },
+  { id: 'hyper-potion', name: 'Iperpozione', description: 'Recupera 150–200 HP (140 + 10d6) di un Arkamon vivo. Non cura gli status.', price: 300, sinceCity: 'Grosseto', icon: '🧴', effect: { kind: 'heal', base: 140, dice: 10 } },
+  { id: 'max-potion', name: 'Pozione Max', description: 'Recupera tutti gli HP di un Arkamon vivo. Non cura gli status.', price: 600, sinceCity: 'Foggia', icon: '🍯', effect: { kind: 'heal', fraction: 1 } },
+  { id: 'revive', name: 'Rianimatore', description: 'Rianima un Arkamon KO con il 50% degli HP massimi. Gli status restano.', price: 300, sinceCity: 'Venezia', icon: '💎', effect: { kind: 'revive', fraction: .5 } },
+  { id: 'antidote', name: 'Antidoto', description: 'Rimuove lo status Avvelenato da un Arkamon vivo.', price: 50, sinceCity: 'Piacenza', icon: '🌿', effect: { kind: 'status', status: 'Avvelenato' } },
+  { id: 'paralysis-heal', name: 'Antiparalisi', description: 'Rimuove lo status Paralizzato da un Arkamon vivo.', price: 50, sinceCity: 'Piacenza', icon: '⚡', effect: { kind: 'status', status: 'Paralizzato' } },
+  { id: 'awakening', name: 'Sveglia', description: 'Rimuove lo status Addormentato da un Arkamon vivo.', price: 50, sinceCity: 'Piacenza', icon: '☀️', effect: { kind: 'status', status: 'Addormentato' } },
+  { id: 'full-heal', name: 'Cura totale', description: 'Rimuove qualunque status da un Arkamon vivo.', price: 200, sinceCity: 'Torino', icon: '✨', effect: { kind: 'status', status: 'tutti' } },
+  { id: 'sacchettino', name: 'Sacchettino', description: 'Borsa conservante per catturare un Arkamon selvatico: tiro d20 secondo la tabella di cattura.', price: 50, sinceCity: 'Venezia', icon: '👝', effect: { kind: 'capture', tier: 'base' } },
+  { id: 'mega-sacchettino', name: 'Mega Sacchettino', description: 'Sacchettino più capiente: soglie di cattura più basse.', price: 150, sinceCity: 'Torino', icon: '👝', effect: { kind: 'capture', tier: 'mega' } },
+  { id: 'ultra-sacchettino', name: 'Ultra Sacchettino', description: 'Il Sacchettino più potente in vendita: soglie di cattura molto basse.', price: 300, sinceCity: 'Cagliari', icon: '👝', effect: { kind: 'capture', tier: 'ultra' } },
+  { id: 'masterball', name: 'Sacchettino Supremo', description: 'Cattura garantita di un Arkamon selvatico. Non è in vendita: arriva dopo la Lega o come premio.', price: null, sinceCity: null, icon: '🔮', effect: { kind: 'capture', tier: 'master' } },
+  { id: 'boost-speed', name: 'Boost velocità', description: 'In battaglia, al posto della mossa: per il resto della sfida i tuoi Arkamon agiscono per primi (la paralisi resta più forte). Non vale contro capipalestra, rivale, Superquattro e Mascherati.', price: 300, sinceCity: 'Torino', icon: '🪽', effect: { kind: 'boost', boost: 'velocita' } },
+  { id: 'boost-damage', name: 'Boost danno', description: 'In battaglia, al posto della mossa: per il resto della sfida i tuoi Arkamon fanno il 25% di danni in più. Non vale contro capipalestra, rivale, Superquattro e Mascherati.', price: 400, sinceCity: 'Cagliari', icon: '🔥', effect: { kind: 'boost', boost: 'danno' } },
+  { id: 'special-scent', name: 'Profumo speciale', description: 'Permette di esplorare di nuovo un cespuglio già visitato. Non è in vendita.', price: null, sinceCity: null, icon: '🌸', effect: { kind: 'scent' } },
+  { id: 'bicycle', name: 'Bicicletta', description: 'Oggetto chiave: nei percorsi un movimento può superare fino a due pallini.', price: 100000, sinceCity: 'Milano', icon: '🚲', effect: { kind: 'vehicle', terrain: 'percorso' } },
+  { id: 'scooter', name: 'Monopattino', description: 'Oggetto chiave: nelle città un movimento può superare fino a due pallini.', price: 100000, sinceCity: 'Milano', icon: '🛴', effect: { kind: 'vehicle', terrain: 'citta' } },
 ]
+
+/** Ordine dei comandi di cattura in battaglia. */
+export const CAPTURE_ITEM_IDS = ['sacchettino', 'mega-sacchettino', 'ultra-sacchettino', 'masterball'] as const
+export type CaptureItemId = typeof CAPTURE_ITEM_IDS[number]
 
 export const MAX_SHOP_QUANTITY = 99
 /** Mantiene il limite già usato dai vecchi salvataggi e dalle ricompense della regia. */
@@ -60,21 +67,29 @@ export const SHOP_LOCATIONS = MAPPE.filter((place) => !place.nome.startsWith('Pe
 const shopLocations = new Set(SHOP_LOCATIONS)
 
 export function hasArkaStore(location: string): boolean { return shopLocations.has(location) }
-export function getShopItemsAt(location: string): readonly (ShopItem & { price: number })[] {
-  const index = SHOP_LOCATIONS.indexOf(location)
-  return SHOP_ITEMS.filter((item): item is ShopItem & { price: number } =>
-    item.price !== null && index >= 0 && (!item.availableFrom || index >= SHOP_LOCATIONS.indexOf(item.availableFrom)))
-}
-export function isCaptureItemId(value: unknown): value is CaptureItemId {
-  return typeof value === 'string' && CAPTURE_ITEM_IDS.includes(value as CaptureItemId)
-}
-export function localMovementReach(inventory: ShopInventory, location: string): 1 | 2 {
-  return (inventory[location.startsWith('Percorso_') ? 'bicycle' : 'scooter'] ?? 0) > 0 ? 2 : 1
-}
 export function isShopItemId(value: unknown): value is ShopItemId {
   return typeof value === 'string' && SHOP_ITEM_IDS.includes(value as ShopItemId)
 }
 export function getShopItem(id: unknown): ShopItem | undefined { return SHOP_ITEMS.find((item) => item.id === id) }
+
+/** Ordine delle città nel viaggio: un oggetto "da Milano" si trova a Milano e negli Arkastore successivi. */
+const CITY_ORDER = MAPPE.filter((place) => !place.nome.startsWith('Percorso_')).map((place) => place.nome)
+
+/** Articoli in vendita in un Arkastore. */
+export function shopItemsAt(location: string): ShopItem[] {
+  const here = CITY_ORDER.indexOf(location)
+  return SHOP_ITEMS.filter((item) => item.price !== null && item.sinceCity !== null
+    && here >= 0 && here >= CITY_ORDER.indexOf(item.sinceCity))
+}
+
+export function isSoldAt(itemId: ShopItemId, location: string): boolean {
+  return shopItemsAt(location).some((item) => item.id === itemId)
+}
+
+/** Oggetti chiave: si possiedono, non si consumano e non si comprano due volte. */
+export function isKeyItem(itemId: ShopItemId): boolean {
+  return getShopItem(itemId)?.effect.kind === 'vehicle'
+}
 
 /** Salvataggi vecchi e inventari parziali restano validi; nessun oggetto nuovo viene regalato. */
 export function normalizeShopInventory(value: unknown, warn?: (message: string) => void): ShopInventory {
@@ -93,4 +108,10 @@ export function normalizeShopInventory(value: unknown, warn?: (message: string) 
     inventory[key] = clean
   }
   return inventory
+}
+
+/** Pallini per movimento nelle mappe locali: 2 con la Bicicletta nei percorsi o il Monopattino nelle città. */
+export function localMoveRange(inventory: ShopInventory, location: string): number {
+  const route = location.startsWith('Percorso_')
+  return (route ? inventory.bicycle ?? 0 : inventory.scooter ?? 0) > 0 ? 2 : 1
 }

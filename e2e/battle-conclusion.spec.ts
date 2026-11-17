@@ -11,7 +11,7 @@ async function endedBattle(page: Page, reverse = false) {
     const player = (id: 1 | 2) => ({ id, nome: `Conclusione ${id}`, squadra: id === 1 ? squad : [], deposito: {},
       cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { revive: 0 }, caselleConsumate: [] })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Pordenone' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 0 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,

@@ -11,7 +11,7 @@ test('emergency download during a seed challenge exports the conserved campaign'
       stato: { tipo: 'Paralizzato', turniRimanenti: -1 },
     }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: id * 321, inventario: { masterball: id } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null, posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,

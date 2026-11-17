@@ -12,8 +12,7 @@ import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
 import { isReferenceUi } from './reference/referenceTheme'
 import { ProvidedArtwork } from './reference/ProvidedArtwork'
 
-type BagCategory = 'all' | 'heal' | 'status' | 'capture' | 'utility'
-const BAG_PAGE_SIZE = 12
+type BagCategory = 'all' | 'heal' | 'status' | 'capture' | 'tools'
 const inventoryCenters = [232, 430, 630, 828]
 const studioAsset = (name: string) => `/ui/studio/Scuro/${name}.svg`
 export interface BagScreenProps { playerId: 1 | 2; onPlayerChange?: (playerId: 1 | 2) => void; showPlayerPicker?: boolean }
@@ -36,13 +35,8 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
   const player = state[viewPlayerId === 1 ? 'giocatore1' : 'giocatore2']
   const squad = currentRoster(player.squadra, state.battaglia)
   const owned = SHOP_ITEMS.filter((item) => (player.inventario[item.id] ?? 0) > 0)
-  const filtered = owned.filter(({ effect }) => category === 'all' || effect.kind === category
-    || (category === 'heal' && effect.kind === 'revive')
-    || (category === 'utility' && (effect.kind === 'transport' || effect.kind === 'boost' || effect.kind === 'retry-encounter')))
+  const filtered = owned.filter((item) => category === 'all' || (category === 'heal' ? item.effect.kind === 'heal' || item.effect.kind === 'revive' : category === 'tools' ? ['boost', 'scent', 'vehicle'].includes(item.effect.kind) : item.effect.kind === category))
   const selected = filtered.find((item) => item.id === selectedId) ?? filtered[0]
-  const page = selected ? Math.floor(filtered.indexOf(selected) / BAG_PAGE_SIZE) : 0
-  const pageCount = Math.max(1, Math.ceil(filtered.length / BAG_PAGE_SIZE))
-  const pageItems = filtered.slice(page * BAG_PAGE_SIZE, (page + 1) * BAG_PAGE_SIZE)
   const [targetId, setTargetId] = usePlayerUiMemory<string>(viewPlayerId, 'bag.target', () => usePlayerUiSession.getState().selection[viewPlayerId]?.instanceId ?? player.squadra[0]?.istanzaId ?? '')
   usePublishPlayerUiSelection(viewPlayerId, { instanceId: targetId, itemId: selected?.id })
   const leagueRunning = state.league?.players[viewPlayerId].status === 'running'
@@ -65,14 +59,14 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
     </div>
     <div className="pu-live-bag-heading"><div><span>SCORTE DI VIAGGIO</span><h2>La borsa di {player.nome || `Giocatore ${viewPlayerId}`}</h2></div><strong>{total} oggetti<small>{owned.length} articoli</small></strong></div>
     <div className="pu-live-bag-categories" aria-label="Categorie degli oggetti">{([
-      ['all', 'Tutti'], ['heal', 'Cure'], ['status', 'Status'], ['capture', 'Cattura'], ['utility', 'Strumenti'],
+      ['all', 'Tutti'], ['heal', 'Cure'], ['status', 'Status'], ['capture', 'Cattura'], ['tools', 'Strumenti'],
     ] as const).map(([id, label]) => <StudioCommand key={id} selected={category === id} className="pu-live-bag-category" aria-pressed={category === id} onClick={() => { setCategory(id); setSelectedId(null) }}>{isReferenceUi() && <KitIcon id={`category-${id}`} />}{label}</StudioCommand>)}</div>
     <div className="pu-bag-layout">
-      <div className="pu-live-bag-inventory" data-paginated={pageCount > 1 ? 'true' : undefined}>
+      <div className="pu-live-bag-inventory">
         <StudioSurface source={studioAsset('box-inventario')} width={1060} height={650} className="pu-live-bag-inventory-art">
           <span className="pu-live-bag-grid-title">LE TUE SCORTE</span>
-          <SpatialNavigation columns={mobile ? 2 : 4} className="pu-live-bag-grid" aria-label="Scorte nella borsa">{Array.from({ length: BAG_PAGE_SIZE }, (_, index) => {
-            const item = pageItems[index]
+          <SpatialNavigation columns={mobile ? 2 : 4} className="pu-live-bag-grid" aria-label="Scorte nella borsa">{Array.from({ length: 12 }, (_, index) => {
+            const item = filtered[index]
             return <div className={`pu-live-bag-cell${item ? '' : ' is-empty'}`} key={index} data-item-id={item?.id} style={{ '--bag-x': `${inventoryCenters[index % 4] / 10.6}%`, '--bag-y': `${[195, 355, 515][Math.floor(index / 4)] / 6.5}%` } as CSSProperties}>
               {item ? <><button type="button" data-rpg-item className="pu-live-bag-slot" aria-pressed={selected?.id === item.id}
                 aria-label={`${item.name}: ${player.inventario[item.id]} disponibili`} onClick={() => setSelectedId(item.id)}>
@@ -82,15 +76,8 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
             </div>
           })}</SpatialNavigation>
         </StudioSurface>
-        {pageCount > 1 && <nav className="pu-live-bag-pages" aria-label="Pagine della borsa">
-          <StudioCommand aria-label="Pagina precedente della borsa" disabled={page === 0}
-            onClick={() => setSelectedId(filtered[(page - 1) * BAG_PAGE_SIZE]?.id ?? null)}>←</StudioCommand>
-          <span>Pagina {page + 1} / {pageCount}</span>
-          <StudioCommand aria-label="Pagina successiva della borsa" disabled={page + 1 >= pageCount}
-            onClick={() => setSelectedId(filtered[(page + 1) * BAG_PAGE_SIZE]?.id ?? null)}>→</StudioCommand>
-        </nav>}
         {!filtered.length && <p className="pu-empty">{owned.length ? 'Nessun oggetto in questa categoria.' : 'La borsa è vuota. Trovi gli oggetti negli Arkastore delle città.'}</p>}
-        {pageCount === 1 && <p className="pu-live-bag-footnote">Seleziona un oggetto per consultarne l’effetto.</p>}
+        <p className="pu-live-bag-footnote">Seleziona un oggetto per consultarne l’effetto.</p>
       </div>
       <div className="pu-live-bag-detail" aria-live="polite" data-item-id={selected?.id}>
         {selected ? <>
@@ -105,9 +92,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
             renderItemIcon={itemId => <KitIcon id={itemIconId(itemId)} />}
             renderEffectPreview={(target, _itemId, result) => <div className="pu-cure-preview" aria-label={`Anteprima su ${target.nome}`}>
               <CreaturePortrait pokemon={target} /><div><span className="pu-kicker">Prima di usare l’oggetto</span><strong>{target.nome}</strong><HealthBar pokemon={target} /></div>
-              {result.ok && result.pokemon ? <div className="pu-cure-after"><span className="pu-kicker">{result.possibleRecovery ? 'Recupero minimo' : 'Dopo'}</span><HealthBar pokemon={result.pokemon} /><span>{result.possibleRecovery
-                ? `+${result.possibleRecovery.join('–')} HP`
-                : result.recoveredHp ? `+${result.recoveredHp} HP` : 'Status rimosso'} · {result.pokemon.stato?.tipo ?? (result.pokemon.hp > 0 ? 'In salute' : 'KO')}</span></div> : <span className="pu-cure-no-effect">Nessun effetto sul compagno selezionato.</span>}
+              {result.ok && result.pokemon ? <div className="pu-cure-after"><span className="pu-kicker">Dopo</span><HealthBar pokemon={result.pokemon} /><span>{result.recoveredHp ? `+${result.recoveredHp} HP` : 'Status rimosso'} · {result.pokemon.stato?.tipo ?? (result.pokemon.hp > 0 ? 'In salute' : 'KO')}</span></div> : <span className="pu-cure-no-effect">Nessun effetto sul compagno selezionato.</span>}
             </div>}
             onUse={(itemId, instanceId) => { setSelectedId(itemId); return state.applicaOggetto(viewPlayerId, itemId, instanceId) }}
             actionNote={leagueRunning ? 'Gli oggetti consentiti fra gli incontri non interrompono la serie della Lega. Gli oggetti inutili non vengono consumati.' : 'Usare un oggetto conclude il turno. Gli oggetti inutili non vengono consumati.'} />

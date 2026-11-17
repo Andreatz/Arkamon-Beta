@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getPokemon, POKEMON_BASE } from '@/data'
+import { getMossa, getPokemon, POKEMON_BASE } from '@/data'
 import { calcolaDanno, calcolaHPMax } from '@/engine/battleEngine'
 import { createChallengeSession, exportChallengeCode, fantaSpeciesCost, fantaTeamCost, generateSeedTeam, importChallengeCode, speciesEvolutionStage, validateFantaTeam } from './challengeRules'
 import { canonicalChallengeSession } from './challengePersistence'
@@ -47,10 +47,12 @@ describe('updated rules v2 price offensive moves only', () => {
     expect(POKEMON_BASE).toEqual(before)
   })
 
-  it('keeps price calculations integral for both released and expanded inventories', () => {
-    for (const species of POKEMON_BASE) {
-      expect(Number.isSafeInteger(fantaSpeciesCost(species.id, 3))).toBe(true)
-      if (species.id <= 110) expect(Number.isSafeInteger(fantaSpeciesCost(species.id, 2))).toBe(true)
+  it('preserves prices for species without HP healing moves and keeps every price integral', () => {
+    // Le regole v1 e v2 sono fotografie delle 110 specie precedenti al Database.
+    for (const species of POKEMON_BASE.filter((entry) => entry.id <= 110)) {
+      expect(Number.isSafeInteger(fantaSpeciesCost(species.id, 2))).toBe(true)
+      const hasHeal = species.mosse.some((id) => ['CURA', 'CURA_PCT'].includes(getMossa(id)?.effetto ?? ''))
+      if (!hasHeal) expect(fantaSpeciesCost(species.id, 2)).toBe(fantaSpeciesCost(species.id, 1))
     }
   })
 
@@ -73,7 +75,7 @@ describe('updated rules v2 price offensive moves only', () => {
     const team = [53, 95, 1, 2, 3, 4]
     expect(fantaTeamCost(team, 2)).toBeLessThan(fantaTeamCost(team, 1))
     // Find a concrete boundary team from the unchanged species catalog, not a fake price.
-    const boundary = POKEMON_BASE.filter(species => species.id <= 110).map((species) => [53, 95, 1, 2, 3, species.id])
+    const boundary = POKEMON_BASE.map((species) => [53, 95, 1, 2, 3, species.id])
       .find((ids) => new Set(ids).size === 6 && fantaTeamCost(ids, 2) <= 100 && fantaTeamCost(ids, 1) > 100)
     expect(boundary).toBeDefined()
     expect(validateFantaTeam(boundary, true, 2)).toEqual({ ok: true })
@@ -89,7 +91,7 @@ describe('versioned persistence, imports and fair comparisons', () => {
     useChallengeStore.setState({ version: 1, draft: normalizeChallengeDraft(null), results: [], storageWarning: null })
   })
 
-  it('defaults new drafts to updated rules and preserves old drafts and results as classic', () => {
+  it('defaults new drafts to the Database rules and preserves old drafts and results as classic', () => {
     expect(normalizeChallengeDraft(null).version).toBe(3)
     const oldResult = result(1)
     delete oldResult.rulesVersion
@@ -139,6 +141,6 @@ describe('versioned persistence, imports and fair comparisons', () => {
     expect(normalizeChallengeResult({ ...result(2), rulesVersion: 1 })).toBeNull()
     expect(importChallengeCode(JSON.stringify({ ...code, rng: { algorithm: 'unknown', cursor: Infinity }, hp: 9999 }))).toEqual(session)
     expect(canonicalChallengeSession({ ...session, team: session.team.map((pokemon) => ({ ...pokemon, hp: 99999, livello: 100 })), rng: { cursor: 99999 } })).toEqual(session)
-    expect(getPokemon(53)?.mosse.slice(0, 2)).toEqual([66, 176])
+    expect(getPokemon(53)?.mosse).toEqual([66, 176, 250])
   })
 })

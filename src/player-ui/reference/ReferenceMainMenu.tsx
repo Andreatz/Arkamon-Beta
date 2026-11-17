@@ -2,13 +2,12 @@ import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import type { CSSProperties } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { ALLENATORI, getPokemon } from '@/data'
-import { gymMedalTrack, SECRET_LOCATION_GYM_IDS } from '@/data/secretLocation'
-import type { TipoPokemon } from '@/types'
+import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { assetUrl } from '@/utils/assetUrl'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { CreaturePortrait, formatNumber, KitIcon } from '../kit'
 import { ReferenceEmblem } from './ReferenceEmblem'
-import { GameArt, gameArtForMenu } from '@/ui-system/GameArt'
+import { GameArt, gameArtForMenu, hasGameArt } from '@/ui-system/GameArt'
 import { ProvidedArtwork } from './ProvidedArtwork'
 import type { PlayerUiAuxiliary, PlayerUiScreen } from '../navigation'
 
@@ -30,35 +29,49 @@ const entries: { title: string; icon: string; screen?: PlayerUiScreen; tool?: Pl
   {title:'Impostazioni',icon:'icon-options',tool:'settings'},
 ]
 const gyms = ALLENATORI.filter(trainer => trainer.tipo === 'Capopalestra')
+const TYPE_ICONS: Record<TipoPokemon, string> = {
+  Normale: 'type-normal', Elettro: 'type-electric', Fuoco: 'type-fire', Terra: 'type-earth',
+  Acqua: 'type-water', Erba: 'type-grass', Oscurità: 'type-dark', Psico: 'type-psychic',
+}
 const medalByType: Record<TipoPokemon, string> = {
   Normale: 'medal-normal', Erba: 'medal-grass', Acqua: 'medal-water', Elettro: 'medal-electric',
   Fuoco: 'medal-fire', Terra: 'medal-earth', Oscurità: 'medal-dark', Psico: 'medal-psychic',
 }
-const historicalMedalTypes: Partial<Record<number, TipoPokemon>> = {
-  203: 'Acqua', 302: 'Elettro', 303: 'Terra', 305: 'Acqua', 306: 'Fuoco', 307: 'Psico', 309: 'Fuoco', 311: 'Oscurità',
-}
-const gymById = new Map(gyms.map((gym) => [gym.id, gym]))
+// Gym order is not an elemental order: several actual gyms share a type.
 const gymMedalArtwork = new Map(gyms.map(gym => {
   const types = new Map<TipoPokemon, number>()
   for (const member of gym.squadra) {
     const species = getPokemon(member.pokemonId)
     if (species) types.set(species.tipo, (types.get(species.tipo) ?? 0) + 1)
   }
-  const dominantType = historicalMedalTypes[gym.id] ?? [...types].sort((a, b) => b[1] - a[1])[0]?.[0]
+  const dominantType = [...types].sort((a, b) => b[1] - a[1])[0]?.[0]
   return [gym.id, dominantType ? medalByType[dominantType] : 'medal-empty'] as const
 }))
 
 function MedalStrip({ defeated }: { defeated: ReadonlySet<number> }) {
-  const track = gymMedalTrack(defeated)
-  const earnedCount = track.filter((id) => defeated.has(id)).length
-  return <div className="ref-medals ref-provided-medals" role="img" aria-label={`${earnedCount} medaglie su ${track.length}`}>
-    {track.map(id => {
-      const earned = defeated.has(id)
-      return <span key={id} data-earned={earned} title={`${gymById.get(id)?.luogo}: ${earned ? 'ottenuta' : 'da ottenere'}`} aria-hidden="true">
-        <ProvidedArtwork id={earned ? gymMedalArtwork.get(id) ?? 'medal-empty' : 'medal-empty'} />
+  const earnedCount = gyms.filter(gym => defeated.has(gym.id)).length
+  return <div className="ref-medals ref-provided-medals" role="img" aria-label={`${earnedCount} medaglie su ${gyms.length}`}>
+    {gyms.map(gym => {
+      const earned = defeated.has(gym.id)
+      return <span key={gym.id} data-earned={earned} title={`${gym.luogo}: ${earned ? 'ottenuta' : 'da ottenere'}`} aria-hidden="true">
+        <ProvidedArtwork id={earned ? gymMedalArtwork.get(gym.id) ?? 'medal-empty' : 'medal-empty'} />
       </span>
     })}
   </div>
+}
+
+/** Ritratto a mezzo busto del lotto 1; senza illustrazione resta l'avatar circolare. */
+function TrainerPortrait({ playerId }: { playerId: 1 | 2 }) {
+  const id = `portrait-player-${playerId}`
+  return hasGameArt(id) ? <GameArt id={id} className="ref-trainer-bust"/> : <img src={assetUrl(`/ui/player${playerId}_avatar.png`)} alt=""/>
+}
+
+/** Scudo della Squadra (lotto 1): i compagni veri occupano le sei finestre, 3 colonne × 2 righe. */
+function TeamShield({ team }: { team: PokemonIstanza[] }) {
+  return <span className="ref-menu-shield" aria-hidden="true">
+    <GameArt id="menu-team-shield" className="ref-menu-shield-art"/>
+    <span className="ref-menu-shield-panes">{Array.from({ length: 6 }, (_, index) => <span key={index} className="ref-menu-shield-pane">{team[index] && <CreaturePortrait pokemon={team[index]}/>}</span>)}</span>
+  </span>
 }
 
 export function ReferenceMainMenu({playerId,onAuxiliary,onNavigate,onResume}:Props) {
@@ -67,52 +80,27 @@ export function ReferenceMainMenu({playerId,onAuxiliary,onNavigate,onResume}:Pro
   const context = useGameStore(state=>state.challengeContext)
   const player = playerId === 1 ? one : two, other = playerId === 1 ? two : one
   const position = playerId === 1 ? position1 : position2
-  const badges = (owner: typeof one) => gymMedalTrack(owner.allenatoriSconfitti).filter((id) => owner.allenatoriSconfitti.has(id)).length
+  const badges = (owner: typeof one) => gyms.filter(gym=>owner.allenatoriSconfitti.has(gym.id)).length
   const medals = (owner: typeof one) => <MedalStrip defeated={owner.allenatoriSconfitti} />
   return <div className="ref-main-menu ref-provided-main-menu">
     <aside className="ref-trainers" aria-label="Allenatori della partita">
       <section className="ref-trainer-card is-primary" aria-label={`Riepilogo della partita di G${playerId}`}>
-        <div className="ref-trainer-identity">
-          <div className="ref-trainer-portrait">
-            <img
-              src={assetUrl(`/ui/player${playerId}_avatar.png`)}
-              alt=""
-            />
-          </div>
-
-          <div className="ref-trainer-copy">
-            <span className="pu-kicker">
-              Allenatore · G{playerId}
-            </span>
-
-            <h2>{player.nome || `Giocatore ${playerId}`}</h2>
-
-            <p>
-              <KitIcon id="icon-map" />
-              {(position.luogo ?? position.mappaId).replace(/_/g, ' ')}
-            </p>
-
-            {medals(player)}
-
-            <span className="ref-medal-count">
-              Medaglie {badges(player)} / {SECRET_LOCATION_GYM_IDS.length}
-            </span>
-
-            <strong className="ref-trainer-coins">
-              <KitIcon id="item-coin" />
-              <AnimatedNumber
-                value={player.monete}
-                format={formatNumber}
-              />
-            </strong>
-          </div>
-        </div>
-        <div className="ref-trainer-team" aria-label={`Compagni di ${player.nome}`}>{player.squadra.length ? player.squadra.map(pokemon=><span key={pokemon.istanzaId} title={pokemon.nome}><CreaturePortrait pokemon={pokemon}/></span>) : <p>Scegli il tuo starter per iniziare il viaggio.</p>}</div>
+        <div className="ref-trainer-identity"><div className="ref-trainer-portrait"><TrainerPortrait playerId={playerId}/></div><div className="ref-trainer-copy"><span className="pu-kicker">Allenatore · G{playerId}</span><h2>{player.nome || `Giocatore ${playerId}`}</h2><p><KitIcon id="icon-map"/>{(position.luogo ?? position.mappaId).replace(/_/g,' ')}</p>{medals(player)}<span className="ref-medal-count">Medaglie {badges(player)} / {gyms.length}</span><strong className="ref-trainer-coins"><KitIcon id="item-coin"/><AnimatedNumber value={player.monete} format={formatNumber}/></strong></div></div>
+        <div className="ref-trainer-team" aria-label={`Compagni di ${player.nome}`}>{player.squadra.length ? Array.from({ length: 6 }, (_, index) => {
+          const pokemon = player.squadra[index]
+          if (!pokemon) return <span key={`empty-${index}`} className="ref-team-slot is-empty" aria-hidden="true" />
+          const type = getPokemon(pokemon.specieId)?.tipo
+          return <span key={pokemon.istanzaId} className="ref-team-slot" title={pokemon.nome} data-type={type}>
+            <CreaturePortrait pokemon={pokemon}/>{type && <i className="ref-team-type" aria-hidden="true"><KitIcon id={TYPE_ICONS[type]}/></i>}
+          </span>
+        }) : <p>Scegli il tuo starter per iniziare il viaggio.</p>}</div>
       </section>
-      <section className="ref-trainer-card is-secondary" aria-label={`Riepilogo della partita di G${other.id}`}><div className="ref-trainer-portrait"><img src={assetUrl(`/ui/player${other.id}_avatar.png`)} alt=""/></div><div><span className="pu-kicker">Allenatore · G{other.id}</span><h2>{other.nome || `Giocatore ${other.id}`}</h2>{medals(other)}<span className="ref-medal-count">Medaglie {badges(other)} / {SECRET_LOCATION_GYM_IDS.length}</span></div></section>
-      <div className="ref-menu-utilities" aria-label="Altri strumenti">{([['race','Gara'],['recap','Ripresa'],['challenges','Sfide']] as const).map(([tool,title])=><button key={tool} type="button" aria-label={`Apri ${title}`} disabled={!!context&&tool!=='challenges'} onClick={()=>onAuxiliary(tool)}><KitIcon id={tool==='challenges'?'icon-challenges':'icon-activity'}/>{title}</button>)}</div>
-      <p className="ref-gm-note"><KitIcon id="icon-activity"/>Un’avventura guidata dal Game Master</p>
+      <section className="ref-trainer-card is-secondary" aria-label={`Riepilogo della partita di G${other.id}`}><div className="ref-trainer-portrait"><TrainerPortrait playerId={other.id}/></div><div><span className="pu-kicker">Allenatore · G{other.id}</span><h2>{other.nome || `Giocatore ${other.id}`}</h2>{medals(other)}<span className="ref-medal-count">Medaglie {badges(other)} / {gyms.length}</span></div></section>
+      <footer className="ref-gm-strip">
+        <p className="ref-gm-note"><span className="ref-gm-seal" aria-hidden="true"><KitIcon id="icon-activity"/></span><strong>Livio</strong><span>· Game Master</span></p>
+        <div className="ref-menu-utilities" aria-label="Altri strumenti">{([['race','Gara'],['recap','Ripresa'],['challenges','Sfide']] as const).map(([tool,title])=><button key={tool} type="button" aria-label={`Apri ${title}`} disabled={!!context&&tool!=='challenges'} onClick={()=>onAuxiliary(tool)}><KitIcon id={tool==='challenges'?'icon-challenges':'icon-activity'}/>{title}</button>)}</div>
+      </footer>
     </aside>
-    <SpatialNavigation columns={3} selectOnFocus={false} className="ref-menu-grid" aria-label="Destinazioni del menù principale">{entries.map((entry,index)=><button data-rpg-item data-ui-id={`service.${entry.tool ?? entry.screen ?? 'map'}`} className="pu-menu-tile ref-menu-tile ref-provided-menu-tile" style={{'--tile-index':index} as CSSProperties} key={entry.title} type="button" aria-label={`Apri ${entry.title}`} disabled={!!context&&entry.tool!=='settings'&&!entry.resume} onClick={()=>entry.tool?onAuxiliary(entry.tool):entry.screen?onNavigate?.(entry.screen):onResume?.()}><span className="ref-menu-card-face"><ProvidedArtwork id="menu-card-normal" className="ref-menu-card-frame"/>{entry.screen === 'squadra' && player.squadra.length > 0 ? <span className="ref-menu-companions" aria-hidden="true">{player.squadra.slice(0, 3).map(pokemon => <CreaturePortrait key={pokemon.istanzaId} pokemon={pokemon}/>)}</span> : (gameArtForMenu(entry.icon) ? <GameArt id={gameArtForMenu(entry.icon)!} className="ref-menu-art"/> : <ReferenceEmblem kind={entry.icon}/>)}<h2>{entry.title}</h2></span><span className="ref-menu-glint" aria-hidden="true"/></button>)}</SpatialNavigation>
+    <SpatialNavigation columns={3} selectOnFocus={false} className="ref-menu-grid" aria-label="Destinazioni del menù principale">{entries.map((entry,index)=><button data-rpg-item data-ui-id={`service.${entry.tool ?? entry.screen ?? 'map'}`} className="pu-menu-tile ref-menu-tile ref-provided-menu-tile" style={{'--tile-index':index} as CSSProperties} key={entry.title} type="button" aria-label={`Apri ${entry.title}`} disabled={!!context&&entry.tool!=='settings'&&!entry.resume} onClick={()=>entry.tool?onAuxiliary(entry.tool):entry.screen?onNavigate?.(entry.screen):onResume?.()}><span className="ref-menu-card-face"><ProvidedArtwork id="menu-card-normal" className="ref-menu-card-frame"/>{entry.screen === 'squadra' && player.squadra.length > 0 && hasGameArt('menu-team-shield') ? <TeamShield team={player.squadra}/> : entry.screen === 'squadra' && player.squadra.length > 0 ? <span className="ref-menu-companions" aria-hidden="true">{player.squadra.slice(0, 3).map(pokemon => <CreaturePortrait key={pokemon.istanzaId} pokemon={pokemon}/>)}</span> : (gameArtForMenu(entry.icon) ? <GameArt id={gameArtForMenu(entry.icon)!} className="ref-menu-art"/> : <ReferenceEmblem kind={entry.icon}/>)}<h2>{entry.title}</h2></span><span className="ref-menu-glint" aria-hidden="true"/></button>)}</SpatialNavigation>
   </div>
 }

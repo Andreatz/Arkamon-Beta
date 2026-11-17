@@ -19,12 +19,12 @@ import {
 const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
-const ORIGINAL_GAME_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
-const EXPANSION_ANIMATED_IDS = [
+const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
+const PENDING_SPECIES_IDS = [
   ...Array.from({ length: 56 }, (_, index) => index + 111),
   ...Object.keys(sourceCountsNovember16).map(Number),
 ]
-const SPECIES_IDS = [...ORIGINAL_GAME_SPECIES_IDS, ...EXPANSION_ANIMATED_IDS]
+const SPECIES_IDS = [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]
 const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
 
@@ -44,13 +44,10 @@ describe('Arkamon animation manifest', () => {
     expect(resolveArkamonAnimationAsset(207, 'back', 'attack')).toBeUndefined()
   })
 
-  it('registers the expanded playable catalog independently of native motion', () => {
-    for (const speciesId of ORIGINAL_GAME_SPECIES_IDS) expect(getPokemon(speciesId)).toBeDefined()
-    for (const speciesId of EXPANSION_ANIMATED_IDS) {
-      expect(getArkamonAnimationAsset(speciesId, 'front', 'idle')).toBeDefined()
-      expect(Boolean(getPokemon(speciesId))).toBe(speciesId !== 130)
-    }
-    expect(SPECIES_IDS.filter(id => getPokemon(id))).toHaveLength(173)
+  it('every animated form is now a playable species of the Database', () => {
+    for (const speciesId of [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]) expect(getPokemon(speciesId)).toBeDefined()
+    for (const speciesId of PENDING_SPECIES_IDS) expect(getArkamonAnimationAsset(speciesId, 'front', 'idle')).toBeDefined()
+    expect(SPECIES_IDS.filter(id => getPokemon(id))).toEqual(SPECIES_IDS)
   })
 
   it.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => ({ speciesId, animation }))))(
@@ -208,7 +205,7 @@ describe('Arkamon animation manifest', () => {
     const shortClips = new Set(['41/idle', '41/attack', '47/hit', '52/attack', '52/ko', '79/victory', '83/ko',
       '107/idle', '107/attack', '107/hit', '107/victory', '107/ko',
       '108/attack', '108/ko', '109/hit', '109/victory', '110/attack', '110/hit', '110/victory'])
-    for (const speciesId of ORIGINAL_GAME_SPECIES_IDS.filter(id => id >= 39)) for (const animation of ANIMATIONS) {
+    for (const speciesId of PLAYABLE_SPECIES_IDS.filter(id => id >= 39)) for (const animation of ANIMATIONS) {
       const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
       const count = shortClips.has(`${speciesId}/${animation}`) ? 95 : 96
       expect(asset.frameCount).toBe(count)

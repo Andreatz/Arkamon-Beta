@@ -69,8 +69,7 @@ export function normalizeChallengeCollection(value: unknown): ChallengeCollectio
 /** Scores are comparable only within the same configuration and rules version. */
 export function challengeLeaderboard(results: readonly ChallengeResult[], configuration: ChallengeSession | string): ChallengeResult[] {
   const sessionId = typeof configuration === 'string' ? configuration : configuration.id
-  const idVersion = Number(/^challenge-v(\d+)-/.exec(sessionId)?.[1])
-  const rulesVersion = typeof configuration === 'string' ? (isChallengeRulesVersion(idVersion) ? idVersion : 1) : configuration.rulesVersion
+  const rulesVersion = typeof configuration === 'string' ? (/^challenge-v2-/.test(configuration) ? 2 : 1) : configuration.rulesVersion
   return results.filter((result) => result.sessionId === sessionId && (result.rulesVersion ?? 1) === rulesVersion
     && (typeof configuration === 'string' || result.seed === configuration.seed && result.mode === configuration.mode
       && result.team.length === configuration.team.length && result.team.every((id, index) => id === configuration.team[index].specieId))).sort((a, b) => {

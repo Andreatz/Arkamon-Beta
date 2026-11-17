@@ -1,3 +1,4 @@
+import { GAME_DATA_VERSION, migrateLegacyInteraction } from '@/data/trainerMigration'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { InteractionDefinition } from './types'
@@ -24,7 +25,7 @@ function commitCatalog(interactions: InteractionDefinition[], set: (patch: Pick<
   if (!storage) return 'Il salvataggio delle interazioni non è disponibile in questo browser. La configurazione precedente è stata conservata.'
   try {
     if (recovery && readCampaignCheckpoint(INTERACTION_STORAGE_KEY) !== recovery.raw) return 'Il catalogo originale è cambiato. Rileggi la sessione prima di scegliere il recupero.'
-    const result = storage.setItem(options.name ?? INTERACTION_STORAGE_KEY, { state: { interactions }, version: options.version ?? 0 })
+    const result = storage.setItem(options.name ?? INTERACTION_STORAGE_KEY, { state: { interactions, dataVersion: GAME_DATA_VERSION }, version: options.version ?? 0 })
     // This catalog uses synchronous browser storage. Never publish an unconfirmed asynchronous write.
     if (result instanceof Promise) {
       void result.catch(() => {})
@@ -58,6 +59,19 @@ function readStoredCatalog(key: string): string | null {
   }
   return raw
 }
+/** Cataloghi salvati o esportati prima del Database: allenatori storici convertiti una sola volta. */
+export function migrateCatalogPayload(value: unknown): unknown {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return value
+  const record = value as { dataVersion?: unknown; interactions?: unknown }
+  if (record.dataVersion === GAME_DATA_VERSION || !Array.isArray(record.interactions)) return value
+  const interactions = record.interactions.map((entry) => {
+    const candidate = entry as InteractionDefinition
+    return candidate && typeof candidate === 'object' && candidate.action && candidate.requirements && Array.isArray(candidate.requirements.gymIds)
+      ? migrateLegacyInteraction(candidate) : entry
+  })
+  return { ...record, dataVersion: GAME_DATA_VERSION, interactions }
+}
+
 export const useInteractionStore = create<InteractionState>()(persist((set, get) => ({
   interactions: [],
   saveInteraction: (interaction) => {
@@ -76,7 +90,7 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
   },
   importCatalog: (json) => {
     try {
-      const validated = validateCatalog(JSON.parse(json))
+      const validated = validateCatalog(migrateCatalogPayload(JSON.parse(json)))
       if (validated.error) return validated.error
       return commitCatalog(validated.catalog!.interactions, set)
     } catch { return 'Il file non contiene un JSON valido.' }
@@ -84,7 +98,7 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
   replaceDamagedCatalog: (json) => {
     if (!useInteractionRecoveryStatus.getState().recovery) return 'Non è presente un catalogo da recuperare.'
     try {
-      const validated = validateCatalog(JSON.parse(json))
+      const validated = validateCatalog(migrateCatalogPayload(JSON.parse(json)))
       if (validated.error) return validated.error
       return commitCatalog(validated.catalog!.interactions, set, true)
     } catch { return 'Il file non contiene un JSON valido.' }
@@ -95,19 +109,20 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
       if (recovery.raw !== null) return recovery.raw
       throw new Error('L’archivio originale non è leggibile. Rileggi la sessione prima di esportarlo.')
     }
-    return JSON.stringify({ version: 1, interactions: get().interactions }, null, 2)
+    return JSON.stringify({ version: 1, dataVersion: GAME_DATA_VERSION, interactions: get().interactions }, null, 2)
   },
 }), {
   name: INTERACTION_STORAGE_KEY,
   storage: createJSONStorage(() => ({ getItem: readStoredCatalog, setItem: writeCampaignCheckpoint, removeItem: removeCampaignCheckpoint })),
-  partialize: (state) => ({ interactions: state.interactions }),
+  partialize: (state) => ({ interactions: state.interactions, dataVersion: GAME_DATA_VERSION }),
   onRehydrateStorage: () => (_state, error) => {
     if (error) recordRecovery('Il catalogo salvato non è leggibile. Le interazioni restano sospese e l’originale viene conservato.')
   },
   merge: (saved, current) => {
     const hasInteractions = saved && typeof saved === 'object' && 'interactions' in saved
     const raw = readCampaignCheckpoint(INTERACTION_STORAGE_KEY)
-    const validated = validateCatalog({ version: 1, interactions: hasInteractions ? saved.interactions : raw === null ? [] : null }, { allowLegacyRepeatableRequirements: true })
+    const payload = migrateCatalogPayload({ version: 1, dataVersion: (saved as { dataVersion?: unknown } | undefined)?.dataVersion, interactions: hasInteractions ? saved.interactions : raw === null ? [] : null })
+    const validated = validateCatalog(payload, { allowLegacyRepeatableRequirements: true })
     if (!validated.catalog) {
       recordRecovery(validated.error ?? 'Il catalogo salvato non è valido.')
       return { ...current, interactions: [] }

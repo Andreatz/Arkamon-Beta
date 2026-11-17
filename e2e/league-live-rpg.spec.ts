@@ -22,7 +22,7 @@ async function seedLeague(page: import('@playwright/test').Page, options: { comp
     const league = { version: 1, config: options.draft ? { ...config, opponents: config.opponents.map(() => ({ name: '', team: [] })), defeat: null, championEnabled: null } : config,
       players: { 1: options.complete ? completed : empty, 2: empty }, winner: options.complete ? { playerId: 1, name: 'Melia', team, completedAt: '2026-10-14T10:00:00.000Z', runId: completed.runId } : null }
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Roma' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
       league, battaglia: null, rivaleStarterId: 9, posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, scenaCorrente: { scena: 'lega' }, scenaPrecedente: null, audioMuted: true } }))
     localStorage.setItem('arkamon-preferences-v1', JSON.stringify({ version: 1, state: { reducedMotion: 'on', animationSpeed: 'fast', musicVolume: 0, effectsVolume: 0 } }))

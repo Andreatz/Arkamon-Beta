@@ -74,7 +74,13 @@ export function safeArtId(value) {
  * poi il primo schema di `patterns` (per i ritratti di NPC e allenatori, con l'id
  * uguale al nome senza estensione). Restituisce undefined per i nomi non previsti.
  */
+/** Estensioni accettate nella cartella di consegna: lo schema usa sempre il nome «.png». */
+export const INBOX_IMAGE = /\.(png|jpe?g|webp)$/i
+
 export function ruleForFile(spec, name) {
+  // Le immagini consegnate in JPG o WebP valgono come il PNG atteso; gli alias coprono i refusi noti.
+  const canonical = name.replace(INBOX_IMAGE, '.png')
+  name = spec?.aliases?.[canonical] ?? canonical
   const exact = spec?.files?.[name]
   if (exact) return exact
   for (const pattern of spec?.patterns ?? []) {

@@ -3884,7 +3884,7 @@
     },
     {
       "id": 130,
-      "status": "pending-game-data",
+      "status": "game-data-present",
       "sprites": {
         "front": {
           "source": "/sprites/front_sprites/130.png",
@@ -5095,6 +5095,44 @@
           ],
           "bytes": 1114408,
           "sha256": "9ef2c713b382582d5e8f13a83434335f9f4aaa40882b0c23deddf2877c43c1b5"
+        }
+      }
+    },
+    {
+      "id": 194,
+      "status": "game-data-present",
+      "sprites": {
+        "front": {
+          "source": "/sprites/front_sprites/194.png",
+          "width": 1024,
+          "height": 1024,
+          "alphaBounds": [
+            226,
+            33,
+            799,
+            859
+          ],
+          "bytes": 108670,
+          "sha256": "0e8b694200110e26062bdb87033a28b0aa3089219293f7383fbe7fac1034a64f"
+        }
+      }
+    },
+    {
+      "id": 195,
+      "status": "game-data-present",
+      "sprites": {
+        "front": {
+          "source": "/sprites/front_sprites/195.png",
+          "width": 1024,
+          "height": 1024,
+          "alphaBounds": [
+            166,
+            0,
+            859,
+            919
+          ],
+          "bytes": 122446,
+          "sha256": "4b93173c895f9b8d8f8038c1621750dc4cd991146a18b13a44a392d6dcb2f1cf"
         }
       }
     },

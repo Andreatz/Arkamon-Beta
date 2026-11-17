@@ -1,5 +1,4 @@
 import type { MossaDef, TipoPokemon } from '@/types'
-import { èMossaCura } from '@/engine/battleEngine'
 import type { MoveVfxAssetId } from './vfxManifest'
 import { getCuratedBattleAssetId } from './vfxCuration'
 import { getMoveVfxAssignment } from './moveVfxAssignments'
@@ -132,7 +131,7 @@ function buildProfile(
 }
 
 function inferMoveVfxProfile(move: MossaDef): MoveVfxProfile {
-  if (èMossaCura(move)) {
+  if (move.effetto === 'CURA' || move.effetto === 'CURA_PCT') {
     return buildProfile('heal', 'effect', 'subtle')
   }
   if (move.soloStato === true || move.effetto === 'PARALISI' || move.effetto === 'PARALIZZATO') {

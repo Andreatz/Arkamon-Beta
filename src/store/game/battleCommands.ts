@@ -1,9 +1,9 @@
 import { getAllenatore, getPokemon } from '@/data'
-import { calcolaHPMax, calcolaVariazioneMonete, clearBattleMoveState, clearStoredExperience, type EsitoBattaglia, type TipoAvversario } from '@/engine/battleEngine'
+import { calcolaHPMax, calcolaVariazioneMonete, clearStoredExperience, type EsitoBattaglia, type TipoAvversario } from '@/engine/battleEngine'
 import { isTeamWithinLevelCap, teamCapMessage, teamLevelRange, TEAM_LEVEL_GAP } from '@/engine/teamLevelCap'
 import { finalizeConfiguredBattle } from '@/interactions/runtime'
 import type { GameState } from '../gameStore'
-import type { AllenatoreDef, NavigazioneScena, PokemonIstanza, StatoBattaglia, StatoGiocatore } from '@/types'
+import type { NavigazioneScena, PokemonIstanza, StatoBattaglia, StatoGiocatore } from '@/types'
 import { commandApplied, commandFailure, type GameCommandResult } from './commandPolicy'
 
 export function clearBattleExperience(battle: StatoBattaglia): StatoBattaglia {
@@ -23,13 +23,8 @@ export function prepareBattleEntry(battle: StatoBattaglia, player: StatoGiocator
     || !Number.isFinite(lead.hp) || lead.hp <= 0 || lead.hp > calcolaHPMax(lead))
     return { result: commandFailure('invalid-battle', 'Scegli un Arkamon vivo e valido della squadra per iniziare la battaglia.') }
   if (!isTeamWithinLevelCap(team)) return { result: commandFailure('team-level-cap', teamCapMessage(team)) }
-  const cleanLead = clearBattleMoveState(lead)
   return { result: commandApplied('La battaglia ha inizio.'),
-    battle: clearBattleExperience({
-      ...battle, pokemonA: cleanLead, pokemonB: clearBattleMoveState(battle.pokemonB),
-      squadraA: team.map(clearBattleMoveState), squadraB: battle.squadraB?.map(clearBattleMoveState),
-      hpMaxA: calcolaHPMax(cleanLead),
-    }) }
+    battle: clearBattleExperience({ ...battle, pokemonA: lead, squadraA: team, hpMaxA: calcolaHPMax(lead) }) }
 }
 
 /** One post-battle status rule for every squad/deposit and both players.
@@ -37,10 +32,11 @@ export function prepareBattleEntry(battle: StatoBattaglia, player: StatoGiocator
  * historical contract. No XP is introduced or consumed by cleanup.
  */
 export function cleanupBattlePlayer(player: StatoGiocatore, fullHeal: boolean): StatoGiocatore {
-  const clean = (member: PokemonIstanza, team: boolean): PokemonIstanza => {
-    const pokemon = clearBattleMoveState(member)
+  const clean = (current: PokemonIstanza, team: boolean): PokemonIstanza => {
+    // L'immunità da status vale solo nella battaglia in cui è stata ottenuta.
+    const { immunitaStati: _immunity, ...pokemon } = current
     if (team && !getPokemon(pokemon.specieId)) return pokemon
-    if (!fullHeal && pokemon.stato?.tipo === 'Paralizzato' && pokemon.stato.regola !== 'database') return pokemon
+    if (!fullHeal && pokemon.stato?.tipo === 'Paralizzato') return pokemon
     const { stato: _status, ...withoutStatus } = pokemon
     return fullHeal && team ? { ...withoutStatus, hp: calcolaHPMax(withoutStatus) } : withoutStatus
   }
@@ -48,21 +44,14 @@ export function cleanupBattlePlayer(player: StatoGiocatore, fullHeal: boolean): 
     deposito: Object.fromEntries(Object.entries(player.deposito).map(([slot, pokemon]) => [slot, clean(pokemon, false)])) }
 }
 
-export function trainerCoinDelta(outcome: EsitoBattaglia, trainer: AllenatoreDef | undefined): number {
-  const authored = outcome === 'vittoria' ? trainer?.guadagno : outcome === 'sconfitta' ? trainer?.perdita : undefined
-  if (authored !== undefined) return authored
-  if (trainer?.tipo === 'Superquattro' || trainer?.tipo === 'Campione') return 0
-  const type: TipoAvversario = trainer?.tipo === 'Capopalestra' ? 'Capopalestra' : trainer?.tipo === 'PVP' ? 'PVP' : 'NPC'
-  return calcolaVariazioneMonete(outcome, type)
-}
-
 /** Shared by the legacy reward action and the complete campaign conclusion. */
 export function npcBattleReward(player: StatoGiocatore, battle: StatoBattaglia, outcome: EsitoBattaglia): StatoGiocatore {
   if (battle.leagueBattle || battle.allenatoreId === undefined || battle.tipo === 'Selvatico' || battle.ricompenseApplicate) return player
   const trainer = getAllenatore(battle.allenatoreId)
+  const type: TipoAvversario = trainer?.tipo === 'Capopalestra' ? 'Capopalestra' : trainer?.tipo === 'PVP' ? 'PVP' : 'NPC'
   const defeated = new Set(player.allenatoriSconfitti)
   if (outcome === 'vittoria') defeated.add(battle.allenatoreId)
-  return { ...player, monete: Math.max(0, player.monete + trainerCoinDelta(outcome, trainer)), allenatoriSconfitti: defeated }
+  return { ...player, monete: Math.max(0, player.monete + calcolaVariazioneMonete(outcome, type)), allenatoriSconfitti: defeated }
 }
 
 /** Only a durable ended checkpoint can settle a campaign battle. The complete

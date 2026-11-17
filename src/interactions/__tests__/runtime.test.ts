@@ -54,7 +54,7 @@ describe('interazioni configurate: regole, risorse e persistenza atomica', () =>
     release()
     expect(writes).toHaveLength(1)
     expect(writes[0].giocatore1.monete).toBe(125)
-    expect(writes[0].giocatore1.inventario.masterball).toBe(1)
+    expect(writes[0].giocatore1.inventario.masterball).toBe(2)
     expect(writes[0].interactionProgress.completed1).toEqual([entry.id])
     expect(writes[0].turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
     useGameStore.setState({ turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 } })

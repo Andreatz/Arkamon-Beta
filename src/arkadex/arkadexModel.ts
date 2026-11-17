@@ -1,4 +1,4 @@
-import { getPokemon, POKEMON_BASE } from '@/data'
+import { getPokemon, INCONTRI, MAPPE, POKEMON_BASE } from '@/data'
 import type { PokemonIstanza, PokemonSpecie, StatoBattaglia, StatoGiocatore, TipoPokemon } from '@/types'
 
 /** Each player's discoveries survive depositing or evolving a creature. */
@@ -104,4 +104,34 @@ export function arkadexEvolutionLabel(species: PokemonSpecie, progress: ArkadexP
   if (!species.evoluzioneId || species.livelloEvoluzione === null) return 'Stadio finale: nessuna ulteriore evoluzione.'
   const next = progress[playerId === 1 ? 'seen1' : 'seen2'].includes(species.evoluzioneId) ? getPokemon(species.evoluzioneId)?.nome : undefined
   return `Evoluzione al livello ${species.livelloEvoluzione}: ${next ?? 'specie ancora da scoprire'}.`
+}
+
+/** Nome leggibile di un luogo del gioco: «Percorso_3» → «Percorso 3», «ReggioCalabria» → «Reggio Calabria». */
+export function placeLabel(place: string): string {
+  return place.replace(/_/g, ' ').replace(/([a-zà-ù])([A-Z])/g, '$1 $2')
+}
+
+export interface ArkadexHabitat {
+  place: string
+  label: string
+  /** La rarità più comune con cui la specie compare in quel luogo. */
+  rarity: 'Comune' | 'Medio' | 'Difficile'
+}
+const RARITY_ORDER = { Comune: 0, Medio: 1, Difficile: 2 } as const
+const mapOrder = new Map(MAPPE.map((place, index) => [place.nome, index]))
+
+/**
+ * Luoghi in cui una specie si incontra nei cespugli, nell'ordine della mappa.
+ * Vuoto per le forme che si ottengono soltanto per evoluzione.
+ */
+export function getArkadexHabitats(speciesId: number): ArkadexHabitat[] {
+  const byPlace = new Map<string, ArkadexHabitat>()
+  for (const encounter of INCONTRI) {
+    if (encounter.pokemonId !== speciesId) continue
+    const rarity = (encounter.probabilita in RARITY_ORDER ? encounter.probabilita : 'Comune') as ArkadexHabitat['rarity']
+    const current = byPlace.get(encounter.luogo)
+    if (!current) byPlace.set(encounter.luogo, { place: encounter.luogo, label: placeLabel(encounter.luogo), rarity })
+    else if (RARITY_ORDER[rarity] < RARITY_ORDER[current.rarity]) current.rarity = rarity
+  }
+  return [...byPlace.values()].sort((a, b) => (mapOrder.get(a.place) ?? 999) - (mapOrder.get(b.place) ?? 999))
 }

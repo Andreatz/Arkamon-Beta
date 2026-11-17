@@ -5,7 +5,6 @@ import { useGameStore } from '@/store/gameStore'
 import { GameDialog } from '@/components/ui/GameDialog'
 import { GameButton } from '@/components/ui/GameButton'
 import { exitChallenge } from './challengeRuntime'
-import { challengeRulesLabel } from './challengeRules'
 
 /** Battle owns an explicit HUD slot; extended details never expand over the turn ribbon. */
 export function ChallengeBanner({ embedded = false }: { embedded?: boolean }) {
@@ -26,7 +25,7 @@ export function ChallengeBanner({ embedded = false }: { embedded?: boolean }) {
     </aside>
     {open && <GameDialog title={mode} onClose={() => setOpen(false)}>
       <p className="mb-4 text-xl">Seed {context.session.seed}</p>
-      <p className="mb-4 text-slate-300">La campagna è conservata separatamente. Versione della sfida · {challengeRulesLabel(context.session.rulesVersion)}.</p>
+      <p className="mb-4 text-slate-300">La campagna è conservata separatamente. Questa sfida usa {context.session.rulesVersion === 1 ? 'le regole classiche v1' : context.session.rulesVersion === 2 ? 'le regole aggiornate v2' : 'le regole del Database v3'}.</p>
       {confirm ? <div className="grid gap-4"><p>Abbandonare la sfida? Il tentativo non entra in classifica.</p>
         <GameButton disabled={busy} onClick={() => { const result = exitChallenge(); if (!result.ok) setError(result.message) }}>Conferma uscita</GameButton>
         <GameButton onClick={() => setConfirm(false)}>Continua la sfida</GameButton></div>

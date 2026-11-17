@@ -69,14 +69,14 @@ describe('interfaccia del passaggio segreto', () => {
     expect(markup).toContain('Luogo non disponibile')
   })
 
-  it('mostra la rete, il ritorno a Roma e le attività del foglio dopo l’ingresso', () => {
+  it('mostra la rete, il ritorno a Roma e le sfide del Database dopo l’ingresso', () => {
     unlock(1)
     expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(true)
     const markup = renderToStaticMarkup(<PercorsoScene />)
     expect(markup).toContain('/maps/Percorso_15.png')
     expect(markup).toContain('Torna a Roma')
     expect(markup).toContain('Passaggio di ritorno')
-    expect(markup).toContain('aria-label="Cespuglio P"')
+    // Il Database definisce 16 cespugli (A–P), 16 allenatori e il rivale del Percorso 15.
     expect(markup).toContain('aria-label="Sfida Rivale"')
   })
 

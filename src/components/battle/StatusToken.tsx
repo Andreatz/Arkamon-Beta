@@ -1,6 +1,5 @@
 import type { Stato } from '@/types'
 import { percentualeProssimoTickVeleno } from '@/engine/battleEngine'
-import { battleStatusDescription } from './battleMoveFacts'
 
 interface StatusTokenProps {
   stato: Stato
@@ -19,14 +18,21 @@ export function StatusToken({ stato, compact = false }: StatusTokenProps) {
   const style = TOKEN_STYLES[stato.tipo]
   const poisonPercent = stato.tipo === 'Avvelenato' ? percentualeProssimoTickVeleno(stato) : 0
   const remaining = Math.max(0, stato.turniRimanenti)
-  const detail = stato.tipo === 'Avvelenato' ? `${poisonPercent.toLocaleString('it-IT')}%`
+  const detail = stato.tipo === 'Avvelenato' ? `${poisonPercent}%`
     : stato.tipo === 'Addormentato' || stato.tipo === 'Confuso' ? `${remaining}` : '3–6'
+  const title = stato.tipo === 'Avvelenato'
+    ? `Avvelenato: prossimo danno ${poisonPercent}% degli HP massimi (tick ${poisonPercent / 10}). Nessun tiro di recupero.`
+    : stato.tipo === 'Paralizzato'
+      ? 'Paralizzato: agisce per secondo. D6: 1–2 non attacca, 3–6 attacca (66,7%). Guarisce solo con una cura.'
+      : stato.tipo === 'Addormentato'
+        ? `Addormentato: primo turno obbligatorio senza dado; dal secondo si sveglia con 4–6 (50%). Massimo 3 turni, ${remaining} rimanenti.`
+        : `Confuso: 50% di colpirsi da solo e perdere il turno; ${remaining} turni rimanenti.`
 
   return (
     <span
       role="img"
       aria-label={`Stato: ${stato.tipo}`}
-      title={battleStatusDescription(stato)}
+      title={title}
       className="inline-flex max-w-full items-center gap-1 align-middle leading-none"
       data-status-token={stato.tipo}
     >

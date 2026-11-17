@@ -1,8 +1,0 @@
-/* ── Contatori ─────────────────────────────────────────────────────────── */
-.arka-counter {
-  display: inline-block;
-  font-variant-numeric: tabular-nums;
-  transition: color calc(var(--motion-scale, 1) * 240ms) ease, text-shadow calc(var(--motion-scale, 1) * 240ms) ease;
-}
-.arka-counter[data-counting='up'] { color: var(--arka-control-gold); text-shadow: 0 0 12px color-mix(in srgb, var(--arka-control-gold) 70%, transparent); }
-.arka-counter[data-counting='down'] { color: var(--arka-type-fuoco); text-shadow: 0 0 10px color-mix(in srgb, var(--arka-type-fuoco) 55%, transparent); }

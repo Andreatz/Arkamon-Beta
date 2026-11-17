@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Nomi attesi nella cartella di consegna (asset-inbox/<lotto>) e destinazione in public/ui/game-art. I ritratti npc-*.png e trainer-*.png sono accettati per schema. Vedi i documenti di progetto 'Prompt per gli asset, lotto 1' e 'Prompt per allenatori e NPC'.",
+  "description": "Nomi attesi (anche in JPG o WebP) nella cartella di consegna (asset-inbox/<lotto>) e destinazione in public/ui/game-art. I ritratti npc-*.png e trainer-*.png sono accettati per schema. Vedi i documenti di progetto 'Prompt per gli asset, lotto 1' e 'Prompt per allenatori e NPC'.",
   "files": {
     "portrait-player-1.png": {
       "id": "portrait-player-1",
@@ -138,5 +138,8 @@
       "match": "^(npc|trainer)-[a-z0-9-]+\\.png$",
       "maxSide": 1400
     }
-  ]
+  ],
+  "aliases": {
+    "item-profump-speciale.png": "item-profumo-speciale.png"
+  }
 }

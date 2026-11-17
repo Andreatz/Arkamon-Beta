@@ -6,11 +6,18 @@ import { getAllenatoriInLuogo, getPokemon } from '@data/index'
 import { useAdminStore } from '@store/adminStore'
 import { useGameStore } from '@store/gameStore'
 import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTypes'
+import type { AllenatoreDef } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
 import { LocalMapScene } from './LocalMapScene'
-import { WildEncounterButtons } from './WildEncounterButtons'
 import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
-import { trainerCoinDelta } from '@/store/game/battleCommands'
+
+const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
+  NPC: 200,
+  Capopalestra: 1000,
+  Superquattro: 0,
+  Campione: 0,
+  PVP: 0,
+}
 
 /**
  * Scena città: allenatori, Centro Pokémon e ritorno alla mappa.
@@ -38,7 +45,7 @@ export function CittaScene() {
     ? turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0
     : fallbackActivity?.playerId === giocatoreAttivo && fallbackActivity.location === luogo
   const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
-  const tutti = getAllenatoriInLuogo(luogo)
+  const tutti = getAllenatoriInLuogo(luogo).filter((a) => a.tipo !== 'PVP')
   const allenatoriOrdinati = [...tutti].sort((a, b) => {
     if (a.tipo === b.tipo) return a.id - b.id
     return a.tipo === 'NPC' ? -1 : 1
@@ -86,7 +93,7 @@ export function CittaScene() {
             const sconfitto = giocatore.allenatoriSconfitti.has(a.id)
             const primoPkmn = getPokemon(a.squadra[0]?.pokemonId)
             const isCapo = a.tipo === 'Capopalestra'
-            const ricompensa = trainerCoinDelta('vittoria', a)
+            const ricompensa = RICOMPENSA[a.tipo]
             return (
               <GameButton
                 key={a.id}
@@ -125,8 +132,6 @@ export function CittaScene() {
               </GameButton>
             )
           })}
-
-          <WildEncounterButtons place={luogo} disabled={layoutEditing || !interazioneDisponibile || !haPokemonVivi} />
 
           {allenatoriOrdinati.length === 0 && (
             <div className="arka-panel col-span-2 flex items-center justify-center p-6">

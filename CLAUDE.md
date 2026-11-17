@@ -19,6 +19,7 @@
 - La Lega comprende quattro battaglie consecutive nello stesso turno dopo Roma e otto medaglie. Nomi, squadre, livelli, regola della sconfitta ed eventuale Campione finale restano nella configurazione Admin; una bozza incompleta non può iniziare. Il primo completamento salva il vincitore della campagna. Nessuna attività narrativa: Livio usa il teatro mentale. Vedi [miglioramenti live GDR](docs/live-rpg-improvements-2026-10-14.md).
 - La griglia è un prototipo legacy. Conservare lo stack attuale; eventuali migrazioni principali richiedono un piano e verifiche dedicate.
 - Specifica STAB/valutazione IA ancora da consolidare: non cambiare bilanciamento per risolvere una discrepanza fra nomi nel codice e descrizione VBA.
+- Database del 16 novembre 2026 (decisioni dell'utente del 17 novembre): specie, mosse, incontri e allenatori vengono da `data-source/Database.xlsx` tramite `python3 scripts/data/import-database.py` (mai modificare a mano i JSON generati). 206 specie giocabili. Le mosse Status prendono i valori da `src/data/statusMoveRules.json`. La cattura usa un Sacchettino della borsa e la tabella d20 di `src/data/captureTable.json` (sostituisce la formula 3d6 descritta più sotto). Oggetti, prezzi e città di vendita in `src/shop/catalog.ts`; Boost, Profumo speciale, Bicicletta e Monopattino seguono le regole proposte lì descritte. I salvataggi senza `dataVersion: 2` vengono migrati una volta (`src/data/trainerMigration.ts`).
 
 Vedi [audit corrente](docs/project-audit-2026-10-10.md) per prove, limiti e priorità.
 

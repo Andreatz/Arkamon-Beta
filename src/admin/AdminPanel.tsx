@@ -1,4 +1,3 @@
-import '@/components/ui/rangeInput.css'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useAdminStore } from '@store/adminStore'
 import { AdminAudiencePanel } from '@/audience/AdminAudiencePanel'

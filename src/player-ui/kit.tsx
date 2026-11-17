@@ -1,11 +1,10 @@
+import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
 import { GameArt, gameArtForIcon } from '@/ui-system/GameArt'
 import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { getMossa, getPokemon } from '@/data'
 import { calcolaHPMax, getMossaAlLivello, èMossaCura, èMossaSoloStato } from '@/engine/battleEngine'
-import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
 import { assetUrl } from '@/utils/assetUrl'
-import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { getPortraitFraming } from './portraitFraming'
 import { RpgFrame, RPG_SKINS } from '@/components/rpg'
 import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
@@ -21,15 +20,14 @@ export const TYPE_ICONS: Record<TipoPokemon, string> = {
 export const ITEM_ICONS: Record<string, string> = {
   potion: 'item-potion', 'super-potion': 'item-superpotion', revive: 'item-revive',
   antidote: 'item-antidote', masterball: 'item-sphere', 'paralysis-heal': 'type-electric', awakening: 'type-psychic',
-  'hyper-potion': 'item-superpotion', 'max-potion': 'item-superpotion', 'full-heal': 'item-antidote',
-  arkaball: 'item-sphere', 'mega-arkaball': 'item-sphere', 'ultra-arkaball': 'item-sphere',
-  'speed-boost': 'type-electric', 'damage-boost': 'type-fire', 'special-perfume': 'item-antidote',
-  bicycle: 'icon-map', scooter: 'icon-map',
+  'hyper-potion': 'item-hyperpotion', 'max-potion': 'item-maxpotion', 'full-heal': 'item-full-heal',
+  sacchettino: 'item-sacchettino', 'mega-sacchettino': 'item-mega-sacchettino', 'ultra-sacchettino': 'item-ultra-sacchettino',
+  'boost-speed': 'item-boost-speed', 'boost-damage': 'item-boost-damage', 'special-scent': 'item-scent', bicycle: 'item-bicycle', scooter: 'item-scooter',
 }
 export function itemIconId(itemId: string): string {
   if (isReferenceUi() && itemId === 'awakening') return 'item-awakening'
   if (isReferenceUi() && itemId === 'paralysis-heal') return 'item-paralysis-heal'
-  return ITEM_ICONS[itemId] ?? 'icon-bag'
+  return ITEM_ICONS[itemId]
 }
 export function kitAsset(id: string): string { return assetUrl(`/ui/player-kit/${id}.svg`) }
 const STUDIO_MENU_ICONS: Record<string, string> = {
@@ -44,6 +42,8 @@ const ICON_GLYPHS: Record<string, string> = {
   'icon-chronicles': '≡', 'icon-challenges': '◇', 'icon-activity': '↗',
   'item-potion': 'P', 'item-superpotion': 'SP', 'item-revive': 'R',
   'item-antidote': 'A', 'item-sphere': 'M', 'item-coin': '₳', 'item-awakening': 'SV', 'item-paralysis-heal': 'AP',
+  'item-hyperpotion': 'IP', 'item-maxpotion': 'PM', 'item-full-heal': 'CT', 'item-sacchettino': 'S', 'item-mega-sacchettino': 'MS',
+  'item-ultra-sacchettino': 'US', 'item-boost-speed': 'BV', 'item-boost-damage': 'BD', 'item-scent': 'PR', 'item-bicycle': 'BI', 'item-scooter': 'MO',
   'type-normal': 'N', 'type-electric': 'EL', 'type-fire': 'FU', 'type-earth': 'TE',
   'type-water': 'AC', 'type-grass': 'ER', 'type-dark': 'OS', 'type-psychic': 'PS',
 }
@@ -89,9 +89,16 @@ export function KitButton({ active = false, asset, artwork, children, className 
 export function TypeBadge({ type }: { type: TipoPokemon }) {
   return <span className="pu-type"><KitIcon id={TYPE_ICONS[type]} />{type}</span>
 }
+/**
+ * Sigillo rotondo del tipo, senza testo visibile. Il nome resta per i lettori di schermo,
+ * tranne dentro un comando che ha già un'etichetta accessibile (`labelled={false}`).
+ */
+export function TypeSeal({ type, className = '', labelled = true }: { type: TipoPokemon; className?: string; labelled?: boolean }) {
+  return <span className={`pu-type-seal ${className}`} data-type={type} title={type} aria-hidden={labelled ? undefined : true}><KitIcon id={TYPE_ICONS[type]} />{labelled && <span className="sr-only">{type}</span>}</span>
+}
 function CreatureImage({ speciesId, large }: { speciesId: number; large: boolean }) {
   const compact = !large && isReferenceUi() ? providedPortraitSource(speciesId) : undefined
-  const source = compact ?? getArkamonSpriteSource(speciesId)
+  const source = compact ?? `/sprites/front_sprites/${speciesId}.png`
   const [loadedSource, setLoadedSource] = useState<string | null>(null)
   const framing = getPortraitFraming(source)
   useEffect(() => {
@@ -133,21 +140,10 @@ export function PokemonMoves({ pokemon, detailed = false }: { pokemon: PokemonIs
   const definition = getPokemon(pokemon.specieId)
   return <div className="pu-moves">{definition?.mosse.filter(id => id > 0).map(id => {
     const move = getMossa(id); if (!move) return null
-    if (move.soloStato) {
-      const facts = battleMoveFacts(move, pokemon.livello)
-      const description = move.livelloMinimo && pokemon.livello < move.livelloMinimo
-        ? `${facts.detail} Disponibile dal livello ${move.livelloMinimo}.` : facts.detail
-      return <div className="pu-move" key={id} data-move-kind={facts.kind}><div><strong>{move.nome}</strong><TypeBadge type={move.tipo} />{detailed && <small className="pu-move-tactical">{description}</small>}</div>
-        <span className="pu-dice" aria-label={description} title={description}>{facts.label}</span></div>
-    }
-    const dice = getMossaAlLivello(move, pokemon.livello)
     const healing = èMossaCura(move)
-    const effect = healing ? `Cura ${move.valoreEffetto ?? 0}${move.effetto === 'CURA_PCT' ? '%' : ' HP'}`
-      : èMossaSoloStato(move) ? 'Stato' : `${dice.dadi}d6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}`
-    const statusName: Record<string, string> = { PARALISI: 'Paralisi', PARALIZZATO: 'Paralisi', VELENO: 'Veleno', SONNO: 'Sonno', CONFUSIONE: 'Confusione' }
-    const description = healing ? `${effect}${move.effetto === 'CURA_PCT' ? ' degli HP massimi' : ''} e rimuove veleno e paralisi`
-      : èMossaSoloStato(move) ? `${statusName[move.effetto ?? ''] ?? 'Stato alterato'} · Nessun danno e nessuna Suprema`
-        : 'Dadi e bonus al livello attuale · Il tipo del bersaglio modifica il danno'
+    const facts = battleMoveFacts(move, pokemon.livello)
+    const effect = facts.kind === 'attack' && !èMossaSoloStato(move) ? (() => { const dice = getMossaAlLivello(move, pokemon.livello); return `${dice.dadi}d6 ${dice.incremento >= 0 ? '+' : ''}${dice.incremento}` })() : facts.label
+    const description = facts.kind === 'attack' && !èMossaSoloStato(move) ? 'Dadi e bonus al livello attuale · Il tipo del bersaglio modifica il danno' : facts.detail
     return <div className="pu-move" key={id} data-move-kind={healing ? 'heal' : èMossaSoloStato(move) ? 'status' : 'attack'}><div><strong>{move.nome}</strong><TypeBadge type={move.tipo} />{detailed && <small className="pu-move-tactical">{description}</small>}</div>
       <span className="pu-dice" role={healing ? 'note' : undefined} aria-label={description} title={description}>{effect}</span></div>
   })}</div>

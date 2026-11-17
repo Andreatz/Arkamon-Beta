@@ -13,11 +13,10 @@ const SCREENS = [
   ['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'],
   ['Borsa', 'borsa'], ['Menù Partita', 'partita'],
 ] as const
+// Catalogo del Database: a Venezia si vendono soltanto Pozione, Rianimatore e Sacchettino.
 const ITEMS = [
-  ['potion', 'Pozione'], ['super-potion', 'Superpozione'], ['revive', 'Rianimatore'],
-  ['antidote', 'Antidoto'], ['paralysis-heal', 'Antiparalisi'], ['awakening', 'Sveglia'], ['masterball', 'Master Arkaball'],
+  ['potion', 'Pozione'], ['revive', 'Rianimatore'], ['sacchettino', 'Sacchettino'],
 ] as const
-const VENEZIA_STOCK = ['Pozione', 'Rianimatore', 'Arkaball']
 
 /** Dense but valid portable data exercises layout; UI consultation must never change it. */
 async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directDeposit = false) {
@@ -66,7 +65,7 @@ async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directD
   }
   await page.addInitScript(({ key, state }) => {
     if (localStorage.getItem(key)) return
-    localStorage.setItem(key, JSON.stringify({ version: 0, state }))
+    localStorage.setItem(key, JSON.stringify({ version: 0, state: { ...state, dataVersion: 2 } }))
     localStorage.setItem('arkamon-preferences-v1', JSON.stringify({ version: 1, state: {
       musicVolume: 0, effectsVolume: 0, animationSpeed: 'fast', reducedMotion: 'on',
     } }))
@@ -80,7 +79,7 @@ async function savedCampaign(page: Page) {
 }
 
 async function openTools(page: Page) {
-  await page.getByRole('button', { name: /^(?:Partita|Menù)$/ }).click()
+  await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   await expect(dialog).toBeVisible()
   return dialog
@@ -159,12 +158,6 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
     const source = svg.getAttribute('data-creature-source')!
     const speciesId = svg.getAttribute('data-species-id')
     const entry = metadata[source]
-    if (source === '/ui/grey_pokeball.png') {
-      const expectedSprite = `/sprites/front_sprites/${speciesId}.png`
-      const href = svg.querySelector('image')?.getAttribute('href')
-      return { source, speciesId, issues: metadata[expectedSprite] || !href?.endsWith(source)
-        ? ['Incorrect placeholder for the species'] : [] }
-    }
     if (!entry) return { source, issues: ['Unrecognized source metadata'] }
     const issues: string[] = []
     if (source !== `/sprites/front_sprites/${speciesId}.png`) issues.push('Portrait does not use the official front sprite')
@@ -231,6 +224,8 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
     const top = rect.top + parseFloat(style.paddingTop) + (contentHeight - height) / 2
     const right = left + width, bottom = top + height
     if (scale <= 0 || rect.width > host.width + epsilon || rect.height > host.height + epsilon) issues.push('Compact portrait exceeds its host')
+    // Fase U2: nelle zone che scorrono per scelta, un ritratto fuori vista non è tagliato: si raggiunge scorrendo.
+    if (image.closest('.pu-u2-deposit .pu-box-grid, .pu-u2-dex .pu-dex-list')) return { source, speciesId, issues }
     if (left < -epsilon || right > innerWidth + epsilon || top < -epsilon || bottom > innerHeight + epsilon) issues.push('Compact portrait canvas exceeds viewport')
     for (let ancestor = image.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
       const ancestorStyle = getComputedStyle(ancestor), bounds = ancestor.getBoundingClientRect()
@@ -269,8 +264,11 @@ async function assertFitsWithoutScroll(dialog: Locator, context: string) {
     const main = all.filter(element => element === root || element.matches(mainSelector))
     const metrics = main.map(element => ({ element: identify(element), height: element.clientHeight,
       contentHeight: element.scrollHeight, top: element.getBoundingClientRect().top, bottom: element.getBoundingClientRect().bottom }))
+    // Fase U2: la griglia del box e l'indice dell'Arkadex scorrono per scelta; il resto deve stare senza scorrere.
+    const scrollRegion = (element: Element) => element.matches('.pu-u2-deposit .pu-box-grid, .pu-u2-dex .pu-dex-list')
     for (const element of all) {
       const style = getComputedStyle(element)
+      if (scrollRegion(element)) continue
       const required = main.includes(element) || ['auto', 'scroll'].includes(style.overflowY)
       if (required && element.scrollHeight > element.clientHeight + epsilon) {
         issues.push(`${identify(element)}: vertical content ${element.scrollHeight}px exceeds available ${element.clientHeight}px (overflow-y:${style.overflowY})`)
@@ -283,12 +281,14 @@ async function assertFitsWithoutScroll(dialog: Locator, context: string) {
     if (document.documentElement.scrollWidth > innerWidth + epsilon) issues.push('Document exceeds the viewport horizontally')
 
     function checkBounds(rect: DOMRect, element: HTMLElement, label: string, horizontal: boolean) {
+      if (element.closest('.pu-u2-deposit .pu-box-grid, .pu-u2-dex .pu-dex-list')) return
       if (rect.top < -epsilon || rect.bottom > innerHeight + epsilon
         || (horizontal && (rect.left < -epsilon || rect.right > innerWidth + epsilon))) {
         issues.push(`${label}: outside ${innerWidth}×${innerHeight} viewport (${Math.round(rect.left)},${Math.round(rect.top)})–(${Math.round(rect.right)},${Math.round(rect.bottom)})`)
       }
       // Decoration/portrait artwork may have intentional crops. Commands and text may not be clipped vertically.
       for (let ancestor = element.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
+        if (scrollRegion(ancestor)) break
         const style = getComputedStyle(ancestor)
         if (['hidden', 'clip', 'auto', 'scroll'].includes(style.overflowY)) {
           const bound = ancestor.getBoundingClientRect(), top = bound.top + ancestor.clientTop
@@ -356,44 +356,24 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
         await dialog.getByLabel('Scegli box del deposito').selectOption('1')
       }
       if (id === 'arkadex') {
-        const pagination = dialog.getByRole('navigation', { name: 'Pagine dell’Arkadex', exact: true })
-        const next = pagination.getByRole('button', { name: 'Pagina successiva dell’Arkadex', exact: true })
-        const previous = pagination.getByRole('button', { name: 'Pagina precedente dell’Arkadex', exact: true })
+        // Fase U2: un solo indice scorrevole con tutte le specie, al posto delle pagine.
+        const list = dialog.locator('.pu-dex-list')
         await dialog.getByRole('button', { name: /^Numero 1:/ }).click()
         const selectedName = await dialog.locator('.pu-dex-detail article').getAttribute('aria-label')
-        await expect(previous).toBeDisabled()
-        const pageSize = 6
-        const pageCount = Math.ceil(pokemonCatalog.length / pageSize)
-        const visitedSpecies: number[] = []
-        const portraitSources = new Set<string>()
-        for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
-          await expect(pagination).toContainText(`Pagina ${pageNumber} / ${pageCount}`)
-          const numbers = await dialog.locator('.pu-dex-list .pu-dex-row').evaluateAll(rows => rows.map(row =>
-            Number(row.getAttribute('aria-label')?.match(/^Numero (\d+):/)?.[1])))
-          expect(numbers).toHaveLength(Math.min(pageSize, pokemonCatalog.length - (pageNumber - 1) * pageSize))
-          visitedSpecies.push(...numbers)
-          await expect(dialog.locator('.pu-dex-detail article')).toHaveAttribute('aria-label', selectedName!)
-          const framing = await assertFitsWithoutScroll(dialog, `Arkadex: page ${pageNumber} / ${pageCount} and stable selected specimen`)
-          framing.portraits.forEach(portrait => portraitSources.add(portrait.source))
-          if (pageNumber < pageCount) await next.click()
-        }
-        expect(visitedSpecies).toEqual(pokemonCatalog.map(species => species.id))
-        expect([...portraitSources].filter(source => source.endsWith('idle-poster.webp'))).toHaveLength(0)
-        const expectedPortraits = new Set(pokemonCatalog.map(({ id }) => {
-          const compact = `/ui/reference-png/portrait-${String(id).padStart(3, '0')}.webp`
-          if (compactPortraitMetadata[compact]) return compact
-          const front = `/sprites/front_sprites/${id}.png`
-          return portraitMetadata[front] ? front : '/ui/grey_pokeball.png'
-        }))
-        expect([...portraitSources].sort()).toEqual([...expectedPortraits].sort())
-        // Paging changes only the compact index. The authored fullscreen hero remains species 1.
+        const numbers = await list.locator('.pu-dex-row').evaluateAll(rows => rows.map(row =>
+          Number(row.getAttribute('aria-label')?.match(/^Numero (\d+):/)?.[1])))
+        expect(numbers).toEqual(pokemonCatalog.map(species => species.id))
+        // I ritratti si montano solo vicino alla parte visibile: all'apertura non sono tutti caricati.
+        expect(await list.locator('.pu-dex-row img.pu-creature-compact').count()).toBeLessThan(pokemonCatalog.length)
+        await assertFitsWithoutScroll(dialog, 'Arkadex: index at the top with selected specimen')
+        await list.evaluate(element => { element.scrollTop = element.scrollHeight })
+        await expect(dialog.getByRole('button', { name: new RegExp(`^Numero ${pokemonCatalog.at(-1)!.id}:`) })).toBeInViewport()
+        await expect(dialog.locator('.pu-dex-detail article')).toHaveAttribute('aria-label', selectedName!)
+        const framing = await assertFitsWithoutScroll(dialog, 'Arkadex: index scrolled to the last species, stable selection')
+        expect(framing.portraits.filter(portrait => portrait.source.endsWith('idle-poster.webp'))).toHaveLength(0)
         await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-reference-splash-ready', 'true')
         await expect(dialog.locator('.pu-dex-hero .pu-splash-hero-presence')).toHaveAttribute('data-splash-species', '1')
         await expect(dialog.locator('.pu-dex-hero .pu-splash-hero-presence')).toHaveAttribute('data-splash-source', /\/backgrounds\/arkamon-splash\/001-vyrath\.webp$/)
-        await expect(next).toBeDisabled()
-        await previous.click()
-        await expect(pagination).toContainText(`Pagina ${pageCount - 1} / ${pageCount}`)
-        await assertFitsWithoutScroll(dialog, 'Arkadex: previous page without scrolling')
         await dialog.getByLabel('Cerca specie scoperta o numero').fill('1')
         await dialog.getByRole('button', { name: /^Numero 1:/ }).click()
         const detailTabs = dialog.getByRole('navigation', { name: 'Sezioni della scheda Arkadex', exact: true })
@@ -405,9 +385,9 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
         await dialog.getByRole('button', { name: /^Numero 110:/ }).click()
         await assertFitsWithoutScroll(dialog, 'Arkadex: final species with owned specimen')
         await dialog.getByRole('button', { name: 'Azzera filtri', exact: true }).click()
-        await expect(pagination).toContainText(`Pagina 1 / ${pageCount}`)
+        await expect(list.locator('.pu-dex-row')).toHaveCount(pokemonCatalog.length)
         await expect(dialog.getByLabel('Cerca specie scoperta o numero')).toHaveValue('')
-        await assertFitsWithoutScroll(dialog, 'Arkadex: filters reset restores the full paginated catalog')
+        await assertFitsWithoutScroll(dialog, 'Arkadex: filters reset restores the full catalog')
       }
       if (id === 'analisi') {
         for (const pokemon of before.giocatore1.squadra as PokemonIstanza[]) {
@@ -608,13 +588,13 @@ for (const { width, height } of [{ width: 1920, height: 900 }, { width: 1920, he
       const returnedCampaign = await savedCampaign(page)
       expect(returnedCampaign).toEqual({ ...before, scenaCorrente: before.scenaPrecedente, scenaPrecedente: null })
       const dialog = await openConfiguredShop(page)
-      for (const itemName of VENEZIA_STOCK) {
+      for (const [, itemName] of ITEMS) {
         await dialog.getByRole('button', { name: `Seleziona ${itemName}`, exact: true }).click()
         const quantity = dialog.getByLabel(`Quantità di ${itemName}`, { exact: true })
         await expect(quantity).toBeEnabled()
         await quantity.fill('99')
       }
-      await expect(dialog.locator('.pu-cart-line')).toHaveCount(VENEZIA_STOCK.length)
+      await expect(dialog.locator('.pu-cart-line')).toHaveCount(ITEMS.length)
       await assertFitsWithoutScroll(dialog, `${height}px returned city, complete cart and checkout warnings`)
       expect(await savedCampaign(page)).toEqual(returnedCampaign)
     })

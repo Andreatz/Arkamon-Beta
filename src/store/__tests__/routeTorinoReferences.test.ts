@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getLocalMap, type LocalMapNode } from '@data/localMaps'
 import { getLocalMapNode } from '@engine/localMapMovement'
-import { SECRET_LOCATION_GYM_IDS } from '@data/secretLocation'
+import { ALLENATORI } from '@data/index'
 import { useGameStore } from '@store/gameStore'
 import type { PosizioneAvatar } from '@/types'
 import referenceData from '@data/__tests__/fixtures/routeTorinoReferences.json'
@@ -27,7 +27,7 @@ vi.hoisted(() => {
 })
 
 const references: CityReference[] = referenceData
-const allGymIds = SECRET_LOCATION_GYM_IDS
+const allGymIds = ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra').map((trainer) => trainer.id)
 
 function prepareMap(city: string) {
   useGameStore.getState().reset()

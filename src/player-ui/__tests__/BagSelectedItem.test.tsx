@@ -51,7 +51,7 @@ describe('selected inventory item action view', () => {
     expect(markup).not.toContain('is-single-item')
     expect(markup).toContain('Oggetti disponibili')
     for (const item of SHOP_ITEMS) expect(markup).toContain(item.description)
-    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>(?:<span\b[^>]*><\/span>)*Usa Master Arkaball<\/button>/)
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>(?:<span\b[^>]*><\/span>)*Usa Sacchettino Supremo<\/button>/)
     expect(onUse).not.toHaveBeenCalled()
   })
 
@@ -69,7 +69,7 @@ describe('selected inventory item action view', () => {
     const markup = renderToStaticMarkup(<BagScreen playerId={1} />)
     expect(useButtons(markup)).toEqual(['Pozione'])
     expect(markup).toContain('Pozione: 2 disponibili')
-    expect(markup).toContain('Master Arkaball: 1 disponibili')
+    expect(markup).toContain('Sacchettino Supremo: 1 disponibili')
     expect(markup).not.toContain('Antiparalisi: 0 disponibili')
     expect(markup).toContain('value="selected-bag-target"')
     expect(runtime.state.giocatore1).toEqual(playerBefore)
@@ -88,8 +88,9 @@ describe('selected inventory item action view', () => {
     // La Pozione usa l'illustrazione dipinta del catalogo game-art (audit UX/UI, U0).
     expect(markup).toMatch(/<span(?=[^>]*class="[^"]*pu-kit-icon-art)(?=[^>]*data-icon="item-potion")[^>]*>/)
     expect(markup).toMatch(/<img(?=[^>]*data-game-art="item-potion")(?=[^>]*src="[^"]*\/ui\/game-art\/item-potion\.webp")[^>]*>/)
-    // Gli oggetti ancora senza illustrazione mantengono il glifo CSS.
-    expect(markup).toContain('pu-kit-icon-glyph')
+    // Lotto 1: anche il Sacchettino Supremo ha la sua illustrazione, nessun glifo CSS resta in borsa.
+    expect(markup).toMatch(/<img(?=[^>]*data-game-art="item-sacchettino-supremo")[^>]*>/)
+    expect(markup).not.toContain('pu-kit-icon-glyph')
     expect(markup).toContain('data-provided-asset="card-selected"')
     expect(markup).toMatch(/<img(?=[^>]*class="[^"]*pu-provided-slot-frame)(?=[^>]*data-package-asset="[^"]+")(?=[^>]*src="[^"]*\/ui\/reference-png\/[a-z0-9_-]+\.webp")[^>]*>/)
     expect(markup).toContain('--bag-command-art:none')

@@ -4,7 +4,6 @@ import { useAdminStore } from '@/store/adminStore'
 import { getPokemon } from '@/data/index'
 import { calcolaHPMax, getMossaAlLivello } from '@/engine/battleEngine'
 import { assetUrl } from '@/utils/assetUrl'
-import { getArkamonSpriteSource } from '@/utils/arkamonSpriteSource'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { ArkamonBattleSprite, type ArkamonAnimationCue } from '@/components/arkamon/ArkamonBattleSprite'
 import { getArkamonAnimationAsset, type ArkamonBattleAnimation } from '@/components/arkamon/arkamonAnimationManifest'
@@ -212,7 +211,7 @@ export function ScambioModal({
                 className="flex min-h-[116px] items-center gap-3 rounded-md border border-white/10 bg-slate-900/86 p-3 text-left shadow-lg transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-45"
               >
                 <img
-                  src={assetUrl(getArkamonSpriteSource(pokemon.specieId))}
+                  src={assetUrl(`/sprites/front_sprites/${pokemon.specieId}.png`)}
                   alt=""
                   className="h-20 w-20 shrink-0 object-contain"
                 />

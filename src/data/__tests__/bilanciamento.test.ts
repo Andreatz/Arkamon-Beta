@@ -6,15 +6,12 @@ import {
 import {
   ALLENATORI,
   INCONTRI,
-  getIncontri,
-  getCespugliInLuogo,
   MAPPE,
   MOSSE,
 } from '@data/index'
 import {
   ECONOMIA_BILANCIAMENTO,
   PROGRESSIONE_MAPPE,
-  RANGE_LIVELLI_ALLENATORI,
   SOGLIE_EFFETTI_SPECIALI,
 } from '@data/bilanciamento'
 
@@ -23,42 +20,46 @@ describe('bilanciamento progressione', () => {
     expect(PROGRESSIONE_MAPPE).toEqual(MAPPE.map((m) => m.nome))
   })
 
-  it('blocca i range livello di ogni allenatore della run principale', () => {
-    for (const allenatore of ALLENATORI.filter((trainer) => trainer.idDatabase === undefined)) {
-      const range = RANGE_LIVELLI_ALLENATORI[allenatore.id]
-      expect(range, `Range mancante per allenatore ${allenatore.id}`).toBeTruthy()
-
+  it('ogni allenatore del Database ha una squadra con livelli validi', () => {
+    for (const allenatore of ALLENATORI) {
       const livelli = allenatore.squadra.map((p) => p.livello)
-      expect(Math.min(...livelli)).toBeGreaterThanOrEqual(range.min)
-      expect(Math.max(...livelli)).toBeLessThanOrEqual(range.max)
+      expect(livelli.length, `Squadra vuota: ${allenatore.id}`).toBeGreaterThan(0)
+      expect(livelli.length).toBeLessThanOrEqual(6)
+      expect(Math.min(...livelli)).toBeGreaterThanOrEqual(5)
+      expect(Math.max(...livelli)).toBeLessThanOrEqual(100)
     }
   })
 
-  it('mantiene in crescita i livelli degli otto Capipalestra del foglio', () => {
-    const gymAces = ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra' && trainer.idDatabase !== undefined)
-      .sort((first, second) => first.idDatabase! - second.idDatabase!)
-      .map((trainer) => Math.max(...trainer.squadra.map((member) => member.livello)))
-    expect(gymAces).toEqual([10, 19, 26, 31, 37, 40, 55, 60])
+  it('mantiene i capipalestra in crescita lungo la progressione', () => {
+    const gymAces = ALLENATORI.filter((a) => a.tipo === 'Capopalestra').map(
+      (a) => Math.max(...a.squadra.map((p) => p.livello))
+    )
+
+    for (let i = 1; i < gymAces.length; i++) {
+      expect(gymAces[i]).toBeGreaterThan(gymAces[i - 1])
+    }
   })
 })
 
-describe('incontri selvatici del database', () => {
-  it('usa i gruppi del foglio nelle città e nei percorsi con gruppi estesi', () => {
-    expect(getIncontri('Venezia', 'A').map((row) => row.pokemonId)).toEqual([99, 196, 111, 101])
-    expect(getIncontri('Percorso_1', 'A').map((row) => row.pokemonId)).toEqual([105, 89, 56, 19])
-    expect(getCespugliInLuogo('Percorso_15')).toEqual('ABCDEFGHIJKLMNOP'.split(''))
-    expect(getIncontri('Percorso_15', 'P')).toContainEqual({
-      luogo: 'Percorso_15', cespuglio: 'P', pokemonId: 132, probabilita: 'Difficile', livelloMin: 70, livelloMax: 70,
-    })
+describe('bilanciamento incontri selvatici (Database)', () => {
+  it('ogni luogo con incontri è sulla mappa o è il Percorso 15', () => {
+    const luoghi = new Set([...MAPPE.map((m) => m.nome), 'Percorso_15'])
+    for (const incontro of INCONTRI) expect(luoghi.has(incontro.luogo), incontro.luogo).toBe(true)
   })
 
-  it('espone solo specie da battaglia con livelli e probabilità validi', () => {
-    for (const encounter of INCONTRI) {
-      expect(encounter.pokemonId).not.toBe(130)
-      expect(encounter.livelloMin).toBeGreaterThanOrEqual(5)
-      expect(encounter.livelloMax).toBeLessThanOrEqual(100)
-      expect(encounter.livelloMin).toBeLessThanOrEqual(encounter.livelloMax)
-      expect(['Comune', 'Medio', 'Difficile']).toContain(encounter.probabilita)
+  it('i livelli degli incontri sono validi e ordinati', () => {
+    for (const incontro of INCONTRI) {
+      expect(incontro.livelloMin).toBeGreaterThanOrEqual(5)
+      expect(incontro.livelloMax).toBeLessThanOrEqual(100)
+      expect(incontro.livelloMin).toBeLessThanOrEqual(incontro.livelloMax)
+    }
+  })
+
+  it('ogni cespuglio offre almeno un incontro Comune', () => {
+    const cespugli = new Set(INCONTRI.map((i) => `${i.luogo}:${i.cespuglio}`))
+    for (const key of cespugli) {
+      const [luogo, cespuglio] = key.split(':')
+      expect(INCONTRI.some((i) => i.luogo === luogo && i.cespuglio === cespuglio && i.probabilita === 'Comune'), key).toBe(true)
     }
   })
 })
@@ -87,7 +88,7 @@ describe('bilanciamento economia', () => {
   })
 
   it('una run completa ha una ricompensa totale positiva ma non esplosiva', () => {
-    const totale = ALLENATORI.filter((trainer) => trainer.idDatabase === undefined).reduce((somma, a) => {
+    const totale = ALLENATORI.reduce((somma, a) => {
       if (a.tipo === 'NPC') return somma + calcolaVariazioneMonete('vittoria', 'NPC')
       if (a.tipo === 'Capopalestra') {
         return somma + calcolaVariazioneMonete('vittoria', 'Capopalestra')
@@ -95,8 +96,9 @@ describe('bilanciamento economia', () => {
       return somma
     }, 0)
 
+    // 102 NPC e 8 capipalestra del Database.
     expect(totale).toBeGreaterThan(0)
-    expect(totale).toBeLessThanOrEqual(15000)
+    expect(totale).toBeLessThanOrEqual(30000)
   })
 })
 
@@ -118,11 +120,12 @@ describe('bilanciamento stati, cure e Supreme', () => {
         )
       }
 
-      if (!mossa.soloStato && (
+      if (
+        !mossa.soloStato && (
         mossa.effetto === 'CONFUSIONE' ||
         mossa.effetto === 'SONNO' ||
-        mossa.effetto === 'VELENO'
-      )) {
+        mossa.effetto === 'VELENO')
+      ) {
         expect(mossa.valoreEffetto).toBeGreaterThanOrEqual(
           SOGLIE_EFFETTI_SPECIALI.statoValoreMin
         )

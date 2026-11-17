@@ -8,7 +8,7 @@ async function openFixture(page: Page, battle = false, enemyHP = 4, poisoned = f
     const b = { istanzaId: 'audit-b', specieId: 13, nome: 'Wormaren Audit', livello: 5, hp: enemyHP, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Audit ${id}`, squadra: [id === 1 ? a : { ...a, istanzaId: 'audit-g2', nome: 'Vyrath Due', stato: undefined }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 1000, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: {
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, audioMuted: true,
@@ -76,7 +76,7 @@ test('a rejected capture save consumes nothing and retries the same action once'
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   await openFixture(page, true, 4, true)
-  const masterball = page.getByRole('button', { name: 'Master Arkaball x1', exact: true })
+  const masterball = page.getByRole('button', { name: 'Sacchettino Supremo ×1', exact: true })
   await expect(masterball).toBeEnabled()
   await page.evaluate(() => {
     const original = Storage.prototype.setItem
@@ -167,7 +167,7 @@ test('a full deposit blocks an out-of-range capture before consuming a Masterbal
     localStorage.setItem('arkamon-save', JSON.stringify(save))
   })
   await page.reload()
-  const masterball = page.getByRole('button', { name: 'Master Arkaball x1', exact: true })
+  const masterball = page.getByRole('button', { name: 'Sacchettino Supremo ×1', exact: true })
   await expect(masterball).toBeEnabled()
   const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   await masterball.click()

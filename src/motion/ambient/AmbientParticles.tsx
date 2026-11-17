@@ -1,6 +1,6 @@
 import { useMemo, type CSSProperties } from 'react'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
-import { createParticles, type AmbientVariant } from './particles'
+import { createParticles, type AmbientVariant } from './ambientParticles'
 import './ambientParticles.css'
 
 /**

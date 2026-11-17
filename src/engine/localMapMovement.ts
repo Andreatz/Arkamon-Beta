@@ -22,21 +22,35 @@ export function getAdjacentLocalMapNodes(map: LocalMapDefinition, nodeId: string
   return [...adjacent]
 }
 
-export function canMoveOnLocalMap(map: LocalMapDefinition, from: string, to: string): boolean {
-  return getAdjacentLocalMapNodes(map, from).includes(to)
+/**
+ * Pallini raggiungibili con un movimento. `range` 1 = solo adiacenti; 2 = Bicicletta nei percorsi
+ * o Monopattino nelle città (si attraversa un pallino intermedio senza fermarsi).
+ */
+export function getReachableLocalMapNodes(map: LocalMapDefinition, from: string, range = 1): string[] {
+  const distance = localDistances(map, from, range)
+  distance.delete(from)
+  return [...distance.keys()]
 }
 
-export function getReachableLocalMapNodes(map: LocalMapDefinition, from: string, reach: 1 | 2 = 1): string[] {
-  const firstSteps = getAdjacentLocalMapNodes(map, from)
-  if (reach === 1) return firstSteps
-  return [...new Set(firstSteps.concat(firstSteps.flatMap(step => getAdjacentLocalMapNodes(map, step))))].filter(node => node !== from)
+function localDistances(map: LocalMapDefinition, from: string, range: number): Map<string, { steps: number; via?: string }> {
+  const seen = new Map<string, { steps: number; via?: string }>([[from, { steps: 0 }]])
+  let frontier = [from]
+  for (let step = 1; step <= range; step++) {
+    const next: string[] = []
+    for (const node of frontier) {
+      for (const adjacent of getAdjacentLocalMapNodes(map, node)) {
+        if (seen.has(adjacent)) continue
+        seen.set(adjacent, { steps: step, via: node })
+        next.push(adjacent)
+      }
+    }
+    frontier = next
+  }
+  return seen
 }
 
-export function getLocalTravelPath(map: LocalMapDefinition, from: string, to: string, reach: 1 | 2 = 1): LocalMapPoint[] {
-  const direct = getLocalRoadPath(map, from, to)
-  if (direct.length || reach === 1 || from === to) return direct
-  const midpoint = getAdjacentLocalMapNodes(map, from).find(node => canMoveOnLocalMap(map, node, to))
-  return midpoint ? [...getLocalRoadPath(map, from, midpoint), ...getLocalRoadPath(map, midpoint, to).slice(1)] : []
+export function canMoveOnLocalMap(map: LocalMapDefinition, from: string, to: string, range = 1): boolean {
+  return to !== from && getReachableLocalMapNodes(map, from, range).includes(to)
 }
 
 /** Il percorso grafico comprende gli estremi e segue le curve anche percorrendolo al contrario. */
@@ -48,4 +62,15 @@ export function getLocalRoadPath(map: LocalMapDefinition, from: string, to: stri
     (candidate.from === from && candidate.to === to) || (candidate.from === to && candidate.to === from))!
   const intermediates = road.from === from ? road.points ?? [] : [...(road.points ?? [])].reverse()
   return [origin, ...intermediates, destination].map(({ x, y }) => ({ x, y }))
+}
+
+/** Percorso grafico di un movimento: diretto, oppure attraverso un pallino intermedio con un veicolo. */
+export function getLocalTravelPath(map: LocalMapDefinition, from: string, to: string, range = 1): LocalMapPoint[] {
+  const direct = getLocalRoadPath(map, from, to)
+  if (direct.length || range < 2) return direct
+  const via = localDistances(map, from, 2).get(to)?.via
+  if (!via || via === from) return []
+  const first = getLocalRoadPath(map, from, via)
+  const second = getLocalRoadPath(map, via, to)
+  return first.length && second.length ? [...first, ...second.slice(1)] : []
 }

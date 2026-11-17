@@ -6,7 +6,7 @@ import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { pendingFrontSpriteInventory } from '../package-web-assets.mjs'
-import { fingerprintRelease, NATIVE_RELEASE_PROOF, NATIVE_RELEASE_SCENARIOS, EXPANSION_NATIVE_RELEASE_SPECIES, readPassingReport, sealRelease, verifyRelease } from '../release-verification.mjs'
+import { fingerprintRelease, NATIVE_RELEASE_PROOF, NATIVE_RELEASE_SCENARIOS, PENDING_NATIVE_RELEASE_SPECIES, readPassingReport, sealRelease, verifyRelease } from '../release-verification.mjs'
 
 function nativeReport(artifact) {
   return { stats: { expected: NATIVE_RELEASE_SCENARIOS.length, unexpected: 0, flaky: 0, skipped: 0 }, suites: [{ specs: NATIVE_RELEASE_SCENARIOS.map(title => ({ title, tests: [{
@@ -15,7 +15,7 @@ function nativeReport(artifact) {
   }] })) }] }
 }
 
-async function releaseFixture(t, { species = [107, 108, 109, 110, ...EXPANSION_NATIVE_RELEASE_SPECIES], frames = () => 10 } = {}) {
+async function releaseFixture(t, { species = [107, 108, 109, 110, ...PENDING_NATIVE_RELEASE_SPECIES], frames = () => 10 } = {}) {
   const root = await mkdtemp(path.join(os.tmpdir(), 'arkamon-release-'))
   t.after(() => rm(root, { recursive: true, force: true }))
   const dist = path.join(root, 'dist'); await mkdir(dist)
@@ -111,15 +111,15 @@ test('a missing, partial, skipped or unbound native compiled group cannot seal a
   await assert.rejects(sealRelease(fixture), /belongs to another artifact/)
 })
 
-test('every expansion native form and original portrait scenario is required in addition to the six original cases', async t => {
+test('every pending native form and pinned portrait scenario is required in addition to the six original cases', async t => {
   const fixture = await releaseFixture(t)
   assert.equal(NATIVE_RELEASE_SCENARIOS.length, 73)
   const requiredPending = [
     ...[
       ...Array.from({ length: 56 }, (_, index) => index + 111),
       169, 170, 171, 172, 173, 174, 175, 176,
-    ].map(id => `compiled ${id}: expansion form plays all five native actions`),
-    ...[205, 184, 206].map(id => `compiled ${id}: expansion portrait uses the exact supplied original`),
+    ].map(id => `compiled ${id}: pending form plays five native actions without game data`),
+    ...[205, 184, 206].map(id => `compiled ${id}: pending portrait uses the exact pinned original without game data`),
   ]
   assert.deepEqual(NATIVE_RELEASE_SCENARIOS.slice(6), requiredPending)
   const full = nativeReport(fixture.artifact)
@@ -166,7 +166,7 @@ test('verification rejects receipts from the old gate and receipts without nativ
 
 test('catalog growth is verified against source metadata and the pin instead of historical totals', async t => {
   const fixture = await releaseFixture(t, {
-    species: [...Array.from({ length: 110 }, (_, index) => index + 1), ...EXPANSION_NATIVE_RELEASE_SPECIES],
+    species: [...Array.from({ length: 110 }, (_, index) => index + 1), ...PENDING_NATIVE_RELEASE_SPECIES],
     frames: index => index === 869 ? 21 : 96,
   })
   assert.equal(fixture.artifact.nativeClips, 870)

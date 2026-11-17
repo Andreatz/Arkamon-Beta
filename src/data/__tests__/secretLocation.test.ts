@@ -3,16 +3,16 @@ import { ALLENATORI } from '@data/index'
 import { SECRET_LOCATION_GYM_IDS, hasUnlockedSecretLocation, isSecretLocationConnection } from '@data/secretLocation'
 
 describe('luogo segreto dopo tutte le palestre', () => {
-  it('accetta le otto medaglie storiche oppure gli otto Capipalestra del database', () => {
-    const historical = ALLENATORI.filter((a) => SECRET_LOCATION_GYM_IDS.includes(a.id))
-    const authored = ALLENATORI.filter((a) => a.tipo === 'Capopalestra' && a.idDatabase !== undefined)
-    expect(historical).toHaveLength(8)
-    expect(authored).toHaveLength(8)
-    expect(historical.some((a) => a.luogo === 'Roma')).toBe(true)
-    for (const track of [historical, authored]) {
-      expect(hasUnlockedSecretLocation({ allenatoriSconfitti: new Set(track.map((gym) => gym.id)) })).toBe(true)
-      expect(hasUnlockedSecretLocation({ allenatoriSconfitti: new Set(track.slice(1).map((gym) => gym.id)) })).toBe(false)
-    }
+  it('richiede tutti gli otto capipalestra reali del Database', () => {
+    const capi = ALLENATORI.filter((a) => a.tipo === 'Capopalestra')
+    expect(capi).toHaveLength(8)
+    expect(SECRET_LOCATION_GYM_IDS).toEqual(capi.map((a) => a.id))
+    expect(hasUnlockedSecretLocation({ allenatoriSconfitti: new Set(SECRET_LOCATION_GYM_IDS) })).toBe(true)
+  })
+
+  it.each(ALLENATORI.filter((a) => a.tipo === 'Capopalestra'))('resta chiuso quando manca $nome', (capo) => {
+    const altri = ALLENATORI.filter((a) => a.id !== capo.id).map((a) => a.id)
+    expect(hasUnlockedSecretLocation({ allenatoriSconfitti: new Set(altri) })).toBe(false)
   })
 
   it('NPC e rivali sconfitti non sostituiscono una palestra', () => {

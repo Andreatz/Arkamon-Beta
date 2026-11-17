@@ -4,7 +4,7 @@ import { LocalMapBoard, type LocalMapPlayer } from '@/components/map/LocalMapBoa
 import { getLocalMap, type LocalMapDefinition } from '@/data/localMaps'
 import { SECRET_LOCATION_ID, SECRET_LOCATION_ORIGIN, canAccessSecretLocation, hasUnlockedSecretLocation } from '@/data/secretLocation'
 import { getReachableLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
-import { localMovementReach } from '@/shop/catalog'
+import { localMoveRange } from '@/shop/catalog'
 import { useGameStore } from '@/store/gameStore'
 import { useSceneInputBlocked } from '@/components/transitions/SceneNavigationContext'
 import { makeDialogBackgroundInert } from '@/components/battle/modalFocus'
@@ -96,8 +96,8 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const current = players.find((p) => p.id === actor)
   const remaining = turn.giocatoreAttivo === actor ? turn.azioniRimaste : 0
   const canMove = !!current && remaining > 0 && !blocked && !battle
-  const reach = localMovementReach((actor === 1 ? player1 : player2).inventario, map.id)
-  const adjacent = current ? getReachableLocalMapNodes(map, current.nodeId, reach) : []
+  const moveRange = localMoveRange((actor === 1 ? player1 : player2).inventario, map.id)
+  const adjacent = current ? getReachableLocalMapNodes(map, current.nodeId, moveRange) : []
   const currentNode = current ? getLocalMapNode(map, current.nodeId) : null
   const pointInteractions = definitions.filter((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === currentNode?.id)
   const interactionLabels = Object.fromEntries(definitions.filter((entry) => entry.enabled && entry.mapId === map.id).map((entry) => [entry.nodeId, entry.title]))
@@ -145,31 +145,11 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       <GameButton tone="primary" disabled={blocked} onClick={passTurn}>Passa turno</GameButton>
     </header>
     <div className="local-map-play-area">
-      <LocalMapBoard
-        map={map}
-        players={players}
-        activePlayerId={actor}
-        remainingActions={remaining}
-        canMove={canMove}
-        movementReach={reach}
-        inputBlocked={blocked || activitiesOpen || interactionOpen}
-        interactionLabels={interactionLabels}
-        interactionKinds={interactionKinds}
-        onMove={moveTo}
-        onSelectNode={(id) => {
+      <LocalMapBoard map={map} players={players} activePlayerId={actor} remainingActions={remaining} canMove={canMove}
+        inputBlocked={blocked || activitiesOpen || interactionOpen} interactionLabels={interactionLabels} interactionKinds={interactionKinds} moveRange={moveRange} onMove={moveTo} onSelectNode={(id) => {
           setSelected(id)
-          if (
-            definitions.some(
-              (entry) =>
-                entry.enabled &&
-                entry.mapId === map.id &&
-                entry.nodeId === id
-            )
-          ) {
-            setInteractionOpen(true)
-          }
-        }}
-      />
+          if (definitions.some((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === id)) setInteractionOpen(true)
+        }} />
     </div>
     <footer className="local-map-footer">
       {isReferenceUi() && <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`}>{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}`}><CreaturePortrait pokemon={pokemon}/><strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}</div>}
@@ -180,7 +160,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
         {adjacent.map((id) => <GameButton key={id} disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)} · 1 azione</GameButton>)}
       </nav>
       {pointInteractions.length > 0 && <GameButton disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</GameButton>}
-      <p>{remaining > 0 ? reach === 2 ? 'Il tuo mezzo percorre fino a due tratti per azione.' : 'Due movimenti, oppure un movimento e un’interazione.' : 'Turno concluso. Passa il controllo all’altro giocatore.'}</p>
+      <p>{remaining > 0 ? 'Due movimenti, oppure un movimento e un’interazione.' : 'Turno concluso. Passa il controllo all’altro giocatore.'}</p>
       <TurnSummary />
       {isReferenceUi() && <button type="button" className="ref-local-menu" onClick={()=>openPlayerUi('partita',{playerId:actor})}><KitIcon id="icon-home"/>Menù</button>}
     </footer>

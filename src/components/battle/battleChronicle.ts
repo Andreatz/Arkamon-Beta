@@ -1,6 +1,6 @@
+import { getPokemon } from '@/data'
 import type { BattleChronicle, BattleLogEvent, BattleLogKind, Lato, PokemonIstanza, RisultatoMossa } from '@/types'
 import type { BattleAttackResolution } from '@/engine/battleResolution'
-import { getPokemon } from '@/data'
 import type { applicaXP, risolviStatoInizioTurno } from '@/engine/battleEngine'
 
 export const MAX_BATTLE_LOG_EVENTS = 240
@@ -56,7 +56,7 @@ export function normalizeBattleChronicle(value: unknown, fallbackId = 'recovered
     for (const key of ['actor', 'target'] as const) {
       const pokemon = item[key]
       if (isRecord(pokemon) && typeof pokemon.instanceId === 'string' && typeof pokemon.name === 'string'
-        && finite(pokemon.speciesId) && getPokemon(pokemon.speciesId)
+        && Number.isInteger(pokemon.speciesId) && finite(pokemon.speciesId) && pokemon.speciesId > 0 && !!getPokemon(pokemon.speciesId)
         && finite(pokemon.level) && pokemon.level >= 5 && pokemon.level <= 100 && finite(pokemon.hp) && pokemon.hp >= 0 && pokemon.hp <= 1_000_000) {
         event[key] = { instanceId: pokemon.instanceId.slice(0, 100), speciesId: pokemon.speciesId, name: pokemon.name.slice(0, 100), level: pokemon.level, hp: pokemon.hp }
       }
@@ -88,7 +88,7 @@ export function revealedAttackEvents(result: RisultatoMossa, side: Lato, actionI
     id: `${actionId}:attack`, kind: 'attack', side,
     title: `${result.attaccante.nome} usa ${result.mossa.nome}${result.suprema ? ' · Suprema' : ''}`,
     actor: logPokemon(result.attaccante), target: { ...logPokemon(result.difensore), hp: hpAfter },
-    messages: [result.dannoFinale > 0 ? `${result.dannoFinale} danni a ${result.difensore.nome}.` : 'Mossa di status: nessun tiro offensivo.'],
+    messages: [result.numDadi ? `${result.dannoFinale} danni a ${result.difensore.nome}.` : 'Mossa di status: nessun tiro offensivo.'],
     dice: result.tiriDado.slice(), diceSum: result.tiriDado.reduce((sum, die) => sum + die, 0),
     increment: result.incremento, baseDamage: result.dannoBase, effectiveness: result.moltiplicatoreTipo,
     supreme: result.suprema === true, damage: result.dannoFinale, hpBefore: result.difensore.hp, hpAfter,

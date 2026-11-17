@@ -30,7 +30,6 @@ function preparedCity() {
   initial.giocatore1.squadra = [pokemon('one')]
   initial.giocatore2.squadra = [pokemon('two', 5, 8, 5)]
   initial.giocatore1.monete = 300
-  initial.giocatore1.inventario = { masterball: 1, 'paralysis-heal': 1 }
   initial.giocatore2.monete = 40
   initial.posizione1.luogo = initial.posizione2.luogo = 'Venezia'
   initial.scenaCorrente = { scena: 'citta', payload: { luogo: 'Venezia' } }
@@ -201,7 +200,7 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
       savedValues.set(key, value)
     })
     try {
-      const result = before.acquistaOggetti(1, { potion: 1, arkaball: 1 }, 'Venezia', 'test-shop')
+      const result = before.acquistaOggetti(1, { potion: 1, sacchettino: 1 }, 'Venezia', 'test-shop')
       expect(result.ok).toBe(false)
       expect(result.message).toContain('non salvato')
       expect(useGameStore.getState()).toBe(before)
@@ -213,11 +212,11 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
       expect(localStorage.getItem('arkamon-save')).toBe(persistedBefore)
     } finally { writer.mockRestore() }
     // The error dialog freezes further gameplay; retry its preserved operation.
-    expect(useGameStore.getState().acquistaOggetti(1, { potion: 1, arkaball: 1 }, 'Venezia', 'test-shop').ok).toBe(false)
+    expect(useGameStore.getState().acquistaOggetti(1, { potion: 1, sacchettino: 1 }, 'Venezia', 'test-shop').ok).toBe(false)
     expect(useSaveWriteStatus.getState().retry?.()).toBe(true)
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!).state
     expect(saved.giocatore1.monete).toBe(200)
-    expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, arkaball: 1 })
+    expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, sacchettino: 6 })
     expect(saved.matchLog.events.filter((event: { kind: string }) => event.kind === 'shop')).toHaveLength(1)
   })
 
@@ -244,6 +243,7 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
     expect(useGameStore.getState().applicaOggetto(1, 'potion', 'one').ok).toBe(false)
     expect(useSaveWriteStatus.getState().retry?.()).toBe(true)
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!).state
+    // Pozione del Database: 20–25 HP, quindi il Vyrath di livello 5 torna pieno.
     expect(saved.giocatore1.squadra[0].hp).toBe(12)
     expect(saved.giocatore1.inventario.potion).toBe(0)
     expect(saved.turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
@@ -254,7 +254,7 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
     preparedCity()
     useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, squadra: [{ ...state.giocatore1.squadra[0], stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }] } }))
     const before = useGameStore.getState(), other = before.giocatore2
-    expect(before.acquistaOggetti(1, { potion: 1, arkaball: 1 }, 'Venezia', 'test-shop').ok).toBe(true)
+    expect(before.acquistaOggetti(1, { potion: 1, sacchettino: 1 }, 'Venezia', 'test-shop').ok).toBe(true)
     let state = useGameStore.getState()
     expect(state.giocatore1.monete).toBe(200)
     expect(state.giocatore1.squadra[0]).toMatchObject({ hp: 3, stato: { tipo: 'Paralizzato' } })
@@ -262,19 +262,14 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
     expect(state.matchLog.events.filter((event) => event.kind === 'shop')).toHaveLength(1)
     expect(state.matchLog.events.find((event) => event.kind === 'shop')).toMatchObject({ amount: -100, playerId: 1, place: 'Venezia' })
     expect(state.acquistaOggetti(1, { potion: 1 }, 'Venezia', 'test-shop').ok).toBe(false)
-    expect(state.applicaOggetto(1, 'paralysis-heal', 'one').ok).toBe(false)
-    state.passaTurnoMappaLocale(); useGameStore.getState().passaTurnoMappaLocale()
-    expect(useGameStore.getState().applicaOggetto(1, 'paralysis-heal', 'one').ok).toBe(true)
-    state = useGameStore.getState()
-    expect(state.giocatore1.squadra[0].hp).toBe(3)
-    expect(state.giocatore1.squadra[0].stato).toBeUndefined()
-    expect(state.giocatore1.inventario['paralysis-heal']).toBe(0)
-    expect(state.giocatore1.inventario.potion).toBe(1)
     expect(state.applicaOggetto(1, 'potion', 'one').ok).toBe(false)
     state.passaTurnoMappaLocale(); useGameStore.getState().passaTurnoMappaLocale()
     expect(useGameStore.getState().applicaOggetto(1, 'potion', 'one').ok).toBe(true)
-    expect(useGameStore.getState().giocatore1.squadra[0].hp).toBe(12)
-    expect(useGameStore.getState().giocatore1.inventario.potion).toBe(0)
+    state = useGameStore.getState()
+    expect(state.giocatore1.squadra[0].hp).toBe(12)
+    expect(state.giocatore1.squadra[0].stato?.tipo).toBe('Paralizzato')
+    expect(state.giocatore1.inventario.potion).toBe(0)
+    expect(state.giocatore1.inventario.sacchettino).toBe(6)
     expect(useGameStore.getState().giocatore2).toEqual(other)
   })
 
