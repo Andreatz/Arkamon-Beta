@@ -88,8 +88,9 @@ describe('selected inventory item action view', () => {
     // La Pozione usa l'illustrazione dipinta del catalogo game-art (audit UX/UI, U0).
     expect(markup).toMatch(/<span(?=[^>]*class="[^"]*pu-kit-icon-art)(?=[^>]*data-icon="item-potion")[^>]*>/)
     expect(markup).toMatch(/<img(?=[^>]*data-game-art="item-potion")(?=[^>]*src="[^"]*\/ui\/game-art\/item-potion\.webp")[^>]*>/)
-    // Gli oggetti ancora senza illustrazione mantengono il glifo CSS.
-    expect(markup).toContain('pu-kit-icon-glyph')
+    // Lotto 1: anche il Sacchettino Supremo ha la sua illustrazione, nessun glifo CSS resta in borsa.
+    expect(markup).toMatch(/<img(?=[^>]*data-game-art="item-sacchettino-supremo")[^>]*>/)
+    expect(markup).not.toContain('pu-kit-icon-glyph')
     expect(markup).toContain('data-provided-asset="card-selected"')
     expect(markup).toMatch(/<img(?=[^>]*class="[^"]*pu-provided-slot-frame)(?=[^>]*data-package-asset="[^"]+")(?=[^>]*src="[^"]*\/ui\/reference-png\/[a-z0-9_-]+\.webp")[^>]*>/)
     expect(markup).toContain('--bag-command-art:none')

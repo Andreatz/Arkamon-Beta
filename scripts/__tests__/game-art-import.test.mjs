@@ -51,5 +51,9 @@ describe('importazione illustrazioni di gioco', () => {
     expect(ruleForFile(inboxSpec, 'npc-giustina-vecchietta.png')?.id).toBe('npc-giustina-vecchietta')
     expect(ruleForFile(inboxSpec, 'npc-Nome Sbagliato.png')).toBeUndefined()
     expect(ruleForFile(inboxSpec, 'foto.png')).toBeUndefined()
+    // Consegne in JPG e refusi noti nel nome (lotto 1, 17/11/2026).
+    expect(ruleForFile(inboxSpec, 'item-sacchettino.jpg')?.id).toBe('item-sacchettino')
+    expect(ruleForFile(inboxSpec, 'pawn-player-1.jpeg')?.ids).toEqual(['pawn-player-1-idle', 'pawn-player-1-jump'])
+    expect(ruleForFile(inboxSpec, 'item-profump-speciale.jpg')?.id).toBe('item-profumo-speciale')
   })
 })

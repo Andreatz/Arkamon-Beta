@@ -234,3 +234,55 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-mov
 @media (max-height: 999px) {
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-summary-moves { display: none; }
 }
+
+/* ---------------- Lotto 1: ritratti e scudo della Squadra ---------------- */
+
+/* Mezzo busto del giocatore: riempie il riquadro dal basso, con la testa in vista. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-portrait .ref-trainer-bust {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / .55));
+  /* Il busto sfuma nella carta: copre anche il bordo inferiore, dove il fondo magenta toccava la figura. */
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 99%);
+  mask-image: linear-gradient(180deg, #000 78%, transparent 99%);
+}
+
+/* Scudo: i sei compagni nelle finestre misurate sull'illustrazione (1228×1400). */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-shield {
+  position: relative;
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 1228 / 1400;
+  justify-self: center;
+  min-height: 0;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-shield-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / .5));
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-shield-panes {
+  position: absolute;
+  inset: 17.1% 10.5% 18.5% 10.4%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 1.9% 2.2%;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-shield-pane {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-provided-main-menu .ref-menu-shield-pane .pu-creature-portrait {
+  width: 100%;
+  height: 100%;
+}
