@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { validateNativeManifestCompleteness } from './native-manifest-completeness.mjs'
@@ -14,7 +14,11 @@ export function readPlayableFrontSpriteIds(root) {
   }
   const ids = species.map(entry => entry.id).sort((a, b) => a - b)
   if (new Set(ids).size !== ids.length) throw new Error('Playable species IDs must be distinct for front sprite distribution')
-  return ids
+  // Elenco esplicito (facoltativo) di specie giocabili i cui sprite frontali restano nel media
+  // release fissato invece che nel sito, per stare sotto il limite di GitHub Pages.
+  const distribution = path.join(root, 'src/data/front-sprite-distribution.json')
+  const remote = existsSync(distribution) ? new Set(JSON.parse(readFileSync(distribution, 'utf8')).remote ?? []) : new Set()
+  return ids.filter(id => !remote.has(id))
 }
 /** Hash the original pending PNGs, including identity and length, without converting them. */
 export async function pendingFrontSpriteInventory(root) {
