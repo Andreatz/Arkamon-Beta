@@ -114,3 +114,44 @@ describe('LocalMapBoard - numerazione interna senza testo sui pallini', () => {
     }
   })
 })
+
+describe('LocalMapBoard - palco a tutto schermo (fase U4)', () => {
+  function renderStage(overview = false) {
+    const map = getLocalMap('Venezia')!
+    return renderToStaticMarkup(
+      <LocalMapBoard
+        map={map}
+        players={[{ id: 1, name: 'Alice', nodeId: 'n53' }, { id: 2, name: 'Bruno', nodeId: 'n49' }]}
+        activePlayerId={1} remainingActions={2} canMove stage overview={overview}
+        interactionKinds={{ n56: 'shop', n53: 'heal' }}
+        onMove={() => true} onSelectNode={() => undefined}
+      />,
+    )
+  }
+
+  it('copre ogni pallino dipinto con una pietra e mostra i segnalini dipinti solo dove c’è un’interazione', () => {
+    const markup = renderStage()
+    const buttons = nodeButtons(markup)
+    expect(buttons).toHaveLength(getLocalMap('Venezia')!.nodes.length)
+    for (const button of buttons) {
+      expect(button.body, button.id).toContain('class="local-map-node-stone"')
+      expect(button.body.replace(/<[^>]*>/g, '').trim(), button.id).toBe('')
+      expect(button.body, button.id).not.toContain('local-map-node-marker')
+    }
+    const medals = buttons.filter((button) => button.body.includes('local-map-node-medal'))
+    expect(medals.map((button) => button.id).sort()).toEqual(['n53', 'n56'])
+    expect(markup).toContain('data-game-art="node-shop"')
+    expect(markup).toContain('data-game-art="node-heal"')
+  })
+
+  it('usa le pedine a figura intera e segnala la pedina di turno senza cambiare le etichette accessibili', () => {
+    const markup = renderStage()
+    expect(markup).toContain('data-game-art="pawn-player-1-idle"')
+    expect(markup).toContain('data-game-art="pawn-player-2-idle"')
+    expect(markup).toContain('class="local-map-pawn-cue"')
+    expect(markup.match(/local-map-pawn-cue/g)).toHaveLength(1)
+    expect(markup).toContain('aria-label="Alice, giocatore 1, Punto 28, turno attivo"')
+    expect(markup).toContain('data-camera="follow"')
+    expect(renderStage(true)).toContain('data-camera="overview"')
+  })
+})

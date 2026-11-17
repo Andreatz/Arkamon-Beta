@@ -1,0 +1,259 @@
+/* ======================= Fase U4: mappa locale a tutto schermo ======================= */
+/* La mappa occupa tutta la scena; intestazione e pannelli galleggiano sopra, come nel mockup.
+   Le classi storiche (toolbar, heading, budget, play-area, footer, neighbours) restano per UI Studio e test. */
+
+html .local-map-scene.local-map-scene--stage[data-reference-ui="aurora"] {
+  --stage-gold: var(--arka-ui-gold, #d9b67b);
+  --stage-gold-bright: var(--arka-ui-gold-bright, #f4dca0);
+  --stage-panel: rgb(4 22 40 / 0.86);
+  --stage-line: var(--arka-ui-line, #a68a62);
+  position: relative;
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  background: var(--arka-ui-night, #031124);
+  font-family: var(--arka-ui-font-body, Georgia, serif);
+}
+html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-play-area { position: absolute; inset: 0; }
+
+/* ---------- Intestazione sovrapposta ---------- */
+html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-toolbar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: minmax(0, auto) auto minmax(0, 1fr) auto auto auto;
+  align-items: start;
+  gap: 12px;
+  min-height: 0;
+  padding: 14px 80px 40px 16px;
+  border: 0;
+  background: linear-gradient(to bottom, rgb(2 12 26 / 0.82), rgb(2 12 26 / 0.45) 60%, transparent);
+  box-shadow: none;
+  pointer-events: none;
+}
+html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-toolbar > * { pointer-events: auto; }
+
+/* Cartiglio del luogo. */
+.local-map-scene--stage .ref-local-place {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
+  max-width: 420px;
+  padding: 6px 22px 8px 6px;
+  border: 1px solid var(--stage-gold);
+  border-radius: 999px 12px 12px 999px;
+  background: linear-gradient(100deg, rgb(6 32 58 / 0.94), rgb(4 22 40 / 0.86));
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 6px 18px #0008;
+}
+.local-map-scene--stage .ref-local-place-emblem {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 2px solid var(--stage-gold);
+  border-radius: 50%;
+  background: radial-gradient(circle, #123b5c, #061a2e);
+  box-shadow: 0 0 0 3px rgb(6 26 46 / 0.9), inset 0 0 10px #000a;
+}
+.local-map-scene--stage .ref-local-place-emblem .pu-kit-icon { width: 32px; height: 32px; }
+.local-map-scene--stage .ref-local-place-emblem > .game-art { width: 112%; height: 112%; border-radius: 50%; object-fit: cover !important; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-heading { min-width: 0; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-heading h1 {
+  font: 400 clamp(26px, 2.2vw, 38px) / 1.05 var(--arka-ui-font-display, Georgia, serif);
+  color: var(--stage-gold-bright);
+  text-shadow: 0 2px 4px #000c;
+}
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-heading span {
+  margin-top: 3px;
+  font: italic clamp(14px, 1vw, 18px) var(--arka-ui-font-body, Georgia, serif);
+  color: #a8ddeb;
+}
+/* Riepilogo del turno sotto il cartiglio: resta solo l'obiettivo, il resto è già nella fascia del turno. */
+.local-map-scene--stage .ref-local-place .turn-summary {
+  grid-column: 1 / -1;
+  display: block;
+  margin: 6px 0 0 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: clamp(13px, 0.85vw, 16px) / 1.3 var(--arka-ui-font-body, Georgia, serif);
+  color: #e9dcc0;
+}
+.local-map-scene--stage .ref-local-place .turn-summary > span:not(:last-child) { display: none; }
+
+/* Le vecchie regole compatte riordinano titolo e azioni: sul palco l'ordine resta quello del markup. */
+html .local-map-scene--stage[data-reference-ui="aurora"] :is(.ref-local-place, .ref-local-turn) > * { order: 0; flex-basis: auto; }
+
+/* Torna alla mappa principale: comando secondario accanto al cartiglio. */
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-back { align-self: center; min-height: 40px; font-size: 15px; padding: 6px 14px; }
+
+/* Fascia «Turno di …» con ritratto e azioni rimaste (al posto del dado del mockup). */
+.local-map-scene--stage .ref-local-turn {
+  justify-self: center;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid var(--stage-gold);
+  border-radius: 999px;
+  background: linear-gradient(100deg, rgb(6 32 58 / 0.95), rgb(4 22 40 / 0.88));
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 6px 18px #0008;
+}
+.local-map-scene--stage .ref-local-turn .ref-local-face {
+  width: 64px;
+  height: 64px;
+  border: 2px solid var(--stage-gold);
+  border-radius: 50%;
+  object-fit: cover !important;
+  object-position: 50% 12%;
+  background: #0b2a44;
+  box-shadow: 0 0 0 3px rgb(6 26 46 / 0.9), 0 0 12px rgb(110 230 255 / 0.35);
+}
+.local-map-scene--stage .ref-local-turn-title {
+  margin: 0;
+  font: 400 clamp(22px, 1.9vw, 34px) / 1 var(--arka-ui-font-display, Georgia, serif);
+  color: #f7ecd6;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px #000b;
+}
+.local-map-scene--stage .ref-local-turn-title strong { font-weight: 700; color: var(--stage-gold-bright); }
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-budget {
+  min-height: 0;
+  padding: 8px 16px;
+  border: 1px solid #70e4f5;
+  border-radius: 999px;
+  background: rgb(6 40 62 / 0.95);
+  box-shadow: inset 0 0 10px rgb(78 220 251 / 0.25);
+  font: 400 clamp(17px, 1.3vw, 24px) / 1 var(--arka-ui-font-display, Georgia, serif);
+  color: #e9fbff;
+  white-space: nowrap;
+}
+
+/* Giocatori a destra. */
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-players { align-self: center; }
+.local-map-scene--stage .ref-local-players > span { min-width: 150px; padding: 4px 12px 4px 4px; background: rgb(4 22 40 / 0.9); }
+.local-map-scene--stage .ref-local-players .ref-local-face { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d1ae75; object-fit: cover !important; object-position: 50% 12%; background: #0b2a44; }
+.local-map-scene--stage .ref-local-players > span > span { font: 15px var(--arka-ui-font-body, Georgia, serif); }
+.local-map-scene--stage .ref-local-players small { font-size: 12px; }
+html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-toolbar > .game-button[data-game-button="primary"] { align-self: center; min-height: 46px; font-size: 18px; }
+
+/* ---------- Pannelli in basso ---------- */
+html .local-map-scene.local-map-scene--stage[data-reference-ui="aurora"] > .local-map-footer {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 6;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 0;
+  padding: 40px 16px 16px;
+  border: 0;
+  background: linear-gradient(to top, rgb(2 12 26 / 0.55), transparent);
+  pointer-events: none;
+}
+html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-footer > * { pointer-events: auto; }
+
+/* Squadra in basso a sinistra. */
+.local-map-scene--stage .ref-local-squad {
+  flex: 0 1 auto;
+  width: min(46vw, 720px);
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--stage-gold);
+  border-radius: 12px;
+  background: var(--stage-panel);
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.85), 0 8px 22px #0009;
+}
+.local-map-scene--stage .ref-local-squad > button { padding: 4px 3px; border-color: #3f6f86; }
+.local-map-scene--stage .ref-local-squad .pu-creature-portrait { height: clamp(48px, 7vh, 82px); }
+.local-map-scene--stage .ref-local-squad strong { font: 13px var(--arka-ui-font-display, Georgia, serif); letter-spacing: 0.02em; }
+.local-map-scene--stage .ref-local-squad > button > span { font-size: 12px; }
+.local-map-scene--stage .ref-local-squad .pu-health > span { font-size: 11px; }
+
+/* Scheda del punto in basso a destra. */
+.local-map-scene--stage .ref-local-card {
+  display: grid;
+  gap: 10px;
+  width: clamp(320px, 28vw, 480px);
+  /* Lascia libero l'angolo del pulsante audio, che resta sullo schermo fino alla fase U6. */
+  margin-bottom: 30px;
+  padding: 14px 16px;
+  border: 1px solid var(--stage-gold);
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgb(8 36 62 / 0.95), rgb(3 18 34 / 0.93));
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.85), 0 8px 22px #0009;
+}
+.local-map-scene--stage .ref-local-card > * { grid-column: 1 / -1; grid-row: auto; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card .local-map-point-info,
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card .local-map-neighbours { grid-column: auto; grid-row: auto; }
+.local-map-scene--stage .ref-local-card-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px; }
+.local-map-scene--stage .ref-local-card-medal { display: grid; place-items: center; width: 58px; height: 58px; }
+.local-map-scene--stage .ref-local-card-medal > .game-art { width: 100%; height: 100%; }
+.local-map-scene--stage .ref-local-card-medal > .ref-local-card-place { border: 2px solid var(--stage-gold); border-radius: 50%; object-fit: cover !important; }
+.local-map-scene--stage .ref-local-card-medal > .pu-kit-icon { width: 46px; height: 46px; padding: 6px; border: 2px solid var(--stage-gold); border-radius: 50%; background: #0b2a44; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-point-info { gap: 3px; min-width: 0; font: inherit; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-point-info strong {
+  font: 400 clamp(22px, 1.7vw, 30px) / 1.1 var(--arka-ui-font-display, Georgia, serif);
+  color: #fff3d8;
+}
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-point-info span { font: clamp(14px, 0.95vw, 17px) / 1.35 var(--arka-ui-font-body, Georgia, serif); color: #cfe0ea; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card > .game-button { width: 100%; min-height: 48px; font-size: 19px; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-neighbours { display: flex; flex-wrap: wrap; gap: 6px; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-neighbours .game-button { min-height: 34px; padding: 5px 10px; font-size: 14px; }
+.local-map-scene--stage .ref-local-card-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card-tools > .game-button { min-height: 40px; font-size: 15px; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card-tools > .game-button[aria-pressed="true"] { border-color: #70e4f5 !important; }
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-menu { grid-column: auto; grid-row: auto; min-height: 40px; font-size: 15px; }
+
+/* ---------- Schermi medi ---------- */
+@media (max-width: 1280px) {
+  html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-toolbar { grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto auto; padding-right: 72px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-back { grid-row: 2; grid-column: 1; justify-self: start; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-players { display: none; }
+  .local-map-scene--stage .ref-local-turn .ref-local-face { width: 52px; height: 52px; }
+}
+@media (max-width: 1100px) {
+  html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-players { display: none; }
+  .local-map-scene--stage .ref-local-squad { width: min(52vw, 560px); }
+  .local-map-scene--stage .ref-local-squad .pu-creature-portrait { height: 44px; }
+}
+
+/* ---------- Telefono: tutto in colonna, la mappa resta al centro ---------- */
+@media (max-width: 760px) {
+  html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-toolbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 8px 60px 24px 8px;
+  }
+  .local-map-scene--stage .ref-local-place { grid-column: 1 / -1; max-width: none; padding: 4px 12px 6px 4px; }
+  .local-map-scene--stage .ref-local-place-emblem { width: 40px; height: 40px; }
+  .local-map-scene--stage .ref-local-place-emblem .pu-kit-icon { width: 22px; height: 22px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-heading h1 { font-size: 22px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-heading span { font-size: 13px; }
+  .local-map-scene--stage .ref-local-place .turn-summary { font-size: 12px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-back { grid-row: auto; grid-column: 1; font-size: 13px; min-height: 36px; padding: 5px 10px; }
+  .local-map-scene--stage .ref-local-turn { grid-column: 1 / -1; justify-self: stretch; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; }
+  .local-map-scene--stage .ref-local-turn .ref-local-face { width: 40px; height: 40px; }
+  .local-map-scene--stage .ref-local-turn-title { font-size: 18px; overflow: hidden; text-overflow: ellipsis; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-budget { font-size: 15px; padding: 6px 10px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-toolbar > .game-button[data-game-button="primary"] { grid-row: 2; grid-column: 2; min-height: 36px; font-size: 14px; }
+
+  html .local-map-scene.local-map-scene--stage[data-reference-ui="aurora"] > .local-map-footer { flex-direction: column; align-items: stretch; gap: 8px; padding: 24px 8px 8px; }
+  .local-map-scene--stage .ref-local-squad { width: auto; padding: 5px; gap: 3px; }
+  .local-map-scene--stage .ref-local-squad .pu-creature-portrait { height: 34px; }
+  .local-map-scene--stage .ref-local-squad strong { font-size: 10px; }
+  .local-map-scene--stage .ref-local-squad > button > span, .local-map-scene--stage .ref-local-squad .pu-health > span { font-size: 9px; }
+  .local-map-scene--stage .ref-local-card { width: auto; gap: 6px; margin-bottom: 0; padding: 8px 10px; }
+  .local-map-scene--stage .ref-local-squad > button > :is(strong, span:not(.pu-creature-portrait)), .local-map-scene--stage .ref-local-squad .pu-health > span { display: none; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-neighbours .game-button { min-height: 30px; padding: 3px 8px; font-size: 12px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card-tools { padding-right: 70px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card-tools > :is(.game-button, .ref-local-menu) { min-height: 34px; font-size: 13px; }
+  .local-map-scene--stage .ref-local-card-medal { width: 42px; height: 42px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-point-info strong { font-size: 19px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-point-info span { font-size: 13px; }
+  html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card > .game-button { min-height: 40px; font-size: 16px; }
+}

@@ -4,6 +4,7 @@ import { motion, useAnimationControls } from 'framer-motion'
 import type { LocalMapDefinition, LocalMapNode, LocalMapPoint } from '@/data/localMaps'
 import { getReachableLocalMapNodes, getLocalTravelPath } from '@/engine/localMapMovement'
 import { assetUrl } from '@/utils/assetUrl'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
 import './localMapBoard.css'
 import { LOCAL_NODE_KIND_LABELS, LocalNodeGlyph, type LocalNodeKind } from './localNodeKinds'
 
@@ -27,7 +28,22 @@ export interface LocalMapBoardProps {
   onSelectNode: (nodeId: string) => void
   /** Pallini per movimento: 2 con Bicicletta (percorsi) o Monopattino (città). */
   moveRange?: number
+  /**
+   * Fase U4: mappa a tutto schermo. La camera segue la pedina di turno; con `overview`
+   * la mappa torna intera. Nodi in pietra, segnalini dipinti e pedine a figura intera.
+   */
+  stage?: boolean
+  overview?: boolean
 }
+
+/** Ingrandimento della camera rispetto alla mappa che copre lo schermo. */
+const STAGE_ZOOM = 1.3
+/** Altezza a cui la camera tiene la pedina: un po' sopra il centro, lontano dall'HUD in basso. */
+const STAGE_FOCUS_Y = 0.46
+/** La camera può oltrepassare i bordi quanto l'HUD li copre, così i punti sul margine restano visibili. */
+const STAGE_OVERSCROLL = { top: 0.1, bottom: 0.24, side: 0.04 }
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
 interface BoardSize {
   width: number
@@ -63,6 +79,7 @@ function LocalMapAvatar({
   active,
   sameNode,
   size,
+  stage = false,
 }: {
   map: LocalMapDefinition
   player: LocalMapPlayer
@@ -70,8 +87,13 @@ function LocalMapAvatar({
   active: boolean
   sameNode: boolean
   size: BoardSize
+  stage?: boolean
 }) {
   const controls = useAnimationControls()
+  const hop = useAnimationControls()
+  const pawn = stage && hasGameArt(`pawn-player-${player.id}-idle`)
+  const [jumping, setJumping] = useState(false)
+  const [landings, setLandings] = useState(0)
   const { reducedMotion, speed } = useGameMotionPreferences()
   const previousNode = useRef(node.id)
   const mounted = useRef(false)
@@ -79,13 +101,18 @@ function LocalMapAvatar({
   const animationVersion = useRef(0)
   const queuedJourneys = useRef<Array<{ points: LocalMapPoint[]; size: BoardSize }>>([])
   const avatarSize = Math.max(22, Math.min(56, size.width * 0.045))
-  const offset = sameNode ? (player.id === 1 ? -avatarSize * 0.34 : avatarSize * 0.34) : 0
+  // Pedina a figura intera: l'altezza segue la mappa, la larghezza le proporzioni del disegno.
+  const pawnHeight = clamp(size.width * 0.05, 60, 180)
+  const pawnWidth = pawnHeight * 0.7
+  const footprint = pawn ? pawnWidth : avatarSize
+  const offset = sameNode ? (player.id === 1 ? -footprint * 0.34 : footprint * 0.34) : 0
   const fittedOffset = Math.max(
-    avatarSize / 2 - node.x * size.width / 100,
-    Math.min(offset, size.width - node.x * size.width / 100 - avatarSize / 2),
+    footprint / 2 - node.x * size.width / 100,
+    Math.min(offset, size.width - node.x * size.width / 100 - footprint / 2),
   )
-  const topInset = (point: LocalMapPoint, plane: BoardSize) =>
-    Math.max(0, Math.max(22, Math.min(56, plane.width * 0.045)) - point.y * plane.height / 100 + 2)
+  // Sul palco la mappa è più grande della vista: la pedina può sporgere sopra il bordo.
+  const topInset = (point: LocalMapPoint, plane: BoardSize) => stage ? 0
+    : Math.max(0, Math.max(22, Math.min(56, plane.width * 0.045)) - point.y * plane.height / 100 + 2)
 
   useEffect(() => {
     mounted.current = true
@@ -94,8 +121,9 @@ function LocalMapAvatar({
       animationVersion.current += 1
       queuedJourneys.current = []
       controls.stop()
+      hop.stop()
     }
-  }, [controls])
+  }, [controls, hop])
 
   useEffect(() => {
     const points = getLocalTravelPath(map, previousNode.current, node.id, 2)
@@ -105,6 +133,9 @@ function LocalMapAvatar({
       animationRunning.current = false
       queuedJourneys.current = []
       controls.stop()
+      hop.stop()
+      hop.set({ y: 0, scaleX: 1, scaleY: 1 })
+      setJumping(false)
       controls.set({ left: `${node.x}%`, top: `${node.y}%`, marginTop: topInset(node, size) })
       return
     }
@@ -119,18 +150,32 @@ function LocalMapAvatar({
       while (mounted.current && version === animationVersion.current && queuedJourneys.current.length) {
         const journey = queuedJourneys.current.shift()!
         const timing = pathTiming(journey.points, journey.size)
+        // Un salto per ogni pallino attraversato; le curve della strada non contano come salti.
+        const hops = pawn ? Math.max(1, journey.points.slice(1).filter((point) => map.nodes.some((item) => item.x === point.x && item.y === point.y)).length) : 0
+        const duration = (pawn ? Math.max(timing.duration, 0.42 * hops) : timing.duration) / speed
+        if (pawn) {
+          setJumping(true)
+          const lift = clamp(journey.size.width * 0.018, 14, 46)
+          const y = [0, ...Array.from({ length: hops }, () => [-lift, 0]).flat()]
+          void hop.start({ y, scaleX: 1, scaleY: 1, transition: { duration, ease: 'easeInOut', times: y.map((_, index) => index / (y.length - 1)) } })
+        }
         await controls.start({
           left: journey.points.map((point) => `${point.x}%`),
           top: journey.points.map((point) => `${point.y}%`),
           marginTop: journey.points.map((point) => topInset(point, journey.size)),
-          transition: { ease: 'linear', times: timing.times, duration: timing.duration / speed },
+          transition: { ease: 'linear', times: timing.times, duration },
         })
+        if (pawn && mounted.current && version === animationVersion.current) {
+          setJumping(false)
+          setLandings((count) => count + 1)
+          await hop.start({ y: 0, scaleX: [1.14, 0.96, 1], scaleY: [0.8, 1.05, 1], transition: { duration: 0.26 / speed, ease: 'easeOut' } })
+        }
       }
       if (version === animationVersion.current) animationRunning.current = false
     }
     void followRoads()
     // Resizing changes the image plane itself; it must not restart a journey.
-  }, [controls, map, node.id, reducedMotion, speed])
+  }, [controls, hop, map, node.id, reducedMotion, speed, pawn])
 
   useEffect(() => {
     if (!animationRunning.current) controls.set({ marginTop: topInset(node, size) })
@@ -140,15 +185,26 @@ function LocalMapAvatar({
     <motion.div
       data-local-map-player={player.id}
       data-node-id={node.id}
-      className={`local-map-avatar ${active ? 'local-map-avatar--active' : ''}`}
+      className={`local-map-avatar ${active ? 'local-map-avatar--active' : ''}${pawn ? ' local-map-avatar--pawn' : ''}`}
       initial={{ left: `${node.x}%`, top: `${node.y}%`, marginTop: topInset(node, size) }}
       animate={controls}
-      style={{ width: avatarSize, height: avatarSize, marginLeft: fittedOffset }}
+      style={pawn ? { width: pawnWidth, height: pawnHeight, marginLeft: fittedOffset } : { width: avatarSize, height: avatarSize, marginLeft: fittedOffset }}
       aria-label={`${player.name}, giocatore ${player.id}, ${node.label ?? node.id}${active ? ', turno attivo' : ''}`}
       role="img"
+      data-jumping={pawn && jumping ? 'true' : undefined}
     >
-      <img src={assetUrl(`/ui/player${player.id}_avatar.png`)} alt="" draggable={false} />
-      <span className={`local-map-avatar-label local-map-avatar-label--${player.id}`}>G{player.id}</span>
+      {pawn ? <>
+        <span className="local-map-pawn-shadow" aria-hidden="true" />
+        {landings > 0 && <span key={landings} className="local-map-pawn-dust" aria-hidden="true" />}
+        <motion.span className="local-map-pawn-body" animate={hop} initial={{ y: 0, scaleX: 1, scaleY: 1 }}>
+          <GameArt id={`pawn-player-${player.id}-${jumping && hasGameArt(`pawn-player-${player.id}-jump`) ? 'jump' : 'idle'}`} className="local-map-pawn-art" />
+        </motion.span>
+        {active && <span className="local-map-pawn-cue" aria-hidden="true" />}
+        <span className={`local-map-avatar-label local-map-avatar-label--${player.id}`}>G{player.id}</span>
+      </> : <>
+        <img src={assetUrl(`/ui/player${player.id}_avatar.png`)} alt="" draggable={false} />
+        <span className={`local-map-avatar-label local-map-avatar-label--${player.id}`}>G{player.id}</span>
+      </>}
     </motion.div>
   )
 }
@@ -170,6 +226,8 @@ export function LocalMapBoard({
   onMove,
   onSelectNode,
   moveRange = 1,
+  stage = false,
+  overview = false,
 }: LocalMapBoardProps) {
   const root = useRef<HTMLDivElement>(null)
   const [bounds, setBounds] = useState<BoardSize>({ width: 0, height: 0 })
@@ -205,13 +263,27 @@ export function LocalMapBoard({
     if (destination) setCameraShot(shot => ({ seq: (shot?.seq ?? 0) + 1, x: destination.x, y: destination.y }))
   }, [activePlayerId, currentNode, map.nodes])
 
-  const width = Math.min(bounds.width, bounds.height * imageRatio)
+  const containWidth = Math.min(bounds.width, bounds.height * imageRatio)
+  const coverWidth = Math.max(bounds.width, bounds.height * imageRatio)
+  const width = stage && !overview ? coverWidth * STAGE_ZOOM : containWidth
   const size = { width, height: width / imageRatio }
+  // Camera del palco: tiene la pedina di turno al centro, senza mai mostrare oltre i bordi della mappa.
+  const focus = map.nodes.find((node) => node.id === (currentNode ?? players[0]?.nodeId))
+  // In verticale (telefono) l'HUD in basso è più alto: la pedina sale e la camera scende di più.
+  const portrait = bounds.height > bounds.width
+  const focusY = portrait ? 0.32 : STAGE_FOCUS_Y
+  const overscrollBottom = portrait ? 0.3 : STAGE_OVERSCROLL.bottom
+  const side = bounds.width * STAGE_OVERSCROLL.side
+  const cameraX = size.width <= bounds.width ? (bounds.width - size.width) / 2
+    : clamp(bounds.width / 2 - (focus?.x ?? 50) * size.width / 100, bounds.width - size.width - side, side)
+  const cameraY = size.height <= bounds.height ? (bounds.height - size.height) / 2
+    : clamp(bounds.height * focusY - (focus?.y ?? 50) * size.height / 100,
+      bounds.height - size.height - bounds.height * overscrollBottom, bounds.height * STAGE_OVERSCROLL.top)
   const canChooseCurrent = !inputBlocked
   const movementEnabled = canMove && !inputBlocked
 
   return (
-    <div ref={root} className="local-map-board" data-local-map-root={map.id}>
+    <div ref={root} className={`local-map-board${stage ? ' local-map-board--stage' : ''}`} data-local-map-root={map.id} data-camera={stage ? (overview ? 'overview' : 'follow') : undefined}>
       {/* Le bande ai lati diventano la stessa illustrazione, sfocata e scurita. */}
       <div className="local-map-ambient" style={{ backgroundImage: `url("${assetUrl(map.image)}")` }} aria-hidden="true" />
       <p id={instructionsId} className="sr-only">
@@ -221,8 +293,10 @@ export function LocalMapBoard({
       </p>
       <div
         className="local-map-plane"
-        style={{ width: size.width || '100%', height: size.height || '100%', '--cam-x': `${cameraShot?.x ?? 50}%`, '--cam-y': `${cameraShot?.y ?? 50}%` } as CSSProperties}
-        data-camera-shot={cameraShot ? (cameraShot.seq % 2 ? 'a' : 'b') : undefined}
+        style={stage
+          ? { width: size.width || '100%', height: size.height || '100%', transform: `translate3d(${Math.round(cameraX)}px, ${Math.round(cameraY)}px, 0)` }
+          : { width: size.width || '100%', height: size.height || '100%', '--cam-x': `${cameraShot?.x ?? 50}%`, '--cam-y': `${cameraShot?.y ?? 50}%` } as CSSProperties}
+        data-camera-shot={!stage && cameraShot ? (cameraShot.seq % 2 ? 'a' : 'b') : undefined}
         role="group"
         aria-label={`Mappa di ${map.id.replace(/_/g, ' ')}`}
         aria-describedby={instructionsId}
@@ -289,13 +363,16 @@ export function LocalMapBoard({
                 else onMove(node.id)
               }}
             >
-              {node.drawMarker && <span className="local-map-node-marker" aria-hidden="true" />}
+              {stage && <span className="local-map-node-stone" aria-hidden="true" />}
+              {!stage && node.drawMarker && <span className="local-map-node-marker" aria-hidden="true" />}
               <span className="local-map-node-ring" aria-hidden="true" />
-              {kind && <span className="local-map-node-kind" data-kind={kind} title={LOCAL_NODE_KIND_LABELS[kind]} aria-hidden="true"><LocalNodeGlyph kind={kind} /></span>}
+              {kind && (stage && hasGameArt(`node-${kind}`)
+                ? <span className="local-map-node-medal" data-kind={kind} aria-hidden="true"><GameArt id={`node-${kind}`} /></span>
+                : <span className="local-map-node-kind" data-kind={kind} title={LOCAL_NODE_KIND_LABELS[kind]} aria-hidden="true"><LocalNodeGlyph kind={kind} /></span>)}
             </button>
           )
         })}
-        {previewNode && movementEnabled && neighbours.includes(previewNode) && <span className="local-map-move-preview" role="status">Movimento · 1 azione</span>}
+        {!stage && previewNode && movementEnabled && neighbours.includes(previewNode) && <span className="local-map-move-preview" role="status">Movimento · 1 azione</span>}
         {players.map((player) => {
           const node = map.nodes.find((item) => item.id === player.nodeId)
           if (!node) return null
@@ -309,10 +386,12 @@ export function LocalMapBoard({
               active={player.id === activePlayerId}
               sameNode={sameNode}
               size={size}
+              stage={stage}
             />
           )
         })}
       </div>
+      {stage && previewNode && movementEnabled && neighbours.includes(previewNode) && <span className="local-map-move-preview" role="status">Movimento · 1 azione</span>}
     </div>
   )
 }
