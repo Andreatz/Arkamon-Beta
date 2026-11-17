@@ -79,6 +79,8 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
     const frameBound = frame?.getBoundingClientRect() ?? bound
     return { tag: element.tagName, label: element.textContent?.trim(), hasFrame: !!frame, background: style.backgroundColor, backgroundImage: style.backgroundImage, borderWidth: style.borderTopWidth, source: frameStyle?.borderImageSource,
       slice: frameStyle?.borderImageSlice, repeat: frameStyle?.borderImageRepeat, font: style.fontFamily, localMap: !!element.closest('.local-map-scene'),
+      // Fase U5: titolo, mappa principale e battaglia usano Cinzel come il resto dell'interfaccia di riferimento.
+      aurora: !!element.closest('[data-world-rpg-map], .rpg-title-scene[data-title-key-art], [data-battle-layout-root][data-reference-ui]'),
       decorative: frame?.getAttribute('aria-hidden'), disabled: (element as HTMLButtonElement).disabled,
       bound: { left: bound.left, top: bound.top, right: bound.right, bottom: bound.bottom, width: bound.width, height: bound.height },
       frameBound: { left: frameBound.left, top: frameBound.top, right: frameBound.right, bottom: frameBound.bottom },
@@ -99,7 +101,7 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
     expect(proof.background !== 'rgba(0, 0, 0, 0)' || proof.backgroundImage !== 'none', 'A solid or gradient surface visibly paints the control').toBe(true)
     expect(parseFloat(proof.borderWidth)).toBeGreaterThan(0)
   }
-  expect(proof.font).toContain(proof.localMap ? 'Georgia' : 'Arkamon Norwester')
+  expect(proof.font).toContain(proof.localMap ? 'Georgia' : proof.aurora ? 'Arkamon Cinzel' : 'Arkamon Norwester')
   expect(proof.disabled).toBe(disabled)
   expect(proof.bound.width).toBeGreaterThan(0)
   expect(proof.bound.height).toBeGreaterThan(0)
@@ -190,8 +192,9 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   const responses = await openFixture(page, 'battaglia')
   const move = page.getByRole('button').filter({ has: page.getByText('Soffio', { exact: true }) })
   await expect(move).toBeEnabled()
-  expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toContain('/ui/move_button.png')
-  expect(await move.evaluate(element => getComputedStyle(element).fontFamily)).toContain('Arkamon Norwester')
+  // Fase U5: cornice provvisoria oro e blu notte, in attesa del lotto 3.
+  expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toContain('/ui/aurora/move-frame.svg')
+  expect(await move.evaluate(element => getComputedStyle(element).fontFamily)).toContain('Arkamon Cinzel')
   // Record the real transient result before slower artwork inspection and PNG
   // encoding; those operations can finish after the battle removes the overlay.
   await page.evaluate(() => {

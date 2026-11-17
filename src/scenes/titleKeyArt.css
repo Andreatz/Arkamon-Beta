@@ -1,0 +1,59 @@
+/* Key art provvisoria del titolo: tre pannelli in diagonale, sotto un velo blu notte che lascia leggere logo e comandi. */
+.title-key-art { position: absolute; inset: 0; overflow: hidden; background: var(--arka-ui-night, #031124); container-type: size; }
+.title-key-art__panel { position: absolute; inset: 0; overflow: hidden; }
+.title-key-art__panel--0 { clip-path: polygon(0 0, 36% 0, 30% 100%, 0 100%); }
+.title-key-art__panel--1 { clip-path: polygon(36% 0, 70% 0, 64% 100%, 30% 100%); }
+.title-key-art__panel--2 { clip-path: polygon(70% 0, 100% 0, 100% 100%, 64% 100%); }
+.title-key-art__panel > img {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 56%;
+  object-fit: cover;
+  filter: saturate(1.05) brightness(0.82);
+  transform-origin: 50% 40%;
+  animation: title-key-art-drift calc(var(--motion-scale, 1) * 22s) ease-in-out infinite alternate;
+}
+.title-key-art__panel--0 > img { left: -6%; }
+.title-key-art__panel--1 > img { left: 22%; animation-delay: calc(var(--motion-scale, 1) * -7s); }
+.title-key-art__panel--2 > img { left: 52%; animation-delay: calc(var(--motion-scale, 1) * -14s); }
+@keyframes title-key-art-drift { from { transform: scale(1.04) translateX(-1%); } to { transform: scale(1.13) translateX(1%); } }
+.title-key-art[data-still] .title-key-art__panel > img { animation: none; transform: scale(1.06); }
+.title-key-art__seams { position: absolute; inset: 0; width: 100%; height: 100%; }
+.title-key-art__seams path { fill: none; stroke: var(--arka-ui-gold, #d9b67b); stroke-width: 3; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 6px rgb(255 214 140 / 0.6)); }
+/* Velo: centro più scuro dietro logo e comandi, bordi in vignetta. */
+.title-key-art__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 38% 46% at 50% 52%, rgb(3 17 36 / 0.72), rgb(3 17 36 / 0.28) 70%, transparent 100%),
+    radial-gradient(ellipse at center, transparent 45%, rgb(2 10 22 / 0.78) 100%),
+    linear-gradient(to bottom, rgb(2 10 22 / 0.35), transparent 30%, transparent 65%, rgb(2 10 22 / 0.6));
+}
+@media (prefers-reduced-motion: reduce) { .title-key-art__panel > img { animation: none; } }
+/* In una scena verticale i pannelli diventano fasce orizzontali (conta la scena, non lo schermo). */
+@container (max-aspect-ratio: 1/1) {
+  .title-key-art__panel--0 { clip-path: polygon(0 0, 100% 0, 100% 30%, 0 36%); }
+  .title-key-art__panel--1 { clip-path: polygon(0 36%, 100% 30%, 100% 64%, 0 70%); }
+  .title-key-art__panel--2 { clip-path: polygon(0 70%, 100% 64%, 100% 100%, 0 100%); }
+  .title-key-art__panel > img { left: 0 !important; width: 100%; height: 40%; }
+  .title-key-art__panel--0 > img { top: 0; }
+  .title-key-art__panel--1 > img { top: 30%; }
+  .title-key-art__panel--2 > img { top: 62%; }
+  .title-key-art__seams { display: none; }
+}
+
+/* Comandi del titolo nella grammatica oro e blu notte. */
+.rpg-title-scene[data-title-key-art] .rpg-title-logo { position: relative; z-index: 10; filter: drop-shadow(0 10px 24px rgb(0 0 0 / 0.75)); }
+.rpg-title-scene[data-title-key-art] .rpg-command {
+  border: 1px solid var(--arka-ui-gold, #d9b67b) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(170deg, rgb(19 64 100 / 0.95), rgb(6 26 46 / 0.95)) !important;
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 8px 22px #000a !important;
+  color: #fff3d8 !important;
+  font-family: var(--arka-ui-font-display, Georgia, serif) !important;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 3px #000c;
+}
+.rpg-title-scene[data-title-key-art] .rpg-command[data-game-button="primary"] { border-color: #70e4f5 !important; box-shadow: inset 0 0 12px rgb(78 220 251 / 0.3), 0 0 14px rgb(64 232 255 / 0.35), 0 8px 22px #000a !important; }
+.rpg-title-scene[data-title-key-art] .rpg-command:not(:disabled):is(:hover, :focus-visible) { filter: brightness(1.12); }

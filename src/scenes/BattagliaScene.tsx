@@ -95,6 +95,9 @@ import { useBattleCinematics } from '@/components/battle/useBattleCinematics'
 import { efficacyTone } from '@/components/battle/battleCinematics'
 import { BattleDamageNumber, BattleMoveBanner } from '@/components/battle/BattleCinematicLayer'
 import { BattleCaptureLayer, captureHidesTarget } from '@/components/battle/BattleCaptureLayer'
+import { captureBagArt } from '@/components/battle/battleCapture'
+import { GameArt } from '@/ui-system/GameArt'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { planD20Capture, planMasterCapture } from '@/components/battle/battleCapture'
 import { SupremeCutIn } from '@/components/battle/SupremeCutIn'
 import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
@@ -1241,7 +1244,7 @@ export function BattagliaScene() {
     }
     actionInProgressRef.current = true
     setAzioneInCorso(true)
-    void cine.capture(plan).then(() => {
+    void cine.capture({ ...plan, item: itemId }).then(() => {
       actionInProgressRef.current = false
       if (plan.caught) {
         mostraCatturaConclusa()
@@ -1589,6 +1592,7 @@ export function BattagliaScene() {
   return (
     <BattleLayoutProvider value={battleLayout}><div
       data-battle-layout-root
+      data-reference-ui={isReferenceUi() ? 'aurora' : undefined}
       className="battle-stage w-full h-full relative overflow-hidden"
       data-battle-impact-held={presentationPaused}
       data-battle-assets-ready={assetReadiness.ready}
@@ -1845,7 +1849,8 @@ export function BattagliaScene() {
                 )}
                 {!pendingCaptureSave && <>{CAPTURE_ITEM_IDS.filter((id) => (inventarioAttivo[id] ?? 0) > 0).map((id) => (
                   <ActionButton key={id} disabled={!turnoA || azioneInCorso} onClick={() => eseguiCattura(id)}>
-                    {getShopItem(id)!.name} ×{inventarioAttivo[id]}
+                    {isReferenceUi() && <GameArt id={captureBagArt(id, id === 'masterball' ? 'master' : 'dice')} className="battle-action-bag" />}
+                    <span>{getShopItem(id)!.name} ×{inventarioAttivo[id]}</span>
                   </ActionButton>
                 ))}
                 {!CAPTURE_ITEM_IDS.some((id) => (inventarioAttivo[id] ?? 0) > 0) && (

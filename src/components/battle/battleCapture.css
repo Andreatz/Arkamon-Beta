@@ -77,3 +77,40 @@
   paint-order: stroke fill;
   white-space: nowrap;
 }
+
+/* ======================= Fase U5: Sacchettino ======================= */
+/* Il sacchetto dipinto è più alto che largo: la base resta il perno di oscillazioni e rimbalzi. */
+.battle-capture__orb[data-capture-bag] { width: clamp(56px, 6.6vw, 120px); transform-origin: 50% 92%; }
+.battle-capture__bag-art { display: block; width: 100%; height: 100%; object-position: 50% 100%; }
+.battle-capture__orb.is-sealed::after {
+  background: radial-gradient(circle, rgb(255 226 140 / 0.75), rgb(255 200 90 / 0.25) 45%, transparent 68%);
+}
+.battle-capture__orb.is-torn { filter: drop-shadow(0 0 14px rgb(255 120 90 / 0.8)); }
+/* Bocca del sacchetto che si apre: bagliore d'oro e ciano. */
+.battle-capture__mouth {
+  position: absolute;
+  width: clamp(90px, 11vw, 200px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 246 214 / 0.95) 0 12%, rgb(255 214 120 / 0.7) 30%, rgb(94 228 255 / 0.35) 55%, transparent 72%);
+  mix-blend-mode: screen;
+}
+.battle-capture__ring.is-suction {
+  border: 3px solid rgb(255 226 150 / 0.9);
+  box-shadow: 0 0 1.2em rgb(110 230 255 / 0.65), inset 0 0 0.8em rgb(255 226 150 / 0.5);
+}
+.battle-capture__ring.is-burst { border-color: rgb(255 140 110); }
+
+/* Dadi della cattura nello stile oro e blu notte. */
+.battle-capture__chip {
+  border: 2px solid var(--arka-ui-gold, #d9b67b);
+  background: linear-gradient(160deg, #123b5c, #051a2e);
+  color: #fff3d8;
+  font-family: var(--arka-ui-font-display, Georgia, serif);
+  box-shadow: inset 0 0 0 2px rgb(10 40 66 / 0.9), 0 0 14px rgb(110 230 255 / 0.35), 0 4px 10px #0009;
+}
+.battle-capture__chip.is-break { border-color: rgb(255 140 110); background: linear-gradient(160deg, #5a1d1d, #2a0b0b); }
+.battle-capture__total { font-family: var(--arka-ui-font-display, Georgia, serif); color: #fff3d8; }
+.battle-capture__total span { color: var(--arka-ui-gold, #d9b67b); }
+.battle-capture__label { font-family: var(--arka-ui-font-display, Georgia, serif); color: var(--arka-ui-gold-bright, #f4dca0); text-shadow: 0 0 18px rgb(255 214 120 / 0.7); }
+.battle-capture__star { background: var(--arka-ui-gold-bright, #f4dca0); }

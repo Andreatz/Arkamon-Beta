@@ -14,6 +14,14 @@ import { battleMoveFacts } from './battleMoveFacts'
 import { BATTLE_LAYOUT_IDS } from '@/ui-studio/battleLayout'
 import { GameButton } from '@/components/ui/GameButton'
 import './battleRpg.css'
+import './battleAurora.css'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
+
+/**
+ * Fase U5: cornici provvisorie oro e blu notte (in attesa del lotto 3). Restano le immagini
+ * predefinite: una personalizzazione di UI Studio o dell'Admin le sostituisce come prima.
+ */
+const AURORA_FRAMES = { hp: '/ui/aurora/hp-plate.svg', move: '/ui/aurora/move-frame.svg', info: '/ui/aurora/infobox.svg' } as const
 import type { AdminBattleLayoutKey, AdminLayoutRect, AdminBattleLayout } from '@/theme/adminThemeTypes'
 import type { PokemonIstanza, MossaDef, Stato, TipoPokemon } from '@/types'
 
@@ -119,7 +127,7 @@ export function InfoBox({
   onOpponentTurn: () => void
 }) {
   const righe = messaggi.slice(-3)
-  const frameSrc = assetUrl('/ui/infobox.png')
+  const frameSrc = assetUrl(isReferenceUi() ? AURORA_FRAMES.info : '/ui/infobox.png')
 
   if (!righe.length) return showOpponentButton ? (
     <div className="flex h-full w-full items-center justify-center">
@@ -460,7 +468,8 @@ export function HpBar({
   const hpColors = hpColorsOverride ?? savedColors
   const pct = Math.max(0, Math.min(100, (hp / hpMax) * 100))
   const colore = pct > 60 ? hpColors.hpHigh : pct > 25 ? hpColors.hpMid : hpColors.hpLow
-  const frameSrc = frameSource ?? assetUrl(`/ui/hp_bar_${side}.png`)
+  const aurora = !frameSource && isReferenceUi()
+  const frameSrc = frameSource ?? assetUrl(aurora ? AURORA_FRAMES.hp : `/ui/hp_bar_${side}.png`)
   const barSrc = assetUrl('/ui/hp_bar.png')
   const barClipId = `hp-bar-inner-${side}`
   const fillWidth = pct === 0 ? 0 : 23 + pct * 5
@@ -572,7 +581,7 @@ export function ActionButton({
       whileTap={!disabled ? { scale: 0.96 } : {}}
       disabled={disabled}
       onClick={onClick}
-      className="rounded-md bg-amber-400 px-5 py-2.5 text-sm font-extrabold text-slate-950 shadow-lg transition-colors hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-45"
+      className="battle-action-button rounded-md bg-amber-400 px-5 py-2.5 text-sm font-extrabold text-slate-950 shadow-lg transition-colors hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-45"
       data-ui-asset-surface=""
     >
       {children}
@@ -593,7 +602,7 @@ export function SupremeButton({ disabled, recoil, onClick }: {
       title={`Scegli un attacco: danno doppio, contraccolpo ${recoil} HP al livello attuale; 50% degli HP massimi dopo eventuale salita di livello`}
       disabled={disabled}
       onClick={onClick}
-      className="flex h-full w-full min-h-0 min-w-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border-2 border-amber-200 bg-gradient-to-b from-amber-400 to-orange-600 px-0 text-center font-black text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:px-1"
+      className="battle-supreme-button flex h-full w-full min-h-0 min-w-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border-2 border-amber-200 bg-gradient-to-b from-amber-400 to-orange-600 px-0 text-center font-black text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:px-1"
     >
       <span className="max-w-full truncate text-[clamp(9px,1.4vw,20px)] leading-tight tracking-tight"><span className="hidden sm:inline">Mossa<br /></span>Suprema</span>
       <span className="hidden text-[clamp(9px,1vw,14px)] leading-tight sm:block">×2 · −{recoil} HP</span>
@@ -618,7 +627,7 @@ export function MoveButton({
 }) {
   const { dadi, incremento } = getMossaAlLivello(mossa, livello)
   const facts = battleMoveFacts(mossa, livello, defenderType)
-  const frameSrc = assetUrl('/ui/move_button.png')
+  const frameSrc = assetUrl(isReferenceUi() ? AURORA_FRAMES.move : '/ui/move_button.png')
   const typeSrc = assetUrl(`/ui/${mossa.tipo.toLocaleLowerCase('it-IT')}.png`)
 
   return (

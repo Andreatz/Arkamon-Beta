@@ -1,0 +1,76 @@
+/* ======================= Fase U5: battaglia oro e blu notte ======================= */
+/* Le cornici vengono da /ui/aurora/*.svg (provvisorie, lotto 3 in arrivo); qui caratteri e comandi.
+   I dadi restano protagonisti: nessuna regola tocca DiceRollOverlay. */
+
+[data-battle-layout-root][data-reference-ui="aurora"] {
+  --battle-display: var(--arka-ui-font-display, Georgia, serif);
+  --battle-body: var(--arka-ui-font-body, Georgia, serif);
+  --battle-gold: var(--arka-ui-gold, #d9b67b);
+  --battle-gold-bright: var(--arka-ui-gold-bright, #f4dca0);
+}
+[data-battle-layout-root][data-reference-ui="aurora"] .arka-battle-font { font-family: var(--battle-display); letter-spacing: 0.02em; }
+
+/* Targhe degli HP: nome in Cinzel dorato, valore leggibile sopra la scanalatura. */
+[data-battle-layout-root][data-reference-ui="aurora"] [data-battle-hp-side] [data-admin-layout-text-key="pokemon-name"] { color: #fff3d8; font-weight: 700; }
+[data-battle-layout-root][data-reference-ui="aurora"] [data-battle-hp-side] [data-admin-layout-text-key="pokemon-level"] { color: var(--battle-gold-bright); }
+[data-battle-layout-root][data-reference-ui="aurora"] [data-battle-hp-side] [data-ui-hp-value] { font-family: var(--battle-body); font-weight: 700; color: #f2f7fb; }
+
+/* Riquadro dei messaggi: testo da leggere, quindi carattere del corpo. */
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-message-lines { font-family: var(--battle-body); font-size: clamp(16px, 1.25vw, 24px); line-height: 1.35; color: #f3ead6; }
+
+/* Pulsanti delle mosse: nome in Cinzel, stato puntato in ciano come nel resto del gioco. */
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-move-button { transition: filter 140ms ease, transform 140ms ease; }
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-move-button:not(:disabled):is(:hover, :focus-visible) {
+  filter: drop-shadow(0 0 10px rgb(110 230 255 / 0.7)) brightness(1.08);
+  outline: none;
+}
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-move-button [data-admin-layout-text-key$="-name"] { color: #fff3d8; font-weight: 700; }
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-move-button [data-admin-layout-text-key$="-dice"] { color: var(--battle-gold-bright); }
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-command-cursor { color: var(--arka-ui-cyan, #6df1ff); }
+
+/* Mossa Suprema: rosso cupo e oro, perché costa metà degli HP. */
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-supreme-button {
+  border: 2px solid var(--battle-gold) !important;
+  border-radius: 10px;
+  background: linear-gradient(170deg, #8b2420, #4a0f10 60%, #2a0708) !important;
+  color: var(--battle-gold-bright) !important;
+  font-family: var(--battle-display);
+  box-shadow: inset 0 0 0 3px rgb(60 10 10 / 0.9), inset 0 0 18px rgb(255 140 90 / 0.35), 0 6px 16px #000a;
+  text-shadow: 0 2px 3px #000c;
+}
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-supreme-button:not(:disabled):is(:hover, :focus-visible) { filter: brightness(1.15) drop-shadow(0 0 10px rgb(255 160 100 / 0.6)); }
+
+/* Sacchettini: piccole carte con l'illustrazione e il numero rimasto. */
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 14px 4px 6px;
+  border: 1px solid var(--battle-gold);
+  border-radius: 8px;
+  background: linear-gradient(170deg, #134064, #061a2e) !important;
+  color: #fff3d8 !important;
+  font: 700 clamp(13px, 0.95vw, 17px) / 1.1 var(--battle-display);
+  box-shadow: inset 0 0 0 2px rgb(10 40 66 / 0.9), 0 6px 14px #0009;
+}
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-action-button:not(:disabled):is(:hover, :focus-visible) { border-color: var(--arka-ui-cyan, #6df1ff); box-shadow: inset 0 0 0 2px rgb(10 40 66 / 0.9), 0 0 12px rgb(110 230 255 / 0.55); }
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-action-bag { width: 34px; height: 34px; flex: none; filter: drop-shadow(0 2px 2px #000a); }
+
+/* Fascia dello stato del turno. */
+[data-battle-layout-root][data-reference-ui="aurora"] [data-battle-turn-status].arka-panel {
+  border: 1px solid var(--battle-gold);
+  border-radius: 999px;
+  background: linear-gradient(100deg, rgb(6 32 58 / 0.94), rgb(4 22 40 / 0.88));
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 6px 18px #0008;
+}
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-turn-label { font-family: var(--battle-display); color: #f7ecd6; letter-spacing: 0.03em; }
+
+/* Comando «Turno dell'avversario». */
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-opponent-command { font-family: var(--battle-display); }
+
+/* Misure: la fascia del turno resta su una riga, i nomi lunghi delle mosse entrano, i Sacchettini pure. */
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-turn-label { font-size: clamp(14px, 1.05vw, 20px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-move-button [data-admin-layout-text-key$="-name"] { font-size: clamp(14px, 1.32vw, 24px); }
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-action-button { min-height: 38px; padding: 2px 12px 2px 4px; font-size: clamp(11px, 0.82vw, 15px); white-space: nowrap; }
+[data-battle-layout-root][data-reference-ui="aurora"] .battle-action-bag { width: 30px; height: 30px; }

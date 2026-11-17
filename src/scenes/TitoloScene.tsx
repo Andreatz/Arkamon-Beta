@@ -11,10 +11,14 @@ import { hasOwnedPokemon } from '@/engine/pokemonOwnership'
 import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { SelectionCursor } from '@/motion/ui/SelectionCursor'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
+import { TitleKeyArt } from './TitleKeyArt'
 
 // Logo dorato degli atlanti forniti (audit UX/UI); il vecchio logo resta il ripiego.
 const DEFAULT_TITLE_LOGO = '/ui/game-art/logo.webp'
 const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
+/** Fase U5: senza un fondo scelto dall'Admin, il titolo usa la key art provvisoria al posto del vecchio video. */
+const USE_KEY_ART = isReferenceUi()
 
 /**
  * Schermata titolo.
@@ -44,9 +48,11 @@ export function TitoloScene() {
   }, [titleBackground])
 
   const logoPath = titleLogo && !logoFailed ? titleLogo : DEFAULT_TITLE_LOGO
+  const customBackground = Boolean(titleBackground && failedBackgroundPath !== titleBackground)
+  const keyArt = USE_KEY_ART && !customBackground
   const backgroundPath =
-    titleBackground && failedBackgroundPath !== titleBackground ? titleBackground : DEFAULT_TITLE_BACKGROUND_VIDEO
-  const hasBackground = Boolean(backgroundPath && failedBackgroundPath !== backgroundPath)
+    customBackground ? titleBackground! : DEFAULT_TITLE_BACKGROUND_VIDEO
+  const hasBackground = !keyArt && Boolean(backgroundPath && failedBackgroundPath !== backgroundPath)
   const hasVideoBackground = /\.(mp4|webm|ogg)$/i.test(backgroundPath)
   useEffect(() => {
     if (!video.current) return
@@ -55,7 +61,8 @@ export function TitoloScene() {
   }, [reducedMotion, backgroundPath])
 
   return (
-    <div className="rpg-title-scene relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950">
+    <div className="rpg-title-scene relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950" data-title-key-art={keyArt || undefined}>
+      {keyArt && <TitleKeyArt still={reducedMotion} />}
       {hasBackground && hasVideoBackground ? (
         <video
           ref={video}

@@ -23,6 +23,9 @@ import {
 } from '@/utils/mainMapRoadGeometry'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { trackAdminPointerDrag } from '@/admin/adminPointerDrag'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
+import './worldMapAurora.css'
 import { MainMapAvatar } from '@/components/map/MainMapAvatar'
 import { getMainMapJourney } from '@/components/map/mapJourney'
 import { useEffect, useRef, useState } from 'react'
@@ -743,6 +746,7 @@ export function MappaPrincipaleScene() {
         zIndex={35}
       >
         <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
+          {isReferenceUi() && hasGameArt(`portrait-player-${giocatoreAttivo}`) && <GameArt id={`portrait-player-${giocatoreAttivo}`} className="world-map-turn-face" />}
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Turno di:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-arka-accent">
             {giocatore.nome}
