@@ -12,5 +12,3 @@ function levelTable(index: number): Record<string, number> {
 export const BASE_RUNTIME_MOVES: MossaDef[] = compact.moves.map(move => ({
   ...move, dadiPerLivello: levelTable(move.dadiPerLivello), incrementoPerLivello: levelTable(move.incrementoPerLivello),
 })) as MossaDef[]
-
-export const RUNTIME_STATUS_ASSIGNMENTS = compact.statusAssignments

@@ -37,6 +37,11 @@ const ICON_ART: Record<string, string> = {
   'item-revive': 'item-revive',
   'item-paralysis-heal': 'item-paralysis-heal',
   'item-sphere': 'item-sacchettino-supremo',
+  // Lotto 1: compaiono appena le illustrazioni entrano nel catalogo.
+  'item-hyperpotion': 'item-iperpozione', 'item-maxpotion': 'item-pozione-max', 'item-full-heal': 'item-cura-totale',
+  'item-sacchettino': 'item-sacchettino', 'item-mega-sacchettino': 'item-mega-sacchettino', 'item-ultra-sacchettino': 'item-ultra-sacchettino',
+  'item-boost-speed': 'item-boost-velocita', 'item-boost-damage': 'item-boost-danno', 'item-scent': 'item-profumo-speciale',
+  'item-bicycle': 'item-bicicletta', 'item-scooter': 'item-monopattino',
 }
 export function gameArtForIcon(iconId: string): string | undefined {
   const art = ICON_ART[iconId]

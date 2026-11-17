@@ -32,7 +32,9 @@ export function prepareBattleEntry(battle: StatoBattaglia, player: StatoGiocator
  * historical contract. No XP is introduced or consumed by cleanup.
  */
 export function cleanupBattlePlayer(player: StatoGiocatore, fullHeal: boolean): StatoGiocatore {
-  const clean = (pokemon: PokemonIstanza, team: boolean): PokemonIstanza => {
+  const clean = (current: PokemonIstanza, team: boolean): PokemonIstanza => {
+    // L'immunità da status vale solo nella battaglia in cui è stata ottenuta.
+    const { immunitaStati: _immunity, ...pokemon } = current
     if (team && !getPokemon(pokemon.specieId)) return pokemon
     if (!fullHeal && pokemon.stato?.tipo === 'Paralizzato') return pokemon
     const { stato: _status, ...withoutStatus } = pokemon

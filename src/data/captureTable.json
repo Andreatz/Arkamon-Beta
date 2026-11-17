@@ -1,0 +1,30 @@
+{
+  "_istruzioni": "Tabella di cattura del Database (foglio 'Oggetti e Tassi cattura'). Si tira 1d20: la cattura riesce se il dado è uguale o maggiore della soglia. Difficoltà dal tasso di cattura della specie. 'pieno+status' non è nel foglio: proposta, un punto sotto 'pieno' come nelle altre righe con status.",
+  "difficolta": { "Facile": [4, 5], "Medio": [2, 3], "Difficile": [1, 1] },
+  "soglie": {
+    "base": {
+      "pieno": { "Facile": 11, "Medio": 15, "Difficile": 19 },
+      "pieno+status": { "Facile": 10, "Medio": 14, "Difficile": 18 },
+      "50": { "Facile": 9, "Medio": 13, "Difficile": 17 },
+      "50+status": { "Facile": 8, "Medio": 12, "Difficile": 16 },
+      "25": { "Facile": 7, "Medio": 11, "Difficile": 15 },
+      "25+status": { "Facile": 6, "Medio": 10, "Difficile": 14 }
+    },
+    "mega": {
+      "pieno": { "Facile": 9, "Medio": 13, "Difficile": 17 },
+      "pieno+status": { "Facile": 8, "Medio": 12, "Difficile": 16 },
+      "50": { "Facile": 7, "Medio": 11, "Difficile": 15 },
+      "50+status": { "Facile": 6, "Medio": 10, "Difficile": 14 },
+      "25": { "Facile": 5, "Medio": 9, "Difficile": 13 },
+      "25+status": { "Facile": 4, "Medio": 8, "Difficile": 12 }
+    },
+    "ultra": {
+      "pieno": { "Facile": 7, "Medio": 9, "Difficile": 11 },
+      "pieno+status": { "Facile": 6, "Medio": 8, "Difficile": 10 },
+      "50": { "Facile": 5, "Medio": 7, "Difficile": 9 },
+      "50+status": { "Facile": 4, "Medio": 6, "Difficile": 8 },
+      "25": { "Facile": 3, "Medio": 5, "Difficile": 7 },
+      "25+status": { "Facile": 2, "Medio": 4, "Difficile": 6 }
+    }
+  }
+}

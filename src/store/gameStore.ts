@@ -26,7 +26,7 @@ import { cancelPendingRecoveryCopy, scheduleRecoveryCopy, reportSaveFailure, use
 import { recoverInterruptedBackupRestore, useBackupRestoreRecoveryStatus } from '@/save/restoreJournal'
 import { useRegiaStore } from '@/regia/regiaStore'
 import { resolveShopPurchase, type ShopPurchaseResult } from '@/shop/purchase'
-import { getShopItem, isShopItemId, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
+import { getShopItem, isShopItemId, localMoveRange, MAX_ITEM_QUANTITY, type ShopCart } from '@/shop/catalog'
 import { resolveItemEffect } from '@/shop/itemEffects'
 import { emptyLeagueState, type LeagueConfiguration } from '@/league/leagueModel'
 import { createLeagueActions } from './game/leagueActions'
@@ -49,7 +49,7 @@ import {
   determinaIniziativa,
   type EsitoBattaglia,
 } from '@engine/battleEngine'
-import { getPokemon, getAllenatore, getIncontri } from '@data/index'
+import { getPokemon, getAllenatore, getIncontri, squadraAllenatore } from '@data/index'
 import {
   MAIN_MAP_START_NODE,
   areMainMapNodesConnected,
@@ -165,6 +165,8 @@ export interface GameState extends GameSaveState {
 
   /** Decrementa di 1 la quantità dell'oggetto. Ritorna true se consumato. */
   usaOggetto: (giocatoreId: 1 | 2, oggettoId: OggettoId, battlePatch?: Partial<StatoBattaglia>) => boolean
+  /** Consuma un oggetto e salva subito (Sacchettino lanciato: si perde anche se la cattura fallisce). */
+  spendiOggetto: (giocatoreId: 1 | 2, oggettoId: OggettoId) => boolean
 
   /** Aggiunge (o crea) `delta` unità di un oggetto. */
   aggiungiOggetto: (giocatoreId: 1 | 2, oggettoId: OggettoId, delta: number) => void
@@ -581,6 +583,16 @@ export const useGameStore = create<GameState>()(
         return written
       },
 
+      spendiOggetto: (giocatoreId, oggettoId) => {
+        if (!isShopItemId(oggettoId)) return false
+        const state = get()
+        const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
+        const g = state[chiaveG]
+        const q = g.inventario[oggettoId] ?? 0
+        if (q <= 0) return false
+        return commitDurable({ [chiaveG]: { ...g, inventario: { ...g.inventario, [oggettoId]: q - 1 } } } as Partial<GameState>)
+      },
+
       aggiungiOggetto: (giocatoreId, oggettoId, delta) =>
         set((s) => {
           if (!isShopItemId(oggettoId) || !Number.isSafeInteger(delta)) return s
@@ -617,7 +629,7 @@ export const useGameStore = create<GameState>()(
         if (!isShopItemId(itemId) || (player.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
         const pokemon = player.squadra.find((entry) => entry.istanzaId === instanceId)
         if (!pokemon) return { ok: false, message: 'Scegli un Arkamon della tua squadra.' }
-        const result = resolveItemEffect(pokemon, itemId)
+        const result = resolveItemEffect(pokemon, itemId, Math.random)
         if (!result.ok || !result.pokemon) return result
         const written = commitDurable({ [key]: { ...player, squadra: player.squadra.map((entry) => entry.istanzaId === instanceId ? result.pokemon! : entry),
           inventario: { ...player.inventario, [itemId]: player.inventario[itemId]! - 1 } }, turnoOverworld: nuovoTurno(playerId),
@@ -643,14 +655,9 @@ export const useGameStore = create<GameState>()(
         const pokemonA = giocatore.squadra.find((p) => p.hp > 0)
         if (!pokemonA) return false
 
-        // Per il Rivale (tipo PVP), il primo slot è lo starter scartato
-        // dai giocatori (porting di AssegnaRivaleEVaiAllaMappa).
-        const isRivale = allenatore.tipo === 'PVP'
-        const slotsAllenatore = allenatore.squadra.map((s, i) =>
-          isRivale && i === 0 && state.rivaleStarterId
-            ? { ...s, pokemonId: state.rivaleStarterId }
-            : s
-        )
+        // Per il rivale lo slot 1 è lo starter scartato dai giocatori, al suo stadio
+        // (porting di AssegnaRivaleEVaiAllaMappa).
+        const slotsAllenatore = squadraAllenatore(allenatore, state.rivaleStarterId)
 
         // Crea istanze fresche per tutta la squadra dell'allenatore
         const squadraB: PokemonIstanza[] = []
@@ -994,7 +1001,8 @@ export const useGameStore = create<GameState>()(
           return false
         }
         const from = getLocalMapNode(map, state[positionKey][luogo]).id
-        if (!canMoveOnLocalMap(map, from, nodoDestinazione)) return false
+        const range = localMoveRange(state[giocatoreId === 1 ? 'giocatore1' : 'giocatore2'].inventario, luogo)
+        if (!canMoveOnLocalMap(map, from, nodoDestinazione, range)) return false
         return set({
           [positionKey]: { ...state[positionKey], [luogo]: nodoDestinazione },
           turnoOverworld: consumaAzione(state.turnoOverworld, 'movimento'),

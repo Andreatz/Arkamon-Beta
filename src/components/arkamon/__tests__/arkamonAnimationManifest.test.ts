@@ -40,13 +40,10 @@ describe('Arkamon animation manifest', () => {
     expect(resolveArkamonAnimationAsset(207, 'back', 'attack')).toBeUndefined()
   })
 
-  it('adds supplied graphics without inventing playable species or battle data', () => {
-    for (const speciesId of PLAYABLE_SPECIES_IDS) expect(getPokemon(speciesId)).toBeDefined()
-    for (const speciesId of PENDING_SPECIES_IDS) {
-      expect(getArkamonAnimationAsset(speciesId, 'front', 'idle')).toBeDefined()
-      expect(getPokemon(speciesId)).toBeUndefined()
-    }
-    expect(SPECIES_IDS.filter(id => getPokemon(id))).toEqual(PLAYABLE_SPECIES_IDS)
+  it('every animated form is now a playable species of the Database', () => {
+    for (const speciesId of [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]) expect(getPokemon(speciesId)).toBeDefined()
+    for (const speciesId of PENDING_SPECIES_IDS) expect(getArkamonAnimationAsset(speciesId, 'front', 'idle')).toBeDefined()
+    expect(SPECIES_IDS.filter(id => getPokemon(id))).toEqual(SPECIES_IDS)
   })
 
   it.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => ({ speciesId, animation }))))(

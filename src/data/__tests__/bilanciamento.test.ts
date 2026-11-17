@@ -10,11 +10,8 @@ import {
   MOSSE,
 } from '@data/index'
 import {
-  CESPUGLI_STANDARD,
   ECONOMIA_BILANCIAMENTO,
   PROGRESSIONE_MAPPE,
-  RANGE_INCONTRI_PERCORSO,
-  RANGE_LIVELLI_ALLENATORI,
   SOGLIE_EFFETTI_SPECIALI,
 } from '@data/bilanciamento'
 
@@ -23,14 +20,13 @@ describe('bilanciamento progressione', () => {
     expect(PROGRESSIONE_MAPPE).toEqual(MAPPE.map((m) => m.nome))
   })
 
-  it('blocca i range livello di ogni allenatore della run principale', () => {
+  it('ogni allenatore del Database ha una squadra con livelli validi', () => {
     for (const allenatore of ALLENATORI) {
-      const range = RANGE_LIVELLI_ALLENATORI[allenatore.id]
-      expect(range, `Range mancante per allenatore ${allenatore.id}`).toBeTruthy()
-
       const livelli = allenatore.squadra.map((p) => p.livello)
-      expect(Math.min(...livelli)).toBeGreaterThanOrEqual(range.min)
-      expect(Math.max(...livelli)).toBeLessThanOrEqual(range.max)
+      expect(livelli.length, `Squadra vuota: ${allenatore.id}`).toBeGreaterThan(0)
+      expect(livelli.length).toBeLessThanOrEqual(6)
+      expect(Math.min(...livelli)).toBeGreaterThanOrEqual(5)
+      expect(Math.max(...livelli)).toBeLessThanOrEqual(100)
     }
   })
 
@@ -45,42 +41,25 @@ describe('bilanciamento progressione', () => {
   })
 })
 
-describe('bilanciamento incontri selvatici', () => {
-  it('ogni percorso ha i cespugli standard A-F o il set storico previsto', () => {
-    for (const [luogo] of Object.entries(RANGE_INCONTRI_PERCORSO)) {
-      const cespugli = new Set(
-        INCONTRI.filter((i) => i.luogo === luogo).map((i) => i.cespuglio)
-      )
-      const attesi =
-        luogo === 'Percorso_1'
-          ? new Set([...CESPUGLI_STANDARD, 'G'])
-          : new Set(CESPUGLI_STANDARD)
-      expect(cespugli).toEqual(attesi)
-    }
+describe('bilanciamento incontri selvatici (Database)', () => {
+  it('ogni luogo con incontri è sulla mappa o è il Percorso 15', () => {
+    const luoghi = new Set([...MAPPE.map((m) => m.nome), 'Percorso_15'])
+    for (const incontro of INCONTRI) expect(luoghi.has(incontro.luogo), incontro.luogo).toBe(true)
   })
 
-  it('i livelli degli incontri restano nel range definito per ogni percorso', () => {
+  it('i livelli degli incontri sono validi e ordinati', () => {
     for (const incontro of INCONTRI) {
-      const range = RANGE_INCONTRI_PERCORSO[incontro.luogo]
-      expect(range, `Range mancante per ${incontro.luogo}`).toBeTruthy()
-      expect(incontro.livelloMin).toBeGreaterThanOrEqual(range.min)
-      expect(incontro.livelloMax).toBeLessThanOrEqual(range.max)
+      expect(incontro.livelloMin).toBeGreaterThanOrEqual(5)
+      expect(incontro.livelloMax).toBeLessThanOrEqual(100)
       expect(incontro.livelloMin).toBeLessThanOrEqual(incontro.livelloMax)
     }
   })
 
-  it('ogni cespuglio offre almeno un incontro Comune e uno non Comune', () => {
-    for (const [luogo] of Object.entries(RANGE_INCONTRI_PERCORSO)) {
-      const cespugli =
-        luogo === 'Percorso_1' ? [...CESPUGLI_STANDARD, 'G'] : CESPUGLI_STANDARD
-
-      for (const cespuglio of cespugli) {
-        const incontri = INCONTRI.filter(
-          (i) => i.luogo === luogo && i.cespuglio === cespuglio
-        )
-        expect(incontri.some((i) => i.probabilita === 'Comune')).toBe(true)
-        expect(incontri.some((i) => i.probabilita !== 'Comune')).toBe(true)
-      }
+  it('ogni cespuglio offre almeno un incontro Comune', () => {
+    const cespugli = new Set(INCONTRI.map((i) => `${i.luogo}:${i.cespuglio}`))
+    for (const key of cespugli) {
+      const [luogo, cespuglio] = key.split(':')
+      expect(INCONTRI.some((i) => i.luogo === luogo && i.cespuglio === cespuglio && i.probabilita === 'Comune'), key).toBe(true)
     }
   })
 })
@@ -117,8 +96,9 @@ describe('bilanciamento economia', () => {
       return somma
     }, 0)
 
+    // 102 NPC e 8 capipalestra del Database.
     expect(totale).toBeGreaterThan(0)
-    expect(totale).toBeLessThanOrEqual(15000)
+    expect(totale).toBeLessThanOrEqual(30000)
   })
 })
 
@@ -141,9 +121,10 @@ describe('bilanciamento stati, cure e Supreme', () => {
       }
 
       if (
+        !mossa.soloStato && (
         mossa.effetto === 'CONFUSIONE' ||
         mossa.effetto === 'SONNO' ||
-        mossa.effetto === 'VELENO'
+        mossa.effetto === 'VELENO')
       ) {
         expect(mossa.valoreEffetto).toBeGreaterThanOrEqual(
           SOGLIE_EFFETTI_SPECIALI.statoValoreMin

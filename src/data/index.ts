@@ -20,57 +20,18 @@ import crescitaData from './crescita_hp.json'
 import mappeData from './mappe.json'
 import incontriData from './incontri.json'
 import allenatoriData from './allenatori.json'
-import { addStatusMovesToPokemon, STATUS_MOVES } from './statusMoves'
-import {
-  CESPUGLI_STANDARD,
-  POKEMON_INCONTRI_COMUNI,
-  POKEMON_INCONTRI_SPECIALI,
-  PROBABILITA_INCONTRI_STANDARD,
-  RANGE_INCONTRI_PERCORSO,
-  ROUTE_GENERATE,
-} from './bilanciamento'
+import { resolveStatusMove } from './statusMoves'
 
 // Cast tipizzati (i JSON non hanno tipi inferiti perfetti dal compilatore)
-export const POKEMON_BASE: PokemonSpecie[] = addStatusMovesToPokemon(pokemonData as PokemonSpecie[])
-export const MOSSE: MossaDef[] = [...BASE_RUNTIME_MOVES, ...STATUS_MOVES]
+// Specie, mosse, incontri e allenatori vengono da data-source/Database.xlsx
+// (scripts/data/import-database.py). Le mosse Status prendono i valori da statusMoveRules.json.
+export const POKEMON_BASE: PokemonSpecie[] = pokemonData as PokemonSpecie[]
+export const MOSSE: MossaDef[] = BASE_RUNTIME_MOVES.map(resolveStatusMove)
 export const TABELLA_TIPI: TabellaTipi = tipiData as TabellaTipi
 export const CRESCITA_HP: Record<CategoriaHP, number> =
   crescitaData as Record<CategoriaHP, number>
 export const MAPPE: Mappa[] = mappeData as Mappa[]
-const INCONTRI_ROUTE_RESTANTI: IncontroSelvatico[] = ROUTE_GENERATE.flatMap(
-  (luogo, routeIndex) =>
-    CESPUGLI_STANDARD.flatMap((cespuglio, bushIndex) => {
-      const range = RANGE_INCONTRI_PERCORSO[luogo]
-      const livello = Math.min(range.max - 1, range.min + Math.floor(bushIndex / 2))
-      const pokemonComune = POKEMON_INCONTRI_COMUNI[bushIndex]
-      const pokemonMedio =
-        POKEMON_INCONTRI_SPECIALI[(routeIndex + bushIndex) % POKEMON_INCONTRI_SPECIALI.length]
-
-      return [
-        {
-          luogo,
-          cespuglio,
-          pokemonId: pokemonComune,
-          probabilita: PROBABILITA_INCONTRI_STANDARD[0],
-          livelloMin: livello,
-          livelloMax: livello + 1,
-        },
-        {
-          luogo,
-          cespuglio,
-          pokemonId: pokemonMedio,
-          probabilita: bushIndex % 3 === 2 ? 'Difficile' : PROBABILITA_INCONTRI_STANDARD[1],
-          livelloMin: livello + 1,
-          livelloMax: livello + 2,
-        },
-      ] satisfies IncontroSelvatico[]
-    })
-)
-
-export const INCONTRI: IncontroSelvatico[] = [
-  ...(incontriData as IncontroSelvatico[]),
-  ...INCONTRI_ROUTE_RESTANTI,
-]
+export const INCONTRI: IncontroSelvatico[] = incontriData as IncontroSelvatico[]
 export const ALLENATORI: AllenatoreDef[] = allenatoriData as AllenatoreDef[]
 
 
@@ -116,4 +77,26 @@ export function efficaciaTipo(
   difensore: PokemonSpecie['tipo']
 ): number {
   return TABELLA_TIPI.efficacia[attaccante]?.[difensore] ?? 1
+}
+
+/** Stadio della linea evolutiva adatto al livello (lo starter del rivale cresce con lui). */
+export function stadioPerLivello(speciesId: number, livello: number): number {
+  let current = getPokemon(speciesId)
+  while (current && current.evoluzioneId && current.livelloEvoluzione && livello >= current.livelloEvoluzione) {
+    const next = getPokemon(current.evoluzioneId)
+    if (!next) break
+    current = next
+  }
+  return current?.id ?? speciesId
+}
+
+/**
+ * Squadra reale di un allenatore. Nel Database lo slot 1 del rivale è vuoto (pokemonId 0):
+ * diventa lo starter scartato dai giocatori, allo stadio adatto al suo livello.
+ */
+export function squadraAllenatore(trainer: AllenatoreDef, rivaleStarterId: number | null): { pokemonId: number; livello: number }[] {
+  return trainer.squadra.map((slot) => {
+    if (slot.pokemonId !== 0 || !trainer.rivale) return slot
+    return { ...slot, pokemonId: stadioPerLivello(rivaleStarterId ?? 1, slot.livello) }
+  })
 }

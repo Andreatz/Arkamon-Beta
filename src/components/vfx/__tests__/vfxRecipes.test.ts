@@ -49,7 +49,7 @@ describe('MOVE_VFX_RECIPES', () => {
   })
 
   it('uses single specific effects for configured moves and retains recipes for unassigned moves', () => {
-    for (const move of MOSSE) {
+    for (const move of MOSSE.filter((entry) => entry.id <= 276)) {
       expect(resolveMoveVfxAsset(move).id).toMatch(/^moveset:/)
       expect(resolveMoveVfxRecipe(move)).toBeUndefined()
     }

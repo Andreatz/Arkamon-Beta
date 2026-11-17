@@ -102,7 +102,7 @@ export function createLeagueActions(get: () => GameState, set: (patch: Partial<G
         if (!isShopItemId(itemId) || (player.inventario[itemId] ?? 0) < 1) return { ok: false, message: 'Questo oggetto non è nella borsa.' }
         const pokemon = player.squadra.find((p) => p.istanzaId === instanceId)
         if (!pokemon) return { ok: false, message: 'Scegli un Arkamon della squadra.' }
-        const effect = resolveItemEffect(pokemon, itemId)
+        const effect = resolveItemEffect(pokemon, itemId, Math.random)
         if (!effect.ok || !effect.pokemon) return effect
         const written = set({ [key]: { ...player, squadra: player.squadra.map((p) => p.istanzaId === instanceId ? effect.pokemon! : p),
           inventario: { ...player.inventario, [itemId]: player.inventario[itemId]! - 1 } } } as Partial<GameState>)

@@ -33,7 +33,7 @@ describe('explicit management reveal', () => {
     expect(view?.item?.name).toBe('Pozione')
     expect(view?.item).not.toHaveProperty('quantity')
     expect(view?.item).not.toHaveProperty('price')
-    expect(buildPublicManagement(campaign(), { screen: 'negozio', playerId: 1, itemId: 'potion' })?.item?.price).toBe(100)
+    expect(buildPublicManagement(campaign(), { screen: 'negozio', playerId: 1, itemId: 'potion' })?.item?.price).toBe(50)
   })
   it('uses the live battle instance without sending the battle roster', () => {
     const game = campaign()

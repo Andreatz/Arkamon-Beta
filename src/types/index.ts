@@ -75,6 +75,10 @@ export interface MossaDef {
   valoreEffetto: number | null
   /** Mossa che applica soltanto uno stato: nessun danno, tiro offensivo o Suprema. */
   soloStato?: boolean
+  /** Regola delle mosse Status del Database (src/data/statusMoveRules.json). */
+  regolaStato?: string
+  /** Livello da cui la mossa è disponibile ("Dal Lvl 22" nel Database). */
+  livelloMinimo?: number
   /** Numero di dadi D6 per livello {"5": 1, "6": 1, ...} */
   dadiPerLivello: Record<string, number>
   /** Incremento fisso per livello {"5": 0, "6": 0, ...} */
@@ -110,7 +114,10 @@ export interface AllenatoreDef {
   nome: string
   luogo: string
   tipo: TipoAllenatore
+  /** pokemonId 0 nello slot 1 del rivale = starter scartato dai giocatori. */
   squadra: { pokemonId: number; livello: number }[]
+  /** Il rivale: lo slot 1 diventa la sua linea di starter. */
+  rivale?: boolean
 }
 
 // =============================================================
@@ -132,10 +139,13 @@ export interface PokemonIstanza {
   xp: number
   /** Stato alterato attivo (se presente). Pulito a fine battaglia. */
   stato?: Stato
+  /** Turni restanti di immunità dagli stati (mossa Status del Database). Solo in battaglia. */
+  immunitaStati?: number
 }
 
 /** Identificatori degli oggetti supportati. */
-export type OggettoId = 'masterball' | 'potion' | 'super-potion' | 'revive' | 'antidote' | 'paralysis-heal' | 'awakening'
+export type OggettoId = 'potion' | 'super-potion' | 'hyper-potion' | 'max-potion' | 'revive' | 'antidote' | 'paralysis-heal' | 'awakening' | 'full-heal'
+  | 'sacchettino' | 'mega-sacchettino' | 'ultra-sacchettino' | 'masterball' | 'boost-speed' | 'boost-damage' | 'special-scent' | 'bicycle' | 'scooter'
 
 /** Stato di un singolo giocatore */
 export interface StatoGiocatore {
@@ -162,6 +172,8 @@ export interface StatoGiocatore {
 
 /** Stato della battaglia in corso (analogo del foglio Battaglia_Corrente VBA) */
 export interface StatoBattaglia {
+  /** Boost del Database usati dal giocatore in questa sfida (oggetti della borsa). */
+  boost?: { velocita?: boolean; danno?: boolean }
   /** League opponents are explicitly configured, not synthetic entries in the campaign catalog. */
   leagueOpponent?: AllenatoreDef
   leagueBattle?: { runId: string; stageIndex: number; playerId: 1 | 2 }

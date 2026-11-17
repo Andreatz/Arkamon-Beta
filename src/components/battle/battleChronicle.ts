@@ -1,3 +1,4 @@
+import { getPokemon } from '@/data'
 import type { BattleChronicle, BattleLogEvent, BattleLogKind, Lato, PokemonIstanza, RisultatoMossa } from '@/types'
 import type { BattleAttackResolution } from '@/engine/battleResolution'
 import type { applicaXP, risolviStatoInizioTurno } from '@/engine/battleEngine'
@@ -55,7 +56,7 @@ export function normalizeBattleChronicle(value: unknown, fallbackId = 'recovered
     for (const key of ['actor', 'target'] as const) {
       const pokemon = item[key]
       if (isRecord(pokemon) && typeof pokemon.instanceId === 'string' && typeof pokemon.name === 'string'
-        && Number.isInteger(pokemon.speciesId) && finite(pokemon.speciesId) && pokemon.speciesId > 0 && pokemon.speciesId <= 110
+        && Number.isInteger(pokemon.speciesId) && finite(pokemon.speciesId) && pokemon.speciesId > 0 && !!getPokemon(pokemon.speciesId)
         && finite(pokemon.level) && pokemon.level >= 5 && pokemon.level <= 100 && finite(pokemon.hp) && pokemon.hp >= 0 && pokemon.hp <= 1_000_000) {
         event[key] = { instanceId: pokemon.instanceId.slice(0, 100), speciesId: pokemon.speciesId, name: pokemon.name.slice(0, 100), level: pokemon.level, hp: pokemon.hp }
       }

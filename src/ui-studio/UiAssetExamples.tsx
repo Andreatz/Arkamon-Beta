@@ -12,7 +12,7 @@ import './assetExamples.css'
 type Example = 'borsa' | 'squadra' | 'laboratorio' | 'controlli'
 const examples: [Example, string][] = [['borsa', 'Borsa'], ['squadra', 'Squadra'], ['laboratorio', 'Laboratorio'], ['controlli', 'Comandi e opzioni']]
 const team = [1, 5, 9, 13, 20, 43].map((id, index) => previewCreature(id, index))
-const stock: Record<ShopItemId, number> = { potion: 8, 'super-potion': 4, revive: 2, antidote: 3, 'paralysis-heal': 2, awakening: 2, masterball: 5 }
+const stock: Partial<Record<ShopItemId, number>> = { potion: 8, 'super-potion': 4, revive: 2, antidote: 3, 'paralysis-heal': 2, awakening: 2, sacchettino: 6, masterball: 1 }
 const studio = (name: string) => `/ui/studio/${name}`
 const dark = (name: string) => studio(`Scuro/${name}.svg`)
 const inventoryCenters = [232, 430, 630, 828]

@@ -1,7 +1,7 @@
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { useEffect, useState } from 'react'
 import { useGameStore } from '@/store/gameStore'
-import { MAX_SHOP_QUANTITY, SHOP_ITEMS, type ShopCart } from './catalog'
+import { MAX_SHOP_QUANTITY, shopItemsAt, type ShopCart } from './catalog'
 import { shopAvailabilityMessage, shopCartTotal, type ShopPurchaseResult } from './purchase'
 import './shop.css'
 
@@ -39,7 +39,7 @@ export function ArkaStorePanel({ location, inputBlocked = false, onPurchase }: A
     <p className="arka-store-note">Puoi consultare il negozio senza spendere azioni. Un acquisto del carrello completo conta come un’interazione e conclude il turno. Gli oggetti restano nella borsa di questo giocatore.</p>
     {unavailable && <p className="arka-store-warning" role="status">{unavailable}</p>}
     <div className="arka-store-catalog">
-      {SHOP_ITEMS.map((item) => {
+      {shopItemsAt(location).map((item) => {
         const held = player.inventario[item.id as keyof typeof player.inventario] ?? 0
         const selected = cart[item.id] ?? 0
         return <article className="arka-store-item" key={item.id}>

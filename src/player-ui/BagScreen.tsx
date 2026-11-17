@@ -12,7 +12,7 @@ import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
 import { isReferenceUi } from './reference/referenceTheme'
 import { ProvidedArtwork } from './reference/ProvidedArtwork'
 
-type BagCategory = 'all' | 'heal' | 'status' | 'capture'
+type BagCategory = 'all' | 'heal' | 'status' | 'capture' | 'tools'
 const inventoryCenters = [232, 430, 630, 828]
 const studioAsset = (name: string) => `/ui/studio/Scuro/${name}.svg`
 export interface BagScreenProps { playerId: 1 | 2; onPlayerChange?: (playerId: 1 | 2) => void; showPlayerPicker?: boolean }
@@ -35,7 +35,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
   const player = state[viewPlayerId === 1 ? 'giocatore1' : 'giocatore2']
   const squad = currentRoster(player.squadra, state.battaglia)
   const owned = SHOP_ITEMS.filter((item) => (player.inventario[item.id] ?? 0) > 0)
-  const filtered = owned.filter((item) => category === 'all' || (category === 'heal' ? item.effect.kind === 'heal' || item.effect.kind === 'revive' : item.effect.kind === category))
+  const filtered = owned.filter((item) => category === 'all' || (category === 'heal' ? item.effect.kind === 'heal' || item.effect.kind === 'revive' : category === 'tools' ? ['boost', 'scent', 'vehicle'].includes(item.effect.kind) : item.effect.kind === category))
   const selected = filtered.find((item) => item.id === selectedId) ?? filtered[0]
   const [targetId, setTargetId] = usePlayerUiMemory<string>(viewPlayerId, 'bag.target', () => usePlayerUiSession.getState().selection[viewPlayerId]?.instanceId ?? player.squadra[0]?.istanzaId ?? '')
   usePublishPlayerUiSelection(viewPlayerId, { instanceId: targetId, itemId: selected?.id })
@@ -59,7 +59,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
     </div>
     <div className="pu-live-bag-heading"><div><span>SCORTE DI VIAGGIO</span><h2>La borsa di {player.nome || `Giocatore ${viewPlayerId}`}</h2></div><strong>{total} oggetti<small>{owned.length} articoli</small></strong></div>
     <div className="pu-live-bag-categories" aria-label="Categorie degli oggetti">{([
-      ['all', 'Tutti'], ['heal', 'Cure'], ['status', 'Status'], ['capture', 'Cattura'],
+      ['all', 'Tutti'], ['heal', 'Cure'], ['status', 'Status'], ['capture', 'Cattura'], ['tools', 'Strumenti'],
     ] as const).map(([id, label]) => <StudioCommand key={id} selected={category === id} className="pu-live-bag-category" aria-pressed={category === id} onClick={() => { setCategory(id); setSelectedId(null) }}>{isReferenceUi() && <KitIcon id={`category-${id}`} />}{label}</StudioCommand>)}</div>
     <div className="pu-bag-layout">
       <div className="pu-live-bag-inventory">

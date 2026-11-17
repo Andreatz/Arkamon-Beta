@@ -7,7 +7,7 @@ describe('battle move facts', () => {
     const healing = MOSSE.filter((move) => move.effetto === 'CURA_PCT' || move.effetto === 'CURA')
     expect(healing.length).toBeGreaterThan(0)
     for (const move of healing) {
-      const facts = battleMoveFacts(move, 20, 'Fuoco')
+      const facts = battleMoveFacts(move, 60, 'Fuoco')
       expect(facts.kind).toBe('heal')
       expect(facts.label).toContain(String(move.valoreEffetto))
       expect(facts.detail).toContain('Rimuove veleno e paralisi')

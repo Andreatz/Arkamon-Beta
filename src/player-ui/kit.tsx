@@ -19,6 +19,9 @@ export const TYPE_ICONS: Record<TipoPokemon, string> = {
 export const ITEM_ICONS: Record<string, string> = {
   potion: 'item-potion', 'super-potion': 'item-superpotion', revive: 'item-revive',
   antidote: 'item-antidote', masterball: 'item-sphere', 'paralysis-heal': 'type-electric', awakening: 'type-psychic',
+  'hyper-potion': 'item-hyperpotion', 'max-potion': 'item-maxpotion', 'full-heal': 'item-full-heal',
+  sacchettino: 'item-sacchettino', 'mega-sacchettino': 'item-mega-sacchettino', 'ultra-sacchettino': 'item-ultra-sacchettino',
+  'boost-speed': 'item-boost-speed', 'boost-damage': 'item-boost-damage', 'special-scent': 'item-scent', bicycle: 'item-bicycle', scooter: 'item-scooter',
 }
 export function itemIconId(itemId: string): string {
   if (isReferenceUi() && itemId === 'awakening') return 'item-awakening'
@@ -38,6 +41,8 @@ const ICON_GLYPHS: Record<string, string> = {
   'icon-chronicles': '≡', 'icon-challenges': '◇', 'icon-activity': '↗',
   'item-potion': 'P', 'item-superpotion': 'SP', 'item-revive': 'R',
   'item-antidote': 'A', 'item-sphere': 'M', 'item-coin': '₳', 'item-awakening': 'SV', 'item-paralysis-heal': 'AP',
+  'item-hyperpotion': 'IP', 'item-maxpotion': 'PM', 'item-full-heal': 'CT', 'item-sacchettino': 'S', 'item-mega-sacchettino': 'MS',
+  'item-ultra-sacchettino': 'US', 'item-boost-speed': 'BV', 'item-boost-damage': 'BD', 'item-scent': 'PR', 'item-bicycle': 'BI', 'item-scooter': 'MO',
   'type-normal': 'N', 'type-electric': 'EL', 'type-fire': 'FU', 'type-earth': 'TE',
   'type-water': 'AC', 'type-grass': 'ER', 'type-dark': 'OS', 'type-psychic': 'PS',
 }

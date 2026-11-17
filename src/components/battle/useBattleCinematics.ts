@@ -140,7 +140,7 @@ export function useBattleCinematics({ rig, fx, enabled }: { rig: CameraRig; fx: 
         let shakes = 0
         let revealed: CaptureDisplay['revealed'] = []
         const show = (patch: Partial<CaptureDisplay>) => setCapture((current) => ({
-          id, kind: plan.kind, phase: 'throw', shake: shakes, revealed, maxTotal: plan.maxTotal, ...(current?.id === id ? current : {}), ...patch,
+          id, kind: plan.kind, phase: 'throw', shake: shakes, revealed, maxTotal: plan.maxTotal, minRoll: plan.minRoll, ...(current?.id === id ? current : {}), ...patch,
         }))
         const oscillations = plan.steps.map((step) => seq(
           call(() => { shakes += 1; show({ phase: 'shake', shake: shakes }) }),

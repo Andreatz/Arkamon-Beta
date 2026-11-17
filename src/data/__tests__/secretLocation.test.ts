@@ -3,11 +3,10 @@ import { ALLENATORI } from '@data/index'
 import { SECRET_LOCATION_GYM_IDS, hasUnlockedSecretLocation, isSecretLocationConnection } from '@data/secretLocation'
 
 describe('luogo segreto dopo tutte le palestre', () => {
-  it('richiede tutti gli otto capipalestra reali, incluso quello di Roma', () => {
+  it('richiede tutti gli otto capipalestra reali del Database', () => {
     const capi = ALLENATORI.filter((a) => a.tipo === 'Capopalestra')
     expect(capi).toHaveLength(8)
     expect(SECRET_LOCATION_GYM_IDS).toEqual(capi.map((a) => a.id))
-    expect(capi.some((a) => a.luogo === 'Roma')).toBe(true)
     expect(hasUnlockedSecretLocation({ allenatoriSconfitti: new Set(SECRET_LOCATION_GYM_IDS) })).toBe(true)
   })
 

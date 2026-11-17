@@ -4,6 +4,7 @@
  * Porting fedele di Mod_Battle_Engine.bas + Mod_Utilities.bas.
  * Senza dipendenze UI: prende stato + azione → restituisce risultato.
  */
+import captureTable from '@/data/captureTable.json'
 import type {
   PokemonIstanza,
   MossaDef,
@@ -75,6 +76,9 @@ export function tentaApplicaStato(
   istanza: PokemonIstanza,
   _tipo: StatoAlterato
 ): { applicato: boolean; messaggio?: string } {
+  if ((istanza.immunitaStati ?? 0) > 0) {
+    return { applicato: false, messaggio: `${istanza.nome} è protetto dagli stati alterati!` }
+  }
   if (istanza.stato) {
     return {
       applicato: false,
@@ -111,6 +115,12 @@ export function risolviStatoInizioTurno(
   messaggi: string[]
   tiroStato?: number
 } {
+  // Immunità da status: scala di un turno a ogni turno del Pokémon protetto.
+  if ((istanza.immunitaStati ?? 0) > 0) {
+    const restanti = (istanza.immunitaStati ?? 0) - 1
+    const { immunitaStati: _scaduta, ...senzaImmunita } = istanza
+    istanza = restanti > 0 ? { ...istanza, immunitaStati: restanti } : senzaImmunita
+  }
   if (!istanza.stato || istanza.hp <= 0) {
     return { istanza, puoAgire: istanza.hp > 0, dannoSubito: 0, messaggi: [] }
   }
@@ -277,14 +287,16 @@ export function calcolaDanno(
     1,
     roundHalfUp(dannoBase * moltTipo)
   )
-  const dannoFinale = soloStato ? 0 : dannoOrdinario * (suprema ? 2 : 1)
+  // Danno fisso (mosse Status del Database): valore della regola, senza dadi né efficacia.
+  const dannoFisso = soloStato && mossa.effetto === 'DANNO_FISSO' ? Math.max(1, Math.floor(mossa.valoreEffetto ?? 0)) : 0
+  const dannoFinale = soloStato ? dannoFisso : dannoOrdinario * (suprema ? 2 : 1)
 
   const messaggi: string[] = [`${attaccante.nome} usa ${mossa.nome}!`]
   if (suprema) messaggi.push('💥 MOSSA SUPREMA! 💥')
   if (moltTipo > 1) messaggi.push('È superefficace!')
   else if (moltTipo < 1 && moltTipo > 0) messaggi.push('Non è molto efficace...')
   else if (moltTipo === 0) messaggi.push('Non ha effetto!')
-  if (!soloStato) messaggi.push(`${difensore.nome} subisce ${dannoFinale} danni.`)
+  if (!soloStato || dannoFisso) messaggi.push(`${difensore.nome} subisce ${dannoFinale} danni${dannoFisso ? ' fissi' : ''}.`)
 
   // Il costo della Suprema è fisso: 50% degli HP massimi, mai degli HP correnti.
   let autodanno = 0
@@ -346,6 +358,11 @@ export function costoSuprema(hpMaxAttaccante: number): number {
   return Math.max(1, Math.floor(hpMaxAttaccante * RAPPORTO_AUTODANNO_SUPREMA))
 }
 
+/** Mosse con livello minimo ("Dal Lvl 22" nel Database): prima non si possono usare. */
+export function èMossaDisponibile(mossa: MossaDef, livello: number): boolean {
+  return livello >= (mossa.livelloMinimo ?? 0)
+}
+
 /** Uno status puro è un'azione senza dadi offensivi o danno al bersaglio. */
 export function èMossaSoloStato(mossa: MossaDef): boolean {
   return mossa.soloStato === true
@@ -379,7 +396,7 @@ export function calcolaAzioneSuprema(
 //
 // Le cure HP rimuovono anche veleno o paralisi, persino a HP già pieni.
 
-export const EFFETTI_CURA = new Set(['CURA', 'CURA_PCT'])
+export const EFFETTI_CURA = new Set(['CURA', 'CURA_PCT', 'CURA_PARALISI', 'IMMUNITA'])
 
 /** True se la mossa è una mossa curativa (non infligge danno). */
 export function èMossaCura(mossa: MossaDef): boolean {
@@ -403,6 +420,22 @@ export function applicaMossaCura(
   tiroStato?: number
 } {
   const messaggi = [`${attaccante.nome} usa ${mossa.nome}!`]
+  if (mossa.effetto === 'CURA_PARALISI') {
+    if (attaccante.stato?.tipo !== 'Paralizzato') {
+      messaggi.push(`${attaccante.nome} non è paralizzato.`)
+      return { istanza: attaccante, hpRecuperato: 0, messaggi }
+    }
+    const { stato: _paralisi, ...guarito } = attaccante
+    messaggi.push(`${attaccante.nome} è guarito dalla paralisi!`)
+    return { istanza: guarito, hpRecuperato: 0, messaggi }
+  }
+  if (mossa.effetto === 'IMMUNITA') {
+    const turni = Math.max(1, Math.floor(mossa.valoreEffetto ?? 5))
+    const { stato: statoPrecedente, ...senzaStato } = attaccante
+    if (statoPrecedente) messaggi.push(`${attaccante.nome} non è più ${statoPrecedente.tipo}.`)
+    messaggi.push(`${attaccante.nome} è protetto dagli stati alterati per ${turni} turni.`)
+    return { istanza: { ...senzaStato, immunitaStati: turni }, hpRecuperato: 0, messaggi }
+  }
   if (!èMossaCura(mossa) || mossa.valoreEffetto == null) {
     return { istanza: attaccante, hpRecuperato: 0, messaggi }
   }
@@ -473,6 +506,46 @@ export function tentaCattura(
 }
 
 // =============================================================
+// CATTURA CON SACCHETTINO (tabella d20 del Database)
+// =============================================================
+
+export type LivelloSacchettino = 'base' | 'mega' | 'ultra' | 'master'
+export type DifficoltaCattura = 'Facile' | 'Medio' | 'Difficile'
+type FasciaCattura = 'pieno' | 'pieno+status' | '50' | '50+status' | '25' | '25+status'
+
+export function difficoltaCattura(tassoCattura: number): DifficoltaCattura {
+  const entries = Object.entries(captureTable.difficolta) as [DifficoltaCattura, [number, number]][]
+  return entries.find(([, [min, max]]) => tassoCattura >= min && tassoCattura <= max)?.[0] ?? (tassoCattura >= 4 ? 'Facile' : tassoCattura <= 1 ? 'Difficile' : 'Medio')
+}
+
+/** HP fino al 25% / fino al 50% degli HP massimi, con o senza uno stato alterato. */
+export function fasciaCattura(bersaglio: PokemonIstanza): FasciaCattura {
+  const ratio = bersaglio.hp / Math.max(1, calcolaHPMax(bersaglio))
+  const hp = ratio <= 0.25 ? '25' : ratio <= 0.5 ? '50' : 'pieno'
+  return (bersaglio.stato ? `${hp}+status` : hp) as FasciaCattura
+}
+
+export function sogliaCatturaD20(bersaglio: PokemonIstanza, livello: Exclude<LivelloSacchettino, 'master'>): { soglia: number; difficolta: DifficoltaCattura; fascia: FasciaCattura } {
+  const specie = getPokemon(bersaglio.specieId)
+  const difficolta = difficoltaCattura(specie?.tassoCattura ?? 3)
+  const fascia = fasciaCattura(bersaglio)
+  return { soglia: captureTable.soglie[livello][fascia][difficolta], difficolta, fascia }
+}
+
+/** Un d20: la cattura riesce con un risultato uguale o maggiore della soglia. Il Supremo non tira. */
+export function tentaCatturaSacchettino(
+  bersaglio: PokemonIstanza,
+  livello: LivelloSacchettino,
+  rng: () => number = Math.random
+): { riuscita: boolean; roll: number | null; soglia: number | null; difficolta: DifficoltaCattura; fascia: FasciaCattura } {
+  const specie = getPokemon(bersaglio.specieId)
+  if (livello === 'master') return { riuscita: true, roll: null, soglia: null, difficolta: difficoltaCattura(specie?.tassoCattura ?? 3), fascia: fasciaCattura(bersaglio) }
+  const { soglia, difficolta, fascia } = sogliaCatturaD20(bersaglio, livello)
+  const roll = Math.min(20, Math.floor(rng() * 20) + 1)
+  return { riuscita: roll >= soglia, roll, soglia, difficolta, fascia }
+}
+
+// =============================================================
 // AI (porting di ScegliMossaIA)
 // =============================================================
 
@@ -497,7 +570,7 @@ export function scegliMossaIA(
     const mossaId = specie.mosse[idx]
     if (!mossaId) continue
     const mossa = getMossa(mossaId)
-    if (!mossa) continue
+    if (!mossa || !èMossaDisponibile(mossa, attaccante.livello)) continue
 
     const { dadi, incremento } = getMossaAlLivello(mossa, attaccante.livello)
     let punteggio = dadi * 3.5 + incremento
@@ -506,13 +579,17 @@ export function scegliMossaIA(
       // La paralisi è utile se sottrae la priorità all'avversario per i round futuri.
       // Con pochi HP residui un attacco resta preferibile; uno stato già presente blocca il nuovo.
       const difensoreHaPriorita = attaccante.stato?.tipo === 'Paralizzato' || difensore.livello > attaccante.livello
-      punteggio = difensore.stato || difensore.hp <= 0 ? Number.NEGATIVE_INFINITY
+      punteggio = mossa.effetto === 'DANNO_FISSO' ? Math.max(1, mossa.valoreEffetto ?? 0)
+        : difensore.stato || (difensore.immunitaStati ?? 0) > 0 || difensore.hp <= 0 ? Number.NEGATIVE_INFINITY
         : mossa.effetto === 'PARALISI' && difensoreHaPriorita && difensore.hp > 1 ? difensore.hp : -1
     }
     if (mossa.effetto && EFFETTI_CURA.has(mossa.effetto)) {
       // La cura esplicita elimina una penalità permanente, anche a HP pieni.
-      punteggio = attaccante.stato?.tipo === 'Paralizzato'
-        ? Number.POSITIVE_INFINITY : hpRatio <= 0.3 ? 100 : -1
+      punteggio = mossa.effetto === 'CURA_PARALISI'
+        ? (attaccante.stato?.tipo === 'Paralizzato' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY)
+        : mossa.effetto === 'IMMUNITA'
+          ? (attaccante.stato ? 90 : (attaccante.immunitaStati ?? 0) > 0 ? Number.NEGATIVE_INFINITY : -1)
+          : attaccante.stato?.tipo === 'Paralizzato' ? Number.POSITIVE_INFINITY : hpRatio <= 0.3 ? 100 : -1
     }
     if (èMossaSuprema(mossa)) {
       punteggio = hpRatio > RAPPORTO_AUTODANNO_SUPREMA + 0.05 ? punteggio * 2 : -1

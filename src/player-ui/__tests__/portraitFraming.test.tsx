@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { resolve } from 'node:path'
 import sharp from 'sharp'
@@ -44,7 +45,7 @@ describe('Whole-creature portrait framing', () => {
   })
 
   it('keeps the official full-body front sprite and its own geometry for every large hero', () => {
-    expect(POKEMON_BASE).toHaveLength(110)
+    expect(POKEMON_BASE).toHaveLength(206)
     for (const species of POKEMON_BASE) {
       const source = `/sprites/front_sprites/${species.id}.png`
       const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} large selected />)
@@ -58,7 +59,8 @@ describe('Whole-creature portrait framing', () => {
   })
 
   it('uses each supplied PNG portrait for compact Aurora slots without borrowing full-body framing', async () => {
-    for (const species of POKEMON_BASE) {
+    // Le specie del Database senza ritratto fornito usano lo sprite frontale (vedi il test successivo).
+    for (const species of POKEMON_BASE.filter((entry) => existsSync(`public/ui/reference-png/portrait-${String(entry.id).padStart(3, '0')}.webp`))) {
       const source = `/ui/reference-png/portrait-${String(species.id).padStart(3, '0')}.webp`
       const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} selected />)
       expect(markup).toMatch(/<img(?=[^>]*class="[^"]*\bpu-creature-art\b)[^>]*>/)

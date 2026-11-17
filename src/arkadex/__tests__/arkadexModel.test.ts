@@ -49,8 +49,8 @@ describe('Arkadex progress and private discoveries', () => {
   it('locks unknown names and types in data as well as in UI filtering', () => {
     const empty = emptyArkadexProgress()
     const entries = getArkadexEntries(empty, 1)
-    expect(entries).toHaveLength(110)
-    expect(POKEMON_BASE).toHaveLength(110)
+    expect(entries).toHaveLength(206)
+    expect(POKEMON_BASE).toHaveLength(206)
     expect(entries.every((entry) => entry.status === 'unknown' && entry.species === undefined)).toBe(true)
     expect(getArkadexEntries(empty, 1, { search: 'Darklaw' })).toHaveLength(0)
     expect(getArkadexEntries(empty, 1, { type: 'Oscurità' })).toHaveLength(0)

@@ -1,4 +1,4 @@
-import { ALLENATORI, getAllenatore, getIncontri, getPokemon } from '@/data'
+import { ALLENATORI, getAllenatore, getIncontri, getPokemon, squadraAllenatore } from '@/data'
 import { getLocalMap } from '@/data/localMaps'
 import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
 import { calcolaHPMax, determinaIniziativa } from '@/engine/battleEngine'
@@ -78,9 +78,8 @@ function makeBattle(state: InteractionRuntimeState, definition: InteractionDefin
     const trainer = getAllenatore(a.trainerId)
     if (!trainer) return null
     trainerId = trainer.id; type = trainer.tipo === 'PVP' ? 'PVP' : 'NPC'; intro = `${trainer.nome} ti sfida!`
-    opponents = trainer.squadra.flatMap((slot, index) => {
-      const speciesId = index === 0 && trainer.tipo === 'PVP' && state.rivaleStarterId ? state.rivaleStarterId : slot.pokemonId
-      const pokemon = makePokemon(speciesId, slot.livello, `interaction-${definition.id}-${player.id}-${index}`)
+    opponents = squadraAllenatore(trainer, state.rivaleStarterId).flatMap((slot, index) => {
+      const pokemon = makePokemon(slot.pokemonId, slot.livello, `interaction-${definition.id}-${player.id}-${index}`)
       return pokemon ? [pokemon] : []
     })
   } else if (a.kind === 'encounter') {
@@ -120,7 +119,12 @@ export function resolveConfiguredInteraction(state: InteractionRuntimeState, def
   if (state.giocatoreAttivo !== playerId || state.turnoOverworld.giocatoreAttivo !== playerId || state.turnoOverworld.azioniRimaste <= 0) return failure('Il turno di questo giocatore è concluso.')
   if (world.mappaId !== 'mappa-principale' || world.luogo !== definition.mapId || (positions[map.id] ?? map.startNode) !== definition.nodeId) return failure('Raggiungi il pallino di questa interazione.')
   if (definition.mapId === SECRET_LOCATION_ID && !canAccessSecretLocation(player, world)) return failure('Il passaggio segreto non è ancora disponibile.')
-  if (!definition.repeatable && isInteractionComplete(state.interactionProgress, definition, playerId)) return failure('Questa interazione è già stata completata.')
+  const bushKey = definition.action.kind === 'bush' ? `${map.id}:${definition.action.bush}` : null
+  const bushExplored = !!bushKey && (player.cespugliVisitati.has(bushKey) || isInteractionComplete(state.interactionProgress, definition, playerId))
+  // Profumo speciale (Database): permette di esplorare di nuovo un cespuglio già visitato.
+  const useScent = bushExplored && (player.inventario['special-scent'] ?? 0) > 0
+  if (bushExplored && !useScent) return failure('Questo cespuglio è già stato esplorato. Un Profumo speciale permette di esplorarlo di nuovo.')
+  if (!bushKey && !definition.repeatable && isInteractionComplete(state.interactionProgress, definition, playerId)) return failure('Questa interazione è già stata completata.')
   const requirement = interactionRequirementMessage(state, definition, playerId)
   if (requirement) return failure(requirement)
   const a = definition.action
@@ -130,11 +134,11 @@ export function resolveConfiguredInteraction(state: InteractionRuntimeState, def
     return { ok: true, message: 'Arkastore disponibile sul pallino. Il turno si conclude soltanto all’acquisto.' }
   }
   if (a.kind === 'trainer' && player.allenatoriSconfitti.has(a.trainerId)) return failure('Questo allenatore è già stato sconfitto.')
-  if (a.kind === 'bush' && player.cespugliVisitati.has(`${map.id}:${a.bush}`)) return failure('Questo cespuglio è già stato esplorato.')
   const startsBattle = a.kind === 'trainer' || a.kind === 'encounter' || a.kind === 'bush'
   const battle = startsBattle ? makeBattle(state, definition, player, rng) : null
   if (startsBattle && !battle) return failure('Serve un Arkamon vivo in squadra per affrontare questo incontro.')
   let updatedPlayer = changeResources(player, definition.cost, -1)
+  if (useScent) updatedPlayer = { ...updatedPlayer, inventario: { ...updatedPlayer.inventario, 'special-scent': (updatedPlayer.inventario['special-scent'] ?? 1) - 1 } }
   let progress = state.interactionProgress
   const pending: PendingInteractionBattle = { interactionId: definition.id, playerId, title: definition.title, mapId: map.id, nodeId: definition.nodeId, scope: definition.scope, reward: structuredClone(definition.reward) }
   if (battle) {
@@ -150,7 +154,7 @@ export function resolveConfiguredInteraction(state: InteractionRuntimeState, def
     progress = appendLog(progress, playerId, { interactionId: definition.id, title: definition.title, mapId: map.id, nodeId: definition.nodeId, message: definition.dialogue || (a.kind === 'heal' ? 'La squadra è stata curata.' : 'Interazione completata.') })
   }
   return {
-    ok: true, message: definition.dialogue || (battle ? 'La sfida ha inizio.' : a.kind === 'heal' ? 'La squadra è stata curata.' : 'Interazione completata.'),
+    ok: true, message: useScent ? 'Usi un Profumo speciale: il cespuglio si anima di nuovo.' : definition.dialogue || (battle ? 'La sfida ha inizio.' : a.kind === 'heal' ? 'La squadra è stata curata.' : 'Interazione completata.'),
     patch: {
       [playerKey]: updatedPlayer, interactionProgress: progress, turnoOverworld: nuovoTurno(playerId),
       ...(battle ? { battaglia: battle, scenaPrecedente: state.scenaCorrente, scenaCorrente: { scena: 'battaglia' as const } } : {}),

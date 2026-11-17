@@ -15,6 +15,7 @@ export interface CaptureDisplay {
   shake: number
   revealed: CaptureStep[]
   maxTotal: number | null
+  minRoll?: number
 }
 
 type Point = { x: number; y: number }
@@ -124,8 +125,9 @@ function CaptureOrbArt({ kind }: { kind: 'dice' | 'master' }) {
 function CaptureDice({ capture, at }: { capture: CaptureDisplay; at: Point }) {
   const settings = useGameMotionPreferences()
   const caught = capture.phase === 'caught'
-  if (!caught && (capture.kind !== 'dice' || capture.revealed.length === 0)) return null
-  const last = capture.revealed[capture.revealed.length - 1]
+  const shown = capture.revealed.filter(step => step.die !== null)
+  if (!caught && (capture.kind !== 'dice' || shown.length === 0)) return null
+  const last = shown[shown.length - 1]
   return (
     <div className="battle-capture__dice arka-battle-font" style={{ left: `${at.x}%`, top: `${at.y}%` }} data-capture-total={last?.total}>
       {caught && (
@@ -135,7 +137,7 @@ function CaptureDice({ capture, at }: { capture: CaptureDisplay; at: Point }) {
         </motion.p>
       )}
       {capture.kind === 'dice' && last && <div className="battle-capture__chips">
-        {capture.revealed.map((step, index) => (
+        {shown.map((step, index) => (
           <motion.span key={index} className={`battle-capture__chip ${step.holds ? '' : 'is-break'}`}
             initial={settings.reducedMotion ? false : { scale: 0.3, opacity: 0, y: 10 }} animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: resolveDuration('base', settings) / 1000, ease: [0.34, 1.56, 0.64, 1] }}>
@@ -145,7 +147,7 @@ function CaptureDice({ capture, at }: { capture: CaptureDisplay; at: Point }) {
       </div>}
       {capture.kind === 'dice' && last && (
         <p className={`battle-capture__total ${last.holds ? '' : 'is-break'}`}>
-          {last.total}<span> / {capture.maxTotal}</span>
+          {last.total}<span>{capture.minRoll ? ` · serve ${capture.minRoll}+` : ` / ${capture.maxTotal}`}</span>
         </p>
       )}
     </div>

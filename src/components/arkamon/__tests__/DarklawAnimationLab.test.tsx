@@ -7,23 +7,15 @@ vi.mock('../ArkamonBattleSprite', () => ({ ArkamonBattleSprite: ({ speciesId }: 
 vi.mock('../ArkamonAttackPreview', () => ({ ArkamonAttackPreview: () => <section data-test-attack-preview="true" /> }))
 
 describe('laboratory for unfinished graphic assets', () => {
-  it.each([205, 184, 206])('shows supplied sprite %s without fake animation controls, battle data or a missing back request', id => {
+  it.each([205, 184, 206])('shows Database species %s as playable, with the front sprite and without a missing back request', id => {
     const markup = renderToStaticMarkup(<DarklawAnimationLab initialSpeciesId={id} />)
     expect(markup).toContain(`data-preview-species="${id}"`)
-    expect(markup).toContain('data-asset-status="pending-game-data"')
-    expect(markup).toContain('data-preview-available="false"')
-    expect(markup).toContain(`data-asset-portrait="/sprites/front_sprites/${id}.png"`)
-    expect(markup).toContain('Nome, mosse e attributi da definire')
-    expect(markup).toContain('Nessun video disponibile')
-    expect(markup).toContain('disabled="">Retro</button>')
+    expect(markup).toContain('data-asset-status="game-data-present"')
+    expect(markup).not.toContain('Nome, mosse e attributi da definire')
     expect(markup).not.toContain(`/back_sprites/${id}.png`)
-    expect(markup).not.toContain('Prova la sequenza')
-    expect(markup).not.toContain('Fotogramma sorgente')
-    expect(markup).not.toContain('data-test-attack-preview')
-    expect(markup).not.toContain('data-test-native-sprite')
     expect(markup).toContain('Catalogo grafico')
-    expect(markup).toContain('Tutti · 204')
-    expect(markup).toContain('Dati da definire · 94')
+    expect(markup).toContain('Tutti · 206')
+    expect(markup).toContain('Dati da definire · 0')
   })
 
   it('retains complete native actions and the real move preview for playable forms', () => {
@@ -36,12 +28,11 @@ describe('laboratory for unfinished graphic assets', () => {
     expect(markup).not.toContain('data-asset-pending')
   })
 
-  it('keeps the supplied new animation forms outside move simulation until game data exists', () => {
+  it('treats the supplied new animation forms as playable Database species', () => {
     for (const id of Array.from({ length: 56 }, (_, index) => index + 111)) {
       const markup = renderToStaticMarkup(<DarklawAnimationLab initialSpeciesId={id} />)
-      expect(markup).toContain('data-asset-status="pending-game-data"')
-      expect(markup).toContain('Nome, mosse e attributi da definire')
-      expect(markup).not.toContain('data-test-attack-preview')
+      expect(markup).toContain('data-asset-status="game-data-present"')
+      expect(markup).not.toContain('Nome, mosse e attributi da definire')
       expect(markup).not.toContain(`/back_sprites/${id}.png`)
     }
   })

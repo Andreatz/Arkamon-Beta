@@ -1,6 +1,6 @@
 import { nuovoTurno } from '@/engine/movimento'
 import type { NavigazioneScena, PosizioneAvatar, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
-import { getShopItem, hasArkaStore, isShopItemId, MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, type ShopCart, type ShopInventory, type ShopItemId } from './catalog'
+import { getShopItem, hasArkaStore, isKeyItem, isShopItemId, isSoldAt, MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, type ShopCart, type ShopInventory, type ShopItemId } from './catalog'
 import { getLocalMap } from '@/data/localMaps'
 import { validateInteraction } from '@/interactions/schema'
 import { interactionRequirementMessage } from '@/interactions/runtime'
@@ -74,6 +74,8 @@ export function resolveShopPurchase(state: ShopRuntimeState, playerId: 1 | 2, ca
     const held = player.inventario[id] ?? 0
     if (!Number.isSafeInteger(held) || held < 0 || held + quantity > MAX_ITEM_QUANTITY) return fail(`Non puoi portare più di ${MAX_ITEM_QUANTITY} ${getShopItem(id)!.name}.`)
     const item = getShopItem(id)!
+    if (item.price === null || !isSoldAt(id, location)) return fail(`${item.name} non è in vendita in questo Arkastore.`)
+    if (isKeyItem(id) && held + quantity > 1) return fail(`${item.name} è un oggetto chiave: ne basta uno.`)
     items.push({ id, quantity, unitPrice: item.price })
     total += quantity * item.price
   }

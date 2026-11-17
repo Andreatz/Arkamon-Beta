@@ -42,7 +42,7 @@ export function buildPublicManagement(game: GameState, request: ManagementReques
     if (!request.itemId || !isShopItemId(request.itemId)) return null
     const item = getShopItem(request.itemId)
     if (!item) return null
-    result.item = { id: item.id, name: item.name, description: item.description, ...(request.screen === 'negozio' ? { price: item.price } : {}) }
+    result.item = { id: item.id, name: item.name, description: item.description, ...(request.screen === 'negozio' && item.price !== null ? { price: item.price } : {}) }
     return result
   }
   const owned = [...player.squadra, ...Object.values(player.deposito)].find(p => p.istanzaId === request.instanceId)

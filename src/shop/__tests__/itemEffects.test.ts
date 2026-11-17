@@ -8,20 +8,35 @@ function pokemon(patch: Partial<PokemonIstanza> = {}): PokemonIstanza {
 }
 
 describe('effetti espliciti degli oggetti', () => {
-  it.each([['potion', 3], ['super-potion', 6]] as const)('%s recovers its declared HP fraction while preserving levels, XP and statuses', (item, recovered) => {
-    const target = pokemon({ stato: { tipo: 'Paralizzato', turniRimanenti: -1 } })
+  it('heals with the Database amounts: Pozione 19 + 1d6, Superpozione 60, Iperpozione 140 + 10d6, Pozione Max tutto', () => {
+    const target = pokemon({ specieId: 107, nome: 'Ao-shin', livello: 100, hp: 1, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } })
     const before = structuredClone(target)
-    const result = resolveItemEffect(target, item)
-    expect(result).toMatchObject({ ok: true, recoveredHp: recovered, pokemon: { ...target, hp: 1 + recovered } })
+    expect(resolveItemEffect(target, 'potion', () => 0).recoveredHp).toBe(20)
+    expect(resolveItemEffect(target, 'potion', () => 0.999).recoveredHp).toBe(25)
+    expect(resolveItemEffect(target, 'super-potion').recoveredHp).toBe(60)
+    expect(resolveItemEffect(target, 'hyper-potion', () => 0).recoveredHp).toBe(150)
+    expect(resolveItemEffect(target, 'hyper-potion', () => 0.999).recoveredHp).toBe(200)
+    expect(resolveItemEffect(target, 'max-potion').pokemon?.hp).toBe(calcolaHPMax(target))
+    expect(resolveItemEffect(target, 'potion', () => 0).pokemon?.stato?.tipo).toBe('Paralizzato')
     expect(target).toEqual(before)
   })
 
-  it('rounds percentages up and caps recovery at HP maximum', () => {
+  it('previews dice healing with its range and caps recovery at HP maximum', () => {
     const target = pokemon({ livello: 6 })
     expect(calcolaHPMax(target)).toBe(13)
-    expect(resolveItemEffect(target, 'potion').recoveredHp).toBe(4)
+    expect(resolveItemEffect(target, 'potion').message).toContain('20–25')
+    expect(resolveItemEffect(target, 'potion', () => 0).pokemon?.hp).toBe(13)
     expect(resolveItemEffect({ ...target, hp: 12 }, 'super-potion').pokemon?.hp).toBe(13)
     expect(resolveItemEffect({ ...target, hp: 13 }, 'potion').ok).toBe(false)
+  })
+
+  it('Cura totale removes any status, including confusion', () => {
+    expect(resolveItemEffect(pokemon({ stato: { tipo: 'Confuso', turniRimanenti: 2 } }), 'full-heal').pokemon).toEqual(pokemon())
+    expect(resolveItemEffect(pokemon(), 'full-heal').ok).toBe(false)
+  })
+
+  it('capture, boost, scent and vehicles are not used on a team member', () => {
+    for (const id of ['sacchettino', 'boost-speed', 'special-scent', 'bicycle'] as const) expect(resolveItemEffect(pokemon(), id).ok).toBe(false)
   })
 
   it('does not heal KO Arkamon and revives only KO without an implicit status cure', () => {

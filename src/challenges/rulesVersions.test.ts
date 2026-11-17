@@ -35,8 +35,8 @@ describe('classic rules v1 remain the released baseline', () => {
 describe('updated rules v2 price offensive moves only', () => {
   it('reduces Leafrex and Beestrix prices without changing battle data or damage', () => {
     const before = structuredClone(POKEMON_BASE)
-    expect(fantaSpeciesCost(53)).toBe(19)
-    expect(fantaSpeciesCost(95)).toBe(12)
+    expect(fantaSpeciesCost(53, 2)).toBe(19)
+    expect(fantaSpeciesCost(95, 2)).toBe(12)
     expect(fantaSpeciesCost(53, 2)).toBeLessThan(fantaSpeciesCost(53, 1))
     expect(fantaSpeciesCost(95, 2)).toBeLessThan(fantaSpeciesCost(95, 1))
     const attacker = { istanzaId: 'leafrex', specieId: 53, nome: 'Leafrex', livello: 20, hp: 20, xp: 0 }
@@ -48,14 +48,15 @@ describe('updated rules v2 price offensive moves only', () => {
   })
 
   it('preserves prices for species without HP healing moves and keeps every price integral', () => {
-    for (const species of POKEMON_BASE) {
+    // Le regole v1 e v2 sono fotografie delle 110 specie precedenti al Database.
+    for (const species of POKEMON_BASE.filter((entry) => entry.id <= 110)) {
       expect(Number.isSafeInteger(fantaSpeciesCost(species.id, 2))).toBe(true)
       const hasHeal = species.mosse.some((id) => ['CURA', 'CURA_PCT'].includes(getMossa(id)?.effetto ?? ''))
       if (!hasHeal) expect(fantaSpeciesCost(species.id, 2)).toBe(fantaSpeciesCost(species.id, 1))
     }
   })
 
-  it.each([1, 2] as const)('generates deterministic affordable six-species teams with rules v%s', (version) => {
+  it.each([1, 2, 3] as const)('generates deterministic affordable six-species teams with rules v%s', (version) => {
     for (let index = 0; index < 30; index++) {
       const seed = `Versioned-${index}`
       const team = generateSeedTeam(seed, 'player', version)
@@ -90,8 +91,8 @@ describe('versioned persistence, imports and fair comparisons', () => {
     useChallengeStore.setState({ version: 1, draft: normalizeChallengeDraft(null), results: [], storageWarning: null })
   })
 
-  it('defaults new drafts to updated rules and preserves old drafts and results as classic', () => {
-    expect(normalizeChallengeDraft(null).version).toBe(2)
+  it('defaults new drafts to the Database rules and preserves old drafts and results as classic', () => {
+    expect(normalizeChallengeDraft(null).version).toBe(3)
     const oldResult = result(1)
     delete oldResult.rulesVersion
     const migrated = normalizeChallengeCollection({ version: 1,
@@ -120,7 +121,7 @@ describe('versioned persistence, imports and fair comparisons', () => {
     expect(challengeLeaderboard([result(1), exact], configuration(1))).toEqual([result(1)])
   })
 
-  it.each([0, 3, '2', null])('refuses unsupported or malformed versions %j', (version) => {
+  it.each([0, 4, '2', null])('refuses unsupported or malformed versions %j', (version) => {
     const session = configuration(2)
     const code = JSON.parse(exportChallengeCode(session))
     code.version = version; code.rulesVersion = version
@@ -140,6 +141,6 @@ describe('versioned persistence, imports and fair comparisons', () => {
     expect(normalizeChallengeResult({ ...result(2), rulesVersion: 1 })).toBeNull()
     expect(importChallengeCode(JSON.stringify({ ...code, rng: { algorithm: 'unknown', cursor: Infinity }, hp: 9999 }))).toEqual(session)
     expect(canonicalChallengeSession({ ...session, team: session.team.map((pokemon) => ({ ...pokemon, hp: 99999, livello: 100 })), rng: { cursor: 99999 } })).toEqual(session)
-    expect(getPokemon(53)?.mosse).toEqual([66, 176, 0])
+    expect(getPokemon(53)?.mosse).toEqual([66, 176, 250])
   })
 })

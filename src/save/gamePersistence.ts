@@ -1,3 +1,4 @@
+import { GAME_DATA_VERSION, migrateDefeatedTrainers, migrateTrainerReference } from '@/data/trainerMigration'
 import type { NavigazioneScena, PokemonIstanza, PosizioneAvatar, PosizioniMappeLocali, SceneId, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
 import { getPokemon } from '@/data'
 import { MAIN_MAP_START_NODE, getAdjacentMainMapNodes } from '@/data/mainMapRoads'
@@ -18,6 +19,8 @@ import { emptyLeagueState, normalizeLeagueState, leagueTrainer, type LeagueState
 
 /** This whitelist is shared by browser persistence and portable campaign files. */
 export interface GameSaveState {
+  /** 2 = dati del Database (allenatori, oggetti). Assente nei salvataggi precedenti. */
+  dataVersion?: number
   league: LeagueState
   arkadex: ArkadexProgress
   matchLog: MatchLog
@@ -39,10 +42,14 @@ export interface GameSaveState {
 }
 
 export const GAME_SAVE_STORAGE_KEY = 'arkamon-save'
+/** Borsa iniziale: il Sacchettino Supremo storico più cinque Sacchettini, che ora servono per catturare. */
+export const STARTING_INVENTORY = { masterball: 1, sacchettino: 5 } as const
+/** Kit dato una sola volta ai salvataggi precedenti al Database, perché la cattura ora consuma un Sacchettino. */
+export const MIGRATION_CAPTURE_KIT = 5
 export const PREVIOUS_BACKUP_STORAGE_KEY = 'arkamon-previous-backup-v1'
 export const emptyPlayer = (id: 1 | 2): StatoGiocatore => ({
   id, nome: `Giocatore ${id}`, squadra: [], deposito: {}, cespugliVisitati: new Set(),
-  allenatoriSconfitti: new Set(), monete: 0, inventario: { masterball: 1 }, caselleConsumate: new Set(),
+  allenatoriSconfitti: new Set(), monete: 0, inventario: { ...STARTING_INVENTORY }, caselleConsumate: new Set(),
 })
 
 export function mainMapPosition(luogo = MAIN_MAP_START_NODE): PosizioneAvatar {
@@ -52,7 +59,7 @@ export function mainMapPosition(luogo = MAIN_MAP_START_NODE): PosizioneAvatar {
 export function initialGameSave(): GameSaveState {
   return {
     giocatore1: emptyPlayer(1), giocatore2: emptyPlayer(2), giocatoreAttivo: 1, battaglia: null,
-    rivaleStarterId: null, posizione1: mainMapPosition(), posizione2: mainMapPosition(),
+    dataVersion: GAME_DATA_VERSION, rivaleStarterId: null, posizione1: mainMapPosition(), posizione2: mainMapPosition(),
     turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {},
     scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, audioMuted: false, interactionProgress: emptyInteractionProgress(), fallbackLocationActivity: null,
     arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(), league: emptyLeagueState(),
@@ -109,6 +116,9 @@ function restorePokemon(value: unknown, warn: Warn, label: string): PokemonIstan
   if (pokemon.hp > calcolaHPMax(pokemon)) {
     pokemon.hp = calcolaHPMax(pokemon)
     warn(`${label}: HP oltre il massimo corretti senza applicare una cura.`)
+  }
+  if (Number.isInteger(value.immunitaStati) && (value.immunitaStati as number) > 0 && (value.immunitaStati as number) <= 20) {
+    pokemon.immunitaStati = value.immunitaStati as number
   }
   if (value.stato !== undefined) {
     const status = value.stato
@@ -209,6 +219,8 @@ function restoreBattle(value: unknown, warn: Warn): StatoBattaglia | null {
       ? { istanzaId: value.evoluzioneInAttesa.istanzaId, nuovaSpecieId: value.evoluzioneInAttesa.nuovaSpecieId } : null,
     ...(finite(value.allenatoreId) ? { allenatoreId: value.allenatoreId } : {}),
     ...(value.ricompenseApplicate === true ? { ricompenseApplicate: true } : {}),
+    ...(isSaveRecord(value.boost) && (value.boost.velocita === true || value.boost.danno === true)
+      ? { boost: { ...(value.boost.velocita === true ? { velocita: true } : {}), ...(value.boost.danno === true ? { danno: true } : {}) } } : {}),
     ...(Array.isArray(value.squadraA) ? { squadraA: roster(value.squadraA) } : {}),
     ...(Array.isArray(value.squadraB) ? { squadraB: roster(value.squadraB) } : {}),
     ...(value.cronaca === undefined ? {} : { cronaca: normalizeBattleChronicle(value.cronaca) }),
@@ -301,6 +313,26 @@ function restoreInstanceIdentity(state: GameSaveState, warn: Warn): void {
   }
 }
 
+/** Salvataggi precedenti al Database: medaglie convertite per città, NPC storici azzerati, kit di Sacchettini. */
+function migrateLegacyCampaign(state: GameSaveState, warn: Warn): void {
+  let changed = false
+  for (const key of ['giocatore1', 'giocatore2'] as const) {
+    const player = state[key]
+    const defeated = migrateDefeatedTrainers(player.allenatoriSconfitti)
+    const started = player.squadra.length > 0 || Object.keys(player.deposito).length > 0
+    const inventario = started ? { ...player.inventario, sacchettino: Math.min(999_999, (player.inventario.sacchettino ?? 0) + MIGRATION_CAPTURE_KIT) } : player.inventario
+    if (defeated.size !== player.allenatoriSconfitti.size || started) changed = true
+    state[key] = { ...player, allenatoriSconfitti: defeated, inventario }
+  }
+  if (state.battaglia?.allenatoreId !== undefined && !state.battaglia.leagueBattle) {
+    const mapped = migrateTrainerReference(state.battaglia.allenatoreId)
+    const { allenatoreId: _legacy, ...battle } = state.battaglia
+    state.battaglia = mapped === undefined ? battle : { ...battle, allenatoreId: mapped }
+    changed = true
+  }
+  if (changed) warn('Dati aggiornati al Database: medaglie conservate, sconfitte degli allenatori storici azzerate e 5 Sacchettini aggiunti alla borsa.')
+}
+
 export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = initialGameSave()): { state: GameSaveState; warnings: string[] } {
   const warnings: string[] = []
   const warn: Warn = (message) => { if (!warnings.includes(message)) warnings.push(message) }
@@ -331,6 +363,8 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
     arkadex: normalizeArkadexProgress(p.arkadex), matchLog: normalizeMatchLog(p.matchLog),
   }
   restoreInstanceIdentity(state, warn)
+  state.dataVersion = GAME_DATA_VERSION
+  if (isSaveRecord(persisted) && p.dataVersion !== GAME_DATA_VERSION) migrateLegacyCampaign(state, warn)
   // Obsolete management routes must not strand a still-valid battle behind the map.
   if (isLegacyNavigation(p.scenaCorrente) && state.battaglia) state.scenaCorrente = { scena: 'battaglia' }
   state.arkadex = deriveArkadexProgress(state.arkadex, state)
@@ -402,6 +436,7 @@ export function serializeGameState(state: GameSaveState): Record<string, unknown
     ...(state.battaglia.squadraB ? { squadraB: state.battaglia.squadraB.map(clearStoredExperience) } : {}),
   } : null
   return {
+    dataVersion: GAME_DATA_VERSION,
     giocatore1: player(state.giocatore1), giocatore2: player(state.giocatore2), giocatoreAttivo: state.giocatoreAttivo,
     battaglia, rivaleStarterId: state.rivaleStarterId, posizione1: state.posizione1, posizione2: state.posizione2,
     turnoOverworld: state.turnoOverworld, posizioniLocali1: state.posizioniLocali1, posizioniLocali2: state.posizioniLocali2,

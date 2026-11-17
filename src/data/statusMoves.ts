@@ -1,30 +1,16 @@
-import { RUNTIME_STATUS_ASSIGNMENTS } from './runtimeGameData'
-import type { MossaDef, PokemonSpecie, TipoPokemon } from '@/types'
+import rules from './statusMoveRules.json'
+import type { MossaDef } from '@/types'
 
-// Le nove mosse di paralisi del catalogo entrano negli slot ancora liberi.
-export const PARALYSIS_MOVE_ASSIGNMENTS = RUNTIME_STATUS_ASSIGNMENTS
+export interface StatusMoveRule { testo: string; effetto: string; valore: number | null }
+export const STATUS_MOVE_RULES: Readonly<Record<string, StatusMoveRule>> = rules.regole
 
-/** Nome, tipo e proprietari derivano dal catalogo; uno status puro non inventa danno o scaling. */
-export const STATUS_MOVES: MossaDef[] = PARALYSIS_MOVE_ASSIGNMENTS.map((entry) => ({
-  id: entry.sourceMoveId,
-  nome: entry.name,
-  tipo: entry.element as TipoPokemon,
-  effetto: 'PARALISI',
-  valoreEffetto: null,
-  soloStato: true,
-  dadiPerLivello: { '5': 0 },
-  incrementoPerLivello: { '5': 0 },
-}))
-
-/** Inserisce gli status soltanto negli slot liberi di una copia delle specie originali. */
-export function addStatusMovesToPokemon(pokemon: PokemonSpecie[]): PokemonSpecie[] {
-  return pokemon.map((specie) => {
-    const mosse = [...specie.mosse] as PokemonSpecie['mosse']
-    for (const assignment of PARALYSIS_MOVE_ASSIGNMENTS) {
-      if (!assignment.arkamon.some((owner) => owner.id === specie.id) || mosse.includes(assignment.sourceMoveId)) continue
-      const slot = mosse.indexOf(0)
-      if (slot >= 0) mosse[slot] = assignment.sourceMoveId
-    }
-    return { ...specie, mosse }
-  })
+/**
+ * Le mosse Status del Database portano solo il nome della regola: effetto e valore
+ * arrivano da statusMoveRules.json, così si possono ritoccare senza toccare il codice.
+ */
+export function resolveStatusMove(move: MossaDef): MossaDef {
+  if (!move.soloStato || !move.regolaStato) return move
+  const rule = STATUS_MOVE_RULES[move.regolaStato]
+  if (!rule) return move
+  return { ...move, effetto: rule.effetto, valoreEffetto: rule.valore }
 }

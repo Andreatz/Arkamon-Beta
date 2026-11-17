@@ -45,7 +45,7 @@ describe('individual moveset VFX assignments', () => {
       expect(getMoveVfxAssignment(move)).toBe(entry)
       if (entry.assetId) expect(resolveMoveVfxAsset(move).id).toBe(entry.assetId)
     }
-    expect(MOSSE).toHaveLength(229)
+    expect(MOSSE).toHaveLength(516)
     expect(getMoveVfxAssignment({ id: 107, nome: 'Sguardo glaciale' })).toBeUndefined()
   })
 
@@ -70,15 +70,13 @@ describe('individual moveset VFX assignments', () => {
     expect(resolveMoveVfxProfile(move).feedback.targetShakePx).toBe(0)
   })
 
-  it('keeps the 47 unimplemented extra moves as previews and integrates only nine pure paralysis moves', () => {
-    expect(MOSSE).toHaveLength(229)
-    const paralysisIds = new Set([221, 225, 227, 230, 242, 253, 256, 270, 271])
+  it('integrates all 56 Status moves of the catalog (221–276) as pure status actions with their VFX', () => {
+    expect(MOSSE).toHaveLength(516)
     for (const entry of MOVE_VFX_ASSIGNMENTS.filter((item) => item.sourceMoveId >= 221)) {
       expect(entry.gameMoveId).toBeNull()
-      expect(MOSSE.some((move) => move.id === entry.sourceMoveId)).toBe(paralysisIds.has(entry.sourceMoveId))
-      const preview = VFX_MOVE_PREVIEWS.find((move) => move.id === entry.sourceMoveId)!
-      expect(preview.dadiPerLivello).toEqual({})
-      expect(preview.incrementoPerLivello).toEqual({})
+      const move = MOSSE.find((item) => item.id === entry.sourceMoveId)!
+      expect(move).toMatchObject({ soloStato: true })
+      const preview = VFX_MOVE_PREVIEWS.find((item) => item.id === entry.sourceMoveId)!
       expect(resolveMoveVfxAsset(preview).id).toBe(entry.assetId)
     }
   })

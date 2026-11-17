@@ -1,23 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import { ALLENATORI, getPokemon } from '@data/index'
+import { ALLENATORI, getPokemon, squadraAllenatore } from '@data/index'
 
-const idsBattleRefresh = new Set([201, 203, 302, 303, 305, 306, 307, 309, 311])
-
-describe('allenatori — Battle Refresh', () => {
-  it('Rivale e Capipalestra hanno una squadra completa da 6 Pokemon', () => {
-    const principali = ALLENATORI.filter((a) => idsBattleRefresh.has(a.id))
-
-    expect(principali).toHaveLength(idsBattleRefresh.size)
-    for (const allenatore of principali) {
-      expect(allenatore.squadra).toHaveLength(6)
-    }
+describe('allenatori del Database', () => {
+  it('140 allenatori: 8 capipalestra, 8 squadre di Superquattro e 3 apparizioni del rivale', () => {
+    expect(ALLENATORI).toHaveLength(140)
+    expect(ALLENATORI.filter((a) => a.tipo === 'Capopalestra').map((a) => a.luogo))
+      .toEqual(['Venezia', 'Milano', 'Torino', 'Grosseto', 'Cagliari', 'Palermo', 'Foggia', 'Napoli'])
+    expect(ALLENATORI.filter((a) => a.tipo === 'Superquattro')).toHaveLength(8)
+    expect(ALLENATORI.filter((a) => a.rivale).map((a) => a.id)).toEqual([256, 313, 340])
   })
 
-  it('tutti gli slot squadra puntano a specie Pokemon esistenti', () => {
+  it('tutti gli slot squadra puntano a specie esistenti, rivale compreso', () => {
     for (const allenatore of ALLENATORI) {
-      for (const slot of allenatore.squadra) {
+      for (const slot of squadraAllenatore(allenatore, 5)) {
         expect(getPokemon(slot.pokemonId), `${allenatore.nome}: ${slot.pokemonId}`).toBeTruthy()
       }
     }
+  })
+
+  it('lo starter del rivale cresce con il livello della squadra', () => {
+    const rival = ALLENATORI.find((a) => a.id === 313)!
+    expect(squadraAllenatore(rival, 5)[0]).toEqual({ pokemonId: 8, livello: 70 })
+    expect(squadraAllenatore(ALLENATORI.find((a) => a.id === 256)!, 9)[0]).toEqual({ pokemonId: 11, livello: 35 })
   })
 })

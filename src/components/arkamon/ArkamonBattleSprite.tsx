@@ -17,6 +17,12 @@ import {
 } from './arkamonAnimationManifest'
 import { getArkamonMotionProfile } from './arkamonMotionProfiles'
 
+/** Le specie 111–206 hanno solo lo sprite frontale: di spalle si usa quello, specchiato. */
+const BACK_SPRITE_MAX_ID = 110
+export function spriteFolder(speciesId: number, side: 'front' | 'back'): 'front_sprites' | 'back_sprites' {
+  return side === 'back' && speciesId >= 1 && speciesId <= BACK_SPRITE_MAX_ID ? 'back_sprites' : 'front_sprites'
+}
+
 export type ArkamonAnimationCue = 'release' | 'reaction'
 
 function getProceduralMotion(
@@ -228,7 +234,8 @@ export function ArkamonBattleSprite({
     )
   }
 
-  const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
+  const folder = spriteFolder(speciesId, side)
+  const mirrored = folder === 'front_sprites' && side === 'back'
   const procedural = getProceduralMotion(speciesId, side, animation, !!reduceMotion || !animationEnabled || playbackPaused)
 
   return (
@@ -242,7 +249,7 @@ export function ArkamonBattleSprite({
       <motion.img
         src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
         alt={name}
-        className="h-full w-full object-contain"
+        className={`h-full w-full object-contain${mirrored ? ' arka-sprite-mirrored' : ''}`}
         animate={procedural.animate}
         transition={{ ...procedural.transition, duration: typeof procedural.transition.duration === 'number' ? procedural.transition.duration / speed : procedural.transition.duration }}
         onError={onError}
@@ -404,7 +411,8 @@ function AnimatedArkamonVisual({
   const aspect = viewport.width / viewport.height
   const paused = playbackPaused || !animationEnabled || reduceMotion || (run.animation === 'ko' && resolved.isIdleFallback)
   const useProcedural = sheetFailed || resolved.isIdleFallback
-  const folder = side === 'back' ? 'back_sprites' : 'front_sprites'
+  const folder = spriteFolder(speciesId, side)
+  const mirrored = folder === 'front_sprites' && side === 'back'
 
   useEffect(() => {
     const neutral = getProceduralMotion(speciesId, side, run.animation, true)
@@ -448,7 +456,7 @@ function AnimatedArkamonVisual({
           src={assetUrl(`/sprites/${folder}/${speciesId}.png`)}
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-contain"
+          className={`h-full w-full object-contain${mirrored ? ' arka-sprite-mirrored' : ''}`}
           onLoad={notifyClipReady}
           onError={onFallbackError}
           draggable={false}

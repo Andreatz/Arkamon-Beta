@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LocalMapBoard, type LocalMapPlayer } from '@/components/map/LocalMapBoard'
 import { getLocalMap, type LocalMapDefinition } from '@/data/localMaps'
 import { SECRET_LOCATION_ID, SECRET_LOCATION_ORIGIN, canAccessSecretLocation, hasUnlockedSecretLocation } from '@/data/secretLocation'
-import { getAdjacentLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
+import { getReachableLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
+import { localMoveRange } from '@/shop/catalog'
 import { useGameStore } from '@/store/gameStore'
 import { useSceneInputBlocked } from '@/components/transitions/SceneNavigationContext'
 import { makeDialogBackgroundInert } from '@/components/battle/modalFocus'
@@ -95,7 +96,8 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const current = players.find((p) => p.id === actor)
   const remaining = turn.giocatoreAttivo === actor ? turn.azioniRimaste : 0
   const canMove = !!current && remaining > 0 && !blocked && !battle
-  const adjacent = current ? getAdjacentLocalMapNodes(map, current.nodeId) : []
+  const moveRange = localMoveRange((actor === 1 ? player1 : player2).inventario, map.id)
+  const adjacent = current ? getReachableLocalMapNodes(map, current.nodeId, moveRange) : []
   const currentNode = current ? getLocalMapNode(map, current.nodeId) : null
   const pointInteractions = definitions.filter((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === currentNode?.id)
   const interactionLabels = Object.fromEntries(definitions.filter((entry) => entry.enabled && entry.mapId === map.id).map((entry) => [entry.nodeId, entry.title]))
@@ -144,7 +146,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     </header>
     <div className="local-map-play-area">
       <LocalMapBoard map={map} players={players} activePlayerId={actor} remainingActions={remaining} canMove={canMove}
-        inputBlocked={blocked || activitiesOpen || interactionOpen} interactionLabels={interactionLabels} interactionKinds={interactionKinds} onMove={moveTo} onSelectNode={(id) => {
+        inputBlocked={blocked || activitiesOpen || interactionOpen} interactionLabels={interactionLabels} interactionKinds={interactionKinds} moveRange={moveRange} onMove={moveTo} onSelectNode={(id) => {
           setSelected(id)
           if (definitions.some((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === id)) setInteractionOpen(true)
         }} />

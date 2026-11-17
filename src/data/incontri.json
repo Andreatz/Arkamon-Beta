@@ -2,7 +2,15 @@
   {
     "luogo": "Percorso_1",
     "cespuglio": "A",
-    "pokemonId": 13,
+    "pokemonId": 105,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Venezia",
+    "cespuglio": "A",
+    "pokemonId": 99,
     "probabilita": "Comune",
     "livelloMin": 5,
     "livelloMax": 5
@@ -10,7 +18,15 @@
   {
     "luogo": "Percorso_1",
     "cespuglio": "A",
-    "pokemonId": 16,
+    "pokemonId": 89,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Venezia",
+    "cespuglio": "A",
+    "pokemonId": 196,
     "probabilita": "Comune",
     "livelloMin": 5,
     "livelloMax": 5
@@ -18,401 +34,2689 @@
   {
     "luogo": "Percorso_1",
     "cespuglio": "A",
-    "pokemonId": 20,
+    "pokemonId": 56,
     "probabilita": "Medio",
     "livelloMin": 5,
-    "livelloMax": 6
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Venezia",
+    "cespuglio": "A",
+    "pokemonId": 111,
+    "probabilita": "Medio",
+    "livelloMin": 5,
+    "livelloMax": 5
   },
   {
     "luogo": "Percorso_1",
     "cespuglio": "A",
-    "pokemonId": 21,
+    "pokemonId": 19,
     "probabilita": "Difficile",
-    "livelloMin": 5,
-    "livelloMax": 7
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "B",
-    "pokemonId": 13,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "B",
-    "pokemonId": 16,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "B",
-    "pokemonId": 20,
-    "probabilita": "Medio",
-    "livelloMin": 5,
+    "livelloMin": 6,
     "livelloMax": 6
   },
   {
-    "luogo": "Percorso_1",
-    "cespuglio": "B",
-    "pokemonId": 21,
-    "probabilita": "Difficile",
-    "livelloMin": 5,
-    "livelloMax": 7
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "C",
-    "pokemonId": 13,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "C",
-    "pokemonId": 16,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "C",
-    "pokemonId": 20,
-    "probabilita": "Medio",
-    "livelloMin": 5,
-    "livelloMax": 6
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "C",
-    "pokemonId": 21,
-    "probabilita": "Difficile",
-    "livelloMin": 5,
-    "livelloMax": 7
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "D",
-    "pokemonId": 13,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "D",
-    "pokemonId": 16,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "D",
-    "pokemonId": 20,
-    "probabilita": "Medio",
-    "livelloMin": 5,
-    "livelloMax": 6
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "D",
-    "pokemonId": 21,
-    "probabilita": "Difficile",
-    "livelloMin": 5,
-    "livelloMax": 7
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "E",
-    "pokemonId": 13,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "E",
-    "pokemonId": 16,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "E",
-    "pokemonId": 20,
-    "probabilita": "Medio",
-    "livelloMin": 5,
-    "livelloMax": 6
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "E",
-    "pokemonId": 21,
-    "probabilita": "Difficile",
-    "livelloMin": 5,
-    "livelloMax": 7
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "F",
-    "pokemonId": 13,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "F",
-    "pokemonId": 16,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "F",
-    "pokemonId": 20,
-    "probabilita": "Medio",
-    "livelloMin": 5,
-    "livelloMax": 6
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "F",
-    "pokemonId": 21,
-    "probabilita": "Difficile",
-    "livelloMin": 5,
-    "livelloMax": 7
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "G",
-    "pokemonId": 13,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "G",
-    "pokemonId": 16,
-    "probabilita": "Comune",
-    "livelloMin": 5,
-    "livelloMax": 5
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "G",
-    "pokemonId": 20,
-    "probabilita": "Medio",
-    "livelloMin": 5,
-    "livelloMax": 6
-  },
-  {
-    "luogo": "Percorso_1",
-    "cespuglio": "G",
-    "pokemonId": 21,
-    "probabilita": "Difficile",
-    "livelloMin": 5,
-    "livelloMax": 7
-  },
-  {
-    "luogo": "Percorso_2",
+    "luogo": "Venezia",
     "cespuglio": "A",
-    "pokemonId": 13,
+    "pokemonId": 101,
+    "probabilita": "Difficile",
+    "livelloMin": 6,
+    "livelloMax": 6
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "B",
+    "pokemonId": 105,
     "probabilita": "Comune",
-    "livelloMin": 10,
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Venezia",
+    "cespuglio": "B",
+    "pokemonId": 99,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "B",
+    "pokemonId": 89,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Venezia",
+    "cespuglio": "B",
+    "pokemonId": 196,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "B",
+    "pokemonId": 56,
+    "probabilita": "Medio",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Venezia",
+    "cespuglio": "B",
+    "pokemonId": 111,
+    "probabilita": "Medio",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "B",
+    "pokemonId": 19,
+    "probabilita": "Difficile",
+    "livelloMin": 6,
+    "livelloMax": 6
+  },
+  {
+    "luogo": "Venezia",
+    "cespuglio": "B",
+    "pokemonId": 101,
+    "probabilita": "Difficile",
+    "livelloMin": 6,
+    "livelloMax": 6
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "C",
+    "pokemonId": 105,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Milano",
+    "cespuglio": "A",
+    "pokemonId": 52,
+    "probabilita": "Comune",
+    "livelloMin": 11,
     "livelloMax": 11
   },
   {
-    "luogo": "Percorso_2",
-    "cespuglio": "A",
-    "pokemonId": 47,
-    "probabilita": "Medio",
-    "livelloMin": 11,
-    "livelloMax": 12
+    "luogo": "Percorso_1",
+    "cespuglio": "C",
+    "pokemonId": 89,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
   },
   {
-    "luogo": "Percorso_2",
-    "cespuglio": "B",
-    "pokemonId": 16,
+    "luogo": "Milano",
+    "cespuglio": "A",
+    "pokemonId": 49,
     "probabilita": "Comune",
-    "livelloMin": 10,
+    "livelloMin": 11,
     "livelloMax": 11
   },
   {
+    "luogo": "Percorso_1",
+    "cespuglio": "C",
+    "pokemonId": 56,
+    "probabilita": "Medio",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Milano",
+    "cespuglio": "A",
+    "pokemonId": 199,
+    "probabilita": "Medio",
+    "livelloMin": 11,
+    "livelloMax": 11
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "C",
+    "pokemonId": 19,
+    "probabilita": "Difficile",
+    "livelloMin": 6,
+    "livelloMax": 6
+  },
+  {
+    "luogo": "Milano",
+    "cespuglio": "A",
+    "pokemonId": 160,
+    "probabilita": "Difficile",
+    "livelloMin": 12,
+    "livelloMax": 12
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "D",
+    "pokemonId": 105,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Milano",
+    "cespuglio": "B",
+    "pokemonId": 52,
+    "probabilita": "Comune",
+    "livelloMin": 11,
+    "livelloMax": 11
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "D",
+    "pokemonId": 89,
+    "probabilita": "Comune",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Milano",
+    "cespuglio": "B",
+    "pokemonId": 49,
+    "probabilita": "Comune",
+    "livelloMin": 11,
+    "livelloMax": 11
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "D",
+    "pokemonId": 56,
+    "probabilita": "Medio",
+    "livelloMin": 5,
+    "livelloMax": 5
+  },
+  {
+    "luogo": "Milano",
+    "cespuglio": "B",
+    "pokemonId": 199,
+    "probabilita": "Medio",
+    "livelloMin": 11,
+    "livelloMax": 11
+  },
+  {
+    "luogo": "Percorso_1",
+    "cespuglio": "D",
+    "pokemonId": 19,
+    "probabilita": "Difficile",
+    "livelloMin": 6,
+    "livelloMax": 6
+  },
+  {
+    "luogo": "Milano",
+    "cespuglio": "B",
+    "pokemonId": 160,
+    "probabilita": "Difficile",
+    "livelloMin": 12,
+    "livelloMax": 12
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "A",
+    "pokemonId": 71,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "A",
+    "pokemonId": 103,
+    "probabilita": "Comune",
+    "livelloMin": 19,
+    "livelloMax": 19
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "A",
+    "pokemonId": 79,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "A",
+    "pokemonId": 67,
+    "probabilita": "Comune",
+    "livelloMin": 19,
+    "livelloMax": 19
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "A",
+    "pokemonId": 36,
+    "probabilita": "Medio",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "A",
+    "pokemonId": 120,
+    "probabilita": "Medio",
+    "livelloMin": 19,
+    "livelloMax": 19
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "A",
+    "pokemonId": 78,
+    "probabilita": "Difficile",
+    "livelloMin": 10,
+    "livelloMax": 10
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "A",
+    "pokemonId": 169,
+    "probabilita": "Difficile",
+    "livelloMin": 20,
+    "livelloMax": 20
+  },
+  {
     "luogo": "Percorso_2",
     "cespuglio": "B",
-    "pokemonId": 32,
+    "pokemonId": 71,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "B",
+    "pokemonId": 103,
+    "probabilita": "Comune",
+    "livelloMin": 19,
+    "livelloMax": 19
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "B",
+    "pokemonId": 79,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "B",
+    "pokemonId": 67,
+    "probabilita": "Comune",
+    "livelloMin": 19,
+    "livelloMax": 19
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "B",
+    "pokemonId": 36,
     "probabilita": "Medio",
-    "livelloMin": 11,
-    "livelloMax": 12
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "B",
+    "pokemonId": 120,
+    "probabilita": "Medio",
+    "livelloMin": 19,
+    "livelloMax": 19
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "B",
+    "pokemonId": 78,
+    "probabilita": "Difficile",
+    "livelloMin": 10,
+    "livelloMax": 10
+  },
+  {
+    "luogo": "Torino",
+    "cespuglio": "B",
+    "pokemonId": 169,
+    "probabilita": "Difficile",
+    "livelloMin": 20,
+    "livelloMax": 20
   },
   {
     "luogo": "Percorso_2",
     "cespuglio": "C",
-    "pokemonId": 20,
+    "pokemonId": 71,
     "probabilita": "Comune",
-    "livelloMin": 10,
-    "livelloMax": 12
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Grosseto",
+    "cespuglio": "A",
+    "pokemonId": 64,
+    "probabilita": "Comune",
+    "livelloMin": 24,
+    "livelloMax": 24
   },
   {
     "luogo": "Percorso_2",
     "cespuglio": "C",
-    "pokemonId": 26,
-    "probabilita": "Difficile",
-    "livelloMin": 12,
-    "livelloMax": 13
+    "pokemonId": 79,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Grosseto",
+    "cespuglio": "A",
+    "pokemonId": 90,
+    "probabilita": "Comune",
+    "livelloMin": 24,
+    "livelloMax": 24
   },
   {
     "luogo": "Percorso_2",
-    "cespuglio": "D",
-    "pokemonId": 21,
-    "probabilita": "Comune",
+    "cespuglio": "C",
+    "pokemonId": 36,
+    "probabilita": "Medio",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Grosseto",
+    "cespuglio": "A",
+    "pokemonId": 172,
+    "probabilita": "Medio",
+    "livelloMin": 24,
+    "livelloMax": 24
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "C",
+    "pokemonId": 78,
+    "probabilita": "Difficile",
     "livelloMin": 10,
-    "livelloMax": 12
+    "livelloMax": 10
+  },
+  {
+    "luogo": "Grosseto",
+    "cespuglio": "A",
+    "pokemonId": 75,
+    "probabilita": "Difficile",
+    "livelloMin": 25,
+    "livelloMax": 25
   },
   {
     "luogo": "Percorso_2",
     "cespuglio": "D",
-    "pokemonId": 47,
-    "probabilita": "Medio",
-    "livelloMin": 11,
-    "livelloMax": 13
-  },
-  {
-    "luogo": "Percorso_2",
-    "cespuglio": "E",
-    "pokemonId": 13,
+    "pokemonId": 71,
     "probabilita": "Comune",
-    "livelloMin": 11,
-    "livelloMax": 12
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Grosseto",
+    "cespuglio": "B",
+    "pokemonId": 64,
+    "probabilita": "Comune",
+    "livelloMin": 24,
+    "livelloMax": 24
   },
   {
     "luogo": "Percorso_2",
-    "cespuglio": "E",
-    "pokemonId": 32,
+    "cespuglio": "D",
+    "pokemonId": 79,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Grosseto",
+    "cespuglio": "B",
+    "pokemonId": 90,
+    "probabilita": "Comune",
+    "livelloMin": 24,
+    "livelloMax": 24
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "D",
+    "pokemonId": 36,
+    "probabilita": "Medio",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Grosseto",
+    "cespuglio": "B",
+    "pokemonId": 172,
+    "probabilita": "Medio",
+    "livelloMin": 24,
+    "livelloMax": 24
+  },
+  {
+    "luogo": "Percorso_2",
+    "cespuglio": "D",
+    "pokemonId": 78,
     "probabilita": "Difficile",
-    "livelloMin": 12,
-    "livelloMax": 13
+    "livelloMin": 10,
+    "livelloMax": 10
   },
   {
-    "luogo": "Percorso_2",
-    "cespuglio": "F",
-    "pokemonId": 16,
-    "probabilita": "Comune",
-    "livelloMin": 11,
-    "livelloMax": 12
-  },
-  {
-    "luogo": "Percorso_2",
-    "cespuglio": "F",
-    "pokemonId": 26,
-    "probabilita": "Medio",
-    "livelloMin": 12,
-    "livelloMax": 13
+    "luogo": "Grosseto",
+    "cespuglio": "B",
+    "pokemonId": 75,
+    "probabilita": "Difficile",
+    "livelloMin": 25,
+    "livelloMax": 25
   },
   {
     "luogo": "Percorso_3",
     "cespuglio": "A",
-    "pokemonId": 32,
+    "pokemonId": 13,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "A",
+    "pokemonId": 80,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_3",
+    "cespuglio": "A",
+    "pokemonId": 24,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "A",
+    "pokemonId": 127,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_3",
+    "cespuglio": "A",
+    "pokemonId": 153,
+    "probabilita": "Medio",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "A",
+    "pokemonId": 157,
+    "probabilita": "Medio",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_3",
+    "cespuglio": "A",
+    "pokemonId": 58,
+    "probabilita": "Difficile",
+    "livelloMin": 10,
+    "livelloMax": 10
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "A",
+    "pokemonId": 93,
+    "probabilita": "Difficile",
+    "livelloMin": 31,
+    "livelloMax": 31
+  },
+  {
+    "luogo": "Percorso_3",
+    "cespuglio": "B",
+    "pokemonId": 13,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "B",
+    "pokemonId": 80,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_3",
+    "cespuglio": "B",
+    "pokemonId": 24,
+    "probabilita": "Comune",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "B",
+    "pokemonId": 127,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_3",
+    "cespuglio": "B",
+    "pokemonId": 153,
+    "probabilita": "Medio",
+    "livelloMin": 9,
+    "livelloMax": 9
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "B",
+    "pokemonId": 157,
+    "probabilita": "Medio",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_3",
+    "cespuglio": "B",
+    "pokemonId": 58,
+    "probabilita": "Difficile",
+    "livelloMin": 10,
+    "livelloMax": 10
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "B",
+    "pokemonId": 93,
+    "probabilita": "Difficile",
+    "livelloMin": 31,
+    "livelloMax": 31
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "A",
+    "pokemonId": 114,
+    "probabilita": "Comune",
+    "livelloMin": 13,
+    "livelloMax": 13
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "C",
+    "pokemonId": 80,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "A",
+    "pokemonId": 179,
+    "probabilita": "Comune",
+    "livelloMin": 13,
+    "livelloMax": 13
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "C",
+    "pokemonId": 127,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "A",
+    "pokemonId": 16,
+    "probabilita": "Medio",
+    "livelloMin": 13,
+    "livelloMax": 13
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "C",
+    "pokemonId": 157,
+    "probabilita": "Medio",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "A",
+    "pokemonId": 151,
+    "probabilita": "Difficile",
+    "livelloMin": 14,
+    "livelloMax": 14
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "C",
+    "pokemonId": 93,
+    "probabilita": "Difficile",
+    "livelloMin": 31,
+    "livelloMax": 31
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "B",
+    "pokemonId": 114,
+    "probabilita": "Comune",
+    "livelloMin": 13,
+    "livelloMax": 13
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "D",
+    "pokemonId": 80,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "B",
+    "pokemonId": 179,
+    "probabilita": "Comune",
+    "livelloMin": 13,
+    "livelloMax": 13
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "D",
+    "pokemonId": 127,
+    "probabilita": "Comune",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "B",
+    "pokemonId": 16,
+    "probabilita": "Medio",
+    "livelloMin": 13,
+    "livelloMax": 13
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "D",
+    "pokemonId": 157,
+    "probabilita": "Medio",
+    "livelloMin": 30,
+    "livelloMax": 30
+  },
+  {
+    "luogo": "Percorso_4",
+    "cespuglio": "B",
+    "pokemonId": 151,
+    "probabilita": "Difficile",
+    "livelloMin": 14,
+    "livelloMax": 14
+  },
+  {
+    "luogo": "Cagliari",
+    "cespuglio": "D",
+    "pokemonId": 93,
+    "probabilita": "Difficile",
+    "livelloMin": 31,
+    "livelloMax": 31
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "A",
+    "pokemonId": 28,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "A",
+    "pokemonId": 96,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "A",
+    "pokemonId": 147,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "A",
+    "pokemonId": 20,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "A",
+    "pokemonId": 37,
+    "probabilita": "Medio",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "A",
+    "pokemonId": 197,
+    "probabilita": "Medio",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "A",
+    "pokemonId": 182,
+    "probabilita": "Difficile",
+    "livelloMin": 22,
+    "livelloMax": 22
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "A",
+    "pokemonId": 175,
+    "probabilita": "Difficile",
+    "livelloMin": 35,
+    "livelloMax": 35
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "B",
+    "pokemonId": 28,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "B",
+    "pokemonId": 96,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "B",
+    "pokemonId": 147,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "B",
+    "pokemonId": 20,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "B",
+    "pokemonId": 37,
+    "probabilita": "Medio",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "B",
+    "pokemonId": 197,
+    "probabilita": "Medio",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "B",
+    "pokemonId": 182,
+    "probabilita": "Difficile",
+    "livelloMin": 22,
+    "livelloMax": 22
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "B",
+    "pokemonId": 175,
+    "probabilita": "Difficile",
+    "livelloMin": 35,
+    "livelloMax": 35
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "C",
+    "pokemonId": 28,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "C",
+    "pokemonId": 96,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "C",
+    "pokemonId": 147,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "C",
+    "pokemonId": 20,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "C",
+    "pokemonId": 37,
+    "probabilita": "Medio",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "C",
+    "pokemonId": 197,
+    "probabilita": "Medio",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "C",
+    "pokemonId": 182,
+    "probabilita": "Difficile",
+    "livelloMin": 22,
+    "livelloMax": 22
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "C",
+    "pokemonId": 175,
+    "probabilita": "Difficile",
+    "livelloMin": 35,
+    "livelloMax": 35
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "D",
+    "pokemonId": 28,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "D",
+    "pokemonId": 96,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "D",
+    "pokemonId": 147,
+    "probabilita": "Comune",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "D",
+    "pokemonId": 20,
+    "probabilita": "Comune",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "D",
+    "pokemonId": 37,
+    "probabilita": "Medio",
+    "livelloMin": 21,
+    "livelloMax": 21
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "D",
+    "pokemonId": 197,
+    "probabilita": "Medio",
+    "livelloMin": 34,
+    "livelloMax": 34
+  },
+  {
+    "luogo": "Percorso_5",
+    "cespuglio": "D",
+    "pokemonId": 182,
+    "probabilita": "Difficile",
+    "livelloMin": 22,
+    "livelloMax": 22
+  },
+  {
+    "luogo": "Palermo",
+    "cespuglio": "D",
+    "pokemonId": 175,
+    "probabilita": "Difficile",
+    "livelloMin": 35,
+    "livelloMax": 35
+  },
+  {
+    "luogo": "Percorso_6",
+    "cespuglio": "A",
+    "pokemonId": 163,
     "probabilita": "Comune",
     "livelloMin": 16,
+    "livelloMax": 16
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "A",
+    "pokemonId": 21,
+    "probabilita": "Comune",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_6",
+    "cespuglio": "A",
+    "pokemonId": 171,
+    "probabilita": "Comune",
+    "livelloMin": 16,
+    "livelloMax": 16
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "A",
+    "pokemonId": 184,
+    "probabilita": "Comune",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_6",
+    "cespuglio": "A",
+    "pokemonId": 143,
+    "probabilita": "Medio",
+    "livelloMin": 16,
+    "livelloMax": 16
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "A",
+    "pokemonId": 162,
+    "probabilita": "Medio",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_6",
+    "cespuglio": "A",
+    "pokemonId": 86,
+    "probabilita": "Difficile",
+    "livelloMin": 17,
     "livelloMax": 17
   },
   {
-    "luogo": "Percorso_3",
+    "luogo": "Foggia",
     "cespuglio": "A",
-    "pokemonId": 26,
-    "probabilita": "Medio",
-    "livelloMin": 17,
-    "livelloMax": 18
+    "pokemonId": 126,
+    "probabilita": "Difficile",
+    "livelloMin": 49,
+    "livelloMax": 49
   },
   {
-    "luogo": "Percorso_3",
+    "luogo": "Percorso_6",
     "cespuglio": "B",
-    "pokemonId": 20,
+    "pokemonId": 163,
     "probabilita": "Comune",
     "livelloMin": 16,
-    "livelloMax": 18
+    "livelloMax": 16
   },
   {
-    "luogo": "Percorso_3",
+    "luogo": "Foggia",
     "cespuglio": "B",
-    "pokemonId": 34,
-    "probabilita": "Medio",
-    "livelloMin": 17,
-    "livelloMax": 18
+    "pokemonId": 21,
+    "probabilita": "Comune",
+    "livelloMin": 48,
+    "livelloMax": 48
   },
   {
-    "luogo": "Percorso_3",
+    "luogo": "Percorso_6",
+    "cespuglio": "B",
+    "pokemonId": 171,
+    "probabilita": "Comune",
+    "livelloMin": 16,
+    "livelloMax": 16
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "B",
+    "pokemonId": 184,
+    "probabilita": "Comune",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_6",
+    "cespuglio": "B",
+    "pokemonId": 143,
+    "probabilita": "Medio",
+    "livelloMin": 16,
+    "livelloMax": 16
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "B",
+    "pokemonId": 162,
+    "probabilita": "Medio",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_6",
+    "cespuglio": "B",
+    "pokemonId": 86,
+    "probabilita": "Difficile",
+    "livelloMin": 17,
+    "livelloMax": 17
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "B",
+    "pokemonId": 126,
+    "probabilita": "Difficile",
+    "livelloMin": 49,
+    "livelloMax": 49
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "A",
+    "pokemonId": 87,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Foggia",
     "cespuglio": "C",
     "pokemonId": 21,
     "probabilita": "Comune",
-    "livelloMin": 16,
-    "livelloMax": 18
+    "livelloMin": 48,
+    "livelloMax": 48
   },
   {
-    "luogo": "Percorso_3",
+    "luogo": "Percorso_7",
+    "cespuglio": "A",
+    "pokemonId": 164,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Foggia",
     "cespuglio": "C",
-    "pokemonId": 47,
-    "probabilita": "Difficile",
-    "livelloMin": 18,
-    "livelloMax": 19
-  },
-  {
-    "luogo": "Percorso_3",
-    "cespuglio": "D",
-    "pokemonId": 26,
+    "pokemonId": 184,
     "probabilita": "Comune",
-    "livelloMin": 17,
-    "livelloMax": 18
+    "livelloMin": 48,
+    "livelloMax": 48
   },
   {
-    "luogo": "Percorso_3",
-    "cespuglio": "D",
-    "pokemonId": 36,
+    "luogo": "Percorso_7",
+    "cespuglio": "A",
+    "pokemonId": 144,
     "probabilita": "Medio",
-    "livelloMin": 18,
-    "livelloMax": 19
+    "livelloMin": 26,
+    "livelloMax": 26
   },
   {
-    "luogo": "Percorso_3",
-    "cespuglio": "E",
-    "pokemonId": 32,
-    "probabilita": "Comune",
-    "livelloMin": 17,
-    "livelloMax": 18
-  },
-  {
-    "luogo": "Percorso_3",
-    "cespuglio": "E",
-    "pokemonId": 88,
-    "probabilita": "Difficile",
-    "livelloMin": 18,
-    "livelloMax": 19
-  },
-  {
-    "luogo": "Percorso_3",
-    "cespuglio": "F",
-    "pokemonId": 34,
-    "probabilita": "Comune",
-    "livelloMin": 17,
-    "livelloMax": 18
-  },
-  {
-    "luogo": "Percorso_3",
-    "cespuglio": "F",
-    "pokemonId": 36,
+    "luogo": "Foggia",
+    "cespuglio": "C",
+    "pokemonId": 162,
     "probabilita": "Medio",
-    "livelloMin": 18,
-    "livelloMax": 19
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "A",
+    "pokemonId": 59,
+    "probabilita": "Difficile",
+    "livelloMin": 27,
+    "livelloMax": 27
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "C",
+    "pokemonId": 126,
+    "probabilita": "Difficile",
+    "livelloMin": 49,
+    "livelloMax": 49
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "B",
+    "pokemonId": 87,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "D",
+    "pokemonId": 21,
+    "probabilita": "Comune",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "B",
+    "pokemonId": 164,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "D",
+    "pokemonId": 184,
+    "probabilita": "Comune",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "B",
+    "pokemonId": 144,
+    "probabilita": "Medio",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "D",
+    "pokemonId": 162,
+    "probabilita": "Medio",
+    "livelloMin": 48,
+    "livelloMax": 48
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "B",
+    "pokemonId": 59,
+    "probabilita": "Difficile",
+    "livelloMin": 27,
+    "livelloMax": 27
+  },
+  {
+    "luogo": "Foggia",
+    "cespuglio": "D",
+    "pokemonId": 126,
+    "probabilita": "Difficile",
+    "livelloMin": 49,
+    "livelloMax": 49
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "C",
+    "pokemonId": 87,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "A",
+    "pokemonId": 181,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "C",
+    "pokemonId": 164,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "A",
+    "pokemonId": 44,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "C",
+    "pokemonId": 144,
+    "probabilita": "Medio",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "A",
+    "pokemonId": 91,
+    "probabilita": "Medio",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "C",
+    "pokemonId": 59,
+    "probabilita": "Difficile",
+    "livelloMin": 27,
+    "livelloMax": 27
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "A",
+    "pokemonId": 135,
+    "probabilita": "Difficile",
+    "livelloMin": 55,
+    "livelloMax": 55
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "D",
+    "pokemonId": 87,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "B",
+    "pokemonId": 181,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "D",
+    "pokemonId": 164,
+    "probabilita": "Comune",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "B",
+    "pokemonId": 44,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "D",
+    "pokemonId": 144,
+    "probabilita": "Medio",
+    "livelloMin": 26,
+    "livelloMax": 26
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "B",
+    "pokemonId": 91,
+    "probabilita": "Medio",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_7",
+    "cespuglio": "D",
+    "pokemonId": 59,
+    "probabilita": "Difficile",
+    "livelloMin": 27,
+    "livelloMax": 27
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "B",
+    "pokemonId": 135,
+    "probabilita": "Difficile",
+    "livelloMin": 55,
+    "livelloMax": 55
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "A",
+    "pokemonId": 27,
+    "probabilita": "Comune",
+    "livelloMin": 32,
+    "livelloMax": 32
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "C",
+    "pokemonId": 181,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "A",
+    "pokemonId": 189,
+    "probabilita": "Comune",
+    "livelloMin": 32,
+    "livelloMax": 32
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "C",
+    "pokemonId": 44,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "A",
+    "pokemonId": 180,
+    "probabilita": "Medio",
+    "livelloMin": 32,
+    "livelloMax": 32
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "C",
+    "pokemonId": 91,
+    "probabilita": "Medio",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "A",
+    "pokemonId": 72,
+    "probabilita": "Difficile",
+    "livelloMin": 33,
+    "livelloMax": 33
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "C",
+    "pokemonId": 135,
+    "probabilita": "Difficile",
+    "livelloMin": 55,
+    "livelloMax": 55
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "B",
+    "pokemonId": 27,
+    "probabilita": "Comune",
+    "livelloMin": 32,
+    "livelloMax": 32
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "D",
+    "pokemonId": 181,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "B",
+    "pokemonId": 189,
+    "probabilita": "Comune",
+    "livelloMin": 32,
+    "livelloMax": 32
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "D",
+    "pokemonId": 44,
+    "probabilita": "Comune",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "B",
+    "pokemonId": 180,
+    "probabilita": "Medio",
+    "livelloMin": 32,
+    "livelloMax": 32
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "D",
+    "pokemonId": 91,
+    "probabilita": "Medio",
+    "livelloMin": 54,
+    "livelloMax": 54
+  },
+  {
+    "luogo": "Percorso_8",
+    "cespuglio": "B",
+    "pokemonId": 72,
+    "probabilita": "Difficile",
+    "livelloMin": 33,
+    "livelloMax": 33
+  },
+  {
+    "luogo": "Napoli",
+    "cespuglio": "D",
+    "pokemonId": 135,
+    "probabilita": "Difficile",
+    "livelloMin": 55,
+    "livelloMax": 55
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "A",
+    "pokemonId": 33,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "A",
+    "pokemonId": 65,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "A",
+    "pokemonId": 200,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "A",
+    "pokemonId": 54,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "A",
+    "pokemonId": 167,
+    "probabilita": "Medio",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "A",
+    "pokemonId": 134,
+    "probabilita": "Medio",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "A",
+    "pokemonId": 115,
+    "probabilita": "Difficile",
+    "livelloMin": 38,
+    "livelloMax": 38
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "A",
+    "pokemonId": 133,
+    "probabilita": "Difficile",
+    "livelloMin": 65,
+    "livelloMax": 65
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "B",
+    "pokemonId": 33,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "B",
+    "pokemonId": 65,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "B",
+    "pokemonId": 200,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "B",
+    "pokemonId": 54,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "B",
+    "pokemonId": 167,
+    "probabilita": "Medio",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "B",
+    "pokemonId": 134,
+    "probabilita": "Medio",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "B",
+    "pokemonId": 115,
+    "probabilita": "Difficile",
+    "livelloMin": 38,
+    "livelloMax": 38
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "B",
+    "pokemonId": 133,
+    "probabilita": "Difficile",
+    "livelloMin": 65,
+    "livelloMax": 65
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "C",
+    "pokemonId": 33,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "C",
+    "pokemonId": 65,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "C",
+    "pokemonId": 200,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "C",
+    "pokemonId": 54,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "C",
+    "pokemonId": 167,
+    "probabilita": "Medio",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "C",
+    "pokemonId": 134,
+    "probabilita": "Medio",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "C",
+    "pokemonId": 115,
+    "probabilita": "Difficile",
+    "livelloMin": 38,
+    "livelloMax": 38
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "C",
+    "pokemonId": 133,
+    "probabilita": "Difficile",
+    "livelloMin": 65,
+    "livelloMax": 65
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "D",
+    "pokemonId": 33,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "D",
+    "pokemonId": 65,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "D",
+    "pokemonId": 200,
+    "probabilita": "Comune",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "D",
+    "pokemonId": 54,
+    "probabilita": "Comune",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "D",
+    "pokemonId": 167,
+    "probabilita": "Medio",
+    "livelloMin": 37,
+    "livelloMax": 37
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "D",
+    "pokemonId": 134,
+    "probabilita": "Medio",
+    "livelloMin": 64,
+    "livelloMax": 64
+  },
+  {
+    "luogo": "Percorso_9",
+    "cespuglio": "D",
+    "pokemonId": 115,
+    "probabilita": "Difficile",
+    "livelloMin": 38,
+    "livelloMax": 38
+  },
+  {
+    "luogo": "Pescara",
+    "cespuglio": "D",
+    "pokemonId": 133,
+    "probabilita": "Difficile",
+    "livelloMin": 65,
+    "livelloMax": 65
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "A",
+    "pokemonId": 48,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "A",
+    "pokemonId": 63,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "A",
+    "pokemonId": 50,
+    "probabilita": "Medio",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "A",
+    "pokemonId": 202,
+    "probabilita": "Difficile",
+    "livelloMin": 42,
+    "livelloMax": 42
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "B",
+    "pokemonId": 48,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "B",
+    "pokemonId": 63,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "B",
+    "pokemonId": 50,
+    "probabilita": "Medio",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "B",
+    "pokemonId": 202,
+    "probabilita": "Difficile",
+    "livelloMin": 42,
+    "livelloMax": 42
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "C",
+    "pokemonId": 48,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "C",
+    "pokemonId": 63,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "C",
+    "pokemonId": 50,
+    "probabilita": "Medio",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "C",
+    "pokemonId": 202,
+    "probabilita": "Difficile",
+    "livelloMin": 42,
+    "livelloMax": 42
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "D",
+    "pokemonId": 48,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "D",
+    "pokemonId": 63,
+    "probabilita": "Comune",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "D",
+    "pokemonId": 50,
+    "probabilita": "Medio",
+    "livelloMin": 41,
+    "livelloMax": 41
+  },
+  {
+    "luogo": "Percorso_10",
+    "cespuglio": "D",
+    "pokemonId": 202,
+    "probabilita": "Difficile",
+    "livelloMin": 42,
+    "livelloMax": 42
+  },
+  {
+    "luogo": "Percorso_11",
+    "cespuglio": "A",
+    "pokemonId": 119,
+    "probabilita": "Comune",
+    "livelloMin": 45,
+    "livelloMax": 45
+  },
+  {
+    "luogo": "Percorso_11",
+    "cespuglio": "A",
+    "pokemonId": 142,
+    "probabilita": "Medio",
+    "livelloMin": 45,
+    "livelloMax": 45
+  },
+  {
+    "luogo": "Percorso_11",
+    "cespuglio": "A",
+    "pokemonId": 121,
+    "probabilita": "Difficile",
+    "livelloMin": 46,
+    "livelloMax": 46
+  },
+  {
+    "luogo": "Percorso_11",
+    "cespuglio": "B",
+    "pokemonId": 106,
+    "probabilita": "Comune",
+    "livelloMin": 45,
+    "livelloMax": 45
+  },
+  {
+    "luogo": "Percorso_11",
+    "cespuglio": "B",
+    "pokemonId": 142,
+    "probabilita": "Medio",
+    "livelloMin": 45,
+    "livelloMax": 45
+  },
+  {
+    "luogo": "Percorso_11",
+    "cespuglio": "B",
+    "pokemonId": 121,
+    "probabilita": "Difficile",
+    "livelloMin": 46,
+    "livelloMax": 46
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "A",
+    "pokemonId": 165,
+    "probabilita": "Comune",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "A",
+    "pokemonId": 57,
+    "probabilita": "Medio",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "A",
+    "pokemonId": 81,
+    "probabilita": "Difficile",
+    "livelloMin": 52,
+    "livelloMax": 52
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "B",
+    "pokemonId": 43,
+    "probabilita": "Comune",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "B",
+    "pokemonId": 57,
+    "probabilita": "Medio",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "B",
+    "pokemonId": 81,
+    "probabilita": "Difficile",
+    "livelloMin": 52,
+    "livelloMax": 52
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "C",
+    "pokemonId": 43,
+    "probabilita": "Comune",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "C",
+    "pokemonId": 165,
+    "probabilita": "Comune",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "C",
+    "pokemonId": 57,
+    "probabilita": "Medio",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "C",
+    "pokemonId": 81,
+    "probabilita": "Difficile",
+    "livelloMin": 52,
+    "livelloMax": 52
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "D",
+    "pokemonId": 43,
+    "probabilita": "Comune",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "D",
+    "pokemonId": 165,
+    "probabilita": "Comune",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "D",
+    "pokemonId": 57,
+    "probabilita": "Medio",
+    "livelloMin": 51,
+    "livelloMax": 51
+  },
+  {
+    "luogo": "Percorso_12",
+    "cespuglio": "D",
+    "pokemonId": 81,
+    "probabilita": "Difficile",
+    "livelloMin": 52,
+    "livelloMax": 52
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "A",
+    "pokemonId": 190,
+    "probabilita": "Comune",
+    "livelloMin": 56,
+    "livelloMax": 56
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "A",
+    "pokemonId": 148,
+    "probabilita": "Comune",
+    "livelloMin": 56,
+    "livelloMax": 56
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "A",
+    "pokemonId": 118,
+    "probabilita": "Medio",
+    "livelloMin": 56,
+    "livelloMax": 56
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "A",
+    "pokemonId": 131,
+    "probabilita": "Difficile",
+    "livelloMin": 57,
+    "livelloMax": 57
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "B",
+    "pokemonId": 190,
+    "probabilita": "Comune",
+    "livelloMin": 56,
+    "livelloMax": 56
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "B",
+    "pokemonId": 148,
+    "probabilita": "Comune",
+    "livelloMin": 56,
+    "livelloMax": 56
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "B",
+    "pokemonId": 118,
+    "probabilita": "Medio",
+    "livelloMin": 56,
+    "livelloMax": 56
+  },
+  {
+    "luogo": "Percorso_13",
+    "cespuglio": "B",
+    "pokemonId": 131,
+    "probabilita": "Difficile",
+    "livelloMin": 57,
+    "livelloMax": 57
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "A",
+    "pokemonId": 159,
+    "probabilita": "Comune",
+    "livelloMin": 62,
+    "livelloMax": 62
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "A",
+    "pokemonId": 198,
+    "probabilita": "Comune",
+    "livelloMin": 62,
+    "livelloMax": 62
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "A",
+    "pokemonId": 136,
+    "probabilita": "Medio",
+    "livelloMin": 62,
+    "livelloMax": 62
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "A",
+    "pokemonId": 137,
+    "probabilita": "Difficile",
+    "livelloMin": 63,
+    "livelloMax": 63
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "B",
+    "pokemonId": 159,
+    "probabilita": "Comune",
+    "livelloMin": 62,
+    "livelloMax": 62
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "B",
+    "pokemonId": 198,
+    "probabilita": "Comune",
+    "livelloMin": 62,
+    "livelloMax": 62
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "B",
+    "pokemonId": 136,
+    "probabilita": "Medio",
+    "livelloMin": 62,
+    "livelloMax": 62
+  },
+  {
+    "luogo": "Percorso_14",
+    "cespuglio": "B",
+    "pokemonId": 137,
+    "probabilita": "Difficile",
+    "livelloMin": 63,
+    "livelloMax": 63
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "A",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "A",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "A",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "A",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "B",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "B",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "B",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "B",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "C",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "C",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "C",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "C",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "D",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "D",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "D",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "D",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "E",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "E",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "E",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "E",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "F",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "F",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "F",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "F",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "G",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "G",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "G",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "G",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "H",
+    "pokemonId": 195,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "H",
+    "pokemonId": 139,
+    "probabilita": "Comune",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "H",
+    "pokemonId": 158,
+    "probabilita": "Medio",
+    "livelloMin": 67,
+    "livelloMax": 67
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "H",
+    "pokemonId": 138,
+    "probabilita": "Difficile",
+    "livelloMin": 68,
+    "livelloMax": 68
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "I",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "I",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "I",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "I",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "J",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "J",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "J",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "J",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "K",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "K",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "K",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "K",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "L",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "L",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "L",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "L",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "M",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "M",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "M",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "M",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "N",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "N",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "N",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "N",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "O",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "O",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "O",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "O",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "P",
+    "pokemonId": 76,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "P",
+    "pokemonId": 98,
+    "probabilita": "Comune",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "P",
+    "pokemonId": 193,
+    "probabilita": "Medio",
+    "livelloMin": 69,
+    "livelloMax": 69
+  },
+  {
+    "luogo": "Percorso_15",
+    "cespuglio": "P",
+    "pokemonId": 132,
+    "probabilita": "Difficile",
+    "livelloMin": 70,
+    "livelloMax": 70
   }
 ]

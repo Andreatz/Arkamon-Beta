@@ -1,3 +1,4 @@
+import { getShopItem } from '@/shop/catalog'
 import { useEffect, useState } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { useInteractionStore } from './interactionStore'
@@ -22,11 +23,16 @@ export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false
   return <div className="configured-interactions">
     {!available.length && <p>Non ci sono interazioni definite su questo pallino.</p>}
     {available.map((entry) => {
-      const done = !entry.repeatable && isInteractionComplete(progress, entry, playerId)
+      const owner = playerId === 1 ? player1 : player2
+      const explored = entry.action.kind === 'bush' && (owner.cespugliVisitati.has(`${entry.mapId}:${entry.action.bush}`) || isInteractionComplete(progress, entry, playerId))
+      const scent = explored && (owner.inventario['special-scent'] ?? 0) > 0
+      const done = !scent && !entry.repeatable && (explored || isInteractionComplete(progress, entry, playerId))
       const requirement = interactionRequirementMessage(state, entry, playerId)
       const disabled = inputBlocked || !!battle || !!progress.pendingBattle || done || !!requirement || turn.giocatoreAttivo !== playerId || turn.azioniRimaste <= 0
-      const reward = [entry.reward.coins ? `${entry.reward.coins} monete` : '', entry.reward.items.masterball ? `${entry.reward.items.masterball} Masterball` : ''].filter(Boolean).join(' e ')
-      const cost = [entry.cost.coins ? `${entry.cost.coins} monete` : '', entry.cost.items.masterball ? `${entry.cost.items.masterball} Masterball` : ''].filter(Boolean).join(' e ')
+      const resources = (value: typeof entry.reward) => [value.coins ? `${value.coins} monete` : '',
+        ...Object.entries(value.items).filter(([, quantity]) => (quantity ?? 0) > 0).map(([id, quantity]) => `${quantity} ${getShopItem(id)?.name ?? id}`)].filter(Boolean).join(' e ')
+      const reward = resources(entry.reward)
+      const cost = resources(entry.cost)
       return <article key={entry.id} className="configured-interaction">
         <h3>{entry.title}</h3><p>{entry.dialogue}</p>
         <small>{entry.scope === 'shared' ? 'Si completa una volta per la partita; il premio va a chi la completa.' : 'Completamento indipendente per questo giocatore.'}{entry.repeatable ? ' Attività ripetibile.' : ''}</small>
@@ -40,7 +46,7 @@ export function ConfiguredInteractionPanel({ mapId, nodeId, inputBlocked = false
             openPlayerUi('negozio', { playerId, shopInteractionId: entry.id })
           }
         }}>
-          {done ? 'Completata' : entry.action.kind === 'shop' ? 'Apri Arkastore' : entry.action.kind === 'heal' ? 'Cura la squadra' : ['trainer', 'bush', 'encounter'].includes(entry.action.kind) ? 'Avvia incontro' : 'Interagisci'}
+          {done ? 'Completata' : scent ? 'Usa Profumo speciale' : entry.action.kind === 'shop' ? 'Apri Arkastore' : entry.action.kind === 'heal' ? 'Cura la squadra' : ['trainer', 'bush', 'encounter'].includes(entry.action.kind) ? 'Avvia incontro' : 'Interagisci'}
         </GameButton>
       </article>
     })}
