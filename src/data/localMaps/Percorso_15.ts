@@ -2,7 +2,7 @@ import type { LocalMapDefinition } from './types'
 
 export const Percorso15: LocalMapDefinition = {
     id: "Percorso_15",
-    image: "/maps/Percorso_15.png",
+    image: "/maps/Percorso_15-1.png",
     startNode: 'n10',
     nodes: [
       { id: 'n1', x: 54.867, y: 15.211, label: 'Punto 16' },

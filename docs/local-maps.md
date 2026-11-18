@@ -93,4 +93,4 @@ Nel luogo segreto non vengono inventati incontri, NPC o ricompense: le sue inter
 
 Lo store conserva `posizioniLocali1` e `posizioniLocali2`, indicizzate per luogo. Queste posizioni non sostituiscono il nodo dei personaggi sulla mappa principale. I vecchi salvataggi vengono accettati senza posizioni locali; un riferimento non valido torna al punto d'ingresso della mappa.
 
-`Reggio-Calabria.png` corrisponde al luogo di gioco `ReggioCalabria`. `Percorso_15.png` usa il passaggio segreto da Roma descritto sopra, senza aggiungere un nodo visibile nella mappa principale. I luoghi senza una delle nuove immagini conservano la schermata preesistente.
+`Reggio-Calabria.png` corrisponde al luogo di gioco `ReggioCalabria`. `Percorso_15-1.png` usa il passaggio segreto da Roma descritto sopra, senza aggiungere un nodo visibile nella mappa principale. I luoghi senza una delle nuove immagini conservano la schermata preesistente.

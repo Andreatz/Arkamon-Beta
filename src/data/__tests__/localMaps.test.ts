@@ -31,7 +31,7 @@ describe('mappe locali disegnate', () => {
     for (const artwork of PENDING_LOCAL_MAP_ARTWORK) expect(getLocalMap(artwork.id)).toBeUndefined()
     expect(mapDefinitions).toHaveLength(16)
     expect(getLocalMap('ReggioCalabria')?.image).toBe('/maps/Reggio-Calabria.png')
-    expect(getLocalMap('Percorso_15')?.image).toBe('/maps/Percorso_15.png')
+    expect(getLocalMap('Percorso_15')?.image).toBe('/maps/Percorso_15-1.png')
     expect(getLocalMap('Pordenone')).toBeUndefined()
     expect(getLocalMap('toString')).toBeUndefined()
   })

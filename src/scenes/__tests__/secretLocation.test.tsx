@@ -36,7 +36,7 @@ describe('interfaccia del passaggio segreto', () => {
     const markup = renderToStaticMarkup(<CittaScene />)
     expect(markup).not.toContain('Passaggio segreto')
     expect(markup).not.toContain('Percorso 15')
-    expect(markup).not.toContain('/maps/Percorso_15.png')
+    expect(markup).not.toContain('/maps/Percorso_15-1.png')
   })
 
   it('offre a Roma il passaggio dopo tutte le palestre, indicando il costo di movimento', () => {
@@ -56,7 +56,7 @@ describe('interfaccia del passaggio segreto', () => {
     useGameStore.setState({ posizione1: world('Percorso_15'), scenaCorrente: { scena: 'percorso', payload: { luogo: 'Percorso_15' } } })
     const markup = renderToStaticMarkup(<PercorsoScene />)
     expect(markup).toContain('Luogo non disponibile')
-    expect(markup).not.toContain('/maps/Percorso_15.png')
+    expect(markup).not.toContain('/maps/Percorso_15-1.png')
     expect(markup).not.toContain('Cespuglio')
     expect(markup).not.toContain('Punti raggiungibili')
   })
@@ -65,7 +65,7 @@ describe('interfaccia del passaggio segreto', () => {
     useGameStore.setState({ posizione1: world('Percorso_15') })
     const markup = renderToStaticMarkup(<LocalMapScene map={getLocalMap('Percorso_15')!} activities={<p>Contenuto segreto</p>} />)
     expect(markup).not.toContain('Contenuto segreto')
-    expect(markup).not.toContain('/maps/Percorso_15.png')
+    expect(markup).not.toContain('/maps/Percorso_15-1.png')
     expect(markup).toContain('Luogo non disponibile')
   })
 
@@ -73,7 +73,7 @@ describe('interfaccia del passaggio segreto', () => {
     unlock(1)
     expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(true)
     const markup = renderToStaticMarkup(<PercorsoScene />)
-    expect(markup).toContain('/maps/Percorso_15.png')
+    expect(markup).toContain('/maps/Percorso_15-1.png')
     expect(markup).toContain('Torna a Roma')
     expect(markup).toContain('Passaggio di ritorno')
     // Il Database definisce 16 cespugli (A–P), 16 allenatori e il rivale del Percorso 15.
