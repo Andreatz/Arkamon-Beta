@@ -18,7 +18,7 @@ test('a real private phone command resumes and executes exactly once in the actu
       if (localStorage.getItem('private-guest-fixture')) return
       const actor = { istanzaId: 'guest-target', specieId: 5, nome: 'Darklaw Melia', livello: 5, hp: 12, xp: 0 }
       const enemy = { istanzaId: 'guest-vyrath', specieId: 1, nome: 'Vyrath ospite', livello: 5, hp: 8, xp: 0, stato: { tipo: 'Avvelenato', turniRimanenti: -1, turniTrascorsi: 1 } }
-      const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: id === 1 ? [actor] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {}, caselleConsumate: [] })
+      const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: id === 1 ? [actor] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {} })
       const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Percorso_1' }
       const battleId = 'e2e-private-guest'
       const roundRequest = { turnKey: `${battleId}:B:1:${enemy.istanzaId}`, channel: 'boss', durationSeconds: 120,

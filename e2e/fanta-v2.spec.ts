@@ -9,7 +9,7 @@ async function openCampaign(page: Page, legacyResult = false) {
   await page.addInitScript(({ classic, legacyResult }) => {
     if (localStorage.getItem('fanta-v2-fixture')) return
     const player = (id: 1 | 2) => ({ id, nome: `Campagna ${id}`, squadra: [{ istanzaId: `campaign-${id}`, specieId: id === 1 ? 1 : 5,
-      nome: `Compagno ${id}`, livello: 5, hp: 7, xp: 0 }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [],
+      nome: `Compagno ${id}`, livello: 5, hp: 7, xp: 0 }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [],
       monete: id * 200, inventario: { masterball: id } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2),

@@ -3,7 +3,7 @@ import { test, expect, type Page } from '@playwright/test'
 async function seedMap(page: Page) {
   await page.addInitScript(() => {
     const pokemon = { istanzaId: 'rpg-map-a', specieId: 1, nome: 'Vyrath', livello: 10, hp: 19, xp: 0 }
-    const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: [{ ...pokemon, istanzaId: `rpg-map-${id}` }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 0, inventario: {} })
+    const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: [{ ...pokemon, istanzaId: `rpg-map-${id}` }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {} })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,

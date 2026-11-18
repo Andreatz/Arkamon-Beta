@@ -33,7 +33,7 @@ async function seedCampaign(page: Page, location: 'map' | 'city' | 'route' | 'de
     const outsideCap = { istanzaId: 'integration-g1-outside-cap', specieId: 13, nome: 'Wormaren fuori fascia', livello: 20, hp: 4, xp: 0 }
     const foreign = { istanzaId: 'integration-g2-first', specieId: 5, nome: 'Darklaw di Bruno', livello: 6, hp: 9, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Arianna' : 'Bruno', squadra: id === 1 ? [first, teammate] : [foreign],
-      deposito: id === 1 ? { '1:1': reserve, '1:2': outsideCap } : {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [],
+      deposito: id === 1 ? { '1:1': reserve, '1:2': outsideCap } : {}, cespugliVisitati: [], allenatoriSconfitti: [],
       monete: id === 1 ? 700 : 125, inventario: id === 1 ? { potion: 2, 'paralysis-heal': 1 } : { potion: 1 },
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })

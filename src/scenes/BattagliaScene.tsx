@@ -106,6 +106,7 @@ import { GameArt } from '@/ui-system/GameArt'
 import { planD20Capture, planMasterCapture } from '@/components/battle/battleCapture'
 import { SupremeCutIn } from '@/components/battle/SupremeCutIn'
 import { GameButton } from '@/components/ui/GameButton'
+import { SceneInputContext } from '@/components/transitions/SceneNavigationContext'
 import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
 import {
   BATTLE_DICE_ASSET_IDS,
@@ -148,6 +149,7 @@ type PendingSwitch = {
  */
 export function BattagliaScene() {
   const previewView = useContext(UiPreviewViewContext)
+  const sceneTransitioning = useContext(SceneInputContext)
   const battaglia = useGameStore((s) => s.battaglia)
   const challengeContext = useGameStore((s) => s.challengeContext)
   const isChallenge = !!challengeContext
@@ -1647,7 +1649,8 @@ export function BattagliaScene() {
         joinUrl={audienceChoice.request.channel === 'npc' ? audienceSession?.joinUrls.npc ?? '' : ''}
         onRetry={audienceVote.retry} onCloseEarly={audienceVote.closeEarly} onFallback={continueWithoutAudience}
       />}
-      {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
+      {/* La moneta si lancia dopo la Carta VS: durante la transizione di ingresso resta in attesa. */}
+      {coinOpen && battaglia && !sceneTransitioning ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} coinFaces={{ heads: { nome: pkmnA.nome, specieId: pkmnA.specieId }, tails: { nome: pkmnB.nome, specieId: pkmnB.specieId } }} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
       {statusRoll ? <BattleOpeningOverlay key={statusRoll.id} kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
       {supremaSide && !terminata && !azioneInCorso && !coinOpen && !statusRoll && (
         <SupremeMoveDialog

@@ -1,7 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import { readFile } from 'node:fs/promises'
-import { MENU_SVG_ARTWORK_ENABLED } from '../src/player-ui/uiAppearancePolicy'
 
 async function tools(page: Page, tab: string) {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
@@ -15,11 +14,8 @@ test('preferences persist independently and dialog is keyboard accessible', asyn
   const errors: string[] = []; page.on('pageerror', (error) => errors.push(error.message))
   const dialog = await tools(page, 'Impostazioni')
   await dialog.getByRole('checkbox', { name: 'Audio attivo', exact: true }).check()
-  if (MENU_SVG_ARTWORK_ENABLED) await expect(dialog.locator('.game-audio-toggle img')).toHaveAttribute('src', /\/ui\/studio\/Scuro\/toggle-on\.svg$/)
-  else {
-    await expect(dialog.locator('.game-audio-toggle img')).toHaveCount(0)
-    await expect(dialog.getByRole('checkbox', { name: 'Audio attivo', exact: true })).toBeVisible()
-  }
+  await expect(dialog.locator('.game-audio-toggle img')).toHaveCount(0)
+  await expect(dialog.getByRole('checkbox', { name: 'Audio attivo', exact: true })).toBeVisible()
   await dialog.getByLabel('Velocità animazioni').selectOption('fast')
   await dialog.getByLabel('Movimento ridotto').selectOption('on')
   await dialog.getByRole('slider', { name: 'Volume musica' }).fill('25')

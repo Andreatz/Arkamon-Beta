@@ -3,9 +3,16 @@ import { motion } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { BattleDie } from './DiceRollOverlay'
 import { makeDialogBackgroundInert } from './modalFocus'
+import { assetUrl } from '@/utils/assetUrl'
+import './battleCoin.css'
 
-export function BattleOpeningOverlay({ kind, value, title, result, onContinue }: {
+/** Faccia della moneta: l'Arkamon del lato che vince il lancio. */
+export interface CoinFace { nome: string; specieId: number }
+
+export function BattleOpeningOverlay({ kind, value, title, result, onContinue, coinFaces }: {
   kind: 'coin' | 'die'; value: number; title: string; result: string; onContinue: () => void
+  /** Testa = lato A, Croce = lato B. */
+  coinFaces?: { heads: CoinFace; tails: CoinFace }
 }) {
   const { reducedMotion: reduced, speed } = useGameMotionPreferences()
   const [ready, setReady] = useState(Boolean(reduced && kind === 'coin'))
@@ -63,14 +70,32 @@ export function BattleOpeningOverlay({ kind, value, title, result, onContinue }:
     onContinue()
   }
 
-  return <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className="absolute inset-0 z-[900] flex items-center justify-center bg-slate-950/85 p-3 outline-none" onKeyDown={(e) => e.stopPropagation()}>
-    <div className="flex max-h-full w-full max-w-lg flex-col items-center gap-4 overflow-y-auto rounded-2xl border border-amber-300 bg-slate-900 p-4 text-center text-white shadow-2xl sm:gap-6 sm:p-8 [&>*]:shrink-0">
-      <h2 className="text-xl font-bold">{title}</h2>
-      {kind === 'coin' ? <div style={{ perspective: 700 }}>
-        <motion.div initial={{ rotateY: 0, y: 30 }} animate={{ rotateY: reduced ? 0 : 1800, y: reduced ? 0 : [30, -35, 0] }} transition={{ duration: reduced ? 0 : 2.2 / speed, ease: 'easeOut' }} onAnimationComplete={() => setReady(true)} className="flex h-32 w-32 items-center justify-center rounded-full border-8 border-amber-200 bg-gradient-to-br from-yellow-200 via-amber-500 to-yellow-800 text-5xl font-black text-amber-950 shadow-xl">{ready ? (value === 0 ? 'T' : 'C') : '✦'}</motion.div>
+  // Fase di rifinitura: moneta d'oro con l'Arkamon di ciascun lato sulle facce. Gira sull'asse
+  // orizzontale, sale in un arco, ricade con un rimbalzo e mostra la faccia del lato che inizia.
+  const spins = 6
+  const finalTurn = spins * 360 + (value === 0 ? 0 : 180)
+  return <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className="battle-opening-overlay absolute inset-0 z-[900] flex items-center justify-center p-3 outline-none" onKeyDown={(e) => e.stopPropagation()}>
+    <div className="battle-opening-panel flex max-h-full w-full max-w-xl flex-col items-center gap-4 overflow-y-auto p-4 text-center sm:gap-6 sm:p-8 [&>*]:shrink-0">
+      <h2 className="battle-opening-title">{title}</h2>
+      {kind === 'coin' ? <div className="battle-coin-stage" data-ready={ready || undefined}>
+        <motion.div className="battle-coin" initial={{ rotateX: 0, y: 40, scale: .8 }}
+          animate={reduced ? { rotateX: value === 0 ? 0 : 180, y: 0, scale: 1 } : { rotateX: finalTurn, y: [40, -120, 0, -14, 0], scale: [.8, 1.15, 1, 1.03, 1] }}
+          transition={{ duration: reduced ? 0 : 2.4 / speed, ease: [0.22, 0.8, 0.3, 1], times: reduced ? undefined : [0, .45, .78, .9, 1] }}
+          onAnimationComplete={() => setReady(true)}>
+          <span className="battle-coin-face is-heads" aria-hidden="true">
+            {coinFaces ? <img src={assetUrl(`/sprites/front_sprites/${coinFaces.heads.specieId}.png`)} alt="" draggable={false} /> : null}
+            <b>Testa</b>
+          </span>
+          <span className="battle-coin-face is-tails" aria-hidden="true">
+            {coinFaces ? <img src={assetUrl(`/sprites/front_sprites/${coinFaces.tails.specieId}.png`)} alt="" draggable={false} /> : null}
+            <b>Croce</b>
+          </span>
+        </motion.div>
+        <span className="battle-coin-shadow" aria-hidden="true" />
+        {coinFaces && <div className="battle-coin-legend" aria-hidden="true"><span>Testa · {coinFaces.heads.nome}</span><span>Croce · {coinFaces.tails.nome}</span></div>}
       </div> : <div className="w-32"><BattleDie value={value} forceFallback={false} onVisible={() => setReady(true)} /></div>}
-      <p role="status" className="min-h-8 font-bold">{ready ? result : kind === 'coin' ? 'La moneta sta girando…' : 'Lancio del dado…'}</p>
-      <button ref={continueRef} type="button" disabled={!ready} onClick={continueOnce} className="rounded-lg bg-amber-300 px-6 py-3 font-bold text-slate-950 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Continua</button>
+      <p role="status" className="battle-opening-result min-h-8">{ready ? result : kind === 'coin' ? 'La moneta sta girando…' : 'Lancio del dado…'}</p>
+      <button ref={continueRef} type="button" disabled={!ready} onClick={continueOnce} className="battle-opening-continue">Continua</button>
     </div>
   </div>
 }

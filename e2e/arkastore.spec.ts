@@ -17,7 +17,7 @@ async function seedCityCampaign(page: Page) {
     const player = (id: 1 | 2) => ({
       id, nome: id === 1 ? 'Cliente Uno' : 'Cliente Due',
       squadra: id === 1 ? [{ ...pokemon('shop-player-one', 1, 'Vyrath', 3), stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }] : [pokemon('shop-player-two', 5, 'Darklaw', 8)],
-      deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [],
+      deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [],
       monete: id === 1 ? 300 : 40, inventario: id === 1 ? { masterball: 1, 'paralysis-heal': 1 } : { masterball: 4 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
@@ -185,7 +185,7 @@ test('a battle item heals once, consumes the move and resumes at the opponent tu
     const attacker = { istanzaId: 'battle-bag-one', specieId: 1, nome: 'Vyrath Borsa', livello: 5, xp: 0, hp: 3 }
     const opponent = { istanzaId: 'battle-bag-enemy', specieId: 13, nome: 'Wormaren Rivale', livello: 5, xp: 0, hp: 12 }
     const player = (id: 1 | 2) => ({ id, nome: `Borsa ${id}`, squadra: id === 1 ? [attacker] : [], deposito: {},
-      cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 300,
+      cespugliVisitati: [], allenatoriSconfitti: [], monete: 300,
       inventario: id === 1 ? { potion: 1 } : { masterball: 1 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }

@@ -1,4 +1,5 @@
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
+import { flyCoins } from '@/motion/ui/coinFlight'
 import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { useEffect, useState } from 'react'
@@ -91,10 +92,12 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
         </div>)}{!quantity && <p className="pu-empty">Il carrello è vuoto. Scegli le quantità nel catalogo.</p>}</div>
         <div className="pu-store-totals"><strong>Carrello: {quantity} oggetti · {total} ₳</strong><span>Saldo dopo l’acquisto: {Math.max(0, player.monete - total)} ₳</span></div>
         <div className="pu-store-actions"><StudioCommand disabled={!quantity} onClick={() => { setCart({}); setMessage('') }}>Svuota carrello</StudioCommand>
-          <StudioCommand className={reference ? 'pu-reference-purchase' : undefined} selected disabled={editBlocked || !quantity || insufficient || !!capacityItem} onClick={() => {
+          <StudioCommand className={reference ? 'pu-reference-purchase' : undefined} selected disabled={editBlocked || !quantity || insufficient || !!capacityItem} onClick={event => {
+            const button = event.currentTarget
             const result = state.acquistaOggetti(playerId, cart, location, shopInteractionId)
             setMessage(result.message)
-            if (result.ok) setCart({})
+            // Le monete volano dal borsellino al banco: solo presentazione, dopo il salvataggio riuscito.
+            if (result.ok) { setCart({}); flyCoins(document.querySelector('.pu-currency'), button, Math.min(12, 4 + quantity)) }
           }}>Acquista carrello</StudioCommand></div>
         {message && <p role="status" aria-live="polite" className="pu-store-result">{message}</p>}
       </KitPanel>

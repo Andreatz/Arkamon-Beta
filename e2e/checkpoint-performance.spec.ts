@@ -39,7 +39,7 @@ for (const scenario of [{ label: 'piccola', deposits: 0 }, { label: 'media', dep
       const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia · checkpoint' : 'Maggi · checkpoint',
         squadra: Array.from({ length: 6 }, (_, index) => creature(id, index)),
         deposito: Object.fromEntries(Array.from({ length: deposits }, (_, index) => [`${Math.floor(index / 35) + 1}:${index % 35 + 1}`, creature(id, index + 6)])),
-        cespugliVisitati: ['Percorso_1:A'], allenatoriSconfitti: [], caselleConsumate: [], monete: id * 125,
+        cespugliVisitati: ['Percorso_1:A'], allenatoriSconfitti: [], monete: id * 125,
         inventario: { potion: 2, masterball: 1 } })
       const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
       localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,

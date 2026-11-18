@@ -31,7 +31,7 @@ async function openCampaignFixture(page: Page) {
     if (localStorage.getItem('e2e-challenge-fixture')) return
     const one = { istanzaId: 'seed-campaign-one', specieId: 1, nome: 'Vyrath campagna', livello: 5, hp: 7, xp: 3, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }
     const two = { istanzaId: 'seed-campaign-two', specieId: 5, nome: 'Darklaw campagna', livello: 5, hp: 9, xp: 2 }
-    const player = (id: 1 | 2) => ({ id, nome: `Campagna ${id}`, squadra: id === 1 ? [one] : [two], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 735 : 490, inventario: { masterball: id }, caselleConsumate: [] })
+    const player = (id: 1 | 2) => ({ id, nome: `Campagna ${id}`, squadra: id === 1 ? [one] : [two], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 735 : 490, inventario: { masterball: id } })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,

@@ -5,7 +5,7 @@ async function battleFixture(page: Page, speed = 'normal', reduced = 'off') {
     if (localStorage.getItem('roadmap-motion-seeded')) return
     const team = [1,5,9,13,20,21].map((specieId, index) => ({ istanzaId: `motion-${index}`, specieId, nome: index === 0 ? 'Vyrath delle Costellazioni di Oriente' : `Compagno ${index}`, livello: 5, hp: index === 0 ? 5 : 10, xp: 0 }))
     const enemy = { istanzaId: 'motion-enemy', specieId: 13, nome: 'Wormaren rivale', livello: 5, hp: 12, xp: 0 }
-    const player = (id: number) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: id === 1 ? team : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 0, inventario: { potion: 2, 'super-potion': 2, revive: 1, antidote: 2, 'paralysis-heal': 2, awakening: 2, masterball: 1 } })
+    const player = (id: number) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: id === 1 ? team : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { potion: 2, 'super-potion': 2, revive: 1, antidote: 2, 'paralysis-heal': 2, awakening: 2, masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9, posizione1: position, posizione2: position,
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true, scenaCorrente: { scena: 'battaglia' }, scenaPrecedente: { scena: 'mappa-principale' },

@@ -10,8 +10,8 @@ async function seed(page: Page) {
     const creature = (id: string, specieId: number, livello: number, hp: number) => ({ istanzaId: id, specieId, nome: id, livello, hp, xp: 0 })
     const one = { id: 1, nome: 'Melia', squadra: [{ ...creature('Vyrath squadra', 1, 20, 3), stato: { tipo: 'Paralizzato', turniRimanenti: -1 } }, creature('Felyss squadra', 9, 25, 0)],
       deposito: { '1:1': creature('Darklaw riserva', 5, 26, 3), '2:35': creature('Darklaw lontano', 5, 22, 7) },
-      cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 500, inventario: { potion: 2, masterball: 1 } }
-    const two = { id: 2, nome: 'Maggi', squadra: [creature('Vyrath Maggi', 1, 20, 20)], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 300, inventario: {} }
+      cespugliVisitati: [], allenatoriSconfitti: [], monete: 500, inventario: { potion: 2, masterball: 1 } }
+    const two = { id: 2, nome: 'Maggi', squadra: [creature('Vyrath Maggi', 1, 20, 20)], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 300, inventario: {} }
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: one, giocatore2: two, giocatoreAttivo: 1,
       rivaleStarterId: 5, battaglia: null, posizione1: position('Venezia'), posizione2: position('Torino'),

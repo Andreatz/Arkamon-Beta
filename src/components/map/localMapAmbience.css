@@ -1,0 +1,22 @@
+/* Ambiente delle mappe locali: barche che ondeggiano e fontane con zampilli. */
+.local-map-ambience { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.local-map-boat { position: absolute; background-repeat: no-repeat;
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  transform-origin: 50% 70%; animation: local-boat-bob calc(var(--motion-scale, 1) * 3.4s) var(--boat-delay, 0s) ease-in-out infinite; }
+@keyframes local-boat-bob { 0%, 100% { transform: translateY(0) rotate(-1.4deg); } 50% { transform: translateY(-1.6%) rotate(1.4deg); } }
+.local-map-fountain { position: absolute; aspect-ratio: 1; translate: -50% -50%; }
+.local-map-fountain::before { content: ''; position: absolute; inset: 30% 30% 40%; border-radius: 50%; background: radial-gradient(circle, rgb(255 255 255 / .85), rgb(160 230 255 / 0) 70%); animation: local-fountain-glint calc(var(--motion-scale, 1) * 1.1s) ease-in-out infinite alternate; }
+@keyframes local-fountain-glint { from { opacity: .35; transform: scale(.8); } to { opacity: .9; transform: scale(1.15); } }
+.local-map-fountain-ripple { position: absolute; inset: 14%; border: 2px solid rgb(240 252 255 / .95); box-shadow: 0 0 6px rgb(170 235 255 / .8); border-radius: 50%; transform: scaleY(.45);
+  animation: local-fountain-ripple calc(var(--motion-scale, 1) * 2.2s) var(--fountain-delay, 0s) ease-out infinite; }
+.local-map-fountain-ripple.is-late { animation-delay: calc(var(--fountain-delay, 0s) + 1.1s); }
+@keyframes local-fountain-ripple { from { opacity: .9; transform: scaleY(.45) scale(.3); } to { opacity: 0; transform: scaleY(.45) scale(1.15); } }
+.local-map-fountain-drop { position: absolute; left: 50%; top: 38%; width: 14%; aspect-ratio: 1; border-radius: 50%; background: rgb(235 250 255 / .95); box-shadow: 0 0 4px rgb(160 230 255 / .9);
+  animation: local-fountain-drop calc(var(--motion-scale, 1) * 1.3s) calc(var(--fountain-delay, 0s) + var(--drop) * .21s) cubic-bezier(.3, .6, .6, 1) infinite; }
+@keyframes local-fountain-drop {
+  0% { transform: translate(-50%, 0); opacity: 0; }
+  15% { opacity: 1; }
+  45% { transform: translate(calc(-50% + (var(--drop) - 2.5) * 30%), -220%); }
+  100% { transform: translate(calc(-50% + (var(--drop) - 2.5) * 70%), 60%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .local-map-fountain::before, .local-map-boat, .local-map-fountain-ripple, .local-map-fountain-drop { animation: none; } .local-map-fountain-drop { display: none; } }

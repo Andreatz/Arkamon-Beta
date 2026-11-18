@@ -9,7 +9,7 @@ async function endedBattle(page: Page, reverse = false) {
     const squad = reverse ? [low, high] : [high, low], final = reverse ? [finalLow, finalHigh] : [finalHigh, finalLow]
     const enemy = { ...low, istanzaId: 'enemy', hp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Conclusione ${id}`, squadra: id === 1 ? squad : [], deposito: {},
-      cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { revive: 0 }, caselleConsumate: [] })
+      cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { revive: 0 } })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Pordenone' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
