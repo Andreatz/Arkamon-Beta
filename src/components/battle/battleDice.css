@@ -72,3 +72,34 @@
 .battle-dice-kicker { font-size: clamp(11px, 0.95vw, 16px); letter-spacing: 0.08em; }
 .battle-dice-move { font-size: clamp(18px, 1.7vw, 30px); line-height: 1.1; }
 .battle-dice-sum { font-size: clamp(12px, 1.05vw, 18px); }
+
+/* ======================= Fase U6: vassoio dei dadi ======================= */
+/* Il vassoio dipinto sostituisce il pannello rettangolare: i dadi si posano sul velluto. */
+.battle-dice-panel[data-dice-tray] {
+  isolation: isolate;
+  width: min(500px, 86%);
+  aspect-ratio: 1407 / 956;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8% 12% 10%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+.battle-dice-panel[data-dice-tray] > .battle-dice-tray {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: fill !important;
+  filter: drop-shadow(0 18px 30px rgb(0 0 0 / 0.65));
+  pointer-events: none;
+}
+.battle-dice-panel[data-dice-tray] .battle-dice-kicker { color: var(--arka-ui-cyan, #6df1ff); font-family: var(--arka-ui-font-display, Georgia, serif); letter-spacing: 0.08em; }
+.battle-dice-panel[data-dice-tray] .battle-dice-move { font-family: var(--arka-ui-font-display, Georgia, serif); color: var(--arka-ui-gold-bright, #f4dca0); }
+.battle-dice-panel[data-dice-tray] .battle-dice-sum { font-family: var(--arka-ui-font-body, Georgia, serif); color: #e9dcc0; }
+.battle-dice-panel[data-dice-tray] .battle-dice-result-label { font-family: var(--arka-ui-font-display, Georgia, serif); }

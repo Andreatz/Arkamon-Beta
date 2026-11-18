@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { animate, motion } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
@@ -81,6 +83,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
   const tone = roll.tone ?? 'normal'
   const toneLabel = EFFICACY_LABEL[tone]
 
+  const tray = isReferenceUi() && hasGameArt('battle-dice-tray')
   return (
     <div
       className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
@@ -94,7 +97,10 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
         transition={{ duration: reducedMotion ? 0 : 0.22 / speed }}
         onAnimationComplete={() => revealRef.current?.panelVisible()}
         className="battle-dice-panel rounded-md border border-white/20 px-5 py-4 text-center text-white shadow-2xl"
+        data-dice-tray={tray || undefined}
       >
+        {/* Fase U6: il vassoio dipinto del lotto 3 al posto del pannello rettangolare. */}
+        {tray && <GameArt id="battle-dice-tray" className="battle-dice-tray" data-ui-asset-decoration="" />}
         <p className="battle-dice-kicker font-black uppercase text-blue-300 arka-letter-outline">
           {roll.side === 'A' ? 'Lancio giocatore' : 'Lancio avversario'}
         </p>

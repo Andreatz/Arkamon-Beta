@@ -239,8 +239,14 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
       hp: document.querySelector('[data-battle-hp-side="enemy"]')?.getAttribute('data-battle-hp'),
     }
   })
-  expect(proof.background).not.toBe('transparent')
-  expect(proof.alpha).toBeCloseTo(.55, 2)
+  // Fase U6: con il vassoio dipinto del lotto 3 il fondo è l'illustrazione, non un rettangolo al 55%.
+  if (await panel.getAttribute('data-dice-tray')) {
+    await expect(panel.locator('.battle-dice-tray')).toBeVisible()
+    expect(proof.alpha).toBe(0)
+  } else {
+    expect(proof.background).not.toBe('transparent')
+    expect(proof.alpha).toBeCloseTo(.55, 2)
+  }
   expect(proof.backdrop).toBe('none')
   expect(proof.opacity).toBe('1')
   expect(proof.captionOpacity.length).toBeGreaterThanOrEqual(3)

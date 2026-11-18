@@ -16,12 +16,24 @@ import { GameButton } from '@/components/ui/GameButton'
 import './battleRpg.css'
 import './battleAurora.css'
 import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
+import { gameArtUrl, hasGameArt, GameArt } from '@/ui-system/GameArt'
+import { BattleFrame, hasBattleFrame } from './BattleFrame'
 
 /**
  * Fase U5: cornici provvisorie oro e blu notte (in attesa del lotto 3). Restano le immagini
  * predefinite: una personalizzazione di UI Studio o dell'Admin le sostituisce come prima.
  */
 const AURORA_FRAMES = { hp: '/ui/aurora/hp-plate.svg', move: '/ui/aurora/move-frame.svg', info: '/ui/aurora/infobox.svg' } as const
+
+/** Sfondo del riquadro: nessuno quando c'è la cornice dipinta del lotto 3, altrimenti quella vettoriale o storica. */
+const frameBackground = (painted: boolean, src: string) => painted ? 'none' : `url(${src})`
+
+/** Emblema dipinto del tipo (lotto 3), se c'è. */
+export function typeEmblemUrl(tipo: TipoPokemon): string | undefined {
+  if (!isReferenceUi()) return undefined
+  const id = `type-${tipo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('it-IT')}`
+  return hasGameArt(id) ? gameArtUrl(id) : undefined
+}
 import type { AdminBattleLayoutKey, AdminLayoutRect, AdminBattleLayout } from '@/theme/adminThemeTypes'
 import type { PokemonIstanza, MossaDef, Stato, TipoPokemon } from '@/types'
 
@@ -128,6 +140,7 @@ export function InfoBox({
 }) {
   const righe = messaggi.slice(-3)
   const frameSrc = assetUrl(isReferenceUi() ? AURORA_FRAMES.info : '/ui/infobox.png')
+  const painted = hasBattleFrame('message')
 
   if (!righe.length) return showOpponentButton ? (
     <div className="flex h-full w-full items-center justify-center">
@@ -144,12 +157,14 @@ export function InfoBox({
       className="arka-battle-font relative h-full w-full text-slate-950 drop-shadow-2xl"
       data-ui-skin-slot="frame"
       data-ui-asset-surface=""
+      data-battle-framed={painted || undefined}
       style={{
-        backgroundImage: `url(${frameSrc})`,
+        backgroundImage: frameBackground(painted, frameSrc),
         backgroundSize: '100% 100%',
         backgroundRepeat: 'no-repeat',
       }}
     >
+      <BattleFrame kind="message" />
       <div
         className={`battle-message-lines absolute left-[8%] top-[16%] space-y-1 text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)] ${
           showOpponentButton ? 'right-[28%]' : 'right-[8%]'
@@ -470,6 +485,8 @@ export function HpBar({
   const colore = pct > 60 ? hpColors.hpHigh : pct > 25 ? hpColors.hpMid : hpColors.hpLow
   const aurora = !frameSource && isReferenceUi()
   const frameSrc = frameSource ?? assetUrl(aurora ? AURORA_FRAMES.hp : `/ui/hp_bar_${side}.png`)
+  // Lotto 3: targa, medaglione e scanalatura dipinti, composti sopra lo stesso riquadro.
+  const painted = aurora && hasBattleFrame('hp-banner') && hasBattleFrame('hp-track') && hasGameArt('battle-hp-medallion')
   const barSrc = assetUrl('/ui/hp_bar.png')
   const barClipId = `hp-bar-inner-${side}`
   const fillWidth = pct === 0 ? 0 : 23 + pct * 5
@@ -485,13 +502,18 @@ export function HpBar({
       data-battle-hp={hp}
       data-ui-skin-slot="frame"
       data-ui-asset-surface=""
+      data-battle-framed={painted || undefined}
       style={{
-        backgroundImage: `url(${frameSrc})`,
+        backgroundImage: frameBackground(painted, frameSrc),
         backgroundSize: frameSource && frameFit !== 'fill' ? frameFit : '100% 100%',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
     >
+      {painted && <>
+        <BattleFrame kind="hp-banner" className="battle-hp-banner-frame" />
+        <span className="battle-hp-medallion" data-ui-asset-decoration="" aria-hidden="true"><GameArt id="battle-hp-medallion" /></span>
+      </>}
       {stato && <span className="absolute bottom-full left-0 z-30 -translate-x-1/4 sm:mb-1"><StatusToken stato={stato} compact /></span>}
       <div data-ui-hp-labels="" className="absolute left-[13.5%] right-[6.5%] top-[15%] flex items-center justify-between gap-3">
         <span
@@ -510,6 +532,7 @@ export function HpBar({
         </span>
       </div>
       <div data-ui-hp-track="" className="absolute left-[10.25%] top-[66.5%] h-[33.5%] w-[59.7%]">
+        {painted && <BattleFrame kind="hp-track" className="battle-hp-track-frame" />}
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 507 40"
@@ -602,8 +625,10 @@ export function SupremeButton({ disabled, recoil, onClick }: {
       title={`Scegli un attacco: danno doppio, contraccolpo ${recoil} HP al livello attuale; 50% degli HP massimi dopo eventuale salita di livello`}
       disabled={disabled}
       onClick={onClick}
+      data-battle-framed={hasBattleFrame('supreme') || undefined}
       className="battle-supreme-button flex h-full w-full min-h-0 min-w-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border-2 border-amber-200 bg-gradient-to-b from-amber-400 to-orange-600 px-0 text-center font-black text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:px-1"
     >
+      <BattleFrame kind="supreme" />
       <span className="max-w-full truncate text-[clamp(9px,1.4vw,20px)] leading-tight tracking-tight"><span className="hidden sm:inline">Mossa<br /></span>Suprema</span>
       <span className="hidden text-[clamp(9px,1vw,14px)] leading-tight sm:block">×2 · −{recoil} HP</span>
     </button>
@@ -628,7 +653,8 @@ export function MoveButton({
   const { dadi, incremento } = getMossaAlLivello(mossa, livello)
   const facts = battleMoveFacts(mossa, livello, defenderType)
   const frameSrc = assetUrl(isReferenceUi() ? AURORA_FRAMES.move : '/ui/move_button.png')
-  const typeSrc = assetUrl(`/ui/${mossa.tipo.toLocaleLowerCase('it-IT')}.png`)
+  const typeSrc = typeEmblemUrl(mossa.tipo) ?? assetUrl(`/ui/${mossa.tipo.toLocaleLowerCase('it-IT')}.png`)
+  const painted = hasBattleFrame('move')
 
   return (
     <motion.button
@@ -640,12 +666,14 @@ export function MoveButton({
       className="battle-move-button arka-battle-font relative h-full min-h-0 overflow-hidden px-[8%] py-[7%] text-slate-950 drop-shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-45"
       data-ui-skin-slot="frame"
       data-ui-asset-surface=""
+      data-battle-framed={painted || undefined}
       style={{
-        backgroundImage: `url(${frameSrc})`,
+        backgroundImage: frameBackground(painted, frameSrc),
         backgroundSize: '100% 100%',
         backgroundRepeat: 'no-repeat',
       }}
     >
+      <BattleFrame kind="move" />
       <span className="battle-command-cursor" aria-hidden="true">▶</span>
       <div
         data-admin-layout-text-key={`${textKeyPrefix}-name`}

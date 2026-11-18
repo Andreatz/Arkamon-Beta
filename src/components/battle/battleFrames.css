@@ -1,0 +1,80 @@
+/* ======================= Fase U6: cornici dipinte del lotto 3 ======================= */
+/* Misure in pixel delle illustrazioni importate (public/ui/game-art): altezza --fh, parti fisse
+   in alto (--t), in basso (--b), all'esterno (--l), sul lato interno con il mezzo cristallo (--s);
+   per le cornici lunghe, estremità sinistra (--l) e destra (--r). Le parti fisse scalano con
+   l'altezza del riquadro (cqh), quindi gli angoli non si deformano mai. */
+
+.battle-frame {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  container-type: size;
+  pointer-events: none;
+}
+.battle-frame::before,
+.battle-frame::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  border-style: solid;
+  border-color: transparent;
+  border-image-repeat: stretch;
+}
+
+/* Due metà: ognuna a nove pezzi, con il mezzo cristallo fermo sul lato interno. */
+.battle-frame--halves::before,
+.battle-frame--halves::after {
+  content: '';
+  width: 50%;
+  border-width:
+    calc(var(--t) * 100cqh / var(--fh))
+    calc(var(--s) * 100cqh / var(--fh))
+    calc(var(--b) * 100cqh / var(--fh))
+    calc(var(--l) * 100cqh / var(--fh));
+}
+.battle-frame--halves::before {
+  left: 0;
+  /* Un pixel sotto la metà destra: niente fessura dove le due metà si incontrano. */
+  width: calc(50% + 1px);
+  border-image-source: var(--frame-left-active, var(--frame-left));
+  border-image-slice: var(--t) var(--s) var(--b) var(--l) fill;
+}
+.battle-frame--halves::after {
+  right: 0;
+  border-width:
+    calc(var(--t) * 100cqh / var(--fh))
+    calc(var(--l) * 100cqh / var(--fh))
+    calc(var(--b) * 100cqh / var(--fh))
+    calc(var(--s) * 100cqh / var(--fh));
+  border-image-source: var(--frame-right-active, var(--frame-right));
+  border-image-slice: var(--t) var(--l) var(--b) var(--s) fill;
+}
+
+/* Cornici lunghe: si allunga solo il tratto dritto fra le due estremità. */
+.battle-frame:not(.battle-frame--halves)::before {
+  content: '';
+  left: 0;
+  right: 0;
+  border-width: 0 calc(var(--r) * 100cqh / var(--fh)) 0 calc(var(--l) * 100cqh / var(--fh));
+  border-image-source: var(--frame);
+  border-image-slice: 0 var(--r) 0 var(--l) fill;
+}
+
+/* Misure delle singole illustrazioni. */
+.battle-frame--move { --fh: 639; --t: 200; --b: 140; --l: 190; --s: 130; }
+.battle-frame--message { --fh: 767; --t: 250; --b: 230; --l: 220; --s: 130; }
+.battle-frame--supreme { --fh: 900; --t: 330; --b: 260; --l: 180; --s: 140; }
+.battle-frame--turn { --fh: 194; --l: 185; --r: 180; }
+.battle-frame--hp-banner { --fh: 170; --l: 180; --r: 220; }
+.battle-frame--hp-track { --fh: 129; --l: 120; --r: 120; }
+
+/* Pulsante della mossa puntato: la cornice con il filo ciano. */
+.battle-move-button:not(:disabled):is(:hover, :focus-visible) > .battle-frame--move {
+  --frame-left-active: var(--frame-left-on);
+  --frame-right-active: var(--frame-right-on);
+  --fh: 658; --t: 210; --b: 150; --l: 195; --s: 130;
+}
+
+/* La cornice sta dietro a tutto il contenuto del riquadro, ma sopra il suo sfondo. */
+[data-battle-framed] { isolation: isolate; }

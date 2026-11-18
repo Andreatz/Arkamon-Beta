@@ -2,6 +2,125 @@
   "version": 1,
   "assets": [
     {
+      "id": "battle-dice-tray",
+      "file": "battle-dice-tray.webp",
+      "width": 1407,
+      "height": 956,
+      "source": "inbox/battle-dice-tray.png"
+    },
+    {
+      "id": "battle-hp-banner",
+      "file": "battle-hp-banner.webp",
+      "width": 1600,
+      "height": 170,
+      "source": "inbox/battle-hp-banner.png"
+    },
+    {
+      "id": "battle-hp-medallion",
+      "file": "battle-hp-medallion.webp",
+      "width": 396,
+      "height": 400,
+      "source": "inbox/battle-hp-medallion.png"
+    },
+    {
+      "id": "battle-hp-track",
+      "file": "battle-hp-track.webp",
+      "width": 1600,
+      "height": 129,
+      "source": "inbox/battle-hp-track.png"
+    },
+    {
+      "id": "battle-message-frame",
+      "file": "battle-message-frame.webp",
+      "width": 1600,
+      "height": 767,
+      "source": "inbox/battle-message-frame.png"
+    },
+    {
+      "id": "battle-message-frame-left",
+      "file": "battle-message-frame-left.webp",
+      "width": 800,
+      "height": 767,
+      "source": "inbox/battle-message-frame.png#left"
+    },
+    {
+      "id": "battle-message-frame-right",
+      "file": "battle-message-frame-right.webp",
+      "width": 800,
+      "height": 767,
+      "source": "inbox/battle-message-frame.png#right"
+    },
+    {
+      "id": "battle-move-frame",
+      "file": "battle-move-frame.webp",
+      "width": 1200,
+      "height": 639,
+      "source": "inbox/battle-move-frame.png"
+    },
+    {
+      "id": "battle-move-frame-left",
+      "file": "battle-move-frame-left.webp",
+      "width": 600,
+      "height": 639,
+      "source": "inbox/battle-move-frame.png#left"
+    },
+    {
+      "id": "battle-move-frame-right",
+      "file": "battle-move-frame-right.webp",
+      "width": 600,
+      "height": 639,
+      "source": "inbox/battle-move-frame.png#right"
+    },
+    {
+      "id": "battle-move-frame-selected",
+      "file": "battle-move-frame-selected.webp",
+      "width": 1200,
+      "height": 658,
+      "source": "inbox/battle-move-frame-selected.png"
+    },
+    {
+      "id": "battle-move-frame-selected-left",
+      "file": "battle-move-frame-selected-left.webp",
+      "width": 600,
+      "height": 658,
+      "source": "inbox/battle-move-frame-selected.png#left"
+    },
+    {
+      "id": "battle-move-frame-selected-right",
+      "file": "battle-move-frame-selected-right.webp",
+      "width": 600,
+      "height": 658,
+      "source": "inbox/battle-move-frame-selected.png#right"
+    },
+    {
+      "id": "battle-supreme-frame",
+      "file": "battle-supreme-frame.webp",
+      "width": 820,
+      "height": 900,
+      "source": "inbox/battle-supreme-frame.png"
+    },
+    {
+      "id": "battle-supreme-frame-left",
+      "file": "battle-supreme-frame-left.webp",
+      "width": 410,
+      "height": 900,
+      "source": "inbox/battle-supreme-frame.png#left"
+    },
+    {
+      "id": "battle-supreme-frame-right",
+      "file": "battle-supreme-frame-right.webp",
+      "width": 410,
+      "height": 900,
+      "source": "inbox/battle-supreme-frame.png#right"
+    },
+    {
+      "id": "battle-turn-banner",
+      "file": "battle-turn-banner.webp",
+      "width": 1600,
+      "height": 194,
+      "source": "inbox/battle-turn-banner.png"
+    },
+    {
       "id": "category-capture",
       "file": "category-capture.webp",
       "width": 256,
@@ -350,6 +469,69 @@
       "width": 676,
       "height": 720,
       "source": "reference-assets/summoning-ring"
+    },
+    {
+      "id": "title-keyart",
+      "file": "title-keyart.webp",
+      "width": 1672,
+      "height": 941,
+      "source": "inbox/title-keyart.png"
+    },
+    {
+      "id": "type-acqua",
+      "file": "type-acqua.webp",
+      "width": 233,
+      "height": 256,
+      "source": "inbox/type-emblems.png#4"
+    },
+    {
+      "id": "type-elettro",
+      "file": "type-elettro.webp",
+      "width": 244,
+      "height": 256,
+      "source": "inbox/type-emblems.png#1"
+    },
+    {
+      "id": "type-erba",
+      "file": "type-erba.webp",
+      "width": 256,
+      "height": 256,
+      "source": "inbox/type-emblems.png#5"
+    },
+    {
+      "id": "type-fuoco",
+      "file": "type-fuoco.webp",
+      "width": 248,
+      "height": 256,
+      "source": "inbox/type-emblems.png#2"
+    },
+    {
+      "id": "type-normale",
+      "file": "type-normale.webp",
+      "width": 222,
+      "height": 256,
+      "source": "inbox/type-emblems.png#0"
+    },
+    {
+      "id": "type-oscurita",
+      "file": "type-oscurita.webp",
+      "width": 256,
+      "height": 252,
+      "source": "inbox/type-emblems.png#6"
+    },
+    {
+      "id": "type-psico",
+      "file": "type-psico.webp",
+      "width": 233,
+      "height": 256,
+      "source": "inbox/type-emblems.png#7"
+    },
+    {
+      "id": "type-terra",
+      "file": "type-terra.webp",
+      "width": 222,
+      "height": 256,
+      "source": "inbox/type-emblems.png#3"
     }
   ]
 }

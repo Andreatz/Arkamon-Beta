@@ -1,5 +1,6 @@
 import { getSplashArtwork } from '@/player-ui/reference/splashArtwork'
 import { assetUrl } from '@/utils/assetUrl'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
 import './titleKeyArt.css'
 
 /** I tre starter del laboratorio, da sinistra: Vyrath, Darklaw, Felyss. */
@@ -11,6 +12,11 @@ const STARTERS = [1, 5, 9] as const
  * finché non arriva la key art definitiva; un fondo scelto dall'Admin resta prioritario.
  */
 export function TitleKeyArt({ still }: { still: boolean }) {
+  // Fase U6: la key art definitiva del lotto 3; il trittico resta come riserva se manca.
+  if (hasGameArt('title-keyart')) return <div className="title-key-art title-key-art--painted" data-still={still || undefined} aria-hidden="true">
+    <GameArt id="title-keyart" className="title-key-art__image" />
+    <div className="title-key-art__veil" />
+  </div>
   return <div className="title-key-art" data-still={still || undefined} aria-hidden="true">
     {STARTERS.map((speciesId, index) => {
       const artwork = getSplashArtwork(speciesId)

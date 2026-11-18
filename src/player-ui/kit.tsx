@@ -1,5 +1,5 @@
 import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
-import { GameArt, gameArtForIcon } from '@/ui-system/GameArt'
+import { GameArt, gameArtForIcon, hasGameArt } from '@/ui-system/GameArt'
 import { useEffect, useState, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { getMossa, getPokemon } from '@/data'
@@ -93,8 +93,16 @@ export function TypeBadge({ type }: { type: TipoPokemon }) {
  * Sigillo rotondo del tipo, senza testo visibile. Il nome resta per i lettori di schermo,
  * tranne dentro un comando che ha già un'etichetta accessibile (`labelled={false}`).
  */
+/** Identificativo dell'emblema dipinto del tipo (lotto 3): `type-oscurita` per Oscurità. */
+export const typeEmblemId = (type: TipoPokemon) => `type-${type.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('it-IT')}`
+
 export function TypeSeal({ type, className = '', labelled = true }: { type: TipoPokemon; className?: string; labelled?: boolean }) {
-  return <span className={`pu-type-seal ${className}`} data-type={type} title={type} aria-hidden={labelled ? undefined : true}><KitIcon id={TYPE_ICONS[type]} />{labelled && <span className="sr-only">{type}</span>}</span>
+  // Fase U6: con l'emblema dipinto il sigillo mostra l'illustrazione, altrimenti l'icona vettoriale.
+  const emblem = isReferenceUi() && hasGameArt(typeEmblemId(type))
+  return <span className={`pu-type-seal ${className}${emblem ? ' has-emblem' : ''}`} data-type={type} title={type} aria-hidden={labelled ? undefined : true}>
+    {emblem ? <GameArt id={typeEmblemId(type)} className="pu-type-emblem" /> : <KitIcon id={TYPE_ICONS[type]} />}
+    {labelled && <span className="sr-only">{type}</span>}
+  </span>
 }
 function CreatureImage({ speciesId, large }: { speciesId: number; large: boolean }) {
   const compact = !large && isReferenceUi() ? providedPortraitSource(speciesId) : undefined

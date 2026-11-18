@@ -96,6 +96,7 @@ import { efficacyTone } from '@/components/battle/battleCinematics'
 import { BattleDamageNumber, BattleMoveBanner } from '@/components/battle/BattleCinematicLayer'
 import { BattleCaptureLayer, captureHidesTarget } from '@/components/battle/BattleCaptureLayer'
 import { captureBagArt } from '@/components/battle/battleCapture'
+import { BattleFrame, hasBattleFrame } from '@/components/battle/BattleFrame'
 import { GameArt } from '@/ui-system/GameArt'
 import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { planD20Capture, planMasterCapture } from '@/components/battle/battleCapture'
@@ -1996,7 +1997,8 @@ export function BattagliaScene() {
         editing={layoutEditing}
         onChange={updateBattleLayout}
       >
-        <div role="status" data-battle-turn-status className={`${diceRoll ? 'relative isolate' : 'arka-panel'} flex h-full w-full items-center justify-center px-4 py-1`}>
+        <div role="status" data-battle-turn-status data-battle-framed={!diceRoll && hasBattleFrame('turn') || undefined} className={`${diceRoll ? 'relative isolate' : 'arka-panel'} flex h-full w-full items-center justify-center px-4 py-1`}>
+        {!diceRoll && <BattleFrame kind="turn" />}
         {diceRoll && <span className="game-button-frame" data-kit="button-primary" aria-hidden="true" style={{
           borderImageSource: `url("${assetUrl('/ui/player-kit/button-primary.svg')}")`, borderImageSlice: '44 fill',
         }} />}
