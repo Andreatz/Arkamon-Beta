@@ -60,6 +60,7 @@ async function tools(page: Page): Promise<Locator> {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   if (!await dialog.getByRole('region', { name: 'Sfide a seed e Fanta-Team Builder', exact: true }).isVisible()) {
+    await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
     await dialog.getByRole('button', { name: 'Apri Sfide', exact: true }).click()
   }
   await expect(dialog.getByRole('region', { name: 'Sfide a seed e Fanta-Team Builder', exact: true })).toBeVisible()

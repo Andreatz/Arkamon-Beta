@@ -80,7 +80,7 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
     return { tag: element.tagName, label: element.textContent?.trim(), hasFrame: !!frame, background: style.backgroundColor, backgroundImage: style.backgroundImage, borderWidth: style.borderTopWidth, source: frameStyle?.borderImageSource,
       slice: frameStyle?.borderImageSlice, repeat: frameStyle?.borderImageRepeat, font: style.fontFamily, localMap: !!element.closest('.local-map-scene'),
       // Fase U5: titolo, mappa principale e battaglia usano Cinzel come il resto dell'interfaccia di riferimento.
-      aurora: !!element.closest('[data-world-rpg-map], .rpg-title-scene[data-title-key-art], [data-battle-layout-root][data-reference-ui]'),
+      aurora: !!element.closest('[data-world-rpg-map], .rpg-title-scene[data-title-key-art], [data-battle-layout-root][data-reference-ui], .player-tools-launcher'),
       decorative: frame?.getAttribute('aria-hidden'), disabled: (element as HTMLButtonElement).disabled,
       bound: { left: bound.left, top: bound.top, right: bound.right, bottom: bound.bottom, width: bound.width, height: bound.height },
       frameBound: { left: frameBound.left, top: frameBound.top, right: frameBound.right, bottom: frameBound.bottom },

@@ -1604,7 +1604,7 @@ export function BattagliaScene() {
       <BattleLogPanel chronicle={chronicle} busy={azioneInCorso || coinOpen || !!statusRoll} />
       {previewView === 'dice' && <DiceRollOverlay staticPreview roll={{ id: -1, side: 'A', moveName: 'Attacco di esempio', rolls: [2, 4, 6], increment: 2, damage: 14 }} />}
       {previewView === 'bag' && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={() => ({ ok: false, message: 'Anteprima del layout: nessun oggetto usato.' })} onClose={() => {}} />}
-      {!terminata && <button type="button" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
+      {!terminata && <button type="button" data-battle-bag-command="" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
       {bagOpen && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={eseguiOggetto} onClose={() => setBagOpen(false)} boostBlocked={boostBlockedReason(battaglia)} activeBoosts={battaglia?.boost} />}
       {audienceChoice && !terminata && <BattleAudienceOverlay
         request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}

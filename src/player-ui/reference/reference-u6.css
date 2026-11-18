@@ -1,0 +1,112 @@
+/* ======================= Fase U6: rifinitura del menù del giocatore ======================= */
+/* La barra delle schermate diventa una fila di icone (il nome compare al passaggio, ed è sempre
+   letto dagli screen reader); a destra i suggerimenti dei comandi, come nel mockup. */
+
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav {
+  gap: 8px;
+  width: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav > .pu-frame { display: none; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--arka-ui-gold) !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 50% 35%, #134064, #061a2e) !important;
+  box-shadow: inset 0 0 0 2px rgb(10 40 66 / 0.9), 0 4px 10px #0009 !important;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button::before,
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button::after { display: none !important; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button > .pu-frame { display: none; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button .pu-kit-icon { width: 22px; height: 22px; margin: 0; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button[aria-pressed="true"] {
+  border-color: var(--arka-ui-cyan) !important;
+  box-shadow: inset 0 0 0 2px rgb(10 40 66 / 0.9), 0 0 12px rgb(64 232 255 / 0.5) !important;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  padding: 3px 10px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: 6px;
+  background: rgb(4 22 40 / 0.96);
+  color: #fff3d8;
+  font: 400 var(--arka-size-caption) / 1.2 var(--arka-ui-font-display);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  pointer-events: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button:is(:hover, :focus-visible) .pu-nav-label { opacity: 1; transform: translate(-50%, 0); }
+
+/* Suggerimenti dei comandi a destra, prima di «Riprendi il Viaggio». */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-footer .pu-command-hints {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+  margin-right: 16px;
+  color: #e9dcc0;
+  font: 400 var(--arka-size-body) / 1 var(--arka-ui-font-display);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints > span { display: inline-flex; align-items: center; gap: 8px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border: 1px solid #f3ead6;
+  border-radius: 999px;
+  background: rgb(4 22 40 / 0.9);
+  color: #fff;
+  font: 700 13px / 1 var(--arka-ui-font-body);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b::before { content: attr(data-key); }
+html[data-input-mode="gamepad"] .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b::before { content: attr(data-pad); }
+html[data-input-mode="gamepad"] .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b { width: 28px; padding: 0; }
+
+/* Cassetto «Altro» nella striscia del Game Master. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more { position: relative; margin-left: auto; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 4px 12px;
+  border: 1px solid rgb(217 182 123 / 0.6);
+  border-radius: 8px;
+  background: rgb(4 22 40 / 0.85);
+  color: #e9dcc0;
+  font: 400 var(--arka-size-caption) / 1 var(--arka-ui-font-display);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more-toggle .pu-kit-icon { width: 16px; height: 16px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more-toggle[aria-expanded="true"] { border-color: var(--arka-ui-cyan); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more > .ref-menu-utilities {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 20;
+  display: grid;
+  gap: 6px;
+  min-width: 180px;
+  padding: 8px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgb(8 36 62 / 0.98), rgb(3 18 34 / 0.98));
+  box-shadow: 0 10px 28px #000b;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more > .ref-menu-utilities > button { justify-content: flex-start; width: 100%; }

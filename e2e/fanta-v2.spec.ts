@@ -29,6 +29,7 @@ async function openCampaign(page: Page, legacyResult = false) {
 async function challenges(page: Page) {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
+  await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
   await dialog.getByRole('button', { name: 'Apri Sfide', exact: true }).click()
   return dialog
 }

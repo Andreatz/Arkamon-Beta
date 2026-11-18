@@ -8,3 +8,31 @@ body:has([data-battle-layout-root]) .player-tools-launcher { top: 0.75rem; botto
 
 /* Mappa locale con interfaccia Aurora: il piè di pagina ha già il proprio comando "Menù". */
 body:has(.local-map-scene[data-reference-ui="aurora"] .ref-local-menu) .player-tools-launcher { display: none; }
+
+/* Fase U6: «Partita» nella grammatica oro e blu notte, come il resto dell'interfaccia di riferimento. */
+.player-tools-launcher.game-button {
+  border: 1px solid var(--arka-ui-gold, #d9b67b) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(170deg, rgb(19 64 100 / 0.95), rgb(6 26 46 / 0.95)) !important;
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 6px 16px #0009 !important;
+  color: #fff3d8 !important;
+  font-family: var(--arka-ui-font-display, Georgia, serif) !important;
+  letter-spacing: 0.04em;
+}
+.player-tools-launcher.game-button:not(:disabled):is(:hover, :focus-visible) { border-color: var(--arka-ui-cyan, #6df1ff) !important; filter: brightness(1.1); }
+
+/* Comandi di servizio della battaglia (Cronaca, Borsa) nello stesso stile. */
+[data-battle-chronicle-command],
+[data-battle-bag-command] {
+  border: 1px solid var(--arka-ui-gold, #d9b67b) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(170deg, rgb(19 64 100 / 0.95), rgb(6 26 46 / 0.95)) !important;
+  box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 6px 16px #0009 !important;
+  color: #fff3d8 !important;
+  font-family: var(--arka-ui-font-display, Georgia, serif) !important;
+  letter-spacing: 0.04em;
+}
+:is([data-battle-chronicle-command], [data-battle-bag-command]):not(:disabled):is(:hover, :focus-visible) { border-color: var(--arka-ui-cyan, #6df1ff) !important; }
+
+/* Admin: icona discreta in alto a destra. */
+.admin-toggle { font-family: var(--arka-ui-font-display, Georgia, serif); }

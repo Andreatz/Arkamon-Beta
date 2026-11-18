@@ -133,7 +133,7 @@ test('reference gallery and local map use real controls without modifying the ca
   const move=preview.getByRole('navigation',{name:'Punti raggiungibili'}).getByRole('button').first()
   await expect(move).toBeEnabled();await move.click()
   await expect(preview.locator('.local-map-budget')).toHaveText('1 azione')
-  await preview.getByRole('button',{name:'Menù',exact:true}).click()
+  await preview.getByRole('button',{name:'Partita',exact:true}).click()
   await expect(preview.locator('.ref-main-menu')).toBeVisible()
   await preview.getByRole('button',{name:'Apri Squadra',exact:true}).click()
   await expect(preview.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen','squadra')
