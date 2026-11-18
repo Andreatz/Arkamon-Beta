@@ -142,6 +142,10 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-dossier-nam
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-detail-heading h2 { font-size: var(--arka-size-heading); }
 }
 
+/* Nomi lunghi dell'allenatore: vanno a capo fra le parole, mai a metà parola, con un corpo più piccolo. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-card h2 { overflow-wrap: normal; word-break: normal; hyphens: manual; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-card h2[data-long-name] { font-size: clamp(19px, 1.75vw, 27px); line-height: 1.12; }
+
 /* ======================= Telefono ======================= */
 @media (max-width: 640px) {
   /* Le icone delle schermate su una sola riga, che scorre se serve. */

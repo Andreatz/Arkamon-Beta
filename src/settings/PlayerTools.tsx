@@ -19,7 +19,7 @@ const PlayerUi = lazy(() => import('@/player-ui/PlayerUi').then(module => ({ def
 export function PlayerTools() {
   const [open, setOpen] = useState(false)
   // Fase U6: nella mappa locale il comando «Partita» sta nella scheda del punto. Il pulsante globale
-  // resta nel DOM (Start del gamepad lo usa) ed è nascosto solo mentre quella scena è montata.
+  // è smontato solo mentre quella scena è montata (Start del gamepad apre il menù via evento).
   const launcherHidden = useGlobalLauncherHidden()
   const [request, setRequest] = useState<PlayerUiOpenRequest & { auxiliary?: PlayerUiAuxiliary; revision: number }>({ screen: 'partita', revision: 0 })
   useEffect(() => {
@@ -65,7 +65,7 @@ export function PlayerTools() {
   return <>
     {createPortal(<SaveRecoveryNotice onOpenBackup={() => openDefault('backup')} />, document.body)}
     {!open && createPortal(<TeamRuleNotice />, document.body)}
-    {createPortal(<GameButton aria-haspopup="dialog" aria-expanded={open} hidden={launcherHidden} onClick={() => openDefault()} data-player-tools-launcher className="player-tools-launcher fixed bottom-3 left-3 z-[950] text-sm">Partita</GameButton>, document.body)}
+    {!launcherHidden && createPortal(<GameButton aria-haspopup="dialog" aria-expanded={open} onClick={() => openDefault()} data-player-tools-launcher className="player-tools-launcher fixed bottom-3 left-3 z-[950] text-sm">Partita</GameButton>, document.body)}
     {open ? <GameDialog title="La tua partita" className="player-ui-dialog" showCloseButton={false} onClose={() => setOpen(false)}>
       <TeamRuleNotice />
       <Suspense fallback={<p role="status">Caricamento…</p>}>

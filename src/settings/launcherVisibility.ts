@@ -2,7 +2,7 @@ import { useLayoutEffect, useSyncExternalStore } from 'react'
 
 /**
  * Fase U6: una scena che mostra un proprio comando «Partita» (la scheda della mappa locale)
- * nasconde il pulsante globale soltanto mentre è montata. Durante la transizione verso la
+ * smonta il pulsante globale soltanto mentre è montata. Durante la transizione verso la
  * scena il pulsante globale resta quindi raggiungibile. Il layout effect aggiorna il pulsante
  * nello stesso commit in cui compare quello della scena: i due non sono mai visibili insieme.
  */
