@@ -1,9 +1,5 @@
 /* A reversible CSS interface. Native gameplay components remain the source of truth. */
 
-.pu-wordmark {
-  display: none;
-}
-
 html .pu-shell.pu-live-shell[data-ui-concept] {
   --ui-bg: #151b1e;
   --ui-surface: #1d272b;
@@ -227,21 +223,6 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-brand {
 
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-brand>img {
   display: none;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-wordmark {
-  display: block;
-  color: var(--ui-text);
-  font: 30px/.9 Arkamon Norwester,Arial,sans-serif;
-  letter-spacing: 1.5px;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-wordmark>span {
-  display: block;
-  font: 8px/1.3 var(--ui-body-font);
-  letter-spacing: 1.5px;
-  margin-top: 8px;
-  color: var(--ui-accent);
 }
 
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-brand>small {
@@ -1193,14 +1174,6 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-cure-after>span:last-child {
 
 /* Menu and secondary tools keep their live actions and finite data. */
 
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-menu-layout {
-  display: grid;
-  grid-template-columns: minmax(0,1.4fr) minmax(270px,.8fr);
-  gap: 24px;
-  height: 100%;
-  min-height: 0;
-}
-
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-menu-grid {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -1246,14 +1219,6 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-menu-tile>.pu-kit-icon {
   font-size: 25px;
 }
 
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-tile-number {
-  position: absolute;
-  right: 14px;
-  top: 12px;
-  font: 10px var(--ui-body-font);
-  color: var(--ui-muted);
-}
-
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey {
   display: flex;
   flex-direction: column;
@@ -1268,88 +1233,9 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey h2 {
   margin: 0;
 }
 
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey-scene {
-  height: 100px;
-  min-height: 60px;
-  flex: none;
-  border: 0;
-  border-radius: var(--ui-radius);
-  overflow: hidden;
-  background: var(--ui-surface-raised);
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey-scene strong {
-  color: #fff;
-  position: absolute;
-  font-size: 24px;
-  bottom: 8px;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 0;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-summary dt {
-  font-size: 10px;
-  color: var(--ui-muted);
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-summary dd {
-  font: 17px var(--ui-display-font);
-  color: var(--ui-text);
-  margin: 3px 0 0;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-gym-badges {
-  gap: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  margin: 6px 0;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-gym-badges>span {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border: 1px solid var(--ui-line);
-  background: var(--ui-surface-raised);
-  border-radius: 50%;
-  color: var(--ui-muted);
-  font-size: 10px;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-gym-badges>.earned {
-  background: var(--ui-accent);
-  color: var(--ui-accent-ink);
-  border-color: var(--ui-accent);
-}
-
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey .pu-kicker {
   font-size: 9px;
   margin: 0;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-trainer-progress strong {
-  font: 15px var(--ui-display-font);
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-trainer-progress p,html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey>.pu-muted {
-  font-size: 10px;
-  margin: 0;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-mini-team {
-  display: flex;
-  gap: 4px;
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-mini-team .pu-creature-portrait {
-  width: 34px;
-  height: 38px;
 }
 
 html .pu-shell.pu-live-shell[data-ui-concept] :is(.pu-dex-layout,.pu-deposit-layout,.pu-analysis-layout,.pu-store-layout) {
@@ -1424,9 +1310,6 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-store-cart input {
   html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey {
     padding: 16px;
     gap: 7px;
-  }
-  html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey-scene {
-    height: 65px;
   }
   html .pu-shell.pu-live-shell[data-ui-concept] .pu-live-bag-illustration {
     height: 40px;
@@ -1589,12 +1472,6 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-store-cart input {
   html .pu-shell.pu-live-shell[data-ui-concept] .pu-cure-preview {
     width: 100%;
   }
-  html .pu-shell.pu-live-shell[data-ui-concept] .pu-menu-layout {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    gap: 16px;
-  }
   html .pu-shell.pu-live-shell[data-ui-concept] .pu-menu-grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: none;
@@ -1614,9 +1491,6 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-store-cart input {
   }
   html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey {
     overflow: visible;
-  }
-  html .pu-shell.pu-live-shell[data-ui-concept] .pu-journey-scene {
-    height: 110px;
   }
   html .pu-shell.pu-live-shell[data-ui-concept] :is(.pu-dex-layout,.pu-deposit-layout,.pu-analysis-layout,.pu-store-layout) {
     height: auto;
@@ -1787,8 +1661,4 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-cure-after>span:last-child {
 
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-cure-no-effect {
   color: var(--ui-muted);
-}
-
-html .pu-shell.pu-live-shell[data-ui-concept] .pu-gym-badge-symbol {
-  color: inherit;
 }

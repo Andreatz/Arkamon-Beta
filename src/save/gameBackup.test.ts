@@ -29,7 +29,6 @@ function campaign() {
   state.giocatore1.deposito = { '30:35': { ...creaIstanza(9, 40)!, hp: 11 } }
   state.giocatore1.allenatoriSconfitti = new Set([101, 102])
   state.giocatore1.cespugliVisitati = new Set(['Percorso_1:A'])
-  state.giocatore2.caselleConsumate = new Set(['legacy:2,3:npc:hi'])
   state.turnoOverworld = { giocatoreAttivo: 2, azioniRimaste: 1 }
   state.giocatoreAttivo = 2
   state.posizioniLocali1 = { Venezia: getLocalMap('Venezia')!.startNode }

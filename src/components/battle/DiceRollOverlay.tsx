@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { GameArt, hasGameArt } from '@/ui-system/GameArt'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { animate, motion } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
@@ -83,7 +82,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
   const tone = roll.tone ?? 'normal'
   const toneLabel = EFFICACY_LABEL[tone]
 
-  const tray = isReferenceUi() && hasGameArt('battle-dice-tray')
+  const tray = hasGameArt('battle-dice-tray')
   return (
     <div
       className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"

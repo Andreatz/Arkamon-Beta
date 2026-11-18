@@ -11,14 +11,13 @@ import { hasOwnedPokemon } from '@/engine/pokemonOwnership'
 import { preloadSceneTransitionArtwork } from '@/components/transitions/ArkamonDiceArtwork'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { SelectionCursor } from '@/motion/ui/SelectionCursor'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { TitleKeyArt } from './TitleKeyArt'
 
 // Logo dorato degli atlanti forniti (audit UX/UI); il vecchio logo resta il ripiego.
 const DEFAULT_TITLE_LOGO = '/ui/game-art/logo.webp'
 const DEFAULT_TITLE_BACKGROUND_VIDEO = '/assets/Sfondo Titolo.mp4'
 /** Fase U5: senza un fondo scelto dall'Admin, il titolo usa la key art provvisoria al posto del vecchio video. */
-const USE_KEY_ART = isReferenceUi()
+const USE_KEY_ART = true
 
 /**
  * Schermata titolo.

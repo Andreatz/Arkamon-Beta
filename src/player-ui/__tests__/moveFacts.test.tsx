@@ -21,6 +21,6 @@ describe('informazioni sulle mosse del compagno', () => {
     expect(markup).toContain('1d6 +1')
     const statuses = renderToStaticMarkup(<PokemonMoves pokemon={{ istanzaId: 'status-facts', specieId: 3, nome: 'Vyrath', livello: 35, hp: 12, xp: 0 }} />)
     expect(statuses).toMatch(/data-move-kind="status"/)
-    expect(statuses).toMatch(/>(Paralisi|Sonno|Veleno|Confusione)</)
+    expect(statuses).toMatch(/>(Paralisi|Sonno|Veleno|Confusione)( · \d+\/10)?</)
   })
 })

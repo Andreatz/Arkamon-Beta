@@ -44,8 +44,6 @@
   background: var(--arka-control-selected-background, #294a60);
 }
 .pu-artwork-symbol { display: grid; place-items: center; width: 100%; height: 100%; font: 500 24px/1 sans-serif; }
-.pu-gym-badge-symbol { display: grid; place-items: center; width: 100%; height: 100%; border: 1px solid currentColor; border-radius: 50%; font-size: 16px; font-variant-numeric: tabular-nums; }
-.pu-gym-badges > :not(.earned) > .pu-gym-badge-symbol { border-style: dashed; }
 .game-audio-toggle[data-menu-artwork="css"] > input {
   position: static;
   width: 24px;

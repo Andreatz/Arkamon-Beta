@@ -39,8 +39,6 @@ import type {
   OggettoId,
   PosizioneAvatar,
   StatoTurnoOverworld,
-  Casella,
-  MappaGriglia,
   PosizioniMappeLocali,
 } from '@/types'
 import {
@@ -49,7 +47,7 @@ import {
   determinaIniziativa,
   type EsitoBattaglia,
 } from '@engine/battleEngine'
-import { getPokemon, getAllenatore, getIncontri, squadraAllenatore } from '@data/index'
+import { getPokemon, getAllenatore, squadraAllenatore } from '@data/index'
 import {
   MAIN_MAP_START_NODE,
   areMainMapNodesConnected,
@@ -65,17 +63,12 @@ import {
   canAccessSecretLocation,
   hasUnlockedSecretLocation,
   isSecretLocationConnection,
-  isSecretLocationPosition,
 } from '@data/secretLocation'
 import { canMoveOnLocalMap, getLocalMapNode } from '@engine/localMapMovement'
-import {
-  chiaveCasellaConsumata,
-  consumaAzione,
-  nuovoTurno,
-  puòMuoversi,
-  risultatoInterazione,
-  type RisultatoInterazione,
-} from '@engine/movimento'
+import { consumaAzione, nuovoTurno } from '@engine/turnoOverworld'
+
+/** Una fusione di Axolux da annunciare: chi si è fuso e in cosa. */
+export interface AvvisoFusione { playerId: 1 | 2; axolux: PokemonIstanza; prima: PokemonIstanza; dopo: PokemonIstanza; messaggio: string }
 
 export interface GameState extends GameSaveState {
   configuraLega: (configuration: LeagueConfiguration) => { ok: boolean; message: string }
@@ -90,6 +83,9 @@ export interface GameState extends GameSaveState {
   challengeContext: ChallengeContext | null
   teamRuleMessage: string | null
   dismissTeamRuleMessage: () => void
+  /** Fusioni di Axolux appena avvenute, da mostrare una volta (non si salvano). */
+  avvisoFusione: AvvisoFusione[] | null
+  chiudiAvvisoFusione: () => void
   acquistaOggetti: (playerId: 1 | 2, cart: ShopCart, location: string, shopInteractionId?: string) => ShopPurchaseResult
   applicaOggetto: (playerId: 1 | 2, itemId: OggettoId, instanceId: string) => { ok: boolean; message: string }
   /** Volatile scene generation. A restored/new campaign must release every old timer and local scene snapshot. */
@@ -198,29 +194,6 @@ export interface GameState extends GameSaveState {
   concludiBattaglia: (esito: EsitoBattaglia) => GameCommandResult
 
   // === ACTIONS OVERWORLD (Fase E) ===
-
-  /**
-   * Muove l'avatar del giocatore alla nuova posizione (deve essere adiacente
-   * e calpestabile). Decrementa di 1 le azioni rimaste; se arriva a 0 passa
-   * automaticamente il turno all'altro giocatore.
-   * Ritorna `true` se il movimento è stato applicato.
-   */
-  muoviAvatar: (giocatoreId: 1 | 2, nuovaPos: PosizioneAvatar, mappa: MappaGriglia) => boolean
-
-  /**
-   * Interagisce con la casella in (x, y) sulla mappa data. Marca la casella
-   * come consumata (per cespuglio/allenatore/npc), gestisce internamente
-   * `transizione-mappa` (sposta l'avatar sulla mappa di destinazione) e
-   * chiude il turno (azioni → 0 → swap).
-   * Ritorna il `RisultatoInterazione` per delegare battaglia/edificio
-   * alla UI; `no-op` se la casella non è interagibile dal giocatore.
-   */
-  interagisciCasella: (
-    giocatoreId: 1 | 2,
-    mappa: MappaGriglia,
-    x: number,
-    y: number
-  ) => RisultatoInterazione
 
   /** Forza lo swap del turno overworld (usato dalla UI come pulsante manuale). */
   passaTurnoOverworld: () => void
@@ -406,6 +379,8 @@ export const useGameStore = create<GameState>()(
       arkadex: emptyArkadexProgress(), matchLog: emptyMatchLog(),
       teamRuleMessage: null,
       dismissTeamRuleMessage: () => set({ teamRuleMessage: null }),
+      avvisoFusione: null,
+      chiudiAvvisoFusione: () => set({ avvisoFusione: null }),
       saveRecoveryWarnings: [],
       dismissSaveRecoveryWarnings: () => set({ saveRecoveryWarnings: [] }),
 
@@ -794,99 +769,6 @@ export const useGameStore = create<GameState>()(
       // ----------------------------------------------------------------
       // OVERWORLD (Fase E)
       // ----------------------------------------------------------------
-
-      muoviAvatar: (giocatoreId, nuovaPos, mappa) => {
-        const state = get()
-        const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
-        const da = state[chiavePos]
-        if (campaignActivityBlock(state)) return false
-        if (mappa.id === SECRET_LOCATION_ID || nuovaPos.luogo === SECRET_LOCATION_ID || isSecretLocationPosition(da)) return false
-        if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) return false
-        if (state.turnoOverworld.azioniRimaste <= 0) return false
-        if (nuovaPos.mappaId !== mappa.id) return false
-        if (!puòMuoversi(da, { x: nuovaPos.x, y: nuovaPos.y }, mappa)) return false
-
-        const turnoNuovo = consumaAzione(state.turnoOverworld, 'movimento')
-        const turnoFinale =
-          turnoNuovo.azioniRimaste <= 0 ? nuovoTurno(giocatoreId) : turnoNuovo
-
-        return set({
-          [chiavePos]: nuovaPos,
-          turnoOverworld: turnoFinale,
-        } as Partial<GameState>)
-      },
-
-      interagisciCasella: (giocatoreId, mappa, x, y) => {
-        const state = get()
-        if (campaignActivityBlock(state)) return { tipo: 'no-op' }
-        if (state.turnoOverworld.giocatoreAttivo !== giocatoreId) {
-          return { tipo: 'no-op' }
-        }
-        if (state.turnoOverworld.azioniRimaste <= 0) return { tipo: 'no-op' }
-        const posizione = state[giocatoreId === 1 ? 'posizione1' : 'posizione2']
-        if (mappa.id === SECRET_LOCATION_ID || isSecretLocationPosition(posizione)) return { tipo: 'no-op' }
-        if (posizione.mappaId !== mappa.id || Math.abs(posizione.x - x) + Math.abs(posizione.y - y) !== 1) {
-          return { tipo: 'no-op' }
-        }
-        const casella: Casella | undefined = mappa.caselle[y]?.[x]
-        if (!casella) return { tipo: 'no-op' }
-
-        const chiaveG = giocatoreId === 1 ? 'giocatore1' : 'giocatore2'
-        const g = state[chiaveG]
-        const r = risultatoInterazione(
-          mappa.id,
-          x,
-          y,
-          casella,
-          giocatoreId,
-          {
-            caselleConsumate: g.caselleConsumate,
-            allenatoriSconfitti: g.allenatoriSconfitti,
-          }
-        )
-        if (r.tipo === 'no-op') return r
-        if (r.tipo === 'transizione-mappa' && r.versoMappaId === SECRET_LOCATION_ID) return { tipo: 'no-op' }
-
-        // Validate every battle prerequisite before consuming a legacy tile or
-        // swapping the overworld turn. The scene starts it in the same transaction.
-        if (r.tipo === 'battaglia-npc' || r.tipo === 'battaglia-selvatica') {
-          if (!isTeamWithinLevelCap(g.squadra)) { set({ teamRuleMessage: teamCapMessage(g.squadra) }); return { tipo: 'no-op' } }
-          if (!g.squadra.some((pokemon) => pokemon.hp > 0)) return { tipo: 'no-op' }
-          if (r.tipo === 'battaglia-npc') {
-            const trainer = getAllenatore(r.allenatoreId)
-            if (!trainer || !trainer.squadra.some((slot) => !!getPokemon(slot.pokemonId))) return { tipo: 'no-op' }
-          } else if (!getIncontri(mappa.id, r.cespuglioId).length) return { tipo: 'no-op' }
-        }
-
-        // Marca la casella come consumata se è un tipo "esauribile".
-        // Edifici e uscite restano sempre interagibili.
-        const chiave = chiaveCasellaConsumata(mappa.id, x, y, casella)
-        const nuoveConsumate = chiave
-          ? new Set(g.caselleConsumate).add(chiave)
-          : g.caselleConsumate
-
-        // Se è una transizione-mappa, sposta l'avatar sul nuovo spawn.
-        const chiavePos = giocatoreId === 1 ? 'posizione1' : 'posizione2'
-        const nuovaPos: PosizioneAvatar =
-          r.tipo === 'transizione-mappa'
-            ? {
-                mappaId: r.versoMappaId,
-                x: r.spawnX,
-                y: r.spawnY,
-                direzione: state[chiavePos].direzione,
-              }
-            : state[chiavePos]
-
-        // Interazione consuma l'intero turno → swap immediato.
-        const turnoFinale = nuovoTurno(giocatoreId)
-
-        if (!set({
-          [chiaveG]: { ...g, caselleConsumate: nuoveConsumate },
-          [chiavePos]: nuovaPos,
-          turnoOverworld: turnoFinale,
-        } as Partial<GameState>)) return { tipo: 'no-op' }
-        return r
-      },
 
       passaTurnoOverworld: () =>
         set((s) => {

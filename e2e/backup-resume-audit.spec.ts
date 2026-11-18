@@ -30,7 +30,7 @@ test('a late file read cannot replace the automatic backup selected afterward', 
       return new Promise<string>(resolve => Object.assign(window, { completeBackupFileRead: resolve }))
     }
   })
-  await tools.getByLabel('Importa backup partita', { exact: true }).setInputFiles({ name: 'lettura-lenta.json', mimeType: 'application/json', buffer: Buffer.from('{}') })
+  await tools.getByLabel('Importa file di salvataggio', { exact: true }).setInputFiles({ name: 'lettura-lenta.json', mimeType: 'application/json', buffer: Buffer.from('{}') })
   await expect.poll(() => page.evaluate(() => typeof (window as unknown as { completeBackupFileRead?: unknown }).completeBackupFileRead)).toBe('function')
   await tools.getByRole('button', { name: 'Controlla copia automatica 1', exact: true }).click()
   const preview = tools.getByLabel('Anteprima ripristino', { exact: true })

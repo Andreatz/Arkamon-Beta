@@ -1,6 +1,5 @@
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { useEffect } from 'react'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { useGameStore } from '@store/gameStore'
 import {
   musicForScene,
@@ -57,7 +56,7 @@ export function AudioController() {
   }, [])
 
   // Fase U6: nell'interfaccia di riferimento l'audio si regola nelle Impostazioni («Audio attivo»).
-  if (isReferenceUi()) return null
+  return null
   return (
     <button
       type="button"

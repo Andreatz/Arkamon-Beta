@@ -23,15 +23,15 @@ export function BackupPanel() {
   const exportCurrent = () => {
     try {
       downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState()), gameBackupFilename())
-      setMessage(catalogRecovery ? 'Backup della campagna scaricato senza catalogo danneggiato. Scarica separatamente l’originale da recuperare.' : 'Backup della partita scaricato. Conservalo anche fuori da questo computer.')
+      setMessage(catalogRecovery ? 'File di salvataggio scaricato senza il catalogo danneggiato. Scarica separatamente l’originale da recuperare.' : 'File di salvataggio scaricato. Conservalo anche fuori da questo computer.')
       setError(null)
-    } catch (cause) { setError(cause instanceof Error ? cause.message : 'Non riesco a scaricare il backup. Riprova dal browser.'); setMessage(null) }
+    } catch (cause) { setError(cause instanceof Error ? cause.message : 'Non riesco a scaricare il file di salvataggio. Riprova dal browser.'); setMessage(null) }
   }
   const loadFile = async (file: File | undefined) => {
     const revision = ++fileReadRevision.current
     setPreview(null); setAccepted(false); setError(null); setMessage(null)
     if (!file) return
-    if (file.size > MAX_GAME_BACKUP_BYTES) { setError('Il file supera il limite di 5 MB per un backup della partita.'); return }
+    if (file.size > MAX_GAME_BACKUP_BYTES) { setError('Il file supera il limite di 5 MB per un file di salvataggio.'); return }
     try {
       const content = await file.text()
       if (fileReadRevision.current !== revision) return
@@ -46,13 +46,13 @@ export function BackupPanel() {
     const result = restoreGameBackup(preview)
     if (!result.ok) { setError(result.error); return }
     setPreviousAvailable(true); setPreview(null); setAccepted(false); setError(null)
-    setMessage('Partita ripristinata. La partita precedente è conservata nel backup precedente scaricabile qui sotto.')
+    setMessage('Partita ripristinata. La partita precedente è conservata nel salvataggio precedente, scaricabile qui sotto.')
   }
-  return <section aria-label="Backup della partita" className="pu-backup-screen space-y-4">
-    <h2 className="text-lg font-bold">Backup della partita</h2>
+  return <section aria-label="Salvataggio della partita" className="pu-backup-screen space-y-4">
+    <h2 className="text-lg font-bold">Salvataggio della partita</h2>
     <p className="text-sm">Salva i progressi di entrambi i giocatori, squadre, deposito, mappe e battaglia. Il ripristino conserva HP e status; i codici QR e le impostazioni del pubblico restano separati.</p>
     <div className="pu-backup-overview">
-    {catalogRecovery && <div role="alert"><p>Il catalogo interazioni richiede recupero. Il backup conserva la campagna e omette quel catalogo; l’originale resta intatto nel browser. Prima di sostituirlo, scaricalo separatamente e recuperalo dall’editor Interazioni.</p>
+    {catalogRecovery && <div role="alert"><p>Il catalogo interazioni richiede recupero. Il file di salvataggio conserva la campagna e omette quel catalogo; l’originale resta intatto nel browser. Prima di sostituirlo, scaricalo separatamente e recuperalo dall’editor Interazioni.</p>
       <button type="button" disabled={catalogRecovery.raw === null} onClick={() => {
         try { downloadGameBackup(catalogRecovery.raw!, 'arkamon-interazioni-originale-da-recuperare.json'); setError(null) }
         catch { setError('Non riesco a scaricare il catalogo originale. Non cancellare i dati del browser e riprova.') }
@@ -75,25 +75,25 @@ export function BackupPanel() {
       <button type="button" className="mt-2 underline" onClick={dismissRecovery}>Ho letto gli avvisi</button>
     </div>}
     <div className="flex flex-wrap gap-2">
-      <button type="button" className="rounded border border-current px-3 py-2 font-semibold" onClick={exportCurrent}>Scarica backup partita</button>
+      <button type="button" className="rounded border border-current px-3 py-2 font-semibold" onClick={exportCurrent}>Scarica file di salvataggio</button>
       {previousAvailable && <button type="button" className="rounded border border-current px-3 py-2" onClick={() => {
         const previous = readPreviousGameBackup()
         if (previous) downloadGameBackup(previous, 'Arkamon-partita-precedente.json')
-        else { setPreviousAvailable(false); setError('Il backup precedente non è disponibile.') }
-      }}>Scarica backup precedente</button>}
+        else { setPreviousAvailable(false); setError('Il salvataggio precedente non è disponibile.') }
+      }}>Scarica salvataggio precedente</button>}
     </div>
     {/* Il selettore nativo mostra testi del browser (anche in inglese): un'etichetta italiana lo sostituisce. */}
     <label className="pu-file-picker block text-sm font-semibold">Importa una partita
-      <input type="file" accept=".json,application/json" aria-label="Importa backup partita" className="sr-only" onChange={(event) => {
+      <input type="file" accept=".json,application/json" aria-label="Importa file di salvataggio" className="sr-only" onChange={(event) => {
         void loadFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''
       }} />
-      <span className="pu-file-picker-button" aria-hidden="true">Scegli un file di backup…</span>
+      <span className="pu-file-picker-button" aria-hidden="true">Scegli un file di salvataggio…</span>
     </label>
     {error && <p role="alert" className="rounded border border-current p-2 text-sm">{error}</p>}
     {message && <p role="status" className="text-sm">{message}</p>}
     </div>
     {preview && <div className="space-y-3 rounded border border-current p-3" aria-label="Anteprima ripristino">
-      <h3 className="font-bold">Anteprima del backup</h3>
+      <h3 className="font-bold">Anteprima del salvataggio</h3>
       <p className="text-sm">Creato il {new Date(preview.createdAt).toLocaleString('it-IT')} · formato {preview.version}</p>
       {preview.players.map((player, i) => <p key={i} className="text-sm"><strong>{player.name}</strong>: {player.team} in squadra, {player.deposit} in deposito, {player.coins} monete, {player.defeatedTrainers} allenatori sconfitti. Luogo: {player.location.replace(/_/g, ' ')}.</p>)}
       <p className="text-sm">Schermata: {preview.scene}. {preview.battle ? 'Riprende la battaglia dall’ultimo turno salvato.' : 'Nessuna battaglia in corso.'}</p>
@@ -102,7 +102,7 @@ export function BackupPanel() {
       {preview.warnings.length > 0 && <div className="text-sm"><p className="font-bold">Campi recuperati da controllare prima di continuare:</p>
         <ul className="ml-4 list-disc">{preview.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
-        <span>Confermo la sostituzione della partita attuale{preview.warnings.length ? ' e accetto i recuperi indicati' : ''}. Verrà conservato un backup della partita precedente.</span></label>
+        <span>Confermo la sostituzione della partita attuale{preview.warnings.length ? ' e accetto i recuperi indicati' : ''}. Verrà conservato un salvataggio della partita precedente.</span></label>
       <div className="flex flex-wrap gap-2"><button type="button" disabled={!accepted} className="rounded border border-current px-3 py-2 font-semibold disabled:opacity-40" onClick={restore}>Ripristina questa partita</button>
         <button type="button" className="rounded border border-current px-3 py-2" onClick={() => { ++fileReadRevision.current; setPreview(null); setAccepted(false) }}>Annulla importazione</button></div>
     </div>}

@@ -11,7 +11,7 @@ export function battleMoveFacts(move: MossaDef, level: number, defenderType?: Ti
     return { label: `Dal Lv. ${move.livelloMinimo}`, detail: `Disponibile dal livello ${move.livelloMinimo}.`, kind: 'status' as const }
   }
   if (move.effetto === 'CURA_PARALISI') {
-    return { label: 'Cura paralisi', detail: 'Rimuove la paralisi da chi la usa. Nessun tiro offensivo.', kind: 'heal' as const }
+    return { label: 'Cura paralisi', detail: `Rimuove la paralisi da chi la usa. Nessun tiro offensivo.${move.priorita ? ' Priorità: da paralizzati si può usare prima dell\'avversario.' : ''}`, kind: 'heal' as const }
   }
   if (move.effetto === 'IMMUNITA') {
     const turns = move.valoreEffetto ?? 5
@@ -24,11 +24,12 @@ export function battleMoveFacts(move: MossaDef, level: number, defenderType?: Ti
   if (èMossaCura(move)) {
     const amount = move.valoreEffetto ?? 0
     const label = move.effetto === 'CURA_PCT' ? `Cura ${amount}% HP` : `Cura ${amount} HP`
-    return { label, detail: `${label}. Rimuove veleno e paralisi; conserva sonno e confusione. Nessun tiro offensivo.`, kind: 'heal' as const }
+    return { label, detail: `${label}. Rimuove veleno e paralisi; conserva sonno e confusione. Nessun tiro offensivo.${move.usiMassimi ? ` Al massimo ${move.usiMassimi} usi per lotta.` : ''}`, kind: 'heal' as const }
   }
   if (èMossaSoloStato(move)) {
     const name = move.effetto ? STATUS_LABELS[move.effetto] ?? move.effetto : 'Status'
-    return { label: name, detail: `${name} al bersaglio. Nessun danno o tiro offensivo; non può diventare Suprema.`, kind: 'status' as const }
+    const accuracy = move.precisione ? ` Precisione ${move.precisione}/10 (d10).` : ''
+    return { label: move.precisione ? `${name} · ${move.precisione}/10` : name, detail: `${name} al bersaglio. Nessun danno o tiro offensivo; non può diventare Suprema.${accuracy}`, kind: 'status' as const }
   }
   const { dadi, incremento } = getMossaAlLivello(move, level)
   const label = `${dadi}d6${incremento ? ` ${incremento > 0 ? '+' : '−'} ${Math.abs(incremento)}` : ''}`

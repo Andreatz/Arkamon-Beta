@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react'
 import { gameArtUrl, hasGameArt } from '@/ui-system/GameArt'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import './battleFrames.css'
 
 /**
@@ -29,7 +28,7 @@ const url = (id: string) => { const src = gameArtUrl(id); return src ? `url("${s
 /** Vero quando la cornice dipinta c'è e l'interfaccia è quella di riferimento. */
 export function hasBattleFrame(kind: BattleFrameKind): boolean {
   const art = ART[kind]
-  return isReferenceUi() && (art.halves ? hasGameArt(`${art.id}-left`) && hasGameArt(`${art.id}-right`) : hasGameArt(art.id))
+  return (art.halves ? hasGameArt(`${art.id}-left`) && hasGameArt(`${art.id}-right`) : hasGameArt(art.id))
 }
 
 export function BattleFrame({ kind, className = '' }: { kind: BattleFrameKind; className?: string }) {

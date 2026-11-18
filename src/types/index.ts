@@ -79,6 +79,12 @@ export interface MossaDef {
   regolaStato?: string
   /** Livello da cui la mossa è disponibile ("Dal Lvl 22" nel Database). */
   livelloMinimo?: number
+  /** Precisione su 10 (legenda del foglio): si tira un d10 e la mossa riesce con un valore ≤ precisione. */
+  precisione?: number
+  /** Usi massimi per lotta di ciascun Arkamon (es. «Ripristina tanti HP»: 3). */
+  usiMassimi?: number
+  /** Mossa prioritaria: un Arkamon paralizzato può usarla prima dell'avversario («Cura paralisi»). */
+  priorita?: boolean
   /** Numero di dadi D6 per livello {"5": 1, "6": 1, ...} */
   dadiPerLivello: Record<string, number>
   /** Incremento fisso per livello {"5": 0, "6": 0, ...} */
@@ -162,12 +168,6 @@ export interface StatoGiocatore {
   monete: number
   /** Inventario oggetti (id → quantità). 0 o assente = nessuno. */
   inventario: Partial<Record<OggettoId, number>>
-  /**
-   * Caselle overworld già consumate da questo giocatore (Fase E).
-   * Chiavi nel formato `<mappaId>:<x>,<y>:<tipo>:<id>` (vedi
-   * `chiaveCasellaConsumata` in `src/engine/movimento.ts`).
-   */
-  caselleConsumate: Set<string>
 }
 
 /** Stato della battaglia in corso (analogo del foglio Battaglia_Corrente VBA) */
@@ -204,7 +204,12 @@ export interface StatoBattaglia {
   checkpoint?: BattleCheckpoint
   /** Reward settlement is idempotent even if the game reloads before leaving the scene. */
   ricompenseApplicate?: boolean
+  /** Usi delle mosse limitate in questa lotta: istanzaId → id mossa → usi già fatti. */
+  usiMosse?: UsiMosse
 }
+
+/** Contatore degli usi delle mosse con limite per lotta (es. 3 per «Ripristina tanti HP»). */
+export type UsiMosse = Record<string, Record<string, number>>
 
 export interface BattleCheckpoint {
   version: 1
@@ -244,6 +249,10 @@ export interface RisultatoMossa {
   autodanno?: number
   /** Suprema risolta per questa azione; true significa danno normale ×2 e costo 50% HP massimi. */
   suprema?: boolean
+  /** Tiro del d10 di precisione delle mosse di stato (assente se la mossa non ha precisione). */
+  tiroPrecisione?: number
+  /** True se il tiro di precisione ha fallito: nessuno stato applicato. */
+  mancata?: boolean
 }
 
 export type BattleLogKind = 'opening' | 'attack' | 'status' | 'heal' | 'ko' | 'xp' | 'recoil' | 'winner' | 'switch' | 'capture' | 'audience' | 'outcome'
@@ -292,33 +301,6 @@ export interface BattleChronicle {
 // OVERWORLD A GRIGLIA (Fase E)
 // =============================================================
 
-/**
- * Una casella della griglia di una mappa overworld.
- * Discriminata per `tipo`. Le caselle "interagibili" (cespuglio, allenatore,
- * npc, edificio, uscita) consumano l'intero turno (2 azioni); `transito` ne
- * consuma 1; `ostacolo` non è calpestabile.
- */
-export type Casella =
-  | { tipo: 'transito' }
-  | { tipo: 'cespuglio'; cespuglioId: string }
-  | { tipo: 'allenatore'; allenatoreId: number }
-  | { tipo: 'npc'; dialogoId: string }
-  | { tipo: 'edificio'; edificioId: 'centro' | 'palestra' | 'laboratorio' | 'deposito' }
-  | { tipo: 'uscita'; versoMappaId: string; spawnX: number; spawnY: number }
-  | { tipo: 'ostacolo' }
-
-/** Definizione statica di una mappa a griglia. */
-export interface MappaGriglia {
-  id: string
-  larghezza: number
-  altezza: number
-  /** caselle[y][x], y dall'alto verso il basso */
-  caselle: Casella[][]
-  spawnDefault: { x: number; y: number }
-  /** Path immagine di sfondo, da risolvere con assetUrl() in UI */
-  background: string
-}
-
 /** Posizione runtime di un avatar in overworld. */
 export interface PosizioneAvatar {
   mappaId: string
@@ -348,7 +330,6 @@ export type SceneId =
   | 'titolo'
   | 'laboratorio'
   | 'mappa-principale'
-  | 'mappa-griglia'
   | 'percorso'
   | 'citta'
   | 'palestra'

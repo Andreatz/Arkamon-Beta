@@ -79,7 +79,7 @@ export function serializeGameBackup(state: GameSaveState & { challengeContext?: 
 
 /** Unknown files/versions fail closed; damaged campaign fields require explicit user acceptance. */
 export function validateGameBackup(text: string): GameBackupValidation {
-  if (new TextEncoder().encode(text).byteLength > MAX_GAME_BACKUP_BYTES) return { ok: false, error: 'Il file supera il limite di 5 MB per un backup della partita.' }
+  if (new TextEncoder().encode(text).byteLength > MAX_GAME_BACKUP_BYTES) return { ok: false, error: 'Il file supera il limite di 5 MB per un file di salvataggio.' }
   let parsed: unknown
   try { parsed = JSON.parse(text) } catch { return { ok: false, error: 'Il file non contiene un backup JSON leggibile.' } }
   if (!isSaveRecord(parsed) || parsed.format !== GAME_BACKUP_FORMAT) return { ok: false, error: 'Questo file non è un backup di una partita Arkamon.' }

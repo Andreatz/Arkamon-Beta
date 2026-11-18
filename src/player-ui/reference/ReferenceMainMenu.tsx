@@ -1,7 +1,7 @@
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { useState, type CSSProperties } from 'react'
 import { useGameStore } from '@/store/gameStore'
-import { ALLENATORI, getPokemon } from '@/data'
+import { getPokemon } from '@/data'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
 import { assetUrl } from '@/utils/assetUrl'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
@@ -9,6 +9,7 @@ import { CreaturePortrait, formatNumber, KitIcon } from '../kit'
 import { ReferenceEmblem } from './ReferenceEmblem'
 import { GameArt, gameArtForMenu, hasGameArt } from '@/ui-system/GameArt'
 import { ProvidedArtwork } from './ProvidedArtwork'
+import { GYM_LEADERS, gymMedalArtwork } from './gymMedals'
 import type { PlayerUiAuxiliary, PlayerUiScreen } from '../navigation'
 
 interface Props {
@@ -28,33 +29,18 @@ const entries: { title: string; icon: string; screen?: PlayerUiScreen; tool?: Pl
   {title:'Salvataggio',icon:'icon-backup',tool:'backup'},
   {title:'Impostazioni',icon:'icon-options',tool:'settings'},
 ]
-const gyms = ALLENATORI.filter(trainer => trainer.tipo === 'Capopalestra')
+const gyms = GYM_LEADERS
 const TYPE_ICONS: Record<TipoPokemon, string> = {
   Normale: 'type-normal', Elettro: 'type-electric', Fuoco: 'type-fire', Terra: 'type-earth',
   Acqua: 'type-water', Erba: 'type-grass', Oscurità: 'type-dark', Psico: 'type-psychic',
 }
-const medalByType: Record<TipoPokemon, string> = {
-  Normale: 'medal-normal', Erba: 'medal-grass', Acqua: 'medal-water', Elettro: 'medal-electric',
-  Fuoco: 'medal-fire', Terra: 'medal-earth', Oscurità: 'medal-dark', Psico: 'medal-psychic',
-}
-// Gym order is not an elemental order: several actual gyms share a type.
-const gymMedalArtwork = new Map(gyms.map(gym => {
-  const types = new Map<TipoPokemon, number>()
-  for (const member of gym.squadra) {
-    const species = getPokemon(member.pokemonId)
-    if (species) types.set(species.tipo, (types.get(species.tipo) ?? 0) + 1)
-  }
-  const dominantType = [...types].sort((a, b) => b[1] - a[1])[0]?.[0]
-  return [gym.id, dominantType ? medalByType[dominantType] : 'medal-empty'] as const
-}))
-
 function MedalStrip({ defeated }: { defeated: ReadonlySet<number> }) {
   const earnedCount = gyms.filter(gym => defeated.has(gym.id)).length
   return <div className="ref-medals ref-provided-medals" role="img" aria-label={`${earnedCount} medaglie su ${gyms.length}`}>
     {gyms.map(gym => {
       const earned = defeated.has(gym.id)
       return <span key={gym.id} data-earned={earned} title={`${gym.luogo}: ${earned ? 'ottenuta' : 'da ottenere'}`} aria-hidden="true">
-        <ProvidedArtwork id={earned ? gymMedalArtwork.get(gym.id) ?? 'medal-empty' : 'medal-empty'} />
+        <ProvidedArtwork id={gymMedalArtwork(gym.id, earned)} />
       </span>
     })}
   </div>

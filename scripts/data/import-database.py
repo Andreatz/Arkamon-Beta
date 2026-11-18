@@ -57,6 +57,9 @@ STATUS_RULES = [
 ]
 
 
+AXOLUX_ID = 130
+
+
 def place(value: str | None) -> str | None:
     if not value:
         return None
@@ -244,7 +247,8 @@ def main() -> int:
             if pid not in species_by_id:
                 warnings.append(f'Incontro {luogo} {bush}: specie {pid} inesistente.')
                 continue
-            if not any(species_by_id[pid]['mosse']):
+            # Axolux (130) non ha mosse per scelta: non combatte, si fonde con un compatibile (decisione del 18 novembre 2026).
+            if not any(species_by_id[pid]['mosse']) and pid != AXOLUX_ID:
                 warnings.append(f"Incontro {place(luogo)} {bush}: {species_by_id[pid]['nome']} ({pid}) non ha mosse nel foglio, escluso finché non le definisci.")
                 continue
             lmin = number(lmin) or 5

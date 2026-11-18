@@ -1,7 +1,6 @@
 /* One chrome and one authored player selector across all real game tools. */
 .pu-shell.pu-live-shell{display:flex;flex-direction:column;gap:0;height:100%;min-height:0;padding:12px 24px;background:linear-gradient(130deg,#132333,#08101e)}
 .pu-live-shell>.pu-topbar{display:flex;align-items:center;flex:none;gap:20px;background:none;border:0;border-bottom:1px solid #51617155;border-radius:0;padding:0 0 8px;min-height:60px}
-.pu-live-shell>.pu-topbar>.rpg-frame,.pu-live-shell>.pu-nav>.rpg-frame,.pu-live-shell .pu-nav-button>.rpg-frame{display:none}
 .pu-live-shell .pu-brand img{width:140px;height:40px;object-fit:contain}
 .pu-live-shell .pu-brand small{font-size:10px;letter-spacing:1.5px}
 .pu-live-shell .pu-header-meta{font-size:16px;gap:10px}

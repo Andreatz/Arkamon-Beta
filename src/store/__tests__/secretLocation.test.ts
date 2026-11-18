@@ -5,7 +5,7 @@ import { SECRET_LOCATION_GYM_IDS } from '@data/secretLocation'
 import { getAdjacentLocalMapNodes } from '@engine/localMapMovement'
 import { calcolaHPMax } from '@engine/battleEngine'
 import { creaIstanza, useGameStore } from '@store/gameStore'
-import type { MappaGriglia, PosizioneAvatar, StatoBattaglia } from '@/types'
+import type { PosizioneAvatar, StatoBattaglia } from '@/types'
 
 vi.hoisted(() => {
   const values = new Map<string, string>()
@@ -156,15 +156,6 @@ describe('store - passaggio segreto individuale di Roma', () => {
     s.iniziaBattaglia(ongoingBattle('Percorso_15'))
     expect(useGameStore.getState().battaglia).toBeNull()
     expect(s.iniziaBattagliaNPC(201, 'Percorso_15')).toBe(false)
-    expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)
-  })
-
-  it('le API a griglia non introducono un secondo ingresso al luogo segreto', () => {
-    unlock(1)
-    useGameStore.setState({ posizione1: { mappaId: 'vecchia-griglia', x: 0, y: 0, direzione: 'E' } })
-    const grid: MappaGriglia = { id: 'vecchia-griglia', larghezza: 2, altezza: 1, spawnDefault: { x: 0, y: 0 }, background: '', caselle: [[{ tipo: 'transito' }, { tipo: 'uscita', versoMappaId: 'Percorso_15', spawnX: 0, spawnY: 0 }]] }
-    expect(useGameStore.getState().interagisciCasella(1, grid, 1, 0)).toEqual({ tipo: 'no-op' })
-    expect(useGameStore.getState().muoviAvatar(1, { mappaId: grid.id, luogo: 'Percorso_15', x: 1, y: 0, direzione: 'E' }, grid)).toBe(false)
     expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)
   })
 

@@ -165,7 +165,7 @@ test('configuration import, subsequent editing and backup restore retain a writa
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   await dialog.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   const downloading = page.waitForEvent('download')
-  await dialog.getByRole('button', { name: 'Scarica backup partita', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Scarica file di salvataggio', exact: true }).click()
   const download = await downloading
   const backup = await readFile((await download.path())!, 'utf8')
   await dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true }).click()
@@ -192,7 +192,7 @@ test('configuration import, subsequent editing and backup restore retain a writa
   await panel.getByRole('button', { name: 'Chiudi', exact: true }).click()
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   await dialog.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
-  await dialog.getByLabel('Importa backup partita', { exact: true }).setInputFiles({ name: 'backup.json', mimeType: 'application/json', buffer: Buffer.from(backup) })
+  await dialog.getByLabel('Importa file di salvataggio', { exact: true }).setInputFiles({ name: 'backup.json', mimeType: 'application/json', buffer: Buffer.from(backup) })
   await expect(dialog.getByLabel('Anteprima ripristino')).toBeVisible()
   await dialog.getByRole('checkbox', { name: /Confermo la sostituzione/ }).check()
   await dialog.getByRole('button', { name: 'Ripristina questa partita', exact: true }).click()

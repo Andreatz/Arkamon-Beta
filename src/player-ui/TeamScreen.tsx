@@ -14,10 +14,7 @@ export { canManagePlayerTeam } from '@/store/game/commandPolicy'
 import { liveOwnedPokemon } from './currentRoster'
 export { liveOwnedPokemon } from './currentRoster'
 import { StudioCommand, StudioSurface } from '@/components/ui/StudioArtwork'
-import { assetUrl } from '@/utils/assetUrl'
 import { CreaturePortrait, HealthBar, KitIcon, PokemonMoves, TypeBadge } from './kit'
-import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
-import { isReferenceUi } from './reference/referenceTheme'
 import { useSplashArtwork } from './reference/SplashArtworkContext'
 
 const squadCenters = [137.5, 302.5, 467.5, 632.5, 797.5, 962.5]
@@ -50,7 +47,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
   const range = teamLevelRange(player.squadra)
   const balanced = isTeamWithinLevelCap(player.squadra)
   const currentSpecies = current ? getPokemon(current.specieId) : undefined
-  const reference = isReferenceUi()
+  const reference = true
   const readySplash = useSplashArtwork()
   const splash = reference && readySplash?.playerId === playerId && readySplash.speciesId === current?.specieId ? readySplash : null
   usePublishPlayerUiSelection(playerId, { instanceId: current?.istanzaId, speciesId: current?.specieId })
@@ -247,7 +244,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
                 aria-pressed={!!pokemon && pokemon.istanzaId === current?.istanzaId}
                 disabled={!pokemon}
                 onClick={() => chooseSlot(index)}>
-                <span className="pu-live-team-slot-art" aria-hidden="true">{MENU_SVG_ARTWORK_ENABLED && <img className="pu-live-team-slot-frame" src={assetUrl(teamArtwork(pokemon && pokemon.istanzaId === current?.istanzaId ? 'cornice-piccola-selezionata' : 'cornice-piccola'))} alt="" draggable={false} />}
+                <span className="pu-live-team-slot-art" aria-hidden="true">
                   {pokemon && <CreaturePortrait pokemon={pokemon} selected={pokemon.istanzaId === current?.istanzaId} />}
                 </span>
                 <span className="pu-slot-number" aria-hidden="true">{index + 1}</span>

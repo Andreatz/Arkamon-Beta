@@ -53,7 +53,6 @@ const SCENE_LABELS: Record<SceneId, string> = {
   titolo: 'Apertura del menu principale',
   laboratorio: 'Ingresso nel laboratorio',
   'mappa-principale': 'Ritorno alla mappa principale',
-  'mappa-griglia': 'Ingresso nella mappa',
   percorso: 'Ingresso nel percorso',
   citta: 'Ingresso in città',
   palestra: 'Ingresso nella palestra',
@@ -117,7 +116,7 @@ function choose(destination: NavigazioneScena, origin: NavigazioneScena | undefi
   if (to === 'titolo') return { mode: 'fade', coverMs: 260, durationMs: 620, blendMs: 360 }
   if (from === 'titolo') return { mode: 'brush', coverMs: 540, durationMs: 780, blendMs: 540 }
   if (from === 'laboratorio') return { mode: 'iris', coverMs: 480, durationMs: 660, blendMs: 520 }
-  if (to === 'mappa-principale' || to === 'mappa-griglia' || isLocal(to)) return { mode: 'fade', coverMs: 80, durationMs: 500, blendMs: 140 }
+  if (to === 'mappa-principale' || isLocal(to)) return { mode: 'fade', coverMs: 80, durationMs: 500, blendMs: 140 }
   return { mode: 'fade', coverMs: 20, durationMs: 120, blendMs: 70 }
 }
 

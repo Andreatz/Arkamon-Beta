@@ -20,8 +20,6 @@
 .pu-shell .pu-bag-dedicated .pu-live-bag-cell{position:absolute;left:var(--bag-x);top:var(--bag-y);transform:translate(-50%,-50%);width:16.5%;height:23.5%;display:flex;align-items:center;flex-direction:column}
 .pu-shell .pu-bag-dedicated .pu-live-bag-slot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);isolation:isolate;width:60%;height:60%;min-height:44px;min-width:44px;border:0;background:transparent;display:grid;place-items:center;padding:0;cursor:pointer;color:#edf5ff}
 .pu-shell .pu-bag-dedicated .pu-live-bag-slot>.pu-kit-icon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80%;height:80%;filter:drop-shadow(0 5px 4px #0007)}
-.pu-shell .pu-bag-dedicated .pu-live-bag-slot-frame{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:135%;height:135%;max-width:none;object-fit:contain;z-index:-1;pointer-events:none}
-.pu-shell .pu-bag-dedicated .pu-live-bag-slot[aria-pressed=false]>.pu-live-bag-slot-frame{visibility:hidden}
 .pu-shell .pu-bag-dedicated .pu-live-bag-slot:focus-visible{outline:3px solid #e4f7ff;outline-offset:4px}
 .pu-shell .pu-bag-dedicated .pu-live-bag-quantity{position:absolute;right:0;bottom:6%;font-size:clamp(11px,1.2cqw,16px);background:#0b1c2c;border:1px solid #4c7c98;border-radius:4px;padding:1px 5px}
 .pu-shell .pu-bag-dedicated .pu-live-bag-item-name{position:absolute;top:74%;width:115%;font-size:clamp(10px,1.15cqw,16px);text-align:center;line-height:1.1;white-space:normal;margin-top:3px;color:#cedbe8;font-weight:400}
@@ -70,13 +68,12 @@
  .pu-shell .pu-bag-dedicated .pu-bag-layout{display:flex;flex-direction:column;gap:20px}
  .pu-shell .pu-bag-dedicated .pu-live-bag-inventory,.pu-shell .pu-bag-dedicated .pu-live-bag-detail{width:100%}
  .pu-shell .pu-bag-dedicated .pu-live-bag-inventory-art{aspect-ratio:auto!important;background:none}
- .pu-shell .pu-bag-dedicated .pu-live-bag-inventory-art>.studio-surface-art,.pu-shell .pu-bag-dedicated .pu-live-bag-grid-title{display:none}
+ .pu-shell .pu-bag-dedicated .pu-live-bag-grid-title{display:none}
  .pu-shell .pu-bag-dedicated .pu-live-bag-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px;padding:8px 0}
  .pu-shell .pu-bag-dedicated .pu-live-bag-cell{position:relative;left:auto;top:auto;transform:none;width:auto;height:auto;gap:4px;min-width:0}
  .pu-shell .pu-bag-dedicated .pu-live-bag-cell.is-empty{display:none}
  .pu-shell .pu-bag-dedicated .pu-live-bag-slot{position:relative;left:auto;top:auto;transform:none;width:110px;height:110px;max-width:100%;aspect-ratio:1}
  .pu-shell .pu-bag-dedicated .pu-live-bag-slot>.pu-kit-icon{width:56%;height:56%}
- .pu-shell .pu-bag-dedicated .pu-live-bag-slot-frame{width:100%;height:100%;visibility:visible!important}
  .pu-shell .pu-bag-dedicated .pu-live-bag-quantity{bottom:13%;right:10%;font-size:12px}
  .pu-shell .pu-bag-dedicated .pu-live-bag-item-name{position:static;width:100%;font-size:15px;margin:0}
  .pu-shell .pu-bag-dedicated .pu-live-bag-detail{display:grid;grid-template-columns:85px minmax(0,1fr);gap:8px 12px;border-top:1px solid #31495d;padding-top:16px}

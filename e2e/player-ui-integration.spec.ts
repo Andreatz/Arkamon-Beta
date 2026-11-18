@@ -381,7 +381,7 @@ test('six match utilities use their main cards, role-based typography and a sing
   const dialog = await openTools(page, 'Menù Partita')
   const utilities = [
     ['Registro', 'register', 'Registro della partita'],
-    ['Salvataggio', 'backup', 'Backup della partita'],
+    ['Salvataggio', 'backup', 'Salvataggio della partita'],
     ['Impostazioni', 'settings', 'Impostazioni del gioco'],
     ['Gara', 'race', 'Situazione della gara'],
     ['Ripresa', 'recap', 'Ripresa della sessione'],

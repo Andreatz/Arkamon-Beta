@@ -12,6 +12,7 @@ import type {
   Lato,
   StatoAlterato,
   Stato,
+  UsiMosse,
 } from '@/types'
 import { getPokemon, getMossa, efficaciaTipo, CRESCITA_HP } from '@data/index'
 
@@ -214,6 +215,11 @@ export function rollD6(n: number, rng: () => number = Math.random): number {
 }
 
 // Porting di: RoundIntHalfUp da old_files/Mod_Utilities.txt
+/** Un d10 (1–10), usato solo per la precisione delle mosse di stato della legenda del foglio. */
+export function rollD10(rng: () => number = Math.random): number {
+  return Math.min(10, Math.floor(rng() * 10) + 1)
+}
+
 export function roundHalfUp(v: number): number {
   return v >= 0 ? Math.trunc(v + 0.5) : -Math.trunc(-v + 0.5)
 }
@@ -312,7 +318,18 @@ export function calcolaDanno(
   // Trigger stato alterato (BR.3: sempre applicato se mossa ha effetto,
   // salvo immunità da tentaApplicaStato — nessun roll % di probabilità).
   let statoApplicato: StatoAlterato | undefined
-  if (mossa.effetto && EFFETTO_TO_STATO[mossa.effetto] && !difensoreSvenuto) {
+  // Precisione della legenda (8/10, 9/10, 7/10): un d10 decide se la mossa di stato va a segno.
+  // Si tira solo per le mosse di stato con precisione, così gli attacchi non consumano tiri in più.
+  let tiroPrecisione: number | undefined
+  let mancata = false
+  if (soloStato && mossa.precisione && mossa.effetto && EFFETTO_TO_STATO[mossa.effetto] && !difensoreSvenuto) {
+    tiroPrecisione = rollD10(rng)
+    mancata = tiroPrecisione > mossa.precisione
+    messaggi.push(mancata
+      ? `Precisione: d10 = ${tiroPrecisione} (serve ${mossa.precisione} o meno). ${mossa.nome} manca il bersaglio!`
+      : `Precisione: d10 = ${tiroPrecisione} (serve ${mossa.precisione} o meno). A segno!`)
+  }
+  if (mossa.effetto && EFFETTO_TO_STATO[mossa.effetto] && !difensoreSvenuto && !mancata) {
     const stato = EFFETTO_TO_STATO[mossa.effetto]
     const tentativo = tentaApplicaStato(difensore, stato)
     if (tentativo.applicato) {
@@ -339,6 +356,7 @@ export function calcolaDanno(
     statoApplicato,
     autodanno,
     suprema,
+    ...(tiroPrecisione !== undefined ? { tiroPrecisione, mancata } : {}),
   }
 }
 
@@ -549,10 +567,55 @@ export function tentaCatturaSacchettino(
 // AI (porting di ScegliMossaIA)
 // =============================================================
 
+/** Usi già fatti di una mossa da un Arkamon in questa lotta. */
+export function usiMossa(usi: UsiMosse | undefined, istanzaId: string, mossaId: number): number {
+  return usi?.[istanzaId]?.[String(mossaId)] ?? 0
+}
+
+/** True se la mossa ha un limite di usi per lotta e l'Arkamon l'ha già esaurito. */
+export function èMossaEsaurita(mossa: MossaDef, usi: UsiMosse | undefined, istanzaId: string): boolean {
+  return !!mossa.usiMassimi && usiMossa(usi, istanzaId, mossa.id) >= mossa.usiMassimi
+}
+
+/** Registra un uso; restituisce un nuovo contatore solo per le mosse con limite. */
+export function registraUsoMossa(usi: UsiMosse | undefined, istanzaId: string, mossa: MossaDef): UsiMosse | undefined {
+  if (!mossa.usiMassimi) return usi
+  const perIstanza = usi?.[istanzaId] ?? {}
+  return { ...(usi ?? {}), [istanzaId]: { ...perIstanza, [String(mossa.id)]: (perIstanza[String(mossa.id)] ?? 0) + 1 } }
+}
+
+/** Id delle mosse esaurite di un Arkamon: l'IA non le considera. */
+export function mosseEsaurite(istanza: PokemonIstanza, usi: UsiMosse | undefined): Set<number> {
+  const specie = getPokemon(istanza.specieId)
+  const esaurite = new Set<number>()
+  for (const mossaId of specie?.mosse ?? []) {
+    const mossa = mossaId ? getMossa(mossaId) : undefined
+    if (mossa && èMossaEsaurita(mossa, usi, istanza.istanzaId)) esaurite.add(mossa.id)
+  }
+  return esaurite
+}
+
+/**
+ * Mossa prioritaria disponibile (legenda: «Cura paralisi ha priorità su tutte le altre mosse»).
+ * Un Arkamon paralizzato agisce per secondo; se conosce una mossa prioritaria può usarla
+ * prima dell'avversario. Restituisce l'indice della mossa, oppure null.
+ */
+export function indiceMossaPrioritaria(istanza: PokemonIstanza, usi?: UsiMosse): 0 | 1 | 2 | null {
+  if (istanza.hp <= 0 || istanza.stato?.tipo !== 'Paralizzato') return null
+  const specie = getPokemon(istanza.specieId)
+  for (let i = 0; i < 3; i++) {
+    const mossaId = specie?.mosse[i]
+    const mossa = mossaId ? getMossa(mossaId) : undefined
+    if (mossa?.priorita && èMossaDisponibile(mossa, istanza.livello) && !èMossaEsaurita(mossa, usi, istanza.istanzaId)) return i as 0 | 1 | 2
+  }
+  return null
+}
+
 export function scegliMossaIA(
   attaccante: PokemonIstanza,
   difensore: PokemonIstanza,
-  rng: () => number = Math.random
+  rng: () => number = Math.random,
+  esaurite: ReadonlySet<number> = new Set()
 ): 0 | 1 | 2 {
   const specie = getPokemon(attaccante.specieId)
   if (!specie) return 0
@@ -570,7 +633,7 @@ export function scegliMossaIA(
     const mossaId = specie.mosse[idx]
     if (!mossaId) continue
     const mossa = getMossa(mossaId)
-    if (!mossa || !èMossaDisponibile(mossa, attaccante.livello)) continue
+    if (!mossa || !èMossaDisponibile(mossa, attaccante.livello) || esaurite.has(mossa.id)) continue
 
     const { dadi, incremento } = getMossaAlLivello(mossa, attaccante.livello)
     let punteggio = dadi * 3.5 + incremento

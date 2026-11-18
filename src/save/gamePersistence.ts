@@ -42,14 +42,14 @@ export interface GameSaveState {
 }
 
 export const GAME_SAVE_STORAGE_KEY = 'arkamon-save'
-/** Borsa iniziale: il Sacchettino Supremo storico più cinque Sacchettini, che ora servono per catturare. */
-export const STARTING_INVENTORY = { masterball: 1, sacchettino: 5 } as const
+/** Borsa iniziale (decisione del 18 novembre 2026): un solo Sacchettino. Il Sacchettino Supremo arriva dopo la Lega o come premio. */
+export const STARTING_INVENTORY = { sacchettino: 1 } as const
 /** Kit dato una sola volta ai salvataggi precedenti al Database, perché la cattura ora consuma un Sacchettino. */
 export const MIGRATION_CAPTURE_KIT = 5
 export const PREVIOUS_BACKUP_STORAGE_KEY = 'arkamon-previous-backup-v1'
 export const emptyPlayer = (id: 1 | 2): StatoGiocatore => ({
   id, nome: `Giocatore ${id}`, squadra: [], deposito: {}, cespugliVisitati: new Set(),
-  allenatoriSconfitti: new Set(), monete: 0, inventario: { ...STARTING_INVENTORY }, caselleConsumate: new Set(),
+  allenatoriSconfitti: new Set(), monete: 0, inventario: { ...STARTING_INVENTORY },
 })
 
 export function mainMapPosition(luogo = MAIN_MAP_START_NODE): PosizioneAvatar {
@@ -164,7 +164,6 @@ function restorePlayer(value: unknown, fallback: StatoGiocatore, warn: Warn): St
     monete: finite(g.monete) ? Math.min(Number.MAX_SAFE_INTEGER, Math.max(0, Math.floor(g.monete))) : fallback.monete,
     cespugliVisitati: restoreSet(g.cespugliVisitati, fallback.cespugliVisitati, (v): v is string => typeof v === 'string', warn, label),
     allenatoriSconfitti: restoreSet(g.allenatoriSconfitti, fallback.allenatoriSconfitti, (v): v is number => finite(v) && Number.isInteger(v) && v > 0, warn, label),
-    caselleConsumate: restoreSet(g.caselleConsumate, fallback.caselleConsumate, (v): v is string => typeof v === 'string', warn, label),
     inventario: g.inventario === undefined ? fallback.inventario : normalizeShopInventory(g.inventario, warn),
   }
   if (g.monete !== undefined && g.monete !== player.monete) warn(`${label}: saldo monete corretto a un numero intero valido.`)
@@ -172,8 +171,9 @@ function restorePlayer(value: unknown, fallback: StatoGiocatore, warn: Warn): St
   return player
 }
 
-const SCENES: SceneId[] = ['lega', 'titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso', 'citta', 'battaglia', 'deposito', 'evoluzione']
-const LEGACY_SCENES = new Set(['palestra', 'centro-pokemon', 'squadra'])
+const SCENES: SceneId[] = ['lega', 'titolo', 'laboratorio', 'mappa-principale', 'percorso', 'citta', 'battaglia', 'deposito', 'evoluzione']
+// La mappa a griglia (rimossa il 18 novembre 2026) torna alla mappa principale come le altre schermate storiche.
+const LEGACY_SCENES = new Set(['palestra', 'centro-pokemon', 'squadra', 'mappa-griglia'])
 const isLegacyNavigation = (value: unknown): boolean => isSaveRecord(value) && typeof value.scena === 'string' && LEGACY_SCENES.has(value.scena)
 function restoreNavigation(value: unknown, fallback: NavigazioneScena | null, warn: Warn): NavigazioneScena | null {
   if (value === null && fallback === null) return null
@@ -428,7 +428,7 @@ export function serializeGameState(state: GameSaveState): Record<string, unknown
   const player = (g: StatoGiocatore) => ({ ...g,
     squadra: g.squadra.map(clearStoredExperience),
     deposito: Object.fromEntries(Object.entries(g.deposito).map(([slot, pokemon]) => [slot, clearStoredExperience(pokemon)])),
-    cespugliVisitati: [...g.cespugliVisitati], allenatoriSconfitti: [...g.allenatoriSconfitti], caselleConsumate: [...g.caselleConsumate] })
+    cespugliVisitati: [...g.cespugliVisitati], allenatoriSconfitti: [...g.allenatoriSconfitti]})
   const battaglia = state.battaglia ? { ...state.battaglia,
     ...(state.battaglia.cronaca ? { cronaca: normalizeBattleChronicle(state.battaglia.cronaca) } : {}),
     pokemonA: clearStoredExperience(state.battaglia.pokemonA), pokemonB: clearStoredExperience(state.battaglia.pokemonB),

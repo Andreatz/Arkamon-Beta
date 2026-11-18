@@ -39,7 +39,7 @@ test('a damaged catalog is visible, preserved and recoverable only through an ex
   const tools = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   await tools.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   await expect(tools.getByRole('alert')).toContainText('omette quel catalogo')
-  const backupText = await downloadedText(page, () => tools.getByRole('button', { name: 'Scarica backup partita', exact: true }).click())
+  const backupText = await downloadedText(page, () => tools.getByRole('button', { name: 'Scarica file di salvataggio', exact: true }).click())
   const backup = JSON.parse(backupText)
   expect(backup.format).toBe('arkamon-campaign-backup')
   expect(backup.interactionCatalog).toBeUndefined()

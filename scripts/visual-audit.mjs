@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path'
 const URL_ROOT = process.env.ARKAMON_AUDIT_URL || 'http://127.0.0.1:3014'
 const OUT = resolve(process.env.ARKAMON_AUDIT_OUTPUT || 'output/visual-audit')
 const LIMIT = Number(process.env.ARKAMON_AUDIT_LIMIT || 0)
-const BASE_SCREENS = ['titolo','laboratorio','mappa-principale','citta','percorso','mappa-griglia','battaglia','lega','evoluzione','menu','squadra','deposito','arkadex','analisi','borsa','negozio','register','race','recap','journal','backup','settings','chronicles','match','challenges']
+const BASE_SCREENS = ['titolo','laboratorio','mappa-principale','citta','percorso','battaglia','lega','evoluzione','menu','squadra','deposito','arkadex','analisi','borsa','negozio','register','race','recap','journal','backup','settings','chronicles','match','challenges']
 const LABS = [
   ['battle-rules-lab','Laboratorio regole'],
   ['audio-lab','Laboratorio audio'],

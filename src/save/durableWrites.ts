@@ -56,7 +56,7 @@ export function rememberRecoveryCopy(previous: GameSaveState, storage?: Pick<Sto
     useSaveWriteStatus.setState({ backupWarning: null })
   } catch {
     // A backup quota error must not prevent an otherwise writable primary save.
-    useSaveWriteStatus.setState({ backupWarning: 'La copia automatica non è disponibile. Scarica un backup della partita.' })
+    useSaveWriteStatus.setState({ backupWarning: 'La copia automatica non è disponibile. Scarica un file di salvataggio.' })
   }
 }
 

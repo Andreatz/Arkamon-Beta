@@ -19,7 +19,7 @@ const first: PokemonIstanza = { istanzaId: 'first-owner-instance', specieId: 5, 
 const reserve: PokemonIstanza = { istanzaId: 'reserve-owner-instance', specieId: 9, nome: 'Luna', livello: 7, hp: 0, xp: 0 }
 const foreign: PokemonIstanza = { istanzaId: 'second-owner-instance', specieId: 1, nome: 'Neve', livello: 6, hp: 10, xp: 0 }
 function player(id: 1 | 2, squadra: PokemonIstanza[], deposito: Record<string, PokemonIstanza>): StatoGiocatore {
-  return { id, nome: id === 1 ? 'Arianna' : 'Bruno', squadra, deposito, monete: 0, inventario: {}, cespugliVisitati: new Set(), allenatoriSconfitti: new Set(), caselleConsumate: new Set() }
+  return { id, nome: id === 1 ? 'Arianna' : 'Bruno', squadra, deposito, monete: 0, inventario: {}, cespugliVisitati: new Set(), allenatoriSconfitti: new Set() }
 }
 function battle(pokemonA = { ...first, hp: 1 }): StatoBattaglia {
   return { tipo: 'Selvatico', pokemonA, pokemonB: { ...foreign, istanzaId: 'wild-opponent' }, hpMaxA: 16, hpMaxB: 13, turnoCorrente: 'A', luogoRitorno: 'Torino', log: [], evoluzioneInAttesa: null }

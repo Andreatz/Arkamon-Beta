@@ -142,6 +142,8 @@ describe('cap di squadra applicato alle azioni della campagna', () => {
 
   it.each([10, 11])('settles a level %s capture atomically into the eligible team or deposit', (level) => {
     preparedCity()
+    // Il kit iniziale non contiene più il Sacchettino Supremo: lo diamo qui per la cattura garantita.
+    useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, inventario: { ...state.giocatore1.inventario, masterball: 1 } } }))
     const target = pokemon('wild', level, 2, 13)
     const battle = wildBattle(target)
     useGameStore.getState().iniziaBattaglia(battle)
@@ -163,6 +165,8 @@ describe('cap di squadra applicato alle azioni della campagna', () => {
 
   it('refuses an out-of-range capture if every deposit slot is occupied, preserving the ball', () => {
     preparedCity()
+    // Il kit iniziale non contiene più il Sacchettino Supremo: lo diamo qui per la cattura garantita.
+    useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, inventario: { ...state.giocatore1.inventario, masterball: 1 } } }))
     const deposit = Object.fromEntries(Array.from({ length: 1050 }, (_, index) => [`${Math.floor(index / 35) + 1}:${index % 35 + 1}`, pokemon(`deposit-${index}`)]))
     useGameStore.setState((state) => ({ giocatore1: { ...state.giocatore1, deposito: deposit } }))
     const target = pokemon('too-high', 11, 1, 13), battle = wildBattle(target)
@@ -216,7 +220,7 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
     expect(useSaveWriteStatus.getState().retry?.()).toBe(true)
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!).state
     expect(saved.giocatore1.monete).toBe(200)
-    expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, sacchettino: 6 })
+    expect(saved.giocatore1.inventario).toMatchObject({ potion: 1, sacchettino: 2 })
     expect(saved.matchLog.events.filter((event: { kind: string }) => event.kind === 'shop')).toHaveLength(1)
   })
 
@@ -269,7 +273,7 @@ describe('Arkastore, cura esplicita e registro persistente', () => {
     expect(state.giocatore1.squadra[0].hp).toBe(12)
     expect(state.giocatore1.squadra[0].stato?.tipo).toBe('Paralizzato')
     expect(state.giocatore1.inventario.potion).toBe(0)
-    expect(state.giocatore1.inventario.sacchettino).toBe(6)
+    expect(state.giocatore1.inventario.sacchettino).toBe(2)
     expect(useGameStore.getState().giocatore2).toEqual(other)
   })
 

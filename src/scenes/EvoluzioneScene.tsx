@@ -1,5 +1,5 @@
 import { DepthBackground } from '@/motion/depth/DepthBackground'
-import { RpgCommand, RpgFrame } from '@/components/rpg'
+import { RpgCommand } from '@/components/rpg'
 import './rpgScenes.css'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { useGameStore } from '@store/gameStore'
@@ -96,8 +96,6 @@ export function EvoluzioneScene() {
     const isPercorso = /^Percorso_/.test(luogoRitorno)
     if (luogoRitorno === 'lega') {
       vaiAScena('lega', { playerId: giocatoreId })
-    } else if (luogoRitorno === 'mappa-griglia') {
-      vaiAScena('mappa-griglia')
     } else if (isPercorso) {
       vaiAScena('percorso', { luogo: luogoRitorno })
     } else if (luogoRitorno && luogoRitorno !== 'mappa-principale') {
@@ -293,7 +291,7 @@ export function EvoluzioneScene() {
         onChange={(rect) => updateEvolutionLayout('textPanel', rect)}
         zIndex={20}
       >
-      <div className="rpg-evolution-message flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center"><RpgFrame />
+      <div className="rpg-evolution-message flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
         {fase === 'pre' && (
           <>
             <h2 className="arka-layout-content arka-readable-title text-3xl font-bold text-white">
@@ -318,7 +316,7 @@ export function EvoluzioneScene() {
             <motion.h2 className="arka-layout-content arka-readable-title text-4xl font-black text-yellow-300"
               initial={reducedMotion ? false : { y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
               transition={{ duration: reducedMotion ? 0 : 0.45 / speed, delay: reducedMotion ? 0 : 0.35 / speed, ease: [0.16, 1, 0.3, 1] }}>
-              {oldSpec.nome} si è evoluto in {newSpec.nome}!
+              {oldSpec.nome} si è evoluto!
             </motion.h2>
             <RpgCommand tone="primary" onClick={continua} className="mt-4">
               <span className="arka-layout-content">
