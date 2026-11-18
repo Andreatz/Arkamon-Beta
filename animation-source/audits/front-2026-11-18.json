@@ -5726,5 +5726,136 @@
     "clipCount": 1010,
     "frameCount": 96027,
     "pageCount": 9970
+  },
+  "localValidation": {
+    "unitTests": {
+      "passed": 5847,
+      "failed": 0,
+      "files": 11,
+      "command": "npx vitest run src/components/arkamon src/motion/depth/depth.test.ts --maxWorkers 2"
+    },
+    "keyingTests": {
+      "passed": 46,
+      "failed": 0
+    },
+    "releaseVerificationTests": {
+      "passed": 9,
+      "failed": 0
+    },
+    "browserImport": {
+      "passed": 70,
+      "failed": 0,
+      "skipped": 0,
+      "projects": [
+        "chromium",
+        "mobile"
+      ],
+      "source": "e2e/native-import-177-206.spec.ts"
+    },
+    "browserCatalogRegression": {
+      "passed": 18,
+      "failed": 0,
+      "projects": [
+        "chromium",
+        "mobile"
+      ]
+    },
+    "gameDataEngineStore": {
+      "passed": 888,
+      "failed": 0,
+      "files": 47
+    },
+    "browserStartup": {
+      "passed": 6,
+      "failed": 0,
+      "projects": [
+        "chromium",
+        "mobile"
+      ],
+      "includes": [
+        "stylesheet delayed until first transition",
+        "stylesheet failure releases navigation input lock"
+      ]
+    },
+    "compiledNative": {
+      "passed": 12,
+      "failed": 0,
+      "project": "compiled-native-chromium",
+      "mediaTransport": "verified-local-pinned-media",
+      "cdnAvailabilityVerified": false,
+      "animatedSpecies": [
+        177,
+        188,
+        201,
+        202,
+        204,
+        206
+      ],
+      "staticSpecies": [
+        167,
+        168,
+        194,
+        195
+      ],
+      "vfxPairs": [
+        [
+          107,
+          110
+        ],
+        [
+          108,
+          109
+        ]
+      ]
+    },
+    "build": {
+      "passed": true,
+      "mode": "GITHUB_PAGES=true",
+      "mediaRevision": "fa3dae9faae4a4486475533b8dc6040caf298ad9",
+      "manifestSha256": "86df15d34ec5fcba6e955b8cdc51ba40afca066150ac3878b1b989a195756d53",
+      "startup": {
+        "ok": true,
+        "totals": {
+          "entryBytes": 495811,
+          "javascriptBytes": 761968,
+          "stylesheetBytes": 99200
+        },
+        "budget": {
+          "entryBytes": 500000,
+          "javascriptBytes": 800000,
+          "stylesheetBytes": 100000
+        },
+        "javascript": [
+          {
+            "file": "assets/index-dXmJm8Op.js",
+            "bytes": 495811,
+            "gzipBytes": 146183
+          },
+          {
+            "file": "assets/motion-Dq_RDBmZ.js",
+            "bytes": 122153,
+            "gzipBytes": 40965
+          },
+          {
+            "file": "assets/zustand-B2MqVtqV.js",
+            "bytes": 9930,
+            "gzipBytes": 3962
+          },
+          {
+            "file": "assets/react-y4E_YFAr.js",
+            "bytes": 134074,
+            "gzipBytes": 43055
+          }
+        ],
+        "stylesheets": [
+          {
+            "file": "assets/index-D198mN8p.css",
+            "bytes": 99200,
+            "gzipBytes": 20288
+          }
+        ],
+        "violations": []
+      }
+    }
   }
 }

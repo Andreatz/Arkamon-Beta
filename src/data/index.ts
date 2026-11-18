@@ -13,26 +13,23 @@ import type {
   AllenatoreDef,
 } from '@/types'
 
-import pokemonData from './pokemon.json'
-import { BASE_RUNTIME_MOVES } from './runtimeGameData'
+import { BASE_RUNTIME_MOVES, RUNTIME_ENCOUNTERS, RUNTIME_SPECIES, RUNTIME_TRAINERS } from './runtimeGameData'
 import tipiData from './tipi.json'
 import crescitaData from './crescita_hp.json'
 import mappeData from './mappe.json'
-import incontriData from './incontri.json'
-import allenatoriData from './allenatori.json'
 import { resolveStatusMove } from './statusMoves'
 
 // Cast tipizzati (i JSON non hanno tipi inferiti perfetti dal compilatore)
 // Specie, mosse, incontri e allenatori vengono da data-source/Database.xlsx
 // (scripts/data/import-database.py). Le mosse Status prendono i valori da statusMoveRules.json.
-export const POKEMON_BASE: PokemonSpecie[] = pokemonData as PokemonSpecie[]
+export const POKEMON_BASE: PokemonSpecie[] = RUNTIME_SPECIES
 export const MOSSE: MossaDef[] = BASE_RUNTIME_MOVES.map(resolveStatusMove)
 export const TABELLA_TIPI: TabellaTipi = tipiData as TabellaTipi
 export const CRESCITA_HP: Record<CategoriaHP, number> =
   crescitaData as Record<CategoriaHP, number>
 export const MAPPE: Mappa[] = mappeData as Mappa[]
-export const INCONTRI: IncontroSelvatico[] = incontriData as IncontroSelvatico[]
-export const ALLENATORI: AllenatoreDef[] = allenatoriData as AllenatoreDef[]
+export const INCONTRI: IncontroSelvatico[] = RUNTIME_ENCOUNTERS
+export const ALLENATORI: AllenatoreDef[] = RUNTIME_TRAINERS
 
 
 // =============================================================

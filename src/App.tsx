@@ -49,6 +49,7 @@ const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(modu
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
 const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
 const ReferenceUiPreview = lazy(() => import('@/ui-studio/ReferenceUiPreview').then(module => ({ default: module.ReferenceUiPreview })))
+const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then(module => ({ default: module.DarklawAnimationLab })))
 
 /**
  * Router delle scene.
@@ -84,7 +85,9 @@ function App() {
     return <Suspense fallback={<div role="status">Caricamento editor interfaccia…</div>}><UiStudioEditor onClose={() => { window.location.hash = '' }} /></Suspense>
   }
 
-  // I laboratori vivono in dev.html (solo server di sviluppo), fuori dal pacchetto del gioco.
+  if (hash === '#arkamon-lab') {
+    return <Suspense fallback={<div role="status">Caricamento animazioni.</div>}><DarklawAnimationLab /></Suspense>
+  }
 
   return (
     <div className={`arka-stage${localMapOpen ? ' arka-stage--local-map' : ''}${scenaCorrente.scena === 'lega' ? ' arka-stage--league' : ''}`}>

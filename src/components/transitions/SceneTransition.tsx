@@ -8,8 +8,15 @@ import { createSceneTransitionState, getSceneKey, sceneTransitionReducer } from 
 import { getSceneTransitionProfile, type SceneTransitionProfile } from './sceneTransitionProfiles'
 import { measureTransitionAnchor, PREPARE_LIMIT_MS, supportsViewTransitions, type AnchorPoint } from './sceneTransitionRuntime'
 import { playSelectedAudio } from '@/utils/soundManager'
-import './sceneTransitions.css'
 import { useRegiaStore } from '@/regia/regiaStore'
+
+let transitionStyles: Promise<unknown> | undefined
+function prepareTransitionStyles(): Promise<unknown> {
+  return transitionStyles ??= import('./sceneTransitions.css').catch(error => {
+    transitionStyles = undefined
+    throw error
+  })
+}
 
 interface SceneTransitionProps {
   navigation: NavigazioneScena
@@ -50,6 +57,16 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
   const wasTransitioning = useRef(false)
   const previousTransition = useRef({ revision: state.revision, phase: state.phase })
   const transitioning = state.phase !== 'idle'
+  const [stylesReady, setStylesReady] = useState(false)
+  useLayoutEffect(() => {
+    if (!transitioning || stylesReady) return
+    let current = true
+    void prepareTransitionStyles().then(() => { if (current) setStylesReady(true) }, () => {
+      // A missing stylesheet must not leave navigation locked behind an invisible overlay.
+      if (current) dispatch({ type: 'navigate', navigation: state.target, reducedMotion: true })
+    })
+    return () => { current = false }
+  }, [transitioning, stylesReady, state.revision, state.target])
   useLayoutEffect(() => {
     useRegiaStore.getState().setBusy(transitioning, 'Cambio scena', 'transition')
     return () => useRegiaStore.getState().setBusy(false, '', 'transition')
@@ -146,7 +163,7 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
   const sharedDurationMs = profile.durationMs
   const sharedStarted = useRef(0)
   useLayoutEffect(() => {
-    if (!sharedElement || state.phase !== 'cover' || sharedStarted.current === state.revision) return
+    if (!stylesReady || !sharedElement || state.phase !== 'cover' || sharedStarted.current === state.revision) return
     const revision = state.revision
     const target = state.target
     const viewName = `arka-shared-${sharedElement}`
@@ -183,7 +200,7 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
     if (entry.done) start()
     else void Promise.race([entry.promise, new Promise(resolve => window.setTimeout(resolve, PREPARE_LIMIT_MS))]).then(start)
     return () => { cancelled = true }
-  }, [ensurePrepared, sharedDurationMs, sharedElement, state.phase, state.revision, state.target])
+  }, [ensurePrepared, sharedDurationMs, sharedElement, state.phase, state.revision, state.target, stylesReady])
 
   useLayoutEffect(() => {
     const scene = sceneRef.current
@@ -224,7 +241,7 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
   }
   const step = `${state.revision}:${state.phase}`
   // Una copertura che parte già chiusa non deve mostrare la scena per due fotogrammi.
-  const skipPriming = !transitioning || !needsPriming || (state.phase === 'cover' && coverStartsCovered.current.get(state.revision) === true)
+  const skipPriming = !transitioning || !stylesReady || !needsPriming || (state.phase === 'cover' && coverStartsCovered.current.get(state.revision) === true)
   const zoomMode = profile.mode === 'zoom-in' || profile.mode === 'zoom-out'
   useLayoutEffect(() => {
     if (skipPriming || primedStep === step) return
@@ -249,7 +266,7 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
   // ridisegnare l'intera scena: l'elemento cambia solo con la scena mostrata.
   const presentedScene = useMemo(() => renderScene(state.shown), [renderScene, state.shown])
 
-  const zooming = transitioning && (profile.mode === 'zoom-in' || profile.mode === 'zoom-out')
+  const zooming = transitioning && stylesReady && (profile.mode === 'zoom-in' || profile.mode === 'zoom-out')
   const sceneStyle = zooming ? {
     '--tx-x': `${anchorPoint?.x ?? 50}%`,
     '--tx-y': `${anchorPoint?.y ?? 50}%`,
@@ -273,7 +290,7 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
           {presentedScene}
         </div>
       </div>
-      {transitioning ? (
+      {transitioning && stylesReady ? (
         <>
           <p className="sr-only" role="status">{profile.label}</p>
           <SceneTransitionOverlay

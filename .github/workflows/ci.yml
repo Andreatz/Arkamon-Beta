@@ -16,10 +16,10 @@ concurrency:
 jobs:
   test-build:
     runs-on: ubuntu-24.04
-    # The expanded native source matrix reaches 45 minutes by itself. Leave
-    # room for checkout, both browser groups, compiled-native verification,
-    # release sealing and the Pages artifact upload.
-    timeout-minutes: 120
+    # The 28 added sets extend both browser playback and the 102 compiled cases.
+    # Keep room for both groups, checkout, sealing and artifact upload without
+    # changing individual test timeouts or the startup size budgets.
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
         with:
