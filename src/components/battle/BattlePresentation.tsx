@@ -185,7 +185,7 @@ export function InfoBox({
         <GameButton
           tone="primary"
           aria-label="AVVERSARIO"
-          className="battle-opponent-command absolute bottom-[13%] right-[6%] min-h-12 w-[22%] px-4 py-3 text-[clamp(16px,1.35vw,24px)]"
+          className="battle-opponent-command absolute bottom-[13%] right-[6%] min-h-12 w-auto min-w-[22%] whitespace-nowrap px-4 py-3 text-[clamp(14px,1.2vw,22px)]"
           onClick={onOpponentTurn}
         >
           AVVERSARIO

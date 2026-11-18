@@ -224,6 +224,13 @@ function PlayerDepositScreen({ playerId, onAnalyse }: DepositScreenProps) {
             <strong>{swapPreview.count} / 6 · Lv. {swapPreview.range.min}–{swapPreview.range.max} · Δ {swapPreview.range.gap} / 5</strong>
             <span>{swapPreview.balanced ? 'Fascia valida' : swapPreview.allowed ? 'Rimozione consentita: continua a riordinare la squadra fuori fascia.' : 'Scambio bloccato: supera la differenza massima di 5 livelli.'}</span>
           </div>}
+          {/* Fase U6: il riquadro occupa già il suo spazio durante lo spostamento. Sul telefono la squadra sta
+              sotto la scheda: se il riquadro comparisse al passaggio del dito, la fila scenderebbe sotto il tocco. */}
+          {!swapPreview && mayManage && moving && <div className="pu-swap-preview is-pending" role="status" aria-live="polite">
+            <span className="pu-kicker">Squadra dopo lo spostamento</span>
+            <strong>—</strong>
+            <span>Indica un posto per vedere la squadra risultante.</span>
+          </div>}
           {!mayManage && <p className="pu-readonly" role="status">{leagueRunning ? 'Consultazione: concludi il tentativo della Lega prima di cambiare squadra.' : 'Consultazione: nessuno scambio durante una battaglia, un’interazione in corso o il turno dell’altro giocatore.'}</p>}
           {message && <p className="pu-note" role="status">{message}</p>}
           <div className="pu-actions">

@@ -1,4 +1,5 @@
 import { GameArt } from '@/ui-system/GameArt'
+import { statusArtId } from '@/components/battle/StatusToken'
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
@@ -138,7 +139,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
                 <span className="pu-reference-portrait-ground" aria-hidden="true" />
               </>}
             </div>
-            <div className="pu-hero-caption">{currentSpecies && <TypeBadge type={currentSpecies.tipo} />}<span className={`pu-status-pill${current.hp <= 0 ? ' pu-status-ko' : ''}`}>{condition}</span></div>
+            <div className="pu-hero-caption">{currentSpecies && <TypeBadge type={currentSpecies.tipo} />}<span className={`pu-status-pill${current.hp <= 0 ? ' pu-status-ko' : ''}`}>{current.hp > 0 && current.stato && statusArtId(current.stato.tipo) && <GameArt id={statusArtId(current.stato.tipo)!} className="pu-status-art" />}{condition}</span></div>
             <p className="pu-reference-hero-caption">{currentSpecies?.nome ?? current.nome}<span aria-hidden="true"> · </span>Il tuo compagno di viaggio</p>
           </section> : <div className="pu-empty-state"><h2>Il viaggio sta per cominciare</h2><p>La tua squadra apparirà qui dopo la scelta dello starter.</p></div>}
         </div>
@@ -210,7 +211,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
               <span className="pu-species-number">ARKA / {String(current.specieId).padStart(3, '0')}</span>
               {currentSpecies && <TypeBadge type={currentSpecies.tipo} />}
               {current.hp <= 0 ? <span className="pu-status-pill pu-status-ko">KO</span>
-                : current.stato && <span className="pu-status-pill">{current.stato.tipo}</span>}
+                : current.stato && <span className="pu-status-pill">{statusArtId(current.stato.tipo) && <GameArt id={statusArtId(current.stato.tipo)!} className="pu-status-art" />}{current.stato.tipo}</span>}
             </div>
           </section> : <div className="pu-empty-state"><KitIcon id="icon-team" /><h2>Il viaggio sta per cominciare</h2><p>La tua squadra apparirà qui dopo la scelta dello starter.</p></div>}
         </div>
