@@ -94,7 +94,6 @@ describe('store - mappe locali e due azioni condivise', () => {
     expect(store.consumaInterazioneMappaLocale(1, 'Venezia')).toBe(false)
     expect(useGameStore.getState().giocatore1).toBe(g1)
     expect(g1.cespugliVisitati.size).toBe(0)
-    expect(g1.caselleConsumate.size).toBe(0)
   })
 
   it('attiva il prossimo giocatore già accodato senza saltarlo, poi passa normalmente al successivo', () => {

@@ -39,14 +39,3 @@
 }
 
 /* Titolo dorato: testo con gradiente metallico e ombra scura leggibile su ogni fondale. */
-.arka-gold-title {
-  font-family: var(--arka-ui-font-display);
-  font-weight: 700;
-  letter-spacing: .04em;
-  color: var(--arka-ui-gold);
-  background: var(--arka-gold-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 2px rgb(0 0 0 / .6));
-}

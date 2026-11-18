@@ -11,7 +11,7 @@ test('a route wild encounter retains reserves through a poison KO, reload, captu
     // enemy damage. Actual encounters and dice still use the real game RNG.
     const reserve = { istanzaId: 'legacy-reserve', specieId: 8, nome: 'Darklaw riserva', livello: 50, hp: 50, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Audit G${id}`, squadra: id === 1 ? [lead, reserve] : [{ ...reserve, istanzaId: 'legacy-player2' }],
-      deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 300, inventario: { masterball: 1 } })
+      deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 300, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Percorso_1', x: 0, y: 0, direzione: 'S' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,

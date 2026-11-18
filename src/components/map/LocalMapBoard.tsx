@@ -1,4 +1,5 @@
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
+import { LocalMapAmbience } from './LocalMapAmbience'
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import type { LocalMapDefinition, LocalMapNode, LocalMapPoint } from '@/data/localMaps'
@@ -229,6 +230,7 @@ export function LocalMapBoard({
   stage = false,
   overview = false,
 }: LocalMapBoardProps) {
+  const { reducedMotion: ambienceStill } = useGameMotionPreferences()
   const root = useRef<HTMLDivElement>(null)
   const [bounds, setBounds] = useState<BoardSize>({ width: 0, height: 0 })
   const [imageRatio, setImageRatio] = useState(1619 / 971)
@@ -311,6 +313,7 @@ export function LocalMapBoard({
           }}
           draggable={false}
         />
+        {!ambienceStill && <LocalMapAmbience mapId={map.id} image={map.image} />}
         <svg
           className="local-map-road-hints"
           viewBox="0 0 100 100"

@@ -2,14 +2,11 @@ import { existsSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { resolve } from 'node:path'
 import sharp from 'sharp'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { POKEMON_BASE } from '@/data'
 import { SpeciesPortrait } from '../kit'
 import { getPortraitFraming } from '../portraitFraming'
 
-const appearance = vi.hoisted(() => ({ reference: true }))
-vi.mock('../reference/referenceTheme', () => ({ isReferenceUi: () => appearance.reference }))
-beforeEach(() => { appearance.reference = true })
 
 const samples = [
   '/sprites/front_sprites/13.png', '/sprites/front_sprites/25.png',
@@ -79,15 +76,4 @@ describe('Whole-creature portrait framing', () => {
     }
   })
 
-  it('retains official full-body sources in the explicitly requested legacy concepts', () => {
-    appearance.reference = false
-    for (const species of POKEMON_BASE) {
-      const source = `/sprites/front_sprites/${species.id}.png`
-      const markup = renderToStaticMarkup(<SpeciesPortrait speciesId={species.id} selected />)
-      expect(markup).toContain(`data-creature-source="${source}"`)
-      expect(markup).toContain(`viewBox="${getPortraitFraming(source).viewBox}"`)
-      expect(markup).toContain('preserveAspectRatio="xMidYMid meet"')
-      expect(markup).not.toContain('/ui/reference-png/portrait-')
-    }
-  })
 })

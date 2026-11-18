@@ -32,11 +32,9 @@
 .game-button:active:enabled { transform: scale(var(--arka-button-scale, .95)); }
 .game-button:focus-visible { outline: 3px solid var(--arka-text); outline-offset: 3px; }
 .game-button:disabled { cursor: not-allowed; opacity: .45; }
-.game-button--activity { flex-direction: column; }
 
 @media (prefers-reduced-motion: reduce) {
   .game-button { transition: none; }
   .game-button:active:enabled { transform: none; }
 }
 /* Same outer targets, new Scuro/Blu art. End caps keep a fixed local scale. */
-.game-button-frame.rpg-frame-command,.game-button-frame.rpg-frame-selected{inset:0;border-width:10px 23px;border-image-slice:70 160 fill}

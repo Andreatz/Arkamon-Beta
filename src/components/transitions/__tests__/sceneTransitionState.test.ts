@@ -129,9 +129,4 @@ describe('getSceneKey', () => {
     expect(getSceneKey({ scena: 'citta' })).toBe(getSceneKey({ scena: 'citta', payload: { luogo: 'Venezia' } }))
     expect(getSceneKey({ scena: 'percorso' })).toBe(getSceneKey({ scena: 'percorso', payload: { luogo: 'Percorso_1' } }))
   })
-
-  it('keeps the grid scene identity stable when its map or active player changes', () => {
-    expect(getSceneKey({ scena: 'mappa-griglia', payload: { mappaId: 'first', giocatoreId: 1 } }))
-      .toBe(getSceneKey({ scena: 'mappa-griglia', payload: { mappaId: 'second', giocatoreId: 2 } }))
-  })
 })

@@ -1,0 +1,12 @@
+/* Erba alta che fruscia e si apre ai lati prima dell'incontro selvatico. */
+.grass-opening { position: fixed; inset: 0; z-index: 1250; overflow: hidden; pointer-events: auto; }
+.grass-opening-glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 70%, rgb(255 244 200 / 0), rgb(6 18 12 / .55)); animation: grass-dim calc(900ms / var(--grass-speed, 1)) ease-in forwards; }
+.grass-blade { position: absolute; bottom: -4vh; transform-origin: 50% 100%; translate: -50% 0;
+  clip-path: polygon(50% 0, 78% 38%, 100% 100%, 0 100%, 22% 38%);
+  background: linear-gradient(180deg, hsl(var(--grass-hue) 62% 58%), hsl(var(--grass-hue) 58% 30%) 55%, hsl(var(--grass-hue) 60% 16%));
+  filter: drop-shadow(0 0 6px rgb(0 0 0 / .35));
+  animation: grass-rise calc(260ms / var(--grass-speed, 1)) ease-out both, grass-rustle calc(240ms / var(--grass-speed, 1)) calc(220ms / var(--grass-speed, 1)) ease-in-out 2 alternate, grass-part calc(380ms / var(--grass-speed, 1)) calc(520ms / var(--grass-speed, 1) + var(--grass-delay)) cubic-bezier(.5, 0, .7, .4) forwards; }
+@keyframes grass-rise { from { transform: translateY(70%) rotate(0); } to { transform: translateY(0) rotate(0); } }
+@keyframes grass-rustle { from { rotate: -4deg; } to { rotate: 5deg; } }
+@keyframes grass-part { to { transform: translateX(calc(var(--grass-side) * 55vw)) rotate(calc(var(--grass-side) * 28deg)); opacity: .2; } }
+@keyframes grass-dim { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: .9; } }

@@ -14,7 +14,7 @@ async function seedLeague(page: import('@playwright/test').Page, options: { comp
     const team = (options.fullTeam ? roster : [4]).map((speciesId, index) => ({ istanzaId: `league-real-${index}`, specieId: speciesId,
       nome: names[speciesId] ?? `Arkamon ${speciesId}`, livello: 55, hp: index === 0 ? 4 : 7, xp: 0 }))
     const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: id === 1 ? team : [{ ...team[0], istanzaId: 'league-real-two' }], deposito: {},
-      cespugliVisitati: [], allenatoriSconfitti: gyms, monete: 0, inventario: { potion: 2, revive: 1 }, caselleConsumate: [] })
+      cespugliVisitati: [], allenatoriSconfitti: gyms, monete: 0, inventario: { potion: 2, revive: 1 } })
     const config = { version: 1, opponents: [1, 2, 3, 4].map((index) => ({ name: options.fullTeam ? `${index} · Avversario di verifica con nome lungo per la disposizione della schermata` : `Avversario di verifica ${index}`, team: [{ pokemonId: 13, livello: 5 }] })),
       champion: null, championEnabled: false, defeat: 'restart', betweenBattleItems: true }
     const empty = { runId: null, nextStage: 0, status: 'idle', attempt: 0, completedStages: [], stageCompleted: false }

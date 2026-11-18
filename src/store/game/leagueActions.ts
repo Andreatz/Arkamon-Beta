@@ -1,7 +1,7 @@
 import type { GameState } from '../gameStore'
 import { getPokemon } from '@/data'
 import { calcolaHPMax, clearStoredExperience } from '@/engine/battleEngine'
-import { nuovoTurno } from '@/engine/movimento'
+import { nuovoTurno } from '@/engine/turnoOverworld'
 import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 import { resolveItemEffect } from '@/shop/itemEffects'
 import { isShopItemId } from '@/shop/catalog'

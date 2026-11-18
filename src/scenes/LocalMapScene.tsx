@@ -13,7 +13,6 @@ import { ConfiguredInteractionPanel } from '@/interactions/ConfiguredInteraction
 import { TurnSummary } from '@/journal/TurnSummary'
 import { useAdminStore } from '@/store/adminStore'
 import './localMapScene.css'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { CreaturePortrait, HealthBar, KitIcon } from '@/player-ui/kit'
 import { assetUrl } from '@/utils/assetUrl'
 import { openPlayerUi } from '@/player-ui/navigation'
@@ -93,7 +92,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   }, [blocked])
   const [selected, setSelected] = useState<string | null>(null)
   // Fase U4: la camera segue la pedina; «Mappa intera» mostra tutto il luogo.
-  const stage = isReferenceUi()
+  const stage = true
   // La scheda mostra il proprio comando «Partita»: il pulsante globale si nasconde finché la scena è montata.
   useHideGlobalLauncher(stage)
   const [overview, setOverview] = useState(false)
@@ -169,10 +168,10 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     {adjacent.map((id) => <GameButton key={id} disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)} · 1 azione</GameButton>)}
   </nav>
   const interact = pointInteractions.length > 0 && <GameButton tone={stage ? 'primary' : undefined} disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</GameButton>
-  const squad = isReferenceUi() && <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`}>{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}`}><CreaturePortrait pokemon={pokemon}/><strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}</div>
-  const menu = isReferenceUi() && <button type="button" className="ref-local-menu" aria-label="Partita" onClick={()=>openPlayerUi('partita',{playerId:actor})}><KitIcon id="icon-home"/>Partita</button>
+  const squad = <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`}>{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}`}><CreaturePortrait pokemon={pokemon}/><strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}</div>
+  const menu = <button type="button" className="ref-local-menu" aria-label="Partita" onClick={()=>openPlayerUi('partita',{playerId:actor})}><KitIcon id="icon-home"/>Partita</button>
 
-  return <section className={`local-map-scene${stage ? ' local-map-scene--stage' : ''}`} data-reference-ui={isReferenceUi() ? 'aurora' : undefined} aria-label={`Esplorazione ${placeName}`}>
+  return <section className={`local-map-scene${stage ? ' local-map-scene--stage' : ''}`} data-reference-ui="aurora" aria-label={`Esplorazione ${placeName}`}>
     {stage ? <header className="local-map-toolbar">
       <div className="ref-local-place">
         <span className="ref-local-place-emblem" aria-hidden="true">{hasGameArt('menu-map') ? <GameArt id="menu-map" /> : <KitIcon id="icon-map" />}</span>

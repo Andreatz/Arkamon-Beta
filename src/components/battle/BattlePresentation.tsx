@@ -15,7 +15,6 @@ import { BATTLE_LAYOUT_IDS } from '@/ui-studio/battleLayout'
 import { GameButton } from '@/components/ui/GameButton'
 import './battleRpg.css'
 import './battleAurora.css'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { gameArtUrl, hasGameArt, GameArt } from '@/ui-system/GameArt'
 import { BattleFrame, hasBattleFrame } from './BattleFrame'
 
@@ -30,7 +29,6 @@ const frameBackground = (painted: boolean, src: string) => painted ? 'none' : `u
 
 /** Emblema dipinto del tipo (lotto 3), se c'è. */
 export function typeEmblemUrl(tipo: TipoPokemon): string | undefined {
-  if (!isReferenceUi()) return undefined
   const id = `type-${tipo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('it-IT')}`
   return hasGameArt(id) ? gameArtUrl(id) : undefined
 }
@@ -139,7 +137,7 @@ export function InfoBox({
   onOpponentTurn: () => void
 }) {
   const righe = messaggi.slice(-3)
-  const frameSrc = assetUrl(isReferenceUi() ? AURORA_FRAMES.info : '/ui/infobox.png')
+  const frameSrc = assetUrl(AURORA_FRAMES.info)
   const painted = hasBattleFrame('message')
 
   if (!righe.length) return showOpponentButton ? (
@@ -483,7 +481,7 @@ export function HpBar({
   const hpColors = hpColorsOverride ?? savedColors
   const pct = Math.max(0, Math.min(100, (hp / hpMax) * 100))
   const colore = pct > 60 ? hpColors.hpHigh : pct > 25 ? hpColors.hpMid : hpColors.hpLow
-  const aurora = !frameSource && isReferenceUi()
+  const aurora = !frameSource
   const frameSrc = frameSource ?? assetUrl(aurora ? AURORA_FRAMES.hp : `/ui/hp_bar_${side}.png`)
   // Lotto 3: targa, medaglione e scanalatura dipinti, composti sopra lo stesso riquadro.
   const painted = aurora && hasBattleFrame('hp-banner') && hasBattleFrame('hp-track') && hasGameArt('battle-hp-medallion')
@@ -642,6 +640,7 @@ export function MoveButton({
   disabled,
   onClick,
   defenderType,
+  usiRimasti,
 }: {
   mossa: MossaDef
   livello: number
@@ -649,10 +648,12 @@ export function MoveButton({
   disabled: boolean
   onClick: () => void
   defenderType?: TipoPokemon
+  /** Usi rimasti in questa lotta, per le mosse con limite (es. 3 per «Ripristina tanti HP»). */
+  usiRimasti?: number
 }) {
   const { dadi, incremento } = getMossaAlLivello(mossa, livello)
   const facts = battleMoveFacts(mossa, livello, defenderType)
-  const frameSrc = assetUrl(isReferenceUi() ? AURORA_FRAMES.move : '/ui/move_button.png')
+  const frameSrc = assetUrl(AURORA_FRAMES.move)
   const typeSrc = typeEmblemUrl(mossa.tipo) ?? assetUrl(`/ui/${mossa.tipo.toLocaleLowerCase('it-IT')}.png`)
   const painted = hasBattleFrame('move')
 
@@ -675,6 +676,7 @@ export function MoveButton({
     >
       <BattleFrame kind="move" />
       <span className="battle-command-cursor" aria-hidden="true">▶</span>
+      {usiRimasti !== undefined && mossa.usiMassimi ? <span className="battle-move-uses" aria-label={`Usi rimasti ${usiRimasti} su ${mossa.usiMassimi}`}>{usiRimasti}/{mossa.usiMassimi}</span> : null}
       <div
         data-admin-layout-text-key={`${textKeyPrefix}-name`}
         className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"

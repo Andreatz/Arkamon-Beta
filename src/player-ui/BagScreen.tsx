@@ -5,11 +5,8 @@ import { useGameStore } from '@/store/gameStore'
 import { ItemUsePanel } from '@/shop/ItemUsePanel'
 import { SHOP_ITEMS, type ShopItemId } from '@/shop/catalog'
 import { StudioCommand, StudioSurface } from '@/components/ui/StudioArtwork'
-import { assetUrl } from '@/utils/assetUrl'
 import { itemIconId, CreaturePortrait, HealthBar, KitIcon } from './kit'
 import { currentRoster } from './currentRoster'
-import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
-import { isReferenceUi } from './reference/referenceTheme'
 import { ProvidedArtwork } from './reference/ProvidedArtwork'
 
 type BagCategory = 'all' | 'heal' | 'status' | 'capture' | 'tools'
@@ -60,7 +57,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
     <div className="pu-live-bag-heading"><div><span>SCORTE DI VIAGGIO</span><h2>La borsa di {player.nome || `Giocatore ${viewPlayerId}`}</h2></div><strong>{total} oggetti<small>{owned.length} articoli</small></strong></div>
     <div className="pu-live-bag-categories" aria-label="Categorie degli oggetti">{([
       ['all', 'Tutti'], ['heal', 'Cure'], ['status', 'Status'], ['capture', 'Cattura'], ['tools', 'Strumenti'],
-    ] as const).map(([id, label]) => <StudioCommand key={id} selected={category === id} className="pu-live-bag-category" aria-pressed={category === id} onClick={() => { setCategory(id); setSelectedId(null) }}>{isReferenceUi() && <KitIcon id={`category-${id}`} />}{label}</StudioCommand>)}</div>
+    ] as const).map(([id, label]) => <StudioCommand key={id} selected={category === id} className="pu-live-bag-category" aria-pressed={category === id} onClick={() => { setCategory(id); setSelectedId(null) }}><KitIcon id={`category-${id}`} />{label}</StudioCommand>)}</div>
     <div className="pu-bag-layout">
       <div className="pu-live-bag-inventory">
         <StudioSurface source={studioAsset('box-inventario')} width={1060} height={650} className="pu-live-bag-inventory-art">
@@ -70,7 +67,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
             return <div className={`pu-live-bag-cell${item ? '' : ' is-empty'}`} key={index} data-item-id={item?.id} style={{ '--bag-x': `${inventoryCenters[index % 4] / 10.6}%`, '--bag-y': `${[195, 355, 515][Math.floor(index / 4)] / 6.5}%` } as CSSProperties}>
               {item ? <><button type="button" data-rpg-item className="pu-live-bag-slot" aria-pressed={selected?.id === item.id}
                 aria-label={`${item.name}: ${player.inventario[item.id]} disponibili`} onClick={() => setSelectedId(item.id)}>
-                {isReferenceUi() ? <ProvidedArtwork className="pu-provided-slot-frame" id={selected?.id === item.id ? 'card-selected' : 'card-normal'} /> : MENU_SVG_ARTWORK_ENABLED && <img className="pu-live-bag-slot-frame" src={assetUrl(studioAsset(selected?.id === item.id ? 'cornice-piccola-selezionata' : 'cornice-piccola'))} alt="" draggable={false} />}
+                <ProvidedArtwork className="pu-provided-slot-frame" id={selected?.id === item.id ? 'card-selected' : 'card-normal'} />
                 <KitIcon id={itemIconId(item.id)} /><span className="pu-live-bag-quantity">×{player.inventario[item.id]}</span>
               </button><strong className="pu-live-bag-item-name">{item.name}</strong></> : <span className="pu-live-bag-slot-empty" aria-hidden="true">·</span>}
             </div>
@@ -86,7 +83,7 @@ export function BagScreen({ playerId, onPlayerChange, showPlayerPicker = true }:
           <StudioSurface source={studioAsset('box-1')} width={1060} height={320} className="pu-live-bag-stock"><div><span>IN BORSA</span><strong>{player.inventario[selected.id] ?? 0} <small>disponibili</small></strong></div></StudioSurface>
         </> : <div className="pu-empty"><KitIcon id="icon-bag" /><h2>Pronto per il viaggio</h2><p>Le scorte acquistate e raccolte compariranno nella borsa di questo giocatore.</p></div>}
       </div>
-      {selected && <div className="pu-live-bag-use pu-item-use pu-item-use-single" style={{ '--bag-command-art': MENU_SVG_ARTWORK_ENABLED ? `url("${assetUrl(studioAsset('bottone-selezionato'))}")` : 'none' } as CSSProperties}>
+      {selected && <div className="pu-live-bag-use pu-item-use pu-item-use-single" style={{ '--bag-command-art': 'none' } as CSSProperties}>
           <ItemUsePanel key={`${viewPlayerId}:${state.campaignRevision}`} squad={squad} inventory={player.inventario} selectedInstanceId={targetId} onTargetChange={setTargetId} unavailableMessage={unavailable}
             visibleItemIds={[selected.id]}
             renderItemIcon={itemId => <KitIcon id={itemIconId(itemId)} />}

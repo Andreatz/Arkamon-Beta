@@ -8,7 +8,7 @@ import {
 } from '../sceneTransitionProfiles'
 
 const scenes: SceneId[] = [
-  'titolo', 'laboratorio', 'mappa-principale', 'mappa-griglia', 'percorso',
+  'titolo', 'laboratorio', 'mappa-principale', 'percorso',
   'citta', 'palestra', 'centro-pokemon', 'battaglia', 'deposito', 'squadra', 'evoluzione',
 ]
 

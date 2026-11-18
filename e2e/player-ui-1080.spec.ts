@@ -41,7 +41,7 @@ async function seedFullCampaign(page: Page, sparseG2Discoveries = false, directD
     id, nome: id === 1 ? 'Arianna delle Costellazioni' : 'Bruno delle Costellazioni',
     squadra: Array.from({ length: 6 }, (_, index) => creature(id, index)),
     deposito: Object.fromEntries(Array.from({ length: 35 }, (_, index) => [`1:${index + 1}`, creature(id, index, true)])),
-    cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: id === 1 ? 500_000 : 125,
+    cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 500_000 : 125,
     inventario: Object.fromEntries(ITEMS.map(([id]) => [id, id === 'masterball' ? 999_900 : 999_901])),
   })
   const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })

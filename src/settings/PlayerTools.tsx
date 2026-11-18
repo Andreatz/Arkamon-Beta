@@ -7,6 +7,8 @@ import { useGameStore } from '@/store/gameStore'
 import type { SceneId } from '@/types'
 import { useGlobalLauncherHidden } from './launcherVisibility'
 import { TeamRuleNotice } from './TeamRuleNotice'
+import { FusionNotice } from '@/components/fusion/FusionNotice'
+import { GrassOpeningOverlay } from '@/motion/encounter/GrassOpening'
 import { isPlayerUiScreen, PLAYER_UI_OPEN_EVENT, type PlayerUiAuxiliary, type PlayerUiOpenRequest } from '@/player-ui/navigation'
 import { useInteractionStore } from '@/interactions/interactionStore'
 import { shopAvailabilityMessage } from '@/shop/purchase'
@@ -65,6 +67,8 @@ export function PlayerTools() {
   return <>
     {createPortal(<SaveRecoveryNotice onOpenBackup={() => openDefault('backup')} />, document.body)}
     {!open && createPortal(<TeamRuleNotice />, document.body)}
+    {createPortal(<FusionNotice />, document.body)}
+    <GrassOpeningOverlay />
     {!launcherHidden && createPortal(<GameButton aria-haspopup="dialog" aria-expanded={open} onClick={() => openDefault()} data-player-tools-launcher className="player-tools-launcher fixed bottom-3 left-3 z-[950] text-sm">Partita</GameButton>, document.body)}
     {open ? <GameDialog title="La tua partita" className="player-ui-dialog" showCloseButton={false} onClose={() => setOpen(false)}>
       <TeamRuleNotice />

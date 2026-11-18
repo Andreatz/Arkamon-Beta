@@ -30,7 +30,7 @@ export function SaveFailureNotice() {
     <p role="alert">{error}</p>
     <p className="mt-3 text-sm">Libera spazio per i dati del browser, poi riprova. Puoi scaricare una copia dei progressi conservati prima di continuare.</p>
     {challengeContext && <p className="mt-3 text-sm">Il download conserva la campagna dei due giocatori. La sfida a seed o Fanta-Team resta nel suo salvataggio separato.</p>}
-    {catalogRecovery && <p className="mt-3 text-sm">Il catalogo interazioni richiede recupero e resta escluso dal backup della campagna. L’originale è conservato nell’editor Interazioni e nel pannello Backup.</p>}
+    {catalogRecovery && <p className="mt-3 text-sm">Il catalogo interazioni richiede recupero e resta escluso dal file di salvataggio della campagna. L’originale è conservato nell’editor Interazioni e nel pannello Salvataggio.</p>}
     <div className="mt-4 flex flex-wrap gap-3">
       <GameButton tone="primary" onClick={() => retry?.()}>Riprova salvataggio</GameButton>
       <GameButton onClick={download}>Scarica progressi conservati</GameButton>

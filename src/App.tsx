@@ -47,7 +47,6 @@ const EvoluzioneScene = lazy(() => sceneLoaders.evoluzione().then((module) => ({
 const LeagueScene = lazy(() => sceneLoaders.lega().then((module) => ({ default: module.LeagueScene })))
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
-const UiAssetExamples = lazy(() => import('@/ui-studio/UiAssetExamples').then(module => ({ default: module.UiAssetExamples })))
 const ReferenceUiPreview = lazy(() => import('@/ui-studio/ReferenceUiPreview').then(module => ({ default: module.ReferenceUiPreview })))
 const DarklawAnimationLab = lazy(() => import('@/components/arkamon/DarklawAnimationLab').then(module => ({ default: module.DarklawAnimationLab })))
 
@@ -76,9 +75,6 @@ function App() {
     return <Suspense fallback={<div role="status">Preparazione della nuova interfaccia…</div>}><ReferenceUiPreview /></Suspense>
   }
   if (new URLSearchParams(window.location.search).get('uiStudioPreview') === '1') {
-    if (new URLSearchParams(window.location.search).get('assetExamples') === '1') {
-      return <Suspense fallback={<div role="status">Preparazione esempi…</div>}><UiAssetExamples /></Suspense>
-    }
     return <Suspense fallback={<div role="status">Preparazione anteprima…</div>}><UiStudioPreview /></Suspense>
   }
   if (hash === '#ui-studio') {
@@ -139,10 +135,6 @@ function renderScena(scena: SceneId) {
     case 'laboratorio':
       return <LaboratorioScene />
     case 'mappa-principale':
-      return <MappaPrincipaleScene />
-    // La vecchia mappa a griglia è stata rimossa (Fase 6): i salvataggi che la indicano
-    // tornano alla mappa principale.
-    case 'mappa-griglia':
       return <MappaPrincipaleScene />
     case 'battaglia':
       return <BattagliaScene />

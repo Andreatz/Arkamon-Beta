@@ -2,7 +2,7 @@ import { ALLENATORI, getAllenatore, getIncontri, getPokemon, squadraAllenatore }
 import { getLocalMap } from '@/data/localMaps'
 import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
 import { calcolaHPMax, determinaIniziativa } from '@/engine/battleEngine'
-import { nuovoTurno } from '@/engine/movimento'
+import { nuovoTurno } from '@/engine/turnoOverworld'
 import type { NavigazioneScena, PokemonIstanza, PosizioneAvatar, PosizioniMappeLocali, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
 import { validateInteraction } from './schema'
 import type { InteractionDefinition, InteractionLogEntry, InteractionProgress, InteractionResources, PendingInteractionBattle } from './types'

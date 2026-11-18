@@ -1,5 +1,4 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { MENU_SVG_ARTWORK_ENABLED } from '../src/player-ui/uiAppearancePolicy'
 
 test.use({ viewport: { width: 1920, height: 1080 }, reducedMotion: 'no-preference' })
 test.beforeEach(async ({}, info) => {
@@ -24,7 +23,7 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
     const companion = { istanzaId: 'svg-controls-g2', specieId: 5, nome: 'Darklaw SVG', livello: 14, hp: 25, xp: 0 }
     const player = (id: 1 | 2) => ({
       id, nome: `Giocatore SVG ${id}`, squadra: [id === 1 ? attacker : companion], deposito: {},
-      cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 1000,
+      cespugliVisitati: [], allenatoriSconfitti: [], monete: 1000,
       inventario: { masterball: 3 },
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
@@ -89,18 +88,11 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
   })
   expect(proof.tag).toBe('BUTTON')
   expect(proof.label).toBeTruthy()
-  expect(proof.hasFrame).toBe(MENU_SVG_ARTWORK_ENABLED)
-  if (MENU_SVG_ARTWORK_ENABLED) {
-    expect(proof.decorative).toBe('true')
-    expect(proof.source).toContain(`/ui/studio/runtime/${id}.svg`)
-    expect(proof.slice).toContain('70 160')
-    expect(proof.slice).toContain('fill')
-    expect(proof.repeat).toBe('stretch')
-  } else {
-    await expect(button).toHaveAttribute('data-menu-artwork', 'css')
-    expect(proof.background !== 'rgba(0, 0, 0, 0)' || proof.backgroundImage !== 'none', 'A solid or gradient surface visibly paints the control').toBe(true)
-    expect(parseFloat(proof.borderWidth)).toBeGreaterThan(0)
-  }
+  // La modalità SVG è stata rimossa (18 novembre 2026): i comandi sono disegnati dal CSS.
+  expect(proof.hasFrame).toBe(false)
+  await expect(button).toHaveAttribute('data-menu-artwork', 'css')
+  expect(proof.background !== 'rgba(0, 0, 0, 0)' || proof.backgroundImage !== 'none', 'A solid or gradient surface visibly paints the control').toBe(true)
+  expect(parseFloat(proof.borderWidth)).toBeGreaterThan(0)
   expect(proof.font).toContain(proof.localMap ? 'Georgia' : proof.aurora ? 'Arkamon Cinzel' : 'Arkamon Norwester')
   expect(proof.disabled).toBe(disabled)
   expect(proof.bound.width).toBeGreaterThan(0)
@@ -112,7 +104,6 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
   for (const edge of ['left', 'top', 'right', 'bottom'] as const) {
     expect(Math.abs(proof.bound[edge] - proof.frameBound[edge])).toBeLessThanOrEqual(2)
   }
-  if (MENU_SVG_ARTWORK_ENABLED) await expect.poll(() => [...responses.entries()].find(([path]) => path.endsWith(`/ui/studio/runtime/${id}.svg`))?.[1]).toBe(200)
   return proof
 }
 

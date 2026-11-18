@@ -6,7 +6,7 @@ async function openFixture(page: Page, battle = false, enemyHP = 4, poisoned = f
     const a = { istanzaId: 'audit-a', specieId: 1, nome: 'Vyrath Audit', livello: 10, hp: 19, xp: 0,
       ...(poisoned ? { stato: { tipo: 'Avvelenato', turniRimanenti: -1, turniTrascorsi: 0 } } : {}) }
     const b = { istanzaId: 'audit-b', specieId: 13, nome: 'Wormaren Audit', livello: 5, hp: enemyHP, xp: 0 }
-    const player = (id: 1 | 2) => ({ id, nome: `Audit ${id}`, squadra: [id === 1 ? a : { ...a, istanzaId: 'audit-g2', nome: 'Vyrath Due', stato: undefined }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 1000, inventario: { masterball: 1 } })
+    const player = (id: 1 | 2) => ({ id, nome: `Audit ${id}`, squadra: [id === 1 ? a : { ...a, istanzaId: 'audit-g2', nome: 'Vyrath Due', stato: undefined }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 1000, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,

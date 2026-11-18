@@ -12,7 +12,7 @@ async function fixture(page: Page, scenario: 'battle' | 'city' | 'evolution' | '
     const final = { ...first, livello: 11, hp: 3 }
     const opponent = { istanzaId: 'durable-opponent', specieId: 13, nome: scenario === 'item' ? 'Wormaren avversario' : 'Wormaren KO', livello: 5, hp: scenario === 'item' ? 12 : 0, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Campagna ${id}`, squadra: scenario === 'names' ? [] : [id === 1 ? first : { ...first, istanzaId: 'durable-two', specieId: 5, nome: 'Darklaw due', stato: undefined }],
-      deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: id === 1 ? 700 : 125,
+      deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 700 : 125,
       inventario: { masterball: id, ...(scenario === 'item' && id === 1 ? { potion: 2 } : {}) } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     const campaign = { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,

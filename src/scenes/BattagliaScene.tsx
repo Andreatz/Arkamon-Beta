@@ -50,6 +50,11 @@ import {
   èMossaSoloStato,
   èMossaDisponibile,
   applicaMossaCura,
+  èMossaEsaurita,
+  registraUsoMossa,
+  mosseEsaurite,
+  indiceMossaPrioritaria,
+  usiMossa,
 } from '@engine/battleEngine'
 import { getPokemon, getMossa, getAllenatore } from '@data/index'
 import { calcolaVariazioneMonete, type TipoAvversario } from '@engine/battleEngine'
@@ -98,9 +103,10 @@ import { BattleCaptureLayer, captureHidesTarget } from '@/components/battle/Batt
 import { captureBagArt } from '@/components/battle/battleCapture'
 import { BattleFrame, hasBattleFrame } from '@/components/battle/BattleFrame'
 import { GameArt } from '@/ui-system/GameArt'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { planD20Capture, planMasterCapture } from '@/components/battle/battleCapture'
 import { SupremeCutIn } from '@/components/battle/SupremeCutIn'
+import { GameButton } from '@/components/ui/GameButton'
+import { SceneInputContext } from '@/components/transitions/SceneNavigationContext'
 import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
 import {
   BATTLE_DICE_ASSET_IDS,
@@ -143,6 +149,7 @@ type PendingSwitch = {
  */
 export function BattagliaScene() {
   const previewView = useContext(UiPreviewViewContext)
+  const sceneTransitioning = useContext(SceneInputContext)
   const battaglia = useGameStore((s) => s.battaglia)
   const challengeContext = useGameStore((s) => s.challengeContext)
   const isChallenge = !!challengeContext
@@ -153,8 +160,10 @@ export function BattagliaScene() {
     const sample = nextSeededRandom(randomState.current); randomState.current = sample.state; return sample.value
   }, [])
   const aggiornaBattaglia = useGameStore((s) => s.aggiornaBattaglia)
+  /** Usi delle mosse limitate in questa lotta; si salvano con il checkpoint del turno concluso. */
+  const moveUses = useRef(battaglia?.usiMosse)
   const saveSettled = useCallback((patch: Partial<NonNullable<typeof battaglia>>) => {
-    aggiornaBattaglia({ ...patch, ...(randomState.current ? { seeded: { ...randomState.current }, challengeActionCount: challengeActions.current } : {}) })
+    aggiornaBattaglia({ ...patch, ...(moveUses.current ? { usiMosse: moveUses.current } : {}), ...(randomState.current ? { seeded: { ...randomState.current }, challengeActionCount: challengeActions.current } : {}) })
   }, [aggiornaBattaglia])
   const concludiCattura = useGameStore((s) => s.concludiCattura)
   const giocatoreAttivo = useGameStore((s) => s.giocatoreAttivo)
@@ -275,7 +284,12 @@ export function BattagliaScene() {
   function nextSide(side: 'A' | 'B', a = latestPokemon.current.A, b = latestPokemon.current.B): 'A' | 'B' {
     // La paralisi modifica la priorità finché una cura non la rimuove.
     const initial = battlePriority()
-    return nextBattleSide(actedThisRound.current, side, initial, a?.stato?.tipo, b?.stato?.tipo)
+    const next = nextBattleSide(actedThisRound.current, side, initial, a?.stato?.tipo, b?.stato?.tipo)
+    // Mossa prioritaria dell'IA: a inizio round un avversario paralizzato che conosce Cura paralisi
+    // la usa prima del giocatore (l'IA la sceglie sempre quando è paralizzata).
+    const bControlledByAi = battaglia?.tipo !== 'PVP' && audienceChannelForBattle(battaglia) !== 'boss' && !audienceEnabled
+    if (next === 'A' && actedThisRound.current.size === 0 && bControlledByAi && b && indiceMossaPrioritaria(b, moveUses.current) !== null) return 'B'
+    return next
   }
   function presentStatus(result: ReturnType<typeof risolviStatoInizioTurno>, pokemon: PokemonIstanza, done: () => void) {
     statusPending.current = true
@@ -492,7 +506,7 @@ export function BattagliaScene() {
     setMostraMoseB(false)
     const messages = messaggiTurnoBRef.current
     messaggiTurnoBRef.current = []
-    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), scegliMossaIA(pkmnB, pkmnA, battleRng), messages)
+    eseguiMossaB(pkmnB, calcolaHPMax(pkmnB), scegliMossaIA(pkmnB, pkmnA, battleRng, mosseEsaurite(pkmnB, moveUses.current)), messages)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mostraMoseB, audienceEnabled, audienceSession?.sessionId, audienceChoice,
     pkmnA, pkmnB, terminata, coinOpen, statusRoll, azioneInCorso])
@@ -937,6 +951,19 @@ export function BattagliaScene() {
     }
   }
 
+  /**
+   * Finestra di priorità del giocatore: con l'avversario pronto ad agire, un Arkamon paralizzato
+   * che conosce Cura paralisi può usarla subito. Conta come l'azione del round del giocatore.
+   */
+  const indicePriorita = !terminata && !actedThisRound.current.has('A') && (attesaAvversario || attesaPassaggio?.direzione === 'A→B')
+    ? indiceMossaPrioritaria(pkmnA, moveUses.current) : null
+  const usaMossaPrioritaria = () => {
+    if (indicePriorita === null || azioneInCorso || actionInProgressRef.current) return
+    setAttesaAvversario(null)
+    if (attesaPassaggio?.direzione === 'A→B') setAttesaPassaggio(null)
+    eseguiMossa(indicePriorita, false, true)
+  }
+
   const confermaTurnoAvversario = () => {
     if (!attesaAvversario) return
     const pendingB = attesaAvversario
@@ -1036,14 +1063,16 @@ export function BattagliaScene() {
   const preparaTurnoGiocatore = (
     onReady: (pokemon: PokemonIstanza, messages: string[]) => void,
     resolvedStatus?: ReturnType<typeof risolviStatoInizioTurno>,
-    verificaAttacco = true
+    verificaAttacco = true,
+    priorita = false
   ) => {
     if (coinOpen || statusPending.current) return
-    if (terminata || !turnoA || azioneInCorso || actionInProgressRef.current || scambioRichiesto || attesaPassaggio || attesaAvversario) return
+    // Con la priorità il giocatore agisce mentre il turno è ancora in attesa dell'avversario.
+    if (terminata || (!turnoA && !priorita) || azioneInCorso || actionInProgressRef.current || scambioRichiesto || (!priorita && (attesaPassaggio || attesaAvversario))) return
     resetInfoBox()
 
     const statoRes = resolvedStatus ?? risolviStatoInizioTurno(pkmnA, hpMaxA, battleRng, verificaAttacco)
-    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes, verificaAttacco)); return }
+    if (!resolvedStatus && statoRes.tiroStato !== undefined) { presentStatus(statoRes, pkmnA, () => preparaTurnoGiocatore(onReady, statoRes, verificaAttacco, priorita)); return }
     if (statoRes.messaggi.length) appendChronicle(statusEvents(pkmnA, statoRes, 'A', `${beginAction()}:status`))
     const pkmnAEffettivo = statoRes.istanza
     setPkmnA(pkmnAEffettivo)
@@ -1094,11 +1123,13 @@ export function BattagliaScene() {
     onReady(pkmnAEffettivo, statoRes.messaggi)
   }
 
-  const eseguiMossa = (numeroMossa: 0 | 1 | 2, suprema = false) => {
+  const eseguiMossa = (numeroMossa: 0 | 1 | 2, suprema = false, priorita = false) => {
     const mossaScelta = specieA.mosse[numeroMossa]
       ? getMossa(specieA.mosse[numeroMossa]!)
       : null
+    if (mossaScelta && èMossaEsaurita(mossaScelta, moveUses.current, pkmnA.istanzaId)) return
     preparaTurnoGiocatore((pkmnAEffettivo, statusMessages) => {
+    if (mossaScelta && !suprema) moveUses.current = registraUsoMossa(moveUses.current, pkmnAEffettivo.istanzaId, mossaScelta)
     if (mossaScelta && èMossaCura(mossaScelta)) {
       if (suprema) return
       const cura = applicaMossaCura(pkmnAEffettivo, mossaScelta, hpMaxA)
@@ -1179,7 +1210,7 @@ export function BattagliaScene() {
       }
       passaTurnoAaB(prossimoB, nuovoB.hp <= 0 ? 800 : 1500)
     })
-    }, undefined, !mossaScelta || !èMossaCura(mossaScelta))
+    }, undefined, !mossaScelta || !èMossaCura(mossaScelta), priorita)
   }
 
   // Porting di: EseguiAzioneCattura da old_files/Mod_Battle_Engine.txt
@@ -1422,7 +1453,7 @@ export function BattagliaScene() {
       return
     }
 
-    const mossaIdx = scegliMossaIA(bEffettivo, pkmnA, battleRng)
+    const mossaIdx = scegliMossaIA(bEffettivo, pkmnA, battleRng, mosseEsaurite(bEffettivo, moveUses.current))
     eseguiMossaB(bEffettivo, hpMaxBcorrente, mossaIdx, statoRes.messaggi)
   }
 
@@ -1435,6 +1466,11 @@ export function BattagliaScene() {
     resolvedParalysis?: ReturnType<typeof risolviStatoInizioTurno>
   ) => {
     const specieB = getPokemon(bEffettivo.specieId)
+    // Una mossa esaurita (voto o scelta già preparata) lascia la scelta all'IA fra quelle rimaste.
+    const sceltaB = specieB?.mosse[mossaIdx] ? getMossa(specieB.mosse[mossaIdx]!) : null
+    if (sceltaB && èMossaEsaurita(sceltaB, moveUses.current, bEffettivo.istanzaId)) {
+      mossaIdx = scegliMossaIA(bEffettivo, pkmnA, battleRng, mosseEsaurite(bEffettivo, moveUses.current))
+    }
     const mossaIdB = specieB?.mosse[mossaIdx] ?? null
     const mossaDefB = mossaIdB ? getMossa(mossaIdB) : null
 
@@ -1456,6 +1492,7 @@ export function BattagliaScene() {
       }
     }
 
+    if (mossaDefB && !suprema) moveUses.current = registraUsoMossa(moveUses.current, bEffettivo.istanzaId, mossaDefB)
     if (mossaDefB && èMossaCura(mossaDefB)) {
       if (suprema) return
       const cura = applicaMossaCura(bEffettivo, mossaDefB, hpMaxBcorrente)
@@ -1593,7 +1630,7 @@ export function BattagliaScene() {
   return (
     <BattleLayoutProvider value={battleLayout}><div
       data-battle-layout-root
-      data-reference-ui={isReferenceUi() ? 'aurora' : undefined}
+      data-reference-ui="aurora"
       className="battle-stage w-full h-full relative overflow-hidden"
       data-battle-impact-held={presentationPaused}
       data-battle-assets-ready={assetReadiness.ready}
@@ -1612,7 +1649,8 @@ export function BattagliaScene() {
         joinUrl={audienceChoice.request.channel === 'npc' ? audienceSession?.joinUrls.npc ?? '' : ''}
         onRetry={audienceVote.retry} onCloseEarly={audienceVote.closeEarly} onFallback={continueWithoutAudience}
       />}
-      {coinOpen && battaglia ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
+      {/* La moneta si lancia dopo la Carta VS: durante la transizione di ingresso resta in attesa. */}
+      {coinOpen && battaglia && !sceneTransitioning ? <BattleOpeningOverlay kind="coin" value={battaglia.turnoCorrente === 'A' ? 0 : 1} coinFaces={{ heads: { nome: pkmnA.nome, specieId: pkmnA.specieId }, tails: { nome: pkmnB.nome, specieId: pkmnB.specieId } }} title="Stesso livello: decide la moneta" result={`${battaglia.turnoCorrente === 'A' ? 'Testa' : 'Croce'} · Inizia ${battaglia.turnoCorrente === 'A' ? pkmnA.nome : pkmnB.nome}`} onContinue={() => setCoinOpen(false)} /> : null}
       {statusRoll ? <BattleOpeningOverlay key={statusRoll.id} kind="die" value={statusRoll.value} title={statusRoll.title} result={`Risultato: ${statusRoll.value}`} onContinue={statusRoll.done} /> : null}
       {supremaSide && !terminata && !azioneInCorso && !coinOpen && !statusRoll && (
         <SupremeMoveDialog
@@ -1813,6 +1851,15 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       )}
 
+      {indicePriorita !== null && !layoutEditing && (
+        <div className="battle-priority-window" role="group" aria-label="Mossa prioritaria">
+          <p>{pkmnA.nome} è paralizzato ma può curarsi per primo.</p>
+          <GameButton tone="primary" onClick={usaMossaPrioritaria} disabled={azioneInCorso}>
+            {getMossa(specieA.mosse[indicePriorita]!)?.nome ?? 'Cura paralisi'} ora · priorità
+          </GameButton>
+        </div>
+      )}
+
       {!terminata && !mostraMoseB && !attesaPassaggio && !attesaAvversario && !scambioRichiesto && (
         <BattleLayoutItem
           layoutKey="playerMoves"
@@ -1833,7 +1880,8 @@ export function BattagliaScene() {
                   livello={pkmnA.livello}
                   defenderType={specieB.tipo}
                   textKeyPrefix={`move-${idx}`}
-                  disabled={!turnoA || azioneInCorso || !èMossaDisponibile(mossa, pkmnA.livello)}
+                  disabled={!turnoA || azioneInCorso || !èMossaDisponibile(mossa, pkmnA.livello) || èMossaEsaurita(mossa, moveUses.current, pkmnA.istanzaId)}
+                  usiRimasti={mossa.usiMassimi ? Math.max(0, mossa.usiMassimi - usiMossa(moveUses.current, pkmnA.istanzaId, mossa.id)) : undefined}
                   onClick={() => eseguiMossa(idx)}
                 />
               ))}
@@ -1850,7 +1898,7 @@ export function BattagliaScene() {
                 )}
                 {!pendingCaptureSave && <>{CAPTURE_ITEM_IDS.filter((id) => (inventarioAttivo[id] ?? 0) > 0).map((id) => (
                   <ActionButton key={id} disabled={!turnoA || azioneInCorso} onClick={() => eseguiCattura(id)}>
-                    {isReferenceUi() && <GameArt id={captureBagArt(id, id === 'masterball' ? 'master' : 'dice')} className="battle-action-bag" />}
+                    {<GameArt id={captureBagArt(id, id === 'masterball' ? 'master' : 'dice')} className="battle-action-bag" />}
                     <span>{getShopItem(id)!.name} ×{inventarioAttivo[id]}</span>
                   </ActionButton>
                 ))}
@@ -1901,7 +1949,8 @@ export function BattagliaScene() {
                   livello={pkmnB.livello}
                   defenderType={specieA.tipo}
                   textKeyPrefix={`move-${idx}`}
-                  disabled={azioneInCorso || !èMossaDisponibile(mossa, pkmnB.livello)}
+                  disabled={azioneInCorso || !èMossaDisponibile(mossa, pkmnB.livello) || èMossaEsaurita(mossa, moveUses.current, pkmnB.istanzaId)}
+                  usiRimasti={mossa.usiMassimi ? Math.max(0, mossa.usiMassimi - usiMossa(moveUses.current, pkmnB.istanzaId, mossa.id)) : undefined}
                   onClick={() => eseguiMossaPvP_B(idx)}
                 />
               ))}

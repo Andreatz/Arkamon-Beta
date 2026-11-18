@@ -34,7 +34,7 @@ async function battleFixture(page: Page, fixture: 'battle' | 'evolution' | 'fina
       : { istanzaId: 'arkadex-a', specieId: 1, nome: 'Vyrath Dex', livello: evolution ? 14 : 10, hp: evolution ? 1 : 10, xp: 0 }
     const defender = { istanzaId: 'arkadex-b', specieId: 13, nome: 'Wormaren Dex', livello: 5, hp: evolution ? 1 : 4, xp: 0 }
     const secondStarter = { istanzaId: 'arkadex-player2', specieId: 5, nome: 'Darklaw Dex', livello: 5, hp: 12, xp: 0 }
-    const player = (id: 1 | 2) => ({ id, nome: `Dex ${id}`, squadra: id === 1 ? [attacker] : [secondStarter], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { masterball: 1 }, caselleConsumate: [] })
+    const player = (id: 1 | 2) => ({ id, nome: `Dex ${id}`, squadra: id === 1 ? [attacker] : [secondStarter], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,

@@ -6,6 +6,8 @@ import { useInteractionStore } from '@/interactions/interactionStore'
 import { collectedGymCount, interactionRequirementMessage, isInteractionComplete } from '@/interactions/runtime'
 import { journalLocations, nextJournalObjective } from './journalModel'
 import './journal.css'
+import { ProvidedArtwork } from '@/player-ui/reference/ProvidedArtwork'
+import { gymMedalArtwork } from '@/player-ui/reference/gymMedals'
 import { HistoryPagination } from '@/components/ui/HistoryPagination'
 
 export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 2 } = {}) {
@@ -53,7 +55,11 @@ export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 
     </div><div className="journal-reading">
     <nav className="journal-sections" aria-label="Sezioni del diario">{([['medals', 'Medaglie'], ['locations', 'Luoghi e attività'], ['missions', 'Tappe e missioni configurate'], ['history', 'Cronaca delle interazioni']] as const).map(([id, title]) => <button type="button" key={id} aria-pressed={section === id} onClick={() => setSection(id)}>{title}</button>)}</nav>
     <section aria-label={section === 'medals' ? 'Medaglie' : section === 'locations' ? 'Luoghi e attività' : section === 'missions' ? 'Tappe e missioni configurate' : 'Cronaca delle interazioni'} className="journal-section-content">
-    {section === 'medals' && <><h3>Medaglie</h3><ul className="journal-medals">{gyms.map((trainer) => <li key={trainer.id}>{player.allenatoriSconfitti.has(trainer.id) ? '✓' : '○'} {trainer.luogo} · {trainer.nome}</li>)}</ul></>}
+    {section === 'medals' && <><h3>Medaglie</h3><ul className="journal-medals">{gyms.map((trainer) => {
+      const earned = player.allenatoriSconfitti.has(trainer.id)
+      // Medaglia dipinta della palestra; l'alloggio vuoto finché non è ottenuta.
+      return <li key={trainer.id} data-earned={earned}><ProvidedArtwork id={gymMedalArtwork(trainer.id, earned)} className="journal-medal-art" aria-hidden="true" /><span><strong>{trainer.luogo}</strong> · {trainer.nome}<small>{earned ? 'Ottenuta' : 'Da ottenere'}</small></span></li>
+    })}</ul></>}
     {section === 'locations' && <><h3>Luoghi e attività</h3><p>I luoghi documentati derivano da posizioni locali, allenatori e cespugli del salvataggio; i salvataggi precedenti non contengono uno storico di ogni passaggio.</p>
       <div className="journal-locations">{locations.slice(start, start + pageSize).map((entry) => <article key={entry.mapId}><strong>{entry.mapId.replace(/_/g, ' ')}{entry.current ? ' · posizione attuale' : entry.documented ? ' · documentato' : ''}</strong>
         <span>Allenatori {entry.trainersCompleted}/{entry.trainersTotal} · Cespugli {entry.bushesCompleted}/{entry.bushesTotal} · Tappe {entry.interactionsCompleted}/{entry.interactionsTotal}</span>

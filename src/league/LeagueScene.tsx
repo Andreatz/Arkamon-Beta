@@ -60,7 +60,7 @@ export function LeagueScene() {
           </div> : <div className="league-notice"><strong>{progress.status === 'defeated' ? 'Tentativo concluso' : 'Preparati alla Lega'}</strong><p>{progress.status === 'defeated' ? `Hai vinto ${progress.completedStages.length} incontri. Cura esplicitamente la squadra prima del prossimo tentativo.` : 'Raggiungi Roma con tutte le otto medaglie. I quattro scontri useranno lo stesso turno.'}</p>{shownPlayerId !== currentPlayerId && <p>Ora tocca a G{currentPlayerId}.</p>}</div>}
       </KitPanel>
     </div>
-    <footer className="league-footer"><p role="status">{message || (winner ? 'Vittoria salvata nella partita e nei backup.' : `Tentativo ${progress.attempt} · ${progress.completedStages.length}/${opponents.length || 4} incontri completati`)}</p>
+    <footer className="league-footer"><p role="status">{message || (winner ? 'Vittoria salvata nella partita e nei file di salvataggio.' : `Tentativo ${progress.attempt} · ${progress.completedStages.length}/${opponents.length || 4} incontri completati`)}</p>
       <div className="league-actions">{running ? <><GameButton disabled={confirmAbandon} onClick={() => runAction(() => useGameStore.getState().prossimoIncontroLega())}>Affronta il prossimo incontro</GameButton>
         <GameButton onClick={() => setConfirmAbandon(!confirmAbandon)}>{confirmAbandon ? 'Mantieni il tentativo' : 'Termina il tentativo'}</GameButton>
         {confirmAbandon && <GameButton onClick={() => runAction(() => useGameStore.getState().abbandonaLega())}>Conferma fine tentativo</GameButton>}</>

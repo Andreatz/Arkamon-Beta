@@ -2,11 +2,10 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { makeDialogBackgroundInert } from '@/components/battle/modalFocus'
 import { DialogNavigationContext, type DialogBackHandler } from './DialogNavigation'
-import { assetUrl } from '@/utils/assetUrl'
-import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from '@/player-ui/uiAppearancePolicy'
 import './studioArtwork.css'
 import './menuArtworkFallback.css'
 import './gameDialogMotion.css'
+import { getAnimationDuration, useGamePreferences } from '@/settings/gamePreferences'
 
 /**
  * Finché almeno un dialogo è aperto la scena presentata arretra dietro di esso
@@ -23,6 +22,31 @@ function holdStageBehindDialog(): () => void {
     openDialogs = Math.max(0, openDialogs - 1)
     if (!openDialogs) document.documentElement.removeAttribute('data-arka-dialog-open')
   }
+}
+
+function prefersStillDialogs(): boolean {
+  const preference = useGamePreferences.getState().reducedMotion
+  if (preference !== 'system') return preference === 'on'
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
+}
+
+/**
+ * Animazione di chiusura: qualunque cosa chiuda il dialogo (comando, Esc o la scena),
+ * una copia inerte e nascosta ai lettori di schermo scende e svanisce, poi si rimuove.
+ */
+function playDialogExit(overlay: HTMLElement | null): void {
+  if (!overlay?.isConnected || prefersStillDialogs()) return
+  const ghost = overlay.cloneNode(true) as HTMLElement
+  ghost.removeAttribute('data-game-dialog')
+  ghost.setAttribute('aria-hidden', 'true')
+  ghost.setAttribute('inert', '')
+  ghost.classList.add('arka-dialog-ghost')
+  ghost.querySelectorAll('[role="dialog"]').forEach(node => node.removeAttribute('role'))
+  ghost.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'))
+  document.body.appendChild(ghost)
+  const remove = () => ghost.remove()
+  ghost.addEventListener('animationend', event => { if (event.target === ghost) remove() })
+  window.setTimeout(remove, getAnimationDuration(320) + 80)
 }
 
 export function GameDialog({ title, onClose, children, className = '', showCloseButton = true }: { title: string; onClose: () => void; children: ReactNode; className?: string; showCloseButton?: boolean }) {
@@ -57,11 +81,12 @@ export function GameDialog({ title, onClose, children, className = '', showClose
     }
     document.addEventListener('keydown', keys, true)
     document.addEventListener('focusin', refocus)
-    return () => { document.removeEventListener('keydown', keys, true); document.removeEventListener('focusin', refocus); release(); releaseStage(); if (previous?.isConnected) previous.focus() }
+    const overlay = dialog.parentElement
+    return () => { playDialogExit(overlay); document.removeEventListener('keydown', keys, true); document.removeEventListener('focusin', refocus); release(); releaseStage(); if (previous?.isConnected) previous.focus() }
   }, [])
   return createPortal(<div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/75 p-3" data-game-dialog>
     <section ref={root} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} className={`flex max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl flex-col rounded-xl border border-violet-400 bg-slate-950 text-white shadow-2xl ${className}`}>
-      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-slate-600 p-4"><h2 className="text-xl font-bold">{title}</h2>{showCloseButton && <button type="button" onClick={onClose} className="studio-dialog-close" data-menu-artwork={MENU_ARTWORK_MODE} aria-label="Chiudi">{MENU_SVG_ARTWORK_ENABLED ? <img src={assetUrl('/ui/studio/Scuro/button-chiusura-rosso.svg')} alt="" draggable={false} /> : <span aria-hidden="true">×</span>}</button>}</header>
+      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-slate-600 p-4"><h2 className="text-xl font-bold">{title}</h2>{showCloseButton && <button type="button" onClick={onClose} className="studio-dialog-close" data-menu-artwork="css" aria-label="Chiudi"><span aria-hidden="true">×</span></button>}</header>
       <div className="min-h-0 overflow-y-auto p-4"><DialogNavigationContext.Provider value={handler => { back.current = handler; return () => { if (back.current === handler) back.current = null } }}>{children}</DialogNavigationContext.Provider></div>
     </section>
   </div>, document.body)

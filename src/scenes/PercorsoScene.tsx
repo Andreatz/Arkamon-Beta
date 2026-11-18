@@ -12,6 +12,8 @@ import type { StatoBattaglia } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
 import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
 import { LocalMapScene } from './LocalMapScene'
+import { useRef } from 'react'
+import { playGrassOpening } from '@/motion/encounter/GrassOpening'
 import { isTeamWithinLevelCap, teamCapMessage } from '@/engine/teamLevelCap'
 
 const CESPUGLI = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const
@@ -38,6 +40,7 @@ export function PercorsoScene() {
   const layoutEditing = useAdminStore((s) => s.layoutEditing)
   const luogoLayout = useAdminStore((s) => s.theme.layouts.luogo)
   const updateSceneLayout = useAdminStore((s) => s.updateSceneLayout)
+  const grassOpening = useRef(false)
 
   const luogo = (scenaCorrente.payload?.luogo as string) || 'Percorso_1'
   const localMap = getLocalMap(luogo)
@@ -80,11 +83,17 @@ export function PercorsoScene() {
       log: [`Appare ${selvatico.nome} selvatico!`],
       evoluzioneInAttesa: null,
     }
-    useGameStore.getState().eseguiTransazione(() => {
-      if (!consumaInterazione(giocatoreAttivo, luogo)) return
-      segnaCespuglioVisitato(giocatoreAttivo, luogo, cespuglio)
-      iniziaBattaglia(battaglia)
-      vaiAScena('battaglia')
+    // L'erba si apre prima dell'incontro (solo presentazione); poi la stessa transazione di sempre.
+    if (grassOpening.current) return
+    grassOpening.current = true
+    void playGrassOpening().then(() => {
+      grassOpening.current = false
+      useGameStore.getState().eseguiTransazione(() => {
+        if (!consumaInterazione(giocatoreAttivo, luogo)) return
+        segnaCespuglioVisitato(giocatoreAttivo, luogo, cespuglio)
+        iniziaBattaglia(battaglia)
+        vaiAScena('battaglia')
+      })
     })
   }
 

@@ -7,7 +7,7 @@ test('a late file read cannot replace the automatic backup selected afterward', 
     if (localStorage.getItem('backup-audit-fixture')) return
     const pokemon = { istanzaId: 'backup-audit-one', specieId: 1, nome: 'Vyrath originale', livello: 5, hp: 3, xp: 0 }
     const player = (id: number) => ({ id, nome: `Campagna attuale ${id}`, squadra: [{ ...pokemon, istanzaId: `backup-audit-${id}` }], deposito: {},
-      cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 321, inventario: { masterball: 1 } })
+      cespugliVisitati: [], allenatoriSconfitti: [], monete: 321, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     const campaign = { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {}, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
@@ -30,7 +30,7 @@ test('a late file read cannot replace the automatic backup selected afterward', 
       return new Promise<string>(resolve => Object.assign(window, { completeBackupFileRead: resolve }))
     }
   })
-  await tools.getByLabel('Importa backup partita', { exact: true }).setInputFiles({ name: 'lettura-lenta.json', mimeType: 'application/json', buffer: Buffer.from('{}') })
+  await tools.getByLabel('Importa file di salvataggio', { exact: true }).setInputFiles({ name: 'lettura-lenta.json', mimeType: 'application/json', buffer: Buffer.from('{}') })
   await expect.poll(() => page.evaluate(() => typeof (window as unknown as { completeBackupFileRead?: unknown }).completeBackupFileRead)).toBe('function')
   await tools.getByRole('button', { name: 'Controlla copia automatica 1', exact: true }).click()
   const preview = tools.getByLabel('Anteprima ripristino', { exact: true })

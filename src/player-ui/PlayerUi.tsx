@@ -5,16 +5,13 @@ import { useGameStore } from '@/store/gameStore'
 import { GameSettingsPanel } from '@/settings/GameSettingsPanel'
 import { launchChallenge } from '@/challenges/challengeRuntime'
 import { assetUrl } from '@/utils/assetUrl'
-import { BATTLE_BG_DEFAULT, DEPOSIT_BG } from '@/data/backgrounds'
-import { CreaturePortrait, KitButton, KitFrame, KitIcon, formatNumber } from './kit'
+import { CreaturePortrait, KitButton, KitIcon, formatNumber } from './kit'
 import { MenuScreen } from './MenuScreen'
 import { usePlayerUiSession } from './playerUiSession'
 import { PresentManagementControl } from '@/regia/PresentManagementControl'
 import { PLAYER_UI_SCREENS, type PlayerUiAuxiliary, type PlayerUiScreen } from './navigation'
 import { StudioCommand } from '@/components/ui/StudioArtwork'
 import './playerUiStyles'
-import { MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
-import { isReferenceUi } from './reference/referenceTheme'
 import { referenceScreenBackground } from './reference/referenceBackgrounds'
 import { providedArtworkVariables } from './reference/ProvidedArtwork'
 import { getSplashArtwork, supportsSplashArtwork } from './reference/splashArtwork'
@@ -56,7 +53,7 @@ const auxiliary: { id: PlayerUiAuxiliary; label: string; icon: string }[] = [
   { id: 'race', label: 'Gara', icon: 'icon-activity' },
   { id: 'recap', label: 'Ripresa', icon: 'icon-activity' },
   { id: 'journal', label: 'Diario', icon: 'icon-journal' },
-  { id: 'backup', label: 'Backup', icon: 'icon-box' },
+  { id: 'backup', label: 'Salvataggio', icon: 'icon-box' },
   { id: 'settings', label: 'Impostazioni', icon: 'icon-options' },
   { id: 'chronicles', label: 'Cronache', icon: 'icon-chronicles' },
   { id: 'match', label: 'Registro del match', icon: 'icon-activity' },
@@ -99,14 +96,13 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   const blockedScreen = !!context && challengeBlocked.has(screen)
   const page = screens[screen]
   const toolLabel = auxiliary.find(entry => entry.id === visibleTool)?.label
-  const reference = !MENU_SVG_ARTWORK_ENABLED && isReferenceUi()
   const selectedSpeciesId = usePlayerUiSession(state => state.selection[playerId]?.speciesId)
   const [loadedSplash, setLoadedSplash] = useState<{ screen: PlayerUiScreen; artwork: ReadySplashArtwork } | null>(null)
   const splashCandidate = useMemo<ReadySplashArtwork | null>(() => {
-    if (!reference || visibleTool || blockedScreen || !supportsSplashArtwork(screen)) return null
+    if (visibleTool || blockedScreen || !supportsSplashArtwork(screen)) return null
     const artwork = getSplashArtwork(selectedSpeciesId)
     return artwork ? { ...artwork, src: assetUrl(artwork.src), playerId } : null
-  }, [reference, visibleTool, blockedScreen, screen, selectedSpeciesId, playerId])
+  }, [visibleTool, blockedScreen, screen, selectedSpeciesId, playerId])
   // Compare the complete selection before rendering, rather than waiting for effect cleanup.
   const readySplash = splashCandidate && loadedSplash?.screen === screen
     && loadedSplash.artwork.playerId === splashCandidate.playerId && loadedSplash.artwork.speciesId === splashCandidate.speciesId
@@ -203,12 +199,12 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
       if (event.target instanceof Element && event.target.closest('input,select,textarea,[contenteditable="true"]')) return
       event.preventDefault()
       cycleScreen(event.key === 'PageDown' ? 1 : -1)
-    }} style={{ ...(reference ? providedArtworkVariables : {}), '--pu-background': `url("${reference ? referenceScreenBackground(screen, location, readySplash) : screen === 'partita' ? BATTLE_BG_DEFAULT : DEPOSIT_BG}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-position': splashFraming?.position ?? '50% 50%' } as CSSProperties}
+    }} style={{ ...providedArtworkVariables, '--pu-background': `url("${referenceScreenBackground(screen, location, readySplash)}")`, '--pu-background-position': readySplash?.objectPosition ?? '50% 50%', '--pu-splash-position': splashFraming?.position ?? '50% 50%' } as CSSProperties}
     data-player-ui-screen={visibleTool ?? screen} data-player-ui-player={playerId} data-shared-element={sharedElement}
     data-splash-frame-ready={readySplash && splashFraming ? 'true' : undefined} data-splash-frame-region={splashFraming?.region}
     data-splash-frame-mode={readySplash ? 'cover' : undefined} data-splash-focus-clear={readySplash && splashFraming ? String(splashFraming.focusFits) : undefined}
     data-reference-splash-species={readySplash?.speciesId} data-reference-splash-ready={readySplash ? 'true' : undefined}
-    data-ui-concept={reference ? 'aurora' : undefined}>
+    data-ui-concept="aurora">
     {readySplash && <div className="pu-splash-backdrop" aria-hidden="true" />}
     {readySplash && <div key={`${readySplash.playerId}:${readySplash.speciesId}`} className="pu-splash-flash" aria-hidden="true"
       style={{ '--type-flash': splashSpecies ? typeColorVar(splashSpecies.tipo) : undefined } as CSSProperties}>
@@ -216,9 +212,9 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     </div>}
     <SelectionCursor scope={shell} />
     <div className="pu-topbar">
-      <KitFrame id="panel-wide" />
-      <div className="pu-brand" role="img" aria-label="Arkamon"><img src={reference && gameArtUrl('logo') ? gameArtUrl('logo') : assetUrl('/ui/logo_arkamon.png')} className={reference ? 'pu-provided-logo' : undefined} alt="" />{!reference && <b className="pu-wordmark" aria-hidden="true">ARKAMON<span>VIAGGIA. SCOPRI. SFIDA.</span></b>}<small>Strumenti dell’allenatore</small></div>
-      {reference && <h1 className="ref-screen-title"><KitIcon id={visibleTool ? auxiliary.find(entry => entry.id === visibleTool)?.icon ?? page.icon : page.icon} />{visibleTool ? toolLabel : screen === 'partita' ? 'Menù principale' : screen === 'negozio' ? 'Negozio' : screens[screen].label}</h1>}
+      
+      <div className="pu-brand" role="img" aria-label="Arkamon"><img src={gameArtUrl('logo') ?? assetUrl('/ui/logo_arkamon.png')} className="pu-provided-logo" alt="" /><small>Strumenti dell’allenatore</small></div>
+      {<h1 className="ref-screen-title"><KitIcon id={visibleTool ? auxiliary.find(entry => entry.id === visibleTool)?.icon ?? page.icon : page.icon} />{visibleTool ? toolLabel : screen === 'partita' ? 'Menù principale' : screen === 'negozio' ? 'Negozio' : screens[screen].label}</h1>}
       <div className="pu-header-meta"><small>Posizione di G{playerId}</small><strong>{location}</strong></div>
       <div className="pu-player-switch" role="group" aria-label="Giocatore degli strumenti">
         {[player1, player2].map(entry => <StudioCommand className="pu-player-option" key={entry.id} selected={playerId === entry.id} aria-pressed={playerId === entry.id}
@@ -231,14 +227,14 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     </div>
 
     <nav className="pu-nav" aria-label="Schermate del giocatore">
-      <KitFrame id="panel-wide" />
+      
       {PLAYER_UI_SCREENS.map(id => <KitButton data-ui-id={`nav.${id === 'partita' ? 'menu' : id}`} className="pu-nav-button" key={id} active={!visibleTool && screen === id} disabled={!!context && id !== 'partita'}
         aria-pressed={!visibleTool && screen === id} title={screens[id].label} onClick={() => navigate(id)}><KitIcon id={screens[id].icon} /><span className="pu-nav-label">{screens[id].label}</span></KitButton>)}
     </nav>
 
     <div className="pu-page-head"><div><span className="pu-kicker">{visibleTool ? 'Strumenti della partita' : page.kicker}</span>{visibleTool ? <h2>{toolLabel}</h2> : <h1>{page.title}</h1>}
       <p>{visibleTool ? 'Salvataggi, progressi e opzioni della tua avventura.' : page.description}</p></div>
-      <div className="pu-player-context"><KitFrame id="card-default" /><KitIcon id={visibleTool ? auxiliary.find(entry => entry.id === visibleTool)!.icon : page.icon} />
+      <div className="pu-player-context"><KitIcon id={visibleTool ? auxiliary.find(entry => entry.id === visibleTool)!.icon : page.icon} />
         <div><small>Giocatore selezionato</small><strong>G{playerId} · {player.nome || `Giocatore ${playerId}`}</strong></div>
       </div>
     </div>

@@ -38,7 +38,7 @@ test('separate public profile receives only selected images and the console play
     await console.addInitScript(() => {
       const first = { istanzaId: 'public-images-a', specieId: 1, nome: 'Vyrath pubblico', livello: 5, hp: 10, xp: 0 }
       const enemy = { ...first, istanzaId: 'public-images-b', specieId: 13, nome: 'Wormaren pubblico', hp: 12 }
-      const player = (id: number) => ({ id, nome: id === 1 ? 'Melia pubblica' : 'Maggi pubblica', squadra: id === 1 ? [first] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 0, inventario: { potion: 2 } })
+      const player = (id: number) => ({ id, nome: id === 1 ? 'Melia pubblica' : 'Maggi pubblica', squadra: id === 1 ? [first] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { potion: 2 } })
       const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
       localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
         posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,

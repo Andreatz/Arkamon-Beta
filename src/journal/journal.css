@@ -16,3 +16,12 @@
 .turn-summary--compact { height: 100%; align-items: center; background: var(--arka-bg); border-radius: .5rem; padding: .2rem .5rem; font-size: clamp(7px,.85vw,11px); overflow: hidden; }
 .turn-summary--compact span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media(max-width: 600px) { .turn-summary { font-size: 9px; } }
+
+/* Medaglie dipinte del Diario: alloggio vuoto finché la palestra non è vinta. */
+.journal-medals { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; list-style: none; padding: 0; margin: .6rem 0 0; }
+.journal-medals li { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: .75rem; padding: .5rem .7rem; border: 1px solid var(--arka-border); border-radius: .65rem; }
+.journal-medals li[data-earned="false"] .journal-medal-art { filter: grayscale(.85) brightness(.7); opacity: .75; }
+.journal-medals .journal-medal-art { width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 4px 6px rgb(0 0 0 / .45)); }
+.journal-medals li span { display: grid; gap: .15rem; min-width: 0; }
+.journal-medals li small { opacity: .75; }
+.journal-medals li[data-earned="true"] small { color: var(--arka-ui-gold, #f5d77a); opacity: 1; }

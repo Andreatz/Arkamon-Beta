@@ -18,7 +18,6 @@
   .pu-live-shell .pu-panel{padding:12px 16px}
   .pu-live-shell .pu-panel h2{font-size:23px}
   .pu-live-shell .pu-panel h3{font-size:18px}
-  .pu-live-shell .pu-menu-layout{gap:18px;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr)}
   .pu-live-shell .pu-menu-grid{gap:6px}
   .pu-live-shell .pu-menu-tile{padding:8px 20px;gap:14px}
   .pu-live-shell .pu-menu-tile h2{font-size:22px;margin:0 0 3px}
@@ -27,24 +26,11 @@
   .pu-live-shell .pu-journey{padding:12px 20px;gap:5px}
   .pu-live-shell .pu-journey h2{font-size:25px;overflow-wrap:anywhere}
   .pu-live-shell .pu-journey .pu-kicker{font-size:13px}
-  .pu-live-shell .pu-journey-scene{height:52px;min-height:40px;flex-basis:52px}
-  .pu-live-shell .pu-journey-scene strong{font-size:24px;bottom:6px}
-  .pu-live-shell .pu-summary{gap:5px 16px;margin:3px 0}
-  .pu-live-shell .pu-summary dt{font-size:14px}
-  .pu-live-shell .pu-summary dd{font-size:19px}
-  .pu-live-shell .pu-gym-badges{margin:3px 0;gap:10px}
-  .pu-live-shell .pu-gym-badges span{width:30px;height:30px}
-  .pu-live-shell .pu-trainer-progress{padding-top:4px}
-  .pu-live-shell .pu-trainer-progress strong{font-size:18px}
-  .pu-live-shell .pu-trainer-progress p{font-size:15px;margin:3px 0}
-  .pu-live-shell .pu-journey>.pu-muted,.pu-live-shell .pu-empty-copy{font-size:14px;line-height:1.2}
-  .pu-live-shell .pu-mini-team{gap:10px}
-  .pu-live-shell .pu-mini-team .pu-creature-portrait{width:34px;height:34px}
+  .pu-live-shell .pu-empty-copy{font-size:14px;line-height:1.2}
   .pu-live-shell .pu-deposit-layout{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:18px}
   .pu-live-shell .pu-box-toolbar{min-height:36px;margin-bottom:5px;gap:10px}
   .pu-live-shell .pu-box-toolbar .pu-button{min-height:32px;padding:4px 12px}
   .pu-live-shell .pu-box-toolbar span,.pu-live-shell .pu-box-toolbar label{font-size:15px}
-  .pu-live-shell .pu-panel-heading>span{font-size:15px}
   .pu-live-shell .pu-deposit-filters{grid-template-columns:minmax(0,1.6fr) 1fr 1fr .65fr .65fr auto;gap:6px;margin:4px 0}
   .pu-live-shell .pu-deposit-filters label{font-size:12px;line-height:1.1}
   .pu-live-shell .pu-deposit-filters input,.pu-live-shell .pu-deposit-filters select{font-size:14px;min-height:30px;padding:3px 6px}
@@ -80,10 +66,8 @@
   .pu-live-shell .pu-dex-row .pu-dex-row-title strong{font-size:17px}
   .pu-live-shell .pu-dex-row small,.pu-live-shell .pu-dex-row-copy>small{font-size:12px}
   .pu-live-shell .pu-dex-row.pu-button{padding:2px 12px 2px 20px;gap:6px}
-  .pu-live-shell .pu-dex-pagination{margin-top:5px}
   .pu-live-shell .pu-pagination>span{font-size:15px}
   .pu-live-shell .pu-pagination small{font-size:12px}
-  .pu-live-shell .pu-dex-pagination .pu-button{min-height:34px}
   .pu-live-shell .pu-dex-screen>.pu-screen-toolbar{top:-48px}
   .pu-live-shell .pu-dex-screen>.pu-screen-toolbar .pu-discovery-count{font-size:14px}
   .pu-live-shell .pu-dex-hero{padding:12px 0}

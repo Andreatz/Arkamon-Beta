@@ -16,7 +16,6 @@
   background: linear-gradient(100deg, rgb(6 32 58 / 0.94), rgb(4 22 40 / 0.9)) !important;
   box-shadow: inset 0 0 0 3px rgb(10 40 66 / 0.9), 0 8px 22px #0009 !important;
 }
-[data-world-rpg-map] .world-map-unified-hud .rpg-frame { display: none; }
 [data-world-rpg-map] .world-map-status-window { font-family: var(--world-display); }
 [data-world-rpg-map] .world-map-status-window > .arka-layout-content:first-of-type {
   color: var(--world-gold) !important;

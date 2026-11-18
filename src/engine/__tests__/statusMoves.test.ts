@@ -17,9 +17,11 @@ describe('azione di sola paralisi', () => {
     for (const level of [5, 40, 100]) {
       const attacker = pokemon(27, level)
       const target = pokemon(1, 10)
-      const result = calcolaDanno(attacker, target, 2, () => {
-        throw new Error('Uno status puro non tira dadi offensivi')
-      })!
+      // Nessun dado offensivo: l'unico tiro è il d10 di precisione (8/10), qui a segno.
+      let draws = 0
+      const result = calcolaDanno(attacker, target, 2, () => { draws += 1; return 0.05 })!
+      expect(draws).toBe(1)
+      expect(result.tiroPrecisione).toBe(1)
       expect(result).toMatchObject({
         numDadi: 0, incremento: 0, tiriDado: [], dannoBase: 0, dannoFinale: 0,
         autodanno: 0, suprema: false, statoApplicato: 'Paralizzato', difensoreSvenuto: false,
@@ -35,7 +37,7 @@ describe('azione di sola paralisi', () => {
   it('non applica un secondo stato né infligge danno quando il bersaglio è già affetto', () => {
     for (const status of ['Paralizzato', 'Confuso', 'Addormentato', 'Avvelenato'] as const) {
       const target = applicaStato(pokemon(1, 10), status)
-      const result = calcolaDanno(pokemon(27, 5), target, 2)!
+      const result = calcolaDanno(pokemon(27, 5), target, 2, () => 0.05)!
       expect(result.statoApplicato).toBeUndefined()
       expect(result.dannoFinale).toBe(0)
       expect(result.messaggi).toContain('Ma non ha funzionato...')

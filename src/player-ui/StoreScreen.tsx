@@ -1,4 +1,5 @@
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
+import { flyCoins } from '@/motion/ui/coinFlight'
 import { usePlayerUiMemory, usePublishPlayerUiSelection } from './playerUiSession'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
 import { useEffect, useState } from 'react'
@@ -7,10 +8,7 @@ import { MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, SHOP_ITEMS, shopItemsAt, type Sho
 import { shopAvailabilityMessage, shopCartTotal } from '@/shop/purchase'
 import { itemIconId, KitButton, KitIcon, KitPanel } from './kit'
 import { useInteractionStore } from '@/interactions/interactionStore'
-import { assetUrl } from '@/utils/assetUrl'
 import { StudioCommand } from '@/components/ui/StudioArtwork'
-import { MENU_ARTWORK_MODE, MENU_SVG_ARTWORK_ENABLED } from './uiAppearancePolicy'
-import { isReferenceUi } from './reference/referenceTheme'
 import { GameArt, hasGameArt } from '@/ui-system/GameArt'
 
 export interface StoreScreenProps { playerId: 1 | 2; inputBlocked?: boolean; shopInteractionId?: string }
@@ -29,7 +27,7 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
   const forSale = shopItemsAt(location)
   const [selectedId, setSelectedId] = usePlayerUiMemory<ShopItemId>(playerId, 'store.item', SHOP_ITEMS[0].id)
   const [category, setCategory] = usePlayerUiMemory<StoreCategory>(playerId, 'store.category', 'all')
-  const reference = isReferenceUi()
+  const reference = true
   const inCategory = forSale.filter(item => category === 'all' || (category === 'heal' ? item.effect.kind === 'heal' || item.effect.kind === 'revive' : category === 'capture' ? item.effect.kind === 'capture' : category === 'status' ? item.effect.kind === 'status' : ['boost', 'scent', 'vehicle'].includes(item.effect.kind)))
   const catalogItems = (reference ? inCategory : forSale).length ? (reference ? inCategory : forSale) : SHOP_ITEMS.slice(0, 1)
   const [cart, setCart] = useState<ShopCart>({})
@@ -76,7 +74,7 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
           <p className="pu-description">{selected.description}</p><p className="pu-item-held">{selected.price ?? '—'} ₳ ciascuno · In borsa: <strong>{player.inventario[selected.id] ?? 0}</strong></p></div></div>
         <div className="pu-quantity-control" aria-label={`Quantità nel carrello di ${selected.name}`}>
           <KitButton artwork="decrement" aria-label={`Diminuisci ${selected.name}`} disabled={editBlocked || !(cart[selected.id] ?? 0)} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) - 1)}>−</KitButton>
-          <label className="pu-shop-quantity"><span>Quantità di {selected.name}</span><input aria-label={`Quantità di ${selected.name}`} type="number" min={0} max={MAX_SHOP_QUANTITY} step={1} inputMode="numeric" value={cart[selected.id] ?? 0} disabled={editBlocked} data-menu-artwork={MENU_ARTWORK_MODE} style={{ backgroundImage: MENU_SVG_ARTWORK_ENABLED ? `url("${assetUrl('/ui/studio/individuali/Scuro/quantita/display.svg')}")` : 'none' }} onChange={event => setQuantity(selected.id, Number(event.target.value))} /></label>
+          <label className="pu-shop-quantity"><span>Quantità di {selected.name}</span><input aria-label={`Quantità di ${selected.name}`} type="number" min={0} max={MAX_SHOP_QUANTITY} step={1} inputMode="numeric" value={cart[selected.id] ?? 0} disabled={editBlocked} data-menu-artwork="css" style={{ backgroundImage: 'none' }} onChange={event => setQuantity(selected.id, Number(event.target.value))} /></label>
           <KitButton artwork="increment" aria-label={`Aumenta ${selected.name}`} disabled={editBlocked || (cart[selected.id] ?? 0) >= MAX_SHOP_QUANTITY} onClick={() => setQuantity(selected.id, (cart[selected.id] ?? 0) + 1)}>+</KitButton>
         </div>
         <p className="pu-store-line-total"><span>Totale</span><strong><i aria-hidden="true">₳</i>{((cart[selected.id] ?? 0) * (selected.price ?? 0)).toLocaleString('it-IT')}</strong></p>
@@ -94,10 +92,12 @@ export function StoreScreen({ playerId, inputBlocked = false, shopInteractionId 
         </div>)}{!quantity && <p className="pu-empty">Il carrello è vuoto. Scegli le quantità nel catalogo.</p>}</div>
         <div className="pu-store-totals"><strong>Carrello: {quantity} oggetti · {total} ₳</strong><span>Saldo dopo l’acquisto: {Math.max(0, player.monete - total)} ₳</span></div>
         <div className="pu-store-actions"><StudioCommand disabled={!quantity} onClick={() => { setCart({}); setMessage('') }}>Svuota carrello</StudioCommand>
-          <StudioCommand className={reference ? 'pu-reference-purchase' : undefined} selected disabled={editBlocked || !quantity || insufficient || !!capacityItem} onClick={() => {
+          <StudioCommand className={reference ? 'pu-reference-purchase' : undefined} selected disabled={editBlocked || !quantity || insufficient || !!capacityItem} onClick={event => {
+            const button = event.currentTarget
             const result = state.acquistaOggetti(playerId, cart, location, shopInteractionId)
             setMessage(result.message)
-            if (result.ok) setCart({})
+            // Le monete volano dal borsellino al banco: solo presentazione, dopo il salvataggio riuscito.
+            if (result.ok) { setCart({}); flyCoins(document.querySelector('.pu-currency'), button, Math.min(12, 4 + quantity)) }
           }}>Acquista carrello</StudioCommand></div>
         {message && <p role="status" aria-live="polite" className="pu-store-result">{message}</p>}
       </KitPanel>

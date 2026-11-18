@@ -1,14 +1,56 @@
 {
-  "_istruzioni": "Valori delle mosse Status del Database. Il foglio descrive l'effetto a parole: qui c'è il numero usato dal gioco. Puoi cambiare 'valore' senza toccare il codice. Effetti: PARALISI, SONNO, CONFUSIONE, VELENO (applicano lo stato al bersaglio); CURA_PCT (cura la percentuale indicata degli HP massimi e rimuove veleno e paralisi); CURA_PARALISI (rimuove la paralisi); DANNO_FISSO (danni indicati, senza dadi né efficacia di tipo); IMMUNITA (cura lo stato e blocca i nuovi stati per i turni indicati).",
+  "_istruzioni": "Valori delle mosse Status del Database. Il foglio descrive l'effetto a parole: qui c'è il numero usato dal gioco. Puoi cambiare 'valore' senza toccare il codice. Effetti: PARALISI, SONNO, CONFUSIONE, VELENO (applicano lo stato al bersaglio); CURA_PCT (cura la percentuale indicata degli HP massimi e rimuove veleno e paralisi); CURA_PARALISI (rimuove la paralisi); DANNO_FISSO (danni indicati, senza dadi né efficacia di tipo); IMMUNITA (cura lo stato e blocca i nuovi stati per i turni indicati). Campi opzionali dalla legenda del foglio: 'precisione' (riuscita su 10, tirata con un d10), 'usiMassimi' (usi per lotta di ogni Arkamon), 'priorita' (la mossa si può usare prima dell'avversario anche da paralizzati).",
   "regole": {
-    "metti-paralisi": { "testo": "Metti paralisi", "effetto": "PARALISI", "valore": null },
-    "metti-sonno": { "testo": "Metti sonno", "effetto": "SONNO", "valore": null },
-    "metti-confusione": { "testo": "Metti confusione", "effetto": "CONFUSIONE", "valore": null },
-    "metti-veleno": { "testo": "Metti veleno", "effetto": "VELENO", "valore": null },
-    "ripristina-hp": { "testo": "Ripristina tanti hp (legenda del foglio: 1/2 degli HP massimi)", "effetto": "CURA_PCT", "valore": 50 },
-    "cura-veleno-hp": { "testo": "Cura veleno e hp (legenda del foglio: 1/4 degli HP massimi)", "effetto": "CURA_PCT", "valore": 25 },
-    "cura-paralisi": { "testo": "Cura paralisi", "effetto": "CURA_PARALISI", "valore": null },
-    "danno-fisso": { "testo": "Danno fisso (il foglio indica 10)", "effetto": "DANNO_FISSO", "valore": 10 },
-    "immunita": { "testo": "Immunità da status (legenda del foglio: 5 turni)", "effetto": "IMMUNITA", "valore": 5 }
+    "metti-paralisi": {
+      "testo": "Metti paralisi",
+      "effetto": "PARALISI",
+      "valore": null,
+      "precisione": 8
+    },
+    "metti-sonno": {
+      "testo": "Metti sonno",
+      "effetto": "SONNO",
+      "valore": null,
+      "precisione": 7
+    },
+    "metti-confusione": {
+      "testo": "Metti confusione",
+      "effetto": "CONFUSIONE",
+      "valore": null,
+      "precisione": 8
+    },
+    "metti-veleno": {
+      "testo": "Metti veleno",
+      "effetto": "VELENO",
+      "valore": null,
+      "precisione": 9
+    },
+    "ripristina-hp": {
+      "testo": "Ripristina tanti hp (legenda del foglio: 1/2 degli HP massimi)",
+      "effetto": "CURA_PCT",
+      "valore": 50,
+      "usiMassimi": 3
+    },
+    "cura-veleno-hp": {
+      "testo": "Cura veleno e hp (legenda del foglio: 1/4 degli HP massimi)",
+      "effetto": "CURA_PCT",
+      "valore": 25
+    },
+    "cura-paralisi": {
+      "testo": "Cura paralisi",
+      "effetto": "CURA_PARALISI",
+      "valore": null,
+      "priorita": true
+    },
+    "danno-fisso": {
+      "testo": "Danno fisso (il foglio indica 10)",
+      "effetto": "DANNO_FISSO",
+      "valore": 10
+    },
+    "immunita": {
+      "testo": "Immunità da status (legenda del foglio: 5 turni)",
+      "effetto": "IMMUNITA",
+      "valore": 5
+    }
   }
 }

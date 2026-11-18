@@ -1,4 +1,4 @@
-import { nuovoTurno } from '@/engine/movimento'
+import { nuovoTurno } from '@/engine/turnoOverworld'
 import type { NavigazioneScena, PosizioneAvatar, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
 import { getShopItem, hasArkaStore, isKeyItem, isShopItemId, isSoldAt, MAX_ITEM_QUANTITY, MAX_SHOP_QUANTITY, type ShopCart, type ShopInventory, type ShopItemId } from './catalog'
 import { getLocalMap } from '@/data/localMaps'

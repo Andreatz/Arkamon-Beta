@@ -12,7 +12,7 @@ async function openBattleFixture(page: Page) {
     if (localStorage.getItem('e2e-chronicle-fixture')) return
     const attacker = { istanzaId: 'chronicle-a', specieId: 1, nome: 'Vyrath Audit', livello: 14, hp: 1, xp: 0 }
     const defender = { istanzaId: 'chronicle-b', specieId: 13, nome: 'Wormaren Audit', livello: 5, hp: 1, xp: 0 }
-    const player = (id: 1 | 2) => ({ id, nome: `Cronaca ${id}`, squadra: id === 1 ? [attacker] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {}, caselleConsumate: [] })
+    const player = (id: 1 | 2) => ({ id, nome: `Cronaca ${id}`, squadra: id === 1 ? [attacker] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {} })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
@@ -120,7 +120,7 @@ test('restoring a different battle in the same scene replaces local HP, checkpoi
   const tools = page.getByRole('dialog', { name: 'La tua partita' })
   await tools.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   const downloaded = page.waitForEvent('download')
-  await tools.getByRole('button', { name: 'Scarica backup partita', exact: true }).click()
+  await tools.getByRole('button', { name: 'Scarica file di salvataggio', exact: true }).click()
   const backup = JSON.parse(await readFile((await (await downloaded).path())!, 'utf8'))
   const replacement = { istanzaId: 'restored-a', specieId: 5, nome: 'Darklaw Ripristinato', livello: 12, hp: 7, xp: 0 }
   const replacementEnemy = { istanzaId: 'restored-b', specieId: 13, nome: 'Wormaren Ripristinato', livello: 5, hp: 9, xp: 0 }
@@ -141,7 +141,7 @@ test('restoring a different battle in the same scene replaces local HP, checkpoi
     squadraA: [replacement], squadraB: [replacementEnemy], turnoCorrente: 'A',
     log: ['Checkpoint della partita ripristinata.'], cronaca: restoredChronicle, checkpoint: restoredCheckpoint,
   }
-  await tools.getByLabel('Importa backup partita').setInputFiles({ name: 'battle-restore.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) })
+  await tools.getByLabel('Importa file di salvataggio').setInputFiles({ name: 'battle-restore.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) })
   await expect(tools.getByLabel('Anteprima ripristino')).toBeVisible()
   await tools.getByRole('checkbox', { name: /Confermo la sostituzione/ }).check()
   await tools.getByRole('button', { name: 'Ripristina questa partita', exact: true }).click()

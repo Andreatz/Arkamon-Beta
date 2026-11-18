@@ -5,7 +5,7 @@ const bundle = (name: string) => Buffer.from(JSON.stringify({ format: 'arkamon-c
 
 async function openConfiguration(page: Page) {
   await page.addInitScript(() => {
-    const player = (id: 1 | 2) => ({ id, nome: `DEMO G${id}`, squadra: [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: 123, inventario: {} })
+    const player = (id: 1 | 2) => ({ id, nome: `DEMO G${id}`, squadra: [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 123, inventario: {} })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
       battaglia: null, posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },

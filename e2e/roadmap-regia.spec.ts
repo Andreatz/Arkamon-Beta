@@ -6,7 +6,7 @@ async function seed(context: BrowserContext, names = false, recent = false) {
     if (localStorage.getItem('roadmap-fixture')) return
     const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia iniziale' : 'Maggi', squadra: names ? [] : [{
       istanzaId: `roadmap-${id}`, specieId: id === 1 ? 1 : 5, nome: id === 1 ? 'Vyrath' : 'Darklaw', livello: 10, hp: 8, xp: 0,
-    }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [], monete: id === 1 ? 700 : 125, inventario: { potion: 2, masterball: 1 } })
+    }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 700 : 125, inventario: { potion: 2, masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
@@ -165,7 +165,7 @@ test('configuration import, subsequent editing and backup restore retain a writa
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   await dialog.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
   const downloading = page.waitForEvent('download')
-  await dialog.getByRole('button', { name: 'Scarica backup partita', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Scarica file di salvataggio', exact: true }).click()
   const download = await downloading
   const backup = await readFile((await download.path())!, 'utf8')
   await dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true }).click()
@@ -192,7 +192,7 @@ test('configuration import, subsequent editing and backup restore retain a writa
   await panel.getByRole('button', { name: 'Chiudi', exact: true }).click()
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   await dialog.getByRole('button', { name: 'Apri Salvataggio', exact: true }).click()
-  await dialog.getByLabel('Importa backup partita', { exact: true }).setInputFiles({ name: 'backup.json', mimeType: 'application/json', buffer: Buffer.from(backup) })
+  await dialog.getByLabel('Importa file di salvataggio', { exact: true }).setInputFiles({ name: 'backup.json', mimeType: 'application/json', buffer: Buffer.from(backup) })
   await expect(dialog.getByLabel('Anteprima ripristino')).toBeVisible()
   await dialog.getByRole('checkbox', { name: /Confermo la sostituzione/ }).check()
   await dialog.getByRole('button', { name: 'Ripristina questa partita', exact: true }).click()

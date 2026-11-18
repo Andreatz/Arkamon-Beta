@@ -9,7 +9,7 @@ test('team level cap discards KO experience through reload and team changes, and
     const boxed = { istanzaId: 'cap-box', specieId: 9, nome: 'Felyss fuori fascia', livello: 20, hp: 3, xp: 2 }
     const enemy = { istanzaId: 'cap-enemy', specieId: 13, nome: 'Wormaren avversario', livello: 5, hp: 1, xp: 0 }
     const player = (id: number) => ({ id, nome: `Cap ${id}`, squadra: id === 1 ? [a, mate] : [], deposito: id === 1 ? { '1:1': boxed } : {},
-      monete: 200, inventario: { masterball: 1 }, cespugliVisitati: [], allenatoriSconfitti: [], caselleConsumate: [] })
+      monete: 200, inventario: { masterball: 1 }, cespugliVisitati: [], allenatoriSconfitti: [] })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
     localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {},

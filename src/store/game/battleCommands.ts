@@ -2,6 +2,8 @@ import { getAllenatore, getPokemon } from '@/data'
 import { calcolaHPMax, calcolaVariazioneMonete, clearStoredExperience, type EsitoBattaglia, type TipoAvversario } from '@/engine/battleEngine'
 import { isTeamWithinLevelCap, teamCapMessage, teamLevelRange, TEAM_LEVEL_GAP } from '@/engine/teamLevelCap'
 import { finalizeConfiguredBattle } from '@/interactions/runtime'
+import { applicaFusioniAxolux, messaggioFusione } from '@/engine/fusion'
+import { recordArkadex } from '@/arkadex/arkadexModel'
 import type { GameState } from '../gameStore'
 import type { NavigazioneScena, PokemonIstanza, StatoBattaglia, StatoGiocatore } from '@/types'
 import { commandApplied, commandFailure, type GameCommandResult } from './commandPolicy'
@@ -94,13 +96,21 @@ export function resolveBattleConclusion(state: GameState, outcome: EsitoBattagli
   const location = battle.luogoRitorno || 'mappa-principale'
   const destination: NavigazioneScena = evolutions.length
     ? { scena: 'evoluzione', payload: { evoluzioni: evolutions, luogoRitorno: location, giocatoreId: playerId } }
-    : location === 'mappa-griglia' ? { scena: 'mappa-griglia' }
     : /^Percorso_/.test(location) ? { scena: 'percorso', payload: { luogo: location } }
     : location !== 'mappa-principale' ? { scena: 'citta', payload: { luogo: location } } : { scena: 'mappa-principale' }
-  return { result: commandApplied('Risultato della battaglia salvato.'), patch: {
-    ...final, battaglia: null,
+  const players = {
     giocatore1: cleanupBattlePlayer(final.giocatore1 ?? (playerId === 1 ? rewarded : state.giocatore1), false),
     giocatore2: cleanupBattlePlayer(final.giocatore2 ?? (playerId === 2 ? rewarded : state.giocatore2), false),
+  }
+  // Fusione di Axolux sul roster definitivo, nello stesso salvataggio del risultato. Chi ha
+  // un'evoluzione in attesa resta com'è: la scena dell'evoluzione lo cerca con la specie di prima.
+  const fusion = applicaFusioniAxolux(players[key], Math.random, new Set(evolutions.map(evolution => evolution.istanzaId)))
+  let arkadex = state.arkadex
+  for (const entry of fusion.fusioni) arkadex = recordArkadex(arkadex, playerId, entry.dopo.specieId, true)
+  return { result: commandApplied(fusion.fusioni.length ? `Risultato della battaglia salvato. ${fusion.fusioni.map(messaggioFusione).join(' ')}` : 'Risultato della battaglia salvato.'), patch: {
+    ...final, battaglia: null,
+    ...players, [key]: fusion.giocatore,
+    ...(fusion.fusioni.length ? { arkadex, avvisoFusione: fusion.fusioni.map(entry => ({ playerId, ...entry, messaggio: messaggioFusione(entry) })) } : {}),
     scenaPrecedente: state.scenaCorrente, scenaCorrente: destination,
     fallbackLocationActivity: destination.scena === 'citta' || destination.scena === 'percorso' ? state.fallbackLocationActivity : null,
   } }

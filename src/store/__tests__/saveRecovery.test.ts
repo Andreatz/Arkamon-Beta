@@ -23,7 +23,6 @@ describe('recupero dei campi corrotti senza perdere la partita valida', () => {
     expect(state.giocatore1).toMatchObject({ nome: 'Andrea', monete: 1200, squadra: [], deposito: {} })
     expect(state.giocatore1.cespugliVisitati).toEqual(new Set())
     expect(state.giocatore1.allenatoriSconfitti).toEqual(new Set())
-    expect(state.giocatore1.caselleConsumate).toEqual(new Set())
   })
 
   it('i dati persistiti non sostituiscono le azioni dello store', () => {
