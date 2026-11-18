@@ -1,5 +1,5 @@
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { ALLENATORI, getPokemon } from '@/data'
 import type { PokemonIstanza, TipoPokemon } from '@/types'
@@ -74,6 +74,17 @@ function TeamShield({ team }: { team: PokemonIstanza[] }) {
   </span>
 }
 
+/** Fase U6: Gara, Ripresa e Sfide in un cassetto «Altro», come nel mockup (striscia del Game Master pulita). */
+function MoreTools({ context, onAuxiliary }: { context: boolean; onAuxiliary: (tool: 'race' | 'recap' | 'challenges') => void }) {
+  const [open, setOpen] = useState(false)
+  return <div className="ref-menu-more" data-open={open || undefined}>
+    <button type="button" className="ref-menu-more-toggle" aria-expanded={open} aria-controls="ref-menu-utilities" onClick={() => setOpen(value => !value)}>
+      <KitIcon id="icon-activity"/>Altro<span aria-hidden="true">{open ? '▴' : '▾'}</span>
+    </button>
+    {open && <div id="ref-menu-utilities" className="ref-menu-utilities" aria-label="Altri strumenti">{([['race','Gara'],['recap','Ripresa'],['challenges','Sfide']] as const).map(([tool,title])=><button key={tool} type="button" aria-label={`Apri ${title}`} disabled={context&&tool!=='challenges'} onClick={()=>onAuxiliary(tool)}><KitIcon id={tool==='challenges'?'icon-challenges':'icon-activity'}/>{title}</button>)}</div>}
+  </div>
+}
+
 export function ReferenceMainMenu({playerId,onAuxiliary,onNavigate,onResume}:Props) {
   const one = useGameStore(state=>state.giocatore1), two = useGameStore(state=>state.giocatore2)
   const position1 = useGameStore(state=>state.posizione1), position2 = useGameStore(state=>state.posizione2)
@@ -85,7 +96,7 @@ export function ReferenceMainMenu({playerId,onAuxiliary,onNavigate,onResume}:Pro
   return <div className="ref-main-menu ref-provided-main-menu">
     <aside className="ref-trainers" aria-label="Allenatori della partita">
       <section className="ref-trainer-card is-primary" aria-label={`Riepilogo della partita di G${playerId}`}>
-        <div className="ref-trainer-identity"><div className="ref-trainer-portrait"><TrainerPortrait playerId={playerId}/></div><div className="ref-trainer-copy"><span className="pu-kicker">Allenatore · G{playerId}</span><h2>{player.nome || `Giocatore ${playerId}`}</h2><p><KitIcon id="icon-map"/>{(position.luogo ?? position.mappaId).replace(/_/g,' ')}</p>{medals(player)}<span className="ref-medal-count">Medaglie {badges(player)} / {gyms.length}</span><strong className="ref-trainer-coins"><KitIcon id="item-coin"/><AnimatedNumber value={player.monete} format={formatNumber}/></strong></div></div>
+        <div className="ref-trainer-identity"><div className="ref-trainer-portrait"><TrainerPortrait playerId={playerId}/></div><div className="ref-trainer-copy"><span className="pu-kicker">Allenatore · G{playerId}</span><h2 data-long-name={(player.nome ?? '').length > 14 || undefined}>{player.nome || `Giocatore ${playerId}`}</h2><p><KitIcon id="icon-map"/>{(position.luogo ?? position.mappaId).replace(/_/g,' ')}</p>{medals(player)}<span className="ref-medal-count">Medaglie {badges(player)} / {gyms.length}</span><strong className="ref-trainer-coins"><KitIcon id="item-coin"/><AnimatedNumber value={player.monete} format={formatNumber}/></strong></div></div>
         <div className="ref-trainer-team" aria-label={`Compagni di ${player.nome}`}>{player.squadra.length ? Array.from({ length: 6 }, (_, index) => {
           const pokemon = player.squadra[index]
           if (!pokemon) return <span key={`empty-${index}`} className="ref-team-slot is-empty" aria-hidden="true" />
@@ -98,7 +109,7 @@ export function ReferenceMainMenu({playerId,onAuxiliary,onNavigate,onResume}:Pro
       <section className="ref-trainer-card is-secondary" aria-label={`Riepilogo della partita di G${other.id}`}><div className="ref-trainer-portrait"><TrainerPortrait playerId={other.id}/></div><div><span className="pu-kicker">Allenatore · G{other.id}</span><h2>{other.nome || `Giocatore ${other.id}`}</h2>{medals(other)}<span className="ref-medal-count">Medaglie {badges(other)} / {gyms.length}</span></div></section>
       <footer className="ref-gm-strip">
         <p className="ref-gm-note"><span className="ref-gm-seal" aria-hidden="true"><KitIcon id="icon-activity"/></span><strong>Livio</strong><span>· Game Master</span></p>
-        <div className="ref-menu-utilities" aria-label="Altri strumenti">{([['race','Gara'],['recap','Ripresa'],['challenges','Sfide']] as const).map(([tool,title])=><button key={tool} type="button" aria-label={`Apri ${title}`} disabled={!!context&&tool!=='challenges'} onClick={()=>onAuxiliary(tool)}><KitIcon id={tool==='challenges'?'icon-challenges':'icon-activity'}/>{title}</button>)}</div>
+        <MoreTools context={!!context} onAuxiliary={onAuxiliary}/>
       </footer>
     </aside>
     <SpatialNavigation columns={3} selectOnFocus={false} className="ref-menu-grid" aria-label="Destinazioni del menù principale">{entries.map((entry,index)=><button data-rpg-item data-ui-id={`service.${entry.tool ?? entry.screen ?? 'map'}`} className="pu-menu-tile ref-menu-tile ref-provided-menu-tile" style={{'--tile-index':index} as CSSProperties} key={entry.title} type="button" aria-label={`Apri ${entry.title}`} disabled={!!context&&entry.tool!=='settings'&&!entry.resume} onClick={()=>entry.tool?onAuxiliary(entry.tool):entry.screen?onNavigate?.(entry.screen):onResume?.()}><span className="ref-menu-card-face"><ProvidedArtwork id="menu-card-normal" className="ref-menu-card-frame"/>{entry.screen === 'squadra' && player.squadra.length > 0 && hasGameArt('menu-team-shield') ? <TeamShield team={player.squadra}/> : entry.screen === 'squadra' && player.squadra.length > 0 ? <span className="ref-menu-companions" aria-hidden="true">{player.squadra.slice(0, 3).map(pokemon => <CreaturePortrait key={pokemon.istanzaId} pokemon={pokemon}/>)}</span> : (gameArtForMenu(entry.icon) ? <GameArt id={gameArtForMenu(entry.icon)!} className="ref-menu-art"/> : <ReferenceEmblem kind={entry.icon}/>)}<h2>{entry.title}</h2></span><span className="ref-menu-glint" aria-hidden="true"/></button>)}</SpatialNavigation>

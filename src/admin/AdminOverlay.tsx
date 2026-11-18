@@ -23,9 +23,13 @@ export function AdminOverlay() {
         aria-expanded={panelOpen}
         aria-controls="arkamon-admin-panel"
         onClick={() => setPanelOpen(!panelOpen)}
-        className="pointer-events-auto absolute right-3 top-3 rounded-md border border-[var(--arka-primary)] bg-[var(--arka-surface)] px-3 py-1.5 text-xs font-bold text-[var(--arka-text)] shadow-lg transition hover:bg-[var(--arka-surface-hover)]"
+        aria-label="Admin"
+        title="Admin (Ctrl+Shift+A)"
+        data-admin-toggle=""
+        className="admin-toggle pointer-events-auto absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border border-[var(--arka-primary)] bg-[var(--arka-surface)] text-base text-[var(--arka-text)] opacity-60 shadow-lg transition hover:opacity-100 focus-visible:opacity-100 hover:bg-[var(--arka-surface-hover)]"
       >
-        Admin
+        {/* Fase U6: icona discreta; la scorciatoia Ctrl+Shift+A resta la via principale. */}
+        <span aria-hidden="true">⚙</span>
       </button>
 
       {panelOpen ? <Suspense fallback={<div role="status" className="pointer-events-auto absolute right-3 top-14 rounded-md border border-[var(--arka-primary)] bg-[var(--arka-surface)] p-3 text-[var(--arka-text)]">Caricamento Admin…</div>}><AdminPanel /></Suspense> : null}

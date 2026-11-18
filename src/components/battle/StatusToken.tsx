@@ -1,5 +1,6 @@
 import type { Stato } from '@/types'
 import { percentualeProssimoTickVeleno } from '@/engine/battleEngine'
+import { GameArt, hasGameArt } from '@/ui-system/GameArt'
 
 interface StatusTokenProps {
   stato: Stato
@@ -13,9 +14,24 @@ const TOKEN_STYLES = {
   Confuso: { label: 'CONF', ring: 'border-orange-300 bg-orange-950 text-orange-100' },
 } as const
 
-/** Vector tokens stay legible beside either HP bar without an external sprite. */
+/** Gettoni dipinti del lotto 3, uno per stato. */
+const STATUS_ART: Record<Stato['tipo'], string> = {
+  Avvelenato: 'status-poison',
+  Paralizzato: 'status-paralysis',
+  Addormentato: 'status-sleep',
+  Confuso: 'status-confusion',
+}
+
+/** Identificativo del gettone dipinto, se consegnato. */
+export function statusArtId(tipo: Stato['tipo']): string | null {
+  const id = STATUS_ART[tipo]
+  return hasGameArt(id) ? id : null
+}
+
+/** Gettone dipinto quando disponibile; altrimenti il gettone vettoriale, leggibile accanto a entrambe le barre HP. */
 export function StatusToken({ stato, compact = false }: StatusTokenProps) {
   const style = TOKEN_STYLES[stato.tipo]
+  const art = statusArtId(stato.tipo)
   const poisonPercent = stato.tipo === 'Avvelenato' ? percentualeProssimoTickVeleno(stato) : 0
   const remaining = Math.max(0, stato.turniRimanenti)
   const detail = stato.tipo === 'Avvelenato' ? `${poisonPercent}%`
@@ -36,7 +52,9 @@ export function StatusToken({ stato, compact = false }: StatusTokenProps) {
       className="inline-flex max-w-full items-center gap-1 align-middle leading-none"
       data-status-token={stato.tipo}
     >
-      <span className={`flex shrink-0 items-center justify-center rounded-full border-2 shadow-lg ${style.ring} ${compact ? 'h-5 w-5 sm:h-7 sm:w-7' : 'h-9 w-9'}`}>
+      {art ? <span className={`flex shrink-0 items-center justify-center drop-shadow-lg ${compact ? 'h-6 w-6 sm:h-8 sm:w-8' : 'h-10 w-10'}`} data-status-art={art}>
+        <GameArt id={art} className="h-full w-full" />
+      </span> : <span className={`flex shrink-0 items-center justify-center rounded-full border-2 shadow-lg ${style.ring} ${compact ? 'h-5 w-5 sm:h-7 sm:w-7' : 'h-9 w-9'}`}>
         <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false" className="h-full w-full" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="22" cy="22" r="18.5" opacity="0.4" />
           {stato.tipo === 'Avvelenato' && <>
@@ -60,7 +78,7 @@ export function StatusToken({ stato, compact = false }: StatusTokenProps) {
             <path d="m31 10 1.1 3.1 3.3.1-2.6 2 1 3.1-2.8-1.8-2.7 1.8.9-3.1-2.6-2 3.3-.1L31 10Zm-17 18 1 2.8 3 .1-2.4 1.9.9 2.8-2.5-1.7-2.5 1.7.9-2.8-2.4-1.9 3-.1 1-2.8Z" fill="currentColor" strokeWidth="0.8" />
           </>}
         </svg>
-      </span>
+      </span>}
       <span className={`flex min-w-0 flex-col gap-0.5 rounded-md border px-1 py-0.5 font-bold shadow-md ${style.ring} ${compact ? 'text-[9px]' : 'text-[11px]'}`}>
         <span>{style.label}</span>
         <span className={compact ? 'text-[9px]' : 'text-[10px]'}>{detail}</span>

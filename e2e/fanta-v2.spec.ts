@@ -29,6 +29,7 @@ async function openCampaign(page: Page, legacyResult = false) {
 async function challenges(page: Page) {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
+  await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
   await dialog.getByRole('button', { name: 'Apri Sfide', exact: true }).click()
   return dialog
 }
@@ -39,7 +40,8 @@ test('updated prices and classic sharing coexist, persist and launch an isolated
   await openCampaign(page)
   const campaign = await page.evaluate(() => localStorage.getItem('arkamon-save'))
   const dialog = await challenges(page)
-  await expect(dialog.getByLabel('Regole della sfida')).toHaveValue('2')
+  // Il valore predefinito è la v3 del Database; la v2 resta selezionabile più sotto.
+  await expect(dialog.getByLabel('Regole della sfida')).toHaveValue('3')
   await dialog.getByRole('button', { name: 'Condividi o importa', exact: true }).click()
   const ids = [53, 95, 1, 5, 9, 13]
   await dialog.getByLabel('Codice della sfida').fill(JSON.stringify({ format: 'arkamon-challenge', version: 1, rulesVersion: 1, mode: 'fanta', seed: 'Legacy-Leafrex', speciesIds: ids }))

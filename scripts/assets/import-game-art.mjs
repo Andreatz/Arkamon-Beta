@@ -55,6 +55,20 @@ async function fromReference(args) {
   return entries
 }
 
+async function writeHalves(whole, name) {
+  const source = path.join(output, whole.file)
+  const half = Math.ceil(whole.width / 2)
+  const halves = []
+  for (const [suffix, left] of [['left', 0], ['right', whole.width - half]]) {
+    const id = `${whole.id}-${suffix}`
+    const info = await sharp(source).extract({ left, top: 0, width: half, height: whole.height })
+      .webp({ quality: 90, alphaQuality: 100, effort: 5 }).toFile(path.join(output, `${id}.webp`))
+    halves.push({ id, file: `${id}.webp`, width: info.width, height: info.height, source: `inbox/${name}#${suffix}` })
+    console.log(`${name} -> ${id}`)
+  }
+  return halves
+}
+
 async function fromInbox(directory) {
   const spec = JSON.parse(await fs.readFile(specPath, 'utf8'))
   const entries = []
@@ -82,8 +96,12 @@ async function fromInbox(directory) {
         console.log(`${name}[${index}] -> ${id}`)
       }
     } else {
-      entries.push({ ...await writeArt(rule.id, image, options), source: `inbox/${name}` })
+      const whole = await writeArt(rule.id, image, options)
+      entries.push({ ...whole, source: `inbox/${name}` })
       console.log(`${name} -> ${rule.id}`)
+      // Cornici con un ornamento al centro di un lato: due metà, ognuna allungabile a nove pezzi
+      // con il mezzo ornamento fermo sul lato interno (vedi battleFrames.css).
+      if (rule.halves) entries.push(...await writeHalves(whole, name))
     }
   }
   const delivered = new Set(files.map(name => { const canonical = name.replace(INBOX_IMAGE, '.png'); return spec.aliases?.[canonical] ?? canonical }))

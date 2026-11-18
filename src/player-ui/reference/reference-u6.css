@@ -1,0 +1,176 @@
+/* ======================= Fase U6: rifinitura del menù del giocatore ======================= */
+/* La barra delle schermate diventa una fila di icone (il nome compare al passaggio, ed è sempre
+   letto dagli screen reader); a destra i suggerimenti dei comandi, come nel mockup. */
+
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav {
+  gap: 8px;
+  width: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav > .pu-frame { display: none; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--arka-ui-gold) !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 50% 35%, #134064, #061a2e) !important;
+  box-shadow: inset 0 0 0 2px rgb(10 40 66 / 0.9), 0 4px 10px #0009 !important;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button::before,
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button::after { display: none !important; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button > .pu-frame { display: none; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button .pu-kit-icon { width: 22px; height: 22px; margin: 0; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button[aria-pressed="true"] {
+  border-color: var(--arka-ui-cyan) !important;
+  box-shadow: inset 0 0 0 2px rgb(10 40 66 / 0.9), 0 0 12px rgb(64 232 255 / 0.5) !important;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  padding: 3px 10px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: 6px;
+  background: rgb(4 22 40 / 0.96);
+  color: #fff3d8;
+  font: 400 var(--arka-size-caption) / 1.2 var(--arka-ui-font-display);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  pointer-events: none;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-button:is(:hover, :focus-visible) .pu-nav-label { opacity: 1; transform: translate(-50%, 0); }
+
+/* Suggerimenti dei comandi a destra, prima di «Riprendi il Viaggio». */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-footer .pu-command-hints {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+  margin-right: 16px;
+  color: #e9dcc0;
+  font: 400 var(--arka-size-body) / 1 var(--arka-ui-font-display);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints > span { display: inline-flex; align-items: center; gap: 8px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border: 1px solid #f3ead6;
+  border-radius: 999px;
+  background: rgb(4 22 40 / 0.9);
+  color: #fff;
+  font: 700 13px / 1 var(--arka-ui-font-body);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b::before { content: attr(data-key); }
+html[data-input-mode="gamepad"] .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b::before { content: attr(data-pad); }
+html[data-input-mode="gamepad"] .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints b { width: 28px; padding: 0; }
+
+/* Cassetto «Altro» nella striscia del Game Master. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more { position: relative; margin-left: auto; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 4px 12px;
+  border: 1px solid rgb(217 182 123 / 0.6);
+  border-radius: 8px;
+  background: rgb(4 22 40 / 0.85);
+  color: #e9dcc0;
+  font: 400 var(--arka-size-caption) / 1 var(--arka-ui-font-display);
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more-toggle .pu-kit-icon { width: 16px; height: 16px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more-toggle[aria-expanded="true"] { border-color: var(--arka-ui-cyan); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more > .ref-menu-utilities {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 20;
+  display: grid;
+  gap: 6px;
+  min-width: 180px;
+  padding: 8px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgb(8 36 62 / 0.98), rgb(3 18 34 / 0.98));
+  box-shadow: 0 10px 28px #000b;
+}
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more > .ref-menu-utilities > button { justify-content: flex-start; width: 100%; }
+
+/* Nomi lunghissimi nella scheda della Squadra: corpo più piccolo, così il titolo resta su una riga
+   e la scheda non deve scorrere (casi limite di player-ui-1080). */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-dossier-name h2[data-long-name] {
+  min-width: 0;
+  font-size: clamp(15px, 1.15vw, 21px);
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+/* Scene dirette (Deposito): il comando globale «Partita» resta in basso a sinistra, le icone partono dopo. */
+.pu-scene-host .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav { margin-left: 96px; }
+
+/* Arkadex su schermi bassi (fino a 800 px): scheda più compatta, così non deve scorrere. */
+@media (max-height: 800px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail h2 { font-size: var(--arka-size-heading); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail h3 { font-size: var(--arka-size-body); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-tabs .pu-button { min-height: 32px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-facts dd { font-size: var(--arka-size-body); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-facts > div { padding-block: 3px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail { gap: 6px; }
+}
+
+/* Analisi su schermi bassi (fino a 800 px): schede e valori un passo più piccoli che in U3. */
+@media (max-height: 800px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-tabs .pu-button { min-height: 34px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-stat > strong { font-size: var(--arka-size-body); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-facts dd { font-size: var(--arka-size-caption); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-selector select { min-height: 34px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-detail-heading h2 { font-size: var(--arka-size-heading); }
+}
+
+/* Nomi lunghi dell'allenatore: vanno a capo fra le parole, mai a metà parola, con un corpo più piccolo. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-card h2 { overflow-wrap: normal; word-break: normal; hyphens: manual; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-card h2[data-long-name] { font-size: clamp(19px, 1.75vw, 27px); line-height: 1.12; }
+
+/* ======================= Telefono ======================= */
+@media (max-width: 640px) {
+  /* Le icone delle schermate su una sola riga, che scorre se serve. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav {
+    display: flex !important;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 6px !important;
+    scrollbar-width: none;
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-label { display: none; }
+  /* Nomi lunghi: corpo più piccolo, a capo solo fra le parole quando possibile. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-card h2 { font-size: clamp(17px, 5.2vw, 24px); overflow-wrap: break-word; hyphens: auto; }
+  /* Il nome è l'ultimo span dentro il contenitore flessibile del comando: i puntini valgono solo su un blocco. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-player-option > span { min-width: 0; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-player-option > span > span:last-child { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-screen-title { font-size: clamp(18px, 5.4vw, 26px); min-width: 0; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints { display: none !important; }
+}
+
+/* Anteprima dello spostamento in attesa della destinazione: stesso ingombro, tono neutro. */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-swap-preview.is-pending { border-color: rgb(217 182 123 / 0.45); background: rgb(6 26 46 / 0.6); color: #c9d6e3; }
+
+/* Gettoni di stato dipinti (lotto 3) dentro le pillole di condizione. */
+html .pu-shell.pu-live-shell[data-ui-concept] .pu-status-pill { display: inline-flex; align-items: center; gap: 5px; }
+html .pu-shell.pu-live-shell[data-ui-concept] .pu-status-pill .pu-status-art { width: 1.5em; height: 1.5em; flex: none; }

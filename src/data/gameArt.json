@@ -2,6 +2,125 @@
   "version": 1,
   "assets": [
     {
+      "id": "battle-dice-tray",
+      "file": "battle-dice-tray.webp",
+      "width": 1000,
+      "height": 679,
+      "source": "inbox/battle-dice-tray.png"
+    },
+    {
+      "id": "battle-hp-banner",
+      "file": "battle-hp-banner.webp",
+      "width": 1600,
+      "height": 170,
+      "source": "inbox/battle-hp-banner.png"
+    },
+    {
+      "id": "battle-hp-medallion",
+      "file": "battle-hp-medallion.webp",
+      "width": 396,
+      "height": 400,
+      "source": "inbox/battle-hp-medallion.png"
+    },
+    {
+      "id": "battle-hp-track",
+      "file": "battle-hp-track.webp",
+      "width": 1600,
+      "height": 129,
+      "source": "inbox/battle-hp-track.png"
+    },
+    {
+      "id": "battle-message-frame",
+      "file": "battle-message-frame.webp",
+      "width": 1600,
+      "height": 767,
+      "source": "inbox/battle-message-frame.png"
+    },
+    {
+      "id": "battle-message-frame-left",
+      "file": "battle-message-frame-left.webp",
+      "width": 800,
+      "height": 767,
+      "source": "inbox/battle-message-frame.png#left"
+    },
+    {
+      "id": "battle-message-frame-right",
+      "file": "battle-message-frame-right.webp",
+      "width": 800,
+      "height": 767,
+      "source": "inbox/battle-message-frame.png#right"
+    },
+    {
+      "id": "battle-move-frame",
+      "file": "battle-move-frame.webp",
+      "width": 1200,
+      "height": 639,
+      "source": "inbox/battle-move-frame.png"
+    },
+    {
+      "id": "battle-move-frame-left",
+      "file": "battle-move-frame-left.webp",
+      "width": 600,
+      "height": 639,
+      "source": "inbox/battle-move-frame.png#left"
+    },
+    {
+      "id": "battle-move-frame-right",
+      "file": "battle-move-frame-right.webp",
+      "width": 600,
+      "height": 639,
+      "source": "inbox/battle-move-frame.png#right"
+    },
+    {
+      "id": "battle-move-frame-selected",
+      "file": "battle-move-frame-selected.webp",
+      "width": 1200,
+      "height": 658,
+      "source": "inbox/battle-move-frame-selected.png"
+    },
+    {
+      "id": "battle-move-frame-selected-left",
+      "file": "battle-move-frame-selected-left.webp",
+      "width": 600,
+      "height": 658,
+      "source": "inbox/battle-move-frame-selected.png#left"
+    },
+    {
+      "id": "battle-move-frame-selected-right",
+      "file": "battle-move-frame-selected-right.webp",
+      "width": 600,
+      "height": 658,
+      "source": "inbox/battle-move-frame-selected.png#right"
+    },
+    {
+      "id": "battle-supreme-frame",
+      "file": "battle-supreme-frame.webp",
+      "width": 820,
+      "height": 900,
+      "source": "inbox/battle-supreme-frame.png"
+    },
+    {
+      "id": "battle-supreme-frame-left",
+      "file": "battle-supreme-frame-left.webp",
+      "width": 410,
+      "height": 900,
+      "source": "inbox/battle-supreme-frame.png#left"
+    },
+    {
+      "id": "battle-supreme-frame-right",
+      "file": "battle-supreme-frame-right.webp",
+      "width": 410,
+      "height": 900,
+      "source": "inbox/battle-supreme-frame.png#right"
+    },
+    {
+      "id": "battle-turn-banner",
+      "file": "battle-turn-banner.webp",
+      "width": 1600,
+      "height": 194,
+      "source": "inbox/battle-turn-banner.png"
+    },
+    {
       "id": "category-capture",
       "file": "category-capture.webp",
       "width": 256,
@@ -46,57 +165,57 @@
     {
       "id": "item-bicicletta",
       "file": "item-bicicletta.webp",
-      "width": 900,
-      "height": 838,
+      "width": 512,
+      "height": 477,
       "source": "inbox/item-bicicletta.jpg"
     },
     {
       "id": "item-boost-danno",
       "file": "item-boost-danno.webp",
-      "width": 828,
-      "height": 900,
+      "width": 471,
+      "height": 512,
       "source": "inbox/item-boost-danno.jpg"
     },
     {
       "id": "item-boost-velocita",
       "file": "item-boost-velocita.webp",
-      "width": 900,
-      "height": 786,
+      "width": 512,
+      "height": 447,
       "source": "inbox/item-boost-velocita.jpg"
     },
     {
       "id": "item-cura-totale",
       "file": "item-cura-totale.webp",
-      "width": 612,
-      "height": 900,
+      "width": 348,
+      "height": 512,
       "source": "inbox/item-cura-totale.jpg"
     },
     {
       "id": "item-iperpozione",
       "file": "item-iperpozione.webp",
-      "width": 464,
-      "height": 900,
+      "width": 264,
+      "height": 512,
       "source": "inbox/item-iperpozione.jpg"
     },
     {
       "id": "item-mega-sacchettino",
       "file": "item-mega-sacchettino.webp",
-      "width": 772,
-      "height": 900,
+      "width": 439,
+      "height": 512,
       "source": "inbox/item-mega-sacchettino.jpg"
     },
     {
       "id": "item-monopattino",
       "file": "item-monopattino.webp",
-      "width": 618,
-      "height": 900,
+      "width": 351,
+      "height": 512,
       "source": "inbox/item-monopattino.jpg"
     },
     {
       "id": "item-paralysis-heal",
       "file": "item-paralysis-heal.webp",
-      "width": 598,
-      "height": 900,
+      "width": 340,
+      "height": 512,
       "source": "inbox/item-antiparalisi.jpg"
     },
     {
@@ -109,15 +228,15 @@
     {
       "id": "item-pozione-max",
       "file": "item-pozione-max.webp",
-      "width": 691,
-      "height": 900,
+      "width": 393,
+      "height": 512,
       "source": "inbox/item-pozione-max.jpg"
     },
     {
       "id": "item-profumo-speciale",
       "file": "item-profumo-speciale.webp",
-      "width": 825,
-      "height": 900,
+      "width": 469,
+      "height": 512,
       "source": "inbox/item-profump-speciale.jpg"
     },
     {
@@ -130,15 +249,15 @@
     {
       "id": "item-sacchettino",
       "file": "item-sacchettino.webp",
-      "width": 769,
-      "height": 900,
+      "width": 438,
+      "height": 512,
       "source": "inbox/item-sacchettino.jpg"
     },
     {
       "id": "item-sacchettino-supremo",
       "file": "item-sacchettino-supremo.webp",
-      "width": 747,
-      "height": 900,
+      "width": 425,
+      "height": 512,
       "source": "inbox/item-sacchettino-supremo.jpg"
     },
     {
@@ -151,8 +270,8 @@
     {
       "id": "item-ultra-sacchettino",
       "file": "item-ultra-sacchettino.webp",
-      "width": 752,
-      "height": 900,
+      "width": 428,
+      "height": 512,
       "source": "inbox/item-ultra-sacchettino.jpg"
     },
     {
@@ -345,11 +464,102 @@
       "source": "inbox/shopkeeper.jpg"
     },
     {
+      "id": "status-confusion",
+      "file": "status-confusion.webp",
+      "width": 232,
+      "height": 256,
+      "source": "inbox/status-tokens.png#3"
+    },
+    {
+      "id": "status-paralysis",
+      "file": "status-paralysis.webp",
+      "width": 233,
+      "height": 256,
+      "source": "inbox/status-tokens.png#1"
+    },
+    {
+      "id": "status-poison",
+      "file": "status-poison.webp",
+      "width": 233,
+      "height": 256,
+      "source": "inbox/status-tokens.png#0"
+    },
+    {
+      "id": "status-sleep",
+      "file": "status-sleep.webp",
+      "width": 233,
+      "height": 256,
+      "source": "inbox/status-tokens.png#2"
+    },
+    {
       "id": "summoning-ring",
       "file": "summoning-ring.webp",
       "width": 676,
       "height": 720,
       "source": "reference-assets/summoning-ring"
+    },
+    {
+      "id": "title-keyart",
+      "file": "title-keyart.webp",
+      "width": 1672,
+      "height": 941,
+      "source": "inbox/title-keyart.png"
+    },
+    {
+      "id": "type-acqua",
+      "file": "type-acqua.webp",
+      "width": 233,
+      "height": 256,
+      "source": "inbox/type-emblems.png#4"
+    },
+    {
+      "id": "type-elettro",
+      "file": "type-elettro.webp",
+      "width": 244,
+      "height": 256,
+      "source": "inbox/type-emblems.png#1"
+    },
+    {
+      "id": "type-erba",
+      "file": "type-erba.webp",
+      "width": 256,
+      "height": 256,
+      "source": "inbox/type-emblems.png#5"
+    },
+    {
+      "id": "type-fuoco",
+      "file": "type-fuoco.webp",
+      "width": 248,
+      "height": 256,
+      "source": "inbox/type-emblems.png#2"
+    },
+    {
+      "id": "type-normale",
+      "file": "type-normale.webp",
+      "width": 222,
+      "height": 256,
+      "source": "inbox/type-emblems.png#0"
+    },
+    {
+      "id": "type-oscurita",
+      "file": "type-oscurita.webp",
+      "width": 256,
+      "height": 252,
+      "source": "inbox/type-emblems.png#6"
+    },
+    {
+      "id": "type-psico",
+      "file": "type-psico.webp",
+      "width": 233,
+      "height": 256,
+      "source": "inbox/type-emblems.png#7"
+    },
+    {
+      "id": "type-terra",
+      "file": "type-terra.webp",
+      "width": 222,
+      "height": 256,
+      "source": "inbox/type-emblems.png#3"
     }
   ]
 }

@@ -233,7 +233,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     <nav className="pu-nav" aria-label="Schermate del giocatore">
       <KitFrame id="panel-wide" />
       {PLAYER_UI_SCREENS.map(id => <KitButton data-ui-id={`nav.${id === 'partita' ? 'menu' : id}`} className="pu-nav-button" key={id} active={!visibleTool && screen === id} disabled={!!context && id !== 'partita'}
-        aria-pressed={!visibleTool && screen === id} onClick={() => navigate(id)}><KitIcon id={screens[id].icon} />{screens[id].label}</KitButton>)}
+        aria-pressed={!visibleTool && screen === id} title={screens[id].label} onClick={() => navigate(id)}><KitIcon id={screens[id].icon} /><span className="pu-nav-label">{screens[id].label}</span></KitButton>)}
     </nav>
 
     <div className="pu-page-head"><div><span className="pu-kicker">{visibleTool ? 'Strumenti della partita' : page.kicker}</span>{visibleTool ? <h2>{toolLabel}</h2> : <h1>{page.title}</h1>}
@@ -264,7 +264,12 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     </main>
 
     <footer className="pu-footer"><span>Turno di G{activePlayerId}{!context && turn.giocatoreAttivo === playerId ? ` · ${turn.azioniRimaste} ${turn.azioniRimaste === 1 ? 'azione disponibile' : 'azioni disponibili'}` : ''}</span>
-      <span className="pu-keyboard-hint">↑ ↓ Seleziona · Invio Conferma · Esc Indietro</span><PresentManagementControl screen={visibleTool ?? screen} playerId={playerId} instanceId={instanceId} /><StudioCommand className="pu-resume-command" data-ui-id="resume-journey" selected onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</StudioCommand>
+      <span className="pu-keyboard-hint">↑ ↓ Seleziona · Invio Conferma · Esc Indietro</span>
+      {/* Fase U6: suggerimenti dei comandi come nel mockup; il gamepad mostra A e B, la tastiera Invio ed Esc. */}
+      <span className="pu-command-hints" aria-hidden="true">
+        <span><b data-pad="A" data-key="Invio" />Conferma</span>
+        <span><b data-pad="B" data-key="Esc" />Indietro</span>
+      </span><PresentManagementControl screen={visibleTool ?? screen} playerId={playerId} instanceId={instanceId} /><StudioCommand className="pu-resume-command" data-ui-id="resume-journey" selected onClick={onClose}><KitIcon id="icon-home" />Riprendi il Viaggio</StudioCommand>
     </footer>
   </div></SplashArtworkProvider>
 }

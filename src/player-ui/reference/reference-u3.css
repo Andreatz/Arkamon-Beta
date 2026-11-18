@@ -155,7 +155,7 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-ac
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-actions > .pu-reference-purchase { font-size: var(--arka-size-lead); }
 
 /* Schermi bassi (768–820 px): negoziante più piccolo e scheda compatta, così nulla deborda. */
-@media (max-height: 820px) {
+@media (max-height: 960px) {
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store { --store-keeper-height: clamp(120px, 20vh, 170px); }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-detail { gap: 4px; padding-top: 8px; padding-bottom: 8px; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u3-store .pu-store-selected-summary .pu-item-hero { min-height: 0; max-height: 84px; }
@@ -287,4 +287,22 @@ html .pu-shell.pu-live-shell[data-ui-concept] .pu-kit-icon:is(.pu-kit-icon-art, 
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-kit-icon:is(.pu-kit-icon-art, .pu-kit-icon-provided)::after {
   content: none !important;
   display: none !important;
+}
+
+/* ======================= Fase U6: emblemi dei tipi del lotto 3 ======================= */
+/* L'emblema dipinto ha già anello d'oro e smalto: il sigillo perde il proprio cerchio. */
+html .pu-shell.pu-live-shell[data-ui-concept] .pu-type-seal.has-emblem {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+html .pu-shell.pu-live-shell[data-ui-concept] .pu-type-seal.has-emblem { position: relative; }
+html .pu-shell.pu-live-shell[data-ui-concept] .pu-type-seal.has-emblem > .pu-type-emblem {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.7));
 }

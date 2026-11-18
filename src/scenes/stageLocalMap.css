@@ -69,6 +69,9 @@ html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-heading span
   margin-top: 3px;
   font: italic clamp(14px, 1vw, 18px) var(--arka-ui-font-body, Georgia, serif);
   color: #a8ddeb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 /* Riepilogo del turno sotto il cartiglio: resta solo l'obiettivo, il resto è già nella fascia del turno. */
 .local-map-scene--stage .ref-local-place .turn-summary {
@@ -92,8 +95,11 @@ html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-back { align
 /* Fascia «Turno di …» con ritratto e azioni rimaste (al posto del dado del mockup). */
 .local-map-scene--stage .ref-local-turn {
   justify-self: center;
+  /* U6: con un nome lungo la fascia resta nella sua colonna e il titolo si accorcia. */
+  min-width: 0;
+  max-width: 100%;
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto minmax(0, auto) auto;
   align-items: center;
   gap: 14px;
   padding: 5px 10px 5px 5px;
@@ -117,7 +123,17 @@ html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-back { align
   font: 400 clamp(22px, 1.9vw, 34px) / 1 var(--arka-ui-font-display, Georgia, serif);
   color: #f7ecd6;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-shadow: 0 2px 3px #000b;
+}
+.local-map-scene--stage .ref-local-turn-title[data-long-name] {
+  font-size: clamp(15px, 1.2vw, 21px);
+  line-height: 1.1;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .local-map-scene--stage .ref-local-turn-title strong { font-weight: 700; color: var(--stage-gold-bright); }
 html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-budget {

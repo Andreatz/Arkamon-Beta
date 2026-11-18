@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { heldActions, INITIAL_PAD_STATE, KEY_FOR_ACTION, nearestInDirection, stepPad, type PadAction, type PadDirection, type PadSnapshot } from './gamepadInput'
+import { openPlayerUi } from '@/player-ui/navigation'
 import '@/motion/ui/liveInterface.css'
 
 const FOCUSABLE = 'button:not(:disabled), a[href], select:not(:disabled), input:not(:disabled):not([type="hidden"]), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
@@ -67,7 +68,10 @@ function perform(action: PadAction, pads: Gamepad[]) {
   if (action === 'back') { rumble(pads, 0.2); pressKey('Escape'); return }
   if (action === 'menu') {
     if (document.querySelector('[data-game-dialog]')) { pressKey('Escape'); return }
-    document.querySelector<HTMLElement>('[data-player-tools-launcher]')?.click()
+    // Nella mappa locale il pulsante globale non è montato (Fase U6): Start apre comunque il menù.
+    const launcher = document.querySelector<HTMLElement>('[data-player-tools-launcher]')
+    if (launcher) launcher.click()
+    else openPlayerUi('partita')
     return
   }
   pressKey(KEY_FOR_ACTION[action]!)

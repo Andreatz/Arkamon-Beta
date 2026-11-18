@@ -96,6 +96,7 @@ import { efficacyTone } from '@/components/battle/battleCinematics'
 import { BattleDamageNumber, BattleMoveBanner } from '@/components/battle/BattleCinematicLayer'
 import { BattleCaptureLayer, captureHidesTarget } from '@/components/battle/BattleCaptureLayer'
 import { captureBagArt } from '@/components/battle/battleCapture'
+import { BattleFrame, hasBattleFrame } from '@/components/battle/BattleFrame'
 import { GameArt } from '@/ui-system/GameArt'
 import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { planD20Capture, planMasterCapture } from '@/components/battle/battleCapture'
@@ -1603,7 +1604,7 @@ export function BattagliaScene() {
       <BattleLogPanel chronicle={chronicle} busy={azioneInCorso || coinOpen || !!statusRoll} />
       {previewView === 'dice' && <DiceRollOverlay staticPreview roll={{ id: -1, side: 'A', moveName: 'Attacco di esempio', rolls: [2, 4, 6], increment: 2, damage: 14 }} />}
       {previewView === 'bag' && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={() => ({ ok: false, message: 'Anteprima del layout: nessun oggetto usato.' })} onClose={() => {}} />}
-      {!terminata && <button type="button" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
+      {!terminata && <button type="button" data-battle-bag-command="" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
       {bagOpen && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={eseguiOggetto} onClose={() => setBagOpen(false)} boostBlocked={boostBlockedReason(battaglia)} activeBoosts={battaglia?.boost} />}
       {audienceChoice && !terminata && <BattleAudienceOverlay
         request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}
@@ -1996,7 +1997,8 @@ export function BattagliaScene() {
         editing={layoutEditing}
         onChange={updateBattleLayout}
       >
-        <div role="status" data-battle-turn-status className={`${diceRoll ? 'relative isolate' : 'arka-panel'} flex h-full w-full items-center justify-center px-4 py-1`}>
+        <div role="status" data-battle-turn-status data-battle-framed={!diceRoll && hasBattleFrame('turn') || undefined} className={`${diceRoll ? 'relative isolate' : 'arka-panel'} flex h-full w-full items-center justify-center px-4 py-1`}>
+        {!diceRoll && <BattleFrame kind="turn" />}
         {diceRoll && <span className="game-button-frame" data-kit="button-primary" aria-hidden="true" style={{
           borderImageSource: `url("${assetUrl('/ui/player-kit/button-primary.svg')}")`, borderImageSlice: '44 fill',
         }} />}

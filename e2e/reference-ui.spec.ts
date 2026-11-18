@@ -81,7 +81,10 @@ test('eight reference screens fit and preserve real storage',async({page,isMobil
       expect(centered.every(item=>item.x<1&&item.y<1&&item.fits),'bag illustrations are centered inside their frames').toBe(true)
     }
     if(screen!=='citta') {
-      const hiddenArt=await root.locator('.pu-nav-button,.pu-live-bag-category,.pu-dex-row,.pu-reference-team .pu-actions>.studio-command').evaluateAll(elements=>elements.filter(el=>getComputedStyle(el,'::before').display==='none').map(el=>el.textContent))
+      // Fase U6: la barra di navigazione è compatta (icone tonde senza cornice testuale).
+      const navIcons=await root.locator('.pu-nav .pu-nav-button .pu-kit-icon').evaluateAll(icons=>icons.map(icon=>icon.getBoundingClientRect()).filter(box=>box.width>=16&&box.height>=16).length)
+      expect(navIcons,'compact navigation icons').toBeGreaterThan(0)
+      const hiddenArt=await root.locator('.pu-live-bag-category,.pu-dex-row,.pu-reference-team .pu-actions>.studio-command').evaluateAll(elements=>elements.filter(el=>getComputedStyle(el,'::before').display==='none').map(el=>el.textContent))
       expect(hiddenArt,'authored decorative layers remain visible').toEqual([])
     }
     const horizontal=await root.evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}))
@@ -133,7 +136,7 @@ test('reference gallery and local map use real controls without modifying the ca
   const move=preview.getByRole('navigation',{name:'Punti raggiungibili'}).getByRole('button').first()
   await expect(move).toBeEnabled();await move.click()
   await expect(preview.locator('.local-map-budget')).toHaveText('1 azione')
-  await preview.getByRole('button',{name:'Menù',exact:true}).click()
+  await preview.getByRole('button',{name:'Partita',exact:true}).click()
   await expect(preview.locator('.ref-main-menu')).toBeVisible()
   await preview.getByRole('button',{name:'Apri Squadra',exact:true}).click()
   await expect(preview.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen','squadra')

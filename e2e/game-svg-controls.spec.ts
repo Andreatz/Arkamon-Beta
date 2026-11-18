@@ -80,7 +80,7 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
     return { tag: element.tagName, label: element.textContent?.trim(), hasFrame: !!frame, background: style.backgroundColor, backgroundImage: style.backgroundImage, borderWidth: style.borderTopWidth, source: frameStyle?.borderImageSource,
       slice: frameStyle?.borderImageSlice, repeat: frameStyle?.borderImageRepeat, font: style.fontFamily, localMap: !!element.closest('.local-map-scene'),
       // Fase U5: titolo, mappa principale e battaglia usano Cinzel come il resto dell'interfaccia di riferimento.
-      aurora: !!element.closest('[data-world-rpg-map], .rpg-title-scene[data-title-key-art], [data-battle-layout-root][data-reference-ui]'),
+      aurora: !!element.closest('[data-world-rpg-map], .rpg-title-scene[data-title-key-art], [data-battle-layout-root][data-reference-ui], .player-tools-launcher'),
       decorative: frame?.getAttribute('aria-hidden'), disabled: (element as HTMLButtonElement).disabled,
       bound: { left: bound.left, top: bound.top, right: bound.right, bottom: bound.bottom, width: bound.width, height: bound.height },
       frameBound: { left: frameBound.left, top: frameBound.top, right: frameBound.right, bottom: frameBound.bottom },
@@ -192,8 +192,11 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   const responses = await openFixture(page, 'battaglia')
   const move = page.getByRole('button').filter({ has: page.getByText('Soffio', { exact: true }) })
   await expect(move).toBeEnabled()
-  // Fase U5: cornice provvisoria oro e blu notte, in attesa del lotto 3.
-  expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toContain('/ui/aurora/move-frame.svg')
+  // Fase U6: la cornice dipinta del lotto 3 (due metà) sostituisce lo sfondo SVG provvisorio.
+  expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toBe('none')
+  const frame = move.locator('[data-battle-frame="move"]')
+  await expect(frame).toHaveCount(1)
+  expect(await frame.evaluate(element => getComputedStyle(element, '::before').borderImageSource)).toMatch(/battle-move-frame(-selected)?-left/)
   expect(await move.evaluate(element => getComputedStyle(element).fontFamily)).toContain('Arkamon Cinzel')
   // Record the real transient result before slower artwork inspection and PNG
   // encoding; those operations can finish after the battle removes the overlay.
@@ -239,8 +242,14 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
       hp: document.querySelector('[data-battle-hp-side="enemy"]')?.getAttribute('data-battle-hp'),
     }
   })
-  expect(proof.background).not.toBe('transparent')
-  expect(proof.alpha).toBeCloseTo(.55, 2)
+  // Fase U6: con il vassoio dipinto del lotto 3 il fondo è l'illustrazione, non un rettangolo al 55%.
+  if (await panel.getAttribute('data-dice-tray')) {
+    await expect(panel.locator('.battle-dice-tray')).toBeVisible()
+    expect(proof.alpha).toBe(0)
+  } else {
+    expect(proof.background).not.toBe('transparent')
+    expect(proof.alpha).toBeCloseTo(.55, 2)
+  }
   expect(proof.backdrop).toBe('none')
   expect(proof.opacity).toBe('1')
   expect(proof.captionOpacity.length).toBeGreaterThanOrEqual(3)

@@ -416,6 +416,11 @@ test('six match utilities use their main cards, role-based typography and a sing
   const screenshot = await page.screenshot({ path: test.info().outputPath(isMobile ? 'menu-phone.png' : 'menu-1920x1080.png') })
   await test.info().attach('Menù Aurora con nove destinazioni e tipografia serif', { body: screenshot, contentType: 'image/png' })
   for (const [label, id, region] of utilities) {
+    // Fase U6: Gara, Ripresa e Sfide stanno nel cassetto «Altro», chiuso a ogni apertura del menù.
+    if (['Gara', 'Ripresa', 'Sfide'].includes(label)) {
+      const more = dialog.getByRole('button', { name: 'Altro', exact: true })
+      if (await more.getAttribute('aria-expanded') !== 'true') await more.click()
+    }
     await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
     await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
     await expect(dialog.getByRole('region', { name: region, exact: true })).toBeVisible()

@@ -57,3 +57,25 @@
 }
 .rpg-title-scene[data-title-key-art] .rpg-command[data-game-button="primary"] { border-color: #70e4f5 !important; box-shadow: inset 0 0 12px rgb(78 220 251 / 0.3), 0 0 14px rgb(64 232 255 / 0.35), 0 8px 22px #000a !important; }
 .rpg-title-scene[data-title-key-art] .rpg-command:not(:disabled):is(:hover, :focus-visible) { filter: brightness(1.12); }
+
+/* Key art definitiva (lotto 3): un'unica illustrazione che respira piano, con lo stesso velo. */
+.title-key-art--painted .title-key-art__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important;
+  object-position: 50% 40%;
+  transform-origin: 50% 45%;
+  animation: title-key-art-breathe calc(var(--motion-scale, 1) * 26s) ease-in-out infinite alternate;
+}
+@keyframes title-key-art-breathe { from { transform: scale(1.02); } to { transform: scale(1.08) translateY(-0.6%); } }
+.title-key-art--painted[data-still] .title-key-art__image { animation: none; transform: none; }
+/* Il cielo in alto al centro è libero per il logo: il velo è più leggero che sul trittico. */
+.title-key-art--painted .title-key-art__veil {
+  background:
+    radial-gradient(ellipse 34% 30% at 50% 66%, rgb(3 17 36 / 0.62), rgb(3 17 36 / 0.18) 70%, transparent 100%),
+    radial-gradient(ellipse at center, transparent 55%, rgb(2 10 22 / 0.7) 100%),
+    linear-gradient(to bottom, rgb(2 10 22 / 0.2), transparent 30%, transparent 70%, rgb(2 10 22 / 0.55));
+}
+@media (prefers-reduced-motion: reduce) { .title-key-art--painted .title-key-art__image { animation: none; } }

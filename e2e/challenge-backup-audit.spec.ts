@@ -26,6 +26,7 @@ test('emergency download during a seed challenge exports the conserved campaign'
   const campaign = JSON.parse(before!).state
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
+  await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
   await dialog.getByRole('button', { name: 'Apri Sfide', exact: true }).click()
   await dialog.getByLabel('Seed della sfida', { exact: true }).fill('BACKUP-LIVE')
   await dialog.getByRole('button', { name: 'Genera sfida', exact: true }).click()

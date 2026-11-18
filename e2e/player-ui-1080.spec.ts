@@ -188,8 +188,10 @@ async function assertVisiblePortraits(dialog: Locator, context: string) {
     if (Math.abs((alpha.left + alpha.right) / 2 - cx) > epsilon || Math.abs((alpha.top + alpha.bottom) / 2 - cy) > epsilon) issues.push('Visible alpha is off center')
     if (alpha.left < circleSquare.left - epsilon || alpha.right > circleSquare.right + epsilon
       || alpha.top < circleSquare.top - epsilon || alpha.bottom > circleSquare.bottom + epsilon) issues.push('Visible alpha exceeds circle square')
-    if (alpha.left < -epsilon || alpha.right > innerWidth + epsilon || alpha.top < -epsilon || alpha.bottom > innerHeight + epsilon) issues.push('Visible alpha exceeds viewport')
-    for (let ancestor = svg.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
+    if (!svg.closest('.pu-u2-deposit .pu-box-grid, .pu-u2-dex .pu-dex-list')
+      && (alpha.left < -epsilon || alpha.right > innerWidth + epsilon || alpha.top < -epsilon || alpha.bottom > innerHeight + epsilon)) issues.push('Visible alpha exceeds viewport')
+    // Liste a scorrimento volute (U2): un ritratto parzialmente fuori vista è scorrimento, non un taglio.
+    if (!svg.closest('.pu-u2-deposit .pu-box-grid, .pu-u2-dex .pu-dex-list')) for (let ancestor = svg.parentElement; ancestor && ancestor !== document.body; ancestor = ancestor.parentElement) {
       const style = getComputedStyle(ancestor), bound = ancestor.getBoundingClientRect()
       const clippedX = ['hidden', 'clip', 'auto', 'scroll'].includes(style.overflowX)
       const clippedY = ['hidden', 'clip', 'auto', 'scroll'].includes(style.overflowY)
@@ -431,6 +433,8 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
     const before = await savedCampaign(page), dialog = await openTools(page)
     for (const [label, id] of [['Registro', 'register'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Sfide', 'challenges']] as const) {
       await selectScreen(dialog, 'Menù Partita', 'partita')
+      // Fase U6: Gara, Ripresa e Sfide stanno nel cassetto «Altro» della striscia del Game Master.
+      if (['race', 'recap', 'challenges'].includes(id)) await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
       await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
       await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
       await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
@@ -496,6 +500,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 900
       }
       for (const [label, id] of [['Registro', 'register'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Sfide', 'challenges']] as const) {
         await selectScreen(dialog, 'Menù Partita', 'partita')
+        if (['race', 'recap', 'challenges'].includes(id)) await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
         await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
         await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
         await check(label)
