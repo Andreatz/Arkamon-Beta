@@ -13,13 +13,15 @@ const nativeReleaseSpecies = Object.freeze([107, 108, 109, 110])
 export const PENDING_NATIVE_RELEASE_SPECIES = Object.freeze([
   ...Array.from({ length: 56 }, (_, index) => index + 111),
   169, 170, 171, 172, 173, 174, 175, 176,
+  177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
+  191, 192, 193, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
 ])
-const pendingPortraitReleaseSpecies = Object.freeze([205, 184, 206])
+const pendingPortraitReleaseSpecies = Object.freeze([167, 168, 194, 195])
 export const NATIVE_RELEASE_SCENARIOS = Object.freeze([
   ...nativeReleaseSpecies.map(species => `compiled ${species}: five native actions against the pinned local media revision`),
   ...[[107, 110], [108, 109]].map(([attacker, target]) => `compiled ${attacker} versus ${target}: native release and reaction cues complete the real VFX lifecycle`),
-  ...PENDING_NATIVE_RELEASE_SPECIES.map(species => `compiled ${species}: pending form plays five native actions without game data`),
-  ...pendingPortraitReleaseSpecies.map(species => `compiled ${species}: pending portrait uses the exact pinned original without game data`),
+  ...PENDING_NATIVE_RELEASE_SPECIES.map(species => `compiled ${species}: Database species plays five native actions`),
+  ...pendingPortraitReleaseSpecies.map(species => `compiled ${species}: Database species without videos uses the exact pinned portrait`),
 ])
 
 async function inventory(root, relative = '') {

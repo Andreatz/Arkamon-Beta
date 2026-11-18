@@ -601,5 +601,43 @@ class InitialBodyScaleTests(unittest.TestCase):
             converter.common_plan(clips, None, 384, .94, .9, 16, 4096, True)
 
 
+class MagentaScreenTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.previous = (converter.SCREEN_COLOUR, converter.SCREEN_BACKGROUND_FALLBACK)
+        converter.SCREEN_COLOUR = 'magenta'
+        converter.SCREEN_BACKGROUND_FALLBACK = None
+
+    def tearDown(self) -> None:
+        converter.SCREEN_COLOUR, converter.SCREEN_BACKGROUND_FALLBACK = self.previous
+
+    def test_keys_magenta_and_its_dark_shadow_without_removing_native_colours(self) -> None:
+        image = Image.new('RGB', (128, 128), (240, 0, 240))
+        image.paste((60, 0, 60), (8, 8, 24, 24))
+        colours = [(40, 170, 80), (230, 30, 30), (30, 60, 220), (220, 180, 40), (70, 70, 70)]
+        for index, colour in enumerate(colours):
+            image.paste(colour, (32 + index * 16, 48, 48 + index * 16, 80))
+        keyed, _ = converter.remove_green(image)
+        self.assertEqual(keyed.getpixel((0, 0)), (0, 0, 0, 0))
+        self.assertEqual(keyed.getpixel((12, 12)), (0, 0, 0, 0))
+        for index, colour in enumerate(colours):
+            self.assertEqual(keyed.getpixel((40 + index * 16, 60)), (*colour, 255))
+
+    def test_preserves_soft_edge_coverage_and_removes_paired_magenta_spill(self) -> None:
+        image = Image.new('RGB', (128, 128), (240, 0, 240))
+        image.paste((130, 70, 150), (48, 48, 80, 80))
+        keyed, _ = converter.remove_green(image)
+        red, green, blue, alpha = keyed.getpixel((64, 64))
+        self.assertGreater(alpha, 0)
+        self.assertLess(alpha, 255)
+        self.assertLessEqual(min(red, blue), green)
+
+    def test_uses_audited_magenta_for_a_native_full_screen_flash(self) -> None:
+        converter.SCREEN_BACKGROUND_FALLBACK = [240, 0, 240]
+        image = Image.new('RGB', (64, 64), (255, 255, 255))
+        rgb, alpha, background = converter.key_alpha(image)
+        self.assertTrue(np.all(alpha == 1))
+        self.assertEqual(background.tolist(), [240, 0, 240])
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

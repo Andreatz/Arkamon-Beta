@@ -6,10 +6,12 @@ import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 import { replacement161VictorySha256 } from './fixtures/native-import-2026-11-13.json'
 import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
+import sourceCountsNovember18 from './fixtures/native-import-2026-11-18.json'
 
 const SPECIES_IDS = [
   ...Array.from({ length: 166 }, (_, index) => index + 1),
   ...Object.keys(sourceCountsNovember16).map(Number),
+  ...Object.keys(sourceCountsNovember18).map(Number),
 ]
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
@@ -138,8 +140,9 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     const conversion = readConversion(speciesId, animation)
     const poster = await sharp(resolve(`public/sprites/arkamon/${speciesId}/front/${conversion.poster.file}`)).ensureAlpha().raw().toBuffer()
     const blueScreen = conversion.key.screenColour === 'blue'
+    const magentaScreen = conversion.key.screenColour === 'magenta'
     const nativeGreenAllowed = conversion.qa.nativeGreenPixelsAllowed === true
-    let transparent = 0, opaqueArtwork = 0, darkFur = 0, redDetails = 0, greenSpill = 0, blueSpill = 0, opaqueGreen = 0
+    let transparent = 0, opaqueArtwork = 0, darkFur = 0, redDetails = 0, greenSpill = 0, blueSpill = 0, magentaSpill = 0, opaqueGreen = 0
     let visiblePixelsDiffer = false
     for (let i = 0; i < data.length; i += info.channels) {
       const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3]
@@ -150,19 +153,29 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
       if (a > 200 && r > g + 35 && r > b + 20) redDetails++
       if (a > 16 && g > Math.max(r, b) + 8) greenSpill++
       if (a > 16 && b > Math.max(r, g) + 8) blueSpill++
+      if (a > 16 && Math.min(r, b) > g + 8) magentaSpill++
       if (a > 240 && g > Math.max(r, b) + 8) opaqueGreen++
     }
     expect(visiblePixelsDiffer).toBe(false)
     expect(transparent).toBeGreaterThan(info.width * info.height * 0.25)
     expect(opaqueArtwork).toBeGreaterThan(1000)
     if ([163, 164, 165, 166].includes(speciesId)) expect(blueScreen).toBe(true)
-    if (speciesId >= 169) expect(blueScreen).toBe(speciesId <= 170)
+    if (speciesId >= 169 && speciesId <= 176) expect(blueScreen).toBe(speciesId <= 170)
+    if (speciesId >= 177) {
+      expect(blueScreen).toBe(false)
+      expect(magentaScreen).toBe([188, 189, 190, 201, 202, 203, 204, 205, 206].includes(speciesId))
+    }
     expect(Boolean(conversion.key.preserveSaturatedGreenBody)).toBe([130, 131, 132, 133, 134, 135, 136].includes(speciesId) && animation === 'idle')
     if (speciesId === 5) {
       expect(darkFur).toBeGreaterThan(1000)
       expect(redDetails).toBeGreaterThan(100)
     }
-    if (blueScreen) {
+    if (magentaScreen) {
+      expect(magentaSpill).toBe(0)
+      expect(conversion.qa.remainingMagentaDominantPixelsOver8).toBe(0)
+      expect(nativeGreenAllowed).toBe(true)
+      if ([188, 189, 190, 201, 202].includes(speciesId)) expect(opaqueGreen).toBeGreaterThan(300)
+    } else if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)
       expect([28, 29, 52, 53, 54, 69, 70, 82, 93, 95, 96, 97, 98, 99, 100, 105, 106, 123, 124, 127, 163, 164, 165, 166, 169, 170]).toContain(speciesId)

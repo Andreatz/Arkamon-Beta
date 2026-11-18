@@ -103,7 +103,7 @@ for (const species of importedSpecies) test(`import ${species}: all five supplie
   await page.evaluate(() => window.nativeImport111To116.close())
 })
 
-test.describe('pending Arkamon graphic catalog in the actual laboratory', () => {
+test.describe('Database Arkamon graphic catalog in the actual laboratory', () => {
   test.use({ reducedMotion: 'no-preference' })
 
   for (const species of importedSpecies) test(`laboratory ${species}: native preview without invented battle data`, async ({ page }, testInfo) => {
@@ -115,18 +115,18 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption(String(species))
     const lab = page.locator('[data-darklaw-lab]')
-    await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')
+    await expect(lab).toHaveAttribute('data-asset-status', 'game-data-present')
     await expect(lab).toHaveAttribute('data-preview-available', 'true')
-    await expect(page.locator('[data-asset-pending]')).toContainText('Nome, mosse e attributi da definire')
+    await expect(page.locator('[data-asset-pending]')).toHaveCount(0)
     const reference = page.locator('[data-preview-card="static"] img')
     await expect(reference).toHaveAttribute('src', new RegExp(`/sprites/front_sprites/${species}\\.png$`))
     await expect.poll(() => reference.evaluate(element => (element as HTMLImageElement).complete && (element as HTMLImageElement).naturalWidth > 0)).toBe(true)
     await reference.evaluate(element => (element as HTMLImageElement).decode())
-    await expect(page.locator('#arkamon-preview-move')).toHaveCount(0)
-    await expect(page.locator('#arkamon-preview-target')).toHaveCount(0)
-    await expect(page.getByRole('button', { name: 'Prova attacco con VFX', exact: true })).toHaveCount(0)
+    await expect(page.locator('#arkamon-preview-move')).toHaveCount(1)
+    await expect(page.locator('#arkamon-preview-target')).toHaveCount(1)
+    await expect(page.getByRole('button', { name: 'Prova attacco con VFX', exact: true })).toHaveCount(1)
     await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
-    expect(await page.evaluate(async id => (await import('/src/data/index.ts')).getPokemon(id), species)).toBeUndefined()
+    expect(await page.evaluate(async id => (await import('/src/data/index.ts')).getPokemon(id), species)).toBeDefined()
     const comparison = page.locator('[data-preview-card="animated"]')
     const sprite = comparison.locator('[data-sprite-renderer="paged-canvas"]')
     await expect(sprite).toBeVisible()
@@ -151,7 +151,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     expect(errors).toEqual([])
   })
 
-  for (const species of [205, 184, 206]) test(`sprite-only ${species}: original portrait and explicit missing data/video`, async ({ page }, testInfo) => {
+  for (const species of [167, 168, 194, 195]) test(`sprite-only ${species}: playable species with original portrait and missing video`, async ({ page }, testInfo) => {
     const errors: string[] = [], unavailableRequests: string[] = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('request', request => {
@@ -160,9 +160,9 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption(String(species))
     const lab = page.locator('[data-darklaw-lab]')
-    await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')
+    await expect(lab).toHaveAttribute('data-asset-status', 'game-data-present')
     await expect(lab).toHaveAttribute('data-preview-available', 'false')
-    await expect(page.locator('[data-asset-pending]')).toContainText('Nome, mosse e attributi da definire')
+    await expect(page.locator('[data-asset-pending]')).toHaveCount(0)
     await expect(page.getByText('Nessun video disponibile', { exact: false }).first()).toBeVisible()
     const portraits = page.locator('[data-asset-portrait]')
     await expect(portraits).toHaveCount(2)
@@ -175,24 +175,24 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
     await expect(page.getByRole('button', { name: 'Prova la sequenza', exact: true })).toHaveCount(0)
     await expect(page.locator('#arkamon-preview-move')).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
-    expect(await page.evaluate(async id => (await import('/src/data/index.ts')).getPokemon(id), species)).toBeUndefined()
+    expect(await page.evaluate(async id => (await import('/src/data/index.ts')).getPokemon(id), species)).toBeDefined()
     await page.screenshot({ path: testInfo.outputPath('pending-static-laboratory.png'), fullPage: true })
     await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('pending-static-comparison.png') })
     expect(unavailableRequests).toEqual([])
     expect(errors).toEqual([])
   })
 
-  test('a missing pending portrait reports its error and retries the original PNG successfully', async ({ page }, testInfo) => {
+  test('a missing static portrait reports its error and retries the original PNG successfully', async ({ page }, testInfo) => {
     const errors: string[] = []
     let unavailable = true, failedRequests = 0
     page.on('pageerror', error => errors.push(error.message))
-    await page.route('**/sprites/front_sprites/205.png', async route => {
+    await page.route('**/sprites/front_sprites/194.png', async route => {
       if (!unavailable) return route.continue()
       failedRequests++
       await route.fulfill({ status: 404, contentType: 'text/plain', body: 'Deliberately unavailable pending portrait' })
     })
     await page.goto('/dev.html#arkamon-lab')
-    await page.locator('#darklaw-preview-species').selectOption('205')
+    await page.locator('#darklaw-preview-species').selectOption('194')
     const portraits = page.locator('[data-asset-portrait]')
     await expect(portraits).toHaveCount(2)
     for (const portrait of await portraits.all()) {
@@ -209,7 +209,7 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
       const panel = page.locator(`[data-preview-card="${card}"]`)
       await panel.getByRole('button', { name: 'Riprova sprite', exact: true }).click()
       await expect(panel.locator('[data-asset-portrait]')).toHaveAttribute('data-asset-image-state', 'ready')
-      await expect(panel.locator('[data-asset-portrait] image')).toHaveAttribute('href', /\/sprites\/front_sprites\/205\.png$/)
+      await expect(panel.locator('[data-asset-portrait] image')).toHaveAttribute('href', /\/sprites\/front_sprites\/194\.png$/)
     }
     await expect(page.getByRole('button', { name: 'Riprova sprite', exact: true })).toHaveCount(0)
     await expect(page.getByText('Lo sprite non è stato caricato.', { exact: false })).toHaveCount(0)
@@ -220,25 +220,24 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
   test('filters actual supplied IDs without filling the gaps or changing the playable catalog', async ({ page }) => {
     await page.goto('/dev.html#arkamon-lab')
     const select = page.locator('#darklaw-preview-species')
-    await expect(select.locator('option')).toHaveCount(204)
+    await expect(select.locator('option')).toHaveCount(206)
     const suppliedIds = await select.locator('option').evaluateAll(options => options.map(option => Number((option as HTMLOptionElement).value)))
     const gameplayAvailability = await page.evaluate(async ids => {
       const { getPokemon } = await import('/src/data/index.ts')
       return ids.map(id => ({ id, playable: getPokemon(id) !== undefined }))
     }, suppliedIds)
-    expect(gameplayAvailability.filter(entry => entry.playable).map(entry => entry.id)).toEqual(Array.from({ length: 110 }, (_, index) => index + 1))
-    expect(gameplayAvailability.filter(entry => !entry.playable)).toHaveLength(94)
-    expect(gameplayAvailability.filter(entry => !entry.playable).every(entry => entry.id > 110)).toBe(true)
+    expect(gameplayAvailability.filter(entry => entry.playable).map(entry => entry.id)).toEqual(Array.from({ length: 206 }, (_, index) => index + 1))
+    expect(gameplayAvailability.filter(entry => !entry.playable)).toHaveLength(0)
     await expect(select.locator('option[value="133"]')).toHaveCount(1)
     await expect(select.locator('option[value="179"]')).toHaveCount(1)
-    await expect(select.locator('option[value="194"]')).toHaveCount(0)
+    await expect(select.locator('option[value="194"]')).toHaveCount(1)
     await page.locator('#darklaw-preview-filter').selectOption('pending-game-data')
-    await expect(select.locator('option')).toHaveCount(94)
+    await expect(select.locator('option')).toHaveCount(0)
     await expect(select.locator('option[value="1"]')).toHaveCount(0)
-    await expect(select.locator('option[value="206"]')).toHaveCount(1)
-    await page.locator('#darklaw-preview-filter').selectOption('animated')
-    await expect(select.locator('option')).toHaveCount(174)
     await expect(select.locator('option[value="206"]')).toHaveCount(0)
+    await page.locator('#darklaw-preview-filter').selectOption('animated')
+    await expect(select.locator('option')).toHaveCount(202)
+    await expect(select.locator('option[value="206"]')).toHaveCount(1)
     await expect(select.locator('option[value="116"]')).toHaveCount(1)
     await expect(select.locator('option[value="139"]')).toHaveCount(1)
     await expect(select.locator('option[value="132"]')).toHaveCount(1)
@@ -253,6 +252,6 @@ test.describe('pending Arkamon graphic catalog in the actual laboratory', () => 
       await expect(select.locator(`option[value="${id}"]`)).toHaveCount(1)
     }
     await page.locator('#darklaw-preview-filter').selectOption('all')
-    await expect(select.locator('option')).toHaveCount(204)
+    await expect(select.locator('option')).toHaveCount(206)
   })
 })

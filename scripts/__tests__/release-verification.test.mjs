@@ -111,15 +111,17 @@ test('a missing, partial, skipped or unbound native compiled group cannot seal a
   await assert.rejects(sealRelease(fixture), /belongs to another artifact/)
 })
 
-test('every pending native form and pinned portrait scenario is required in addition to the six original cases', async t => {
+test('every additional native form and static portrait scenario is required in addition to the six original cases', async t => {
   const fixture = await releaseFixture(t)
-  assert.equal(NATIVE_RELEASE_SCENARIOS.length, 73)
+  assert.equal(NATIVE_RELEASE_SCENARIOS.length, 102)
   const requiredPending = [
     ...[
       ...Array.from({ length: 56 }, (_, index) => index + 111),
       169, 170, 171, 172, 173, 174, 175, 176,
-    ].map(id => `compiled ${id}: pending form plays five native actions without game data`),
-    ...[205, 184, 206].map(id => `compiled ${id}: pending portrait uses the exact pinned original without game data`),
+      177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
+      191, 192, 193, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+    ].map(id => `compiled ${id}: Database species plays five native actions`),
+    ...[167, 168, 194, 195].map(id => `compiled ${id}: Database species without videos uses the exact pinned portrait`),
   ]
   assert.deepEqual(NATIVE_RELEASE_SCENARIOS.slice(6), requiredPending)
   const full = nativeReport(fixture.artifact)
@@ -169,10 +171,10 @@ test('catalog growth is verified against source metadata and the pin instead of 
     species: [...Array.from({ length: 110 }, (_, index) => index + 1), ...PENDING_NATIVE_RELEASE_SPECIES],
     frames: index => index === 869 ? 21 : 96,
   })
-  assert.equal(fixture.artifact.nativeClips, 870)
-  assert.equal(fixture.artifact.nativeFrames, 83_445)
+  assert.equal(fixture.artifact.nativeClips, 1_010)
+  assert.equal(fixture.artifact.nativeFrames, 96_885)
   await sealRelease(fixture)
-  assert.equal((await verifyRelease(fixture.dist, fixture.revision, fixture)).reports.find(report => report.kind === 'native-compiled').artifact.nativeClips, 870)
+  assert.equal((await verifyRelease(fixture.dist, fixture.revision, fixture)).reports.find(report => report.kind === 'native-compiled').artifact.nativeClips, 1_010)
   const cli = spawnSync(process.execPath, ['scripts/release-verification.mjs', 'verify', '--dist', fixture.dist,
     '--revision', fixture.revision, '--root', fixture.root], { encoding: 'utf8' })
   assert.equal(cli.status, 0, cli.stderr)

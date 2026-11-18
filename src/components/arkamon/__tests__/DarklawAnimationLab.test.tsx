@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { DarklawAnimationLab } from '../DarklawAnimationLab'
 import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
+import sourceCountsNovember18 from './fixtures/native-import-2026-11-18.json'
 
 vi.mock('@/settings/gamePreferences', () => ({ useGameMotionPreferences: () => ({ speed: 1, reducedMotion: false }) }))
 vi.mock('../ArkamonBattleSprite', () => ({ ArkamonBattleSprite: ({ speciesId }: { speciesId: number }) => <span data-test-native-sprite={speciesId} /> }))
@@ -33,6 +34,7 @@ describe('laboratory for unfinished graphic assets', () => {
     const animatedIds = [
       ...Array.from({ length: 56 }, (_, index) => index + 111),
       ...Object.keys(sourceCountsNovember16).map(Number),
+      ...Object.keys(sourceCountsNovember18).map(Number),
     ]
     for (const id of animatedIds) {
       const markup = renderToStaticMarkup(<DarklawAnimationLab initialSpeciesId={id} />)

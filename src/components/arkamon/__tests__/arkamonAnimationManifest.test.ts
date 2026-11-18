@@ -6,6 +6,7 @@ import sourceCountsNovember9 from './fixtures/native-import-2026-11-09.json'
 import sourceCountsNovember12 from './fixtures/native-import-2026-11-12.json'
 import { sourceCounts as sourceCountsNovember13 } from './fixtures/native-import-2026-11-13.json'
 import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
+import sourceCountsNovember18 from './fixtures/native-import-2026-11-18.json'
 import {
   ARKAMON_ANIMATION_MANIFEST,
   getArkamonAnimationAsset,
@@ -23,6 +24,7 @@ const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1
 const PENDING_SPECIES_IDS = [
   ...Array.from({ length: 56 }, (_, index) => index + 111),
   ...Object.keys(sourceCountsNovember16).map(Number),
+  ...Object.keys(sourceCountsNovember18).map(Number),
 ]
 const SPECIES_IDS = [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]
 const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
@@ -163,6 +165,27 @@ describe('Arkamon animation manifest', () => {
         expect(asset.durationMs).toBeCloseTo(counts[animation] / 24 * 1000)
       }
     }
+  })
+
+  it('preserves the native frame counts and timing of every November 18 clip', () => {
+    expect(Object.keys(sourceCountsNovember18).map(Number)).toEqual([
+      177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
+      191, 192, 193, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+    ])
+    for (const [species, counts] of Object.entries(sourceCountsNovember18)) {
+      for (const animation of ANIMATIONS) {
+        const asset = getArkamonAnimationAsset(Number(species), 'front', animation)!
+        expect(asset.frameCount).toBe(counts[animation])
+        expect(asset.fps).toBe(24)
+        expect(asset.durationMs).toBeCloseTo(counts[animation] / 24 * 1000)
+        expect(getArkamonRuntimeAsset(asset).pages?.reduce((sum, page) => sum + page.frameCount, 0)).toBe(counts[animation])
+      }
+    }
+  })
+
+  it.each([167, 168, 194, 195])('keeps species %s on its supplied static portrait while videos are unavailable', speciesId => {
+    expect(getPokemon(speciesId)).toBeDefined()
+    for (const action of ANIMATIONS) expect(resolveArkamonAnimationAsset(speciesId, 'front', action)).toBeUndefined()
   })
 
   it('retains a view’s idle as the fallback when a dedicated action is unavailable', () => {

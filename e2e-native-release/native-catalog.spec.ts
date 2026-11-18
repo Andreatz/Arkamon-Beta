@@ -33,7 +33,7 @@ export async function verifyLocalProductionMedia(page: Page, testInfo: TestInfo)
   const publicRoot = realpathSync('public')
   const files = new Map(proof.externalAssets.map(file => [file.path, file.bytes]))
   const pages = new Map(Object.values(manifest.clips).flatMap(clip => clip.pages.map(part => [part.src.slice(1), part] as const)))
-  const pendingPortraits = new Map(assetCatalog.entries.filter(entry => entry.status === 'pending-game-data' && entry.sprites.front)
+  const pendingPortraits = new Map(assetCatalog.entries.filter(entry => entry.sprites.front && files.has(entry.sprites.front.source.slice(1)))
     .map(entry => [entry.sprites.front!.source.slice(1), entry.sprites.front!] as const))
   const served: { path: string; bytes: number; sha256: string; nativePageFingerprintVerified: boolean; pendingPortraitFingerprintVerified: boolean }[] = []
   const errors: string[] = []
@@ -110,24 +110,24 @@ for (const species of [107, 108, 109, 110]) test(`compiled ${species}: five nati
   await media.attach()
 })
 
-for (const species of PENDING_NATIVE_RELEASE_SPECIES as readonly number[]) test(`compiled ${species}: pending form plays five native actions without game data`, async ({ page }, testInfo) => {
+for (const species of PENDING_NATIVE_RELEASE_SPECIES as readonly number[]) test(`compiled ${species}: Database species plays five native actions`, async ({ page }, testInfo) => {
   const media = await verifyLocalProductionMedia(page, testInfo)
   await media.install
   await page.goto('./#arkamon-lab')
   await page.locator('#darklaw-preview-species').selectOption(String(species))
   const lab = page.locator('[data-darklaw-lab]')
-  await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')
+  await expect(lab).toHaveAttribute('data-asset-status', 'game-data-present')
   await expect(lab).toHaveAttribute('data-preview-available', 'true')
-  await expect(page.locator('[data-asset-pending]')).toContainText('Nome, mosse e attributi da definire')
+  await expect(page.locator('[data-asset-pending]')).toHaveCount(0)
   const reference = page.locator('[data-preview-card="static"] img')
   await expect(reference).toHaveAttribute('src', new RegExp(`/sprites/front_sprites/${species}\\.png$`))
   await expect.poll(() => reference.evaluate(element => (element as HTMLImageElement).complete && (element as HTMLImageElement).naturalWidth > 0)).toBe(true)
   await reference.evaluate(element => (element as HTMLImageElement).decode())
-  await expect(page.locator('#arkamon-preview-move')).toHaveCount(0)
-  await expect(page.locator('#arkamon-preview-target')).toHaveCount(0)
+  await expect(page.locator('#arkamon-preview-move')).toHaveCount(1)
+  await expect(page.locator('#arkamon-preview-target')).toHaveCount(1)
   await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
   const gameplay = JSON.parse(readFileSync('src/data/pokemon.json', 'utf8')) as { id: number }[]
-  expect(gameplay.some(entry => entry.id === species)).toBe(false)
+  expect(gameplay.some(entry => entry.id === species)).toBe(true)
   const comparison = page.locator('[data-preview-card="animated"]')
   const sprite = comparison.locator('[data-sprite-renderer="paged-canvas"]')
   await expect(sprite).toBeVisible()
@@ -154,19 +154,19 @@ for (const species of PENDING_NATIVE_RELEASE_SPECIES as readonly number[]) test(
   await media.attach()
 })
 
-for (const species of [205, 184, 206]) test(`compiled ${species}: pending portrait uses the exact pinned original without game data`, async ({ page }, testInfo) => {
+for (const species of [167, 168, 194, 195]) test(`compiled ${species}: Database species without videos uses the exact pinned portrait`, async ({ page }, testInfo) => {
   const media = await verifyLocalProductionMedia(page, testInfo)
   await media.install
   const original = media.assetCatalog.entries.find(entry => entry.id === species)
-  expect(original?.status).toBe('pending-game-data')
+  expect(original?.status).toBe('game-data-present')
   const portrait = original!.sprites.front!
   const originalUrl = new URL(portrait.source.slice(1), media.origin).href
   await page.goto('./#arkamon-lab')
   await page.locator('#darklaw-preview-species').selectOption(String(species))
   const lab = page.locator('[data-darklaw-lab]')
-  await expect(lab).toHaveAttribute('data-asset-status', 'pending-game-data')
+  await expect(lab).toHaveAttribute('data-asset-status', 'game-data-present')
   await expect(lab).toHaveAttribute('data-preview-available', 'false')
-  await expect(page.locator('[data-asset-pending]')).toContainText('Nome, mosse e attributi da definire')
+  await expect(page.locator('[data-asset-pending]')).toHaveCount(0)
   await expect(page.getByText('Nessun video disponibile', { exact: false }).first()).toBeVisible()
   const portraits = page.locator('[data-asset-portrait]')
   await expect(portraits).toHaveCount(2)
@@ -182,7 +182,7 @@ for (const species of [205, 184, 206]) test(`compiled ${species}: pending portra
   await expect(page.locator('#arkamon-preview-target')).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
   const gameplay = JSON.parse(readFileSync('src/data/pokemon.json', 'utf8')) as { id: number }[]
-  expect(gameplay.some(entry => entry.id === species)).toBe(false)
+  expect(gameplay.some(entry => entry.id === species)).toBe(true)
   expect(media.served.some(entry => entry.path.startsWith(`sprites/arkamon-paged/${species}/`))).toBe(false)
   expect(media.errors).toEqual([])
   await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('compiled-pending-portrait.png') })
