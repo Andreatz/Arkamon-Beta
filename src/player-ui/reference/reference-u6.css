@@ -110,3 +110,34 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more > .ref-men
   box-shadow: 0 10px 28px #000b;
 }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-menu-more > .ref-menu-utilities > button { justify-content: flex-start; width: 100%; }
+
+/* Nomi lunghissimi nella scheda della Squadra: corpo più piccolo, così il titolo resta su una riga
+   e la scheda non deve scorrere (casi limite di player-ui-1080). */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-dossier-name h2[data-long-name] {
+  min-width: 0;
+  font-size: clamp(15px, 1.15vw, 21px);
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+/* Scene dirette (Deposito): il comando globale «Partita» resta in basso a sinistra, le icone partono dopo. */
+.pu-scene-host .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav { margin-left: 96px; }
+
+/* Arkadex su schermi bassi (fino a 800 px): scheda più compatta, così non deve scorrere. */
+@media (max-height: 800px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail h2 { font-size: var(--arka-size-heading); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail h3 { font-size: var(--arka-size-body); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-tabs .pu-button { min-height: 32px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-facts dd { font-size: var(--arka-size-body); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail .pu-facts > div { padding-block: 3px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-u2-dex .pu-dex-detail { gap: 6px; }
+}
+
+/* Analisi su schermi bassi (fino a 800 px): schede e valori un passo più piccoli che in U3. */
+@media (max-height: 800px) {
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-tabs .pu-button { min-height: 34px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-stat > strong { font-size: var(--arka-size-body); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-facts dd { font-size: var(--arka-size-caption); }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-selector select { min-height: 34px; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-detail-heading h2 { font-size: var(--arka-size-heading); }
+}

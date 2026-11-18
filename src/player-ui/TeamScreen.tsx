@@ -152,7 +152,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
           <div className="pu-reference-dossier-content" id="pu-team-dossier-content" role="tabpanel" tabIndex={0} aria-labelledby={`pu-team-tab-${referenceTab}`}>
             {current ? <>
               {referenceTab === 'riepilogo' && <>
-                <div className="pu-reference-dossier-name"><h2>{current.nome}</h2><span>Lv. <AnimatedNumber key={current.istanzaId} value={current.livello} /></span></div>
+                <div className="pu-reference-dossier-name"><h2 data-long-name={current.nome.length > 16 || undefined}>{current.nome}</h2><span>Lv. <AnimatedNumber key={current.istanzaId} value={current.livello} /></span></div>
                 <div className="pu-reference-dossier-health"><div><span>Punti vita</span><strong><AnimatedNumber key={current.istanzaId} value={current.hp} /> <small>/ {calcolaHPMax(current)} HP</small></strong></div><HealthBar pokemon={current} /></div>
                 <dl className="pu-reference-team-facts">
                   <div><dt>Tipo</dt><dd>{currentSpecies && <TypeBadge type={currentSpecies.tipo} />}</dd></div>

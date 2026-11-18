@@ -167,7 +167,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   </nav>
   const interact = pointInteractions.length > 0 && <GameButton tone={stage ? 'primary' : undefined} disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</GameButton>
   const squad = isReferenceUi() && <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`}>{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}`}><CreaturePortrait pokemon={pokemon}/><strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}</div>
-  const menu = isReferenceUi() && <button type="button" className="ref-local-menu" onClick={()=>openPlayerUi('partita',{playerId:actor})}><KitIcon id="icon-home"/>Partita</button>
+  const menu = isReferenceUi() && <button type="button" className="ref-local-menu" aria-label="Partita" onClick={()=>openPlayerUi('partita',{playerId:actor})}><KitIcon id="icon-home"/>Partita</button>
 
   return <section className={`local-map-scene${stage ? ' local-map-scene--stage' : ''}`} data-reference-ui={isReferenceUi() ? 'aurora' : undefined} aria-label={`Esplorazione ${placeName}`}>
     {stage ? <header className="local-map-toolbar">

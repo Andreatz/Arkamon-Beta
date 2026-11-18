@@ -36,3 +36,4 @@ body:has(.local-map-scene[data-reference-ui="aurora"] .ref-local-menu) .player-t
 
 /* Admin: icona discreta in alto a destra. */
 .admin-toggle { font-family: var(--arka-ui-font-display, Georgia, serif); }
+.player-tools-launcher[hidden] { display: none !important; }

@@ -5,6 +5,8 @@ import { GameButton } from '@/components/ui/GameButton'
 import { SaveRecoveryNotice } from '@/save/SaveRecoveryNotice'
 import { useGameStore } from '@/store/gameStore'
 import type { SceneId } from '@/types'
+import { getLocalMap } from '@/data/localMaps'
+import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { TeamRuleNotice } from './TeamRuleNotice'
 import { isPlayerUiScreen, PLAYER_UI_OPEN_EVENT, type PlayerUiAuxiliary, type PlayerUiOpenRequest } from '@/player-ui/navigation'
 import { useInteractionStore } from '@/interactions/interactionStore'
@@ -17,6 +19,10 @@ const ESCAPE_MENU_SCENES = new Set<SceneId>(['mappa-principale', 'citta', 'batta
 const PlayerUi = lazy(() => import('@/player-ui/PlayerUi').then(module => ({ default: module.PlayerUi })))
 export function PlayerTools() {
   const [open, setOpen] = useState(false)
+  // Fase U6: nella mappa locale il comando «Partita» sta nella scheda del punto. Il pulsante globale
+  // resta nel DOM (Start del gamepad lo usa) ma è nascosto fin dal cambio di scena, non dopo il montaggio.
+  const launcherHidden = useGameStore(state => isReferenceUi() && (state.scenaCorrente.scena === 'citta' || state.scenaCorrente.scena === 'percorso')
+    && !!getLocalMap(String(state.scenaCorrente.payload?.luogo ?? (state.scenaCorrente.scena === 'citta' ? 'Venezia' : 'Percorso_1'))))
   const [request, setRequest] = useState<PlayerUiOpenRequest & { auxiliary?: PlayerUiAuxiliary; revision: number }>({ screen: 'partita', revision: 0 })
   useEffect(() => {
     const handleOpen = (event: Event) => {
@@ -61,7 +67,7 @@ export function PlayerTools() {
   return <>
     {createPortal(<SaveRecoveryNotice onOpenBackup={() => openDefault('backup')} />, document.body)}
     {!open && createPortal(<TeamRuleNotice />, document.body)}
-    {createPortal(<GameButton aria-haspopup="dialog" aria-expanded={open} onClick={() => openDefault()} data-player-tools-launcher className="player-tools-launcher fixed bottom-3 left-3 z-[950] text-sm">Partita</GameButton>, document.body)}
+    {createPortal(<GameButton aria-haspopup="dialog" aria-expanded={open} hidden={launcherHidden} onClick={() => openDefault()} data-player-tools-launcher className="player-tools-launcher fixed bottom-3 left-3 z-[950] text-sm">Partita</GameButton>, document.body)}
     {open ? <GameDialog title="La tua partita" className="player-ui-dialog" showCloseButton={false} onClose={() => setOpen(false)}>
       <TeamRuleNotice />
       <Suspense fallback={<p role="status">Caricamento…</p>}>
