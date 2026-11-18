@@ -19,5 +19,4 @@ export const PENDING_LOCAL_MAP_ARTWORK = [
   { id: 'Percorso_10', image: '/maps/Percorso_10.png' },
   { id: 'Percorso_12', image: '/maps/Percorso_12.png' },
   { id: 'Percorso_15-2', image: '/maps/Percorso_15-2.png' },
-  { id: 'Percorso_15-3', image: '/maps/Percorso_15-3.png' },
 ] as const
