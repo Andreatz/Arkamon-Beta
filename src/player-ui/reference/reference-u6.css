@@ -141,3 +141,22 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-dossier-nam
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-analysis-selector select { min-height: 34px; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-analysis-screen .pu-detail-heading h2 { font-size: var(--arka-size-heading); }
 }
+
+/* ======================= Telefono ======================= */
+@media (max-width: 640px) {
+  /* Le icone delle schermate su una sola riga, che scorre se serve. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav {
+    display: flex !important;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 6px !important;
+    scrollbar-width: none;
+  }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-nav .pu-nav-label { display: none; }
+  /* Nomi lunghi: corpo più piccolo, a capo solo fra le parole quando possibile. */
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .ref-trainer-card h2 { font-size: clamp(17px, 5.2vw, 24px); overflow-wrap: break-word; hyphens: auto; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-player-option > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-command-hints { display: none !important; }
+}

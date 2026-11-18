@@ -21,6 +21,8 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     const group = preview(page).locator('[data-ui-id="layout.hp-nemico"]')
     const hp = group.locator('[data-battle-hp-side="enemy"]')
     const oldDecoration = hp.locator('[data-ui-skin-dependent="frame"]')
+    // Fase U6: l'originale è la targa dipinta del lotto 3, senza sfondo sulla superficie.
+    const paintedFrame = hp.locator('[data-battle-frame="hp-banner"]')
     const text = await hp.innerText()
     const selectedSkin = () => hp.evaluate(element => decodeURIComponent(getComputedStyle(element).backgroundImage))
     const selectSkin = async () => {
@@ -28,11 +30,13 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
       await page.getByLabel('Cerca asset', { exact: true }).fill('hp bar enemy')
       await page.getByRole('dialog', { name: 'Scegli asset', exact: true }).getByRole('button', { name: 'hp bar enemy Comuni', exact: true }).click()
     }
-    await expect(hp).toHaveCSS('background-image', /\/ui\/aurora\/hp-plate\.svg/)
+    await expect(hp).toHaveCSS('background-image', 'none')
+    await expect(paintedFrame).toBeVisible()
     await selectSkin()
     await expect.poll(selectedSkin).toContain('/ui/studio/Comuni/hp-bar-enemy.svg')
     await expect(group).toHaveCSS('background-image', 'none')
     await expect(oldDecoration).toHaveCSS('visibility', 'hidden')
+    await expect(paintedFrame).toBeHidden()
     expect(await hp.innerText()).toBe(text)
     // La scia ritardata della Fase 1 è un secondo rettangolo, separato dal riempimento.
     await expect(hp.locator('svg rect[data-battle-hp-ghost]')).toHaveCount(1)
@@ -43,7 +47,8 @@ test.describe('declared graphical slots and shared battle coordinates', () => {
     await expect.poll(selectedSkin).toContain('/ui/studio/Comuni/hp-bar-enemy.svg')
     await selectLayer(page, 'HP nemico')
     await page.getByRole('button', { name: 'Originale', exact: true }).click()
-    await expect(hp).toHaveCSS('background-image', /\/ui\/aurora\/hp-plate\.svg/)
+    await expect(hp).toHaveCSS('background-image', 'none')
+    await expect(paintedFrame).toBeVisible()
     await expect(oldDecoration).toHaveCSS('visibility', 'visible')
     expect(await hp.innerText()).toBe(text)
   })

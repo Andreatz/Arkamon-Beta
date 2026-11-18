@@ -192,8 +192,11 @@ test('battaglia: asset originali delle mosse, stato del lancio SVG e fondo dei d
   const responses = await openFixture(page, 'battaglia')
   const move = page.getByRole('button').filter({ has: page.getByText('Soffio', { exact: true }) })
   await expect(move).toBeEnabled()
-  // Fase U5: cornice provvisoria oro e blu notte, in attesa del lotto 3.
-  expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toContain('/ui/aurora/move-frame.svg')
+  // Fase U6: la cornice dipinta del lotto 3 (due metà) sostituisce lo sfondo SVG provvisorio.
+  expect(await move.evaluate(element => getComputedStyle(element).backgroundImage)).toBe('none')
+  const frame = move.locator('[data-battle-frame="move"]')
+  await expect(frame).toHaveCount(1)
+  expect(await frame.evaluate(element => getComputedStyle(element, '::before').borderImageSource)).toMatch(/battle-move-frame(-selected)?-left/)
   expect(await move.evaluate(element => getComputedStyle(element).fontFamily)).toContain('Arkamon Cinzel')
   // Record the real transient result before slower artwork inspection and PNG
   // encoding; those operations can finish after the battle removes the overlay.

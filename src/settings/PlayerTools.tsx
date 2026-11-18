@@ -5,8 +5,7 @@ import { GameButton } from '@/components/ui/GameButton'
 import { SaveRecoveryNotice } from '@/save/SaveRecoveryNotice'
 import { useGameStore } from '@/store/gameStore'
 import type { SceneId } from '@/types'
-import { getLocalMap } from '@/data/localMaps'
-import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
+import { useGlobalLauncherHidden } from './launcherVisibility'
 import { TeamRuleNotice } from './TeamRuleNotice'
 import { isPlayerUiScreen, PLAYER_UI_OPEN_EVENT, type PlayerUiAuxiliary, type PlayerUiOpenRequest } from '@/player-ui/navigation'
 import { useInteractionStore } from '@/interactions/interactionStore'
@@ -20,9 +19,8 @@ const PlayerUi = lazy(() => import('@/player-ui/PlayerUi').then(module => ({ def
 export function PlayerTools() {
   const [open, setOpen] = useState(false)
   // Fase U6: nella mappa locale il comando «Partita» sta nella scheda del punto. Il pulsante globale
-  // resta nel DOM (Start del gamepad lo usa) ma è nascosto fin dal cambio di scena, non dopo il montaggio.
-  const launcherHidden = useGameStore(state => isReferenceUi() && (state.scenaCorrente.scena === 'citta' || state.scenaCorrente.scena === 'percorso')
-    && !!getLocalMap(String(state.scenaCorrente.payload?.luogo ?? (state.scenaCorrente.scena === 'citta' ? 'Venezia' : 'Percorso_1'))))
+  // resta nel DOM (Start del gamepad lo usa) ed è nascosto solo mentre quella scena è montata.
+  const launcherHidden = useGlobalLauncherHidden()
   const [request, setRequest] = useState<PlayerUiOpenRequest & { auxiliary?: PlayerUiAuxiliary; revision: number }>({ screen: 'partita', revision: 0 })
   useEffect(() => {
     const handleOpen = (event: Event) => {

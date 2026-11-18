@@ -46,8 +46,10 @@ describe('player menu navigation and progression facts', () => {
     const onAuxiliary = vi.fn()
     const before = structuredClone(runtime.state.giocatore1)
     const markup = renderToStaticMarkup(<MenuScreen playerId={1} onAuxiliary={onAuxiliary} />)
+    // Fase U6: Gara, Ripresa e Sfide sono nel cassetto «Altro», chiuso all'apertura del menù.
+    expect(markup).toContain('aria-controls="ref-menu-utilities"')
     expect([...markup.matchAll(/aria-label="Apri ([^"]+)"/g)].map(([, name]) => name)).toEqual([
-      'Gara', 'Ripresa', 'Sfide', 'Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Registro', 'Salvataggio', 'Impostazioni',
+      'Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Registro', 'Salvataggio', 'Impostazioni',
     ])
     expect(markup.match(/aria-label="Apri Squadra"/g)).toHaveLength(1)
     expect(markup).not.toContain('Apri Negozio')

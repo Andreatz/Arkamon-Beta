@@ -17,6 +17,7 @@ import { isReferenceUi } from '@/player-ui/reference/referenceTheme'
 import { CreaturePortrait, HealthBar, KitIcon } from '@/player-ui/kit'
 import { assetUrl } from '@/utils/assetUrl'
 import { openPlayerUi } from '@/player-ui/navigation'
+import { useHideGlobalLauncher } from '@/settings/launcherVisibility'
 import './referenceLocalMap.css'
 import './stageLocalMap.css'
 import { LOCAL_NODE_KIND_LABELS, nodeKinds, type LocalNodeKind } from '@/components/map/localNodeKinds'
@@ -93,6 +94,8 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const [selected, setSelected] = useState<string | null>(null)
   // Fase U4: la camera segue la pedina; «Mappa intera» mostra tutto il luogo.
   const stage = isReferenceUi()
+  // La scheda mostra il proprio comando «Partita»: il pulsante globale si nasconde finché la scena è montata.
+  useHideGlobalLauncher(stage)
   const [overview, setOverview] = useState(false)
   const [interactionOpen, setInteractionOpen] = useState(false)
   const closeInteraction = useCallback(() => setInteractionOpen(false), [])
