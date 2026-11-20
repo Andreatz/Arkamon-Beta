@@ -37,6 +37,22 @@ export function TitoloScene() {
   const commands = useRef<HTMLDivElement>(null)
   const [logoFailed, setLogoFailed] = useState(false)
   const [failedBackgroundPath, setFailedBackgroundPath] = useState<string | null>(null)
+  // Audit fase 6: un clic o Invio salta l'ingresso animato e porta subito ai comandi.
+  const [introSkipped, setIntroSkipped] = useState(false)
+  const instant = reducedMotion || introSkipped
+  useEffect(() => {
+    const skip = (event: KeyboardEvent) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return
+      setIntroSkipped(true)
+      const active = document.activeElement
+      if (!active || active === document.body) {
+        event.preventDefault()
+        commands.current?.querySelector<HTMLButtonElement>('button')?.focus()
+      }
+    }
+    window.addEventListener('keydown', skip)
+    return () => window.removeEventListener('keydown', skip)
+  }, [])
 
   useEffect(() => {
     setLogoFailed(false)
@@ -60,7 +76,7 @@ export function TitoloScene() {
   }, [reducedMotion, backgroundPath])
 
   return (
-    <div className="rpg-title-scene relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950" data-title-key-art={keyArt || undefined}>
+    <div onPointerDown={() => setIntroSkipped(true)} className="rpg-title-scene relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-arka-bg via-slate-900 to-purple-950" data-title-key-art={keyArt || undefined}>
       {keyArt && <TitleKeyArt still={reducedMotion} />}
       {hasBackground && hasVideoBackground ? (
         <video
@@ -96,7 +112,7 @@ export function TitoloScene() {
         className="rpg-title-logo relative z-10 drop-shadow-2xl"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: reducedMotion ? 0 : 0.2 / speed, type: 'spring' }}
+        transition={instant ? { duration: 0 } : { delay: 0.2 / speed, type: 'spring' }}
         onError={(e) => {
           if (logoPath !== DEFAULT_TITLE_LOGO) {
             setLogoFailed(true)
@@ -116,7 +132,7 @@ export function TitoloScene() {
         onPointerDown={() => { if (!reducedMotion) preloadSceneTransitionArtwork() }}
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: reducedMotion ? 0 : .3 / speed }}
+        transition={instant ? { duration: 0 } : { delay: .3 / speed }}
       >
         <GameButton
           tone="primary" className="text-xl"

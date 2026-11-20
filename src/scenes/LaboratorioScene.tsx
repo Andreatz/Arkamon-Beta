@@ -7,18 +7,20 @@ import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import './liveLaboratory.css'
 import { useGameStore, STARTER_IDS } from '@store/gameStore'
 import { getPokemon } from '@data/index'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { LABORATORY_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
+import { professorLine, type ProfessorMoment } from './laboratoryLines'
+import { playSound } from '@/utils/soundManager'
 
 const capsuleColors = ['blu', 'nera', 'viola'] as const
 
-function LaboratorySprite({ speciesId }: { speciesId: number }) {
+function LaboratorySprite({ speciesId, released = false }: { speciesId: number; released?: boolean }) {
   const source = `/sprites/front_sprites/${speciesId}.png`
   const framing = getPortraitFraming(source)
-  return <svg className="live-laboratory-sprite" viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+  return <svg className="live-laboratory-sprite" data-released={released || undefined} viewBox={framing.viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
     <image href={assetUrl(source)} width={framing.width} height={framing.height} />
   </svg>
 }
@@ -51,6 +53,9 @@ export function LaboratorioScene() {
   const [nomeGiocatore1, setNomeGiocatore1] = useState(giocatore1.nome)
   const [nomeGiocatore2, setNomeGiocatore2] = useState(giocatore2.nome)
   const [confermaRichiesta, setConfermaRichiesta] = useState(false)
+  // Audit fase 6: battuta del Professore che segue la capsula indicata e la scelta appena fatta.
+  const [momento, setMomento] = useState<ProfessorMoment>({ kind: 'intro' })
+  const [appenaScelto, setAppenaScelto] = useState<number | null>(null)
 
   useEffect(() => {
     if (sceneRef.current) sceneRef.current.scrollTop = 0
@@ -65,12 +70,27 @@ export function LaboratorioScene() {
   const giocatoreAttivo = g1HaStarter ? 2 : 1
   const starterScelti = [...getOwnedPokemon(giocatore1), ...getOwnedPokemon(giocatore2)].map((pokemon) => pokemon.specieId)
   const nomeGiocatoreAttivo = giocatoreAttivo === 1 ? giocatore1.nome : giocatore2.nome
+  const battuta = professorLine(tuttiHannoStarter ? { kind: 'done' } : momento)
+
+  useEffect(() => {
+    if (appenaScelto === null) return
+    const timer = window.setTimeout(() => setAppenaScelto(null), reducedMotion ? 0 : 900)
+    return () => window.clearTimeout(timer)
+  }, [appenaScelto, reducedMotion])
+
+  const scegli = (id: number, nome: string) => {
+    const player = nomeGiocatoreAttivo
+    if (!scegliStarter(id)) return
+    playSound('capture')
+    setAppenaScelto(id)
+    setMomento({ kind: 'chosen', player, name: nome })
+  }
 
   useEffect(() => {
     if (!tuttiHannoStarter) return
     const timer = window.setTimeout(() => {
       if (useGameStore.getState().scenaCorrente.scena === 'laboratorio') vaiAScena('mappa-principale')
-    }, 800)
+    }, 1600)
     return () => window.clearTimeout(timer)
   }, [tuttiHannoStarter, vaiAScena])
 
@@ -142,19 +162,25 @@ export function LaboratorioScene() {
           const specie = getPokemon(id)
           if (!specie) return null
           const disponibile = !tuttiHannoStarter && !starterScelti.includes(id)
+          const preso = starterScelti.includes(id)
+          const indica = () => { if (!tuttiHannoStarter && appenaScelto === null) setMomento({ kind: 'hover', name: specie.nome, type: specie.tipo, taken: preso }) }
 
           return (
             <motion.button
               data-rpg-item key={id}
               type="button"
-              whileHover={disponibile && !reducedMotion ? { scale: 1.025, y: -6 } : {}}
+              whileHover={disponibile && !reducedMotion ? { scale: 1.035, y: -8 } : {}}
               whileTap={disponibile && !reducedMotion ? { scale: 0.98 } : {}}
               disabled={!disponibile}
-              aria-label={`${specie.nome} · ${specie.tipo}${starterScelti.includes(id) ? ' · già scelto' : ''}`}
-              onClick={() => scegliStarter(id)}
+              aria-label={`${specie.nome} · ${specie.tipo}${preso ? ' · già scelto' : ''}`}
+              onClick={() => scegli(id, specie.nome)}
+              onPointerEnter={indica}
+              onFocus={indica}
               className="live-laboratory-capsule"
+              data-just-chosen={appenaScelto === id || undefined}
             >
-              <LaboratorySprite speciesId={specie.id} />
+              <LaboratorySprite speciesId={specie.id} released={appenaScelto === id && !reducedMotion} />
+              {appenaScelto === id && !reducedMotion && <span className="live-laboratory-capsule-flash" aria-hidden="true" />}
               <LaboratoryArtwork source={`/ui/studio/Comuni/capsula-lab-${capsuleColors[index]}.svg`} crop="0 0 260 360" />
               <span className="live-laboratory-capsule-name">{specie.nome}</span>
               <span className="live-laboratory-capsule-type">{starterScelti.includes(id) ? 'SCELTO' : specie.tipo}</span>
@@ -162,12 +188,15 @@ export function LaboratorioScene() {
           )
         })}
       </SpatialNavigation>
-      <div className="live-laboratory-dialog">
-        <LaboratoryArtwork source="/ui/studio/Comuni/dialogo-lab.svg" crop="250 145 630 210" />
-        <p className="live-laboratory-sr-only">Professore: scegli con cura il tuo compagno d’avventura! Sarà il coraggioso Vyrath, l’oscuro Darklaw, o il misterioso Felyss?</p>
-      </div>
-      <StudioSurface source="/ui/studio/Scuro/dialogo-scuro.svg" width={820} height={430} className="live-laboratory-mobile-dialog">
-        <div><strong>PROFESSORE</strong><p>Scegli con cura il tuo compagno d’avventura! Vyrath, Darklaw o Felyss?</p></div>
+      {/* Audit fase 6: il riquadro del Professore ha testo vivo, che cambia con la capsula indicata e la scelta. */}
+      <StudioSurface source="/ui/studio/Scuro/dialogo-scuro.svg" width={820} height={430} className="live-laboratory-professor">
+        <div><strong>PROFESSORE</strong>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.p key={battuta} aria-live="polite" initial={reducedMotion ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }} transition={{ duration: reducedMotion ? 0 : 0.18 }}>
+              {battuta}
+            </motion.p>
+          </AnimatePresence>
+        </div>
       </StudioSurface>
         </>
       )}

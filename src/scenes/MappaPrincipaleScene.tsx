@@ -1,3 +1,4 @@
+import { prefetchScene } from '@/components/transitions/scenePrefetch'
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { WorldMapCamera, type WorldCameraFocus } from '@/components/map/WorldMapCamera'
 import { resolveWorldMapHudLayout } from '@/components/map/worldMapHudLayout'
@@ -242,6 +243,11 @@ export function MappaPrincipaleScene() {
   const [hoverDestination, setPreviewDestination] = useState<string | null>(null)
   const [selectedDestination, setSelectedDestination] = useState<string | null>(null)
   const previewDestination = selectedDestination ?? hoverDestination
+  // Audit fase 6: appena una destinazione è indicata, si precaricano modulo e mappa locale dove si arriverà.
+  useEffect(() => {
+    if (!previewDestination || !getLocalMap(previewDestination) || !COORDS[previewDestination]) return
+    void prefetchScene({ scena: isRouteNode(COORDS[previewDestination].tipo) ? 'percorso' : 'citta', payload: { luogo: previewDestination } })
+  }, [previewDestination])
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const turnoOverworld = useGameStore((s) => s.turnoOverworld)
   const posizione1 = useGameStore((s) => s.posizione1)
@@ -268,6 +274,11 @@ export function MappaPrincipaleScene() {
 
   const giocatoreAttivo = turnoOverworld.giocatoreAttivo
   const activeNodeName = getMainMapNodeName(giocatoreAttivo === 1 ? posizione1 : posizione2)
+  // Anche il luogo in cui ci si trova è una meta probabile («Apri mappa di …»).
+  useEffect(() => {
+    if (!getLocalMap(activeNodeName) || !COORDS[activeNodeName]) return
+    void prefetchScene({ scena: isRouteNode(COORDS[activeNodeName].tipo) ? 'percorso' : 'citta', payload: { luogo: activeNodeName } })
+  }, [activeNodeName])
   const activePosition = giocatoreAttivo === 1 ? posizione1 : posizione2
   const player1NodeName = getMainMapNodeName(posizione1)
   const player2NodeName = getMainMapNodeName(posizione2)

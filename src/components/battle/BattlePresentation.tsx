@@ -1,3 +1,4 @@
+import { useHealPulse } from '@/motion/ui/useHealPulse'
 import { forwardRef, useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
 import '@/ui-system/primitives.css'
 import { motion } from 'framer-motion'
@@ -490,12 +491,15 @@ export function HpBar({
   const previousPct = useRef(pct)
   const dropping = pct < previousPct.current
   useEffect(() => { previousPct.current = pct }, [pct])
+  // Audit fase 6: quando gli HP salgono la targa si illumina di verde.
+  const healing = useHealPulse(hp)
 
   return (
     <div
       className={`arka-battle-font relative z-20 h-full w-full text-white arka-letter-outline ${className}`}
       data-battle-hp-side={side}
       data-battle-hp={hp}
+      data-healing={healing || undefined}
       data-ui-skin-slot="frame"
       data-ui-asset-surface=""
       data-battle-framed={painted || undefined}

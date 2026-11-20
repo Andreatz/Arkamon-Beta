@@ -73,6 +73,7 @@ export type SoundId =
   | 'victory'
   | 'level-up'
   | 'evolution'
+  | 'heal'
 
 export type MusicId = 'title' | 'map' | 'battle' | 'evolution'
 
@@ -87,6 +88,13 @@ interface ToneStep {
 }
 
 const SOUND_BANK: Record<SoundId, ToneStep[]> = {
+  // Audit fase 6: arpeggio morbido che sale, per ogni cura (Infermeria, oggetti, mosse curative).
+  heal: [
+    { frequency: 523, duration: 0.09, type: 'sine', gain: 0.05 },
+    { frequency: 659, duration: 0.09, delay: 0.08, type: 'sine', gain: 0.05 },
+    { frequency: 784, duration: 0.11, delay: 0.16, type: 'sine', gain: 0.05 },
+    { frequency: 1047, duration: 0.22, delay: 0.25, type: 'triangle', gain: 0.045 },
+  ],
   click: [{ frequency: 620, duration: 0.045, type: 'square', gain: 0.035 }],
   'battle-start': [
     { frequency: 196, duration: 0.08, type: 'sawtooth', gain: 0.055 },
@@ -248,7 +256,7 @@ export function isAudioMuted(): boolean {
 
 export function playSound(sound: SoundId): void {
   if (muted) return
-  if (getAppliedAudioSelection(`event:${sound}`) || selections.choices[`event:${sound}`]) { playSelectedAudio(`event:${sound}`); return }
+  if (getAppliedAudioSelection(`event:${sound}`) || (selections.choices as Record<string, unknown>)[`event:${sound}`]) { playSelectedAudio(`event:${sound}`); return }
   for (const step of SOUND_BANK[sound]) playTone(step)
 }
 

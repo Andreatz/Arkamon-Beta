@@ -122,6 +122,12 @@ import { VFX_TYPE_COLORS } from '@/components/vfx/vfxTypeColors'
 
 
 
+/** Audit fase 6: tipo di avversario per la variazione di monete mostrata nella scheda finale. */
+function tipoAvversarioMonete(allenatoreId: number | undefined): TipoAvversario {
+  const allenatore = allenatoreId !== undefined ? getAllenatore(allenatoreId) : null
+  return allenatore?.tipo === 'Capopalestra' ? 'Capopalestra' : allenatore?.tipo === 'PVP' ? 'PVP' : 'NPC'
+}
+
 type PendingSwitch = {
   motivo: string
   prossimoPasso: 'passaAdA' | 'passaAB'
@@ -897,6 +903,8 @@ export function BattagliaScene() {
     void cine.attackStart({ side, moveName: move.nome, color: VFX_TYPE_COLORS[move.tipo] })
     playMoveVisuals(move, side, null, () => {}, () => {
       cine.attackEnd()
+      // Audit fase 6: la cura ha il suo suono, insieme al bagliore della barra HP.
+      playSound('heal')
       onComplete()
       actionInProgressRef.current = false
       setAzioneInCorso(false)
@@ -1391,6 +1399,7 @@ export function BattagliaScene() {
       if (!committed) { mostraMessaggi(['Oggetto non usato: il browser non può salvare la partita.']); return }
       if (isChallenge) challengeActions.current += 1
       beginAction(); appendChronicle([event])
+      if (effect.pokemon.hp > currentTarget.hp) playSound('heal')
       setPkmnA(nextA); setSquadraA(nextSquad); mostraMessaggi([...messages, effect.message]); passaTurnoAaB(pkmnB, 0)
     }, undefined, false)
     return { ok: true, message: 'Uso dell’oggetto avviato.' }
@@ -2014,31 +2023,10 @@ export function BattagliaScene() {
         </BattleLayoutItem>
       )}
 
-      {terminata && isNPC && !battaglia?.leagueBattle && esito && (() => {
-        const allenatore = battaglia?.allenatoreId !== undefined
-          ? getAllenatore(battaglia.allenatoreId)
-          : null
-        const tipoAvv: TipoAvversario =
-          allenatore?.tipo === 'Capopalestra'
-            ? 'Capopalestra'
-            : allenatore?.tipo === 'PVP'
-            ? 'PVP'
-            : 'NPC'
-        const delta = calcolaVariazioneMonete(esito, tipoAvv)
-        if (delta === 0) return null
-        return (
-          // Audit fase 2: targhetta monete con lo stile comune (oro per il guadagno, rosso per la perdita).
-          <div className="battle-coin-delta absolute bottom-20 left-1/2 z-20 -translate-x-1/2" data-delta={delta > 0 ? 'gain' : 'loss'}>
-            <GameArt id="coin" className="battle-coin-delta__icon" />
-            <p className="arka-layout-content">
-              {delta > 0 ? `+${delta} ₳ guadagnati` : `${delta} ₳ persi`}
-            </p>
-          </div>
-        )
-      })()}
 
       {terminata && <BattleResultCard chronicle={chronicle} outcome={isSelvatico && esito === 'vittoria' && pkmnB.hp > 0 ? 'cattura' : esito}
         messages={infoBoxMessaggi}
+        coinDelta={terminata && isNPC && !battaglia?.leagueBattle && esito ? calcolaVariazioneMonete(esito, tipoAvversarioMonete(battaglia?.allenatoreId)) : 0}
         gymVictory={esito === 'vittoria' && battaglia?.allenatoreId !== undefined && getAllenatore(battaglia.allenatoreId)?.tipo === 'Capopalestra'} />}
 
       {terminata && (
