@@ -2,6 +2,15 @@ import { GENERATED_MOVE_VFX_ASSETS } from '../vfx/generatedVfxAssets'
 import type { SpriteSheetMeta } from '../vfx/types'
 
 export const BATTLE_DICE_ROLL_VISIBLE_MS = 2000
+/** Uscita della carta dei dadi: i messaggi del turno compaiono solo dopo che la carta è sparita. */
+export const BATTLE_DICE_EXIT_MS = 220
+/** Margine oltre l'uscita prima di proseguire comunque (scheda in background, animazioni ferme). */
+export const BATTLE_DICE_EXIT_GRACE_MS = 400
+
+/** Audit fase 4: attesa fra la chiusura della carta dei dadi e i messaggi (a velocità normale). */
+export function battleDiceDismissDelayMs(reducedMotion: boolean): number {
+  return reducedMotion ? 0 : BATTLE_DICE_EXIT_MS
+}
 
 type DiceValue = 1 | 2 | 3 | 4 | 5 | 6
 

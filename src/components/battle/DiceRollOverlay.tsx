@@ -4,7 +4,7 @@ import { animate, motion } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '../vfx/AnimatedSprite'
-import { getBattleDiceSequence } from './battleDiceAssets'
+import { BATTLE_DICE_EXIT_MS, getBattleDiceSequence } from './battleDiceAssets'
 import { createBattleDiceReveal } from './battleDiceReveal'
 import { playSelectedAudio } from '@/utils/soundManager'
 import { EFFICACY_LABEL, diceCellWidth, type EfficacyTone } from './battleCinematics'
@@ -85,7 +85,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
   const tray = hasGameArt('battle-dice-tray')
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
+      className="battle-dice-layer pointer-events-none absolute inset-0 z-[var(--battle-z-dice)] flex items-center justify-center"
       data-dice-roll-id={roll.id}
       data-dice-revealed={damageVisible}
     >
@@ -93,7 +93,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
         initial={reducedMotion ? false : { opacity: 0, scale: 0.72, y: -28 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 12 }}
-        transition={{ duration: reducedMotion ? 0 : 0.22 / speed }}
+        transition={{ duration: reducedMotion ? 0 : BATTLE_DICE_EXIT_MS / 1000 / speed }}
         onAnimationComplete={() => revealRef.current?.panelVisible()}
         className="battle-dice-panel rounded-md border border-white/20 px-5 py-4 text-center text-white shadow-2xl"
         data-dice-tray={tray || undefined}

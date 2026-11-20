@@ -83,3 +83,23 @@
 :root { --arka-user-text-scale: 1; }
 html[data-text-size="large"] { --arka-user-text-scale: 1.15; }
 html[data-text-size="tv"] { --arka-user-text-scale: 1.3; }
+
+/*
+ * Audit fase 4: ordine esplicito dei livelli della battaglia (dal basso verso l'alto).
+ * Mondo e sprite < HUD (barre, messaggi, mosse) < fascia della mossa < cattura < danno
+ * < impulso d'impatto < carta dei dadi < finestra di priorità < Suprema < esito < pubblico.
+ * Le finestre modali (moneta, dado di stato, Suprema, borsa) restano sopra, da 880 in su.
+ */
+:root {
+  --battle-z-hud: 20;
+  --battle-z-banner: 25;
+  --battle-z-capture: 26;
+  --battle-z-damage: 30;
+  --battle-z-command: 31;
+  --battle-z-impact: 35;
+  --battle-z-dice: 40;
+  --battle-z-priority: 42;
+  --battle-z-cutin: 45;
+  --battle-z-result: 50;
+  --battle-z-audience: 70;
+}

@@ -1,5 +1,5 @@
 /* Stacco della Mossa Suprema: sopra mondo e HUD, sotto i dialoghi. */
-.supreme-cut-in { position: absolute; inset: 0; z-index: 45; overflow: hidden; pointer-events: none; }
+.supreme-cut-in { position: absolute; inset: 0; z-index: var(--battle-z-cutin); overflow: hidden; pointer-events: none; }
 .supreme-cut-in__dim { position: absolute; inset: 0; background: color-mix(in srgb, var(--arka-bg) 72%, transparent); }
 
 .supreme-cut-in__band {

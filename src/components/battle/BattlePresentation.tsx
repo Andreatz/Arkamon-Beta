@@ -97,7 +97,7 @@ export function ImpactPulseOverlay({
 
   return (
     <div
-      className="pointer-events-none absolute z-[64] -translate-x-1/2 -translate-y-1/2"
+      className="pointer-events-none absolute z-[var(--battle-z-impact)] -translate-x-1/2 -translate-y-1/2"
       style={position}
       aria-hidden="true"
     >

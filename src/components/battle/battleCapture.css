@@ -1,5 +1,5 @@
 /* Sfera di cattura, dadi delle oscillazioni ed esito. */
-.battle-capture { position: absolute; inset: 0; z-index: 26; pointer-events: none; }
+.battle-capture { position: absolute; inset: 0; z-index: var(--battle-z-capture); pointer-events: none; }
 
 .battle-capture__orb {
   position: absolute;

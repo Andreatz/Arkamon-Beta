@@ -112,6 +112,8 @@ import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceR
 import {
   BATTLE_DICE_ASSET_IDS,
   BATTLE_DICE_ROLL_VISIBLE_MS,
+  BATTLE_DICE_EXIT_GRACE_MS,
+  battleDiceDismissDelayMs,
 } from '@/components/battle/battleDiceAssets'
 import {
   getMoveVfxFeedback,
@@ -208,6 +210,7 @@ export function BattagliaScene() {
     hp: number
   } | null>(null)
   const diceRollTimerRef = useRef<number | null>(null)
+  const diceExitRef = useRef<(() => void) | null>(null)
   const diceRollIdRef = useRef(0)
   const diceRollCallbacksRef = useRef<{
     id: number
@@ -580,9 +583,21 @@ export function BattagliaScene() {
     diceRollTimerRef.current = window.setTimeout(() => {
       if (diceRollCallbacksRef.current !== callbacks) return
       setDiceRoll(null)
-      diceRollTimerRef.current = null
-      diceRollCallbacksRef.current = null
-      callbacks.onComplete()
+      const finish = () => {
+        if (diceRollCallbacksRef.current !== callbacks) return
+        if (diceRollTimerRef.current !== null) window.clearTimeout(diceRollTimerRef.current)
+        diceRollTimerRef.current = null
+        diceRollCallbacksRef.current = null
+        diceExitRef.current = null
+        callbacks.onComplete()
+      }
+      // Audit fase 4: la carta dei dadi esce del tutto prima che i messaggi del turno compaiano.
+      // La fine dell'uscita (AnimatePresence) sblocca il turno; il timer è solo una rete di sicurezza
+      // per una scheda in background, dove le animazioni possono restare ferme.
+      const exitMs = getAnimationDuration(battleDiceDismissDelayMs(reducedMotion))
+      if (exitMs <= 0) { finish(); return }
+      diceExitRef.current = finish
+      diceRollTimerRef.current = window.setTimeout(finish, exitMs + BATTLE_DICE_EXIT_GRACE_MS)
     }, getAnimationDuration(BATTLE_DICE_ROLL_VISIBLE_MS))
   }
 
@@ -1643,7 +1658,7 @@ export function BattagliaScene() {
       <BattleLogPanel chronicle={chronicle} busy={azioneInCorso || coinOpen || !!statusRoll} />
       {previewView === 'dice' && <DiceRollOverlay staticPreview roll={{ id: -1, side: 'A', moveName: 'Attacco di esempio', rolls: [2, 4, 6], increment: 2, damage: 14 }} />}
       {previewView === 'bag' && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={() => ({ ok: false, message: 'Anteprima del layout: nessun oggetto usato.' })} onClose={() => {}} />}
-      {!terminata && <button type="button" data-battle-bag-command="" className="absolute bottom-3 right-3 z-30 rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
+      {!terminata && <button type="button" data-battle-bag-command="" className="absolute bottom-3 right-3 z-[var(--battle-z-command)] rounded border border-violet-300 bg-slate-950 px-3 py-2 text-sm text-white" disabled={!turnoA || azioneInCorso || coinOpen || !!statusRoll || !!attesaAvversario || !!attesaPassaggio || !!scambioRichiesto || !!mostraMoseB} onClick={() => setBagOpen(true)}>Borsa</button>}
       {bagOpen && <BattleItemDialog squad={squadraA} inventory={giocatore.inventario} onUse={eseguiOggetto} onClose={() => setBagOpen(false)} boostBlocked={boostBlockedReason(battaglia)} activeBoosts={battaglia?.boost} />}
       {audienceChoice && !terminata && <BattleAudienceOverlay
         request={audienceChoice.request} round={audienceVote.round} status={audienceVote.status}
@@ -1670,7 +1685,7 @@ export function BattagliaScene() {
         />
       )}
 
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={() => diceExitRef.current?.()}>
         {diceRoll && (
           <DiceRollOverlay key={diceRoll.id} roll={diceRoll} onVisible={() => revealLancioDadi(diceRoll.id)} />
         )}

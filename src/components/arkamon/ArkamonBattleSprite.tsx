@@ -25,18 +25,51 @@ export function spriteFolder(speciesId: number, side: 'front' | 'back'): 'front_
 
 export type ArkamonAnimationCue = 'release' | 'reaction'
 
-function getProceduralMotion(
+/**
+ * Filtro neutro con la stessa lista di funzioni del lampo di colpo: framer-motion interpola
+ * soltanto liste omogenee, quindi «brightness(1)» da solo non riporterebbe a 1 la saturazione.
+ */
+export const NEUTRAL_SPRITE_FILTER = 'brightness(1) saturate(1)'
+const NEUTRAL_SPRITE_POSE = { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, filter: NEUTRAL_SPRITE_FILTER } as const
+type NeutralSpriteProperty = keyof typeof NEUTRAL_SPRITE_POSE
+type ProceduralMotion = { animate: TargetAndTransition; transition: Transition & { duration?: number } }
+
+/**
+ * Audit fase 4: ogni stato procedurale dichiara tutte le proprietà della posa.
+ * Prima un colpo interrotto (hit → idle/KO, attacco → colpo) lasciava il filtro bianco,
+ * l'opacità del KO o lo spostamento laterale nel valore raggiunto al momento dell'interruzione.
+ * Le proprietà che lo stato non anima tornano a neutro con una transizione breve e senza ripetizioni.
+ */
+function withNeutralPose({ animate, transition }: ProceduralMotion): ProceduralMotion {
+  const reset = (Object.keys(NEUTRAL_SPRITE_POSE) as NeutralSpriteProperty[]).filter(key => !(key in animate))
+  const resetTransition = { duration: 0.12, ease: 'easeOut' as const, repeat: 0 }
+  return {
+    animate: { ...Object.fromEntries(reset.map(key => [key, NEUTRAL_SPRITE_POSE[key]])), ...animate },
+    transition: { ...transition, ...Object.fromEntries(reset.map(key => [key, resetTransition])) },
+  }
+}
+
+export function getProceduralMotion(
   speciesId: number,
   side: ArkamonSpriteSide,
   animation: ArkamonBattleAnimation,
   reduceMotion: boolean
-): { animate: TargetAndTransition; transition: Transition & { duration?: number } } {
+): ProceduralMotion {
+  return withNeutralPose(getProceduralAction(speciesId, side, animation, reduceMotion))
+}
+
+function getProceduralAction(
+  speciesId: number,
+  side: ArkamonSpriteSide,
+  animation: ArkamonBattleAnimation,
+  reduceMotion: boolean
+): ProceduralMotion {
   const profile = getArkamonMotionProfile(speciesId)
   const direction = side === 'back' ? 1 : -1
 
   if (reduceMotion) {
     return {
-      animate: { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, filter: 'brightness(1)' },
+      animate: { ...NEUTRAL_SPRITE_POSE },
       transition: { duration: 0.1 },
     }
   }
@@ -58,9 +91,9 @@ function getProceduralMotion(
         animate: {
           scale: [1, profile.hitScale, 1.025, 1],
           filter: [
-            'brightness(1)',
+            NEUTRAL_SPRITE_FILTER,
             'brightness(2.2) saturate(0.45)',
-            'brightness(1)',
+            NEUTRAL_SPRITE_FILTER,
           ],
         },
         transition: { duration: 0.24, ease: 'easeOut' },
