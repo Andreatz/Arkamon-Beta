@@ -7,7 +7,7 @@ import { MenuScreen } from '../MenuScreen'
 import { PlayerUi } from '../PlayerUi'
 import { AnalysisScreen } from '../AnalysisScreen'
 import { DepositScreen } from '../DepositScreen'
-import { PLAYER_UI_SCREENS, isPlayerUiScreen } from '../navigation'
+import { PLAYER_UI_NAV_SCREENS, PLAYER_UI_SCREENS, isPlayerUiScreen } from '../navigation'
 
 const runtime = vi.hoisted(() => ({ state: undefined as unknown as GameState }))
 vi.mock('@/store/gameStore', () => ({
@@ -49,7 +49,8 @@ describe('player menu navigation and progression facts', () => {
     // Fase U6: Gara, Ripresa e Sfide sono nel cassetto «Altro», chiuso all'apertura del menù.
     expect(markup).toContain('aria-controls="ref-menu-utilities"')
     expect([...markup.matchAll(/aria-label="Apri ([^"]+)"/g)].map(([, name]) => name)).toEqual([
-      'Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Registro', 'Salvataggio', 'Impostazioni',
+      // Audit fase 3: Diario e Registro sono una sola destinazione.
+      'Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Salvataggio', 'Impostazioni',
     ])
     expect(markup.match(/aria-label="Apri Squadra"/g)).toHaveLength(1)
     expect(markup).not.toContain('Apri Negozio')
@@ -60,13 +61,15 @@ describe('player menu navigation and progression facts', () => {
 
   it('keeps the shop outside navigation and exposes exactly one journey resume command', () => {
     expect(PLAYER_UI_SCREENS).toEqual(['partita', 'squadra', 'deposito', 'arkadex', 'analisi', 'borsa'])
+    // L'Analisi resta un collegamento diretto, ma non è più nella barra: vive nella scheda «Dettagli» della Squadra.
+    expect(PLAYER_UI_NAV_SCREENS).toEqual(['partita', 'squadra', 'deposito', 'arkadex', 'borsa'])
     expect(isPlayerUiScreen('negozio')).toBe(true)
     const markup = renderToStaticMarkup(<PlayerUi onClose={vi.fn()} />)
     expect(markup.match(/Riprendi il Viaggio/g)).toHaveLength(1)
     expect(markup).not.toContain('pu-aux-nav')
     expect(markup).not.toContain('Esc · Chiudi')
     expect(markup).not.toContain('>Negozio<')
-    expect(markup.match(/class="pu-button[^\"]*pu-nav-button/g)).toHaveLength(6)
+    expect(markup.match(/class="pu-button[^\"]*pu-nav-button/g)).toHaveLength(5)
   })
 
   it('does not open a shop from an initial screen lacking a point interaction', () => {

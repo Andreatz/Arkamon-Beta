@@ -12,7 +12,6 @@ import { HistoryPagination } from '@/components/ui/HistoryPagination'
 
 export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 2 } = {}) {
   const [playerId, setPlayerId] = useState<1 | 2>(() => initialPlayerId ?? useGameStore.getState().giocatoreAttivo)
-  const [section, setSection] = useState<'medals' | 'locations' | 'missions' | 'history'>('medals')
   const [pages, setPages] = useState({ locations: 0, missions: 0, history: 0 })
   const player1 = useGameStore((s) => s.giocatore1)
   const player2 = useGameStore((s) => s.giocatore2)
@@ -36,10 +35,17 @@ export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 
   const log = progress[playerId === 1 ? 'log1' : 'log2']
   const gyms = ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra')
   const visibleInteractions = interactions.filter((entry) => entry.enabled && (entry.mapId !== SECRET_LOCATION_ID || hasUnlockedSecretLocation(player)))
-  const pageSize = section === 'locations' ? 4 : 2
-  const count = section === 'locations' ? locations.length : section === 'missions' ? visibleInteractions.length : log.length
-  const page = section === 'medals' ? 0 : Math.min(pages[section], Math.max(0, Math.ceil(count / pageSize) - 1))
-  const start = page * pageSize
+  // Audit fase 3: niente sotto-schede. Le quattro sezioni sono una sotto l'altra, ognuna con le sue pagine.
+  const PAGE = 6
+  const slice = (section: 'locations' | 'missions' | 'history', count: number) => {
+    const page = Math.min(pages[section], Math.max(0, Math.ceil(count / PAGE) - 1))
+    return { page, start: page * PAGE }
+  }
+  const locationsPage = slice('locations', locations.length)
+  const missionsPage = slice('missions', visibleInteractions.length)
+  const historyPage = slice('history', log.length)
+  const pager = (section: 'locations' | 'missions' | 'history', page: number, count: number, label: string) => count > PAGE
+    ? <HistoryPagination page={page} count={count} pageSize={PAGE} onPageChange={next => setPages(previous => ({ ...previous, [section]: next }))} label={label} /> : null
   return <section className="player-journal" aria-label="Diario dei giocatori">
     <div className="journal-overview">
     <h2>Diario della partita</h2>
@@ -53,31 +59,31 @@ export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 
     </div>
     <div className="journal-objective"><strong>Prossimo obiettivo suggerito: {objective.title}</strong><p>{objective.detail}</p>{objective.nextStep && <p>Prossimo luogo lungo le strade: {objective.nextStep.replace(/_/g, ' ')}.</p>}</div>
     </div><div className="journal-reading">
-    <nav className="journal-sections" aria-label="Sezioni del diario">{([['medals', 'Medaglie'], ['locations', 'Luoghi e attività'], ['missions', 'Tappe e missioni configurate'], ['history', 'Cronaca delle interazioni']] as const).map(([id, title]) => <button type="button" key={id} aria-pressed={section === id} onClick={() => setSection(id)}>{title}</button>)}</nav>
-    <section aria-label={section === 'medals' ? 'Medaglie' : section === 'locations' ? 'Luoghi e attività' : section === 'missions' ? 'Tappe e missioni configurate' : 'Cronaca delle interazioni'} className="journal-section-content">
-    {section === 'medals' && <><h3>Medaglie</h3><ul className="journal-medals">{gyms.map((trainer) => {
+    <section aria-label="Medaglie" className="journal-section-content"><h3>Medaglie</h3><ul className="journal-medals">{gyms.map((trainer) => {
       const earned = player.allenatoriSconfitti.has(trainer.id)
       // Medaglia dipinta della palestra; l'alloggio vuoto finché non è ottenuta.
       return <li key={trainer.id} data-earned={earned}><ProvidedArtwork id={gymMedalArtwork(trainer.id, earned)} className="journal-medal-art" aria-hidden="true" /><span><strong>{trainer.luogo}</strong> · {trainer.nome}<small>{earned ? 'Ottenuta' : 'Da ottenere'}</small></span></li>
-    })}</ul></>}
-    {section === 'locations' && <><h3>Luoghi e attività</h3><p>I luoghi documentati derivano da posizioni locali, allenatori e cespugli del salvataggio; i salvataggi precedenti non contengono uno storico di ogni passaggio.</p>
-      <div className="journal-locations">{locations.slice(start, start + pageSize).map((entry) => <article key={entry.mapId}><strong>{entry.mapId.replace(/_/g, ' ')}{entry.current ? ' · posizione attuale' : entry.documented ? ' · documentato' : ''}</strong>
+    })}</ul></section>
+    <section aria-label="Luoghi e attività" className="journal-section-content"><h3>Luoghi e attività</h3><p>I luoghi documentati derivano da posizioni locali, allenatori e cespugli del salvataggio; i salvataggi precedenti non contengono uno storico di ogni passaggio.</p>
+      <div className="journal-locations">{locations.slice(locationsPage.start, locationsPage.start + PAGE).map((entry) => <article key={entry.mapId}><strong>{entry.mapId.replace(/_/g, ' ')}{entry.current ? ' · posizione attuale' : entry.documented ? ' · documentato' : ''}</strong>
         <span>Allenatori {entry.trainersCompleted}/{entry.trainersTotal} · Cespugli {entry.bushesCompleted}/{entry.bushesTotal} · Tappe {entry.interactionsCompleted}/{entry.interactionsTotal}</span>
       </article>)}</div>
-    </>}
-    {section === 'missions' && <><h3>Tappe e missioni configurate</h3>
+      {pager('locations', locationsPage.page, locations.length, 'Pagine dei luoghi del diario')}
+    </section>
+    <section aria-label="Tappe e missioni configurate" className="journal-section-content"><h3>Tappe e missioni configurate</h3>
       {!visibleInteractions.length && <p>La regia non ha ancora definito tappe disponibili sui pallini. Le attività esistenti restano disponibili.</p>}
-      <ul>{visibleInteractions.slice(start, start + pageSize).map((entry) => {
+      <ul>{visibleInteractions.slice(missionsPage.start, missionsPage.start + PAGE).map((entry) => {
         const done = !entry.repeatable && isInteractionComplete(progress, entry, playerId)
         const reason = done ? null : interactionRequirementMessage(state, entry, playerId)
         return <li key={entry.id}><strong>{done ? '✓' : reason ? '○' : '→'} {entry.title}</strong><span>{entry.mapId.replace(/_/g, ' ')} · {entry.scope === 'shared' ? 'completamento condiviso' : 'progressi individuali'}{entry.repeatable ? ' · ripetibile' : ''}</span>
           {reason && <small>{reason}</small>}{entry.requirements.completedInteractions.length > 0 && <small>Tappe precedenti: {entry.requirements.completedInteractions.map((id) => interactions.find((item) => item.id === id)?.title ?? id).join(', ')}.</small>}
         </li>
       })}</ul>
-    </>}
-    {section === 'history' && <><h3>Cronaca delle interazioni</h3>{!log.length ? <p>Nessuna interazione configurata completata da questo giocatore.</p> : <ol>{[...log].reverse().slice(start, start + pageSize).map((entry, index) => <li key={`${entry.interactionId}-${index}`}><strong>{entry.title} · {entry.mapId.replace(/_/g, ' ')}</strong><p>{entry.message}</p></li>)}</ol>}</>}
+      {pager('missions', missionsPage.page, visibleInteractions.length, 'Pagine delle tappe del diario')}
     </section>
-    {section !== 'medals' && <HistoryPagination page={page} count={count} pageSize={pageSize} onPageChange={next => setPages(previous => ({ ...previous, [section]: next }))} label="Pagine della sezione del diario" />}
+    <section aria-label="Cronaca delle interazioni" className="journal-section-content"><h3>Cronaca delle interazioni</h3>{!log.length ? <p>Nessuna interazione configurata completata da questo giocatore.</p> : <ol>{[...log].reverse().slice(historyPage.start, historyPage.start + PAGE).map((entry, index) => <li key={`${entry.interactionId}-${index}`}><strong>{entry.title} · {entry.mapId.replace(/_/g, ' ')}</strong><p>{entry.message}</p></li>)}</ol>}
+      {pager('history', historyPage.page, log.length, 'Pagine della cronaca del diario')}
+    </section>
     </div>
   </section>
 }

@@ -102,7 +102,7 @@ test('all six Aurora menu screens fit the viewport with supplied PNG controls, c
   })
   await seedCampaign(page)
   const dialog = await openTools(page, 'Squadra')
-  for (const [name, id] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Menù Partita', 'partita']] as const) {
+  for (const [name, id] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Borsa', 'borsa'], ['Menù Partita', 'partita']] as const) {
     await dialog.getByRole('button', { name, exact: true }).click()
     const shell = dialog.locator('.pu-shell')
     await expect(shell).toHaveAttribute('data-player-ui-screen', id)
@@ -205,8 +205,8 @@ test('Escape closes an archived replay above the direct deposit without closing 
   const beforeArchive = await page.evaluate(() => localStorage.getItem('arkamon-battle-archive-v1'))
   const scene = page.locator('.pu-scene-host')
   await scene.getByRole('button', { name: 'Menù Partita', exact: true }).click()
-  await scene.getByRole('button', { name: 'Apri Registro', exact: true }).click()
-  await scene.getByRole('navigation', { name: 'Archivi del registro', exact: true }).getByRole('button', { name: 'Cronache delle battaglie', exact: true }).click()
+  await scene.getByRole('button', { name: 'Apri Diario', exact: true }).click()
+  await scene.getByRole('navigation', { name: 'Archivi del diario', exact: true }).getByRole('button', { name: 'Cronache delle battaglie', exact: true }).click()
   const review = scene.getByRole('button', { name: 'Rivedi cronaca e dadi', exact: true })
   await review.click()
   const replay = page.getByRole('dialog', { name: 'Cronaca della battaglia', exact: true })
@@ -361,7 +361,7 @@ test('the route menu has no shop entry and rejects an incomplete shop request wi
   const dialog = await openTools(page, 'Menù Partita')
   await expect(dialog.getByRole('button', { name: 'Negozio', exact: true })).toHaveCount(0)
   await expect(dialog.getByRole('button', { name: 'Apri Negozio', exact: true })).toHaveCount(0)
-  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(9)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(8)
   await expect(dialog.getByRole('button', { name: 'Riprendi il Viaggio', exact: true })).toHaveCount(1)
   await expect(dialog.getByRole('button', { name: /^(Chiudi|Riprendi)$/ })).toHaveCount(0)
   await page.evaluate(() => window.dispatchEvent(new CustomEvent('arkamon:open-player-ui', { detail: { screen: 'negozio', playerId: 1 } })))
@@ -380,17 +380,17 @@ test('six match utilities use their main cards, role-based typography and a sing
   const before = await campaign(page)
   const dialog = await openTools(page, 'Menù Partita')
   const utilities = [
-    ['Registro', 'register', 'Registro della partita'],
+    ['Diario', 'journal', 'Diario della partita'],
     ['Salvataggio', 'backup', 'Salvataggio della partita'],
     ['Impostazioni', 'settings', 'Impostazioni del gioco'],
     ['Gara', 'race', 'Situazione della gara'],
     ['Ripresa', 'recap', 'Ripresa della sessione'],
     ['Sfide', 'challenges', 'Sfide a seed e Fanta-Team Builder'],
   ] as const
-  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(9)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(8)
   const mainCards = dialog.locator('.ref-menu-grid')
   await expect(mainCards).toHaveAttribute('aria-label', 'Destinazioni del menù principale')
-  for (const label of ['Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Registro', 'Salvataggio', 'Impostazioni']) {
+  for (const label of ['Squadra', 'Arkadex', 'Borsa', 'Deposito', 'Mappa', 'Diario', 'Salvataggio', 'Impostazioni']) {
     await expect(mainCards.getByRole('button', { name: `Apri ${label}`, exact: true })).toHaveCount(1)
   }
   await page.evaluate(() => document.fonts.ready)
@@ -414,7 +414,7 @@ test('six match utilities use their main cards, role-based typography and a sing
   expect(primaryFont(fonts.text)).toBe(primaryFont(fonts.bodyRole))
   expect(fonts.loaded).toBe(true)
   const screenshot = await page.screenshot({ path: test.info().outputPath(isMobile ? 'menu-phone.png' : 'menu-1920x1080.png') })
-  await test.info().attach('Menù Aurora con nove destinazioni e tipografia serif', { body: screenshot, contentType: 'image/png' })
+  await test.info().attach('Menù Aurora con otto destinazioni e tipografia serif', { body: screenshot, contentType: 'image/png' })
   for (const [label, id, region] of utilities) {
     // Fase U6: Gara, Ripresa e Sfide stanno nel cassetto «Altro», chiuso a ogni apertura del menù.
     if (['Gara', 'Ripresa', 'Sfide'].includes(label)) {
@@ -428,7 +428,7 @@ test('six match utilities use their main cards, role-based typography and a sing
     await expect(dialog.getByRole('button', { name: /^(Chiudi|Riprendi)$/ })).toHaveCount(0)
     await dialog.getByRole('button', { name: 'Menù Partita', exact: true }).click()
   }
-  for (const screen of ['Deposito', 'Analisi']) {
+  for (const screen of ['Deposito']) {
     await dialog.getByRole('button', { name: screen, exact: true }).click()
     await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)
     await expect(dialog.locator('.pu-content')).not.toContainText(/\bXP\b|Esperienza/)

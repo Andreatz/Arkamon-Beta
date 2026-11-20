@@ -324,3 +324,9 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-team .pu-te
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-dossier-health { padding: 10px; }
   html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-dossier-health > div:first-child { margin-bottom: 9px; }
 }
+
+/* Audit fase 3: scheda «Dettagli» della Squadra (ex Analisi). */
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-details { display: grid; gap: 8px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-details h3 { margin: 4px 0 0; font: 600 18px var(--arka-ui-font-display); color: var(--arka-ui-gold-bright); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-details .pu-note { margin: 0; font: 14px / 1.45 var(--arka-ui-font-body); color: var(--arka-ui-ink-muted); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-reference-details .pu-affinity-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; margin: 6px 0; }

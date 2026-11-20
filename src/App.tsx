@@ -157,6 +157,13 @@ function renderScena(scena: SceneId) {
 
 function GameApp() {
   const motion = useGamePreferences((state) => state.reducedMotion)
+  // Audit fase 3: la dimensione del testo scelta nelle Impostazioni scala i token tipografici.
+  const textSize = useGamePreferences((state) => state.textSize)
+  useEffect(() => {
+    const root = document.documentElement
+    if (textSize === 'normal') delete root.dataset.textSize
+    else root.dataset.textSize = textSize
+  }, [textSize])
   return <MotionConfig reducedMotion={motion === 'system' ? 'user' : motion === 'on' ? 'always' : 'never'}><MotionRoot /><SessionGate><App /></SessionGate></MotionConfig>
 }
 export default GameApp

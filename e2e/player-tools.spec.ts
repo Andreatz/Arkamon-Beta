@@ -5,8 +5,7 @@ import { readFile } from 'node:fs/promises'
 async function tools(page: Page, tab: string) {
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita' })
-  await dialog.getByRole('button', { name: `Apri ${tab === 'Diario' ? 'Registro' : tab === 'Backup' ? 'Salvataggio' : tab}`, exact: true }).click()
-  if (tab === 'Diario') await dialog.getByRole('navigation', { name: 'Archivi del registro', exact: true }).getByRole('button', { name: 'Diario', exact: true }).click()
+  await dialog.getByRole('button', { name: `Apri ${tab === 'Backup' ? 'Salvataggio' : tab}`, exact: true }).click()
   return dialog
 }
 test('preferences persist independently and dialog is keyboard accessible', async ({ page }) => {
@@ -111,7 +110,6 @@ test('interaction editor persists definitions and journal shows per-player requi
   await expect(editor.getByRole('status')).toHaveText('Interazione salvata.')
   await page.getByRole('button', { name: 'Chiudi', exact: true }).click()
   const journal = await tools(page, 'Diario')
-  await journal.getByRole('navigation', { name: 'Sezioni del diario', exact: true }).getByRole('button', { name: 'Tappe e missioni configurate', exact: true }).click()
   await expect(journal).toContainText('Indizio di prova')
   await expect(journal).toContainText('progressi individuali')
   await journal.getByLabel('Giocatore del diario').selectOption('2')

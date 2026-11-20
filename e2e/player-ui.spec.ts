@@ -50,7 +50,7 @@ test('browsing G2 and all six menu screens preserves turn, HP, position and camp
   await expect(dialog.locator('.pu-header-meta')).toContainText('Torino')
   await expect(dialog.getByRole('button', { name: 'Negozio', exact: true })).toHaveCount(0)
   await expect(dialog.getByRole('button', { name: 'Apri Negozio', exact: true })).toHaveCount(0)
-  for (const [label, screen] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'], ['Borsa', 'borsa'], ['Menù Partita', 'partita']] as const) {
+  for (const [label, screen] of [['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Borsa', 'borsa'], ['Menù Partita', 'partita']] as const) {
     await dialog.getByRole('button', { name: label, exact: true }).click()
     await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', screen)
     await expect(dialog.locator('.pu-content').getByRole('status').filter({ hasText: 'Caricamento…' })).toHaveCount(0)

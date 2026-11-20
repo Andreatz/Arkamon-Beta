@@ -12,8 +12,9 @@ const tabs: { id: RegisterTab; label: string }[] = [
 /** One entry point, three existing archives. No migration or duplication of saved history. */
 export function RegisterScreen({ playerId, initialTab = 'match' }: { playerId: 1 | 2; initialTab?: RegisterTab }) {
   const [tab, setTab] = useState<RegisterTab>(initialTab)
-  return <section className="pu-register-screen" aria-label="Registro della partita">
-    <nav className="pu-register-tabs" aria-label="Archivi del registro">{tabs.map(entry => <KitButton key={entry.id} active={tab === entry.id}
+  // Audit fase 3: Diario e Registro sono un'unica destinazione «Diario» con tre schede.
+  return <section className="pu-register-screen" aria-label="Diario della partita">
+    <nav className="pu-register-tabs" aria-label="Archivi del diario">{tabs.map(entry => <KitButton key={entry.id} active={tab === entry.id}
       aria-pressed={tab === entry.id} aria-controls="pu-register-content" onClick={() => setTab(entry.id)}>{entry.label}</KitButton>)}</nav>
     <div id="pu-register-content">
       <Suspense fallback={<p role="status">Caricamento archivio…</p>}>

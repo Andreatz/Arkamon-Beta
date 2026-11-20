@@ -10,7 +10,7 @@ const portraitMetadata: Record<string, PortraitMetadata> = JSON.parse(readFileSy
 const pngPackage: { assets: { id: string; file: string; width: number; height: number; trim: boolean }[] } = JSON.parse(readFileSync(new URL('../public/ui/reference-png/manifest.generated.json', import.meta.url), 'utf8'))
 const compactPortraitMetadata = Object.fromEntries(pngPackage.assets.filter(asset => asset.id.startsWith('portrait-')).map(asset => [`/ui/reference-png/${asset.file}`, asset]))
 const SCREENS = [
-  ['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'], ['Analisi', 'analisi'],
+  ['Squadra', 'squadra'], ['Deposito', 'deposito'], ['Arkadex', 'arkadex'],
   ['Borsa', 'borsa'], ['Menù Partita', 'partita'],
 ] as const
 // Catalogo del Database: a Venezia si vendono soltanto Pozione, Rianimatore e Sacchettino.
@@ -431,7 +431,7 @@ test.describe('Six real player tools at 1920×1080 with maximum content', () => 
   test('the same player button family survives auxiliary tools and both selected states', async ({ page }) => {
     await seedFullCampaign(page)
     const before = await savedCampaign(page), dialog = await openTools(page)
-    for (const [label, id] of [['Registro', 'register'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Sfide', 'challenges']] as const) {
+    for (const [label, id] of [['Diario', 'journal'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Sfide', 'challenges']] as const) {
       await selectScreen(dialog, 'Menù Partita', 'partita')
       // Fase U6: Gara, Ripresa e Sfide stanno nel cassetto «Altro» della striscia del Game Master.
       if (['race', 'recap', 'challenges'].includes(id)) await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
@@ -498,22 +498,21 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 900
         await assertFitsWithoutScroll(dialog, `${viewport.width}×${viewport.height} auxiliary ${label}`)
         expect(await savedCampaign(page), `${label}: reading tools preserve the campaign`).toEqual(before)
       }
-      for (const [label, id] of [['Registro', 'register'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Sfide', 'challenges']] as const) {
+      for (const [label, id] of [['Diario', 'journal'], ['Salvataggio', 'backup'], ['Impostazioni', 'settings'], ['Gara', 'race'], ['Ripresa', 'recap'], ['Sfide', 'challenges']] as const) {
         await selectScreen(dialog, 'Menù Partita', 'partita')
         if (['race', 'recap', 'challenges'].includes(id)) await dialog.getByRole('button', { name: 'Altro', exact: true }).click()
         await dialog.getByRole('button', { name: `Apri ${label}`, exact: true }).click()
         await expect(dialog.locator('.pu-shell')).toHaveAttribute('data-player-ui-screen', id)
         await check(label)
 
-        if (id === 'register') {
-          const archives = dialog.getByRole('navigation', { name: 'Archivi del registro', exact: true })
-          await archives.getByRole('button', { name: 'Diario', exact: true }).click()
-          const sections = dialog.getByRole('navigation', { name: 'Sezioni del diario', exact: true })
+        if (id === 'journal') {
+          const archives = dialog.getByRole('navigation', { name: 'Archivi del diario', exact: true })
+          // Audit fase 3: le quattro sezioni del diario sono impilate, senza sotto-schede.
+          await expect(dialog.getByRole('navigation', { name: 'Sezioni del diario', exact: true })).toHaveCount(0)
           for (const section of ['Medaglie', 'Luoghi e attività', 'Tappe e missioni configurate', 'Cronaca delle interazioni']) {
-            await sections.getByRole('button', { name: section, exact: true }).click()
-            await expect(dialog.getByRole('region', { name: section, exact: true })).toBeVisible()
-            await check(`Diario: ${section}`)
+            await expect(dialog.getByRole('region', { name: section, exact: true })).toBeAttached()
           }
+          await check('Diario')
           await archives.getByRole('button', { name: 'Cronache delle battaglie', exact: true }).click()
           await expect(dialog.getByRole('region', { name: 'Cronache delle battaglie', exact: true })).toBeVisible()
           await check('Cronache delle battaglie')

@@ -6,6 +6,7 @@ import { calcolaHPMax } from '@engine/battleEngine'
 import { useGameStore } from '@store/gameStore'
 import { HealthBar, KitButton, KitIcon, KitPanel, PokemonHero, PokemonMoves, TypeBadge } from './kit'
 import { liveOwnedPokemon } from './currentRoster'
+import type { PokemonIstanza } from '@/types'
 
 export interface AnalysisScreenProps { playerId: 1 | 2; instanceId?: string }
 type AnalysisTab = 'scheda' | 'mosse' | 'status'
@@ -69,18 +70,28 @@ function PlayerAnalysisScreen({ playerId, instanceId }: AnalysisScreenProps) {
             <h3>Mosse disponibili al livello {pokemon.livello}</h3><PokemonMoves pokemon={pokemon} detailed />
             <KitPanel className="pu-note pu-supreme-note"><KitIcon id="icon-activity" /><div><strong>Mossa Suprema · potenza doppia</strong><p>Danno al bersaglio e salita di livello prima del contraccolpo: metà degli HP massimi. Nel doppio KO vince l’attaccante.</p></div></KitPanel>
           </>}
-          {tab === 'status' && <>
+          {tab === 'status' && <AnalysisDetails pokemon={pokemon} />}
+        </KitPanel>
+      </div> : <KitPanel className="pu-empty-state"><KitIcon id="icon-analysis" /><h2>Nessun Arkamon da analizzare</h2><p>La scheda sarà disponibile dopo la scelta del tuo starter o una cattura.</p></KitPanel>}
+    </section>
+  )
+}
+
+/**
+ * Audit fase 3: condizione, stato alterato e affinità difensive del compagno.
+ * È la parte dell'Analisi che non esisteva altrove: ora vive anche nella scheda «Dettagli» della Squadra.
+ */
+export function AnalysisDetails({ pokemon }: { pokemon: PokemonIstanza }) {
+  const species = getPokemon(pokemon.specieId)
+  const status = pokemon.stato
+  return <>
             <h3>{pokemon.hp <= 0 ? 'Arkamon esausto' : status?.tipo ?? 'In salute'}</h3><HealthBar pokemon={pokemon} />
             {status?.tipo === 'Paralizzato' && <p className="pu-note">Agisce per secondo. Con 1–2 sul d6 non attacca; con 3–6 attacca. La paralisi termina soltanto con una mossa di cura o un oggetto.</p>}
             {status?.tipo === 'Addormentato' && <p className="pu-note">Turni di sonno rimasti: {status.turniRimanenti}. Il primo turno è obbligatorio; dal secondo un 4–6 sul d6 permette di svegliarsi.</p>}
             {status?.tipo === 'Avvelenato' && <p className="pu-note">Turni di veleno già trascorsi: {status.turniTrascorsi ?? 0}. Il danno cresce dal 10% degli HP massimi di altri 10 punti percentuali ogni turno.</p>}
             {status?.tipo === 'Confuso' && <p className="pu-note">La confusione influenza l’azione durante la battaglia.</p>}
             {!status && pokemon.hp > 0 && <p className="pu-note">Nessuno stato alterato attivo.</p>}
-            <p className="pu-note">Gli HP residui vengono conservati. Consulta la borsa per usare una cura, oppure raggiungi un Centro Arkamon.</p>
+            <p className="pu-note">Gli HP residui vengono conservati. Consulta la borsa per usare una cura, oppure raggiungi un’Infermeria Arka.</p>
             {species && <div className="pu-status-affinities"><h3>Affinità difensive</h3><div className="pu-affinity-grid pu-affinity-compact">{TABELLA_TIPI.tipi.map((type) => <div key={type}><TypeBadge type={type} /><strong>×{TABELLA_TIPI.efficacia[type]?.[species.tipo] ?? 1}</strong></div>)}</div><p className="pu-note">Danno ricevuto per tipo di attacco.</p></div>}
-          </>}
-        </KitPanel>
-      </div> : <KitPanel className="pu-empty-state"><KitIcon id="icon-analysis" /><h2>Nessun Arkamon da analizzare</h2><p>La scheda sarà disponibile dopo la scelta del tuo starter o una cattura.</p></KitPanel>}
-    </section>
-  )
+  </>
 }

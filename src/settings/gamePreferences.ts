@@ -12,9 +12,11 @@ export interface GamePreferences {
   animationSpeed: 'normal' | 'fast'
   reducedMotion: MotionPreference
   graphicsMemory: 'auto' | 'full' | 'low'
+  /** Audit fase 3: dimensione del testo; «tv» per la diretta o lo schermo lontano. */
+  textSize: 'normal' | 'large' | 'tv'
 }
 export const DEFAULT_GAME_PREFERENCES: GamePreferences = {
-  musicVolume: 1, effectsVolume: 1, animationSpeed: 'normal', reducedMotion: 'system', graphicsMemory: 'auto',
+  musicVolume: 1, effectsVolume: 1, animationSpeed: 'normal', reducedMotion: 'system', graphicsMemory: 'auto', textSize: 'normal',
 }
 const volume = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value)
   ? Math.max(0, Math.min(1, value)) : fallback
@@ -25,6 +27,7 @@ export function normalizeGamePreferences(value: unknown): GamePreferences {
     animationSpeed: data.animationSpeed === 'fast' ? 'fast' : 'normal',
     reducedMotion: data.reducedMotion === 'on' || data.reducedMotion === 'off' ? data.reducedMotion : 'system',
     graphicsMemory: data.graphicsMemory === 'full' || data.graphicsMemory === 'low' ? data.graphicsMemory : 'auto',
+    textSize: data.textSize === 'large' || data.textSize === 'tv' ? data.textSize : 'normal',
   }
 }
 interface PreferencesStore extends GamePreferences {
@@ -38,7 +41,7 @@ export const useGamePreferences = create<PreferencesStore>()(persist((set, get) 
 }), {
   name: 'arkamon-preferences-v1', version: 1,
   storage: createJSONStorage(() => isUiStudioPreview() ? uiPreviewCampaignStorage : localStorage),
-  partialize: ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory }) => ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory }),
+  partialize: ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory, textSize }) => ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory, textSize }),
   merge: (saved, current) => ({ ...current, ...normalizeGamePreferences(saved) }),
 }))
 
@@ -53,3 +56,6 @@ export function useGameMotionPreferences(): { reducedMotion: boolean; speed: num
   const speed = useGamePreferences((state) => state.animationSpeed === 'fast' ? 2 : 1)
   return playback ?? { reducedMotion: preference === 'system' ? Boolean(system) : preference === 'on', speed }
 }
+
+/** Fattore applicato ai token tipografici (`--arka-user-text-scale`). */
+export const TEXT_SIZE_SCALE: Record<GamePreferences['textSize'], number> = { normal: 1, large: 1.15, tv: 1.3 }
