@@ -2,6 +2,7 @@ import { useEffect, useId, useRef } from 'react'
 import { èMossaCura, èMossaSoloStato } from '@/engine/battleEngine'
 import type { MossaDef } from '@/types'
 import { makeDialogBackgroundInert } from './modalFocus'
+import { ArkaButton, ArkaModalFrame } from '@/ui-system/primitives'
 
 interface SupremeMoveDialogProps {
   moves: { mossa: MossaDef; idx: 0 | 1 | 2 }[]
@@ -93,47 +94,29 @@ export function SupremeMoveDialog({ moves, level, recoil, pokemonName, onChoose,
     onChoose(idx)
   }
 
+  // Audit fase 2: finestra costruita con i componenti del design system (pannello blu e oro, pulsanti comuni).
   return (
-    <div
+    <ArkaModalFrame
       ref={dialogRef}
       tabIndex={-1}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
-      aria-describedby={descriptionId}
-      className="absolute inset-0 z-[900] flex items-center justify-center bg-slate-950/85 p-3 outline-none"
+      titleId={titleId}
+      descriptionId={descriptionId}
+      kicker={`${pokemonName} · Livello ${level}`}
+      title="Mossa Suprema"
+      description={<>Scegli l’attacco: <strong>danno ×2</strong>. Contraccolpo: <strong>{recoil} HP</strong> al livello attuale (50% degli HP massimi).</>}
+      className="z-[900] outline-none"
       onKeyDown={(event) => event.stopPropagation()}
+      footer={<ArkaButton onClick={dismiss}>Annulla</ArkaButton>}
     >
-      <div className="flex max-h-full w-full max-w-lg flex-col gap-4 overflow-y-auto rounded-2xl border border-amber-300 bg-slate-900 p-4 text-center text-white shadow-2xl sm:gap-6 sm:p-8 [&>*]:shrink-0">
-        <h2 id={titleId} className="text-xl font-bold">Mossa Suprema</h2>
-        <p id={descriptionId} className="text-sm leading-relaxed sm:text-base">
-          Scegli l’attacco: danno ×2. Contraccolpo: {recoil} HP al livello attuale (50% degli HP massimi).
-        </p>
-        <p className="text-xs leading-relaxed text-slate-300">
-          Se il bersaglio va KO, {pokemonName} guadagna prima esperienza e livelli. Il contraccolpo si calcola poi sugli HP massimi aggiornati.
-        </p>
-        <p className="text-sm text-slate-300">{pokemonName} · Livello {level}</p>
-        <div className="grid gap-2">
-          {attacks.map(({ mossa, idx }) => (
-            <button
-              key={idx}
-              type="button"
-              className="min-h-11 rounded-lg border border-amber-200/60 bg-amber-300 px-4 py-3 font-bold text-slate-950 transition hover:bg-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              onClick={() => choose(idx)}
-            >
-              {mossa.nome}
-            </button>
-          ))}
-          {attacks.length === 0 && <p role="status" className="text-sm text-slate-300">Nessun attacco disponibile.</p>}
-        </div>
-        <button
-          type="button"
-          className="min-h-11 rounded-lg border border-slate-500 bg-slate-800 px-4 py-3 font-bold text-white transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          onClick={dismiss}
-        >
-          Annulla
-        </button>
+      <p className="arka-ds-note text-center">
+        Se il bersaglio va KO, {pokemonName} guadagna prima esperienza e livelli. Il contraccolpo si calcola poi sugli HP massimi aggiornati.
+      </p>
+      <div className="arka-ds-modal-actions">
+        {attacks.map(({ mossa, idx }) => (
+          <ArkaButton key={idx} tone="primary" size="lg" onClick={() => choose(idx)}>{mossa.nome}</ArkaButton>
+        ))}
+        {attacks.length === 0 && <p role="status" className="arka-ds-note text-center">Nessun attacco disponibile.</p>}
       </div>
-    </div>
+    </ArkaModalFrame>
   )
 }

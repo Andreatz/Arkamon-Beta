@@ -134,3 +134,12 @@
   color: #fff3d8;
 }
 [data-world-rpg-map] .turn-summary--compact > span:not(:last-child) { display: none; }
+
+/* Audit fase 2: su schermi stretti i comandi della mappa (Cinzel, molto largo) si troncavano
+   («PROSEG…», «PASS…», «TITO…»). Sotto i 900 px usano il carattere di testo, più compatto. */
+@media (max-width: 900px) {
+  [data-world-rpg-map] .game-button { font-family: var(--world-body) !important; letter-spacing: 0; }
+  [data-world-rpg-map] .game-button .arka-layout-content { font-size: 12px; font-weight: 700; }
+  [data-world-rpg-map] .world-map-status-window,
+  [data-world-rpg-map] .world-map-status-window > .arka-layout-content { font-family: var(--world-body) !important; letter-spacing: 0; }
+}

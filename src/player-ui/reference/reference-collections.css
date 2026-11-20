@@ -536,67 +536,70 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-hero .pu-animatio
   flex: none;
   order: 3;
 }
+/* Audit fase 2: la scheda dell'Arkadex usa il pannello comune (blu notte e filo d'oro) invece della pergamena chiara. */
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail {
-  --collection-paper-text: #2b3540;
-  --collection-paper-muted: #5d625f;
+  --collection-paper-text: var(--arka-ui-ink);
+  --collection-paper-muted: var(--arka-ui-ink-muted);
   display: flex;
   flex-direction: column;
   padding: 24px;
   min-height: 0;
-  background: radial-gradient(ellipse at 20% 10%,#fcf3d7a6,transparent 80%),linear-gradient(115deg,#d4ccac,#eee4c5 48%,#d5cdb0);
-  border: 1px solid #e3c883;
-  border-radius: 5px;
-  color: var(--collection-paper-text);
-  box-shadow: inset 0 0 0 4px #78684333,inset 0 0 28px #7965391c,0 8px 25px #0005;
+  background: var(--arka-ui-surface);
+  border: var(--arka-ui-frame);
+  border-radius: var(--arka-ui-radius-md);
+  color: var(--arka-ui-ink);
+  box-shadow: var(--arka-ui-frame-inset), var(--arka-ui-shadow-md);
   overflow: auto;
 }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail article { min-width: 0; }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail :is(h2,h3) {
-  font-family: Georgia,'Times New Roman',serif;
-  font-weight: 400;
-  color: #2c3940;
+  font-family: var(--arka-ui-font-display);
+  font-weight: 600;
+  color: var(--arka-ui-gold-bright);
   text-transform: none;
   letter-spacing: .025em;
+  text-shadow: 0 2px 4px #000c;
 }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail h2 {
   margin: 5px 0 8px;
   font-size: 31px;
   line-height: 1.15;
   padding-bottom: 12px;
-  border-bottom: 1px solid #8c784c77;
+  border-bottom: 1px solid var(--arka-ui-line);
 }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail h3 { font-size: 20px; margin: 14px 0 9px; }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail p {
-  color: #4d5654;
-  font: 12px/1.5 Georgia,'Times New Roman',serif;
+  color: var(--arka-ui-ink-muted);
+  font: 14px/1.5 var(--arka-ui-font-body);
   margin: 8px 0;
 }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen .pu-dex-detail .pu-kicker { color: #665732; font-size: 10px; }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-discovery-state { color: #535c54; font-style: italic; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-screen .pu-dex-detail .pu-kicker { color: #a8ddeb; font-size: 12px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-discovery-state { color: var(--arka-ui-ink-muted); font-style: italic; }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-tabs {
-  gap: 0;
+  gap: 4px;
   flex-wrap: nowrap;
   margin: 14px 0;
-  padding-bottom: 0;
-  border: 1px solid #a8996c;
-  border-radius: 4px;
-  background: #a8996c1a;
+  padding: 4px;
+  border: var(--arka-ui-frame-soft);
+  border-radius: var(--arka-ui-radius-sm);
+  background: rgb(4 18 32 / .6);
 }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-tabs .pu-button {
-  min-height: 34px;
+  min-height: 38px;
   min-width: 0;
   padding: 7px 8px;
   flex: 1;
-  border: 0 !important;
-  border-radius: 2px;
+  border: 1px solid transparent !important;
+  border-radius: 4px;
   background: transparent !important;
-  color: #3d453e;
-  font: 11px Georgia,'Times New Roman',serif;
+  color: var(--arka-ui-ink-muted);
+  font: 600 14px var(--arka-ui-font-display);
 }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-tabs .pu-button.is-active {
-  color: #f6e9c6 !important;
-  background: #364e58 !important;
-  box-shadow: inset 0 0 0 1px #8a9f94;
+  color: var(--arka-ui-gold-bright) !important;
+  background: rgb(79 216 255 / .14) !important;
+  border-color: var(--arka-ui-cyan) !important;
+  box-shadow: none;
 }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-facts {
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -607,24 +610,24 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-facts 
   padding: 8px 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid #8c784c55;
+  border-bottom: 1px solid var(--arka-ui-line);
   border-radius: 0;
-  color: #2c3940;
+  color: var(--arka-ui-ink);
 }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-facts dt { font: 10px/1.3 Arial,sans-serif; color: #5e604f; }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-facts dd { margin: 5px 0 0; font: 17px/1.25 Georgia,'Times New Roman',serif; color: #2c3940; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-facts dt { font: 600 12px/1.3 var(--arka-ui-font-body); letter-spacing: .08em; text-transform: uppercase; color: #a8ddeb; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-facts dd { margin: 5px 0 0; font: 17px/1.25 var(--arka-ui-font-body); color: var(--arka-ui-ink); }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail :is(.pu-type,.pu-dice) {
-  color: #344c51;
-  background: #b3c0b555;
-  border-color: #819386;
+  color: var(--arka-ui-ink);
+  background: rgb(79 216 255 / .1);
+  border-color: var(--arka-ui-line);
 }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-move { border-bottom-color: #8c784c66; padding: 10px 0; }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-move strong { font: 400 17px Georgia,'Times New Roman',serif; color: #2c3940; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-move { border-bottom-color: var(--arka-ui-line); padding: 10px 0; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-move strong { font: 600 17px var(--arka-ui-font-display); color: var(--arka-ui-gold-bright); }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution { gap: 8px; margin: 16px 0; }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step { min-width: 60px; padding: 8px 4px; border: 1px solid #8c784c55; border-radius: 4px; }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step.is-current { border-color: #557d7c; background: #a5c0b533; }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step strong { font: 12px Georgia,'Times New Roman',serif; color: #2c3940; }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step small { color: #5d6253; font-size: 10px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step { min-width: 60px; padding: 8px 4px; border: 1px solid var(--arka-ui-line); border-radius: 6px; }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step.is-current { border-color: var(--arka-ui-cyan); background: rgb(79 216 255 / .1); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step strong { font: 13px var(--arka-ui-font-body); color: var(--arka-ui-ink); }
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution-step small { color: var(--arka-ui-ink-muted); font-size: 12px; }
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] .pu-dex-detail .pu-evolution .pu-creature-portrait { width: 66px; height: 66px; max-width: 100%; }
 
 /* Analisi: full specimen illustration beside a restrained dossier of real stats. */

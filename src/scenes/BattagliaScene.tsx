@@ -1,4 +1,5 @@
 import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
+import { ArkaButton } from '@/ui-system/primitives'
 import { DepthBackground } from '@/motion/depth/DepthBackground'
 import { useBattleAssetReadiness } from '@/components/battle/useBattleAssetReadiness'
 import { ChallengeBanner } from '@/challenges/ChallengeBanner'
@@ -2013,10 +2014,11 @@ export function BattagliaScene() {
         const delta = calcolaVariazioneMonete(esito, tipoAvv)
         if (delta === 0) return null
         return (
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 arka-panel px-6 py-3 z-20">
-            <p className="arka-layout-content text-yellow-300 font-bold text-center">
-              {delta > 0 ? `+${delta}₳ guadagnati` : `${delta}₳ persi`}
-              {tipoAvv === 'Capopalestra' && delta > 0 && ' 👑'}
+          // Audit fase 2: targhetta monete con lo stile comune (oro per il guadagno, rosso per la perdita).
+          <div className="battle-coin-delta absolute bottom-20 left-1/2 z-20 -translate-x-1/2" data-delta={delta > 0 ? 'gain' : 'loss'}>
+            <GameArt id="coin" className="battle-coin-delta__icon" />
+            <p className="arka-layout-content">
+              {delta > 0 ? `+${delta} ₳ guadagnati` : `${delta} ₳ persi`}
             </p>
           </div>
         )
@@ -2034,9 +2036,9 @@ export function BattagliaScene() {
           editing={layoutEditing}
           onChange={updateBattleLayout}
         >
-          <button className="arka-button h-full w-full" onClick={tornaIndietro}>
+          <ArkaButton tone="primary" size="lg" className="h-full w-full" onClick={tornaIndietro}>
             <span className="arka-layout-content">Prosegui</span>
-          </button>
+          </ArkaButton>
         </BattleLayoutItem>
       )}
 

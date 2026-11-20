@@ -38,4 +38,43 @@
   --arka-gold-gradient: linear-gradient(180deg, #fff6dc 0%, #f9db9c 38%, #dfbb7b 62%, #9d7642 100%);
 }
 
-/* Titolo dorato: testo con gradiente metallico e ombra scura leggibile su ogni fondale. */
+/*
+ * Audit fase 2 — un solo design system.
+ * Due famiglie di caratteri in tutto il gioco: display (Cinzel) per titoli e comandi,
+ * testo (Georgia, con Gelasio come riserva metrica) per tutto il resto. Le variabili storiche
+ * --arka-font-* (prima Norwester condensato) puntano ora a queste due famiglie.
+ */
+:root {
+  --arka-font-body: var(--arka-ui-font-body);
+  --arka-font-heading: var(--arka-ui-font-display);
+  --arka-font-button: var(--arka-ui-font-display);
+
+  /* Scala minima del testo: 14 px per il testo di gioco, 12 px per le note. */
+  --arka-size-min-body: 14px;
+  --arka-size-min-note: 12px;
+  --arka-size-note: clamp(12px, 1.2vh, 16px);
+
+  /* Raggi, linee, ombre e cornici */
+  --arka-ui-radius-sm: 6px;
+  --arka-ui-radius-md: 12px;
+  --arka-ui-radius-lg: 18px;
+  --arka-ui-radius-pill: 999px;
+  --arka-ui-frame: 1px solid var(--arka-ui-gold);
+  --arka-ui-frame-soft: 1px solid var(--arka-ui-line);
+  --arka-ui-frame-inset: inset 0 0 0 3px rgb(10 40 66 / .9);
+  --arka-ui-shadow-sm: 0 4px 12px #0007;
+  --arka-ui-shadow-md: 0 8px 24px #0009;
+  --arka-ui-shadow-lg: 0 18px 48px #000b;
+  --arka-ui-surface: linear-gradient(160deg, rgb(18 50 79 / .97), rgb(6 23 39 / .96));
+  --arka-ui-surface-raised: linear-gradient(160deg, #1a4466, #0c2a44);
+  --arka-ui-backdrop: rgb(2 10 18 / .78);
+
+  /* Spaziature */
+  --arka-ui-space-1: 4px;
+  --arka-ui-space-2: 8px;
+  --arka-ui-space-3: 12px;
+  --arka-ui-space-4: 16px;
+  --arka-ui-space-5: 24px;
+  --arka-ui-space-6: 32px;
+}
+

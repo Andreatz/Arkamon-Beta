@@ -1,4 +1,5 @@
 import { forwardRef, useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
+import '@/ui-system/primitives.css'
 import { motion } from 'framer-motion'
 import { useAdminStore } from '@/store/adminStore'
 import { getPokemon } from '@/data/index'
@@ -205,16 +206,13 @@ export function ScambioModal({
   onSelect: (pokemon: PokemonIstanza) => void
 }) {
   return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/62 px-6 backdrop-blur-sm">
-      <div className="w-[min(760px,92vw)] rounded-lg border border-white/15 bg-slate-950/92 p-5 text-white shadow-2xl">
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-extrabold">Scegli un Arkamon</h2>
-            <p className="mt-1 text-sm font-semibold text-slate-300">{motivo}</p>
-          </div>
-          <span className="text-xs font-bold uppercase tracking-wide text-amber-300">
-            Cambio squadra
-          </span>
+    // Audit fase 2: pannello comune del design system, sopra al box dei messaggi (prima vi finiva sotto).
+    <div className="arka-ds-backdrop z-[880] backdrop-blur-sm">
+      <div className="arka-ds-panel w-[min(760px,92vw)]">
+        <div className="mb-4 grid gap-1">
+          <span className="arka-ds-kicker">Cambio squadra</span>
+          <h2 className="arka-ds-title">Scegli un Arkamon</h2>
+          <p className="arka-ds-text">{motivo}</p>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
@@ -229,7 +227,7 @@ export function ScambioModal({
                 key={pokemon.istanzaId}
                 disabled={disabled}
                 onClick={() => onSelect(pokemon)}
-                className="flex min-h-[116px] items-center gap-3 rounded-md border border-white/10 bg-slate-900/86 p-3 text-left shadow-lg transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-45"
+                className="arka-ds-card !flex min-h-[116px] !items-center !justify-start gap-3 !p-3 text-left"
               >
                 <img
                   src={assetUrl(`/sprites/front_sprites/${pokemon.specieId}.png`)}
@@ -238,11 +236,11 @@ export function ScambioModal({
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-sm font-extrabold">
+                    <span className="arka-ds-card-title truncate">
                       {pokemon.nome}
                     </span>
-                    <span className="text-xs font-bold text-slate-300">
-                      LV. {pokemon.livello}
+                    <span className="arka-ds-card-meta">
+                      Lv. {pokemon.livello}
                     </span>
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/60">
@@ -251,7 +249,7 @@ export function ScambioModal({
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <div className="mt-1 flex justify-between text-xs font-bold text-slate-300">
+                  <div className="arka-ds-card-meta mt-1 flex justify-between">
                     <span>{pokemon.hp}/{hpMax}</span>
                     <span>{pokemon.hp <= 0 ? 'KO' : specie?.tipo}</span>
                   </div>
