@@ -56,7 +56,7 @@ const SCENE_LABELS: Record<SceneId, string> = {
   percorso: 'Ingresso nel percorso',
   citta: 'Ingresso in città',
   palestra: 'Ingresso nella palestra',
-  'centro-pokemon': 'Ingresso nel Centro Pokémon',
+  'centro-pokemon': 'Ingresso nell’Infermeria Arka',
   battaglia: 'Inizio della battaglia',
   deposito: 'Apertura del deposito',
   squadra: 'Apertura della squadra',

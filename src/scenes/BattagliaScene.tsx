@@ -330,13 +330,14 @@ export function BattagliaScene() {
   const rivalDisplayName = battaglia?.leagueOpponent?.nome ?? getAllenatore(battaglia?.allenatoreId ?? 0)?.nome ?? wildDisplayName ?? 'Rivale'
   const controlStatus = paused ? 'Pausa di regia' : terminata ? 'Battaglia finita'
     : pendingCaptureSave ? 'Cattura in attesa di salvataggio'
-    : audienceChoice ? audienceChoice.request.channel === 'boss' ? `Ospite · ${audienceChoice.request.trainer.name} · sceglie la mossa` : 'Pubblico NPC · votazione in corso'
+    : audienceChoice ? audienceChoice.request.channel === 'boss' ? `Sceglie l’ospite (${audienceChoice.request.trainer.name})` : 'Vota il pubblico'
     : diceRoll ? 'Lancio dei dadi...' : moveVfx ? 'Animazione mossa...'
     : azioneInCorso ? 'Azione in corso...'
-    : attesaAvversario ? `Tocca a ${rivalDisplayName} · avvia il turno avversario`
-    : attesaPassaggio ? `Passa il controllo a ${attesaPassaggio.direzione === 'A→B' ? rivalDisplayName : giocatore.nome}`
-    : mostraMoseB ? `${rivalDisplayName} · scegli una mossa`
-    : turnoA ? `Turno di ${giocatore.nome} · scegli una mossa` : `Turno di ${rivalDisplayName}...`
+    // Audit fase 1: testi brevi, il banner non deve troncarsi. L'azione da compiere è già sul pulsante.
+    : attesaAvversario ? `Tocca a ${rivalDisplayName}`
+    : attesaPassaggio ? `Passa a ${attesaPassaggio.direzione === 'A→B' ? rivalDisplayName : giocatore.nome}`
+    : mostraMoseB ? `Sceglie ${rivalDisplayName}`
+    : turnoA ? `Turno di ${giocatore.nome}` : `Turno di ${rivalDisplayName}…`
   useEffect(() => {
     const busy = coinOpen || !!statusRoll || azioneInCorso || !!moveVfx || !!diceRoll || !!pendingHealth || !!audienceChoice || !!scambioRichiesto
     useRegiaStore.getState().setBusy(busy, controlStatus, 'battle')
@@ -976,7 +977,7 @@ export function BattagliaScene() {
     setAudienceChoice(null)
     setMostraMoseB(false)
     setAttesaAvversario(null)
-    mostraMessaggi(['Scegli un Pokemon dalla squadra.'])
+    mostraMessaggi(['Scegli un Arkamon dalla squadra.'])
     setScambioRichiesto(richiesta)
   }
 

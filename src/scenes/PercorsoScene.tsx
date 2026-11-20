@@ -106,7 +106,7 @@ export function PercorsoScene() {
           {!hasDefinedActivities && <p role="status" className="arka-panel p-6 text-2xl">Nessuna attività configurata qui. Torna alla mappa principale per proseguire il viaggio.</p>}
           {!haPokemonVivi && hasDefinedActivities && (
             <p role="status" className="arka-panel shrink-0 p-3 text-center text-amber-200">
-              La squadra è esausta. Visita un Centro Pokémon prima di affrontare un incontro.
+              La squadra è esausta. Visita un’Infermeria Arka prima di affrontare un incontro.
             </p>
           )}
           {hasDefinedActivities && <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
@@ -151,7 +151,7 @@ export function PercorsoScene() {
                       <span>
                         <span className="block text-lg font-bold">{allenatore.nome}</span>
                         <span className="block text-xs text-arka-text-muted">
-                          {sconfitto ? 'Già sconfitto' : `Squadra: ${allenatore.squadra.length} Pokémon · Lv. ${allenatore.squadra[0]?.livello ?? '—'}`}
+                          {sconfitto ? 'Già sconfitto' : `Squadra: ${allenatore.squadra.length} Arkamon · Lv. ${allenatore.squadra[0]?.livello ?? '—'}`}
                         </span>
                       </span>
                     </GameButton>

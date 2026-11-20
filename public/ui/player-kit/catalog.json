@@ -1,7 +1,7 @@
 {
   "rendering": "Exact user-provided SVG graphics with adaptive layout",
   "bitmapEmbeds": false,
-  "userGraphicsModified": false,
+  "userGraphicsModified": true,
   "assets": [
     {
       "id": "panel-wide",
@@ -1015,13 +1015,13 @@
       "y": 936,
       "width": 249.0,
       "height": 251.0,
-      "label": "Sfera rossa e grigia",
+      "label": "Sacchettino di cattura",
       "kind": "item",
       "file": "item-sphere.svg",
       "format": "native-svg",
-      "paths": 5,
-      "bytes": 2590,
-      "sha256": "ab0bbaacc17aa4a236d5a0c6706a36a9eb68218df98af486115212e3e82f0f94",
+      "paths": 9,
+      "bytes": 2843,
+      "sha256": "e0dcb2f8a0afa93e23d93893c4bead18448d28778a2346873d9535af3c49365f",
       "geometry": "Constructed geometric shapes and smooth Bezier curves",
       "elements": {
         "svg": 1,
@@ -1030,14 +1030,10 @@
         "defs": 1,
         "radialGradient": 3,
         "stop": 15,
-        "linearGradient": 1,
-        "clipPath": 1,
-        "circle": 6,
-        "filter": 1,
-        "feGaussianBlur": 1,
-        "g": 1,
-        "path": 5,
-        "ellipse": 3
+        "linearGradient": 2,
+        "ellipse": 1,
+        "path": 9,
+        "circle": 3
       },
       "viewBox": [
         0.0,
@@ -1045,10 +1041,10 @@
         249.0,
         251.0
       ],
-      "origin": "Exact SVG from the user-provided RAR",
+      "origin": "Hand-authored replacement (audit fase 1): pouch instead of the red and grey sphere",
       "archiveFile": "Arkamon-Assets-SVG.rar",
       "archiveEntry": "Arkamon-Assets-SVG/item-sphere.svg",
-      "sourceHashMatched": true,
+      "sourceHashMatched": false,
       "previousSHA256": "e7e3abc27d0ab33876ad26d4a84a373b4397842607b6baafea94c0e3b4733f07"
     },
     {

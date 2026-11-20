@@ -147,7 +147,7 @@ test('mappa principale e Venezia: i comandi correnti accompagnano la navigazione
   await page.getByRole('button', { name: 'Scorciatoie del Game Master', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Scorciatoie del Game Master', exact: true })
   await expect(dialog).toBeVisible()
-  await assertCommandButton(dialog.getByRole('button', { name: /Centro Pokémon/ }), responses)
+  await assertCommandButton(dialog.getByRole('button', { name: /Infermeria Arka/ }), responses)
   const close = dialog.getByRole('button', { name: 'Chiudi attività', exact: true })
   await assertCommandButton(close, responses)
   await close.click()

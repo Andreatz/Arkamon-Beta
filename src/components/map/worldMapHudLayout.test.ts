@@ -12,9 +12,17 @@ describe('world map default HUD composition', () => {
     expect(result.layout.legend).toBe(defaultMainMapUiLayout.legend)
   })
   it('keeps any authored legacy position or text offset intact', () => {
-    const custom = { ...defaultMainMapUiLayout, turnPanel: { ...defaultMainMapUiLayout.turnPanel, x: 17 } }
+    const custom = { ...defaultMainMapUiLayout, turnPanel: { ...defaultMainMapUiLayout.turnPanel, x: 17 }, footer: { ...defaultMainMapUiLayout.footer, x: 50 } }
     expect(resolveWorldMapHudLayout(custom)).toEqual({ layout: custom, combined: false })
     const text = { ...defaultMainMapUiLayout, turnPanel: { ...defaultMainMapUiLayout.turnPanel, contentOffsets: { title: { x: 2, y: 0 } } } }
     expect(resolveWorldMapHudLayout(text).combined).toBe(false)
+  })
+  it('turns the shipped 4%×4% objective box into a readable bottom strip, but keeps an authored one', () => {
+    const footer = resolveWorldMapHudLayout(defaultMainMapUiLayout).layout.footer
+    expect(footer.w).toBeGreaterThanOrEqual(40)
+    expect(footer.x + footer.w).toBeLessThanOrEqual(100)
+    expect(footer.y + footer.h).toBeLessThanOrEqual(100)
+    const authored = { ...defaultMainMapUiLayout, footer: { ...defaultMainMapUiLayout.footer, w: 12 } }
+    expect(resolveWorldMapHudLayout(authored).layout.footer).toBe(authored.footer)
   })
 })

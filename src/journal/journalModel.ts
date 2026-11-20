@@ -32,7 +32,7 @@ export function nextJournalObjective(state: InteractionRuntimeState & { league?:
   if (!player.squadra.length) return Object.keys(player.deposito).length
     ? { title: 'Ritira un Arkamon dal deposito', detail: 'Hai già dei compagni in riserva. Spostane almeno uno in squadra per proseguire il viaggio.' }
     : { title: 'Scegli il tuo starter', detail: 'Il laboratorio assegna uno starter diverso a ciascun giocatore.' }
-  if (!player.squadra.some((pokemon) => pokemon.hp > 0)) return { title: 'Cura la squadra', detail: 'Visita il Centro Pokémon di una città prima di affrontare un incontro.' }
+  if (!player.squadra.some((pokemon) => pokemon.hp > 0)) return { title: 'Cura la squadra', detail: 'Visita l’Infermeria Arka di una città prima di affrontare un incontro.' }
   if (hasUnlockedSecretLocation(player)) return { title: league?.players[playerId].status === 'defeated' ? 'Riprova la Lega a Roma' : 'Affronta la Lega a Roma', mapId: 'Roma',
     detail: `Hai completato le otto palestre. ${here === 'Roma' ? 'Apri la Lega dalla città.' : 'Raggiungi Roma per affrontare i Superquattro.'} Il passaggio segreto resta un’opportunità facoltativa.`, nextStep: routeToLocation(here, 'Roma')?.[1] }
   const candidates = definitions.filter((definition) => definition.enabled && !definition.repeatable

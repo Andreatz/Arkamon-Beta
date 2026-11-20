@@ -20,7 +20,7 @@ const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
 }
 
 /**
- * Scena città: allenatori, Centro Pokémon e ritorno alla mappa.
+ * Scena città: allenatori, Infermeria Arka e ritorno alla mappa.
  * Il layout admin è condiviso da tutte le città.
  */
 export function CittaScene() {
@@ -69,7 +69,7 @@ export function CittaScene() {
     <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
           {!haPokemonVivi && (
             <p role="status" className="arka-panel col-span-3 p-3 text-center text-amber-200">
-              La squadra è esausta. Curala al Centro Pokémon per tornare a combattere.
+              La squadra è esausta. Curala all’Infermeria Arka per tornare a combattere.
             </p>
           )}
           <GameButton
@@ -83,7 +83,7 @@ export function CittaScene() {
             className="col-span-1 flex cursor-pointer flex-col items-center justify-center p-6 hover:border-arka-accent"
           >
             <span className="arka-layout-content mb-2 text-6xl">🏥</span>
-            <h3 className="arka-layout-content text-xl font-bold">Centro Pokémon</h3>
+            <h3 className="arka-layout-content text-xl font-bold">Infermeria Arka</h3>
             <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
               Cura tutta la squadra
             </p>
@@ -216,7 +216,7 @@ export function CittaScene() {
         onChange={(rect) => updateLuogoLayout('subtitle', rect)}
       >
         <p className="arka-layout-content arka-readable-text flex h-full w-full items-center justify-center text-center italic text-arka-text-muted">
-          Sfida gli allenatori o cura la tua squadra al Centro Pokémon
+          Sfida gli allenatori o cura la tua squadra all’Infermeria Arka
         </p>
       </AdminLayoutItem>
 

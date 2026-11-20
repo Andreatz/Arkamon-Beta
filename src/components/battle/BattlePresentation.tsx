@@ -209,7 +209,7 @@ export function ScambioModal({
       <div className="w-[min(760px,92vw)] rounded-lg border border-white/15 bg-slate-950/92 p-5 text-white shadow-2xl">
         <div className="mb-4 flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-xl font-extrabold">Scegli un Pokemon</h2>
+            <h2 className="text-xl font-extrabold">Scegli un Arkamon</h2>
             <p className="mt-1 text-sm font-semibold text-slate-300">{motivo}</p>
           </div>
           <span className="text-xs font-bold uppercase tracking-wide text-amber-300">
