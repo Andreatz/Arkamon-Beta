@@ -15,6 +15,9 @@ import {
 } from './resolveMoveVfxAsset'
 import { prepareMoveVfxPlayback } from './preloadVfxAssets'
 import { useVfxPlaybackPreferences } from './useVfxPlaybackPreferences'
+import { resolveMoveVfxTravel } from './moveVfxProfiles'
+import { VFX_TYPE_COLORS } from './vfxTypeColors'
+import { VfxTravelTrail, planVfxTravel } from './VfxTravelTrail'
 
 export function SpriteMoveVfx({ effect, onStart, onImpact, onComplete, assetOverride }: { effect: MoveVfxEvent; assetOverride?: MoveVfxAsset } & MoveVfxPlaybackCallbacks) {
   const { speed, reducedMotion } = useVfxPlaybackPreferences(effect.id)
@@ -23,6 +26,13 @@ export function SpriteMoveVfx({ effect, onStart, onImpact, onComplete, assetOver
   const recipe = assetOverride ? undefined : resolveMoveVfxRecipe(effect.move)
   const durationMs = reducedMotion ? 180 : (recipe?.durationMs ?? asset.durationMs) / speed
   const impactMs = reducedMotion ? 0 : assetOverride ? Math.max(0, Math.min(asset.impactAtMs ?? 0, asset.durationMs)) / speed : getMoveVfxImpactDelayMs(effect.move) / speed
+  // Un effetto che è già un proiettile non riceve una seconda scia.
+  const ownsTravel = assetOverride ? asset.motion === 'projectile' : recipe ? recipe.steps.some(step => step.motion === 'projectile') : asset.motion === 'projectile'
+  const travelPlan = ownsTravel ? null : planVfxTravel({
+    travel: resolveMoveVfxTravel(effect.move), target: effect.target, reducedMotion, impactMs,
+    from: getBattleVfxAnchorPosition(layout, effect.side, 'attacker'),
+    to: getBattleVfxAnchorPosition(layout, effect.side, 'target'),
+  })
   const [readyId, setReadyId] = useState<number | null>(null)
   const [completedId, setCompletedId] = useState<number | null>(null)
   const callbacksRef = useRef({ onStart, onImpact, onComplete })
@@ -76,8 +86,9 @@ export function SpriteMoveVfx({ effect, onStart, onImpact, onComplete, assetOver
     const point = getBattleVfxAnchorPosition(layout, effect.side, effect.target === 'self' ? 'self' : 'target')
     return <div data-vfx-reduced-cue data-move-vfx-event={effect.id} aria-hidden="true" className="absolute pointer-events-none z-[60] h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white/80 bg-sky-300/15" style={{ left: `${point.x}%`, top: `${point.y}%` }} />
   }
+  const trail = travelPlan && <VfxTravelTrail side={effect.side} plan={travelPlan} color={VFX_TYPE_COLORS[effect.move.tipo] ?? '#fff'} effectId={effect.id} />
   if (recipe) {
-    return <CompositeMoveVfx effect={effect} recipe={recipe} />
+    return <>{trail}<CompositeMoveVfx effect={effect} recipe={recipe} /></>
   }
 
   return (
@@ -88,12 +99,14 @@ export function SpriteMoveVfx({ effect, onStart, onImpact, onComplete, assetOver
       data-move-vfx-event={effect.id}
       aria-hidden="true"
     >
+      {trail}
       <MoveVfxLayer
         asset={asset}
         effectId={effect.id}
         side={effect.side}
         target={effect.target}
         playbackSpeed={speed}
+        arriveAtMs={asset.impactAtMs}
       />
     </div>
   )

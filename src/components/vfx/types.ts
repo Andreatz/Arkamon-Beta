@@ -98,6 +98,14 @@ export type VfxArchetype =
 
 export type VfxIntensity = 'subtle' | 'light' | 'medium' | 'heavy'
 
+/**
+ * Audit fase 5: come l'effetto raggiunge il bersaglio.
+ * - `projectile`: un corpo parte dall'attaccante e arriva sul bersaglio all'impatto;
+ * - `beam`: un raggio si allunga dall'attaccante al bersaglio e resta fino all'impatto;
+ * - `burst`: l'effetto nasce direttamente sul bersaglio (contatto, area, stati, cure).
+ */
+export type VfxTravel = 'projectile' | 'beam' | 'burst'
+
 export type VfxProfileSource = 'explicit' | 'effect' | 'name' | 'type-fallback'
 
 export interface MoveVfxFeedback {
@@ -113,5 +121,6 @@ export interface MoveVfxProfile {
   archetype: VfxArchetype
   intensity: VfxIntensity
   source: VfxProfileSource
+  travel: VfxTravel
   feedback: MoveVfxFeedback
 }

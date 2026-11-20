@@ -51,6 +51,7 @@ function RecipeStep({
       offsetY={step.offsetY}
       opacity={step.opacity}
       blendMode={step.blendMode}
+      arriveAtMs={Math.max(0, recipe.impactAtMs - step.startAtMs)}
     />
   )
 }
