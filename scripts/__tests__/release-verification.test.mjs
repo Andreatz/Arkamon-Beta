@@ -227,3 +227,24 @@ test('release sealing and receipt verification reject pending PNG changes even i
   await assert.rejects(sealRelease(fixture), /Pending front sprites differ/)
   await assert.rejects(verifyRelease(fixture.dist, fixture.revision, fixture), /Pending front sprites differ/)
 })
+
+test('a web-scope seal publishes without the native group but never passes as a full release', async t => {
+  const fixture = await releaseFixture(t), { dist, revision } = fixture
+  const sealed = await sealRelease({ ...fixture, nativeCompiled: undefined, scope: 'web' })
+  assert.equal(sealed.scope, 'web')
+  assert.deepEqual(sealed.reports.map(report => report.kind).sort(), ['browser', 'compiled', 'unit'])
+  assert.deepEqual((await verifyRelease(dist, revision, { ...fixture, scope: 'web' })).files, sealed.files)
+  await assert.rejects(verifyRelease(dist, revision, fixture), /sealed for the web scope/)
+  const command = spawnSync(process.execPath, ['scripts/release-verification.mjs', 'verify', '--dist', dist, '--revision', revision, '--root', fixture.root, '--scope', 'web'], { encoding: 'utf8' })
+  assert.equal(command.status, 0, command.stderr)
+  await writeFile(path.join(dist, 'injected.js'), 'unverified')
+  await assert.rejects(verifyRelease(dist, revision, { ...fixture, scope: 'web' }), /changed after verification/)
+})
+
+test('a full seal still requires the native group and is not accepted as a web seal', async t => {
+  const fixture = await releaseFixture(t)
+  await assert.rejects(sealRelease({ ...fixture, nativeCompiled: undefined }), /native verification report is required/)
+  await assert.rejects(sealRelease({ ...fixture, scope: 'nightly' }), /Unknown release scope/)
+  await sealRelease(fixture)
+  await assert.rejects(verifyRelease(fixture.dist, fixture.revision, { ...fixture, scope: 'web' }), /sealed for the full scope/)
+})

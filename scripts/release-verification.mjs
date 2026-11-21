@@ -112,27 +112,53 @@ export async function readPassingReport(filename, kind, artifact) {
     ...(kind === 'native-compiled' ? { artifact: compiledNativeProof(report, artifact) } : {}) }
 }
 
-export async function sealRelease({ dist, revision, unit, browser, compiled, nativeCompiled, root = projectRoot }) {
+/**
+ * Ambiti del sigillo (audit fase 7).
+ * - `full`: unit, browser, release compilata e azioni native compilate (contratto completo);
+ * - `web`: unit, browser e release compilata. Serve a pubblicare Pages senza attendere il gruppo
+ *   nativo, che resta verificato in un job separato e non blocca la pubblicazione.
+ * Un sigillo `web` non supera mai una verifica `full`, e viceversa.
+ */
+export const RELEASE_SCOPES = Object.freeze({
+  full: Object.freeze(['browser', 'compiled', 'native-compiled', 'unit']),
+  web: Object.freeze(['browser', 'compiled', 'unit']),
+})
+
+function releaseScope(scope = 'full') {
+  if (!Object.hasOwn(RELEASE_SCOPES, scope)) throw new Error(`Unknown release scope: ${scope}`)
+  return scope
+}
+
+export async function sealRelease({ dist, revision, unit, browser, compiled, nativeCompiled, root = projectRoot, scope: requestedScope }) {
+  const scope = releaseScope(requestedScope)
   if (!/^[a-f0-9]{40}$/i.test(revision ?? '')) throw new Error('The exact 40-character Git revision is required')
-  if (!nativeCompiled) throw new Error('The compiled native verification report is required')
+  if (scope === 'full' && !nativeCompiled) throw new Error('The compiled native verification report is required')
   const { files, contentSha256 } = await fingerprintRelease(dist)
   for (const required of ['index.html', 'media-release.json']) if (!files.some(entry => entry.file === required)) throw new Error(`Missing release file: ${required}`)
   const media = JSON.parse(await readFile(path.join(dist, 'media-release.json'), 'utf8'))
   assertMatchingNativeCatalog(media, await pinnedNativeCatalog(root))
   const artifact = { contentSha256, mediaRevision: media.mediaRevision, manifestSha256: media.manifestSha256, nativeClips: media.nativeClips, nativeFrames: media.nativeFrames }
-  const reports = await Promise.all([readPassingReport(unit, 'unit'), readPassingReport(browser, 'browser'), readPassingReport(compiled, 'compiled'), readPassingReport(nativeCompiled, 'native-compiled', artifact)])
-  const manifest = { version: 2, revision, verifiedAt: new Date().toISOString(), reports, files, contentSha256 }
+  const reports = await Promise.all([readPassingReport(unit, 'unit'), readPassingReport(browser, 'browser'), readPassingReport(compiled, 'compiled'),
+    ...(scope === 'full' ? [readPassingReport(nativeCompiled, 'native-compiled', artifact)] : [])])
+  const manifest = { version: 2, revision, ...(scope === 'full' ? {} : { scope }), verifiedAt: new Date().toISOString(), reports, files, contentSha256 }
   await writeFile(path.join(dist, manifestName), JSON.stringify(manifest, null, 2) + '\n')
   return manifest
 }
 
-export async function verifyRelease(dist, revision, { root = projectRoot } = {}) {
+export async function verifyRelease(dist, revision, { root = projectRoot, scope: requestedScope } = {}) {
+  const scope = releaseScope(requestedScope)
   const manifest = JSON.parse(await readFile(path.join(dist, manifestName), 'utf8'))
   if (manifest.version !== 2 || manifest.revision !== revision) throw new Error('The artifact belongs to another revision or uses an obsolete verification contract')
+  if ((manifest.scope ?? 'full') !== scope) throw new Error(`The artifact was sealed for the ${manifest.scope ?? 'full'} scope, not ${scope}`)
   const files = await inventory(dist)
   if (JSON.stringify(files) !== JSON.stringify(manifest.files) || sha256(JSON.stringify(files)) !== manifest.contentSha256) throw new Error('The artifact changed after verification')
   const kinds = manifest.reports?.map(report => report.kind).sort()
-  if (JSON.stringify(kinds) !== JSON.stringify(['browser', 'compiled', 'native-compiled', 'unit'])) throw new Error('The artifact is missing a required verification report')
+  if (JSON.stringify(kinds) !== JSON.stringify(RELEASE_SCOPES[scope])) throw new Error('The artifact is missing a required verification report')
+  if (scope === 'web') {
+    const media = JSON.parse(await readFile(path.join(dist, 'media-release.json'), 'utf8'))
+    assertMatchingNativeCatalog(media, await pinnedNativeCatalog(root))
+    return manifest
+  }
   const native = manifest.reports.find(report => report.kind === 'native-compiled')
   if (native.passed !== NATIVE_RELEASE_SCENARIOS.length || native.skipped !== 0 || native.artifact?.contentSha256 !== manifest.contentSha256
     || native.artifact.transport !== 'verified-local-pinned-media' || native.artifact.cdnAvailabilityVerified !== false) throw new Error('The artifact has no matching compiled native verification')
