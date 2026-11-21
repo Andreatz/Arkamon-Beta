@@ -146,7 +146,11 @@ test('mappa principale e Venezia: i comandi correnti accompagnano la navigazione
   await page.getByRole('button', { name: 'Scorciatoie del Game Master', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Scorciatoie del Game Master', exact: true })
   await expect(dialog).toBeVisible()
-  await assertCommandButton(dialog.getByRole('button', { name: /Infermeria Arka/ }), responses)
+  // Audit fase 2: le scorciatoie del GM sono carte del design system (ArkaCardButton), non comandi GameButton.
+  const heal = dialog.getByRole('button', { name: /Infermeria Arka/ })
+  await expect(heal).toBeVisible()
+  await expect(heal).toBeEnabled()
+  await expect(heal).toHaveClass(/arka-ds-card/)
   const close = dialog.getByRole('button', { name: 'Chiudi attività', exact: true })
   await assertCommandButton(close, responses)
   await close.click()
