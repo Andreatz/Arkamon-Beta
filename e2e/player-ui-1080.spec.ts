@@ -509,10 +509,12 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 900
           const archives = dialog.getByRole('navigation', { name: 'Archivi del diario', exact: true })
           // Audit fase 3: le quattro sezioni del diario sono impilate, senza sotto-schede.
           await expect(dialog.getByRole('navigation', { name: 'Sezioni del diario', exact: true })).toHaveCount(0)
-          for (const section of ['Medaglie', 'Luoghi e attività', 'Tappe e missioni configurate', 'Cronaca delle interazioni']) {
-            await expect(dialog.getByRole('region', { name: section, exact: true })).toBeAttached()
+          // Le sezioni sono pannelli a fisarmonica: ciascuno, aperto, deve stare nella schermata.
+          for (const [key, section] of [['medals', 'Medaglie'], ['locations', 'Luoghi e attività'], ['missions', 'Tappe e missioni configurate'], ['history', 'Cronaca delle interazioni']] as const) {
+            await dialog.locator(`[data-journal-section="${key}"] > summary`).click()
+            await expect(dialog.getByRole('region', { name: section, exact: true })).toBeVisible()
+            await check(`Diario: ${section}`)
           }
-          await check('Diario')
           await archives.getByRole('button', { name: 'Cronache delle battaglie', exact: true }).click()
           await expect(dialog.getByRole('region', { name: 'Cronache delle battaglie', exact: true })).toBeVisible()
           await check('Cronache delle battaglie')
