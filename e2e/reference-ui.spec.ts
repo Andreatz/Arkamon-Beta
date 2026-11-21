@@ -96,7 +96,7 @@ test('eight reference screens fit and preserve real storage',async({page,isMobil
         expect(content.scroll,`${screen} main content fits`).toBeLessThanOrEqual(content.height+2)
       }
     }
-    if(screen==='menu')await expect(root.locator('.ref-menu-tile')).toHaveCount(9)
+    if(screen==='menu')await expect(root.locator('.ref-menu-tile')).toHaveCount(8)
     if(screen==='squadra') {
       await root.getByRole('tab',{name:'Mosse',exact:true}).click();await expect(root.locator('.pu-reference-dossier-content .pu-moves')).toBeVisible()
       await root.getByRole('tab',{name:'Statistiche',exact:true}).click();await expect(root.locator('.pu-reference-statistics')).toBeVisible()
