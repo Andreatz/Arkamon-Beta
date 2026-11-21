@@ -222,7 +222,7 @@ test('healing moves show their real effect in team, analysis and Arkadex without
   const before = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
-  for (const screen of ['Squadra', 'Analisi', 'Arkadex']) {
+  for (const screen of ['Squadra', 'Arkadex']) {
     await dialog.getByRole('button', { name: screen, exact: true }).click()
     if (screen === 'Squadra') await dialog.getByRole('tab', { name: 'Mosse', exact: true }).click()
     else await dialog.getByRole('button', { name: 'Mosse', exact: true }).click()

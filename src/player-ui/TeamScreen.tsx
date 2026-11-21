@@ -1,4 +1,5 @@
 import { GameArt } from '@/ui-system/GameArt'
+import { AnalysisDetails } from './AnalysisScreen'
 import { statusArtId } from '@/components/battle/StatusToken'
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { SpatialNavigation } from '@/components/rpg/SpatialNavigation'
@@ -41,7 +42,7 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
   const [movingId, setMovingId] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [navigationColumns, setNavigationColumns] = useState(6)
-  const [referenceTab, setReferenceTab] = useState<'riepilogo' | 'mosse' | 'statistiche'>('riepilogo')
+  const [referenceTab, setReferenceTab] = useState<'riepilogo' | 'mosse' | 'statistiche' | 'dettagli'>('riepilogo')
   const selected = player.squadra.find((pokemon) => pokemon.istanzaId === selectedId) ?? player.squadra[0]
   const current = selected ? liveOwnedPokemon(selected, battle) : undefined
   const range = teamLevelRange(player.squadra)
@@ -144,7 +145,8 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
         <section className="pu-team-tactics pu-reference-team-dossier" aria-label="Scheda e comandi del compagno">
           <div className="pu-reference-dossier-title"><span className="pu-kicker">Scheda del compagno</span><span aria-hidden="true">✦</span></div>
           <div className="pu-tabs pu-reference-dossier-tabs" role="tablist" aria-label="Sezioni del compagno">
-            {(['riepilogo', 'mosse', 'statistiche'] as const).map(tab => <button type="button" role="tab" key={tab} id={`pu-team-tab-${tab}`} aria-selected={referenceTab === tab} aria-controls="pu-team-dossier-content" className={referenceTab === tab ? 'is-active' : ''} onClick={() => setReferenceTab(tab)}>{tab === 'riepilogo' ? 'Riepilogo' : tab === 'mosse' ? 'Mosse' : 'Statistiche'}</button>)}
+            {/* Audit fase 3: l'Analisi confluisce qui come scheda «Dettagli» (condizione, stato, affinità). */}
+            {(['riepilogo', 'mosse', 'statistiche', 'dettagli'] as const).map(tab => <button type="button" role="tab" key={tab} id={`pu-team-tab-${tab}`} aria-selected={referenceTab === tab} aria-controls="pu-team-dossier-content" className={referenceTab === tab ? 'is-active' : ''} onClick={() => setReferenceTab(tab)}>{tab === 'riepilogo' ? 'Riepilogo' : tab === 'mosse' ? 'Mosse' : tab === 'statistiche' ? 'Statistiche' : 'Dettagli'}</button>)}
           </div>
           {/* Il pannello può scorrere quando il testo va a capo: resta raggiungibile da tastiera. */}
           <div className="pu-reference-dossier-content" id="pu-team-dossier-content" role="tabpanel" tabIndex={0} aria-labelledby={`pu-team-tab-${referenceTab}`}>
@@ -170,10 +172,14 @@ function PlayerTeamScreen({ playerId, onAnalyse, onBag, onDeposit }: TeamScreenP
                   <div><dt>Prossima evoluzione</dt><dd>{evolution && currentSpecies?.livelloEvoluzione ? `${evolution.nome} · Lv. ${currentSpecies.livelloEvoluzione}` : 'Forma finale'}</dd></div>
                 </dl>
               </>}
+              {referenceTab === 'dettagli' && <>
+                <div className="pu-reference-dossier-name"><h2>Dettagli</h2><span>N° {String(current.specieId).padStart(3, '0')}</span></div>
+                <div className="pu-reference-details"><AnalysisDetails pokemon={current} /></div>
+              </>}
             </> : <p className="pu-empty-copy">Seleziona un compagno dalla tua squadra.</p>}
           </div>
           <div className="pu-actions">
-            <StudioCommand selected disabled={!current} onClick={() => current && onAnalyse(current.istanzaId)}>Analizza Arkamon <span aria-hidden="true">›</span></StudioCommand>
+            <StudioCommand selected disabled={!current} onClick={() => setReferenceTab('dettagli')}>Analizza Arkamon <span aria-hidden="true">›</span></StudioCommand>
             <StudioCommand disabled={!current} onClick={onBag}>Apri borsa</StudioCommand>
             <StudioCommand onClick={onDeposit}>Apri deposito</StudioCommand>
             <StudioCommand disabled={!current || !mayManage} onClick={() => { setMovingId(movingId ? null : current?.istanzaId ?? null); setMessage('') }}>{movingId ? 'Annulla spostamento' : 'Cambia ordine'}</StudioCommand>

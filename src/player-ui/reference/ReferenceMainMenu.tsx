@@ -25,7 +25,6 @@ const entries: { title: string; icon: string; screen?: PlayerUiScreen; tool?: Pl
   {title:'Deposito',icon:'icon-deposit',screen:'deposito'},
   {title:'Mappa',icon:'icon-map',resume:true},
   {title:'Diario',icon:'icon-journal',tool:'journal'},
-  {title:'Registro',icon:'icon-book',tool:'register'},
   {title:'Salvataggio',icon:'icon-backup',tool:'backup'},
   {title:'Impostazioni',icon:'icon-options',tool:'settings'},
 ]

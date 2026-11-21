@@ -28,7 +28,8 @@ export function MatchRegisterPanel({ initialPlayerId }: { initialPlayerId?: 1 | 
   const [page, setPage] = useState(0)
   const events = filterMatchEvents(log, { playerId: player, kind, search })
   const ordered = order === 'recent' ? [...events].reverse() : events
-  const pageSize = 2
+  // Audit fase 3: 8 eventi per pagina invece di 2.
+  const pageSize = 8
   const currentPage = Math.min(page, Math.max(0, Math.ceil(ordered.length / pageSize) - 1))
   const gyms = new Set(ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra').map((trainer) => trainer.id))
   return <section className="match-register" aria-label="Registro del match">

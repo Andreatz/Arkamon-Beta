@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_GAME_PREFERENCES, normalizeGamePreferences, useGamePreferences, getAnimationDuration } from './gamePreferences'
+import { DEFAULT_GAME_PREFERENCES, normalizeGamePreferences, useGamePreferences, getAnimationDuration, TEXT_SIZE_SCALE } from './gamePreferences'
 describe('game preferences', () => {
   it('recovers malformed saved settings and bounds the volumes', () => {
     expect(normalizeGamePreferences(null)).toEqual(DEFAULT_GAME_PREFERENCES)
@@ -19,5 +19,15 @@ describe('game preferences', () => {
     expect(useGamePreferences.getState().graphicsMemory).toBe('full')
     useGamePreferences.getState().resetPreferences()
     expect(useGamePreferences.getState().graphicsMemory).toBe('auto')
+  })
+})
+
+describe('dimensione del testo (audit fase 3)', () => {
+  it('accetta normale, grande e TV e ripiega su normale per valori sconosciuti', () => {
+    expect(normalizeGamePreferences({ textSize: 'tv' }).textSize).toBe('tv')
+    expect(normalizeGamePreferences({ textSize: 'large' }).textSize).toBe('large')
+    expect(normalizeGamePreferences({ textSize: 'enorme' }).textSize).toBe('normal')
+    expect(normalizeGamePreferences({}).textSize).toBe('normal')
+    expect(TEXT_SIZE_SCALE).toEqual({ normal: 1, large: 1.15, tv: 1.3 })
   })
 })

@@ -221,7 +221,7 @@ test('Register keeps the three archives; Race and Recap fit one 1080p screen wit
   const before = await checkpoint(page)
   await page.getByRole('button', {name:'Partita',exact:true}).click()
   const dialog = page.getByRole('dialog',{name:'La tua partita',exact:true})
-  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(9)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(8)
   for (const [label, region] of [['Gara','Situazione della gara'], ['Ripresa','Ripresa della sessione']]) {
     // Fase U6: Gara e Ripresa sono nel cassetto «Altro» del menù.
     const more = dialog.getByRole('button',{name:'Altro',exact:true})
@@ -245,8 +245,8 @@ test('Register keeps the three archives; Race and Recap fit one 1080p screen wit
     }
     await dialog.getByRole('button',{name:'Menù Partita',exact:true}).click()
   }
-  await dialog.getByRole('button',{name:'Apri Registro',exact:true}).click()
-  const tabs = dialog.getByRole('navigation',{name:'Archivi del registro',exact:true})
+  await dialog.getByRole('button',{name:'Apri Diario',exact:true}).click()
+  const tabs = dialog.getByRole('navigation',{name:'Archivi del diario',exact:true})
   for (const [label, region] of [['Diario','Diario dei giocatori'], ['Eventi del match','Registro del match'], ['Cronache delle battaglie','Cronache delle battaglie']]) {
     await tabs.getByRole('button',{name:label,exact:true}).click()
     await expect(dialog.getByRole('region',{name:region,exact:true})).toBeVisible()
@@ -264,7 +264,7 @@ test('new management views are also available as real editable Studio screens', 
   await page.setViewportSize({width:1920,height:1080})
   await page.goto('/#ui-studio')
   const preview = page.frameLocator('.uis-canvas iframe')
-  for (const [screen, region] of [['register','Registro della partita'],['race','Situazione della gara'],['recap','Ripresa della sessione']]) {
+  for (const [screen, region] of [['register','Diario della partita'],['race','Situazione della gara'],['recap','Ripresa della sessione']]) {
     await page.getByLabel('Schermata da modificare',{exact:true}).selectOption(screen)
     await expect(preview.getByRole('region',{name:region,exact:true})).toBeVisible()
     await expect(page.locator('.uis-layer').first()).toBeVisible()

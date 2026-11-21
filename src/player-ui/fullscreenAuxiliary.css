@@ -3,7 +3,7 @@
 .pu-history-pages button{min-height:36px;padding:5px 12px;border:1px solid #68859a;border-radius:5px;background:#152a3c;color:#edf6ff}
 .pu-history-pages button:disabled{opacity:.45}
 .journal-overview{display:grid;gap:12px}
-.journal-reading{display:flex;flex-direction:column;gap:12px;min-width:0}
+.journal-reading{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow-y:auto;padding-right:4px}
 .journal-sections{display:flex;flex-wrap:wrap;gap:6px}
 .journal-sections button{min-height:36px;border:1px solid #68859a;border-radius:5px;background:#152a3c;padding:5px 10px;font-size:14px}
 .journal-sections button[aria-pressed=true],.challenge-pages button[aria-pressed=true],.challenge-builder-pages button[aria-pressed=true]{background:#284b64;border-color:#a6daeb;color:#fff1ce}
@@ -191,3 +191,21 @@
  .pu-live-shell .game-settings-artwork label:not(.game-audio-toggle){font-size:14px}
  .pu-live-shell .game-settings-artwork>p{font-size:12px;line-height:1.3}
 }
+/* Audit fase 3: sezioni del Diario a fisarmonica, una aperta alla volta. */
+.journal-fold{border:1px solid #406587;border-radius:6px;min-width:0}
+.journal-fold>summary{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-height:40px;padding:8px 12px;cursor:pointer;list-style:none;font-weight:600;font-size:16px}
+.journal-fold>summary::-webkit-details-marker{display:none}
+.journal-fold>summary::before{content:'▸';margin-right:8px;color:var(--arka-ui-gold-bright, #f5d58a)}
+.journal-fold[open]>summary::before{content:'▾'}
+.journal-fold>summary small{font-size:13px;font-weight:400;opacity:.8}
+.journal-fold[open]>summary{border-bottom:1px solid #406587}
+.journal-fold>.journal-section-content{border:0;border-radius:0}
+.journal-fold>.journal-section-content>h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.journal-reading{gap:8px}
+/* Medaglie compatte dentro la fisarmonica: il Diario resta in una schermata anche a 1366×768. */
+.pu-live-shell .journal-fold .journal-medals{gap:8px 14px!important}
+.pu-live-shell .journal-fold .journal-medals li{padding:6px 10px;min-height:0}
+.pu-live-shell .journal-fold .journal-medal-art{width:44px;height:44px}
+.pu-live-shell .journal-fold>.journal-section-content{padding:10px 12px}
+.pu-live-shell .journal-fold .journal-medals{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pu-live-shell .journal-fold .journal-medals li{grid-template-columns:44px 1fr;gap:8px}

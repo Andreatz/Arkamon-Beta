@@ -9,7 +9,7 @@ import { CreaturePortrait, KitButton, KitIcon, formatNumber } from './kit'
 import { MenuScreen } from './MenuScreen'
 import { usePlayerUiSession } from './playerUiSession'
 import { PresentManagementControl } from '@/regia/PresentManagementControl'
-import { PLAYER_UI_SCREENS, type PlayerUiAuxiliary, type PlayerUiScreen } from './navigation'
+import { PLAYER_UI_NAV_SCREENS, type PlayerUiAuxiliary, type PlayerUiScreen } from './navigation'
 import { StudioCommand } from '@/components/ui/StudioArtwork'
 import './playerUiStyles'
 import { referenceScreenBackground } from './reference/referenceBackgrounds'
@@ -49,14 +49,14 @@ const screens: Record<PlayerUiScreen, { label: string; title: string; kicker: st
 }
 
 const auxiliary: { id: PlayerUiAuxiliary; label: string; icon: string }[] = [
-  { id: 'register', label: 'Registro', icon: 'icon-book' },
+  { id: 'register', label: 'Diario', icon: 'icon-journal' },
   { id: 'race', label: 'Gara', icon: 'icon-activity' },
   { id: 'recap', label: 'Ripresa', icon: 'icon-activity' },
   { id: 'journal', label: 'Diario', icon: 'icon-journal' },
   { id: 'backup', label: 'Salvataggio', icon: 'icon-box' },
   { id: 'settings', label: 'Impostazioni', icon: 'icon-options' },
   { id: 'chronicles', label: 'Cronache', icon: 'icon-chronicles' },
-  { id: 'match', label: 'Registro del match', icon: 'icon-activity' },
+  { id: 'match', label: 'Eventi del match', icon: 'icon-activity' },
   { id: 'challenges', label: 'Sfide', icon: 'icon-challenges' },
 ]
 const challengeBlocked = new Set<PlayerUiScreen>(['deposito', 'borsa', 'negozio'])
@@ -168,7 +168,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
     const direction = navigationDirection(
       { pane: previous.pane, playerId: previous.playerId },
       { pane: paneKey, playerId },
-      PLAYER_UI_SCREENS,
+      PLAYER_UI_NAV_SCREENS,
     )
     navMotion.current = { pane: paneKey, playerId, direction, flips: previous.flips + (direction === 'flip' ? 1 : 0) }
   }
@@ -176,8 +176,8 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   const paneDirection = navMotion.current.direction === 'flip' && navMotion.current.flips % 2 === 0 ? 'flip-alt' : navMotion.current.direction
   // Pagina su / giù (e LB / RB del gamepad) scorrono le schede principali.
   function cycleScreen(step: 1 | -1) {
-    const available = PLAYER_UI_SCREENS.filter(id => !(context && id !== 'partita'))
-    const index = available.indexOf(screen as typeof PLAYER_UI_SCREENS[number])
+    const available = PLAYER_UI_NAV_SCREENS.filter(id => !(context && id !== 'partita'))
+    const index = available.indexOf(screen as typeof PLAYER_UI_NAV_SCREENS[number])
     const next = available[(Math.max(0, index) + step + available.length) % available.length]
     if (next) navigate(next)
   }
@@ -228,7 +228,7 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
 
     <nav className="pu-nav" aria-label="Schermate del giocatore">
       
-      {PLAYER_UI_SCREENS.map(id => <KitButton data-ui-id={`nav.${id === 'partita' ? 'menu' : id}`} className="pu-nav-button" key={id} active={!visibleTool && screen === id} disabled={!!context && id !== 'partita'}
+      {PLAYER_UI_NAV_SCREENS.map(id => <KitButton data-ui-id={`nav.${id === 'partita' ? 'menu' : id}`} className="pu-nav-button" key={id} active={!visibleTool && screen === id} disabled={!!context && id !== 'partita'}
         aria-pressed={!visibleTool && screen === id} title={screens[id].label} onClick={() => navigate(id)}><KitIcon id={screens[id].icon} /><span className="pu-nav-label">{screens[id].label}</span></KitButton>)}
     </nav>
 
