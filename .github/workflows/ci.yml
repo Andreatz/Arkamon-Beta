@@ -41,7 +41,7 @@ jobs:
         run: npm test -- --maxWorkers=4 --reporter=default --reporter=json --outputFile=output/ci/unit.json
 
       - name: Release and relay contracts
-        run: node --test scripts/__tests__/release-verification.test.mjs scripts/__tests__/public-relay.test.mjs scripts/__tests__/public-media-relay.test.mjs scripts/__tests__/startup-budget.test.mjs scripts/__tests__/desktop-resources.test.mjs
+        run: node --test scripts/__tests__/release-verification.test.mjs scripts/__tests__/public-relay.test.mjs scripts/__tests__/public-media-relay.test.mjs scripts/__tests__/startup-budget.test.mjs scripts/__tests__/desktop-resources.test.mjs scripts/__tests__/repo-weight-report.test.mjs
 
       - name: UI asset imports and splash catalog
         run: npm run test:ui-assets

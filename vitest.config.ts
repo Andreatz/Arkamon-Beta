@@ -7,4 +7,5 @@ export default defineConfig(env => mergeConfig(createGameConfig(env), { test: { 
   'scripts/__tests__/startup-budget.test.mjs', 'scripts/__tests__/release-verification.test.mjs', 'scripts/__tests__/public-relay.test.mjs',
   'scripts/__tests__/public-media-relay.test.mjs',
   'scripts/__tests__/desktop-resources.test.mjs',
+  'scripts/__tests__/repo-weight-report.test.mjs',
 ] } }))
