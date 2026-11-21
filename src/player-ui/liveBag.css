@@ -24,13 +24,13 @@
 .pu-shell .pu-bag-dedicated .pu-live-bag-quantity{position:absolute;right:0;bottom:6%;font-size:clamp(11px,1.2cqw,16px);background:#0b1c2c;border:1px solid #4c7c98;border-radius:4px;padding:1px 5px}
 .pu-shell .pu-bag-dedicated .pu-live-bag-item-name{position:absolute;top:74%;width:115%;font-size:clamp(10px,1.15cqw,16px);text-align:center;line-height:1.1;white-space:normal;margin-top:3px;color:#cedbe8;font-weight:400}
 .pu-shell .pu-bag-dedicated .pu-live-bag-slot-empty{height:100%;display:grid;place-items:center;color:#5c758c;font-size:20px}
-.pu-shell .pu-bag-dedicated .pu-live-bag-footnote{font-family:Arial,sans-serif;font-size:13px;color:#aab9ca;margin:14px 5px 0}
+.pu-shell .pu-bag-dedicated .pu-live-bag-footnote{font-family: var(--arka-ui-font-display);font-size:13px;color:#aab9ca;margin:14px 5px 0}
 .pu-shell .pu-bag-dedicated .pu-live-bag-detail{display:flex;flex-direction:column;gap:10px;min-width:0}
 .pu-shell .pu-bag-dedicated .pu-live-bag-illustration{height:145px;display:grid;place-items:center;background:radial-gradient(ellipse,#1c6b8244,transparent 66%)}
 .pu-shell .pu-bag-dedicated .pu-live-bag-illustration>.pu-kit-icon{height:128px;width:128px;filter:drop-shadow(0 9px 12px #000a)}
 .pu-shell .pu-bag-dedicated .pu-live-bag-detail>.pu-kicker{font-size:12px;letter-spacing:2px;color:#e5c39a}
 .pu-shell .pu-bag-dedicated .pu-live-bag-detail>h2{font-size:32px;line-height:1.1;margin:0}
-.pu-shell .pu-bag-dedicated .pu-live-bag-detail>.pu-description{font-family:Arial,sans-serif;font-size:14px;line-height:1.65;color:#c0cede;max-width:40ch;margin:0 0 4px}
+.pu-shell .pu-bag-dedicated .pu-live-bag-detail>.pu-description{font-family: var(--arka-ui-font-display);font-size:14px;line-height:1.65;color:#c0cede;max-width:40ch;margin:0 0 4px}
 .pu-shell .pu-bag-dedicated .pu-live-bag-stock{max-width:440px;margin-top:3px}
 .pu-shell .pu-bag-dedicated .pu-live-bag-stock>div{position:absolute;inset:30% 12% 15%;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .pu-shell .pu-bag-dedicated .pu-live-bag-stock span{font-size:12px;letter-spacing:1px;color:#b4c5d5}
@@ -38,7 +38,7 @@
 .pu-shell .pu-bag-dedicated .pu-live-bag-stock small{font-size:12px;font-weight:400;color:#c7d4e3}
 .pu-shell .pu-bag-dedicated .pu-item-use{margin:0;padding-top:12px;border-top:1px solid #34485a}
 .pu-shell .pu-bag-dedicated .pu-item-use .arka-item-bag{gap:10px}
-.pu-shell .pu-bag-dedicated .pu-item-use .arka-store-note,.pu-shell .pu-bag-dedicated .pu-item-use .arka-store-warning{font-family:Arial,sans-serif;font-size:13px;line-height:1.5;margin:0}
+.pu-shell .pu-bag-dedicated .pu-item-use .arka-store-note,.pu-shell .pu-bag-dedicated .pu-item-use .arka-store-warning{font-family: var(--arka-ui-font-display);font-size:13px;line-height:1.5;margin:0}
 .pu-shell .pu-bag-dedicated .pu-item-use .arka-item-target{font-size:15px;gap:6px}
 .pu-shell .pu-bag-dedicated .pu-item-use .arka-item-target select{font-size:14px;min-width:0;padding:10px}
 .pu-shell .pu-bag-dedicated .pu-item-use .arka-store-catalog{grid-template-columns:1fr}

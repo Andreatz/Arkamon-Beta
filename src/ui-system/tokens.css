@@ -23,8 +23,9 @@
   --arka-ui-tile: linear-gradient(160deg, #173a55 0%, #0b2338 70%, #081a2b 100%);
 
   /* Font */
+  /* 21 novembre 2026: un solo carattere in tutto il gioco, Cinzel. */
   --arka-ui-font-display: 'Arkamon Cinzel', Georgia, serif;
-  --arka-ui-font-body: Georgia, serif;
+  --arka-ui-font-body: var(--arka-ui-font-display);
 
   /* Scala del testo legata all'altezza (1vh = 10.8 px a 1080p) */
   --arka-size-caption: calc(clamp(14px, 1.48vh, 22px) * var(--arka-user-text-scale, 1));   /* 16 px a 1080p */

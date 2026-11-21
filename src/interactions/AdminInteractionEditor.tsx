@@ -87,7 +87,7 @@ export function AdminInteractionEditor() {
       </select></label>
       <p className="interaction-note">Nel completamento condiviso il premio va soltanto al giocatore che completa per primo. I requisiti riguardano sempre il giocatore che agisce.</p>
       <label>Attività<select value={draft.action.kind} onChange={(e) => chooseAction(e.target.value as InteractionAction['kind'])}>
-        <option value="dialogue">Dialogo / missione / ricompensa</option><option value="heal">Cura della squadra</option>
+        <option value="dialogue">Dialogo / missione / ricompensa</option>{/* Infermerie rimosse (21 novembre 2026): la cura avviene a fine battaglia. Resta visibile solo per le voci già salvate. */}{draft.action.kind === 'heal' && <option value="heal">Cura della squadra (non più necessaria)</option>}
         <option value="shop" disabled={!hasArkaStore(mapId)}>Arkastore</option>
         <option value="trainer" disabled={!trainers.length}>Allenatore esistente</option><option value="bush" disabled={!bushes.length}>Cespuglio esistente</option><option value="encounter">Incontro definito dalla regia</option>
       </select></label>

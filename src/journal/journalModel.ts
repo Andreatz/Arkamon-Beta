@@ -32,7 +32,8 @@ export function nextJournalObjective(state: InteractionRuntimeState & { league?:
   if (!player.squadra.length) return Object.keys(player.deposito).length
     ? { title: 'Ritira un Arkamon dal deposito', detail: 'Hai già dei compagni in riserva. Spostane almeno uno in squadra per proseguire il viaggio.' }
     : { title: 'Scegli il tuo starter', detail: 'Il laboratorio assegna uno starter diverso a ciascun giocatore.' }
-  if (!player.squadra.some((pokemon) => pokemon.hp > 0)) return { title: 'Cura la squadra', detail: 'Visita l’Infermeria Arka di una città prima di affrontare un incontro.' }
+  // Solo un vecchio salvataggio può avere la squadra tutta KO fuori battaglia (21 novembre 2026).
+  if (!player.squadra.some((pokemon) => pokemon.hp > 0)) return { title: 'Recupera la squadra', detail: 'Questo salvataggio precede la cura automatica di fine battaglia. Apri una città o un percorso e scegli «Recupera la squadra».' }
   if (hasUnlockedSecretLocation(player)) return { title: league?.players[playerId].status === 'defeated' ? 'Riprova la Lega a Roma' : 'Affronta la Lega a Roma', mapId: 'Roma',
     detail: `Hai completato le otto palestre. ${here === 'Roma' ? 'Apri la Lega dalla città.' : 'Raggiungi Roma per affrontare i Superquattro.'} Il passaggio segreto resta un’opportunità facoltativa.`, nextStep: routeToLocation(here, 'Roma')?.[1] }
   const candidates = definitions.filter((definition) => definition.enabled && !definition.repeatable

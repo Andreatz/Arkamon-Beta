@@ -12,7 +12,7 @@ html .local-map-scene.local-map-scene--stage[data-reference-ui="aurora"] {
   height: 100%;
   overflow: hidden;
   background: var(--arka-ui-night, #031124);
-  font-family: var(--arka-ui-font-body, Georgia, serif);
+  font-family: var(--arka-ui-font-display);
 }
 html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-play-area { position: absolute; inset: 0; }
 

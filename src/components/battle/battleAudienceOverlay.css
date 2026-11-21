@@ -1,5 +1,5 @@
 .battle-audience-overlay { position:absolute; inset:0; z-index:var(--battle-z-audience); display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(5,9,15,.83); }
-.battle-audience-card { width:min(880px,100%); max-height:100%; overflow:auto; padding:22px; border:2px solid var(--arka-primary); border-radius:18px; background:var(--arka-surface); color:var(--arka-text); box-shadow:0 16px 70px #0009; font-family:system-ui,sans-serif; }
+.battle-audience-card { width:min(880px,100%); max-height:100%; overflow:auto; padding:22px; border:2px solid var(--arka-primary); border-radius:18px; background:var(--arka-surface); color:var(--arka-text); box-shadow:0 16px 70px #0009; font-family: var(--arka-ui-font-display); }
 .battle-audience-card header { display:flex; align-items:center; justify-content:space-between; gap:16px; }
 .battle-audience-card h2 { margin:0 0 8px; font-size:clamp(18px,2.4vw,30px); font-weight:900; }
 .battle-audience-card p { margin:6px 0; }

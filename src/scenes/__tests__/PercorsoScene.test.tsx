@@ -48,7 +48,8 @@ describe('allenatori accessibili nei percorsi', () => {
     }))
     useGameStore.getState().vaiAScena('percorso', { luogo: 'Percorso_1' })
     const markup = renderToStaticMarkup(<PercorsoScene />)
-    expect(markup).toContain('La squadra è esausta.')
+    expect(markup).toContain('Nessun Arkamon della squadra è in grado di combattere.')
+    expect(markup).toContain('Recupera la squadra')
     const encounterButtons = [...markup.matchAll(/<button\b[^>]*aria-label="(?:Cespuglio|Sfida)[^"]*"[^>]*>/g)]
     expect(encounterButtons.length).toBeGreaterThan(7)
     expect(encounterButtons.every(([button]) => button.includes('disabled=""'))).toBe(true)

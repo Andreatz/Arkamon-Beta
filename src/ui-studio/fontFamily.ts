@@ -1,8 +1,10 @@
-/** Shared font lookup is independent of the editor's image catalog. */
-export function getUiFontFamily(id: string): string {
-  if (id === 'norwester') return "'Arkamon Norwester', 'Arial Narrow', Arial, sans-serif"
-  if (id === 'chela') return "'Chela One', Arial, sans-serif"
-  if (id === 'azonix') return "'Azonix', Arial, sans-serif"
-  if (id === 'system') return 'system-ui, sans-serif'
-  return "'UiUploaded_" + id.replace(/[^a-zA-Z0-9_-]/g, '_') + "', 'Arkamon Norwester', Arial, sans-serif"
+/**
+ * Shared font lookup is independent of the editor's image catalog.
+ * 21 novembre 2026: il gioco usa un solo carattere, Cinzel. Gli identificatori salvati nei
+ * progetti (`norwester`, `chela`, `azonix`, `system`, font importati) restano leggibili ma
+ * vengono tutti risolti nel carattere del gioco.
+ */
+export const GAME_FONT_STACK = "'Arkamon Cinzel', Georgia, serif"
+export function getUiFontFamily(_id: string): string {
+  return GAME_FONT_STACK
 }

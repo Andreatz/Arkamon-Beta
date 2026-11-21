@@ -6,7 +6,7 @@
   --world-gold: var(--arka-ui-gold, #d9b67b);
   --world-gold-bright: var(--arka-ui-gold-bright, #f4dca0);
   --world-display: var(--arka-ui-font-display, Georgia, serif);
-  --world-body: var(--arka-ui-font-body, Georgia, serif);
+  --world-body: var(--arka-ui-font-display);
 }
 
 /* Intestazione unica in alto. */

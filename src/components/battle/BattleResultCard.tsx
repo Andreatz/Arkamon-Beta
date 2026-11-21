@@ -76,6 +76,6 @@ export function BattleResultCard({ chronicle, outcome, gymVictory = false, messa
       </span>
     </ResultRow>}
     {messages.length > 0 && <div className="battle-result-messages" role="status" aria-live="polite">{messages.slice(-3).map((message, index) => <p key={`${index}-${message}`}>{message}</p>)}</div>}
-    <p className="battle-result-progress">Gli HP residui sono conservati. Premi Prosegui per continuare.</p>
+    <p className="battle-result-progress">Premi Prosegui: la squadra verrà curata completamente.</p>
   </section>
 }
