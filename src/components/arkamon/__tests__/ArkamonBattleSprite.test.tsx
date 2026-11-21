@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ArkamonBattleSprite,
   completeArkamonPlayback,
+  getProceduralMotion,
+  NEUTRAL_SPRITE_FILTER,
   requestArkamonPlayback,
   type ArkamonPlaybackState,
 } from '../ArkamonBattleSprite'
@@ -173,5 +175,34 @@ describe('Arkamon battle sprite visual selection', () => {
     expect(markup).toContain('transform:scale(0.75)')
     expect(markup).toContain(src)
     expect(markup).toContain('alt="Arkamon"')
+  })
+})
+
+describe('procedural pose after an interrupted action', () => {
+  const NEUTRAL_KEYS = ['x', 'y', 'rotate', 'scale', 'opacity', 'filter'] as const
+  const last = (value: unknown) => Array.isArray(value) ? value[value.length - 1] : value
+
+  it.each(ANIMATIONS)('%s declares every pose property, so a cut-off hit cannot leave the flash or KO fade behind', (animation) => {
+    for (const reduced of [false, true]) {
+      const { animate } = getProceduralMotion(1, 'front', animation, reduced)
+      for (const key of NEUTRAL_KEYS) expect(animate, `${animation} ${reduced ? 'ridotto' : 'completo'}: ${key}`).toHaveProperty(key)
+    }
+  })
+
+  it.each(['idle', 'attack', 'victory'] as const)('%s returns filter and opacity to neutral after a hit flash or KO', (animation) => {
+    const { animate, transition } = getProceduralMotion(1, 'back', animation, false)
+    expect(last(animate.filter)).toBe(NEUTRAL_SPRITE_FILTER)
+    expect(last(animate.opacity)).toBe(1)
+    // The neutral reset is short and never inherits an idle/victory loop.
+    expect((transition as Record<string, { repeat?: number; duration?: number }>).filter).toMatchObject({ repeat: 0, duration: 0.12 })
+  })
+
+  it('keeps hit flash keyframes interpolable with the neutral filter', () => {
+    const { animate } = getProceduralMotion(1, 'front', 'hit', false)
+    const functions = (value: string) => value.match(/[a-z-]+(?=\()/g)
+    const frames = animate.filter as string[]
+    expect(frames[0]).toBe(NEUTRAL_SPRITE_FILTER)
+    expect(frames[frames.length - 1]).toBe(NEUTRAL_SPRITE_FILTER)
+    for (const frame of frames) expect(functions(frame)).toEqual(functions(NEUTRAL_SPRITE_FILTER))
   })
 })
