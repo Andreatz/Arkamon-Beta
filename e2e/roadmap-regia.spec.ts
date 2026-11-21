@@ -221,7 +221,7 @@ test('Register keeps the three archives; Race and Recap fit one 1080p screen wit
   const before = await checkpoint(page)
   await page.getByRole('button', {name:'Partita',exact:true}).click()
   const dialog = page.getByRole('dialog',{name:'La tua partita',exact:true})
-  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(9)
+  await expect(dialog.locator('.pu-menu-tile')).toHaveCount(8)
   for (const [label, region] of [['Gara','Situazione della gara'], ['Ripresa','Ripresa della sessione']]) {
     // Fase U6: Gara e Ripresa sono nel cassetto «Altro» del menù.
     const more = dialog.getByRole('button',{name:'Altro',exact:true})

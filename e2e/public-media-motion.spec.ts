@@ -6,7 +6,7 @@ test('Tab respects the selected roving grid item and stays inside the real game 
   await page.getByRole('button', { name: 'Partita', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'La tua partita', exact: true })
   const items = dialog.locator('.ref-menu-grid [data-rpg-item]')
-  await expect(items).toHaveCount(9)
+  await expect(items).toHaveCount(8)
   await expect(items.nth(1)).toHaveAttribute('tabindex', '-1')
   await items.first().focus()
   await page.keyboard.press('Tab')
