@@ -1,0 +1,23 @@
+/* Audit fase 8: tutorial del primo turno, in basso al centro, sopra la mappa ma sotto i menù. */
+.first-turn-tutorial {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(84px, 13vh, 150px);
+  z-index: 60;
+  width: min(92%, 620px);
+  margin-inline: auto;
+  padding: clamp(16px, 1.6vw, 26px);
+  display: grid;
+  gap: 10px;
+}
+.first-turn-tutorial__kicker { margin: 0; color: var(--arka-text-muted); font-size: calc(13px * var(--arka-user-text-scale, 1)); letter-spacing: .14em; text-transform: uppercase; }
+.first-turn-tutorial h2 { margin: 0; color: var(--arka-ui-gold-bright); font: 600 calc(clamp(20px, 1.8vw, 28px) * var(--arka-user-text-scale, 1)) / 1.15 var(--arka-ui-font-display); }
+.first-turn-tutorial__body { margin: 0; font-size: calc(clamp(15px, 1.2vw, 19px) * var(--arka-user-text-scale, 1)); line-height: 1.45; }
+.first-turn-tutorial__dots { display: flex; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; }
+.first-turn-tutorial__dots li { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--arka-text-muted) 45%, transparent); }
+.first-turn-tutorial__dots li[data-active] { background: var(--arka-ui-gold-bright); }
+.first-turn-tutorial__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+/* Il testo non intercetta i clic sulla mappa: solo i pulsanti sono interattivi. */
+.first-turn-tutorial { pointer-events: none; }
+.first-turn-tutorial__actions > * { pointer-events: auto; }

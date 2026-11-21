@@ -1,3 +1,4 @@
+import { AUTO_OPPONENT_DELAY_MS, useAutoOpponent } from '@/settings/autoOpponent'
 import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
 import { ArkaButton } from '@/ui-system/primitives'
 import { DepthBackground } from '@/motion/depth/DepthBackground'
@@ -260,6 +261,8 @@ export function BattagliaScene() {
   const battleRig = useCameraRig({ focusPoints: battleFocusPoints })
   const battleFx = useScreenFx()
   // La regia resta ferma nell'editor dei layout e nelle anteprime: lì il mondo non deve muoversi.
+  const autoOpponent = useAutoOpponent()
+  const confermaTurnoAvversarioRef = useRef<() => void>(() => {})
   const cine = useBattleCinematics({ rig: battleRig, fx: battleFx, enabled: !layoutEditing && !previewView, focusPoints: battleFocusPoints })
   const [pendingCaptureSave, setPendingCaptureSave] = useState<{ itemId: CaptureItemId } | null>(null)
   const actionInProgressRef = useRef(false)
@@ -929,6 +932,15 @@ export function BattagliaScene() {
     })
   }
 
+  // Audit fase 8: con «Avversario automatico» (fuori dalla regia) il turno parte da solo.
+  // Gli hook stanno prima del ritorno anticipato; la funzione aggiornata arriva tramite ref.
+  const opponentBlocked = !attesaAvversario || terminata || azioneInCorso || coinOpen || !!statusRoll || !!scambioRichiesto || !!audienceChoice
+  useEffect(() => {
+    if (!autoOpponent.active || opponentBlocked) return
+    const timer = window.setTimeout(() => confermaTurnoAvversarioRef.current(), getAnimationDuration(AUTO_OPPONENT_DELAY_MS))
+    return () => window.clearTimeout(timer)
+  }, [autoOpponent.active, opponentBlocked, attesaAvversario])
+
   if (!pkmnA || !pkmnB) return <div className="text-white p-8">Caricamento...</div>
 
   const specieB = getPokemon(pkmnB.specieId)!
@@ -993,6 +1005,7 @@ export function BattagliaScene() {
     setAttesaAvversario(null)
     turnoAvversario(pendingB)
   }
+  confermaTurnoAvversarioRef.current = confermaTurnoAvversario
 
   const apriScambio = (richiesta: PendingSwitch) => {
     if (audienceChoice) void audienceVote.cancel().catch(() => {})

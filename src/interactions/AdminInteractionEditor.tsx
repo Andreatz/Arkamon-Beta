@@ -29,6 +29,7 @@ export function AdminInteractionEditor() {
   const remove = useInteractionStore((s) => s.removeInteraction)
   const importCatalog = useInteractionStore((s) => s.importCatalog)
   const exportCatalog = useInteractionStore((s) => s.exportCatalog)
+  const installDefaultCatalog = useInteractionStore((s) => s.installDefaultCatalog)
   const replaceDamagedCatalog = useInteractionStore((s) => s.replaceDamagedCatalog)
   const recovery = useInteractionRecoveryStatus((s) => s.recovery)
   const [acceptRecovery, setAcceptRecovery] = useState(false)
@@ -119,6 +120,11 @@ export function AdminInteractionEditor() {
       </div>
     </div>
     <p role="status" aria-live="polite">{message}</p>
+    {/* Audit fase 8: catalogo pronto per la prima sessione; le voci del GM non vengono toccate. */}
+    <section className="interaction-default-catalog" aria-label="Catalogo di base">
+      <p>Catalogo di base: accoglienza, Arkastore, Infermeria, due allenatori e Capopalestra a Venezia; cartello, tre cespugli e due allenatori sul Percorso 1. Viene aggiunto solo dove il pallino è libero.</p>
+      <button className="arka-button-secondary" disabled={!!recovery} onClick={() => setMessage(installDefaultCatalog() ?? 'Catalogo di base aggiunto dove i pallini erano liberi.')}>Aggiungi il catalogo di base</button>
+    </section>
     <details><summary>Importa / esporta e Tiled</summary>
       <p>Il catalogo JSON contiene tutte le mappe. Il file Tiled modifica soltanto le interazioni del luogo selezionato: coordinate e collegamenti del gioco non vengono riscritti. Metti il file Tiled accanto al PNG originale per visualizzare lo sfondo.</p>
       <label>Configurazione delle interazioni<textarea rows={8} value={transfer} onChange={(e) => setTransfer(e.target.value)} /></label>

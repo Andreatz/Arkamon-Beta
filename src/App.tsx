@@ -1,3 +1,4 @@
+import { FirstTurnTutorial } from '@/components/overworld/FirstTurnTutorial'
 import { registerScenePreparer } from '@/components/transitions/scenePrefetch'
 import { HealSoundBridge } from '@/components/overworld/HealSoundBridge'
 import { TurnChangeBanner } from '@/components/overworld/TurnChangeBanner'
@@ -102,6 +103,7 @@ function App() {
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
       <TurnChangeBanner key={`turn-banner-${campaignRevision}`} />
       <HealSoundBridge />
+      <FirstTurnTutorial />
       <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene} prepareScene={prepareScene}>
         <AudioController />
       </SceneTransition>

@@ -14,9 +14,13 @@ export interface GamePreferences {
   graphicsMemory: 'auto' | 'full' | 'low'
   /** Audit fase 3: dimensione del testo; «tv» per la diretta o lo schermo lontano. */
   textSize: 'normal' | 'large' | 'tv'
+  /** Audit fase 8: l'avversario controllato dal gioco agisce da solo, senza premere «AVVERSARIO». */
+  autoOpponent: boolean
+  /** Audit fase 8: il tutorial del primo turno è stato completato o saltato su questo dispositivo. */
+  tutorialDone: boolean
 }
 export const DEFAULT_GAME_PREFERENCES: GamePreferences = {
-  musicVolume: 1, effectsVolume: 1, animationSpeed: 'normal', reducedMotion: 'system', graphicsMemory: 'auto', textSize: 'normal',
+  musicVolume: 1, effectsVolume: 1, animationSpeed: 'normal', reducedMotion: 'system', graphicsMemory: 'auto', textSize: 'normal', autoOpponent: false, tutorialDone: false,
 }
 const volume = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value)
   ? Math.max(0, Math.min(1, value)) : fallback
@@ -28,6 +32,8 @@ export function normalizeGamePreferences(value: unknown): GamePreferences {
     reducedMotion: data.reducedMotion === 'on' || data.reducedMotion === 'off' ? data.reducedMotion : 'system',
     graphicsMemory: data.graphicsMemory === 'full' || data.graphicsMemory === 'low' ? data.graphicsMemory : 'auto',
     textSize: data.textSize === 'large' || data.textSize === 'tv' ? data.textSize : 'normal',
+    autoOpponent: data.autoOpponent === true,
+    tutorialDone: data.tutorialDone === true,
   }
 }
 interface PreferencesStore extends GamePreferences {
@@ -41,7 +47,7 @@ export const useGamePreferences = create<PreferencesStore>()(persist((set, get) 
 }), {
   name: 'arkamon-preferences-v1', version: 1,
   storage: createJSONStorage(() => isUiStudioPreview() ? uiPreviewCampaignStorage : localStorage),
-  partialize: ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory, textSize }) => ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory, textSize }),
+  partialize: ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory, textSize, autoOpponent, tutorialDone }) => ({ musicVolume, effectsVolume, animationSpeed, reducedMotion, graphicsMemory, textSize, autoOpponent, tutorialDone }),
   merge: (saved, current) => ({ ...current, ...normalizeGamePreferences(saved) }),
 }))
 

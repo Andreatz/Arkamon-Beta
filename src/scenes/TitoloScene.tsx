@@ -1,3 +1,4 @@
+import { useInteractionStore } from '@/interactions/interactionStore'
 import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
 import { RpgCommand as GameButton } from '@/components/rpg'
 import './rpgScenes.css'
@@ -144,6 +145,8 @@ export function TitoloScene() {
               danger: true,
             })) return
             useGameStore.getState().eseguiTransazione(() => { reset(); vaiAScena('laboratorio') })
+            // Audit fase 8: una partita nuova senza catalogo riceve le interazioni di base.
+            if (useInteractionStore.getState().interactions.length === 0) useInteractionStore.getState().installDefaultCatalog()
           }}
         >
           Nuova Partita

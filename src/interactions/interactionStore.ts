@@ -2,6 +2,7 @@ import { GAME_DATA_VERSION, migrateLegacyInteraction } from '@/data/trainerMigra
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { InteractionDefinition } from './types'
+import { mergeDefaultInteractions } from './defaultCatalog'
 import { validateCatalog, validateInteraction } from './schema'
 import { isCampaignWritable, readCampaignCheckpoint, removeCampaignCheckpoint, sessionOwnershipMessage, writeCampaignCheckpoint } from '@/session/sessionOwnership'
 import { interactionRecoveryMessage, useInteractionRecoveryStatus } from './interactionRecovery'
@@ -14,6 +15,8 @@ interface InteractionState {
   importCatalog: (json: string) => string | null
   replaceDamagedCatalog: (json: string) => string | null
   exportCatalog: () => string
+  /** Audit fase 8: aggiunge le interazioni di base mancanti (Venezia, Percorso 1, prima palestra). */
+  installDefaultCatalog: () => string | null
 }
 /** Write the validated catalog before publishing it to subscribers. Quota errors leave both copies unchanged. */
 function commitCatalog(interactions: InteractionDefinition[], set: (patch: Pick<InteractionState, 'interactions'>) => void, replaceDamaged = false): string | null {
@@ -102,6 +105,14 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
       if (validated.error) return validated.error
       return commitCatalog(validated.catalog!.interactions, set, true)
     } catch { return 'Il file non contiene un JSON valido.' }
+  },
+  installDefaultCatalog: () => {
+    const existing = get().interactions
+    const next = mergeDefaultInteractions(existing)
+    if (next.length === existing.length) return null
+    const validated = validateCatalog({ version: 1, interactions: next }, { legacyInteractions: existing })
+    if (validated.error) return validated.error
+    return commitCatalog(validated.catalog!.interactions, set)
   },
   exportCatalog: () => {
     const recovery = useInteractionRecoveryStatus.getState().recovery

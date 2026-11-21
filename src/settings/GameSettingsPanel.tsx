@@ -1,5 +1,6 @@
 import { useGameStore } from '@/store/gameStore'
 import { useGamePreferences } from './gamePreferences'
+import { useAutoOpponent } from './autoOpponent'
 import './gameSettingsArtwork.css'
 import '@/components/ui/menuArtworkFallback.css'
 
@@ -11,6 +12,7 @@ export function GameSettingsPanel() {
   const graphicsMemory = useGamePreferences((state) => state.graphicsMemory)
   const textSize = useGamePreferences((state) => state.textSize)
   const setPreferences = useGamePreferences((state) => state.setPreferences)
+  const autoOpponent = useAutoOpponent()
   const muted = useGameStore((state) => state.audioMuted)
   const setMuted = useGameStore((state) => state.setAudioMuted)
   return <section aria-label="Impostazioni del gioco" className="game-settings-artwork space-y-5">
@@ -44,6 +46,17 @@ export function GameSettingsPanel() {
         <option value="normal">Normale</option><option value="large">Grande</option><option value="tv">Modalità TV (diretta e schermo lontano)</option>
       </select>
     </label>
+    <h2 className="text-lg font-bold">Partita</h2>
+    {/* Audit fase 8: l'avversario del gioco può muovere da solo; in regia resta al conduttore. */}
+    <label className="game-audio-toggle" data-menu-artwork="css">
+      <input type="checkbox" checked={autoOpponent.preference} disabled={autoOpponent.blockedByDirector}
+        onChange={(event) => setPreferences({ autoOpponent: event.target.checked })} />
+      <span>Avversario automatico</span>
+    </label>
+    <p className="text-sm text-slate-300">{autoOpponent.blockedByDirector
+      ? 'Disattivato in modalità regia: con il pubblico collegato o la pausa di regia è il conduttore a far muovere l’avversario.'
+      : 'Allenatori e Arkamon selvatici scelgono e giocano la mossa da soli dopo un attimo, senza premere «Turno dell’avversario».'}</p>
+    <button type="button" className="arka-button-secondary" onClick={() => setPreferences({ tutorialDone: false })}>Rivedi il tutorial del primo turno</button>
     <p className="text-sm text-slate-300">La memoria ridotta prepara meno pagine contemporaneamente. Dettagli, trasparenza, frame e velocità restano identici.</p>
     <p className="text-sm text-slate-300">Le preferenze vengono ricordate su questo dispositivo. Dadi, turni e regole restano identici; il risultato del colpo viene mostrato prima del KO.</p>
   </section>
