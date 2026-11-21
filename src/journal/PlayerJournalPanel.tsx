@@ -14,11 +14,11 @@ export function PlayerJournalPanel({ initialPlayerId }: { initialPlayerId?: 1 | 
   const [playerId, setPlayerId] = useState<1 | 2>(() => initialPlayerId ?? useGameStore.getState().giocatoreAttivo)
   const [pages, setPages] = useState({ locations: 0, missions: 0, history: 0 })
   const [openSection, setOpenSection] = useState<'medals' | 'locations' | 'missions' | 'history'>('medals')
-  /** Pannello a fisarmonica: il contenuto resta nel DOM (letto anche chiuso), un solo pannello aperto. */
+  /** Pannello a fisarmonica: un solo pannello aperto; il contenuto dei pannelli chiusi non viene disegnato. */
   const fold = (key: typeof openSection, title: string, meta: string, content: React.ReactNode) => <details className="journal-fold" data-journal-section={key} open={openSection === key}
     onToggle={(event) => { if ((event.currentTarget as HTMLDetailsElement).open) setOpenSection(key) }}>
     <summary onClick={(event) => { event.preventDefault(); setOpenSection(key) }}><span>{title}</span><small>{meta}</small></summary>
-    {content}
+    {openSection === key && content}
   </details>
   const player1 = useGameStore((s) => s.giocatore1)
   const player2 = useGameStore((s) => s.giocatore2)
