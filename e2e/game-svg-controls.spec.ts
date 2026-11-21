@@ -50,16 +50,14 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
   }, { scene, place })
   await page.goto('/')
   await expect(page.locator(`[data-presented-scene="${scene}"]`)).toHaveAttribute('aria-busy', 'false')
-  await page.evaluate(async () => {
-    await document.fonts.ready
-    await document.fonts.load('400 18px "Arkamon Norwester"')
-  })
+  await page.evaluate(async () => { await document.fonts.ready })
   const fonts = await page.evaluate(() => ({
     body: getComputedStyle(document.body).fontFamily,
     loaded: Array.from(document.fonts).filter(face => face.status === 'loaded').map(face => face.family.replace(/["']/g, '')),
   }))
-  expect(fonts.body).toContain('Arkamon Norwester')
-  expect(fonts.loaded).toContain('Arkamon Norwester')
+  // Audit fase 2: un solo design system con due famiglie (display Cinzel, testo Georgia/Gelasio).
+  expect(fonts.body).toContain('Georgia')
+  expect(fonts.body).not.toContain('Norwester')
   expect(fonts.loaded).not.toEqual(expect.arrayContaining(['Oxanium']))
   expect(fonts.loaded).not.toEqual(expect.arrayContaining(['Sora']))
   return svgResponses
@@ -93,7 +91,8 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
   await expect(button).toHaveAttribute('data-menu-artwork', 'css')
   expect(proof.background !== 'rgba(0, 0, 0, 0)' || proof.backgroundImage !== 'none', 'A solid or gradient surface visibly paints the control').toBe(true)
   expect(parseFloat(proof.borderWidth)).toBeGreaterThan(0)
-  expect(proof.font).toContain(proof.localMap ? 'Georgia' : proof.aurora ? 'Arkamon Cinzel' : 'Arkamon Norwester')
+  // Audit fase 2: i comandi usano la famiglia display (Cinzel); la mappa locale resta in Georgia.
+  expect(proof.font).toContain(proof.localMap ? 'Georgia' : 'Arkamon Cinzel')
   expect(proof.disabled).toBe(disabled)
   expect(proof.bound.width).toBeGreaterThan(0)
   expect(proof.bound.height).toBeGreaterThan(0)
