@@ -147,7 +147,8 @@ test('a configured interaction pays once, ends the turn and preserves separate p
   // Locate both players at this defined point without spending gameplay actions to reach it.
   const definition = await page.evaluate(() => {
     const catalog = JSON.parse(localStorage.getItem('arkamon-interactions-v1')!).state.interactions
-    const entry = catalog[0]
+    // Audit fase 8: la nuova partita installa anche il catalogo di base; si cerca la voce appena creata.
+    const entry = catalog.find((item: { title: string }) => item.title === 'Messaggio del ponte')
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!)
     saved.state.posizione1.luogo = entry.mapId; saved.state.posizione2.luogo = entry.mapId
     saved.state.posizioniLocali1 = { [entry.mapId]: entry.nodeId }
@@ -161,7 +162,8 @@ test('a configured interaction pays once, ends the turn and preserves separate p
   const scene = page.locator('[data-presented-scene="citta:Venezia"]')
   await expect(scene).toHaveAttribute('aria-busy', 'false')
   await scene.getByRole('button', { name: 'Interagisci sul punto', exact: true }).click()
-  let interaction = page.getByRole('dialog', { name: 'Interazioni del punto' })
+  const ours = () => page.getByRole('dialog', { name: 'Interazioni del punto' }).locator('article.configured-interaction').filter({ hasText: 'Messaggio del ponte' })
+  let interaction = ours()
   await interaction.getByRole('button', { name: 'Interagisci', exact: true }).click()
   await expect(interaction.getByRole('button', { name: 'Completata', exact: true })).toBeDisabled()
   const completed = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
@@ -173,7 +175,7 @@ test('a configured interaction pays once, ends the turn and preserves separate p
   await page.keyboard.press('Escape'); await page.reload()
   await expect(scene).toHaveAttribute('aria-busy', 'false')
   await scene.getByRole('button', { name: 'Interagisci sul punto', exact: true }).click()
-  interaction = page.getByRole('dialog', { name: 'Interazioni del punto' })
+  interaction = ours()
   await expect(interaction.getByRole('button', { name: 'Completata', exact: true })).toBeDisabled()
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore1.monete)).toBe(150)
   const a11y = await new AxeBuilder({ page }).include('.local-map-activities:not([hidden])').analyze()
@@ -182,7 +184,7 @@ test('a configured interaction pays once, ends the turn and preserves separate p
   await page.keyboard.press('Escape')
   await scene.getByRole('button', { name: 'Passa turno', exact: true }).click()
   await scene.getByRole('button', { name: 'Interagisci sul punto', exact: true }).click()
-  await page.getByRole('dialog', { name: 'Interazioni del punto' }).getByRole('button', { name: 'Interagisci', exact: true }).click()
+  await ours().getByRole('button', { name: 'Interagisci', exact: true }).click()
   const both = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
   expect(both.giocatore1.monete).toBe(150); expect(both.giocatore2.monete).toBe(150)
   expect(both.interactionProgress.completed1).toEqual([definition.id])
