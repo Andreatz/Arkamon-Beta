@@ -7,7 +7,7 @@
  .pu-shell .pu-store-dedicated>.pu-store-heading{flex:none;min-height:0;padding:0 0 10px;margin:0 0 10px;gap:20px}
  .pu-shell .pu-store-dedicated .pu-store-heading h1{font-size:28px;margin:2px 0 4px;line-height:1.1}
  .pu-shell .pu-store-dedicated .pu-store-heading .pu-kicker{font-size:12px;margin:0 0 3px;line-height:1.1}
- .pu-shell .pu-store-dedicated .pu-store-heading p:last-child{font-family:Arial,sans-serif;font-size:13px;line-height:1.4;margin:0}
+ .pu-shell .pu-store-dedicated .pu-store-heading p:last-child{font-family: var(--arka-ui-font-display);font-size:13px;line-height:1.4;margin:0}
  .pu-shell .pu-store-dedicated .pu-store-heading .pu-store-balance{font-size:25px;white-space:nowrap}
  .pu-shell .pu-store-dedicated>.pu-store-layout{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr) minmax(0,1.12fr);gap:18px;flex:1;min-height:0;align-items:stretch}
  .pu-shell .pu-store-dedicated .pu-store-catalog,.pu-shell .pu-store-dedicated .pu-store-detail,.pu-shell .pu-store-dedicated .pu-store-checkout{display:flex;flex-direction:column;min-width:0;min-height:0;padding:16px;gap:0}
@@ -24,7 +24,7 @@
  .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-item-hero>.pu-kit-icon{height:clamp(85px,13dvh,135px);width:clamp(85px,13dvh,135px)}
  .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-kicker{font-size:12px;line-height:1.2}
  .pu-shell .pu-store-dedicated .pu-store-selected-summary h2{font-size:28px;line-height:1.1;margin:5px 0 9px}
- .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-description{font-family:Arial,sans-serif;font-size:14px;line-height:1.5;margin:0 0 10px}
+ .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-description{font-family: var(--arka-ui-font-display);font-size:14px;line-height:1.5;margin:0 0 10px}
  .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-item-held{font-size:16px;line-height:1.3;margin:0}
  .pu-shell .pu-store-dedicated .pu-quantity-control{flex:none;min-height:64px;margin:12px 0 8px;gap:8px;justify-content:center}
  .pu-shell .pu-store-dedicated .pu-quantity-control .pu-button{width:52px;min-width:52px;height:52px;min-height:52px;margin:0;padding:0;flex:none}
@@ -32,7 +32,7 @@
  .pu-shell .pu-store-dedicated .pu-shop-quantity>span{font-size:13px;line-height:1.2;text-align:center}
  .pu-shell .pu-store-dedicated .pu-shop-quantity input{width:92px;height:44px;font-size:24px;padding:0;text-align:center}
  .pu-shell .pu-store-dedicated .pu-store-notices{margin:4px 0 0;gap:6px}
- .pu-shell .pu-store-dedicated .pu-store-notices>p{font-family:Arial,sans-serif;font-size:13px;line-height:1.4;margin:0}
+ .pu-shell .pu-store-dedicated .pu-store-notices>p{font-family: var(--arka-ui-font-display);font-size:13px;line-height:1.4;margin:0}
  .pu-shell .pu-store-dedicated .pu-store-checkout>h3{font-size:22px;line-height:1.2;margin:0 0 8px;flex:none}
  .pu-shell .pu-store-dedicated .pu-cart-lines-compact{display:grid;grid-template-columns:minmax(0,1fr);gap:0;padding:0;flex:none;min-width:0}
  .pu-shell .pu-store-dedicated .pu-cart-lines-compact .pu-cart-line{min-height:34px;line-height:1.15;padding:2px 0;gap:7px;font-size:15px}
@@ -45,7 +45,7 @@
  .pu-shell .pu-store-dedicated .pu-store-totals span{font-size:15px;line-height:1.25}
  .pu-shell .pu-store-dedicated .pu-store-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px;flex:none}
  .pu-shell .pu-store-dedicated .pu-store-actions>.studio-command{min-height:44px;font-size:15px;padding:0 12px}
- .pu-shell .pu-store-dedicated .pu-store-result{font-family:Arial,sans-serif;font-size:13px;line-height:1.4;margin:8px 0 0;flex:none}
+ .pu-shell .pu-store-dedicated .pu-store-result{font-family: var(--arka-ui-font-display);font-size:13px;line-height:1.4;margin:8px 0 0;flex:none}
 }
 @media(min-width:901px) and (max-height:820px){
  .pu-shell .pu-store-dedicated>.pu-store-heading{margin-bottom:8px;padding-bottom:7px}
@@ -86,9 +86,9 @@
  .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-item-hero>.pu-kit-icon{width:75px;height:75px}
  .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-kicker{font-size:11px}
  .pu-shell .pu-store-dedicated .pu-store-selected-summary h2{font-size:24px;line-height:1.15;margin:5px 0}
- .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-description{font-family:Arial,sans-serif;font-size:13px;line-height:1.45;margin:8px 0}
+ .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-description{font-family: var(--arka-ui-font-display);font-size:13px;line-height:1.45;margin:8px 0}
  .pu-shell .pu-store-dedicated .pu-store-selected-summary .pu-item-held{font-size:15px;line-height:1.3}
- .pu-shell .pu-store-dedicated .pu-store-notices p{font-family:Arial,sans-serif;font-size:13px;line-height:1.45}
+ .pu-shell .pu-store-dedicated .pu-store-notices p{font-family: var(--arka-ui-font-display);font-size:13px;line-height:1.45}
  .pu-shell .pu-store-dedicated .pu-store-cart{min-height:0}
  .pu-shell .pu-store-dedicated .pu-store-checkout>h3{font-size:22px;margin:0 0 10px}
  .pu-shell .pu-store-dedicated .pu-cart-lines-compact{display:grid;grid-template-columns:minmax(0,1fr);gap:0}

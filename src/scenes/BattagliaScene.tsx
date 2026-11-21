@@ -260,7 +260,7 @@ export function BattagliaScene() {
   const battleRig = useCameraRig({ focusPoints: battleFocusPoints })
   const battleFx = useScreenFx()
   // La regia resta ferma nell'editor dei layout e nelle anteprime: lì il mondo non deve muoversi.
-  const cine = useBattleCinematics({ rig: battleRig, fx: battleFx, enabled: !layoutEditing && !previewView, focusPoints: battleFocusPoints })
+  const cine = useBattleCinematics({ rig: battleRig, fx: battleFx, enabled: !layoutEditing && !previewView })
   const [pendingCaptureSave, setPendingCaptureSave] = useState<{ itemId: CaptureItemId } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
@@ -439,7 +439,7 @@ export function BattagliaScene() {
 
   useEffect(() => {
     if (!terminata || !esito) return
-    appendChronicle([{ id: `${chronicleRef.current.battleId}:outcome`, kind: 'outcome', winnerSide: esito === 'vittoria' ? 'A' : 'B', title: esito === 'vittoria' ? 'Vittoria del giocatore' : 'Vittoria dell’avversario', messages: ['Battaglia conclusa. Gli HP residui restano nella squadra.'] }])
+    appendChronicle([{ id: `${chronicleRef.current.battleId}:outcome`, kind: 'outcome', winnerSide: esito === 'vittoria' ? 'A' : 'B', title: esito === 'vittoria' ? 'Vittoria del giocatore' : 'Vittoria dell’avversario', messages: [isChallenge ? 'Battaglia conclusa.' : 'Battaglia conclusa. La squadra verrà curata completamente.'] }])
     // A locally revealed ending is not an archive entry until its checkpoint
     // and complete chronicle are durable. Replays remain available before Prosegui.
     const durable = battaglia?.cronaca
@@ -1072,8 +1072,9 @@ export function BattagliaScene() {
     sconfittoPrima: PokemonIstanza,
     sconfittoDopo: PokemonIstanza
   ): PokemonIstanza => {
-    const xpRes = applicaXPDopoKO(rivale, sconfittoPrima, sconfittoDopo,
-      isChallenge ? teamProgressionLimit(squadraB, rivale.istanzaId) : 100)
+    // Gli Arkamon degli NPC non salgono di livello: niente EXP né voce in cronaca.
+    if (!isChallenge) return rivale
+    const xpRes = applicaXPDopoKO(rivale, sconfittoPrima, sconfittoDopo, teamProgressionLimit(squadraB, rivale.istanzaId))
     appendChronicle(xpEvent(rivale, xpRes, 'B', `${beginAction()}:xp`))
     if (xpRes.livelliGuadagnati > 0) {
       playSound('level-up')
@@ -1174,7 +1175,7 @@ export function BattagliaScene() {
     const ris = risultatoBase && useGameStore.getState().battaglia?.boost?.danno ? applyDamageBoost(risultatoBase) : risultatoBase
     if (!ris) return
 
-    const settlement = resolveBattleAttack(ris, 'A', squadraA, squadraB, teamProgressionLimit(squadraA, pkmnAEffettivo.istanzaId), isChallenge ? teamProgressionLimit(squadraB, pkmnB.istanzaId) : 100)
+    const settlement = resolveBattleAttack(ris, 'A', squadraA, squadraB, teamProgressionLimit(squadraA, pkmnAEffettivo.istanzaId), isChallenge ? teamProgressionLimit(squadraB, pkmnB.istanzaId) : 100, isChallenge)
     let nuovoB = settlement.defenderAfterImpact
     let nuovaSquadraB = updateInSquadra(squadraB, nuovoB)
     eseguiSequenzaOffensiva(
@@ -1538,7 +1539,7 @@ export function BattagliaScene() {
       passaTurnoBaA()
       return
     }
-    const settlement = resolveBattleAttack(ris, 'B', squadraA, squadraB, teamProgressionLimit(squadraA, pkmnA.istanzaId), isChallenge ? teamProgressionLimit(squadraB, bEffettivo.istanzaId) : 100)
+    const settlement = resolveBattleAttack(ris, 'B', squadraA, squadraB, teamProgressionLimit(squadraA, pkmnA.istanzaId), isChallenge ? teamProgressionLimit(squadraB, bEffettivo.istanzaId) : 100, isChallenge)
     const nuovoA = settlement.defenderAfterImpact
     const nuovaSquadraA = updateInSquadra(squadraA, nuovoA)
     eseguiSequenzaOffensiva(

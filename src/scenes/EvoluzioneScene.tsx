@@ -168,7 +168,8 @@ export function EvoluzioneScene() {
         specieId: newSpec.id,
         nome: newSpec.nome,
       }
-      evoluto.hp = Math.min(istanza.hp, calcolaHPMax(evoluto))
+      // Dopo la cura di fine battaglia l'Arkamon è a HP pieni: lo resta anche con il nuovo massimo.
+      evoluto.hp = istanza.hp >= calcolaHPMax(istanza) ? calcolaHPMax(evoluto) : Math.min(istanza.hp, calcolaHPMax(evoluto))
       aggiornaPokemon(giocatoreId, evoluto)
       evolutionTimerRef.current = null
     }, reducedMotion ? 0 : getAnimationDuration(EVOLUTION_MORPH_MS))

@@ -88,7 +88,7 @@ interface ToneStep {
 }
 
 const SOUND_BANK: Record<SoundId, ToneStep[]> = {
-  // Audit fase 6: arpeggio morbido che sale, per ogni cura (Infermeria, oggetti, mosse curative).
+  // Audit fase 6: arpeggio morbido che sale, per ogni cura (fine battaglia, oggetti, mosse curative).
   heal: [
     { frequency: 523, duration: 0.09, type: 'sine', gain: 0.05 },
     { frequency: 659, duration: 0.09, delay: 0.08, type: 'sine', gain: 0.05 },

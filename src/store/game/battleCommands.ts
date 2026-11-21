@@ -99,8 +99,9 @@ export function resolveBattleConclusion(state: GameState, outcome: EsitoBattagli
     : /^Percorso_/.test(location) ? { scena: 'percorso', payload: { luogo: location } }
     : location !== 'mappa-principale' ? { scena: 'citta', payload: { luogo: location } } : { scena: 'mappa-principale' }
   const players = {
-    giocatore1: cleanupBattlePlayer(final.giocatore1 ?? (playerId === 1 ? rewarded : state.giocatore1), false),
-    giocatore2: cleanupBattlePlayer(final.giocatore2 ?? (playerId === 2 ? rewarded : state.giocatore2), false),
+    // 21 novembre 2026: a fine battaglia la squadra che ha combattuto torna a HP pieni e senza status.
+    giocatore1: cleanupBattlePlayer(final.giocatore1 ?? (playerId === 1 ? rewarded : state.giocatore1), playerId === 1),
+    giocatore2: cleanupBattlePlayer(final.giocatore2 ?? (playerId === 2 ? rewarded : state.giocatore2), playerId === 2),
   }
   // Fusione di Axolux sul roster definitivo, nello stesso salvataggio del risultato. Chi ha
   // un'evoluzione in attesa resta com'è: la scena dell'evoluzione lo cerca con la specie di prima.

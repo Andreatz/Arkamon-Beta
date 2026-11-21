@@ -5,7 +5,7 @@
  * moltiplicatore) arrivano già risolti dal motore e servono soltanto a
  * dosare inquadrature, scosse e dimensioni.
  */
-import { poseForTarget, type CameraMove, type StagePoint } from '@/motion/camera'
+import type { CameraMove } from '@/motion/camera'
 
 export type BattleSide = 'A' | 'B'
 export type EfficacyTone = 'super' | 'weak' | 'normal'
@@ -58,38 +58,6 @@ export function attackerShot(side: BattleSide, suprema: boolean): CameraMove {
 /** Stacco sul bersaglio al rilascio del colpo. */
 export function targetShot(targetSide: BattleSide, suprema: boolean): CameraMove {
   return { focus: focusOf(targetSide), zoom: suprema ? 1.3 : 1.2, rotate: 0, ms: 240, ease: 'inOut' }
-}
-
-export interface BattleFocusPoints { player: StagePoint; enemy: StagePoint }
-
-/** Margine attorno al centro di ciascun Arkamon che deve restare in quadro (frazioni del palco). */
-export const DUEL_FRAME_MARGIN = { x: 0.13, y: 0.17 } as const
-/** Lo «schiaffo» di zoom all'impatto si somma all'inquadratura: va lasciato spazio anche per quello. */
-const IMPACT_PUNCH_ZOOM = 1.07
-
-function visibleWithin(point: StagePoint, pose: { x: number; y: number; zoom: number }, margin: { x: number; y: number }): boolean {
-  // Il mondo è scalato attorno al centro e poi traslato: il centro del quadro mostra il punto 0.5 - t/z.
-  const centerX = 0.5 - pose.x / pose.zoom, centerY = 0.5 - pose.y / pose.zoom
-  const halfW = 0.5 / pose.zoom, halfH = 0.5 / pose.zoom
-  return Math.abs(point.x - centerX) <= halfW - margin.x && Math.abs(point.y - centerY) <= halfH - margin.y
-}
-
-/**
- * Audit fase 5: durante lo scambio la cinepresa tiene in quadro entrambi gli Arkamon.
- * Il fuoco resta spostato verso il lato richiesto (`bias` verso l'altro lato) e lo zoom
- * scende quanto basta perché attaccante e bersaglio, con il loro margine, restino visibili.
- */
-export function frameBothSides(shot: CameraMove, points: BattleFocusPoints, bias = 0.35, margin = DUEL_FRAME_MARGIN): CameraMove {
-  if (shot.focus !== 'player' && shot.focus !== 'enemy') return shot
-  const main = points[shot.focus], other = points[shot.focus === 'player' ? 'enemy' : 'player']
-  const focus = { x: main.x + (other.x - main.x) * bias, y: main.y + (other.y - main.y) * bias }
-  let zoom = Math.max(1, shot.zoom ?? 1)
-  while (zoom > 1) {
-    const pose = poseForTarget({ focus, zoom: zoom * IMPACT_PUNCH_ZOOM })
-    if (visibleWithin(main, pose, margin) && visibleWithin(other, pose, margin)) break
-    zoom = Math.max(1, Math.round((zoom - 0.01) * 100) / 100)
-  }
-  return { ...shot, focus, zoom }
 }
 
 /** Primo piano sull'Arkamon che va KO. */
