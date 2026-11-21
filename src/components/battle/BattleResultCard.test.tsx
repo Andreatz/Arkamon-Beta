@@ -22,4 +22,24 @@ describe('scheda di fine battaglia', () => {
     expect(markup).toContain('Vittoria!')
     expect(markup).not.toContain('battle-result-messages')
   })
+
+  it('mostra le monete guadagnate o perse nella scheda, con il segno', () => {
+    const gain = renderToStaticMarkup(<BattleResultCard chronicle={chronicle} outcome="vittoria" coinDelta={200} />)
+    expect(gain).toContain('battle-result-coins')
+    expect(gain).toContain('data-delta="gain"')
+    expect(gain).toContain('guadagnati')
+    const loss = renderToStaticMarkup(<BattleResultCard chronicle={chronicle} outcome="sconfitta" coinDelta={-200} />)
+    expect(loss).toContain('data-delta="loss"')
+    expect(loss).toContain('persi')
+    expect(renderToStaticMarkup(<BattleResultCard chronicle={chronicle} outcome="vittoria" />)).not.toContain('battle-result-coins')
+  })
+
+  it('elenca i livelli guadagnati con il loro incremento', () => {
+    const levels: BattleChronicle = { ...chronicle, events: [
+      { id: 'x', sequence: 1, kind: 'xp', side: 'A', title: 'XP', messages: [], actor: { instanceId: 'a', name: 'Darklaw', speciesId: 5, level: 7 }, levelBefore: 5, levelAfter: 7 } as never,
+    ] }
+    const markup = renderToStaticMarkup(<BattleResultCard chronicle={levels} outcome="vittoria" />)
+    expect(markup).toContain('Darklaw · Lv. ')
+    expect(markup).toContain('+2')
+  })
 })

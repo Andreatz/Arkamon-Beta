@@ -60,8 +60,15 @@
 .battle-priority-window p { margin: 0; font-size: clamp(13px, 1vw, 17px); }
 
 /* Audit fase 2: monete guadagnate o perse a fine battaglia. */
-.battle-coin-delta { display: flex; align-items: center; gap: 10px; padding: 8px 22px 8px 12px; border: var(--arka-ui-frame); border-radius: var(--arka-ui-radius-pill); background: var(--arka-ui-surface); box-shadow: var(--arka-ui-frame-inset), var(--arka-ui-shadow-md); }
-.battle-coin-delta__icon { width: 34px; height: 34px; }
-.battle-coin-delta p { margin: 0; font: 600 clamp(16px, 1.3vw, 22px) / 1 var(--arka-ui-font-display); color: var(--arka-ui-gold-bright); }
-.battle-coin-delta[data-delta="loss"] { border-color: #f2a08f; }
-.battle-coin-delta[data-delta="loss"] p { color: #ffb3a3; }
+
+/* Audit fase 6: riepilogo finale animato (livelli che contano, monete che volano, sigillo che rimbalza). */
+.battle-result-card { overflow: visible; }
+.battle-result-level { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.battle-result-level-gain { margin-left: 6px; padding: 0 8px; border-radius: var(--arka-ui-radius-pill); background: color-mix(in srgb, var(--hp-high, #4ade80) 22%, transparent); color: var(--hp-high, #4ade80); font-size: .82em; }
+.battle-result-coins { display: inline-flex; align-items: center; gap: 10px; margin: 14px auto 0; padding: 8px 22px 8px 12px; border: var(--arka-ui-frame); border-radius: var(--arka-ui-radius-pill); background: rgb(6 26 46 / .6); box-shadow: var(--arka-ui-frame-inset); }
+.battle-result-coins__icon { display: inline-grid; width: 34px; height: 34px; }
+.battle-result-coins__icon img { width: 100%; height: 100%; object-fit: contain; }
+.battle-result-coins__value { font: 600 clamp(18px, 1.5vw, 26px) / 1 var(--arka-ui-font-display); color: var(--arka-ui-gold-bright); font-variant-numeric: tabular-nums; }
+.battle-result-coins__value[data-delta="loss"] { color: #ffb3a3; }
+.battle-result-seal-burst { position: absolute; left: 50%; top: -20px; width: 150px; height: 150px; margin-left: -75px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, color-mix(in srgb, var(--arka-ui-gold-bright) 70%, transparent) 0 18%, transparent 62%); animation: battle-result-seal-burst calc(var(--motion-slow, 520ms) * 1.4) ease-out both; z-index: -1; }
+@keyframes battle-result-seal-burst { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }

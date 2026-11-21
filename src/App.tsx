@@ -1,3 +1,6 @@
+import { registerScenePreparer } from '@/components/transitions/scenePrefetch'
+import { HealSoundBridge } from '@/components/overworld/HealSoundBridge'
+import { TurnChangeBanner } from '@/components/overworld/TurnChangeBanner'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
@@ -97,6 +100,8 @@ function App() {
       <GamepadBridge />
       <SaveFailureNotice />
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
+      <TurnChangeBanner key={`turn-banner-${campaignRevision}`} />
+      <HealSoundBridge />
       <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene} prepareScene={prepareScene}>
         <AudioController />
       </SceneTransition>
@@ -119,6 +124,8 @@ function prepareScene(navigation: NavigazioneScena): Promise<unknown> {
   const artwork = sceneArtwork(navigation)
   return Promise.all([loader?.(), artwork ? decodeImage(artwork) : undefined])
 }
+// Audit fase 6: le scene possono essere precaricate anche su intenzione (hover, destinazione scelta).
+registerScenePreparer(prepareScene)
 
 function renderPresentedScene(navigation: NavigazioneScena) {
   return <Suspense fallback={<div className="flex h-full items-center justify-center p-4 text-arka-text-muted" role="status">Caricamento scena…</div>}>

@@ -1,0 +1,34 @@
+/* Audit fase 6: fascia del cambio di turno sulle mappe. */
+.turn-change-banner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 42%;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: clamp(10px, 1.6vh, 22px) 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--arka-bg) 90%, transparent) 18%, color-mix(in srgb, var(--arka-bg) 90%, transparent) 82%, transparent);
+  border-top: 2px solid var(--arka-ui-gold);
+  border-bottom: 2px solid var(--arka-ui-gold);
+  box-shadow: 0 0 40px rgb(0 0 0 / .45);
+}
+.turn-change-banner[data-turn-player="2"] { border-color: var(--arka-ui-gold-bright); }
+.turn-change-banner__text {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .5em;
+  color: var(--arka-ui-gold-bright);
+  font-size: calc(clamp(26px, 3.4vw, 64px) * var(--arka-user-text-scale, 1));
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-shadow: 0 3px 0 var(--arka-bg), 0 0 24px color-mix(in srgb, var(--arka-primary-hover) 45%, transparent);
+}
+.turn-change-banner__text small {
+  font-size: .45em;
+  letter-spacing: .2em;
+  color: var(--arka-text-muted);
+}
+.turn-change-banner__text { align-items: center; }
+.turn-change-banner__portrait { width: 1.6em; height: 1.6em; border-radius: 50%; border: 2px solid var(--arka-ui-gold); background: rgb(6 26 46 / .8); overflow: hidden; }

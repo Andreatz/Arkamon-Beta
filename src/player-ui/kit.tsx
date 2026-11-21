@@ -1,3 +1,4 @@
+import { useHealPulse } from '@/motion/ui/useHealPulse'
 import { battleMoveFacts } from '@/components/battle/battleMoveFacts'
 import { GameArt, gameArtForIcon, hasGameArt } from '@/ui-system/GameArt'
 import { useEffect, useState, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from 'react'
@@ -115,7 +116,8 @@ export function CreaturePortrait({ pokemon, ...props }: { pokemon: PokemonIstanz
 export function HealthBar({ pokemon }: { pokemon: PokemonIstanza }) {
   const maximum = calcolaHPMax(pokemon), value = Math.min(maximum, Math.max(0, pokemon.hp))
   const condition = value <= 0 ? 'ko' : value / maximum <= .25 ? 'low' : value / maximum <= .5 ? 'medium' : 'high'
-  return <div className="pu-health" data-health={condition}><progress aria-label={`HP di ${pokemon.nome}: ${value} su ${maximum}`} max={maximum} value={value} /><span>{value} / {maximum} HP</span></div>
+  const healing = useHealPulse(value)
+  return <div className="pu-health" data-health={condition} data-healing={healing || undefined}><progress aria-label={`HP di ${pokemon.nome}: ${value} su ${maximum}`} max={maximum} value={value} /><span>{value} / {maximum} HP</span></div>
 }
 export function PokemonMoves({ pokemon, detailed = false }: { pokemon: PokemonIstanza; detailed?: boolean }) {
   const definition = getPokemon(pokemon.specieId)

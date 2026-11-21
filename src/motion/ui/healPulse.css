@@ -1,0 +1,15 @@
+/* Audit fase 6: bagliore verde quando gli HP salgono (barre della squadra e targhe di battaglia). */
+[data-healing] { animation: arka-heal-glow var(--arka-heal-ms, 900ms) ease-out both; }
+.pu-health[data-healing] progress { animation: arka-heal-bar var(--arka-heal-ms, 900ms) ease-out both; }
+@keyframes arka-heal-glow {
+  0% { filter: drop-shadow(0 0 0 transparent); }
+  30% { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--hp-high) 85%, white)) brightness(1.2); }
+  100% { filter: drop-shadow(0 0 0 transparent); }
+}
+@keyframes arka-heal-bar {
+  0%, 100% { box-shadow: none; }
+  35% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--hp-high) 70%, white), 0 0 14px color-mix(in srgb, var(--hp-high) 80%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-healing], .pu-health[data-healing] progress { animation: none; outline: 2px solid var(--hp-high); outline-offset: 2px; }
+}
