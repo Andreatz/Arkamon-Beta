@@ -86,7 +86,7 @@ export function SpriteMoveVfx({ effect, onStart, onImpact, onComplete, assetOver
     const point = getBattleVfxAnchorPosition(layout, effect.side, effect.target === 'self' ? 'self' : 'target')
     return <div data-vfx-reduced-cue data-move-vfx-event={effect.id} aria-hidden="true" className="absolute pointer-events-none z-[60] h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white/80 bg-sky-300/15" style={{ left: `${point.x}%`, top: `${point.y}%` }} />
   }
-  const trail = travelPlan && <VfxTravelTrail side={effect.side} plan={travelPlan} color={VFX_TYPE_COLORS[effect.move.tipo] ?? '#fff'} effectId={effect.id} />
+  const trail = travelPlan && <VfxTravelTrail side={effect.side} plan={travelPlan} color={VFX_TYPE_COLORS[effect.move.tipo] ?? 'var(--arka-type-normale)'} effectId={effect.id} />
   if (recipe) {
     return <>{trail}<CompositeMoveVfx effect={effect} recipe={recipe} /></>
   }

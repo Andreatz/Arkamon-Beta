@@ -1,5 +1,5 @@
 /* Erba alta che fruscia e si apre ai lati prima dell'incontro selvatico. */
-.grass-opening { position: fixed; inset: 0; z-index: 1250; overflow: hidden; pointer-events: auto; }
+.grass-opening { position: fixed; inset: 0; z-index: var(--z-fx); overflow: hidden; pointer-events: auto; }
 .grass-opening-glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 70%, rgb(255 244 200 / 0), rgb(6 18 12 / .55)); animation: grass-dim calc(900ms / var(--grass-speed, 1)) ease-in forwards; }
 .grass-blade { position: absolute; bottom: -4vh; transform-origin: 50% 100%; translate: -50% 0;
   clip-path: polygon(50% 0, 78% 38%, 100% 100%, 0 100%, 22% 38%);

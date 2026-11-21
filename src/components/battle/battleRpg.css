@@ -69,6 +69,6 @@
 .battle-result-coins__icon { display: inline-grid; width: 34px; height: 34px; }
 .battle-result-coins__icon img { width: 100%; height: 100%; object-fit: contain; }
 .battle-result-coins__value { font: 600 clamp(18px, 1.5vw, 26px) / 1 var(--arka-ui-font-display); color: var(--arka-ui-gold-bright); font-variant-numeric: tabular-nums; }
-.battle-result-coins__value[data-delta="loss"] { color: #ffb3a3; }
+.battle-result-coins__value[data-delta="loss"] { color: var(--arka-loss); }
 .battle-result-seal-burst { position: absolute; left: 50%; top: -20px; width: 150px; height: 150px; margin-left: -75px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, color-mix(in srgb, var(--arka-ui-gold-bright) 70%, transparent) 0 18%, transparent 62%); animation: battle-result-seal-burst calc(var(--motion-slow, 520ms) * 1.4) ease-out both; z-index: -1; }
 @keyframes battle-result-seal-burst { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }

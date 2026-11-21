@@ -1,0 +1,56 @@
+name: Visual regression
+
+# Audit fase 10: titolo, mappa, menù, battaglia e risultato a 1920×1080 e 1440×810.
+# Fallisce se un testo è troncato o se una schermata cambia rispetto all'immagine approvata
+# in e2e-visual/__screenshots__. Le immagini mancanti vengono create e caricate come
+# artefatto: scaricale, controllale e salvale nel repository per attivare il confronto.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'e2e-visual/**'
+      - 'playwright.visual.config.ts'
+      - '.github/workflows/visual-regression.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-regression-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screens:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Key screens
+        run: npm run test:visual
+
+      - name: Screens and differences
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: visual-regression
+          path: |
+            e2e-visual/__screenshots__/
+            output/visual-results/
+            output/visual-report/
+          retention-days: 14

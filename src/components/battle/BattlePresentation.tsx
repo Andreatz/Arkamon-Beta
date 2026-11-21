@@ -120,8 +120,8 @@ export function ImpactPulseOverlay({
         className="h-28 w-28 rounded-full border-[3px]"
         style={{
           borderColor: pulse.color,
-          background: `radial-gradient(circle, ${pulse.color}55 0%, ${pulse.color}22 42%, transparent 70%)`,
-          boxShadow: `0 0 18px ${pulse.color}, 0 0 42px ${pulse.color}88, inset 0 0 20px ${pulse.color}66`,
+          background: `radial-gradient(circle, color-mix(in srgb, ${pulse.color} 33%, transparent) 0%, color-mix(in srgb, ${pulse.color} 13%, transparent) 42%, transparent 70%)`,
+          boxShadow: `0 0 18px ${pulse.color}, 0 0 42px color-mix(in srgb, ${pulse.color} 53%, transparent), inset 0 0 20px color-mix(in srgb, ${pulse.color} 40%, transparent)`,
           mixBlendMode: 'screen',
         }}
       />
@@ -166,7 +166,7 @@ export function InfoBox({
     >
       <BattleFrame kind="message" />
       <div
-        className={`battle-message-lines absolute left-[8%] top-[16%] space-y-1 text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)] ${
+        className={`battle-message-lines absolute left-[8%] top-[16%] space-y-1 text-white arka-text-outline ${
           showOpponentButton ? 'right-[28%]' : 'right-[8%]'
         }`}
       >
@@ -208,7 +208,7 @@ export function ScambioModal({
 }) {
   return (
     // Audit fase 2: pannello comune del design system, sopra al box dei messaggi (prima vi finiva sotto).
-    <div className="arka-ds-backdrop z-[880] backdrop-blur-sm">
+    <div className="arka-ds-backdrop z-[var(--z-modal)] backdrop-blur-sm">
       <div className="arka-ds-panel w-[min(760px,92vw)]">
         <div className="mb-4 grid gap-1">
           <span className="arka-ds-kicker">Cambio squadra</span>
@@ -519,14 +519,14 @@ export function HpBar({
         <span
           data-admin-layout-text-key="pokemon-name"
           title={nome}
-          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.35vw,23px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          className="arka-layout-content min-w-0 truncate text-[clamp(13px,1.35vw,23px)] leading-none text-white arka-text-outline"
         >
           {nome}
 
         </span>
         <span
           data-admin-layout-text-key="pokemon-level"
-          className="arka-layout-content shrink-0 text-[clamp(11px,1.1vw,19px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          className="arka-layout-content shrink-0 text-[clamp(11px,1.1vw,19px)] text-white arka-text-outline"
         >
           LV. {livello}
         </span>
@@ -580,7 +580,7 @@ export function HpBar({
         <div
           data-admin-layout-text-key={side === 'enemy' ? 'pokemon-enemy-hp' : 'pokemon-hp'}
           data-ui-hp-value=""
-          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,1vw,17px)] text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          className="arka-layout-content absolute left-[10.25%] top-[66.5%] flex h-[33.5%] w-[59.7%] items-center justify-center text-center text-[clamp(10px,1vw,17px)] text-white arka-text-outline"
         >
           {hp}/{hpMax}
         </div>
@@ -681,14 +681,14 @@ export function MoveButton({
       {usiRimasti !== undefined && mossa.usiMassimi ? <span className="battle-move-uses" aria-label={`Usi rimasti ${usiRimasti} su ${mossa.usiMassimi}`}>{usiRimasti}/{mossa.usiMassimi}</span> : null}
       <div
         data-admin-layout-text-key={`${textKeyPrefix}-name`}
-        className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+        className="arka-layout-content truncate px-[4%] text-center text-[clamp(16px,1.65vw,28px)] leading-none text-white arka-text-outline"
       >
         {mossa.nome}
       </div>
       <div className="absolute bottom-[14%] left-[8%] flex w-[48%] items-center justify-start">
         <span
           data-admin-layout-text-key={`${textKeyPrefix}-dice`}
-          className="arka-layout-content flex items-center gap-[0.14em] whitespace-nowrap text-[clamp(15px,1.65vw,26px)] leading-none text-white [text-shadow:-1px_-1px_0_#111,1px_-1px_0_#111,-1px_1px_0_#111,1px_1px_0_#111,0_3px_3px_rgba(0,0,0,0.55)]"
+          className="arka-layout-content flex items-center gap-[0.14em] whitespace-nowrap text-[clamp(15px,1.65vw,26px)] leading-none text-white arka-text-outline"
         >
           {facts.kind !== 'attack' ? <span className="text-[0.65em]">{facts.label}</span> : <>
             <span>{dadi}</span>

@@ -120,20 +120,20 @@ function CaptureOrbArt({ kind }: { kind: 'dice' | 'master' }) {
     <svg viewBox="0 0 100 100" className="battle-capture__orb-art">
       <defs>
         <radialGradient id={`${id}-core`} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor={master ? '#fde68a' : '#a5f3fc'} />
-          <stop offset="55%" stopColor={master ? '#a855f7' : '#0e7490'} />
-          <stop offset="100%" stopColor={master ? '#3b0764' : '#082f49'} />
+          <stop offset="0%" stopColor={master ? 'var(--capture-master-core-1)' : 'var(--capture-core-1)'} />
+          <stop offset="55%" stopColor={master ? 'var(--capture-master-core-2)' : 'var(--capture-core-2)'} />
+          <stop offset="100%" stopColor={master ? 'var(--capture-master-core-3)' : 'var(--capture-core-3)'} />
         </radialGradient>
         <linearGradient id={`${id}-band`} x1="0" x2="1">
-          <stop offset="0%" stopColor="#92400e" />
-          <stop offset="50%" stopColor="#fcd34d" />
-          <stop offset="100%" stopColor="#92400e" />
+          <stop offset="0%" stopColor="var(--capture-band-edge)" />
+          <stop offset="50%" stopColor="var(--capture-band-mid)" />
+          <stop offset="100%" stopColor="var(--capture-band-edge)" />
         </linearGradient>
       </defs>
-      <circle cx="50" cy="50" r="44" fill={`url(#${id}-core)`} stroke="#fde68a" strokeWidth="3" />
+      <circle cx="50" cy="50" r="44" fill={`url(#${id}-core)`} stroke="var(--capture-master-core-1)" strokeWidth="3" />
       <path d="M8 50 Q50 62 92 50" fill="none" stroke={`url(#${id}-band)`} strokeWidth="9" strokeLinecap="round" />
-      <path d="M50 38 L60 52 L50 66 L40 52 Z" fill="#fef3c7" stroke="#b45309" strokeWidth="2.5" />
-      <ellipse cx="34" cy="28" rx="11" ry="6" fill="#ffffff" opacity="0.55" transform="rotate(-30 34 28)" />
+      <path d="M50 38 L60 52 L50 66 L40 52 Z" fill="var(--capture-gem)" stroke="var(--capture-gem-edge)" strokeWidth="2.5" />
+      <ellipse cx="34" cy="28" rx="11" ry="6" fill="white" opacity="0.55" transform="rotate(-30 34 28)" />
     </svg>
   )
 }

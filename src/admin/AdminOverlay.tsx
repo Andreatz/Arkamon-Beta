@@ -17,7 +17,7 @@ export function AdminOverlay() {
   // The game stage is letterboxed and scaled. The editor uses the real viewport
   // so its tabs and scrollable controls stay reachable on portrait screens.
   return createPortal(
-    <div data-admin-overlay="viewport" className="fixed inset-0 z-[1000] pointer-events-none">
+    <div data-admin-overlay="viewport" className="fixed inset-0 z-[var(--z-admin)] pointer-events-none">
       <button
         type="button"
         aria-expanded={panelOpen}

@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   top: 42%;
-  z-index: 70;
+  z-index: var(--z-banner);
   display: grid;
   place-items: center;
   padding: clamp(10px, 1.6vh, 22px) 0;

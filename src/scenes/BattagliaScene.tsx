@@ -1,3 +1,4 @@
+import { useBattleDiceRoll } from './battle/useBattleDiceRoll'
 import { AUTO_OPPONENT_DELAY_MS, useAutoOpponent } from '@/settings/autoOpponent'
 import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
 import { ArkaButton } from '@/ui-system/primitives'
@@ -98,7 +99,7 @@ import { Stage, StageLayer } from '@/motion/Stage'
 import { useCameraRig } from '@/motion/useCameraRig'
 import { ScreenFxLayer, useScreenFx } from '@/motion/ScreenFx'
 import { useBattleCinematics } from '@/components/battle/useBattleCinematics'
-import { damageRevealShake, efficacyTone } from '@/components/battle/battleCinematics'
+import { damageRevealShake } from '@/components/battle/battleCinematics'
 import { BattleDamageNumber, BattleMoveBanner } from '@/components/battle/BattleCinematicLayer'
 import { BattleCaptureLayer, captureHidesTarget } from '@/components/battle/BattleCaptureLayer'
 import { captureBagArt } from '@/components/battle/battleCapture'
@@ -108,13 +109,8 @@ import { planD20Capture, planMasterCapture } from '@/components/battle/battleCap
 import { SupremeCutIn } from '@/components/battle/SupremeCutIn'
 import { GameButton } from '@/components/ui/GameButton'
 import { SceneInputContext } from '@/components/transitions/SceneNavigationContext'
-import { DiceRollOverlay, type DiceRollDisplay } from '@/components/battle/DiceRollOverlay'
-import {
-  BATTLE_DICE_ASSET_IDS,
-  BATTLE_DICE_ROLL_VISIBLE_MS,
-  BATTLE_DICE_EXIT_GRACE_MS,
-  battleDiceDismissDelayMs,
-} from '@/components/battle/battleDiceAssets'
+import { DiceRollOverlay } from '@/components/battle/DiceRollOverlay'
+import { BATTLE_DICE_ASSET_IDS } from '@/components/battle/battleDiceAssets'
 import {
   getMoveVfxFeedback,
   getMoveVfxImpactDelayMs,
@@ -187,6 +183,9 @@ export function BattagliaScene() {
   const audienceBattleId = useRef(initialCheckpoint?.audienceBattleId ?? createAudienceBattleId())
   const { chronicle, current: chronicleRef, beginAction, append: appendChronicle } = useBattleChronicle(battaglia?.cronaca, audienceBattleId.current)
   const { reducedMotion } = useGameMotionPreferences()
+  // Audit fase 10: la carta dei dadi vive in un hook dedicato.
+  const dice = useBattleDiceRoll(reducedMotion)
+  const { diceRoll, publicDiceId } = dice
   const opponentTurnNumber = useRef(initialCheckpoint?.opponentTurnNumber ?? 0)
   type PendingAudience = NonNullable<BattleCheckpoint['audiencePending']> & { pokemon: PokemonIstanza; messages: string[] }
   const [audienceChoice, setAudienceChoice] = useState<PendingAudience | null>(null)
@@ -199,20 +198,10 @@ export function BattagliaScene() {
   const [squadraA, setSquadraA] = useState<PokemonIstanza[]>([])
   const [squadraB, setSquadraB] = useState<PokemonIstanza[]>([])
   const [infoBoxMessaggi, setInfoBoxMessaggi] = useState<string[]>([])
-  const [diceRoll, setDiceRoll] = useState<DiceRollDisplay | null>(null)
-  const [publicDiceId, setPublicDiceId] = useState<number | null>(null)
   const [pendingHealth, setPendingHealth] = useState<{
     side: 'A' | 'B'
     instanceId: string
     hp: number
-  } | null>(null)
-  const diceRollTimerRef = useRef<number | null>(null)
-  const diceExitRef = useRef<(() => void) | null>(null)
-  const diceRollIdRef = useRef(0)
-  const diceRollCallbacksRef = useRef<{
-    id: number
-    onVisible: () => void
-    onComplete: () => void
   } | null>(null)
   const [impactPulse, setImpactPulse] = useState<ImpactPulseDisplay | null>(null)
   const impactPulseIdRef = useRef(0)
@@ -519,10 +508,6 @@ export function BattagliaScene() {
 
   useEffect(() => {
     return () => {
-      if (diceRollTimerRef.current !== null) {
-        window.clearTimeout(diceRollTimerRef.current)
-      }
-      diceRollCallbacksRef.current = null
       activePlaybackRef.current?.cancel()
       activePlaybackRef.current = null
       moveVfxCallbacksRef.current = null
@@ -550,55 +535,8 @@ export function BattagliaScene() {
     setInfoBoxMessaggi((correnti) => [...correnti, ...messaggi].slice(-6))
   }
 
-  const mostraLancioDadi = (
-    risultato: RisultatoMossa,
-    side: 'A' | 'B',
-    onVisible: () => void,
-    onComplete: () => void
-  ) => {
-    if (diceRollTimerRef.current !== null) {
-      window.clearTimeout(diceRollTimerRef.current)
-      diceRollTimerRef.current = null
-    }
-
-    const id = ++diceRollIdRef.current
-    diceRollCallbacksRef.current = { id, onVisible, onComplete }
-    setDiceRoll({
-      id,
-      side,
-      moveName: risultato.suprema ? `${risultato.mossa.nome} · Suprema` : risultato.mossa.nome,
-      rolls: risultato.tiriDado,
-      increment: risultato.incremento,
-      damage: risultato.dannoFinale,
-      tone: efficacyTone(risultato.moltiplicatoreTipo),
-    })
-  }
-
-  const revealLancioDadi = (id: number) => {
-    const callbacks = diceRollCallbacksRef.current
-    if (!callbacks || callbacks.id !== id || diceRollTimerRef.current !== null) return
-    setPublicDiceId(id)
-    callbacks.onVisible()
-    diceRollTimerRef.current = window.setTimeout(() => {
-      if (diceRollCallbacksRef.current !== callbacks) return
-      setDiceRoll(null)
-      const finish = () => {
-        if (diceRollCallbacksRef.current !== callbacks) return
-        if (diceRollTimerRef.current !== null) window.clearTimeout(diceRollTimerRef.current)
-        diceRollTimerRef.current = null
-        diceRollCallbacksRef.current = null
-        diceExitRef.current = null
-        callbacks.onComplete()
-      }
-      // Audit fase 4: la carta dei dadi esce del tutto prima che i messaggi del turno compaiano.
-      // La fine dell'uscita (AnimatePresence) sblocca il turno; il timer è solo una rete di sicurezza
-      // per una scheda in background, dove le animazioni possono restare ferme.
-      const exitMs = getAnimationDuration(battleDiceDismissDelayMs(reducedMotion))
-      if (exitMs <= 0) { finish(); return }
-      diceExitRef.current = finish
-      diceRollTimerRef.current = window.setTimeout(finish, exitMs + BATTLE_DICE_EXIT_GRACE_MS)
-    }, getAnimationDuration(BATTLE_DICE_ROLL_VISIBLE_MS))
-  }
+  const mostraLancioDadi = dice.show
+  const revealLancioDadi = dice.reveal
 
   const mostraVfxMossa = (
     move: MossaDef,
@@ -1705,7 +1643,7 @@ export function BattagliaScene() {
         />
       )}
 
-      <AnimatePresence onExitComplete={() => diceExitRef.current?.()}>
+      <AnimatePresence onExitComplete={dice.onExitComplete}>
         {diceRoll && (
           <DiceRollOverlay key={diceRoll.id} roll={diceRoll} onVisible={() => revealLancioDadi(diceRoll.id)} />
         )}
