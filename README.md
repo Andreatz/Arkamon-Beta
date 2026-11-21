@@ -1,5 +1,7 @@
 # Arkamon
 
+[![CI](https://github.com/Andreatz/Arkamon-Beta/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Andreatz/Arkamon-Beta/actions/workflows/ci.yml) [![Gioca su GitHub Pages](https://img.shields.io/badge/gioca-GitHub%20Pages-1f6feb)](https://andreatz.github.io/Arkamon-Beta/)
+
 Gioco ibrido tra Pokemon e boardgame con dadi D6, costruito con **React + TypeScript + Vite + Tailwind**.
 
 Versione web del progetto originariamente prototipato in PowerPoint + VBA.

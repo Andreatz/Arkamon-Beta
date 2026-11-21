@@ -1,8 +1,20 @@
 # Pubblicazione GitHub Pages
 
-Arkamon viene compilato con Vite e pubblicato dal workflow `.github/workflows/deploy.yml`.
+Arkamon viene compilato con Vite e pubblicato dal workflow `.github/workflows/ci.yml`.
 
-Il vecchio comando locale `npm run deploy` e la dipendenza `gh-pages` sono stati rimossi: compilavano con base `/` e pubblicavano su un branch separato, mentre questo progetto usa la base `/Arkamon-Beta/` e la sorgente GitHub Actions. La pubblicazione continua ad avvenire con un push su `main` o avviando il workflow **Deploy to GitHub Pages**. Una build locale o una PR aperta non pubblica automaticamente il gioco.
+## Pipeline (audit fase 7, 21 novembre 2026)
+
+| Job | Quando | Blocca Pages? | Cosa verifica |
+| --- | --- | --- | --- |
+| `test-build` | PR, push su `main`, manuale | sì | unit, contratti, catalogo, build, flussi browser, release compilata; sigillo `--scope web` |
+| `deploy` | push su `main`, manuale | — | pubblica l'artefatto sigillato da `test-build` |
+| `native-release` | push su `main`, ogni notte, manuale | no | animazioni native, azioni/VFX compilati, budget di avvio |
+
+Prima di questa separazione il controllo del budget di avvio, già superato su `main`, interrompeva `test-build` e nessuna pubblicazione partiva. Ora il budget viene misurato e segnalato come avviso in `test-build` e resta vincolante in `native-release`.
+
+Il sigillo `web` (`release-verification.json` con `"scope": "web"`) contiene i rapporti unit, browser e compilato; non supera mai una verifica `full`, che richiede anche il rapporto nativo compilato.
+
+Il vecchio comando locale `npm run deploy` e la dipendenza `gh-pages` sono stati rimossi: compilavano con base `/` e pubblicavano su un branch separato, mentre questo progetto usa la base `/Arkamon-Beta/` e la sorgente GitHub Actions. La pubblicazione continua ad avvenire con un push su `main` o avviando manualmente il workflow **CI**. Una build locale o una PR aperta non pubblica automaticamente il gioco.
 
 L'audit del 12 ottobre 2026 misura circa 3,733 GiB nella cartella pubblica, copiata integralmente in `dist`. Questo supera il limite documentato di 1 GB del sito Pages: il successo della compilazione non certifica che il pacchetto rientri nella quota. La riduzione del pacchetto e la distribuzione separata degli asset restano un lavoro dedicato; vedere [audit del progetto](project-audit-2026-10-12.md).
 
@@ -24,7 +36,7 @@ Il risultato atteso è `workflow`. Per ripristinare la sorgente corretta, con un
 gh api --method PUT repos/Andreatz/Arkamon-Beta/pages -f build_type=workflow
 ```
 
-L’URL del gioco è `https://andreatz.github.io/Arkamon-Beta/`. Verificare il workflow **Deploy to GitHub Pages** e l’apertura effettiva del gioco; l’eventuale vecchio run **pages-build-deployment** fallito rimane nello storico.
+L’URL del gioco è `https://andreatz.github.io/Arkamon-Beta/`. Verificare il job `deploy` del workflow **CI** e l’apertura effettiva del gioco; l’eventuale vecchio run **pages-build-deployment** fallito rimane nello storico.
 
 La cartella `docs/ui-previews/` conserva anteprime grafiche autonome e pacchetti consultabili nel repository; il workflow del gioco pubblica `dist/`.
 
