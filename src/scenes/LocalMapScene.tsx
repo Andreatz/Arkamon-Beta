@@ -181,7 +181,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       <GameButton className="ref-local-back" disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</GameButton>
       <div className="ref-local-turn">
         <PlayerFace playerId={actor} />
-        <p className="ref-local-turn-title" data-long-name={(player.nome ?? '').length > 14 || undefined}>Turno di <strong>{player.nome || `Giocatore ${actor}`}</strong></p>
+        <p className="ref-local-turn-title" data-long-name={(player.nome ?? '').length > 14 || undefined}><span className="ref-local-turn-kicker">Turno di </span><strong title={player.nome || `Giocatore ${actor}`}>{player.nome || `Giocatore ${actor}`}</strong></p>
         {budget}
       </div>
       <div className="ref-local-players" aria-label="Giocatori">{[player1,player2].map(owner=><span key={owner.id} data-active={owner.id===actor}><PlayerFace playerId={owner.id} /><span>{owner.nome || `Giocatore ${owner.id}`} · G{owner.id}<small>{owner.id===actor?'Turno attuale':'In attesa'}</small></span></span>)}</div>

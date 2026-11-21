@@ -58,6 +58,10 @@
   box-shadow: 0 0 2.2em color-mix(in srgb, var(--arka-primary) 45%, transparent);
 }
 .battle-move-banner.is-supreme .battle-move-banner__name { color: var(--arka-primary-hover); }
+/* Audit fase 1: la fascia della Suprema usa un carattere più grande e prima troncava («DARDO DI FIAM…»).
+   È più larga e, se serve, il nome va a capo in modo bilanciato invece di essere tagliato. */
+.battle-move-banner.is-supreme { width: 54%; margin-left: -27%; font-size: clamp(20px, 2.5vw, 48px); }
+.battle-move-banner__name { white-space: normal; text-wrap: balance; overflow-wrap: anywhere; line-height: 1.05; }
 
 .battle-damage-number {
   position: absolute;

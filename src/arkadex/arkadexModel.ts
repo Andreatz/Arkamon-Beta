@@ -1,3 +1,4 @@
+import { placeLabel } from '@/utils/placeLabel'
 import { getPokemon, INCONTRI, MAPPE, POKEMON_BASE } from '@/data'
 import type { PokemonIstanza, PokemonSpecie, StatoBattaglia, StatoGiocatore, TipoPokemon } from '@/types'
 
@@ -106,10 +107,8 @@ export function arkadexEvolutionLabel(species: PokemonSpecie, progress: ArkadexP
   return `Evoluzione al livello ${species.livelloEvoluzione}: ${next ?? 'specie ancora da scoprire'}.`
 }
 
-/** Nome leggibile di un luogo del gioco: «Percorso_3» → «Percorso 3», «ReggioCalabria» → «Reggio Calabria». */
-export function placeLabel(place: string): string {
-  return place.replace(/_/g, ' ').replace(/([a-zà-ù])([A-Z])/g, '$1 $2')
-}
+/** Nome leggibile di un luogo: spostato in `@/utils/placeLabel` per l'uso in tutte le scene. */
+export { placeLabel }
 
 export interface ArkadexHabitat {
   place: string

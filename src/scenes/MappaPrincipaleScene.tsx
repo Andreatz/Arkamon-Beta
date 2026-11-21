@@ -17,6 +17,7 @@ import {
 } from '@data/mainMapRoads'
 import { motion } from 'framer-motion'
 import { assetUrl } from '@/utils/assetUrl'
+import { placeLabel } from '@/utils/placeLabel'
 import {
   hasOnlyOrthogonalSegments,
   orthogonalizeRoadPoints,
@@ -679,9 +680,10 @@ export function MappaPrincipaleScene() {
         return (
           <div
             key={luogo.nome}
-            className={`absolute z-20 ${
+            className={`world-map-node-wrap absolute z-20 ${
               layoutEditing ? 'cursor-move' : ''
             }`}
+            data-node-kind={coord.tipo}
             style={{
               left: `${position.x}%`,
               top: `${position.y}%`,
@@ -700,7 +702,7 @@ export function MappaPrincipaleScene() {
               onFocus={() => setPreviewDestination(isReachable ? luogo.nome : null)}
               onBlur={() => setPreviewDestination(null)}
               aria-pressed={selectedDestination === luogo.nome}
-              aria-label={`${luogo.nome.replace('_', ' ')}${isCurrent ? ', posizione attuale' : isReachable ? ', 1 movimento' : ', non raggiungibile'}`}
+              aria-label={`${placeLabel(luogo.nome)}${isCurrent ? ', posizione attuale' : isReachable ? ', 1 movimento' : ', non raggiungibile'}`}
               className={`world-map-node flex flex-col items-center justify-center gap-0.5 ${
                 !layoutEditing && !isActionable ? 'cursor-default' : ''
               }`}
@@ -722,8 +724,8 @@ export function MappaPrincipaleScene() {
                   draggable={false}
                 />
               </div>
-              <span className={`world-map-node-label arka-layout-content arka-readable-text text-white font-bold whitespace-nowrap leading-tight ${isCurrent || isReachable ? 'is-important' : ''}`}>
-                {luogo.nome.replace('_', ' ')}
+              <span className={`world-map-node-label arka-layout-content arka-readable-text text-white font-bold whitespace-nowrap leading-tight ${isCurrent || isReachable ? 'is-important' : ''}${coord.tipo === 'percorso' ? ' world-map-node-label--route' : ''}`}>
+                {placeLabel(luogo.nome)}
               </span>
             </motion.button>
           </div>
@@ -780,7 +782,7 @@ export function MappaPrincipaleScene() {
         <div className="world-map-status-window arka-panel flex h-full w-full min-w-0 items-center overflow-hidden px-3 py-1.5">
           <span className="arka-layout-content shrink-0 text-xs text-arka-text-muted">Posizione:</span>
           <span className="arka-layout-content ml-2 min-w-0 truncate font-bold text-white">
-            {activeNodeName.replace('_', ' ')}
+            {placeLabel(activeNodeName)}
           </span>
         </div>
       </AdminLayoutItem>
@@ -814,7 +816,7 @@ export function MappaPrincipaleScene() {
           disabled={!aperturaDisponibile}
           tone="primary" className="h-full w-full overflow-hidden px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-45"
         >
-          <span className="arka-layout-content block truncate">{activeNodeName === MAIN_MAP_START_NODE ? 'Prosegui il viaggio' : `${getLocalMap(activeNodeName) ? 'Apri mappa di' : 'Entra in'} ${activeNodeName.replace('_', ' ')}`}</span>
+          <span className="arka-layout-content block truncate">{activeNodeName === MAIN_MAP_START_NODE ? 'Prosegui il viaggio' : `${getLocalMap(activeNodeName) ? 'Apri mappa di' : 'Entra in'} ${placeLabel(activeNodeName)}`}</span>
         </GameButton>
       </AdminLayoutItem>
 
@@ -872,8 +874,8 @@ export function MappaPrincipaleScene() {
         onClick={() => vaiAScena('lega')}>Lega Arkamon</GameButton>}
 
       {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <aside className="world-map-destination" aria-label="Destinazione selezionata">
-        <p>Prossima destinazione</p><h2>{previewDestination.replace(/_/g, ' ')}</h2>
-        <p>Da {activeNodeName.replace(/_/g, ' ')} · 1 movimento</p>
+        <p>Prossima destinazione</p><h2>{placeLabel(previewDestination)}</h2>
+        <p>Da {placeLabel(activeNodeName)} · 1 movimento</p>
         <GameButton tone="primary" onClick={() => { muoviAvatarMappaPrincipale(giocatoreAttivo, previewDestination); setSelectedDestination(null); setPreviewDestination(null) }}>Conferma movimento</GameButton>
         {selectedDestination && <GameButton onClick={() => setSelectedDestination(null)}>Annulla destinazione</GameButton>}
       </aside>}

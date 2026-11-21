@@ -46,7 +46,7 @@ export function ItemUsePanel({ squad, inventory, onUse, disabled = false, unavai
     <div className="arka-store-catalog">
       {owned.map((item) => {
         const preview = target ? resolveItemEffect(target, item.id) : null
-        const disabledReason = item.effect.kind === 'capture' ? 'Usa il pulsante Masterball durante una battaglia selvatica.' : preview && !preview.ok ? preview.message : null
+        const disabledReason = item.effect.kind === 'capture' ? `Si usa in battaglia contro un Arkamon selvatico, dal pulsante «${item.name}».` : preview && !preview.ok ? preview.message : null
         return <article key={item.id} className="arka-store-item">
           {!singleItem && <><div className="arka-store-item-title">{renderItemIcon ? renderItemIcon(item.id) : <span aria-hidden="true">{item.icon}</span>}<h4>{item.name}</h4><strong>×{inventory[item.id]}</strong></div>
             <p>{item.description}</p></>}
