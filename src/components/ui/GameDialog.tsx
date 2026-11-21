@@ -85,7 +85,7 @@ export function GameDialog({ title, onClose, children, className = '', showClose
     const overlay = dialog.parentElement
     return () => { playDialogExit(overlay); document.removeEventListener('keydown', keys, true); document.removeEventListener('focusin', refocus); release(); releaseStage(); if (previous?.isConnected) previous.focus() }
   }, [])
-  return createPortal(<div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/75 p-3" data-game-dialog>
+  return createPortal(<div className="fixed inset-0 z-[var(--z-dialog)] flex items-center justify-center bg-black/75 p-3" data-game-dialog>
     <section ref={root} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} className={`arka-ds-panel arka-ds-dialog flex max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl flex-col !p-0 ${className}`}>
       <header className="flex shrink-0 items-center justify-between gap-4 border-b border-[var(--arka-ui-line)] px-5 py-3"><h2 className="arka-ds-title arka-ds-dialog-title">{title}</h2>{showCloseButton && <button type="button" onClick={onClose} className="studio-dialog-close" data-menu-artwork="css" aria-label="Chiudi"><span aria-hidden="true">×</span></button>}</header>
       <div className="min-h-0 overflow-y-auto px-5 py-4"><DialogNavigationContext.Provider value={handler => { back.current = handler; return () => { if (back.current === handler) back.current = null } }}>{children}</DialogNavigationContext.Provider></div>

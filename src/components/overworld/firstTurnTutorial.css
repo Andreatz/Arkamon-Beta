@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: clamp(84px, 13vh, 150px);
-  z-index: 60;
+  z-index: var(--z-overlay);
   width: min(92%, 620px);
   margin-inline: auto;
   padding: clamp(16px, 1.6vw, 26px);

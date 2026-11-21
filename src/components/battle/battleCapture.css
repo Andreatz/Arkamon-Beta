@@ -114,3 +114,11 @@
 .battle-capture__total span { color: var(--arka-ui-gold, #d9b67b); }
 .battle-capture__label { font-family: var(--arka-ui-font-display, Georgia, serif); color: var(--arka-ui-gold-bright, #f4dca0); text-shadow: 0 0 18px rgb(255 214 120 / 0.7); }
 .battle-capture__star { background: var(--arka-ui-gold-bright, #f4dca0); }
+
+/* Audit fase 10: palette del sigillo di cattura come token (prima esadecimali nel componente). */
+.battle-capture {
+  --capture-core-1: #a5f3fc; --capture-core-2: #0e7490; --capture-core-3: #082f49;
+  --capture-master-core-1: #fde68a; --capture-master-core-2: #a855f7; --capture-master-core-3: #3b0764;
+  --capture-band-edge: #92400e; --capture-band-mid: #fcd34d;
+  --capture-gem: #fef3c7; --capture-gem-edge: #b45309;
+}

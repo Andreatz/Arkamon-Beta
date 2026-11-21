@@ -80,7 +80,7 @@ export function VfxTravelTrail({ side, plan, color, effectId }: { side: 'A' | 'B
           className="absolute block rounded-full"
           style={{
             width: 54, height: 54, marginLeft: -27, marginTop: -27,
-            backgroundImage: `radial-gradient(circle, #ffffff 0 22%, ${color} 46%, color-mix(in srgb, ${color} 0%, transparent) 72%)`,
+            backgroundImage: `radial-gradient(circle, white 0 22%, ${color} 46%, color-mix(in srgb, ${color} 0%, transparent) 72%)`,
             boxShadow: `0 0 22px 8px ${color}`,
           }}
           initial={{ left: `${from.x}%`, top: `${from.y}%`, opacity: 0, scale: 0.6 }}

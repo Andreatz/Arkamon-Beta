@@ -104,7 +104,7 @@ export function SupremeMoveDialog({ moves, level, recoil, pokemonName, onChoose,
       kicker={`${pokemonName} · Livello ${level}`}
       title="Mossa Suprema"
       description={<>Scegli l’attacco: <strong>danno ×2</strong>. Contraccolpo: <strong>{recoil} HP</strong> al livello attuale (50% degli HP massimi).</>}
-      className="z-[900] outline-none"
+      className="z-[var(--z-modal-raised)] outline-none"
       onKeyDown={(event) => event.stopPropagation()}
       footer={<ArkaButton onClick={dismiss}>Annulla</ArkaButton>}
     >

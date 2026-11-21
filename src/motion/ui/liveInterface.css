@@ -44,7 +44,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1250;
+  z-index: var(--z-fx);
   pointer-events: none;
   border-radius: 12px;
   border: 1.5px solid color-mix(in srgb, var(--arka-control-gold) 75%, transparent);
@@ -123,7 +123,7 @@
   position: fixed;
   left: 50%;
   bottom: 14px;
-  z-index: 1260;
+  z-index: var(--z-fx-raised);
   display: flex;
   gap: 18px;
   padding: 7px 16px;
@@ -162,4 +162,4 @@
 @keyframes arka-pane-flip-alt { from { opacity: 0; transform: perspective(1400px) rotateY(82deg); } 55% { opacity: 1; } }
 
 /* Monete in volo dopo un acquisto (flyCoins). */
-.coin-flight { position: fixed; z-index: 1300; width: 36px; height: 36px; pointer-events: none; object-fit: contain; filter: drop-shadow(0 3px 4px rgb(0 0 0 / .45)); color: #f5d77a; font-weight: 700; text-align: center; line-height: 30px; }
+.coin-flight { position: fixed; z-index: var(--z-top); width: 36px; height: 36px; pointer-events: none; object-fit: contain; filter: drop-shadow(0 3px 4px rgb(0 0 0 / .45)); color: #f5d77a; font-weight: 700; text-align: center; line-height: 30px; }
