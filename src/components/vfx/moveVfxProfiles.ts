@@ -8,6 +8,7 @@ import type {
   VfxArchetype,
   VfxIntensity,
   VfxProfileSource,
+  VfxTravel,
 } from './types'
 
 type NameRule = {
@@ -25,13 +26,14 @@ const FEEDBACK: Record<VfxIntensity, MoveVfxFeedback> = {
     cameraShakeMs: 0,
     hitStopMs: 0,
   },
+  // Audit fase 5: il fermo immagine all'impatto va da 60 a 90 ms, così ogni colpo «pesa».
   light: {
     targetShakePx: 4,
     targetShakeMs: 170,
     targetFlashMs: 90,
     cameraShakePx: 1,
     cameraShakeMs: 140,
-    hitStopMs: 20,
+    hitStopMs: 60,
   },
   medium: {
     targetShakePx: 8,
@@ -39,7 +41,7 @@ const FEEDBACK: Record<VfxIntensity, MoveVfxFeedback> = {
     targetFlashMs: 120,
     cameraShakePx: 3,
     cameraShakeMs: 210,
-    hitStopMs: 45,
+    hitStopMs: 75,
   },
   heavy: {
     targetShakePx: 12,
@@ -47,7 +49,7 @@ const FEEDBACK: Record<VfxIntensity, MoveVfxFeedback> = {
     targetFlashMs: 170,
     cameraShakePx: 6,
     cameraShakeMs: 300,
-    hitStopMs: 75,
+    hitStopMs: 90,
   },
 }
 
@@ -117,6 +119,31 @@ function defaultIntensity(archetype: VfxArchetype): VfxIntensity {
   return 'medium'
 }
 
+/**
+ * Audit fase 5: percorso dell'effetto per famiglia. I colpi di contatto, le aree e gli
+ * stati nascono sul bersaglio; soffi e raggi si allungano; gli elementi viaggiano.
+ */
+export const VFX_TRAVEL_BY_ARCHETYPE: Record<VfxArchetype, VfxTravel> = {
+  blunt: 'burst',
+  slash: 'burst',
+  bite: 'burst',
+  charge: 'burst',
+  beam: 'beam',
+  wave: 'beam',
+  storm: 'burst',
+  eruption: 'burst',
+  aura: 'burst',
+  psychic: 'projectile',
+  plant: 'projectile',
+  fire: 'projectile',
+  electric: 'beam',
+  water: 'projectile',
+  dark: 'projectile',
+  heal: 'burst',
+  status: 'burst',
+  supreme: 'burst',
+}
+
 function buildProfile(
   archetype: VfxArchetype,
   source: VfxProfileSource,
@@ -126,6 +153,7 @@ function buildProfile(
     archetype,
     intensity,
     source,
+    travel: VFX_TRAVEL_BY_ARCHETYPE[archetype],
     feedback: FEEDBACK[intensity],
   }
 }
@@ -172,13 +200,21 @@ export function resolveMoveVfxProfile(move: MossaDef): MoveVfxProfile {
   const assignment = getMoveVfxAssignment(move)
   if (!assignment) return profile
   const intensity = assignment.tier === 'status' ? 'subtle' : assignment.tier
+  const archetype = assignment.tier === 'status' && profile.archetype !== 'heal' ? 'status' : profile.archetype
   return {
     ...profile,
-    archetype: assignment.tier === 'status' && profile.archetype !== 'heal' ? 'status' : profile.archetype,
+    archetype,
+    travel: VFX_TRAVEL_BY_ARCHETYPE[archetype],
     intensity,
     // Healing/status animation size must not introduce physical hit reactions.
     feedback: FEEDBACK[profile.archetype === 'heal' ? 'subtle' : intensity],
   }
+}
+
+/** Percorso dell'effetto di una mossa; una definizione incompleta resta un'esplosione sul bersaglio. */
+export function resolveMoveVfxTravel(move: MossaDef): VfxTravel {
+  if (typeof move?.nome !== 'string' || !move.tipo) return 'burst'
+  return resolveMoveVfxProfile(move).travel
 }
 
 const BEAM_BY_TYPE: Record<TipoPokemon, MoveVfxAssetId> = {

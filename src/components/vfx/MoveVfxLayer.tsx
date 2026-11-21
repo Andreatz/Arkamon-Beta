@@ -25,6 +25,17 @@ export const VFX_Z_INDEX: Record<VfxLayer, number> = {
 
 const COMPACT_VFX_QUERY = '(max-width: 640px)'
 
+/**
+ * Audit fase 5: un proiettile viaggia fino all'istante d'impatto e poi resta sul bersaglio,
+ * invece di scivolare per tutta la durata dell'effetto e arrivare in ritardo rispetto al colpo.
+ */
+export function projectileTransition(totalSeconds: number, arriveAtMs: number | undefined, durationMs: number, speed: number) {
+  const base = { duration: totalSeconds, ease: 'easeInOut' as const }
+  if (!(totalSeconds > 0) || arriveAtMs === undefined || !(arriveAtMs > 0) || !(durationMs > 0)) return base
+  const travel = { duration: Math.min(arriveAtMs, durationMs) / speed / 1000, ease: 'easeIn' as const }
+  return { ...base, left: travel, top: travel }
+}
+
 function StaticImageVfx({
   asset,
   effectId,
@@ -71,6 +82,7 @@ export function MoveVfxLayer({
   offsetY = 0,
   opacity,
   blendMode,
+  arriveAtMs,
 }: {
   asset: MoveVfxAsset
   effectId: number
@@ -86,6 +98,8 @@ export function MoveVfxLayer({
   offsetY?: number
   opacity?: number
   blendMode?: VfxBlendMode
+  /** Audit fase 5: istante (ms, a velocità 1) in cui un proiettile tocca il bersaglio. */
+  arriveAtMs?: number
 }) {
   const { reducedMotion: reduceMotion, speed: preferenceSpeed } = useVfxPlaybackPreferences(`${effectId}:${asset.id}`)
   const speed = playbackSpeed ?? preferenceSpeed
@@ -184,7 +198,7 @@ export function MoveVfxLayer({
           opacity: [0, 1, 1, 0],
           scale: projectile ? [0.7, 1.1, 1] : [0.9, 1.04, 1],
         }}
-        transition={{ duration: reduceMotion ? 0 : duration / speed / 1000, ease: 'easeInOut' }}
+        transition={projectileTransition(reduceMotion ? 0 : duration / speed / 1000, projectile && !reduceMotion ? arriveAtMs : undefined, duration, speed)}
         style={{
           width: isScreen ? '100%' : asset.width,
           height: isScreen ? '100%' : asset.height,

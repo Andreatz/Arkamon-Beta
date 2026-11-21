@@ -78,11 +78,22 @@
   paint-order: stroke fill;
   text-shadow: 0 0.08em 0 var(--arka-bg), 0 0 0.5em color-mix(in srgb, var(--hp-low) 70%, transparent);
 }
-.battle-damage-number.is-super { color: var(--arka-primary-hover); font-size: clamp(36px, 6vw, 120px); }
-.battle-damage-number.is-weak { color: var(--arka-text-muted); font-size: clamp(24px, 3.8vw, 76px); }
+/* Audit fase 5: l'efficacia si legge dalla dimensione e dal colore del numero, anche da lontano.
+   Superefficace = ×1,5 e oro; poco efficace = ×0,5 e grigio. */
+.battle-damage-number.is-super {
+  color: var(--arka-ui-gold-bright);
+  font-size: clamp(45px, 7.5vw, 150px);
+  text-shadow: 0 0.08em 0 var(--arka-bg), 0 0 0.45em color-mix(in srgb, var(--arka-primary-hover) 80%, transparent);
+}
+.battle-damage-number.is-weak {
+  color: var(--arka-text-muted);
+  font-size: clamp(15px, 2.5vw, 50px);
+  text-shadow: 0 0.08em 0 var(--arka-bg);
+}
+.battle-damage-number.is-weak .battle-damage-number__label { font-size: max(13px, 0.56em); }
 .battle-damage-number.is-ko .battle-damage-number__amount { color: var(--hp-low); }
 .battle-damage-number__label {
-  font-size: 0.28em;
+  font-size: max(13px, 0.28em);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   -webkit-text-stroke: 0.14em var(--arka-bg);

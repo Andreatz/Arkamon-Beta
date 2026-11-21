@@ -63,7 +63,6 @@ import type {
   PokemonIstanza,
   MossaDef,
   RisultatoMossa,
-  TipoPokemon,
   BattleCheckpoint,
   Lato,
 } from '@/types'
@@ -98,7 +97,7 @@ import { Stage, StageLayer } from '@/motion/Stage'
 import { useCameraRig } from '@/motion/useCameraRig'
 import { ScreenFxLayer, useScreenFx } from '@/motion/ScreenFx'
 import { useBattleCinematics } from '@/components/battle/useBattleCinematics'
-import { efficacyTone } from '@/components/battle/battleCinematics'
+import { damageRevealShake, efficacyTone } from '@/components/battle/battleCinematics'
 import { BattleDamageNumber, BattleMoveBanner } from '@/components/battle/BattleCinematicLayer'
 import { BattleCaptureLayer, captureHidesTarget } from '@/components/battle/BattleCaptureLayer'
 import { captureBagArt } from '@/components/battle/battleCapture'
@@ -119,18 +118,9 @@ import {
   getMoveVfxFeedback,
   getMoveVfxImpactDelayMs,
 } from '@/components/vfx/resolveMoveVfxAsset'
+import { VFX_TYPE_COLORS } from '@/components/vfx/vfxTypeColors'
 
 
-const VFX_TYPE_COLORS: Record<TipoPokemon, string> = {
-  Normale: '#f8fafc',
-  Fuoco: '#fb923c',
-  Acqua: '#38bdf8',
-  Erba: '#4ade80',
-  Elettro: '#fde047',
-  Terra: '#d6a15f',
-  Psico: '#e879f9',
-  Oscurità: '#a78bfa',
-}
 
 type PendingSwitch = {
   motivo: string
@@ -264,7 +254,7 @@ export function BattagliaScene() {
   const battleRig = useCameraRig({ focusPoints: battleFocusPoints })
   const battleFx = useScreenFx()
   // La regia resta ferma nell'editor dei layout e nelle anteprime: lì il mondo non deve muoversi.
-  const cine = useBattleCinematics({ rig: battleRig, fx: battleFx, enabled: !layoutEditing && !previewView })
+  const cine = useBattleCinematics({ rig: battleRig, fx: battleFx, enabled: !layoutEditing && !previewView, focusPoints: battleFocusPoints })
   const [pendingCaptureSave, setPendingCaptureSave] = useState<{ itemId: CaptureItemId } | null>(null)
   const actionInProgressRef = useRef(false)
   const [turnoA, setTurnoA] = useState(true)
@@ -872,6 +862,14 @@ export function BattagliaScene() {
             targetSide, damage: risultato.dannoFinale, hpMax: target ? calcolaHPMax(target) : 0,
             ko: targetWillKO, multiplier: risultato.moltiplicatoreTipo,
           })
+          // Audit fase 5: alla rivelazione il bersaglio trema in proporzione alla quota di HP persa.
+          const revealShake = damageRevealShake(risultato.dannoFinale, target ? calcolaHPMax(target) : 0, targetWillKO)
+          if (!reducedMotion && revealShake) {
+            setShakeStrengthPx(revealShake.px)
+            setShakeDurationMs(getAnimationDuration(revealShake.ms))
+            setShaking(targetSide)
+            scheduleFeedbackTimer(() => setShaking((current) => (current === targetSide ? null : current)), revealShake.ms)
+          }
         },
         onComplete: () => {
           if (activePlaybackRef.current === reveal) activePlaybackRef.current = null
