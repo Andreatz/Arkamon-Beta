@@ -19,7 +19,7 @@
   border-radius: var(--arka-control-radius, 8px);
   color: var(--arka-control-text, #f2f6fa);
   background: var(--arka-control-background, #1a293b);
-  font: 400 28px/1 sans-serif;
+  font: 400 28px/1 var(--arka-ui-font-display);
 }
 .pu-kit-icon-glyph {
   display: grid;
@@ -28,7 +28,7 @@
   height: 100%;
   border: 1px solid currentColor;
   border-radius: 25%;
-  font-family: sans-serif;
+  font-family: var(--arka-ui-font-display);
   font-size: .65em;
   line-height: 1;
   font-weight: 700;
@@ -43,7 +43,7 @@
   border-color: var(--arka-control-selected-border, #9ed1e7);
   background: var(--arka-control-selected-background, #294a60);
 }
-.pu-artwork-symbol { display: grid; place-items: center; width: 100%; height: 100%; font: 500 24px/1 sans-serif; }
+.pu-artwork-symbol { display: grid; place-items: center; width: 100%; height: 100%; font: 500 24px/1 var(--arka-ui-font-display); }
 .game-audio-toggle[data-menu-artwork="css"] > input {
   position: static;
   width: 24px;

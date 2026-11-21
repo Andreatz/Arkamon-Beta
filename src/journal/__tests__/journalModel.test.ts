@@ -32,10 +32,10 @@ describe('diario: obiettivi derivati dai progressi reali', () => {
     saved.league.winner = { playerId: 2, name: 'Maggi', team: [], runId: 'done', completedAt: new Date().toISOString() }
     expect(nextJournalObjective(saved, 1, []).detail).toContain('Maggi ha vinto')
   })
-  it('indica la cura della squadra KO prima di proporre un nuovo incontro', () => {
+  it('indica il recupero della squadra KO di un vecchio salvataggio prima di un nuovo incontro', () => {
     const saved = state()
     saved.giocatore1.squadra[0].hp = 0
-    expect(nextJournalObjective(saved, 1, []).title).toBe('Cura la squadra')
+    expect(nextJournalObjective(saved, 1, []).title).toBe('Recupera la squadra')
   })
   it('calcola il prossimo luogo seguendo connessioni bidirezionali vere', () => {
     expect(routeToLocation('Pordenone', 'Piacenza')).toEqual(['Pordenone', 'Venezia', 'Percorso_1', 'Piacenza'])

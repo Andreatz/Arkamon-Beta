@@ -401,11 +401,12 @@ test('six match utilities use their main cards, role-based typography and a sing
     bodyRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-body-font').trim(),
     displayRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-display-font').trim(),
     titleRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-title-font').trim(),
-    loaded: document.fonts.check('16px Georgia') && document.fonts.check('700 32px "Arkamon Cinzel"'),
+    loaded: document.fonts.check('16px "Arkamon Cinzel"') && document.fonts.check('700 32px "Arkamon Cinzel"'),
   }))
   const normalizeFont = (value: string) => value.replace(/["']/g, '').replace(/\s*,\s*/g, ',').toLowerCase()
-  expect(fonts.bodyRole).toMatch(/^Georgia,/)
-  expect(fonts.displayRole).toMatch(/^Georgia,/)
+  // 21 novembre 2026: un solo carattere in tutto il gioco, Cinzel.
+  expect(fonts.bodyRole).toMatch(/Arkamon Cinzel/)
+  expect(fonts.displayRole).toMatch(/Arkamon Cinzel/)
   const primaryFont = (value: string) => normalizeFont(value).split(',')[0]
   expect(primaryFont(fonts.button)).toBe(primaryFont(fonts.bodyRole))
   // I titoli di schermata hanno un ruolo proprio: Cinzel (audit UX/UI, decisione 4).

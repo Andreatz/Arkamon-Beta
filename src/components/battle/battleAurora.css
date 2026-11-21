@@ -4,7 +4,7 @@
 
 [data-battle-layout-root][data-reference-ui="aurora"] {
   --battle-display: var(--arka-ui-font-display, Georgia, serif);
-  --battle-body: var(--arka-ui-font-body, Georgia, serif);
+  --battle-body: var(--arka-ui-font-display);
   --battle-gold: var(--arka-ui-gold, #d9b67b);
   --battle-gold-bright: var(--arka-ui-gold-bright, #f4dca0);
 }

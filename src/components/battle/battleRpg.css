@@ -6,7 +6,7 @@
 .battle-message-lines { font-size: clamp(15px, 1.55vw, 27px); line-height: 1.2; }
 .battle-message-lines p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 /* Audit fase 2: scheda di fine battaglia con il pannello comune (blu notte, filo d'oro) e testo minimo 14 px. */
-.battle-result-card { position: absolute; top: 24%; left: 30%; right: 30%; z-index: var(--battle-z-result); padding: 22px 28px; border: var(--arka-ui-frame); border-radius: var(--arka-ui-radius-lg); background: var(--arka-ui-surface); color: var(--arka-ui-ink); box-shadow: var(--arka-ui-frame-inset), var(--arka-ui-shadow-lg); font-family: var(--arka-ui-font-body); text-align: center; }
+.battle-result-card { position: absolute; top: 24%; left: 30%; right: 30%; z-index: var(--battle-z-result); padding: 22px 28px; border: var(--arka-ui-frame); border-radius: var(--arka-ui-radius-lg); background: var(--arka-ui-surface); color: var(--arka-ui-ink); box-shadow: var(--arka-ui-frame-inset), var(--arka-ui-shadow-lg); font-family: var(--arka-ui-font-display); text-align: center; }
 .battle-result-card h2 { margin: 0; font: 600 clamp(26px, 2.4vw, 44px) / 1.05 var(--arka-ui-font-display); color: var(--arka-ui-gold-bright); text-shadow: 0 2px 4px #000c; }
 .battle-result-seal { display: block; width: 76px; height: 76px; margin: -58px auto 6px; object-fit: contain; filter: drop-shadow(0 6px 10px #000a); }
 .battle-result-card p { margin-top: 8px; font-size: clamp(14px, 1.1vw, 20px); }

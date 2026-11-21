@@ -20,6 +20,8 @@ const pokemon = (id: string, level: number, hp: number): PokemonIstanza => ({ is
 const ended: BattleCheckpoint = { version: 1, initialPriority: 'A', actedThisRound: [], phase: 'ended',
   openingComplete: true, outcome: 'vittoria', evolutions: [], rivalMessages: [] }
 const writes = () => disk.writes.filter(key => key === GAME_SAVE_STORAGE_KEY).length
+// 21 novembre 2026: la squadra che ha combattuto torna a HP pieni e senza status.
+const healed = ({ stato: _status, ...p }: PokemonIstanza): PokemonIstanza => ({ ...p, hp: calcolaHPMax(p) })
 
 function fixture(reverse = false) {
   const initial = initialGameSave(), a = pokemon('higher-first', 10, 0), b = pokemon('lower-second', 5, 12)
@@ -59,8 +61,8 @@ describe('durable complete campaign battle conclusion', () => {
     const before = useGameStore.getState()
     expect(before.concludiBattaglia('vittoria')).toMatchObject({ ok: true, changed: true })
     unsubscribe()
-    const state = useGameStore.getState(), cleanB = { ...finalB, stato: undefined }
-    expect(state.giocatore1.squadra).toEqual(reverse ? [cleanB, finalA] : [finalA, cleanB])
+    const state = useGameStore.getState()
+    expect(state.giocatore1.squadra).toEqual(reverse ? [healed(finalB), healed(finalA)] : [healed(finalA), healed(finalB)])
     expect(state.giocatore1.monete).toBe(550)
     expect(state.giocatore1.inventario).toEqual({ revive: 0, masterball: 5 })
     expect(state.giocatore1.allenatoriSconfitti.has(202)).toBe(true)
@@ -92,7 +94,7 @@ describe('durable complete campaign battle conclusion', () => {
     disk.blocked.clear(); disk.writes.length = 0
     expect(retry()).toBe(true)
     const state = useGameStore.getState()
-    expect(state.giocatore1.squadra.map(p => [p.livello, p.hp])).toEqual([[11, 11], [6, 0]])
+    expect(state.giocatore1.squadra.map(p => [p.livello, p.hp])).toEqual([[11, calcolaHPMax(pokemon('a', 11, 0))], [6, calcolaHPMax(pokemon('b', 6, 0))]])
     expect(state.giocatore1.monete).toBe(550)
     expect(state.giocatore1.inventario.masterball).toBe(5)
     expect(state.battaglia).toBeNull()
@@ -144,7 +146,8 @@ describe('durable complete campaign battle conclusion', () => {
     disk.writes.length = 0
     expect(useGameStore.getState().concludiBattaglia('vittoria').ok).toBe(true)
     const after = useGameStore.getState().giocatore1
-    expect([...after.squadra, ...Object.values(after.deposito)]).toEqual([lead, captured])
+    // Il deposito non partecipa alla battaglia: solo la squadra viene curata.
+    expect([...after.squadra, ...Object.values(after.deposito)]).toEqual([healed(lead), boxed ? captured : healed(captured)])
     expect(after.monete).toBe(300)
     expect(writes()).toBe(1)
   })
@@ -156,7 +159,7 @@ describe('durable complete campaign battle conclusion', () => {
       battaglia: { ...state.battaglia!, pokemonA: result, squadraA: [result], checkpoint: { ...ended, evolutions: [evolution] } } })
     disk.writes.length = 0
     expect(useGameStore.getState().concludiBattaglia('vittoria').ok).toBe(true)
-    expect(useGameStore.getState().giocatore1.squadra).toEqual([result])
+    expect(useGameStore.getState().giocatore1.squadra).toEqual([healed(result)])
     expect(useGameStore.getState().scenaCorrente).toEqual({ scena: 'evoluzione', payload: { evoluzioni: [evolution], luogoRitorno: 'Venezia', giocatoreId: 1 } })
     expect(writes()).toBe(1)
   })
@@ -167,6 +170,6 @@ describe('durable complete campaign battle conclusion', () => {
     useGameStore.setState({ giocatore1: { ...state.giocatore1, squadra: [state.giocatore1.squadra[0], reserve] },
       battaglia: { ...state.battaglia!, squadraA: undefined } })
     expect(useGameStore.getState().concludiBattaglia('vittoria').ok).toBe(true)
-    expect(useGameStore.getState().giocatore1.squadra).toEqual([result, reserve])
+    expect(useGameStore.getState().giocatore1.squadra).toEqual([healed(result), healed(reserve)])
   })
 })

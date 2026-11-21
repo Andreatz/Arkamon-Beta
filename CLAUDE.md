@@ -6,7 +6,9 @@
 
 ## Regole correnti verificate il 10 ottobre 2026
 
-- Gli HP residui restano dopo la battaglia; la cura deve essere esplicita.
+- Alla fine di ogni battaglia (campagna e Lega) la squadra che ha combattuto torna a HP pieni e senza status; il deposito non viene curato. Le infermerie non esistono più. Una squadra tutta KO di un vecchio salvataggio si recupera con «Recupera la squadra» in città o sul percorso. Regola aggiornata il 21 novembre 2026.
+- Gli Arkamon controllati dal gioco (allenatori, Capipalestra, Lega, rivale, selvatici) non guadagnano EXP né livelli; solo nelle Sfide la squadra avversaria appartiene ai giocatori e progredisce. Regola del 21 novembre 2026.
+- Un solo carattere in tutto il gioco: Cinzel (`'Arkamon Cinzel'`, token `--arka-ui-font-display`). Non introdurre altre famiglie. Regola del 21 novembre 2026.
 - La squadra del giocatore consente al massimo cinque livelli fra massimo e minimo, inclusi KO. Un singolo punto EXP fa salire subito di un livello; l’EXP non si accumula mai, neppure al cap di squadra o al livello 100. I residui EXP dei vecchi salvataggi vengono azzerati senza cambiare livelli, HP o status; nessun recupero futuro di livelli. Catture fuori fascia in deposito. Vecchi livelli fuori fascia non vengono abbassati: avviso e riordino prima di un nuovo incontro. Regola aggiornata il 12 ottobre 2026.
 - Arkadex e registro sono individuali per la campagna e inclusi nei backup. Arkastore: acquisto multiplo è una interazione; uso oggetto in battaglia sostituisce la mossa. Nessuna cura all’acquisto.
 - Sfide seed/Fanta: contenitore separato dalla campagna, sei specie al livello 20, budget 100, RNG versionato/cursore salvato solo al checkpoint concluso. Nessun voto remoto; classifica locale solo della medesima configurazione.
@@ -183,7 +185,7 @@ Tutti a turni, basati su D6.
 | **Allenatore_NPC** | 3 mosse              | AI con `ScegliMossaIA`    | ❌ no                 |
 | **PvP**         | 3 mosse                  | Terzo giocatore (3 mosse PvP) | ❌ no             |
 
-Il prototipo VBA ripristinava gli HP alla fine. La regola web corrente conserva invece gli HP residui, con ritorno alla scena precedente (`Fonte_Ritorno`) e cura soltanto esplicita.
+Il prototipo VBA ripristinava gli HP alla fine. Dal 21 novembre 2026 anche la regola web cura completamente la squadra a fine battaglia, con ritorno alla scena precedente (`Fonte_Ritorno`).
 
 ### Sistema XP & Level Up (già presente nel VBA)
 - 1 punto EXP per nemico sconfitto

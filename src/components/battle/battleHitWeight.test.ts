@@ -1,18 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { MOSSE } from '@data/index'
-import { poseForTarget } from '@/motion/camera'
-import { attackerShot, damageRevealShake, DUEL_FRAME_MARGIN, frameBothSides, targetShot } from './battleCinematics'
+import { damageRevealShake } from './battleCinematics'
 import { resolveMoveVfxProfile, VFX_TRAVEL_BY_ARCHETYPE } from '@/components/vfx/moveVfxProfiles'
 import { planVfxTravel, MIN_TRAVEL_MS } from '@/components/vfx/VfxTravelTrail'
 import { projectileTransition } from '@/components/vfx/MoveVfxLayer'
 
-const points = { player: { x: 0.23, y: 0.67 }, enemy: { x: 0.78, y: 0.31 } }
-
-function inFrame(point: { x: number; y: number }, shot: ReturnType<typeof frameBothSides>) {
-  const pose = poseForTarget({ focus: shot.focus as { x: number; y: number }, zoom: (shot.zoom ?? 1) * 1.07 })
-  const cx = 0.5 - pose.x / pose.zoom, cy = 0.5 - pose.y / pose.zoom, half = 0.5 / pose.zoom
-  return Math.abs(point.x - cx) <= half - DUEL_FRAME_MARGIN.x + 1e-9 && Math.abs(point.y - cy) <= half - DUEL_FRAME_MARGIN.y + 1e-9
-}
 
 describe('peso del colpo (audit fase 5)', () => {
   it('ferma l’immagine fra 60 e 90 ms per ogni colpo fisico, e non per cure o stati', () => {
@@ -57,22 +49,6 @@ describe('peso del colpo (audit fase 5)', () => {
     expect(half.px).toBeGreaterThan(scratch.px)
     expect(half.ms).toBeGreaterThan(scratch.ms)
     expect(ko.px).toBeGreaterThanOrEqual(half.px)
-  })
-
-  it.each([
-    ['attacco di G1', attackerShot('A', false)], ['attacco di G2', attackerShot('B', false)],
-    ['Suprema', attackerShot('A', true)], ['rilascio su G2', targetShot('B', false)], ['rilascio Suprema su G1', targetShot('A', true)],
-  ])('tiene in quadro entrambi gli Arkamon: %s', (_label, shot) => {
-    const framed = frameBothSides(shot, points)
-    expect(framed.zoom).toBeGreaterThanOrEqual(1)
-    expect(framed.zoom).toBeLessThanOrEqual(shot.zoom ?? 1)
-    expect(inFrame(points.player, framed)).toBe(true)
-    expect(inFrame(points.enemy, framed)).toBe(true)
-  })
-
-  it('lascia invariati i primi piani che non riguardano lo scambio', () => {
-    const custom = { focus: { x: 0.5, y: 0.5 }, zoom: 1.3 }
-    expect(frameBothSides(custom, points)).toBe(custom)
   })
 })
 

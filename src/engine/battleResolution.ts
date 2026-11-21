@@ -5,15 +5,20 @@ export const updateBattleSquad = (squad: PokemonIstanza[], updated: PokemonIstan
   squad.map((pokemon) => pokemon.istanzaId === updated.istanzaId ? updated : pokemon)
 
 /** Shared A/B settlement, with target KO and progression strictly before recoil. No randomness. */
-export function resolveBattleAttack(result: RisultatoMossa, side: Lato, squadA: PokemonIstanza[], squadB: PokemonIstanza[], maxLevelA = 100, maxLevelB = 100) {
+/**
+ * `progressionB = false`: gli Arkamon controllati dal gioco (allenatori, Capipalestra, Lega,
+ * selvatici) non guadagnano EXP né livelli (21 novembre 2026). Solo nelle Sfide la squadra
+ * avversaria appartiene ai giocatori e progredisce.
+ */
+export function resolveBattleAttack(result: RisultatoMossa, side: Lato, squadA: PokemonIstanza[], squadB: PokemonIstanza[], maxLevelA = 100, maxLevelB = 100, progressionB = true) {
   let defender = { ...result.difensore, hp: Math.max(0, result.difensore.hp - result.dannoFinale) }
   if (result.statoApplicato && defender.hp > 0) defender = applicaStato(defender, result.statoApplicato)
   const defenderAfterImpact = defender
-  const attackerProgression = risolviAttaccanteDopoMossa(result, side === 'A' ? maxLevelA : maxLevelB)
+  const attackerProgression = risolviAttaccanteDopoMossa(result, side === 'A' ? maxLevelA : maxLevelB, side === 'A' || progressionB)
   const attacker = attackerProgression.istanza
   // An attacker who takes down the target owns a double KO. Otherwise the
   // surviving target receives the recoil KO reward, once, at its residual HP.
-  const defenderProgression = defender.hp > 0 && attacker.hp <= 0
+  const defenderProgression = defender.hp > 0 && attacker.hp <= 0 && (side === 'B' || progressionB)
     ? applicaXPDopoKO(defender, result.attaccante, attacker, side === 'A' ? maxLevelB : maxLevelA) : undefined
   if (defenderProgression) defender = defenderProgression.istanza
   const nextA = updateBattleSquad(squadA, side === 'A' ? attacker : defender)

@@ -5,7 +5,7 @@
   overflow-y: auto;
   color: #edf2e8;
   background: radial-gradient(ellipse at 80% 0%, #182827 0%, transparent 45%), #0b1214;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--arka-ui-font-display);
 }
 
 .darklaw-lab *,

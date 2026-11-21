@@ -34,8 +34,12 @@ export default {
       },
       fontFamily: {
         // Aggiungi font custom qui (poi importali in index.css)
-        game: ['"Press Start 2P"', 'system-ui', 'sans-serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        // 21 novembre 2026: un solo carattere in tutto il gioco.
+        game: ['"Arkamon Cinzel"', 'Georgia', 'serif'],
+        body: ['"Arkamon Cinzel"', 'Georgia', 'serif'],
+        sans: ['"Arkamon Cinzel"', 'Georgia', 'serif'],
+        serif: ['"Arkamon Cinzel"', 'Georgia', 'serif'],
+        mono: ['"Arkamon Cinzel"', 'Georgia', 'serif'],
       },
       animation: {
         'shake': 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both',

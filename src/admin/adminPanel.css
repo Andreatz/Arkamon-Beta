@@ -1,6 +1,6 @@
 /* Keep editor controls readable while changing the game's font scale. */
 .arka-admin-panel {
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--arka-ui-font-display);
   font-size: 14px;
   line-height: 1.5;
 }

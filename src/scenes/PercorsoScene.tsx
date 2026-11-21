@@ -1,4 +1,5 @@
 import { GameButton } from '@/components/ui/GameButton'
+import { ExhaustedTeamNotice } from '@/components/overworld/ExhaustedTeamNotice'
 import { ArkaCardButton } from '@/ui-system/primitives'
 import { GameArt } from '@/ui-system/GameArt'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
@@ -106,11 +107,7 @@ export function PercorsoScene() {
   const activities = (
     <div className="flex h-full w-full flex-col gap-4 overflow-y-auto p-1">
           {!hasDefinedActivities && <p role="status" className="arka-panel p-6 text-2xl">Nessuna attività configurata qui. Torna alla mappa principale per proseguire il viaggio.</p>}
-          {!haPokemonVivi && hasDefinedActivities && (
-            <p role="status" className="arka-panel shrink-0 p-3 text-center text-amber-200">
-              La squadra è esausta. Visita un’Infermeria Arka prima di affrontare un incontro.
-            </p>
-          )}
+          {!haPokemonVivi && hasDefinedActivities && giocatore.squadra.length > 0 && <ExhaustedTeamNotice playerId={giocatoreAttivo} className="shrink-0" />}
           {hasDefinedActivities && <div className="grid shrink-0 grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-7">
           {CESPUGLI.map((c) => {
             const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)

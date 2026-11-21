@@ -48,4 +48,24 @@ describe('risoluzione comune ai due lati', () => {
     expect(resolved.winnerSide).toBeUndefined()
     expect(resolved.outcome).toBeNull()
   })
+
+  it('gli Arkamon controllati dal gioco non guadagnano EXP né livelli', () => {
+    const npc = creature('npc', 14, 13)
+    const player = creature('player', 5, 1)
+    const ko = calcolaAzioneSuprema(npc, player, 0, () => 0)!
+    const resolved = resolveBattleAttack(ko, 'B', [player], [npc], 100, 100, false)
+    expect(resolved.defender.hp).toBe(0)
+    expect(resolved.attackerProgression).toMatchObject({ xpAssegnata: 0, livelliGuadagnati: 0 })
+    expect(resolved.attackerProgression.messaggi.join(' ')).not.toContain('EXP')
+    expect(resolved.attacker.livello).toBe(14)
+
+    // Il giocatore cade per il contraccolpo della Suprema: l'NPC sopravvissuto non viene premiato.
+    const fragile = creature('player-fragile', 10, 1)
+    const sturdyNpc = creature('npc-sturdy', 20, 20)
+    const recoil = calcolaAzioneSuprema(fragile, sturdyNpc, 0, () => 0)!
+    const survived = resolveBattleAttack(recoil, 'A', [fragile], [sturdyNpc], 100, 100, false)
+    expect(survived.defenderProgression).toBeUndefined()
+    expect(survived.defender.livello).toBe(20)
+    expect(survived.winnerSide).toBe('B')
+  })
 })
