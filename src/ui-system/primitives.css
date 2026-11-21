@@ -1,0 +1,167 @@
+/*
+ * Audit fase 2 — componenti base del design system (Panel, Modal, Button, Tabs, Card).
+ * Tutti leggono i token di tokens.css: blu notte, filo d'oro, ciano per selezione e fuoco.
+ * Le classi sono prefissate `arka-ds-` per non scontrarsi con gli stili storici.
+ */
+
+/* ---------- Panel ---------- */
+.arka-ds-panel {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--arka-ui-space-5);
+  border: var(--arka-ui-frame);
+  border-radius: var(--arka-ui-radius-md);
+  background: var(--arka-ui-surface);
+  color: var(--arka-ui-ink);
+  box-shadow: var(--arka-ui-frame-inset), var(--arka-ui-shadow-md);
+  font: var(--arka-size-body) / 1.4 var(--arka-ui-font-body);
+}
+.arka-ds-panel[data-density="compact"] { padding: var(--arka-ui-space-3) var(--arka-ui-space-4); }
+.arka-ds-panel > :first-child { margin-top: 0; }
+
+.arka-ds-kicker {
+  display: block;
+  font: 600 max(var(--arka-size-min-note), var(--arka-size-note)) / 1.2 var(--arka-ui-font-body);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #a8ddeb;
+}
+.arka-ds-title {
+  margin: 0;
+  font: 600 var(--arka-size-heading) / 1.1 var(--arka-ui-font-display);
+  letter-spacing: .02em;
+  color: var(--arka-ui-gold-bright);
+  text-shadow: 0 2px 4px #000c;
+}
+.arka-ds-text { margin: 0; font: max(var(--arka-size-min-body), var(--arka-size-body)) / 1.45 var(--arka-ui-font-body); color: var(--arka-ui-ink); }
+.arka-ds-note { margin: 0; font: max(var(--arka-size-min-note), var(--arka-size-note)) / 1.4 var(--arka-ui-font-body); color: var(--arka-ui-ink-muted); }
+.arka-ds-divider { height: 1px; margin: var(--arka-ui-space-3) 0; border: 0; background: var(--arka-ui-line); }
+
+/* ---------- Modal ---------- */
+.arka-ds-backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--arka-ui-space-3);
+  background: var(--arka-ui-backdrop);
+  outline: none;
+}
+.arka-ds-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arka-ui-space-4);
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  border-radius: var(--arka-ui-radius-lg);
+  box-shadow: var(--arka-ui-frame-inset), var(--arka-ui-shadow-lg);
+}
+.arka-ds-modal > header { display: grid; gap: var(--arka-ui-space-1); text-align: center; }
+.arka-ds-modal-actions { display: grid; gap: var(--arka-ui-space-2); }
+
+/* ---------- Button ----------
+   Selettori rinforzati: le schermate «player-ui» stilano tutti i <button> con regole molto specifiche. */
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--arka-ui-space-2);
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: var(--arka-ui-radius-sm);
+  background: var(--arka-ui-surface-raised);
+  color: var(--arka-ui-ink);
+  font: 600 max(15px, var(--arka-size-caption)) / 1.15 var(--arka-ui-font-display);
+  letter-spacing: .03em;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 2px rgb(6 26 46 / .9), var(--arka-ui-shadow-sm);
+  transition: filter .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone]:hover:not(:disabled) { filter: brightness(1.15); box-shadow: inset 0 0 0 2px rgb(6 26 46 / .9), 0 0 0 2px var(--arka-ui-cyan-glow), var(--arka-ui-shadow-sm); }
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone]:active:not(:disabled) { transform: translateY(1px); }
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone]:focus-visible { outline: 3px solid var(--arka-ui-cyan); outline-offset: 2px; }
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone]:disabled { cursor: not-allowed; opacity: .45; filter: grayscale(.4); }
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone="primary"] {
+  border-color: var(--arka-ui-gold-bright);
+  background: linear-gradient(180deg, #f7d58e, #d7a650 55%, #a87a35);
+  color: #1b1307;
+  text-shadow: 0 1px 0 #fff6;
+}
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone="danger"] {
+  border-color: #f2a08f;
+  background: linear-gradient(180deg, #8c2a24, #5e1714);
+  color: #ffe7df;
+}
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone="ghost"] { background: transparent; box-shadow: none; border-color: var(--arka-ui-line); }
+html .arka-ds-button.arka-ds-button.arka-ds-button[data-size="lg"] { min-height: 56px; padding: 10px 28px; font-size: max(17px, var(--arka-size-lead)); }
+
+/* ---------- Tabs ---------- */
+.arka-ds-tabs {
+  display: flex;
+  gap: var(--arka-ui-space-1);
+  padding: var(--arka-ui-space-1);
+  border: var(--arka-ui-frame-soft);
+  border-radius: var(--arka-ui-radius-sm);
+  background: rgb(4 18 32 / .6);
+}
+.arka-ds-tab {
+  flex: 1;
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--arka-ui-ink-muted);
+  font: 600 max(var(--arka-size-min-body), var(--arka-size-caption)) / 1.1 var(--arka-ui-font-display);
+  cursor: pointer;
+}
+.arka-ds-tab:hover { color: var(--arka-ui-ink); }
+.arka-ds-tab[aria-selected="true"] { border-color: var(--arka-ui-cyan); background: rgb(79 216 255 / .14); color: var(--arka-ui-gold-bright); }
+.arka-ds-tab:focus-visible { outline: 3px solid var(--arka-ui-cyan); outline-offset: 1px; }
+
+/* ---------- Card ---------- */
+.arka-ds-card {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--arka-ui-space-2);
+  min-width: 0;
+  padding: var(--arka-ui-space-4);
+  border: var(--arka-ui-frame-soft);
+  border-radius: var(--arka-ui-radius-md);
+  background: var(--arka-ui-tile);
+  color: var(--arka-ui-ink);
+  text-align: center;
+  box-shadow: var(--arka-ui-shadow-sm);
+}
+button.arka-ds-card { cursor: pointer; font: inherit; transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+button.arka-ds-card:hover:not(:disabled) { border-color: var(--arka-ui-cyan); box-shadow: 0 0 0 2px var(--arka-ui-cyan-glow), var(--arka-ui-shadow-sm); transform: translateY(-1px); }
+button.arka-ds-card:focus-visible { outline: 3px solid var(--arka-ui-cyan); outline-offset: 2px; }
+button.arka-ds-card:disabled { cursor: not-allowed; opacity: .5; filter: grayscale(.35); }
+.arka-ds-card[data-accent="gold"] { border-color: var(--arka-ui-gold); box-shadow: 0 0 18px rgb(249 219 156 / .18), var(--arka-ui-shadow-sm); }
+.arka-ds-card[data-layout="row"] { grid-template-columns: auto minmax(0, 1fr) auto; justify-items: start; text-align: left; align-items: center; }
+.arka-ds-card-icon { display: grid; place-items: center; width: 56px; height: 56px; }
+.arka-ds-card-icon > * { max-width: 100%; max-height: 100%; }
+.arka-ds-card-title { font: 600 max(16px, var(--arka-size-lead)) / 1.15 var(--arka-ui-font-display); color: var(--arka-ui-gold-bright); }
+.arka-ds-card-meta { font: max(var(--arka-size-min-note), var(--arka-size-note)) / 1.3 var(--arka-ui-font-body); color: var(--arka-ui-ink-muted); }
+.arka-ds-card-badge {
+  padding: 2px 10px;
+  border: 1px solid var(--arka-ui-gold);
+  border-radius: var(--arka-ui-radius-pill);
+  font: 600 max(var(--arka-size-min-note), var(--arka-size-note)) / 1.3 var(--arka-ui-font-body);
+  color: var(--arka-ui-gold-bright);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html .arka-ds-button.arka-ds-button.arka-ds-button[data-tone], button.arka-ds-card { transition: none; }
+}
+
+/* GameDialog (tutti i dialoghi di gioco) usa il pannello comune; il titolo resta più contenuto. */
+.arka-ds-dialog { border-radius: var(--arka-ui-radius-lg); box-shadow: var(--arka-ui-frame-inset), var(--arka-ui-shadow-lg); }
+.arka-ds-dialog-title { font-size: max(20px, var(--arka-size-lead)); }

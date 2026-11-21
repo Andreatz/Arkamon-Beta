@@ -1,4 +1,6 @@
 import { GameButton } from '@/components/ui/GameButton'
+import { ArkaCardButton } from '@/ui-system/primitives'
+import { GameArt } from '@/ui-system/GameArt'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
@@ -114,47 +116,38 @@ export function PercorsoScene() {
             const visited = cespuglioVisitato(giocatoreAttivo, luogo, c)
             const haIncontri = getIncontri(luogo, c).length > 0
             const disabled = !interazioneDisponibile || visited || !haIncontri || !haPokemonVivi
+            // Audit fase 2: scheda comune del design system con l'icona dipinta del cespuglio al posto delle emoji.
             return (
-              <GameButton
+              <ArkaCardButton
                 key={c}
                 disabled={layoutEditing || disabled}
                 aria-label={`Cespuglio ${c}${visited ? ', esplorato' : ''}`}
                 onClick={() => apriCespuglio(c)}
-                className={`flex aspect-square flex-col items-center justify-center
-                  ${disabled ? 'cursor-not-allowed opacity-30' : 'cursor-pointer hover:border-arka-accent'}
-                `}
-              >
-                <span className="arka-layout-content mb-2 text-5xl">{visited ? '🌾' : '🌳'}</span>
-                <span className="arka-layout-content text-lg font-bold">{c}</span>
-                <span className="arka-layout-content text-xs text-arka-text-muted">
-                  {visited ? 'esplorato' : haIncontri ? 'cespuglio' : '—'}
-                </span>
-              </GameButton>
+                icon={<GameArt id={visited ? 'icon-captured' : 'node-grass'} />}
+                title={`Cespuglio ${c}`}
+                meta={visited ? 'Esplorato' : haIncontri ? 'Da esplorare' : 'Nessun incontro'}
+              />
             )
           })}
           </div>}
           {allenatori.length > 0 && (
             <section className="shrink-0" aria-label="Allenatori del percorso">
-              <h3 className="arka-readable-title mb-3 text-xl font-bold text-white">Allenatori del percorso</h3>
+              <h3 className="arka-ds-title mb-3 text-[length:var(--arka-size-lead)]">Allenatori del percorso</h3>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {allenatori.map((allenatore) => {
                   const sconfitto = giocatore.allenatoriSconfitti.has(allenatore.id)
                   return (
-                    <GameButton
+                    <ArkaCardButton
                       key={allenatore.id}
+                      layout="row"
                       disabled={layoutEditing || !interazioneDisponibile || sconfitto || !haPokemonVivi}
                       onClick={() => sfidaAllenatore(allenatore.id)}
                       aria-label={sconfitto ? `${allenatore.nome}, già sconfitto` : `Sfida ${allenatore.nome}`}
-                      className={`flex w-full items-center gap-3 p-4 text-left ${sconfitto || !haPokemonVivi ? 'cursor-not-allowed opacity-40' : 'hover:border-arka-accent'}`}
-                    >
-                      <span className="text-3xl" aria-hidden="true">{sconfitto ? '✅' : allenatore.tipo === 'PVP' ? '⚔️' : '🥋'}</span>
-                      <span>
-                        <span className="block text-lg font-bold">{allenatore.nome}</span>
-                        <span className="block text-xs text-arka-text-muted">
-                          {sconfitto ? 'Già sconfitto' : `Squadra: ${allenatore.squadra.length} Arkamon · Lv. ${allenatore.squadra[0]?.livello ?? '—'}`}
-                        </span>
-                      </span>
-                    </GameButton>
+                      icon={<GameArt id={sconfitto ? 'icon-captured' : 'node-trainer'} />}
+                      title={allenatore.nome}
+                      meta={sconfitto ? 'Già sconfitto' : `Squadra: ${allenatore.squadra.length} Arkamon · Lv. ${allenatore.squadra[0]?.livello ?? '—'}`}
+                      badge={allenatore.tipo === 'PVP' ? 'PvP' : undefined}
+                    />
                   )
                 })}
               </div>

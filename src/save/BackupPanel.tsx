@@ -6,6 +6,8 @@ import { useInteractionStore } from '@/interactions/interactionStore'
 import { interactionCatalogForBackup, useInteractionRecoveryStatus } from '@/interactions/interactionRecovery'
 import { useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { readRecoveryCopies, useSaveWriteStatus } from './durableWrites'
+import { ArkaButton, ArkaPanel } from '@/ui-system/primitives'
+import { GameArt } from '@/ui-system/GameArt'
 
 /** Render inside the common game tools menu; no scene navigation or Admin privileges required. */
 export function BackupPanel() {
@@ -48,63 +50,75 @@ export function BackupPanel() {
     setPreviousAvailable(true); setPreview(null); setAccepted(false); setError(null)
     setMessage('Partita ripristinata. La partita precedente è conservata nel salvataggio precedente, scaricabile qui sotto.')
   }
-  return <section aria-label="Salvataggio della partita" className="pu-backup-screen space-y-4">
-    <h2 className="text-lg font-bold">Salvataggio della partita</h2>
-    <p className="text-sm">Salva i progressi di entrambi i giocatori, squadre, deposito, mappe e battaglia. Il ripristino conserva HP e status; i codici QR e le impostazioni del pubblico restano separati.</p>
-    <div className="pu-backup-overview">
-    {catalogRecovery && <div role="alert"><p>Il catalogo interazioni richiede recupero. Il file di salvataggio conserva la campagna e omette quel catalogo; l’originale resta intatto nel browser. Prima di sostituirlo, scaricalo separatamente e recuperalo dall’editor Interazioni.</p>
-      <button type="button" disabled={catalogRecovery.raw === null} onClick={() => {
+  // Audit fase 2: schermata ricomposta con i componenti del design system (tre schede d'azione invece di un vuoto).
+  return <section aria-label="Salvataggio della partita" className="pu-backup-screen grid content-start gap-4">
+    <header className="grid gap-1">
+      <span className="arka-ds-kicker">Progressi della campagna</span>
+      <h2 className="arka-ds-title">Salvataggio della partita</h2>
+      <p className="arka-ds-text">Salva i progressi di entrambi i giocatori, squadre, deposito, mappe e battaglia. Il ripristino conserva HP e status; i codici QR e le impostazioni del pubblico restano separati.</p>
+    </header>
+    {catalogRecovery && <ArkaPanel as="div" density="compact" role="alert" className="grid gap-2"><p className="arka-ds-text">Il catalogo interazioni richiede recupero. Il file di salvataggio conserva la campagna e omette quel catalogo; l’originale resta intatto nel browser. Prima di sostituirlo, scaricalo separatamente e recuperalo dall’editor Interazioni.</p>
+      <ArkaButton disabled={catalogRecovery.raw === null} onClick={() => {
         try { downloadGameBackup(catalogRecovery.raw!, 'arkamon-interazioni-originale-da-recuperare.json'); setError(null) }
         catch { setError('Non riesco a scaricare il catalogo originale. Non cancellare i dati del browser e riprova.') }
-      }}>Scarica originale da recuperare</button>
-    </div>}
-    {backupWarning && <p role="status" className="text-sm">{backupWarning}</p>}
-    {copies.length > 0 && <div className="rounded border border-current p-3 text-sm">
-      <p className="font-bold">Copie automatiche dei progressi precedenti</p>
-      <p>Ogni copia conserva un punto già valido della campagna. Controlla l’anteprima prima del ripristino.</p>
-      <div className="mt-2 flex flex-wrap gap-2">{copies.map((copy, index) => <button key={copy.createdAt + index} type="button" className="rounded border border-current px-3 py-2" onClick={() => {
-        ++fileReadRevision.current
-        const result = validateGameBackup(copy.backup)
-        setAccepted(false); setError(null); setMessage(null)
-        if (result.ok) setPreview(result.preview); else setError(result.error)
-      }}>Controlla copia automatica {index + 1}</button>)}</div>
-    </div>}
-    {recoveryWarnings.length > 0 && <div role="status" className="rounded border border-current p-3 text-sm">
-      <p className="font-bold">Recupero del salvataggio</p>
-      <ul className="ml-4 list-disc">{recoveryWarnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
-      <button type="button" className="mt-2 underline" onClick={dismissRecovery}>Ho letto gli avvisi</button>
-    </div>}
-    <div className="flex flex-wrap gap-2">
-      <button type="button" className="rounded border border-current px-3 py-2 font-semibold" onClick={exportCurrent}>Scarica file di salvataggio</button>
-      {previousAvailable && <button type="button" className="rounded border border-current px-3 py-2" onClick={() => {
-        const previous = readPreviousGameBackup()
-        if (previous) downloadGameBackup(previous, 'Arkamon-partita-precedente.json')
-        else { setPreviousAvailable(false); setError('Il salvataggio precedente non è disponibile.') }
-      }}>Scarica salvataggio precedente</button>}
+      }}>Scarica originale da recuperare</ArkaButton>
+    </ArkaPanel>}
+    {backupWarning && <p role="status" className="arka-ds-text">{backupWarning}</p>}
+    {recoveryWarnings.length > 0 && <ArkaPanel as="div" density="compact" role="status" className="grid gap-2">
+      <p className="arka-ds-card-title">Recupero del salvataggio</p>
+      <ul className="arka-ds-text ml-5 list-disc">{recoveryWarnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
+      <ArkaButton tone="ghost" onClick={dismissRecovery}>Ho letto gli avvisi</ArkaButton>
+    </ArkaPanel>}
+    <div className="pu-backup-overview grid gap-4 md:grid-cols-3">
+      <ArkaPanel as="article" className="grid content-start gap-3">
+        <span className="arka-ds-card-icon" aria-hidden="true"><GameArt id="menu-save" /></span>
+        <h3 className="arka-ds-card-title">Scarica la partita</h3>
+        <p className="arka-ds-note">Un file con entrambi i giocatori. Conservalo anche fuori da questo computer.</p>
+        <ArkaButton tone="primary" onClick={exportCurrent}>Scarica file di salvataggio</ArkaButton>
+        {previousAvailable && <ArkaButton onClick={() => {
+          const previous = readPreviousGameBackup()
+          if (previous) downloadGameBackup(previous, 'Arkamon-partita-precedente.json')
+          else { setPreviousAvailable(false); setError('Il salvataggio precedente non è disponibile.') }
+        }}>Scarica salvataggio precedente</ArkaButton>}
+      </ArkaPanel>
+      <ArkaPanel as="article" className="grid content-start gap-3">
+        <span className="arka-ds-card-icon" aria-hidden="true"><GameArt id="menu-register" /></span>
+        <h3 className="arka-ds-card-title">Importa una partita</h3>
+        <p className="arka-ds-note">Vedi un’anteprima prima di sostituire la partita attuale.</p>
+        {/* Il selettore nativo mostra testi del browser (anche in inglese): un'etichetta italiana lo sostituisce. */}
+        <label className="pu-file-picker arka-ds-button" data-tone="secondary">Scegli un file di salvataggio…
+          <input type="file" accept=".json,application/json" aria-label="Importa file di salvataggio" className="sr-only" onChange={(event) => {
+            void loadFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''
+          }} />
+        </label>
+      </ArkaPanel>
+      <ArkaPanel as="article" className="grid content-start gap-3">
+        <span className="arka-ds-card-icon" aria-hidden="true"><GameArt id="menu-diary" /></span>
+        <h3 className="arka-ds-card-title">Copie automatiche</h3>
+        <p className="arka-ds-note">{copies.length ? 'Ogni copia conserva un punto già valido della campagna. Controlla l’anteprima prima del ripristino.' : 'Nessuna copia automatica ancora: si creano mentre giochi.'}</p>
+        {copies.map((copy, index) => <ArkaButton key={copy.createdAt + index} onClick={() => {
+          ++fileReadRevision.current
+          const result = validateGameBackup(copy.backup)
+          setAccepted(false); setError(null); setMessage(null)
+          if (result.ok) setPreview(result.preview); else setError(result.error)
+        }}>Controlla copia automatica {index + 1}</ArkaButton>)}
+      </ArkaPanel>
     </div>
-    {/* Il selettore nativo mostra testi del browser (anche in inglese): un'etichetta italiana lo sostituisce. */}
-    <label className="pu-file-picker block text-sm font-semibold">Importa una partita
-      <input type="file" accept=".json,application/json" aria-label="Importa file di salvataggio" className="sr-only" onChange={(event) => {
-        void loadFile(event.currentTarget.files?.[0]); event.currentTarget.value = ''
-      }} />
-      <span className="pu-file-picker-button" aria-hidden="true">Scegli un file di salvataggio…</span>
-    </label>
-    {error && <p role="alert" className="rounded border border-current p-2 text-sm">{error}</p>}
-    {message && <p role="status" className="text-sm">{message}</p>}
-    </div>
-    {preview && <div className="space-y-3 rounded border border-current p-3" aria-label="Anteprima ripristino">
-      <h3 className="font-bold">Anteprima del salvataggio</h3>
-      <p className="text-sm">Creato il {new Date(preview.createdAt).toLocaleString('it-IT')} · formato {preview.version}</p>
-      {preview.players.map((player, i) => <p key={i} className="text-sm"><strong>{player.name}</strong>: {player.team} in squadra, {player.deposit} in deposito, {player.coins} monete, {player.defeatedTrainers} allenatori sconfitti. Luogo: {player.location.replace(/_/g, ' ')}.</p>)}
-      <p className="text-sm">Schermata: {preview.scene}. {preview.battle ? 'Riprende la battaglia dall’ultimo turno salvato.' : 'Nessuna battaglia in corso.'}</p>
-      <p className="text-sm">{preview.interactionCatalog ? `${preview.interactionCatalog.interactions.length} interazioni personalizzate incluse.` : 'Le interazioni configurate su questo computer restano invariate.'}</p>
-      {preview.battleArchive && <p className="text-sm">{preview.battleArchive.matches.length} battaglie incluse nell’archivio replay.</p>}
-      {preview.warnings.length > 0 && <div className="text-sm"><p className="font-bold">Campi recuperati da controllare prima di continuare:</p>
-        <ul className="ml-4 list-disc">{preview.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
-      <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
+    {error && <p role="alert" className="arka-ds-panel arka-ds-text" data-density="compact">{error}</p>}
+    {message && <p role="status" className="arka-ds-text">{message}</p>}
+    {preview && <ArkaPanel as="div" className="grid gap-3" aria-label="Anteprima ripristino">
+      <h3 className="arka-ds-card-title">Anteprima del salvataggio</h3>
+      <p className="arka-ds-note">Creato il {new Date(preview.createdAt).toLocaleString('it-IT')} · formato {preview.version}</p>
+      {preview.players.map((player, i) => <p key={i} className="arka-ds-text"><strong>{player.name}</strong>: {player.team} in squadra, {player.deposit} in deposito, {player.coins} monete, {player.defeatedTrainers} allenatori sconfitti. Luogo: {player.location.replace(/_/g, ' ')}.</p>)}
+      <p className="arka-ds-text">Schermata: {preview.scene}. {preview.battle ? 'Riprende la battaglia dall’ultimo turno salvato.' : 'Nessuna battaglia in corso.'}</p>
+      <p className="arka-ds-text">{preview.interactionCatalog ? `${preview.interactionCatalog.interactions.length} interazioni personalizzate incluse.` : 'Le interazioni configurate su questo computer restano invariate.'}</p>
+      {preview.battleArchive && <p className="arka-ds-text">{preview.battleArchive.matches.length} battaglie incluse nell’archivio replay.</p>}
+      {preview.warnings.length > 0 && <div className="arka-ds-text"><p className="font-bold">Campi recuperati da controllare prima di continuare:</p>
+        <ul className="ml-5 list-disc">{preview.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>}
+      <label className="arka-ds-text flex items-start gap-2"><input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
         <span>Confermo la sostituzione della partita attuale{preview.warnings.length ? ' e accetto i recuperi indicati' : ''}. Verrà conservato un salvataggio della partita precedente.</span></label>
-      <div className="flex flex-wrap gap-2"><button type="button" disabled={!accepted} className="rounded border border-current px-3 py-2 font-semibold disabled:opacity-40" onClick={restore}>Ripristina questa partita</button>
-        <button type="button" className="rounded border border-current px-3 py-2" onClick={() => { ++fileReadRevision.current; setPreview(null); setAccepted(false) }}>Annulla importazione</button></div>
-    </div>}
+      <div className="flex flex-wrap gap-2"><ArkaButton tone="primary" disabled={!accepted} onClick={restore}>Ripristina questa partita</ArkaButton>
+        <ArkaButton onClick={() => { ++fileReadRevision.current; setPreview(null); setAccepted(false) }}>Annulla importazione</ArkaButton></div>
+    </ArkaPanel>}
   </section>
 }

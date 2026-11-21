@@ -184,7 +184,7 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary h
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :is(p, li, label, small) { font-size: var(--arka-size-caption); line-height: 1.45; }
 
 /* Carte: articoli, riepiloghi, obiettivi, riquadri del backup. */
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :is(article, .match-summary, .journal-summary, .journal-objective, .journal-section-content, .pu-backup-screen [class~="border-current"]:not(button), .match-events > li, .match-history li) {
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :is(article:not(.arka-ds-panel), .match-summary, .journal-summary, .journal-objective, .journal-section-content, .pu-backup-screen [class~="border-current"]:not(button), .match-events > li, .match-history li) {
   border: 1px solid var(--arka-ui-line) !important;
   border-radius: 6px;
   background: linear-gradient(160deg, rgb(18 50 79 / .78), rgb(6 23 39 / .82));
@@ -194,7 +194,7 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary :
 html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary .journal-objective { border-left: 3px solid var(--arka-ui-gold) !important; }
 
 /* Comandi generici (non del kit): bordo oro, fondo notte, selezione ciano. */
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button) {
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button):not(.arka-ds-button) {
   min-height: 40px;
   padding: 6px 14px;
   border: 1px solid var(--arka-ui-gold-deep) !important;
@@ -205,11 +205,11 @@ html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary b
   cursor: pointer;
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button):is(:hover, :focus-visible):not(:disabled) {
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button):not(.arka-ds-button):is(:hover, :focus-visible):not(:disabled) {
   border-color: var(--arka-ui-gold) !important;
   box-shadow: 0 0 0 2px var(--arka-ui-cyan-glow);
 }
-html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button):is([aria-pressed="true"], [aria-selected="true"]) {
+html .pu-shell.pu-live-shell[data-ui-concept="aurora"] > .pu-content-auxiliary button:not(.pu-button):not(.studio-command):not(.game-button):not(.arka-ds-button):is([aria-pressed="true"], [aria-selected="true"]) {
   border-color: var(--arka-ui-cyan) !important;
   background: linear-gradient(180deg, rgb(36 92 120 / .95), rgb(12 40 62 / .95));
 }

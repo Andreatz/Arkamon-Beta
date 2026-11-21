@@ -1,4 +1,6 @@
 import { GameButton } from '@/components/ui/GameButton'
+import { ArkaCardButton } from '@/ui-system/primitives'
+import { GameArt } from '@/ui-system/GameArt'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
 import { AdminLayoutItem } from '@/admin/AdminLayoutItem'
 import { getBackground } from '@data/backgrounds'
@@ -65,14 +67,15 @@ export function CittaScene() {
   const updateLuogoLayout = (key: AdminLuogoLayoutKey, rect: AdminLayoutRect) =>
     updateSceneLayout({ scene: 'luogo', key, rect })
 
+  // Audit fase 2: schede comuni del design system con icone dipinte (niente più emoji né card vuote giganti).
   const activities = (
-    <div className="grid h-full w-full grid-cols-3 gap-4 overflow-y-auto p-1">
+    <div className="grid w-full grid-cols-2 content-start gap-3 overflow-y-auto p-1 lg:grid-cols-3">
           {!haPokemonVivi && (
-            <p role="status" className="arka-panel col-span-3 p-3 text-center text-amber-200">
+            <p role="status" className="arka-ds-panel col-span-full text-center text-amber-200" data-density="compact">
               La squadra è esausta. Curala all’Infermeria Arka per tornare a combattere.
             </p>
           )}
-          <GameButton
+          <ArkaCardButton
             disabled={layoutEditing || !interazioneDisponibile}
             onClick={() => {
               useGameStore.getState().eseguiTransazione(() => {
@@ -80,14 +83,10 @@ export function CittaScene() {
                 curaSquadra(giocatoreAttivo)
               })
             }}
-            className="col-span-1 flex cursor-pointer flex-col items-center justify-center p-6 hover:border-arka-accent"
-          >
-            <span className="arka-layout-content mb-2 text-6xl">🏥</span>
-            <h3 className="arka-layout-content text-xl font-bold">Infermeria Arka</h3>
-            <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
-              Cura tutta la squadra
-            </p>
-          </GameButton>
+            icon={<GameArt id="node-heal" />}
+            title="Infermeria Arka"
+            meta="Cura tutta la squadra"
+          />
 
           {allenatoriOrdinati.map((a) => {
             const sconfitto = giocatore.allenatoriSconfitti.has(a.id)
@@ -95,50 +94,21 @@ export function CittaScene() {
             const isCapo = a.tipo === 'Capopalestra'
             const ricompensa = RICOMPENSA[a.tipo]
             return (
-              <GameButton
+              <ArkaCardButton
                 key={a.id}
                 disabled={layoutEditing || !interazioneDisponibile || sconfitto || !haPokemonVivi}
                 onClick={() => sfida(a.id)}
-                className={`flex flex-col items-center justify-center p-6
-                  ${sconfitto ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:border-arka-accent'}
-                  ${isCapo && !sconfitto ? 'border-yellow-400 shadow-lg shadow-yellow-500/20' : ''}
-                `}
-              >
-                <span className="arka-layout-content mb-2 text-6xl">
-                  {sconfitto ? '✅' : isCapo ? '👑' : '🥋'}
-                </span>
-                <h3 className={`arka-layout-content text-xl font-bold ${isCapo && !sconfitto ? 'text-yellow-300' : ''}`}>
-                  {a.nome}
-                </h3>
-                {isCapo && !sconfitto && (
-                  <span className="arka-layout-content mt-0.5 text-[10px] uppercase tracking-wider text-yellow-300">
-                    Capopalestra
-                  </span>
-                )}
-                <p className="arka-layout-content mt-1 text-center text-xs text-arka-text-muted">
-                  {sconfitto
-                    ? 'Già sconfitto'
-                    : primoPkmn
-                    ? `Squadra: ${a.squadra.length}× (lv ${a.squadra[0].livello})`
-                    : 'Allenatore'}
-                </p>
-                {!sconfitto && (
-                  <span
-                    className={`arka-layout-content mt-2 text-xs ${isCapo ? 'font-bold text-yellow-300' : 'text-yellow-400/80'}`}
-                  >
-                    +{ricompensa}₳ se vinci
-                  </span>
-                )}
-              </GameButton>
+                accent={isCapo && !sconfitto ? 'gold' : undefined}
+                icon={<GameArt id={sconfitto ? 'icon-captured' : isCapo ? 'node-gym' : 'node-trainer'} />}
+                title={a.nome}
+                meta={sconfitto ? 'Già sconfitto' : `${isCapo ? 'Capopalestra · ' : ''}${primoPkmn ? `Squadra: ${a.squadra.length} · Lv. ${a.squadra[0].livello}` : 'Allenatore'}`}
+                badge={sconfitto ? undefined : `+${ricompensa} ₳`}
+              />
             )
           })}
 
           {allenatoriOrdinati.length === 0 && (
-            <div className="arka-panel col-span-2 flex items-center justify-center p-6">
-              <p className="arka-layout-content italic text-arka-text-muted">
-                Nessun allenatore in questa città
-              </p>
-            </div>
+            <p className="arka-ds-note col-span-full text-center">Nessun allenatore in questa città.</p>
           )}
         </div>
   )

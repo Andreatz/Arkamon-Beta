@@ -66,6 +66,10 @@ function ActivityDialog({ open, onClose, children, title = 'Attività del luogo'
 }
 
 /** Le azioni sono condivise con la mappa principale; cambiare vista non spende un'azione. */
+
+/** Icone dipinte degli stati alterati per il pannello squadra. */
+const STATUS_ART: Record<string, string> = { Paralizzato: 'status-paralysis', Confuso: 'status-confusion', Addormentato: 'status-sleep', Avvelenato: 'status-poison' }
+
 export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; activities: ReactNode }) {
   const actor = useGameStore((s) => s.giocatoreAttivo)
   const turn = useGameStore((s) => s.turnoOverworld)
@@ -168,7 +172,9 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     {adjacent.map((id) => <GameButton key={id} disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)} · 1 azione</GameButton>)}
   </nav>
   const interact = pointInteractions.length > 0 && <GameButton tone={stage ? 'primary' : undefined} disabled={blocked} onClick={() => setInteractionOpen(true)}>Interagisci sul punto</GameButton>
-  const squad = <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`}>{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}`}><CreaturePortrait pokemon={pokemon}/><strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}</div>
+  // Audit fase 2: sei posti fissi (come la fila della squadra nel Deposito), ritratto grande, KO e status visibili.
+  const squad = <div className="ref-local-squad" aria-label={`Squadra di ${player.nome}`} data-squad-slots="6">{player.squadra.map(pokemon=><button type="button" key={pokemon.istanzaId} data-ko={pokemon.hp <= 0 || undefined} onClick={()=>openPlayerUi('squadra',{playerId:actor,instanceId:pokemon.istanzaId})} aria-label={`Apri squadra: ${pokemon.nome}${pokemon.hp <= 0 ? ', KO' : ''}${pokemon.stato ? `, ${pokemon.stato.tipo}` : ''}`}><CreaturePortrait pokemon={pokemon}/>{pokemon.stato && STATUS_ART[pokemon.stato.tipo] && <span className="ref-local-squad-status" title={pokemon.stato.tipo}><GameArt id={STATUS_ART[pokemon.stato.tipo]} /></span>}<strong>{pokemon.nome}</strong><span>Lv. {pokemon.livello}</span><HealthBar pokemon={pokemon}/></button>)}
+    {Array.from({ length: Math.max(0, 6 - player.squadra.length) }, (_, index) => <span key={`empty-${index}`} className="ref-local-squad-empty" aria-hidden="true" />)}</div>
   const menu = <button type="button" className="ref-local-menu" aria-label="Partita" onClick={()=>openPlayerUi('partita',{playerId:actor})}><KitIcon id="icon-home"/>Partita</button>
 
   return <section className={`local-map-scene${stage ? ' local-map-scene--stage' : ''}`} data-reference-ui="aurora" aria-label={`Esplorazione ${placeName}`}>
