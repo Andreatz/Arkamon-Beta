@@ -5,14 +5,11 @@ import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 import { getArkamonAnimationAsset, getArkamonRuntimeAsset, type ArkamonBattleAnimation } from '../arkamonAnimationManifest'
 import { replacement161VictorySha256 } from './fixtures/native-import-2026-11-13.json'
-import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
-import sourceCountsNovember18 from './fixtures/native-import-2026-11-18.json'
+import { POKEMON_BASE } from '@/data'
+import november22Clips from './fixtures/native-import-2026-11-22.json'
 
-const SPECIES_IDS = [
-  ...Array.from({ length: 166 }, (_, index) => index + 1),
-  ...Object.keys(sourceCountsNovember16).map(Number),
-  ...Object.keys(sourceCountsNovember18).map(Number),
-]
+const SPECIES_IDS = POKEMON_BASE.map(species => species.id)
+const UPDATED_CLIPS: Record<number, { screen: string; frames: Partial<Record<ArkamonBattleAnimation, number>> }> = november22Clips
 const ANIMATIONS: ArkamonBattleAnimation[] = ['idle', 'attack', 'hit', 'victory', 'ko']
 
 const conversionCache = new Map<string, ReturnType<typeof JSON.parse>>()
@@ -95,8 +92,6 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     const conversion = readConversion(speciesId, animation)
     expect(conversion.source.file).toBe(`animation-source/raw/${speciesId}/front/${animation}.mp4`)
     const video = readFileSync(resolve(conversion.source.file))
-    // The duplicate "36 defeat.mp4" was removed by the supplied source update;
-    // "36 ko.mp4" has the same SHA-256 as the original canonical KO video.
     const suppliedAction = speciesId === 69 && animation === 'hit' ? 'hiy' : animation
     const suppliedVideo = readFileSync(resolve(`public/sprites/animation/Front/${speciesId} ${suppliedAction}.mp4`))
     expect(video.byteLength).toBeGreaterThan(0)
@@ -161,7 +156,10 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     expect(opaqueArtwork).toBeGreaterThan(1000)
     if ([163, 164, 165, 166].includes(speciesId)) expect(blueScreen).toBe(true)
     if (speciesId >= 169 && speciesId <= 176) expect(blueScreen).toBe(speciesId <= 170)
-    if (speciesId >= 177) {
+    const updated = UPDATED_CLIPS[speciesId]
+    if (updated?.frames[animation] !== undefined) {
+      expect(conversion.key.screenColour).toBe(updated.screen)
+    } else if (speciesId >= 177) {
       expect(blueScreen).toBe(false)
       expect(magentaScreen).toBe([188, 189, 190, 201, 202, 203, 204, 205, 206].includes(speciesId))
     }
@@ -174,7 +172,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
       expect(magentaSpill).toBe(0)
       expect(conversion.qa.remainingMagentaDominantPixelsOver8).toBe(0)
       expect(nativeGreenAllowed).toBe(true)
-      if ([188, 189, 190, 201, 202].includes(speciesId)) expect(opaqueGreen).toBeGreaterThan(300)
+      if ([167, 168, 188, 189, 190, 201, 202].includes(speciesId)) expect(opaqueGreen).toBeGreaterThan(300)
     } else if (blueScreen) {
       expect(blueSpill).toBe(0)
       expect(conversion.qa.remainingBlueDominantPixelsOver8).toBe(0)

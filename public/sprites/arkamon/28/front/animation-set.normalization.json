@@ -17,46 +17,46 @@
     "groundFraction": 0.98388671875
   },
   "idleBodyCoreBounds": [
-    462,
-    142,
-    820,
-    578
+    718,
+    244,
+    1204,
+    837
   ],
-  "idleBodyHeightSourcePixels": 436,
-  "idleBodyHeightOutputPixels": 245.25,
-  "idleGroundSourcePixels": 578,
+  "idleBodyHeightSourcePixels": 593,
+  "idleBodyHeightOutputPixels": 214.59375,
+  "idleGroundSourcePixels": 837,
   "sourceCoordinateSystem": [
-    1280,
-    720
+    1920,
+    1080
   ],
-  "sharedScale": 0.5625,
+  "sharedScale": 0.36187816188870153,
   "logicalCanvasOrigin": [
-    -232.5625,
-    -73.125
+    -235.76491357504216,
+    -82.89202150084316
   ],
   "canonicalUnionAlphaBounds": [
     0.0,
     0.0,
-    1280.0,
-    720.0
+    1920.0,
+    1080.0
   ],
   "logicalUnionAlphaBounds": [
-    -233,
-    -74,
-    488,
-    332
+    -236,
+    -83,
+    460,
+    308
   ],
   "cellWidth": 768,
   "cellHeight": 768,
   "viewport": {
-    "width": 256,
-    "height": 256,
-    "left": 256,
-    "top": 255
+    "width": 224,
+    "height": 224,
+    "left": 272,
+    "top": 271
   },
   "groundPivot": [
     384.0,
-    507
+    491
   ],
   "paddingPixels": 16,
   "maxTextureDimension": 8192,
@@ -70,13 +70,13 @@
         0.0
       ],
       "initialBodyCoreBounds": [
-        462,
-        142,
-        820,
-        578
+        718,
+        244,
+        1204,
+        837
       ],
-      "initialBodyHeightInIdleCoordinates": 436,
-      "initialGroundInIdleCoordinates": 578,
+      "initialBodyHeightInIdleCoordinates": 593,
+      "initialGroundInIdleCoordinates": 837,
       "constantForEntireClip": true
     },
     "attack": {
@@ -86,29 +86,29 @@
         0.0
       ],
       "initialBodyCoreBounds": [
-        462,
-        142,
-        820,
-        578
+        718,
+        244,
+        1204,
+        837
       ],
-      "initialBodyHeightInIdleCoordinates": 436,
-      "initialGroundInIdleCoordinates": 578,
+      "initialBodyHeightInIdleCoordinates": 593,
+      "initialGroundInIdleCoordinates": 837,
       "constantForEntireClip": true
     },
     "hit": {
-      "nativeToIdleCoordinateScale": 1.0,
+      "nativeToIdleCoordinateScale": 0.9983164983164983,
       "nativeToIdleCoordinateOffset": [
-        0.0,
-        0.0
+        1.6178451178451496,
+        1.4090909090909918
       ],
       "initialBodyCoreBounds": [
-        462,
-        142,
-        820,
-        578
+        718,
+        243,
+        1204,
+        837
       ],
-      "initialBodyHeightInIdleCoordinates": 436,
-      "initialGroundInIdleCoordinates": 578,
+      "initialBodyHeightInIdleCoordinates": 593,
+      "initialGroundInIdleCoordinates": 837,
       "constantForEntireClip": true
     },
     "victory": {
@@ -118,29 +118,29 @@
         0.0
       ],
       "initialBodyCoreBounds": [
-        462,
-        142,
-        820,
-        578
+        718,
+        244,
+        1204,
+        837
       ],
-      "initialBodyHeightInIdleCoordinates": 436,
-      "initialGroundInIdleCoordinates": 578,
+      "initialBodyHeightInIdleCoordinates": 593,
+      "initialGroundInIdleCoordinates": 837,
       "constantForEntireClip": true
     },
     "ko": {
       "nativeToIdleCoordinateScale": 1.0,
       "nativeToIdleCoordinateOffset": [
-        1.0,
+        0.0,
         0.0
       ],
       "initialBodyCoreBounds": [
-        460,
-        142,
-        820,
-        578
+        718,
+        244,
+        1204,
+        837
       ],
-      "initialBodyHeightInIdleCoordinates": 436,
-      "initialGroundInIdleCoordinates": 578,
+      "initialBodyHeightInIdleCoordinates": 593,
+      "initialGroundInIdleCoordinates": 837,
       "constantForEntireClip": true
     }
   }

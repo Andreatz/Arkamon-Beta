@@ -106,7 +106,7 @@ for (const species of importedSpecies) test(`import ${species}: all five supplie
 test.describe('Database Arkamon graphic catalog in the actual laboratory', () => {
   test.use({ reducedMotion: 'no-preference' })
 
-  for (const species of importedSpecies) test(`laboratory ${species}: native preview without invented battle data`, async ({ page }, testInfo) => {
+  for (const species of [...importedSpecies, 167, 168, 194, 195]) test(`laboratory ${species}: native preview without invented battle data`, async ({ page }, testInfo) => {
     const errors: string[] = [], missingBackRequests: string[] = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('request', request => {
@@ -151,37 +151,6 @@ test.describe('Database Arkamon graphic catalog in the actual laboratory', () =>
     expect(errors).toEqual([])
   })
 
-  for (const species of [167, 168, 194, 195]) test(`sprite-only ${species}: playable species with original portrait and missing video`, async ({ page }, testInfo) => {
-    const errors: string[] = [], unavailableRequests: string[] = []
-    page.on('pageerror', error => errors.push(error.message))
-    page.on('request', request => {
-      if (request.url().includes(`/back_sprites/${species}.png`) || request.url().includes(`/arkamon-paged/${species}/`)) unavailableRequests.push(request.url())
-    })
-    await page.goto('/dev.html#arkamon-lab')
-    await page.locator('#darklaw-preview-species').selectOption(String(species))
-    const lab = page.locator('[data-darklaw-lab]')
-    await expect(lab).toHaveAttribute('data-asset-status', 'game-data-present')
-    await expect(lab).toHaveAttribute('data-preview-available', 'false')
-    await expect(page.locator('[data-asset-pending]')).toHaveCount(0)
-    await expect(page.getByText('Nessun video disponibile', { exact: false }).first()).toBeVisible()
-    const portraits = page.locator('[data-asset-portrait]')
-    await expect(portraits).toHaveCount(2)
-    for (const portrait of await portraits.all()) {
-      await expect(portrait).toHaveAttribute('data-asset-image-state', 'ready')
-      await expect(portrait).toBeVisible()
-      await expect(portrait.locator('image')).toHaveAttribute('href', new RegExp(`/sprites/front_sprites/${species}\\.png$`))
-    }
-    await expect(lab.locator('[data-sprite-renderer="paged-canvas"]')).toHaveCount(0)
-    await expect(page.getByRole('button', { name: 'Prova la sequenza', exact: true })).toHaveCount(0)
-    await expect(page.locator('#arkamon-preview-move')).toHaveCount(0)
-    await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
-    expect(await page.evaluate(async id => (await import('/src/data/index.ts')).getPokemon(id), species)).toBeDefined()
-    await page.screenshot({ path: testInfo.outputPath('pending-static-laboratory.png'), fullPage: true })
-    await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('pending-static-comparison.png') })
-    expect(unavailableRequests).toEqual([])
-    expect(errors).toEqual([])
-  })
-
   test('a missing static portrait reports its error and retries the original PNG successfully', async ({ page }, testInfo) => {
     const errors: string[] = []
     let unavailable = true, failedRequests = 0
@@ -190,6 +159,12 @@ test.describe('Database Arkamon graphic catalog in the actual laboratory', () =>
       if (!unavailable) return route.continue()
       failedRequests++
       await route.fulfill({ status: 404, contentType: 'text/plain', body: 'Deliberately unavailable pending portrait' })
+    })
+    // Simulate a species cataloged before its animation set is provided.
+    await page.route(url => url.pathname === '/src/components/arkamon/arkamonAnimationManifest.ts', async route => {
+      const response = await route.fetch()
+      const source = await response.text()
+      await route.fulfill({ response, body: source + '\n;delete ARKAMON_ANIMATION_MANIFEST[194];\n' })
     })
     await page.goto('/dev.html#arkamon-lab')
     await page.locator('#darklaw-preview-species').selectOption('194')
@@ -236,7 +211,7 @@ test.describe('Database Arkamon graphic catalog in the actual laboratory', () =>
     await expect(select.locator('option[value="1"]')).toHaveCount(0)
     await expect(select.locator('option[value="206"]')).toHaveCount(0)
     await page.locator('#darklaw-preview-filter').selectOption('animated')
-    await expect(select.locator('option')).toHaveCount(202)
+    await expect(select.locator('option')).toHaveCount(206)
     await expect(select.locator('option[value="206"]')).toHaveCount(1)
     await expect(select.locator('option[value="116"]')).toHaveCount(1)
     await expect(select.locator('option[value="139"]')).toHaveCount(1)
@@ -247,7 +222,7 @@ test.describe('Database Arkamon graphic catalog in the actual laboratory', () =>
     await expect(select.locator('option[value="162"]')).toHaveCount(1)
     await expect(select.locator('option[value="163"]')).toHaveCount(1)
     await expect(select.locator('option[value="166"]')).toHaveCount(1)
-    for (const id of [167, 168]) await expect(select.locator(`option[value="${id}"]`)).toHaveCount(0)
+    for (const id of [167, 168, 194, 195]) await expect(select.locator(`option[value="${id}"]`)).toHaveCount(1)
     for (const id of [169, 170, 171, 172, 173, 174, 175, 176]) {
       await expect(select.locator(`option[value="${id}"]`)).toHaveCount(1)
     }
