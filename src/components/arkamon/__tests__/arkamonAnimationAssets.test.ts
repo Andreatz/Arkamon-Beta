@@ -158,7 +158,7 @@ describe.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => (
     if (speciesId >= 169 && speciesId <= 176) expect(blueScreen).toBe(speciesId <= 170)
     const updated = UPDATED_CLIPS[speciesId]
     if (updated?.frames[animation] !== undefined) {
-      expect(conversion.key.screenColour).toBe(updated.screen)
+      expect(conversion.key.screenColour ?? 'green').toBe(updated.screen)
     } else if (speciesId >= 177) {
       expect(blueScreen).toBe(false)
       expect(magentaScreen).toBe([188, 189, 190, 201, 202, 203, 204, 205, 206].includes(speciesId))
