@@ -159,7 +159,15 @@ describe('precisazioni Torino e Percorso 15', () => {
   })
 
   it('completa le sedici mappe con 771 punti, 922 collegamenti e soltanto sei pallini aggiunti', () => {
-    const maps = Object.values(LOCAL_MAPS)
+    // Le dieci reti del 23 novembre 2026 hanno il proprio conteggio in fondo.
+    const added = new Set(['Civitavecchia', 'Grosseto', 'Leggendario_Percorso_3', 'Leggendario_Percorso_11', 'Leggendario_Percorso_12',
+      'Nascondiglio_Team_Towers', 'Percorso_5', 'Percorso_6', 'Percorso_7', 'Percorso_8'])
+    const fresh = Object.values(LOCAL_MAPS).filter((map) => added.has(map.id))
+    expect(fresh).toHaveLength(10)
+    expect(fresh.reduce((total, map) => total + map.nodes.length, 0)).toBe(583)
+    expect(fresh.reduce((total, map) => total + map.roads.length, 0)).toBe(691)
+    expect(fresh.some((map) => map.nodes.some((node) => node.drawMarker))).toBe(false)
+    const maps = Object.values(LOCAL_MAPS).filter((map) => !added.has(map.id))
     expect(maps).toHaveLength(16)
     expect(maps.reduce((total, map) => total + map.nodes.length, 0)).toBe(771)
     expect(maps.reduce((total, map) => total + map.roads.length, 0)).toBe(922)

@@ -198,7 +198,9 @@ describe('store - luoghi nascosti dei Percorsi 3, 9, 11 e 12', () => {
     expect(s.attraversaPassaggioSegreto(1)).toBe(true)
     expect(useGameStore.getState().posizione1.luogo).toBe(hidden)
     expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(1)
-    expect(useGameStore.getState().scenaCorrente).toEqual({ scena: 'mappa-principale' })
+    // La rete di pallini del 23 novembre 2026 apre direttamente la mappa locale, dal Punto 1.
+    expect(useGameStore.getState().scenaCorrente).toEqual({ scena: 'percorso', payload: { luogo: hidden } })
+    expect(useGameStore.getState().posizioniLocali1[hidden]).toBe('n1')
     // Nessun contenuto inventato: senza allenatori né cespugli definiti.
     expect(s.muoviAvatarMappaPrincipale(1, 'Venezia')).toBe(false)
     expect(s.attraversaPassaggioSegreto(1)).toBe(true)

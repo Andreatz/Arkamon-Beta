@@ -54,12 +54,13 @@ describe('luoghi nascosti dei Percorsi 3, 9, 11 e 12', () => {
     expect(canEnterHiddenLocation({ allenatoriSconfitti: new Set() }, 'Lega_Roma')).toBe(false)
   })
 
-  it('nessun contenuto inventato: niente allenatori, mappe o passaggi da altri luoghi', () => {
+  it('nessun contenuto inventato: niente allenatori né passaggi da altri luoghi', () => {
     for (const entry of HIDDEN_LOCATIONS) {
       expect(getAllenatoriInLuogo(entry.id)).toEqual([])
       expect(ALLENATORI.some((trainer) => trainer.luogo === entry.id)).toBe(false)
-      expect(getLocalMap(entry.id)).toBeUndefined()
     }
+    // Dal 23 novembre 2026 i luoghi leggendari e il nascondiglio hanno la rete di pallini; la Lega attende la pittura.
+    expect(HIDDEN_LOCATIONS.filter((entry) => !getLocalMap(entry.id)).map((entry) => entry.id)).toEqual(['Lega_Roma'])
     expect(hiddenLocationFrom('Venezia')).toBeUndefined()
     expect(hiddenLocationFrom('Percorso_15')).toBeUndefined()
   })

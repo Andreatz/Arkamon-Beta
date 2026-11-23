@@ -16,6 +16,16 @@ import { ReggioCalabria } from './localMaps/ReggioCalabria'
 import { Roma } from './localMaps/Roma'
 import { Torino } from './localMaps/Torino'
 import { Venezia } from './localMaps/Venezia'
+import { Civitavecchia } from './localMaps/Civitavecchia'
+import { Grosseto } from './localMaps/Grosseto'
+import { LeggendarioPercorso3 } from './localMaps/Leggendario_Percorso_3'
+import { LeggendarioPercorso11 } from './localMaps/Leggendario_Percorso_11'
+import { LeggendarioPercorso12 } from './localMaps/Leggendario_Percorso_12'
+import { NascondiglioTeamTowers } from './localMaps/Nascondiglio_Team_Towers'
+import { Percorso5 } from './localMaps/Percorso_5'
+import { Percorso6 } from './localMaps/Percorso_6'
+import { Percorso7 } from './localMaps/Percorso_7'
+import { Percorso8 } from './localMaps/Percorso_8'
 
 // Coordinate, identificatori e strade conservati; un modulo per ciascuna foto.
 export const LOCAL_MAPS: Readonly<Record<string, LocalMapDefinition>> = {
@@ -36,6 +46,17 @@ export const LOCAL_MAPS: Readonly<Record<string, LocalMapDefinition>> = {
   'Roma': Roma,
   'Torino': Torino,
   'Venezia': Venezia,
+  // Reti del 23 novembre 2026 dalle foto «Interazioni»: città, Percorsi 5–8 e luoghi nascosti.
+  'Civitavecchia': Civitavecchia,
+  'Grosseto': Grosseto,
+  'Leggendario_Percorso_3': LeggendarioPercorso3,
+  'Leggendario_Percorso_11': LeggendarioPercorso11,
+  'Leggendario_Percorso_12': LeggendarioPercorso12,
+  'Nascondiglio_Team_Towers': NascondiglioTeamTowers,
+  'Percorso_5': Percorso5,
+  'Percorso_6': Percorso6,
+  'Percorso_7': Percorso7,
+  'Percorso_8': Percorso8,
 }
 
 export function getLocalMap(id: string): LocalMapDefinition | undefined {

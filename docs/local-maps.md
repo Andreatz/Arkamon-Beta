@@ -87,6 +87,37 @@ Il Percorso 15 è un luogo segreto raggiungibile da **Roma** dopo aver sconfitto
 
 Nel luogo segreto non vengono inventati incontri, NPC o ricompense: le sue interazioni saranno definite dall'utente in seguito. Il salvataggio conserva gli accessi legittimi; una posizione segreta non sbloccata viene riportata a Roma senza azioni aggiuntive.
 
+### Dieci nuove reti: riferimenti del 23 novembre 2026
+
+Le foto «Interazioni» del 23 novembre definiscono **583 punti e 691 collegamenti** per le pitture nuove:
+
+| Mappa | Punti | Collegamenti | Ingresso |
+| --- | ---: | ---: | --- |
+| Civitavecchia | 45 | 57 | Punto 1 |
+| Grosseto | 94 | 108 | Punto 1 |
+| Percorso 5 | 44 | 57 | Punto 3 («ingresso da percorso 4») |
+| Percorso 6 | 37 | 37 | Punto 1 |
+| Percorso 7 | 45 | 51 | Punto 23 (una delle «entrate 23/36») |
+| Percorso 8 | 48 | 59 | Punto 1 |
+| Luogo leggendario del Percorso 3 | 37 | 42 | Punto 1 |
+| Luogo leggendario del Percorso 11 | 64 | 87 | Punto 1 |
+| Luogo leggendario del Percorso 12 | 45 | 47 | Punto 1 |
+| Nascondiglio del Team Towers | 124 | 146 | Punto 1 |
+
+Le reti sono state ricavate dalle foto in modo semiautomatico. Le cifre blu sono state lette con un classificatore addestrato sulle otto mappe già verificate. Le strade fucsia sono state tracciate seguendone lo scheletro. I raccordi senza pallino collegano tutte le coppie incidenti, come nelle mappe precedenti.
+
+Lo stesso procedimento, applicato alle otto foto di mappe esistenti (Cagliari, Foggia, Milano, Napoli, Palermo, Percorsi 1, 2 e 4), ritrova gli stessi pallini (scarto medio 1–2 px) e le stesse strade. Le uniche strade mancanti sono quelle coperte dalle etichette rosse delle foto. Quelle reti restano invariate.
+
+Casi particolari, da confermare:
+- Grosseto salta il numero 39: non viene inventato un punto.
+- Il luogo leggendario del Percorso 11 ripete il 63 e salta il 60: il 63 vicino a 59 e 64 diventa **Punto 60**.
+- Il Nascondiglio ripete il 120: quello vicino a 65 e 123 diventa **Punto 124**.
+- Nel Nascondiglio le strade 58–59, 62–63, 65–124 e 114–115 sono nascoste dai numeri della foto e sono state aggiunte a mano.
+
+I luoghi nascosti con una rete si aprono come mappe locali dopo il passaggio. La Lega di Roma attende ancora la pittura. Restano senza rete Pescara, i Percorsi 9, 10 e 12 e la terza mappa di Via Vittoria.
+
+Per il budget di avvio tutte le reti sono scritte in un formato testuale compatto (`src/data/localMaps/codec.ts`). I valori sono gli stessi, verificati confrontando tutte le mappe prima e dopo la conversione.
+
 ## Dati e salvataggi
 
 `src/data/localMaps.ts` contiene immagini, centri dei pallini, ingresso e collegamenti. Le strade includono solo i vertici intermedi: gli estremi sono i nodi. `src/engine/localMapMovement.ts` calcola adiacenze e percorsi senza dipendere dalla UI.
