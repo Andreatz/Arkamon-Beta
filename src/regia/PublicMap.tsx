@@ -5,7 +5,7 @@ import { hasOnlyOrthogonalSegments, orthogonalizeRoadPoints } from '@/utils/main
 import type { AdminMapRoadPoint } from '@/theme/adminThemeTypes'
 import type { PublicSnapshot } from './publicSnapshot'
 
-const villages = new Set(['Piacenza', 'Civitavecchia', 'Molisnt', 'ReggioCalabria'])
+const villages = new Set(['Piacenza', 'Civitavecchia', 'ReggioCalabria'])
 
 /** Saved world roads include both endpoints; local roads contain only interior bends. */
 function worldRoadPoints(from: AdminMapRoadPoint, to: AdminMapRoadPoint, saved?: AdminMapRoadPoint[]): AdminMapRoadPoint[] {

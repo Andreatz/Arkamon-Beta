@@ -1,4 +1,6 @@
 import { isShopItemId, SHOP_ITEMS, type ShopItemId } from '@/shop/catalog'
+import { getHiddenLocation } from '@/data/secretLocation'
+import { placeLabel } from '@/utils/placeLabel'
 import { useState } from 'react'
 import { ALLENATORI, INCONTRI, POKEMON_BASE, getAllenatoriInLuogo } from '@/data'
 import { LOCAL_MAPS } from '@/data/localMaps'
@@ -67,8 +69,9 @@ export function AdminInteractionEditor() {
     </section>}
     <label>Luogo<select value={mapId} onChange={(e) => {
       const id = e.target.value; setMapId(id); setDraft(createDraft(id, LOCAL_MAPS[id].startNode)); setMessage('')
-    }}>{maps.map((item) => <option key={item.id} value={item.id}>{item.id.replace(/_/g, ' ')}</option>)}</select></label>
-    {mapId === 'Percorso_15' && <p className="interaction-note">Luogo segreto: l’accesso conserva il requisito delle otto palestre. Nessun contenuto viene creato automaticamente.</p>}
+    }}>{maps.map((item) => <option key={item.id} value={item.id}>{placeLabel(item.id)}</option>)}</select></label>
+    {getHiddenLocation(mapId) && <p className="interaction-note">Luogo nascosto raggiungibile da {placeLabel(getHiddenLocation(mapId)!.origin)}{getHiddenLocation(mapId)!.requiresAllGyms ? ': l’accesso conserva il requisito delle otto palestre' : ''}. Nessun contenuto viene creato automaticamente.</p>}
+    {mapId === 'Via_Vittoria_2' && <p className="interaction-note">Seconda mappa di Via Vittoria: non è ancora collegata alla prima, in attesa dei riferimenti dei passaggi.</p>}
     <div className="interaction-editor-map" role="group" aria-label="Scegli un pallino sulla mappa">
       <img src={assetUrl(map.image)} alt={`Riferimento ${mapId}`} onLoad={(e) => setDimensions({ width: e.currentTarget.naturalWidth, height: e.currentTarget.naturalHeight })} />
       {map.nodes.map((node) => <button type="button" key={node.id} aria-label={`Modifica ${node.label ?? node.id}`} aria-pressed={draft.nodeId === node.id}

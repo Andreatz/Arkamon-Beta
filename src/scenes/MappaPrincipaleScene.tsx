@@ -10,7 +10,7 @@ import { TurnSummary } from '@/journal/TurnSummary'
 import { useAdminStore } from '@store/adminStore'
 import { MAPPE } from '@data/index'
 import { getLocalMap } from '@/data/localMaps'
-import { SECRET_LOCATION_ID, canAccessSecretLocation, hasUnlockedSecretLocation, isSecretLocationPosition } from '@/data/secretLocation'
+import { canAccessSecretLocation, canEnterHiddenLocation, getHiddenLocation, hasUnlockedSecretLocation, hiddenLocationFrom, isHiddenLocation, isSecretLocationPosition } from '@/data/secretLocation'
 import {
   MAIN_MAP_START_NODE,
   MAIN_MAP_ROAD_CONNECTIONS,
@@ -66,10 +66,10 @@ const COORDS: Record<string, { x: number; y: number; tipo: Tipo }> = {
   Grosseto:       { x: 38, y: 44, tipo: 'citta' },
   Civitavecchia:  { x: 42, y: 52, tipo: 'villaggio' },
   Roma:           { x: 48, y: 56, tipo: 'citta' },
-  Percorso_14:    { x: 54, y: 54, tipo: 'percorso' },
+  Percorso_15:    { x: 54, y: 54, tipo: 'percorso' },
   Pescara:        { x: 60, y: 52, tipo: 'citta' },
-  Percorso_13:    { x: 60, y: 56, tipo: 'percorso' },
-  Molisnt:        { x: 62, y: 60, tipo: 'villaggio' },
+  Percorso_14:    { x: 60, y: 56, tipo: 'percorso' },
+  Percorso_13:    { x: 62, y: 60, tipo: 'percorso' },
   Napoli:         { x: 56, y: 64, tipo: 'citta' },
   Percorso_12:    { x: 62, y: 64, tipo: 'percorso' },
   Percorso_11:    { x: 66, y: 62, tipo: 'percorso' },
@@ -521,22 +521,33 @@ export function MappaPrincipaleScene() {
     return [{ key, points, controlPoints, d: roadPath(points) }]
   })
 
-  if (isSecretLocationPosition(activePosition)) return <section className="local-map-scene" aria-label="Passaggio di ritorno">
-    <header className="local-map-toolbar">
-      <div className="local-map-heading"><h1>{canAccessSecretLocation(giocatore, activePosition) ? 'Percorso 15' : 'Luogo non disponibile'}</h1><span>G{giocatoreAttivo} · {giocatore.nome}</span></div>
-      <span className="local-map-budget" role="status">{turnoOverworld.azioniRimaste} {turnoOverworld.azioniRimaste === 1 ? 'azione' : 'azioni'}</span>
-      {canAccessSecretLocation(giocatore, activePosition) && <>
-        <GameButton onClick={() => {
-          useGameStore.getState().eseguiTransazione(() => {
-            if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, SECRET_LOCATION_ID)) vaiAScena('percorso', { luogo: SECRET_LOCATION_ID })
-          })
-        }}>Riapri Percorso 15</GameButton>
-        <GameButton tone="primary" disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>Torna a Roma · 1 movimento</GameButton>
-      </>}
-      <GameButton onClick={passaTurnoOverworld}>Passa turno</GameButton>
-    </header>
-    <p>Il passaggio conduce a Roma. Tornare alla città consuma un movimento.</p>
-  </section>
+  const hiddenHere = isSecretLocationPosition(activePosition) ? getHiddenLocation(activePosition.luogo) : undefined
+  if (hiddenHere) {
+    const access = canAccessSecretLocation(giocatore, activePosition)
+    const painted = !!getLocalMap(hiddenHere.id)
+    return <section className="local-map-scene" aria-label="Passaggio di ritorno">
+      <header className="local-map-toolbar">
+        <div className="local-map-heading"><h1>{access ? placeLabel(hiddenHere.id) : 'Luogo non disponibile'}</h1><span>G{giocatoreAttivo} · {giocatore.nome}</span></div>
+        <span className="local-map-budget" role="status">{turnoOverworld.azioniRimaste} {turnoOverworld.azioniRimaste === 1 ? 'azione' : 'azioni'}</span>
+        {access && <>
+          {painted && <GameButton onClick={() => {
+            useGameStore.getState().eseguiTransazione(() => {
+              if (useGameStore.getState().apriMappaLocale(giocatoreAttivo, hiddenHere.id)) vaiAScena('percorso', { luogo: hiddenHere.id })
+            })
+          }}>Riapri {placeLabel(hiddenHere.id)}</GameButton>}
+          <GameButton tone="primary" disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>Torna a {placeLabel(hiddenHere.origin)} · 1 movimento</GameButton>
+        </>}
+        <GameButton onClick={passaTurnoOverworld}>Passa turno</GameButton>
+      </header>
+      <p>Il passaggio conduce a {placeLabel(hiddenHere.origin)}. Tornare indietro consuma un movimento.</p>
+      {access && !painted && <p role="status">La mappa di questo luogo è in preparazione: contenuti e punti verranno aggiunti in seguito.</p>}
+    </section>
+  }
+  // Passaggio verso un luogo nascosto da un luogo senza mappa dipinta (dove c'è il disegno, il
+  // pulsante sta nella mappa locale).
+  const hiddenFromHere = hiddenLocationFrom(activeNodeName)
+  const hiddenPassageOnMap = hiddenFromHere && !getLocalMap(activeNodeName) && canEnterHiddenLocation(giocatore, hiddenFromHere.id)
+    ? hiddenFromHere : undefined
 
   return (
     <div
@@ -662,7 +673,7 @@ export function MappaPrincipaleScene() {
         <path key={previewDestination} className="world-map-route-draw" pathLength={1} d={roadPath(getMainMapJourney(roadRenderItems, activeNodeName, previewDestination))} fill="none"
           stroke="var(--arka-primary)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
       </svg>}
-      {player1NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
+      {!isHiddenLocation(player1NodeName) && <MainMapAvatar
         playerId={1}
         nodeName={player1NodeName}
         sameNode={player1NodeName === player2NodeName}
@@ -670,7 +681,7 @@ export function MappaPrincipaleScene() {
         getPosition={(name) => nodePositions[name] ?? COORDS[name]}
         roads={roadRenderItems}
       />}
-      {player2NodeName !== SECRET_LOCATION_ID && <MainMapAvatar
+      {!isHiddenLocation(player2NodeName) && <MainMapAvatar
         playerId={2}
         nodeName={player2NodeName}
         sameNode={player1NodeName === player2NodeName}
@@ -883,6 +894,11 @@ export function MappaPrincipaleScene() {
       {activeNodeName === 'Roma' && hasUnlockedSecretLocation(giocatore) && !layoutEditing && <GameButton
         className="absolute right-3 top-[42%] z-[35] min-w-36 px-4 py-3" tone="primary"
         onClick={() => vaiAScena('lega')}>Lega Arkamon</GameButton>}
+
+      {hiddenPassageOnMap && !layoutEditing && <GameButton
+        className="absolute right-3 top-[42%] z-[35] min-w-36 px-4 py-3"
+        disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>
+        Verso {placeLabel(hiddenPassageOnMap.id)} · 1 movimento</GameButton>}
 
       {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <aside className="world-map-destination" aria-label="Destinazione selezionata">
         <p>Prossima destinazione</p><h2>{placeLabel(previewDestination)}</h2>

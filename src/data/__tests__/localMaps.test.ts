@@ -31,7 +31,12 @@ describe('mappe locali disegnate', () => {
     for (const artwork of PENDING_LOCAL_MAP_ARTWORK) expect(getLocalMap(artwork.id)).toBeUndefined()
     expect(mapDefinitions).toHaveLength(16)
     expect(getLocalMap('ReggioCalabria')?.image).toBe('/maps/Reggio-Calabria.png')
-    expect(getLocalMap('Percorso_15')?.image).toBe('/maps/Percorso_15-1.png')
+    // Rinomina del 18 novembre 2026: la vecchia rete del luogo segreto è la seconda mappa di Via Vittoria.
+    expect(getLocalMap('Via_Vittoria_2')?.image).toBe('/maps/Percorso_15-1.png')
+    expect(getLocalMap('Percorso_15')?.image).toBe('/maps/Percorso_14.png')
+    expect(getLocalMap('Percorso_14')?.image).toBe('/maps/Percorso_13.png')
+    expect(getLocalMap('Percorso_13')).toBeUndefined()
+    expect(getLocalMap('Lega_Roma')).toBeUndefined()
     expect(getLocalMap('Pordenone')).toBeUndefined()
     expect(getLocalMap('toString')).toBeUndefined()
   })
@@ -39,7 +44,7 @@ describe('mappe locali disegnate', () => {
   it('conserva tutti i pallini contati e verificati visivamente sulle sedici immagini', () => {
     expect(Object.fromEntries(mapDefinitions.map((map) => [map.id, map.nodes.length]))).toEqual({
       Cagliari: 41, Foggia: 59, Milano: 56, Napoli: 40, Palermo: 55,
-      Percorso_1: 50, Percorso_13: 36, Percorso_14: 48, Percorso_15: 36,
+      Percorso_1: 50, Percorso_14: 36, Percorso_15: 48, Via_Vittoria_2: 36,
       Percorso_2: 43, Percorso_4: 47, Piacenza: 56, ReggioCalabria: 46,
       Roma: 50, Torino: 51, Venezia: 57,
     })

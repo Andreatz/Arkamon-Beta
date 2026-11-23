@@ -1,4 +1,5 @@
 import { MAPPE } from '@/data'
+import { isRouteLocation } from '@/data/routeLocation'
 import type { StatoAlterato } from '@/types'
 
 export const SHOP_ITEM_IDS = [
@@ -112,6 +113,6 @@ export function normalizeShopInventory(value: unknown, warn?: (message: string) 
 
 /** Pallini per movimento nelle mappe locali: 2 con la Bicicletta nei percorsi o il Monopattino nelle città. */
 export function localMoveRange(inventory: ShopInventory, location: string): number {
-  const route = location.startsWith('Percorso_')
+  const route = isRouteLocation(location)
   return (route ? inventory.bicycle ?? 0 : inventory.scooter ?? 0) > 0 ? 2 : 1
 }

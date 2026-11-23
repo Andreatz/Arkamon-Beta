@@ -13,7 +13,7 @@ import { useGameStore } from '@store/gameStore'
 import type { AdminLayoutRect, AdminLuogoLayoutKey } from '@/theme/adminThemeTypes'
 import type { StatoBattaglia } from '@/types'
 import { getLocalMap } from '@/data/localMaps'
-import { SECRET_LOCATION_ID, canAccessSecretLocation } from '@/data/secretLocation'
+import { canAccessSecretLocation, isHiddenLocation } from '@/data/secretLocation'
 import { LocalMapScene } from './LocalMapScene'
 import { useRef } from 'react'
 import { playGrassOpening } from '@/motion/encounter/GrassOpening'
@@ -51,8 +51,8 @@ export function PercorsoScene() {
     ? turno.giocatoreAttivo === giocatoreAttivo && turno.azioniRimaste > 0
     : fallbackActivity?.playerId === giocatoreAttivo && fallbackActivity.location === luogo
   const allenatori = getAllenatoriInLuogo(luogo)
-  const secret = luogo === SECRET_LOCATION_ID
-  const secretAccess = !secret || canAccessSecretLocation(giocatore, posizione)
+  const secret = isHiddenLocation(luogo)
+  const secretAccess = !secret || canAccessSecretLocation(giocatore, posizione, luogo)
   const hasDefinedActivities = allenatori.length > 0 || CESPUGLI.some((c) => getIncontri(luogo, c).length > 0)
   const haPokemonVivi = giocatore.squadra.some((pokemon) => pokemon.hp > 0)
 

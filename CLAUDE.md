@@ -16,12 +16,15 @@
 - Paralisi: agisce per secondo; 1–2 sul d6 impedisce l'attacco, 3–6 lo permette. Il tiro non cura la paralisi: occorre una cura esplicita.
 - Sonno: fino a tre turni, primo obbligatorio senza dado, risveglio 4–6 dal secondo. Veleno: 10%, 20%, 30% e così via degli HP massimi.
 - Ogni turno sulla mappa consente due movimenti oppure un movimento e una interazione, condivisi fra mappa principale e mappa locale. Le posizioni dei due giocatori sono separate. I numeri dei pallini restano interni.
-- Percorso 15 si sblocca per ciascun giocatore dopo tutte le otto palestre e Roma; non aggiungere interazioni, incontri o premi senza definizione dell'utente.
+- Luoghi rinominati il 18 novembre 2026 (`src/data/locationRename.ts`, salvataggi `dataVersion: 3`): Molisnt → Percorso 13, Percorso 13 → Percorso 14, Percorso 14 → Percorso 15. Il Percorso 15 è Via Vittoria (Pescara–Roma), sempre aperto, composto da tre mappe: la prima è la vecchia rete del Percorso 14, la seconda (`Via_Vittoria_2`, vecchia rete del luogo segreto) non è ancora collegata e la terza (`Via_Vittoria_3`) attende la rete di nodi. I dati del Database «Percorso 13/14/15» vanno ai luoghi nuovi.
+- Luoghi nascosti (`src/data/secretLocation.ts`), raggiunti con un movimento dal luogo d'origine. Roma porta alla Lega di Roma (`Lega_Roma`, ex luogo segreto) dopo le otto medaglie. I Percorsi 3, 11 e 12 portano ai luoghi leggendari e il Percorso 9 al Nascondiglio del Team Towers: per ora sono ad accesso libero e vuoti. Non aggiungere leggendari, allenatori, incontri, premi, reti di nodi o collegamenti senza definizione e riferimenti dell'utente.
 - Il pubblico vota soltanto le mosse dei normali NPC. Il canale QR `boss` è un invito privato per un singolo ospite che interpreta Capipalestra, rivale, Superquattro o Campione: non è una votazione pubblica. Rinnovo, revoca e scadenza invalidano il precedente controllore. Il fallback della regia è esplicito; non introdurre una Suprema votabile. Regola aggiornata il 14 ottobre 2026.
 - La Lega comprende quattro battaglie consecutive nello stesso turno dopo Roma e otto medaglie. Nomi, squadre, livelli, regola della sconfitta ed eventuale Campione finale restano nella configurazione Admin; una bozza incompleta non può iniziare. Il primo completamento salva il vincitore della campagna. Nessuna attività narrativa: Livio usa il teatro mentale. Vedi [miglioramenti live GDR](docs/live-rpg-improvements-2026-10-14.md).
-- La griglia è un prototipo legacy. Conservare lo stack attuale; eventuali migrazioni principali richiedono un piano e verifiche dedicate.
+- La mappa a griglia e la modalità SVG dell'interfaccia sono state rimosse il 18 novembre 2026: non reintrodurle. Conservare lo stack attuale; eventuali migrazioni principali richiedono un piano e verifiche dedicate.
+- Mosse del foglio (decisioni del 18 novembre 2026). La precisione si tira su un d10 dedicato. «Max 3 usi» vale per battaglia. La priorità apre una finestra prima del turno avversario. I valori stanno in `src/data/statusMoveRules.json`: cura 50% e 25%, danno fisso 10, immunità per 5 turni. Kit iniziale: 1 Sacchettino.
+- Axolux non ha mosse né evoluzioni. A fine battaglia, se in squadra o nel deposito c'è almeno una specie compatibile, una di esse scelta a caso diventa la sua forma «(luce)» allo stesso livello (`src/engine/fusion.ts`). Se non ce n'è nessuna, Axolux attende.
 - Specifica STAB/valutazione IA ancora da consolidare: non cambiare bilanciamento per risolvere una discrepanza fra nomi nel codice e descrizione VBA.
-- Database del 16 novembre 2026 (decisioni dell'utente del 17 novembre): specie, mosse, incontri e allenatori vengono da `data-source/Database.xlsx` tramite `python3 scripts/data/import-database.py` (mai modificare a mano i JSON generati). 206 specie giocabili. Le mosse Status prendono i valori da `src/data/statusMoveRules.json`. La cattura usa un Sacchettino della borsa e la tabella d20 di `src/data/captureTable.json` (sostituisce la formula 3d6 descritta più sotto). Oggetti, prezzi e città di vendita in `src/shop/catalog.ts`; Boost, Profumo speciale, Bicicletta e Monopattino seguono le regole proposte lì descritte. I salvataggi senza `dataVersion: 2` vengono migrati una volta (`src/data/trainerMigration.ts`).
+- Database del 16 novembre 2026 (decisioni dell'utente del 17 novembre): specie, mosse, incontri e allenatori vengono da `data-source/Database.xlsx` tramite `python3 scripts/data/import-database.py` (mai modificare a mano i JSON generati). 206 specie giocabili. Le mosse Status prendono i valori da `src/data/statusMoveRules.json`. La cattura usa un Sacchettino della borsa e la tabella d20 di `src/data/captureTable.json` (sostituisce la formula 3d6 descritta più sotto). Oggetti, prezzi e città di vendita in `src/shop/catalog.ts`; Boost, Profumo speciale, Bicicletta e Monopattino seguono le regole proposte lì descritte. I salvataggi senza `dataVersion: 2` vengono migrati una volta (`src/data/trainerMigration.ts`); la rinomina dei luoghi si applica una volta a quelli precedenti a `dataVersion: 3`. Confermati dall'utente: soglia «HP pieno + status» della tabella d20, Boost (danno ×1,25, vietati nelle sfide importanti), Bicicletta e Monopattino a 100.000, nome Sacchettino Supremo. La squadra del rivale è lo starter scartato più cinque Arkamon ancora da indicare.
 
 Vedi [audit corrente](docs/project-audit-2026-10-10.md) per prove, limiti e priorità.
 
@@ -229,10 +232,10 @@ Il prototipo VBA ripristinava gli HP alla fine. Dal 21 novembre 2026 anche la re
 | Foggia           | 23           |
 | Percorso_11..12  | 24, 25       |
 | Napoli           | 26           |
-| Molisnt          | 27           |
-| Percorso_13      | 28           |
+| Molisnt (ora Percorso_13) | 27  |
+| Percorso_13 (ora Percorso_14) | 28 |
 | Pescara          | 29           |
-| Percorso_14      | 30           |
+| Percorso_14 (ora Percorso_15, Via Vittoria) | 30 |
 | Roma             | 31           |
 | (slide 32 = VS)  | 32           |
 | (slide 33 = battaglia) | 33     |

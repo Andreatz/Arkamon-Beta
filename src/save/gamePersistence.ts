@@ -1,11 +1,12 @@
-import { GAME_DATA_VERSION, migrateDefeatedTrainers, migrateTrainerReference } from '@/data/trainerMigration'
+import { DATABASE_TRAINERS_VERSION, GAME_DATA_VERSION, LOCATION_RENAME_VERSION, migrateDefeatedTrainers, migrateTrainerReference } from '@/data/trainerMigration'
+import { renameLegacySaveLocations } from '@/data/locationRename'
 import type { NavigazioneScena, PokemonIstanza, PosizioneAvatar, PosizioniMappeLocali, SceneId, StatoBattaglia, StatoGiocatore, StatoTurnoOverworld } from '@/types'
 import { getPokemon } from '@/data'
 import { MAIN_MAP_START_NODE, getAdjacentMainMapNodes } from '@/data/mainMapRoads'
 import { getLocalMap } from '@/data/localMaps'
 import { getLocalMapNode } from '@/engine/localMapMovement'
 import { calcolaHPMax, clearStoredExperience } from '@/engine/battleEngine'
-import { SECRET_LOCATION_ID, SECRET_LOCATION_ORIGIN, canAccessSecretLocation, hasUnlockedSecretLocation, isSecretLocationPosition } from '@/data/secretLocation'
+import { canAccessSecretLocation, canEnterHiddenLocation, getHiddenLocation, isHiddenLocation, isSecretLocationPosition } from '@/data/secretLocation'
 import { restoreBattleCheckpoint } from '@/components/battle/battleCheckpoint'
 import { emptyInteractionProgress, type InteractionProgress } from '@/interactions/types'
 import { normalizeInteractionProgress } from '@/interactions/schema'
@@ -77,7 +78,8 @@ function restorePosition(value: unknown, warn: Warn, label: string): PosizioneAv
     if (value !== undefined) warn(`${label}: posizione non valida, ripristinato l’ingresso.`)
     return mainMapPosition()
   }
-  if (value.mappaId === SECRET_LOCATION_ID) return mainMapPosition(SECRET_LOCATION_ORIGIN)
+  const hiddenMap = getHiddenLocation(value.mappaId)
+  if (hiddenMap) return mainMapPosition(hiddenMap.origin)
   if (value.mappaId !== 'mappa-principale') {
     if (Number.isInteger(value.x) && Number.isInteger(value.y) && ['N', 'S', 'E', 'O'].includes(value.direzione as string)) {
       return { mappaId: value.mappaId, x: value.x as number, y: value.y as number, direzione: value.direzione as PosizioneAvatar['direzione'] }
@@ -86,7 +88,7 @@ function restorePosition(value: unknown, warn: Warn, label: string): PosizioneAv
     return mainMapPosition()
   }
   const luogo = typeof value.luogo === 'string' ? value.luogo : MAIN_MAP_START_NODE
-  if (luogo === SECRET_LOCATION_ID || getAdjacentMainMapNodes(luogo).length > 0) return mainMapPosition(luogo)
+  if (isHiddenLocation(luogo) || getAdjacentMainMapNodes(luogo).length > 0) return mainMapPosition(luogo)
   warn(`${label}: luogo non disponibile, ripristinato l’ingresso.`)
   return mainMapPosition()
 }
@@ -336,7 +338,9 @@ function migrateLegacyCampaign(state: GameSaveState, warn: Warn): void {
 export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = initialGameSave()): { state: GameSaveState; warnings: string[] } {
   const warnings: string[] = []
   const warn: Warn = (message) => { if (!warnings.includes(message)) warnings.push(message) }
-  const p = isSaveRecord(persisted) ? persisted : {}
+  const savedVersion = isSaveRecord(persisted) && typeof persisted.dataVersion === 'number' ? persisted.dataVersion : 0
+  // Rinomina dei luoghi sul salvataggio grezzo: le posizioni si validano poi contro le mappe attuali.
+  const p = isSaveRecord(persisted) ? (savedVersion < LOCATION_RENAME_VERSION ? renameLegacySaveLocations(persisted) : persisted) : {}
   if (persisted !== undefined && !isSaveRecord(persisted)) warn('Il salvataggio non era valido: recuperate le impostazioni iniziali.')
   const turn = isSaveRecord(p.turnoOverworld) ? p.turnoOverworld : {}
   const turnoOverworld: StatoTurnoOverworld = {
@@ -364,7 +368,7 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
   }
   restoreInstanceIdentity(state, warn)
   state.dataVersion = GAME_DATA_VERSION
-  if (isSaveRecord(persisted) && p.dataVersion !== GAME_DATA_VERSION) migrateLegacyCampaign(state, warn)
+  if (isSaveRecord(persisted) && savedVersion < DATABASE_TRAINERS_VERSION) migrateLegacyCampaign(state, warn)
   // Obsolete management routes must not strand a still-valid battle behind the map.
   if (isLegacyNavigation(p.scenaCorrente) && state.battaglia) state.scenaCorrente = { scena: 'battaglia' }
   state.arkadex = deriveArkadexProgress(state.arkadex, state)
@@ -401,18 +405,19 @@ export function normalizeGameSave(persisted: unknown, fallback: GameSaveState = 
   if (state.scenaCorrente.scena === 'battaglia' && !state.battaglia) state.scenaCorrente = { scena: 'mappa-principale' }
   for (const id of [1, 2] as const) {
     const positionKey = id === 1 ? 'posizione1' : 'posizione2'
-    if (isSecretLocationPosition(state[positionKey]) && !hasUnlockedSecretLocation(state[id === 1 ? 'giocatore1' : 'giocatore2'])) {
-      state[positionKey] = mainMapPosition(SECRET_LOCATION_ORIGIN)
+    const hidden = getHiddenLocation(state[positionKey].luogo)
+    if (hidden && isSecretLocationPosition(state[positionKey]) && !canEnterHiddenLocation(state[id === 1 ? 'giocatore1' : 'giocatore2'], hidden.id)) {
+      state[positionKey] = mainMapPosition(hidden.origin)
       warn(`Giocatore ${id}: il luogo segreto resta bloccato fino alle otto palestre.`)
     }
   }
   const playerKey = state.giocatoreAttivo === 1 ? 'giocatore1' : 'giocatore2'
   const positionKey = state.giocatoreAttivo === 1 ? 'posizione1' : 'posizione2'
-  const permitted = (scene: NavigazioneScena) => scene.payload?.luogo !== SECRET_LOCATION_ID
-    || scene.scena === 'percorso' && canAccessSecretLocation(state[playerKey], state[positionKey])
+  const permitted = (scene: NavigazioneScena) => !isHiddenLocation(scene.payload?.luogo as string | undefined)
+    || scene.scena === 'percorso' && canAccessSecretLocation(state[playerKey], state[positionKey], scene.payload?.luogo as string)
   if (!permitted(state.scenaCorrente)) state.scenaCorrente = { scena: 'mappa-principale' }
   if (state.scenaPrecedente && !permitted(state.scenaPrecedente)) state.scenaPrecedente = null
-  if (state.battaglia?.luogoRitorno === SECRET_LOCATION_ID && !canAccessSecretLocation(state[playerKey], state[positionKey])) {
+  if (isHiddenLocation(state.battaglia?.luogoRitorno) && !canAccessSecretLocation(state[playerKey], state[positionKey], state.battaglia?.luogoRitorno)) {
     state.battaglia = null
     if (state.scenaCorrente.scena === 'battaglia') state.scenaCorrente = { scena: 'mappa-principale' }
   }

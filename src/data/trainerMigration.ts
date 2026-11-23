@@ -6,7 +6,15 @@ import type { InteractionDefinition } from '@/interactions/types'
  * Il Database riusa gli ID 201–340 per persone diverse: i vecchi riferimenti vanno
  * convertiti una sola volta, riconoscendo i salvataggi senza `dataVersion`.
  */
-export const GAME_DATA_VERSION = 2
+/**
+ * Versione dei dati di gioco nei salvataggi e nei cataloghi delle interazioni:
+ * 2 = allenatori del Database (16 novembre 2026); 3 = rinomina dei luoghi (18 novembre 2026).
+ */
+export const GAME_DATA_VERSION = 3
+/** Prima versione con gli allenatori del Database: sotto questa si convertono gli allenatori storici. */
+export const DATABASE_TRAINERS_VERSION = 2
+/** Prima versione con i luoghi rinominati (Molisnt → Percorso 13 e seguenti). */
+export const LOCATION_RENAME_VERSION = 3
 
 /** ID del vecchio catalogo (31 allenatori). */
 export const LEGACY_TRAINER_IDS: ReadonlySet<number> = new Set([

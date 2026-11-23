@@ -6,9 +6,9 @@ import { Milano } from './localMaps/Milano'
 import { Napoli } from './localMaps/Napoli'
 import { Palermo } from './localMaps/Palermo'
 import { Percorso1 } from './localMaps/Percorso_1'
-import { Percorso13 } from './localMaps/Percorso_13'
 import { Percorso14 } from './localMaps/Percorso_14'
 import { Percorso15 } from './localMaps/Percorso_15'
+import { ViaVittoria2 } from './localMaps/Via_Vittoria_2'
 import { Percorso2 } from './localMaps/Percorso_2'
 import { Percorso4 } from './localMaps/Percorso_4'
 import { Piacenza } from './localMaps/Piacenza'
@@ -25,9 +25,10 @@ export const LOCAL_MAPS: Readonly<Record<string, LocalMapDefinition>> = {
   'Napoli': Napoli,
   'Palermo': Palermo,
   'Percorso_1': Percorso1,
-  'Percorso_13': Percorso13,
   'Percorso_14': Percorso14,
   'Percorso_15': Percorso15,
+  // Seconda mappa di Via Vittoria: registrata per l'editor delle interazioni, non ancora raggiungibile.
+  'Via_Vittoria_2': ViaVittoria2,
   'Percorso_2': Percorso2,
   'Percorso_4': Percorso4,
   'Piacenza': Piacenza,

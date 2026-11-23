@@ -37,7 +37,7 @@ async function battleFixture(page: Page, fixture: 'battle' | 'evolution' | 'fina
     const secondStarter = { istanzaId: 'arkadex-player2', specieId: 5, nome: 'Darklaw Dex', livello: 5, hp: 12, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Dex ${id}`, squadra: id === 1 ? [attacker] : [secondStarter], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,
@@ -171,7 +171,8 @@ test('a real battle evolution retains both obtained stages and logs the change o
   await page.getByRole('button', { name: 'Fine', exact: true }).click()
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')
   const evolved = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
-  expect(evolved.giocatore1.squadra[0]).toMatchObject({ specieId: 2, livello: 15, hp: 1 })
+  // Cura completa della squadra a fine battaglia (regola del 21 novembre 2026): 27 HP al livello 15.
+  expect(evolved.giocatore1.squadra[0]).toMatchObject({ specieId: 2, livello: 15, hp: 27 })
   expect(evolved.arkadex.caught1).toEqual([1, 2]); expect(evolved.arkadex.caught2).toEqual([5])
   expect(evolved.matchLog.events.filter((event: { kind: string }) => event.kind === 'evolution')).toHaveLength(1)
   await page.reload()

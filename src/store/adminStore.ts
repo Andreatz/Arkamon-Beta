@@ -7,7 +7,6 @@ import type {
   AdminEvolutionLayoutKey,
   AdminLuogoLayoutKey,
   AdminMainMapUiLayoutKey,
-  AdminMapGridLayoutKey,
   AdminMapNodePosition,
   AdminMapRoadPoint,
   AdminTheme,
@@ -21,6 +20,7 @@ import { migrateDepositLayout } from '@/theme/depositLayoutMigration'
 import { isValidThemeUiValue } from '@/theme/adminThemeUiBounds'
 import { isSafeThemeAssetPath } from '@/theme/adminThemeAssetPaths'
 import { normalizeDesign } from '@/ui-studio/designModel'
+import { hasLegacyThemeLocations, renameLegacyLocation, renameLegacyRoadKey, renameLegacyThemeKeys } from '@/data/locationRename'
 import { assertVisualStorageWritable } from '@/presentation/presentationTransaction'
 import type { UiDesignDocument } from '@/ui-studio/types'
 import {
@@ -32,7 +32,6 @@ import {
   defaultMainMapNodePositions,
   defaultMainMapRoads,
   defaultMainMapUiLayout,
-  defaultMapGridLayout,
   defaultLuogoLayout,
 } from '@/theme/defaultAdminTheme'
 
@@ -66,7 +65,6 @@ type PersistedAdminTheme = Partial<AdminTheme> & {
     mainMapNodes?: Partial<AdminTheme['layouts']['mainMapNodes']>
     mainMapRoads?: Partial<AdminTheme['layouts']['mainMapRoads']>
     mainMapUi?: Partial<AdminTheme['layouts']['mainMapUi']>
-    mapGrid?: Partial<AdminTheme['layouts']['mapGrid']>
     luogo?: Partial<AdminTheme['layouts']['luogo']>
     deposit?: Partial<AdminTheme['layouts']['deposit']>
     evolution?: Partial<AdminTheme['layouts']['evolution']>
@@ -74,7 +72,6 @@ type PersistedAdminTheme = Partial<AdminTheme> & {
 }
 
 type SceneLayoutUpdate =
-  | { scene: 'mapGrid'; key: AdminMapGridLayoutKey; rect: AdminLayoutRect }
   | { scene: 'luogo'; key: AdminLuogoLayoutKey; rect: AdminLayoutRect }
   | { scene: 'mainMapUi'; key: AdminMainMapUiLayoutKey; rect: AdminLayoutRect }
   | { scene: 'deposit'; key: AdminDepositLayoutKey; rect: AdminLayoutRect }
@@ -118,7 +115,8 @@ function pushLayoutUndo(state: AdminState): AdminTheme['layouts'][] {
   ]
 }
 
-function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
+function normalizeTheme(input: PersistedAdminTheme | undefined): AdminTheme {
+  const theme = migrateLegacyThemeLocations(input)
   let design: UiDesignDocument | undefined
   if (theme?.design !== undefined) {
     try { design = normalizeDesign(theme.design) } catch { /* Invalid visual settings cannot prevent boot. */ }
@@ -179,10 +177,6 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
         ...defaultMainMapUiLayout,
         ...theme?.layouts?.mainMapUi,
       },
-      mapGrid: {
-        ...defaultMapGridLayout,
-        ...theme?.layouts?.mapGrid,
-      },
       luogo: {
         ...defaultLuogoLayout,
         ...theme?.layouts?.luogo,
@@ -194,6 +188,20 @@ function normalizeTheme(theme: PersistedAdminTheme | undefined): AdminTheme {
       },
     },
   }
+}
+
+/** Rinomina del 18 novembre 2026 (Molisnt → Percorso 13 e seguenti) nelle chiavi di nodi e strade. */
+function migrateLegacyThemeLocations(theme: PersistedAdminTheme | undefined): PersistedAdminTheme | undefined {
+  const layouts = theme?.layouts
+  if (!theme || !layouts || !hasLegacyThemeLocations(layouts.mainMapNodes, layouts.mainMapRoads)) return theme
+  return {
+    ...theme,
+    layouts: {
+      ...layouts,
+      mainMapNodes: renameLegacyThemeKeys(layouts.mainMapNodes, renameLegacyLocation),
+      mainMapRoads: renameLegacyThemeKeys(layouts.mainMapRoads, renameLegacyRoadKey),
+    },
+  } as PersistedAdminTheme
 }
 
 export const useAdminStore = create<AdminState>()(
@@ -409,9 +417,7 @@ export const useAdminStore = create<AdminState>()(
             layouts: {
               ...state.theme.layouts,
               [scene]:
-                scene === 'mapGrid'
-                  ? defaultMapGridLayout
-                  : scene === 'luogo'
+                scene === 'luogo'
                   ? defaultLuogoLayout
                   : scene === 'mainMapUi'
                   ? defaultMainMapUiLayout

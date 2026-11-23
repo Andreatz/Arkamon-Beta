@@ -18,5 +18,5 @@ export const PENDING_LOCAL_MAP_ARTWORK = [
   { id: 'Percorso_9', image: '/maps/Percorso_9.png' },
   { id: 'Percorso_10', image: '/maps/Percorso_10.png' },
   { id: 'Percorso_12', image: '/maps/Percorso_12.png' },
-  { id: 'Percorso_15-2', image: '/maps/Percorso_15-2.png' },
+  { id: 'Via_Vittoria_3', image: '/maps/Percorso_15-2.png' },
 ] as const

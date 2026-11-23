@@ -21,7 +21,7 @@ async function seedCityCampaign(page: Page) {
       monete: id === 1 ? 300 : 40, inventario: id === 1 ? { masterball: 1, 'paralysis-heal': 1 } : { masterball: 4 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: { Venezia: 'n56' },
@@ -189,7 +189,7 @@ test('a battle item heals once, consumes the move and resumes at the opponent tu
       inventario: id === 1 ? { potion: 1 } : { masterball: 1 },
     })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: {}, audioMuted: true,

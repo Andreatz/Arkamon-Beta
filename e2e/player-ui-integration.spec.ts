@@ -38,7 +38,7 @@ async function seedCampaign(page: Page, location: 'map' | 'city' | 'route' | 'de
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
     const place = location === 'city' || location === 'deposit' ? 'Venezia' : location === 'route' ? 'Percorso_1' : 'Milano'
-    localStorage.setItem(key, JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem(key, JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null,
       posizione1: position(place), posizione2: position('Torino'), turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: location === 'city' ? { Venezia: 'n56' } : {}, posizioniLocali2: {},

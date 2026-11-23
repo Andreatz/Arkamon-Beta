@@ -13,7 +13,7 @@ async function seed(page: Page) {
       cespugliVisitati: [], allenatoriSconfitti: [], monete: 500, inventario: { potion: 2, masterball: 1 } }
     const two = { id: 2, nome: 'Maggi', squadra: [creature('Vyrath Maggi', 1, 20, 20)], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 300, inventario: {} }
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: one, giocatore2: two, giocatoreAttivo: 1,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3, giocatore1: one, giocatore2: two, giocatoreAttivo: 1,
       rivaleStarterId: 5, battaglia: null, posizione1: position('Venezia'), posizione2: position('Torino'),
       posizioniLocali1: {}, posizioniLocali2: {}, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null, audioMuted: true,

@@ -106,7 +106,7 @@ describe('store overworld — mappa principale', () => {
         x: 0,
         y: 0,
         direzione: 'S',
-        luogo: 'Percorso_14',
+        luogo: 'Percorso_15',
       },
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
     })
@@ -120,14 +120,18 @@ describe('store overworld — mappa principale', () => {
   it('modella le diramazioni principali senza percorso lineare unico', () => {
     expect(getAdjacentMainMapNodes('Percorso_3')).toEqual(['Milano'])
     expect(getAdjacentMainMapNodes('Percorso_11')).toEqual(['Foggia'])
-    expect(new Set(getAdjacentMainMapNodes('Percorso_14'))).toEqual(
+    // Rinomina del 18 novembre 2026: la strada Pescara–Roma è il Percorso 15 (Via Vittoria).
+    expect(new Set(getAdjacentMainMapNodes('Percorso_15'))).toEqual(
       new Set(['Percorso_1', 'Grosseto', 'Pescara', 'Roma'])
     )
+    expect(new Set(getAdjacentMainMapNodes('Percorso_13'))).toEqual(new Set(['Percorso_12', 'Percorso_14']))
+    expect(new Set(getAdjacentMainMapNodes('Percorso_14'))).toEqual(new Set(['Percorso_13', 'Pescara']))
+    expect(getAdjacentMainMapNodes('Molisnt')).toEqual([])
     expect(new Set(getAdjacentMainMapNodes('Percorso_4'))).toEqual(
       new Set(['Percorso_2', 'Percorso_5'])
     )
     expect(new Set(getAdjacentMainMapNodes('Percorso_12'))).toEqual(
-      new Set(['Foggia', 'Napoli', 'Molisnt'])
+      new Set(['Foggia', 'Napoli', 'Percorso_13'])
     )
   })
 

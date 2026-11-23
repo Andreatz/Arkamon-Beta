@@ -1,4 +1,5 @@
 import { ALLENATORI, getPokemon } from '@/data'
+import { getHiddenLocation } from '@/data/secretLocation'
 import { calcolaHPMax } from '@/engine/battleEngine'
 import { initialGameSave, mainMapPosition, type GameSaveState } from '@/save/gamePersistence'
 import { emptyLeagueState } from '@/league/leagueModel'
@@ -36,7 +37,7 @@ export function createPreviewFixture(screenKey: string): GameSaveState {
     state.scenaCorrente.payload = { luogo: view }
     state.posizione1 = mainMapPosition(view)
     state.posizioniLocali1 = { [view]: getLocalMap(view)!.startNode }
-    if (view === 'Percorso_15') state.giocatore1.allenatoriSconfitti = new Set(ALLENATORI.filter(entry => entry.tipo === 'Capopalestra').map(entry => entry.id))
+    if (getHiddenLocation(view)?.requiresAllGyms) state.giocatore1.allenatoriSconfitti = new Set(ALLENATORI.filter(entry => entry.tipo === 'Capopalestra').map(entry => entry.id))
   }
   if (screen === 'laboratorio') {
     // One chosen starter reveals the real starter-selection view without its automatic exit.

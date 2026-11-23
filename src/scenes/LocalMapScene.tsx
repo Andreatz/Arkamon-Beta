@@ -1,8 +1,10 @@
 import { GameButton } from '@/components/ui/GameButton'
+import { isRouteLocation } from '@/data/routeLocation'
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LocalMapBoard, type LocalMapPlayer } from '@/components/map/LocalMapBoard'
 import { getLocalMap, type LocalMapDefinition } from '@/data/localMaps'
-import { SECRET_LOCATION_ID, SECRET_LOCATION_ORIGIN, canAccessSecretLocation, hasUnlockedSecretLocation } from '@/data/secretLocation'
+import { canAccessSecretLocation, canEnterHiddenLocation, getHiddenLocation, hiddenLocationFrom } from '@/data/secretLocation'
+import { placeLabel } from '@/utils/placeLabel'
 import { getReachableLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
 import { localMoveRange } from '@/shop/catalog'
 import { useGameStore } from '@/store/gameStore'
@@ -104,7 +106,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const closeInteraction = useCallback(() => setInteractionOpen(false), [])
   const samePlace = (world: typeof world1) => world.mappaId === 'mappa-principale' && world.luogo === map.id
   const allowedPlayer = (world: typeof world1, player: typeof player1) => samePlace(world)
-    && (map.id !== SECRET_LOCATION_ID || canAccessSecretLocation(player, world))
+    && (!getHiddenLocation(map.id) || canAccessSecretLocation(player, world, map.id))
 
   useEffect(() => {
     if (allowedPlayer(world1, player1)) initialize(1, map.id)
@@ -127,13 +129,15 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const interactionLabels = Object.fromEntries(definitions.filter((entry) => entry.enabled && entry.mapId === map.id).map((entry) => [entry.nodeId, entry.title]))
   const interactionKinds = nodeKinds(definitions.filter((entry) => entry.enabled && entry.mapId === map.id), isGymLeader)
   const nodeLabel = (id: string) => getLocalMapNode(map, id).label ?? id
-  const placeName = map.id.replace(/_/g, ' ')
+  const placeName = placeLabel(map.id)
   const currentKind = currentNode ? interactionKinds[currentNode.id] : undefined
   const player = actor === 1 ? player1 : player2
   const actorWorld = actor === 1 ? world1 : world2
-  const secret = map.id === SECRET_LOCATION_ID
-  const secretAccess = canAccessSecretLocation(player, actorWorld)
-  const secretPassageVisible = map.id === SECRET_LOCATION_ORIGIN && !!current && hasUnlockedSecretLocation(player)
+  const hiddenHere = getHiddenLocation(map.id)
+  const secret = !!hiddenHere
+  const secretAccess = canAccessSecretLocation(player, actorWorld, map.id)
+  const hiddenFromHere = hiddenLocationFrom(map.id)
+  const secretPassageVisible = !!hiddenFromHere && !!current && canEnterHiddenLocation(player, hiddenFromHere.id)
   const moveTo = (id: string) => {
     if (!canMove) return false
     const moved = move(actor, map.id, id)
@@ -148,7 +152,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       const world = state.giocatoreAttivo === 1 ? state.posizione1 : state.posizione2
       const target = world.mappaId === 'mappa-principale' ? getLocalMap(world.luogo ?? '') : undefined
       if (target && state.apriMappaLocale(state.giocatoreAttivo, target.id)) {
-        navigate(target.id.startsWith('Percorso_') ? 'percorso' : 'citta', { luogo: target.id })
+        navigate(isRouteLocation(target.id) ? 'percorso' : 'citta', { luogo: target.id })
       } else navigate('mappa-principale')
     })
   }
@@ -160,7 +164,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
 
   const passage = (secretPassageVisible || secret) && <GameButton
     disabled={!canMove || activitiesOpen || interactionOpen} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
-    {secret ? 'Torna a Roma' : 'Passaggio segreto'} · 1 movimento
+    {hiddenHere ? `Torna a ${placeLabel(hiddenHere.origin)}` : `Verso ${placeLabel(hiddenFromHere?.id ?? '')}`} · 1 movimento
   </GameButton>
   const budget = <span className="local-map-budget" role="status">{remaining} {remaining === 1 ? 'azione' : 'azioni'}</span>
   const pointInfo = <div className="local-map-point-info" role="status">
@@ -181,7 +185,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     {stage ? <header className="local-map-toolbar">
       <div className="ref-local-place">
         <span className="ref-local-place-emblem" aria-hidden="true">{hasGameArt('menu-map') ? <GameArt id="menu-map" /> : <KitIcon id="icon-map" />}</span>
-        <div className="local-map-heading"><h1>{placeName}</h1><span>{map.id.startsWith('Percorso_') ? 'Percorso' : 'Città'} · G{actor} · {player.nome}</span></div>
+        <div className="local-map-heading"><h1>{placeName}</h1><span>{isRouteLocation(map.id) ? 'Percorso' : 'Città'} · G{actor} · {player.nome}</span></div>
         <TurnSummary compact />
       </div>
       <GameButton className="ref-local-back" disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</GameButton>

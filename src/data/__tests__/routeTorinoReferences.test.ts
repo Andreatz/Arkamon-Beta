@@ -28,7 +28,8 @@ interface SharedJunction {
 const references: CityReference[] = referenceData
 const counts: Record<string, [number, number]> = {
   Percorso_1: [50, 63], Percorso_2: [43, 58], Percorso_4: [47, 52],
-  Percorso_13: [36, 48], Percorso_14: [48, 59], Percorso_15: [36, 40], Torino: [51, 61],
+  // Rinomina del 18 novembre 2026: le vecchie reti 13, 14 e 15 sono ora Percorso 14, Percorso 15 (Via Vittoria) e Via Vittoria 2.
+  Percorso_14: [36, 48], Percorso_15: [48, 59], Via_Vittoria_2: [36, 40], Torino: [51, 61],
 }
 const edgeKey = (from: string, to: string) => [from, to].sort().join(':')
 const normalizedNodes = (nodes: LocalMapNode[]) => nodes.map(({ id, x, y, label, drawMarker }) =>
@@ -146,10 +147,10 @@ describe('precisazioni Torino e Percorso 15', () => {
     }
   })
 
-  it('conserva il collegamento 35–36 di Percorso 15 espressamente confermato dall’utente e la sua curva precedente', () => {
-    const reference = references.find((candidate) => candidate.city === 'Percorso_15')!
+  it('conserva il collegamento 35–36 della seconda mappa di Via Vittoria (ex Percorso 15) confermato dall’utente e la sua curva precedente', () => {
+    const reference = references.find((candidate) => candidate.city === 'Via_Vittoria_2')!
     expect(reference.authorizedNonMagentaEdges).toEqual([[35, 36]])
-    const map = getLocalMap('Percorso_15')!
+    const map = getLocalMap('Via_Vittoria_2')!
     const forward = getLocalRoadPath(map, 'n31', 'n34')
     expect(forward).toEqual([
       { x: 17.116, y: 66.684 }, { x: 12.292, y: 69.516 }, { x: 6.665, y: 71.74 },

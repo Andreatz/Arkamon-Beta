@@ -25,7 +25,7 @@ const unlock = (id: 1 | 2) => {
   useGameStore.setState((s) => ({ [key]: { ...s[key], allenatoriSconfitti: new Set(SECRET_LOCATION_GYM_IDS) } }))
 }
 
-describe('interfaccia del passaggio segreto', () => {
+describe('interfaccia del passaggio verso la Lega di Roma', () => {
   beforeEach(() => {
     useGameStore.getState().reset()
     useGameStore.setState({ posizione1: world('Roma'), posizione2: world('Roma'), scenaCorrente: { scena: 'citta', payload: { luogo: 'Roma' } } })
@@ -34,84 +34,92 @@ describe('interfaccia del passaggio segreto', () => {
   it('nasconde il passaggio a Roma prima dello sblocco personale, anche se l’altro giocatore ha tutte le palestre', () => {
     unlock(2)
     const markup = renderToStaticMarkup(<CittaScene />)
-    expect(markup).not.toContain('Passaggio segreto')
-    expect(markup).not.toContain('Percorso 15')
-    expect(markup).not.toContain('/maps/Percorso_15-1.png')
+    expect(markup).not.toContain('Verso Lega di Roma')
   })
 
   it('offre a Roma il passaggio dopo tutte le palestre, indicando il costo di movimento', () => {
     unlock(1)
     const markup = renderToStaticMarkup(<CittaScene />)
-    expect(markup).toContain('Passaggio segreto')
-    expect(markup).toContain('1 movimento')
+    expect(markup).toContain('Verso Lega di Roma · 1 movimento')
   })
 
   it('non offre il passaggio in un’altra città neppure a un giocatore sbloccato', () => {
     unlock(1)
     useGameStore.setState({ posizione1: world('Venezia'), scenaCorrente: { scena: 'citta', payload: { luogo: 'Venezia' } } })
-    expect(renderToStaticMarkup(<CittaScene />)).not.toContain('Passaggio segreto')
+    expect(renderToStaticMarkup(<CittaScene />)).not.toContain('Verso ')
   })
 
-  it('un payload forzato non mostra lo sfondo né attività segrete prima dello sblocco', () => {
-    useGameStore.setState({ posizione1: world('Percorso_15'), scenaCorrente: { scena: 'percorso', payload: { luogo: 'Percorso_15' } } })
+  it('un payload forzato non mostra attività della Lega prima dello sblocco', () => {
+    useGameStore.setState({ posizione1: world('Lega_Roma'), scenaCorrente: { scena: 'percorso', payload: { luogo: 'Lega_Roma' } } })
     const markup = renderToStaticMarkup(<PercorsoScene />)
     expect(markup).toContain('Luogo non disponibile')
-    expect(markup).not.toContain('/maps/Percorso_15-1.png')
     expect(markup).not.toContain('Cespuglio')
     expect(markup).not.toContain('Punti raggiungibili')
   })
 
   it('protegge anche il componente locale usato direttamente prima dello sblocco', () => {
-    useGameStore.setState({ posizione1: world('Percorso_15') })
-    const markup = renderToStaticMarkup(<LocalMapScene map={getLocalMap('Percorso_15')!} activities={<p>Contenuto segreto</p>} />)
+    useGameStore.setState({ posizione1: world('Lega_Roma') })
+    // La Lega non ha ancora una rete di nodi: si simula la mappa futura con una rete esistente.
+    const future = { ...getLocalMap('Via_Vittoria_2')!, id: 'Lega_Roma' }
+    const markup = renderToStaticMarkup(<LocalMapScene map={future} activities={<p>Contenuto segreto</p>} />)
     expect(markup).not.toContain('Contenuto segreto')
-    expect(markup).not.toContain('/maps/Percorso_15-1.png')
     expect(markup).toContain('Luogo non disponibile')
   })
 
-  it('mostra la rete, il ritorno a Roma e le sfide del Database dopo l’ingresso', () => {
+  it('dopo l’ingresso la mappa principale mostra il luogo in preparazione e il ritorno a Roma, senza cambiare lo stato', () => {
     unlock(1)
     expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(true)
-    const markup = renderToStaticMarkup(<PercorsoScene />)
-    expect(markup).toContain('/maps/Percorso_15-1.png')
-    expect(markup).toContain('Torna a Roma')
-    expect(markup).toContain('Passaggio di ritorno')
-    // Il Database definisce 16 cespugli (A–P), 16 allenatori e il rivale del Percorso 15.
-    expect(markup).toContain('aria-label="Sfida Rivale"')
-  })
-
-  it('l’ispezione della schermata di ritorno conserva luogo, pallino e azioni', () => {
-    unlock(1)
-    expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(true)
-    useGameStore.getState().vaiAScena('mappa-principale')
     const before = useGameStore.getState()
     const markup = renderToStaticMarkup(<MappaPrincipaleScene />)
-    expect(markup).toContain('Riapri Percorso 15')
-    expect(markup).toContain('Torna a Roma')
+    expect(markup).toContain('Passaggio di ritorno')
+    expect(markup).toContain('Lega di Roma')
+    expect(markup).toContain('Torna a Roma · 1 movimento')
+    expect(markup).toContain('in preparazione')
+    expect(markup).not.toContain('Riapri')
     expect(markup).not.toContain('/maps/Mappa-Finale.jpg')
     expect(useGameStore.getState()).toBe(before)
-    expect(before.posizione1.luogo).toBe('Percorso_15')
+    expect(before.posizione1.luogo).toBe('Lega_Roma')
     expect(before.turnoOverworld.azioniRimaste).toBe(1)
   })
 
-  it('mostra nel segreto soltanto gli avatar dei giocatori autorizzati', () => {
-    unlock(1)
-    expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(true)
-    useGameStore.setState({ posizione2: world('Percorso_15') })
-    const markup = renderToStaticMarkup(<PercorsoScene />)
-    expect(markup).toContain('data-local-map-player="1"')
-    expect(markup).not.toContain('data-local-map-player="2"')
-    unlock(2)
-    expect(renderToStaticMarkup(<PercorsoScene />)).toContain('data-local-map-player="2"')
-  })
-
-  it('quando l’altro giocatore è sul mondo, l’avatar nel percorso segreto non appare su coordinate inventate', () => {
+  it('quando l’altro giocatore è sul mondo, l’avatar nella Lega non appare su coordinate inventate', () => {
     unlock(1)
     expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(true)
     useGameStore.getState().passaTurnoOverworld()
     const markup = renderToStaticMarkup(<MappaPrincipaleScene />)
     expect(markup).toContain('/maps/Mappa-Finale.jpg')
-    expect(markup).not.toContain('Riapri Percorso 15')
-    expect(markup).not.toContain('Passaggio segreto')
+    expect(markup).not.toContain('Torna a Roma')
+    expect(markup).not.toContain('data-main-map-player="1"')
+    expect(markup).toContain('data-main-map-player="2"')
+  })
+})
+
+describe('interfaccia dei luoghi nascosti dei percorsi e di Via Vittoria', () => {
+  beforeEach(() => {
+    useGameStore.getState().reset()
+    useGameStore.setState({ posizione2: world('Venezia'), scenaCorrente: { scena: 'mappa-principale' } })
+  })
+
+  it.each([
+    ['Percorso_3', 'Luogo leggendario del Percorso 3'],
+    ['Percorso_9', 'Nascondiglio del Team Towers'],
+    ['Percorso_11', 'Luogo leggendario del Percorso 11'],
+    ['Percorso_12', 'Luogo leggendario del Percorso 12'],
+  ])('sulla mappa principale %s offre il passaggio verso %s senza medaglie', (origin, label) => {
+    useGameStore.setState({ posizione1: world(origin) })
+    expect(renderToStaticMarkup(<MappaPrincipaleScene />)).toContain(`Verso ${label} · 1 movimento`)
+  })
+
+  it('gli altri luoghi non offrono passaggi', () => {
+    useGameStore.setState({ posizione1: world('Percorso_10') })
+    expect(renderToStaticMarkup(<MappaPrincipaleScene />)).not.toContain('Verso ')
+  })
+
+  it('il Percorso 15 è Via Vittoria, sempre aperto: mappa dipinta senza requisiti di medaglie', () => {
+    useGameStore.setState({ posizione1: world('Percorso_15'), scenaCorrente: { scena: 'percorso', payload: { luogo: 'Percorso_15' } } })
+    const markup = renderToStaticMarkup(<PercorsoScene />)
+    expect(markup).not.toContain('Luogo non disponibile')
+    expect(markup).toContain('/maps/Percorso_14.png')
+    expect(markup).toContain('Percorso 15 · Via Vittoria')
   })
 })

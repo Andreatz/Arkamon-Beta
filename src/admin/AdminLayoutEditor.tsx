@@ -59,13 +59,6 @@ export function AdminLayoutEditor() {
           </button>
           <button
             type="button"
-            onClick={() => resetSceneLayout('mapGrid')}
-            className="rounded-md border border-[var(--arka-border)] px-2 py-2 text-xs font-black text-[var(--arka-text)] transition hover:bg-[var(--arka-surface-hover)]"
-          >
-            Mappa
-          </button>
-          <button
-            type="button"
             onClick={resetMainMapRoads}
             className="rounded-md border border-[var(--arka-border)] px-2 py-2 text-xs font-black text-[var(--arka-text)] transition hover:bg-[var(--arka-surface-hover)]"
           >

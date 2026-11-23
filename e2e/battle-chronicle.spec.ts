@@ -14,7 +14,7 @@ async function openBattleFixture(page: Page) {
     const defender = { istanzaId: 'chronicle-b', specieId: 13, nome: 'Wormaren Audit', livello: 5, hp: 1, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Cronaca ${id}`, squadra: id === 1 ? [attacker] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {} })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,
