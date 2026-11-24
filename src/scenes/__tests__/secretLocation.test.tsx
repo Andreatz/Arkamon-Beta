@@ -102,12 +102,20 @@ describe('interfaccia dei luoghi nascosti dei percorsi e di Via Vittoria', () =>
 
   it.each([
     ['Percorso_3', 'Luogo leggendario del Percorso 3'],
-    ['Percorso_9', 'Nascondiglio del Team Towers'],
     ['Percorso_11', 'Luogo leggendario del Percorso 11'],
-    ['Percorso_12', 'Luogo leggendario del Percorso 12'],
-  ])('sulla mappa principale %s offre il passaggio verso %s senza medaglie', (origin, label) => {
+  ])('sulla mappa principale %s (senza mappa dipinta) offre il passaggio verso %s senza medaglie', (origin, label) => {
     useGameStore.setState({ posizione1: world(origin) })
     expect(renderToStaticMarkup(<MappaPrincipaleScene />)).toContain(`Verso ${label} · 1 movimento`)
+  })
+
+  it.each([
+    ['Percorso_9', 'Nascondiglio del Team Towers'],
+    ['Percorso_12', 'Luogo leggendario del Percorso 12'],
+  ])('nella mappa dipinta di %s il passaggio verso %s sta nella mappa locale', (origin, label) => {
+    const map = getLocalMap(origin)!
+    useGameStore.setState({ posizione1: world(origin), posizioniLocali1: { [origin]: map.startNode }, scenaCorrente: { scena: 'percorso', payload: { luogo: origin } } })
+    expect(renderToStaticMarkup(<MappaPrincipaleScene />)).not.toContain('Verso ')
+    expect(renderToStaticMarkup(<PercorsoScene />)).toContain(`Verso ${label} · 1 movimento`)
   })
 
   it('gli altri luoghi non offrono passaggi', () => {

@@ -114,9 +114,21 @@ Casi particolari, da confermare:
 - Il Nascondiglio ripete il 120: quello vicino a 65 e 123 diventa **Punto 124**.
 - Nel Nascondiglio le strade 58–59, 62–63, 65–124 e 114–115 sono nascoste dai numeri della foto e sono state aggiunte a mano.
 
-I luoghi nascosti con una rete si aprono come mappe locali dopo il passaggio. La Lega di Roma attende ancora la pittura. Restano senza rete Pescara, i Percorsi 9, 10 e 12 e la terza mappa di Via Vittoria.
+I luoghi nascosti con una rete si aprono come mappe locali dopo il passaggio. La Lega di Roma attende ancora la pittura.
 
-Per il budget di avvio tutte le reti sono scritte in un formato testuale compatto (`src/data/localMaps/codec.ts`). I valori sono gli stessi, verificati confrontando tutte le mappe prima e dopo la conversione.
+### Cinque reti del 24 novembre 2026
+
+| Mappa | Punti | Collegamenti | Ingresso |
+| --- | ---: | ---: | --- |
+| Percorso 9 | 127 | 151 | Punto 1 («entrate 1/11»); la foto salta il 39 |
+| Percorso 10 | 120 | 155 | Punto 1 («1-12 entrata») |
+| Percorso 12 | 120 | 149 | Punto 39 («39-31 entrata») |
+| Pescara | 54 | 82 | Punto 39 («38-39 entrata»); il Punto 54 non è dipinto e lo disegna il gioco |
+| Via Vittoria, terza mappa | 55 | 68 | Punto 31 («entrata da parte 1»), non ancora collegata |
+
+Ogni pittura ha ora la sua rete. Le foto nuove di Venezia, Piacenza, Torino, Reggio Calabria, Roma, Percorsi 14 e 15 e Via Vittoria 2 confermano le reti esistenti: pallini a 1–2 px, nessuna strada in più. Le poche strade che le foto non mostrano sono coperte dalle etichette, tranne il collegamento 35–36 di Via Vittoria 2, che l'utente aveva confermato a parte e resta.
+
+Per il budget di avvio tutte le reti sono scritte in un formato testuale compatto (`src/data/localMaps/codec.ts`: identificatori senza «n», coordinate in millesimi). I valori sono gli stessi, verificati confrontando tutte le mappe prima e dopo la conversione.
 
 ## Dati e salvataggi
 

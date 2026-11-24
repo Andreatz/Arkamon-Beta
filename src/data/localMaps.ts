@@ -16,6 +16,11 @@ import { ReggioCalabria } from './localMaps/ReggioCalabria'
 import { Roma } from './localMaps/Roma'
 import { Torino } from './localMaps/Torino'
 import { Venezia } from './localMaps/Venezia'
+import { Percorso9 } from './localMaps/Percorso_9'
+import { Percorso10 } from './localMaps/Percorso_10'
+import { Percorso12 } from './localMaps/Percorso_12'
+import { Pescara } from './localMaps/Pescara'
+import { ViaVittoria3 } from './localMaps/Via_Vittoria_3'
 import { Civitavecchia } from './localMaps/Civitavecchia'
 import { Grosseto } from './localMaps/Grosseto'
 import { LeggendarioPercorso3 } from './localMaps/Leggendario_Percorso_3'
@@ -57,6 +62,12 @@ export const LOCAL_MAPS: Readonly<Record<string, LocalMapDefinition>> = {
   'Percorso_6': Percorso6,
   'Percorso_7': Percorso7,
   'Percorso_8': Percorso8,
+  // Reti del 24 novembre 2026: Percorsi 9, 10 e 12, Pescara e terza mappa di Via Vittoria.
+  'Percorso_9': Percorso9,
+  'Percorso_10': Percorso10,
+  'Percorso_12': Percorso12,
+  'Pescara': Pescara,
+  'Via_Vittoria_3': ViaVittoria3,
 }
 
 export function getLocalMap(id: string): LocalMapDefinition | undefined {

@@ -3,10 +3,5 @@
  * connections and invalidate existing location progress. Keep it available as
  * source artwork without silently enabling a new route topology.
  */
-export const PENDING_LOCAL_MAP_ARTWORK = [
-  { id: 'Pescara', image: '/maps/Pescara.png' },
-  { id: 'Percorso_9', image: '/maps/Percorso_9.png' },
-  { id: 'Percorso_10', image: '/maps/Percorso_10.png' },
-  { id: 'Percorso_12', image: '/maps/Percorso_12.png' },
-  { id: 'Via_Vittoria_3', image: '/maps/Percorso_15-2.png' },
-] as const
+// Dal 24 novembre 2026 ogni pittura ha la propria rete: l'elenco resta per le pitture future.
+export const PENDING_LOCAL_MAP_ARTWORK: readonly { id: string; image: string }[] = []

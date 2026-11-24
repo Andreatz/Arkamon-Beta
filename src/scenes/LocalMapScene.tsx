@@ -162,7 +162,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     <GameButton onClick={() => navigate('mappa-principale')}>Mappa principale</GameButton>
   </section>
 
-  const passage = (secretPassageVisible || secret) && <GameButton
+  const passage = (secretPassageVisible || secret) && <GameButton className="ref-local-passage"
     disabled={!canMove || activitiesOpen || interactionOpen} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
     {hiddenHere ? `Torna a ${placeLabel(hiddenHere.origin)}` : `Verso ${placeLabel(hiddenFromHere?.id ?? '')}`} · 1 movimento
   </GameButton>

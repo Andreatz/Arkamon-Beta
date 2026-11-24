@@ -147,18 +147,19 @@ describe('store overworld — mappa principale', () => {
   })
 
   it('prenota una sola attività nei luoghi fallback senza mappa locale', () => {
+    // Dal 24 novembre 2026 Pescara ha la sua rete: il Percorso 11 resta senza pittura.
     useGameStore.setState({
-      posizione1: { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Pescara' },
+      posizione1: { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Percorso_11' },
       giocatoreAttivo: 1,
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       fallbackLocationActivity: null,
-      scenaCorrente: { scena: 'citta', payload: { luogo: 'Pescara' } },
+      scenaCorrente: { scena: 'percorso', payload: { luogo: 'Percorso_11' } },
     })
-    expect(useGameStore.getState().interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'luogo', luogo: 'Pescara' })
-    expect(useGameStore.getState().fallbackLocationActivity).toEqual({ playerId: 1, location: 'Pescara' })
-    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Pescara')).toBe(true)
+    expect(useGameStore.getState().interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'luogo', luogo: 'Percorso_11' })
+    expect(useGameStore.getState().fallbackLocationActivity).toEqual({ playerId: 1, location: 'Percorso_11' })
+    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Percorso_11')).toBe(true)
     expect(useGameStore.getState().fallbackLocationActivity).toBeNull()
-    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Pescara')).toBe(false)
+    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Percorso_11')).toBe(false)
   })
 })
 
