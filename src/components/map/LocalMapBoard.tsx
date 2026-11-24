@@ -3,7 +3,7 @@ import { LocalMapAmbience } from './LocalMapAmbience'
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import type { LocalMapDefinition, LocalMapNode, LocalMapPoint } from '@/data/localMaps'
-import { getReachableLocalMapNodes, getLocalTravelPath } from '@/engine/localMapMovement'
+import { getReachableLocalMapNodes, getLocalTravelPath, getLocalRoadPath } from '@/engine/localMapMovement'
 import { assetUrl } from '@/utils/assetUrl'
 import { GameArt, hasGameArt } from '@/ui-system/GameArt'
 import './localMapBoard.css'
@@ -35,6 +35,15 @@ export interface LocalMapBoardProps {
    */
   stage?: boolean
   overview?: boolean
+  /** Strade percorribili dal giocatore di turno, senza le strade bloccate (24 novembre 2026). */
+  walkableMap?: LocalMapDefinition
+  /** Strade e pallini chiusi, con il titolo del blocco che li chiude. */
+  closures?: LocalMapClosures
+}
+
+export interface LocalMapClosures {
+  roads: { from: string; to: string; title: string }[]
+  nodes: Record<string, string>
 }
 
 /** Ingrandimento della camera rispetto alla mappa che copre lo schermo. */
@@ -229,7 +238,10 @@ export function LocalMapBoard({
   moveRange = 1,
   stage = false,
   overview = false,
+  walkableMap,
+  closures,
 }: LocalMapBoardProps) {
+  const walkable = walkableMap ?? map
   const { reducedMotion: ambienceStill } = useGameMotionPreferences()
   const root = useRef<HTMLDivElement>(null)
   const [bounds, setBounds] = useState<BoardSize>({ width: 0, height: 0 })
@@ -238,7 +250,7 @@ export function LocalMapBoard({
   const instructionsId = useId()
   const activePlayer = players.find((player) => player.id === activePlayerId)
   const currentNode = activePlayer?.nodeId
-  const neighbours = currentNode ? getReachableLocalMapNodes(map, currentNode, moveRange) : []
+  const neighbours = currentNode ? getReachableLocalMapNodes(walkable, currentNode, moveRange) : []
 
   useEffect(() => {
     const element = root.current
@@ -320,8 +332,13 @@ export function LocalMapBoard({
           preserveAspectRatio="none"
           aria-hidden="true"
         >
+          {closures?.roads.map((road) => {
+            const points = getLocalRoadPath(map, road.from, road.to)
+            return points.length ? <path key={`closed-${road.from}-${road.to}`} className="local-map-road-closed" data-local-road-closed={`${road.from}-${road.to}`}
+              d={pathString(points)} fill="none" vectorEffect="non-scaling-stroke" /> : null
+          })}
           {movementEnabled && currentNode && neighbours.map((nextNode) => {
-            const points = getLocalTravelPath(map, currentNode, nextNode, moveRange)
+            const points = getLocalTravelPath(walkable, currentNode, nextNode, moveRange)
             return points.length ? (
               <path
                 key={nextNode}
@@ -343,6 +360,7 @@ export function LocalMapBoard({
           const enabled = isCurrent ? canChooseCurrent : isReachable
           const label = node.label ?? `Punto ${index + 1}`
           const kind = interactionKinds[node.id]
+          const closed = closures?.nodes[node.id]
           return (
             <button
               key={node.id}
@@ -350,12 +368,13 @@ export function LocalMapBoard({
               data-local-map-node={node.id}
               data-reachable={isReachable ? 'true' : 'false'}
               data-node-kind={kind}
-              className={`local-map-node${isCurrent ? ' local-map-node--current' : ''}${isReachable ? ' local-map-node--reachable' : ''}`}
+              data-closed={closed ? 'true' : undefined}
+              className={`local-map-node${isCurrent ? ' local-map-node--current' : ''}${isReachable ? ' local-map-node--reachable' : ''}${closed ? ' local-map-node--closed' : ''}`}
               style={{ left: `${node.x}%`, top: `${node.y}%` }}
               disabled={!enabled}
               aria-current={isCurrent ? 'location' : undefined}
-              aria-label={`${label}${isCurrent ? ', posizione attuale; mostra interazione' : isReachable ? ', muoviti qui' : ', non adiacente'}`}
-              title={isCurrent ? `${label} · ${interactionLabels[node.id] ?? 'interazione da definire'}` : isReachable ? `Vai a ${label}` : label}
+              aria-label={`${label}${isCurrent ? ', posizione attuale; mostra interazione' : isReachable ? ', muoviti qui' : closed ? `, chiuso: ${closed}` : ', non adiacente'}`}
+              title={isCurrent ? `${label} · ${interactionLabels[node.id] ?? 'interazione da definire'}` : isReachable ? `Vai a ${label}` : closed ? `${label} · ${closed}` : label}
               onMouseEnter={() => setPreviewNode(isReachable ? node.id : null)}
               onMouseLeave={() => setPreviewNode(null)}
               onFocus={() => setPreviewNode(isReachable ? node.id : null)}
@@ -369,6 +388,7 @@ export function LocalMapBoard({
               {stage && <span className="local-map-node-stone" aria-hidden="true" />}
               {!stage && node.drawMarker && <span className="local-map-node-marker" aria-hidden="true" />}
               <span className="local-map-node-ring" aria-hidden="true" />
+              {closed && <span className="local-map-node-barrier" aria-hidden="true" />}
               {kind && (stage && hasGameArt(`node-${kind}`)
                 ? <span className="local-map-node-medal" data-kind={kind} aria-hidden="true"><GameArt id={`node-${kind}`} /></span>
                 : <span className="local-map-node-kind" data-kind={kind} title={LOCAL_NODE_KIND_LABELS[kind]} aria-hidden="true"><LocalNodeGlyph kind={kind} /></span>)}

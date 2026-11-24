@@ -11,6 +11,10 @@ import { useAdminStore } from '@store/adminStore'
 import { MAPPE } from '@data/index'
 import { getLocalMap } from '@/data/localMaps'
 import { canAccessSecretLocation, canEnterHiddenLocation, getHiddenLocation, hasUnlockedSecretLocation, hiddenLocationFrom, isHiddenLocation, isSecretLocationPosition } from '@/data/secretLocation'
+import { mainRoadBlock } from '@/engine/roadBlocks'
+import { roadBlockContextFor } from '@/interactions/roadBlockRuntime'
+import { useInteractionStore } from '@/interactions/interactionStore'
+import { MAIN_MAP_BLOCK_ID } from '@/interactions/types'
 import {
   MAIN_MAP_START_NODE,
   MAIN_MAP_ROAD_CONNECTIONS,
@@ -282,7 +286,15 @@ export function MappaPrincipaleScene() {
   const activePosition = giocatoreAttivo === 1 ? posizione1 : posizione2
   const player1NodeName = getMainMapNodeName(posizione1)
   const player2NodeName = getMainMapNodeName(posizione2)
-  const reachableNodeNames = getAdjacentMainMapNodes(activeNodeName)
+  // Strade bloccate (24 novembre 2026): le linee rosse restano disegnate ma non si percorrono.
+  const roadBlocks = useInteractionStore((s) => s.roadBlocks)
+  const blockProgress = useGameStore((s) => s.interactionProgress)
+  const blockLeague = useGameStore((s) => s.league)
+  const blockPlayer1 = useGameStore((s) => s.giocatore1)
+  const blockPlayer2 = useGameStore((s) => s.giocatore2)
+  const blockContext = roadBlockContextFor({ giocatore1: blockPlayer1, giocatore2: blockPlayer2, interactionProgress: blockProgress, league: blockLeague }, giocatoreAttivo)
+  const closedRoad = (from: string, to: string) => mainRoadBlock(roadBlocks, blockContext, from, to, MAIN_MAP_BLOCK_ID)
+  const reachableNodeNames = getAdjacentMainMapNodes(activeNodeName).filter((name) => !closedRoad(activeNodeName, name))
   const movimentoDisponibile = turnoOverworld.azioniRimaste > 0
   const interazioneDisponibile = turnoOverworld.azioniRimaste > 0
   const aperturaDisponibile = !!getLocalMap(activeNodeName) || interazioneDisponibile
@@ -518,7 +530,7 @@ export function MappaPrincipaleScene() {
     )
     const points = orthogonalizeRoadPoints(controlPoints)
 
-    return [{ key, points, controlPoints, d: roadPath(points) }]
+    return [{ key, points, controlPoints, d: roadPath(points), closed: closedRoad(fromName, toName) }]
   })
 
   const hiddenHere = isSecretLocationPosition(activePosition) ? getHiddenLocation(activePosition.luogo) : undefined
@@ -626,6 +638,11 @@ export function MappaPrincipaleScene() {
             pointerEvents="none"
           />
         ))}
+
+        {!layoutEditing && roadRenderItems.map(({ key, d, closed }) => closed ? (
+          <path key={`${key}-closed`} className="world-map-road-closed" data-main-map-road-closed={key} d={d} fill="none"
+            vectorEffect="non-scaling-stroke" pointerEvents="none"><title>{closed.title}</title></path>
+        ) : null)}
 
         {roadRenderItems.map(({ key, controlPoints, d }) => (
           <g key={`${key}-editor`}>
@@ -897,8 +914,9 @@ export function MappaPrincipaleScene() {
 
       {hiddenPassageOnMap && !layoutEditing && <GameButton
         className="absolute right-3 top-[42%] z-[35] min-w-36 px-4 py-3"
-        disabled={!movimentoDisponibile} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>
-        Verso {placeLabel(hiddenPassageOnMap.id)} · 1 movimento</GameButton>}
+        title={closedRoad(activeNodeName, hiddenPassageOnMap.id)?.message}
+        disabled={!movimentoDisponibile || !!closedRoad(activeNodeName, hiddenPassageOnMap.id)} onClick={() => attraversaPassaggioSegreto(giocatoreAttivo)}>
+        {closedRoad(activeNodeName, hiddenPassageOnMap.id)?.title ?? `Verso ${placeLabel(hiddenPassageOnMap.id)} · 1 movimento`}</GameButton>}
 
       {previewDestination && reachableNodeNames.includes(previewDestination) && movimentoDisponibile && !layoutEditing && <aside className="world-map-destination" aria-label="Destinazione selezionata">
         <p>Prossima destinazione</p><h2>{placeLabel(previewDestination)}</h2>

@@ -52,3 +52,7 @@
   .local-map-neighbours button { min-height:48px; font-size:20px; }
   .local-map-footer p { font-size:17px; }
 }
+
+/* Strada bloccata accanto al pallino del giocatore (24 novembre 2026). */
+.local-map-closure-note { display: block; margin-top: 4px; font-size: 0.85em; color: rgb(255 196 190); }
+.local-map-closure-note strong { margin-right: 4px; color: rgb(255 120 112); }

@@ -59,7 +59,7 @@ beforeEach(() => {
   savedValues.clear()
   useGameStore.getState().reset()
   useGameStore.setState({ challengeContext: null })
-  useInteractionStore.setState({ interactions: [] })
+  useInteractionStore.setState({ interactions: [], roadBlocks: [] })
 })
 
 describe('cap di squadra applicato alle azioni della campagna', () => {

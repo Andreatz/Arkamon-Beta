@@ -2,6 +2,9 @@ import { useGameStore } from '@/store/gameStore'
 import { stateFromValidatedBackup, serializeGameBackup, validateGameBackup, type GameBackupPreview } from './gameBackup'
 import { GAME_SAVE_STORAGE_KEY, PREVIOUS_BACKUP_STORAGE_KEY, serializeGameState } from './gamePersistence'
 import { INTERACTION_STORAGE_KEY, useInteractionStore } from '@/interactions/interactionStore'
+import { BUILT_IN_REVISION, withBuiltInContent, withRequiredBuiltIns } from '@/interactions/builtInCatalog'
+import type { InteractionCatalog, InteractionDefinition, RoadBlockDefinition } from '@/interactions/types'
+import { GAME_DATA_VERSION } from '@/data/trainerMigration'
 import { BATTLE_ARCHIVE_STORAGE_KEY, useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { isCampaignWritable, sessionOwnershipMessage } from '@/session/sessionOwnership'
 import { backupRestoreStorage, prepareBackupRestore, finishBackupRestore, rollbackBackupRestore, useBackupRestoreRecoveryStatus, type RestoreEntry } from './restoreJournal'
@@ -11,6 +14,17 @@ import { interactionRecoveryMessage, useInteractionRecoveryStatus } from '@/inte
 
 type BackupStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 export type GameBackupRestoreResult = { ok: true; previousBackup: string } | { ok: false; error: string }
+
+/**
+ * Il catalogo del backup nella forma dello store: un backup senza strade bloccate conserva quelle attuali,
+ * e uno precedente ai contenuti del gioco li riceve come un catalogo importato.
+ */
+function storedBackupCatalog(catalog: InteractionCatalog | undefined): { interactions: InteractionDefinition[]; roadBlocks: RoadBlockDefinition[] } | undefined {
+  if (!catalog) return undefined
+  const roadBlocks = catalog.roadBlocks ?? useInteractionStore.getState().roadBlocks
+  const interactions = catalog.roadBlocks ? catalog.interactions : withRequiredBuiltIns(catalog.interactions, roadBlocks)
+  return withBuiltInContent({ interactions, roadBlocks }, catalog.builtInRevision ?? 0)
+}
 
 /** Write durable data first, then publish one in-memory state update. Failed writes leave the game untouched. */
 export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupStorage): GameBackupRestoreResult {
@@ -22,12 +36,12 @@ export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupSt
   if (!restored) return { ok: false, error: 'Il backup non è più valido. Riapri il file e controlla l’anteprima.' }
   const revalidated = validateGameBackup(preview.source)
   if (!revalidated.ok) return { ok: false, error: revalidated.error }
-  const catalog = revalidated.preview.interactionCatalog
+  const catalog = storedBackupCatalog(revalidated.preview.interactionCatalog)
   const archive = revalidated.preview.battleArchive
   const state = useGameStore.getState()
   restored.audioMuted = state.audioMuted
   let previousBackup: string
-  try { previousBackup = serializeGameBackup(state, new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState()) }
+  try { previousBackup = serializeGameBackup(state, new Date(), useInteractionStore.getState().interactions, useBattleArchiveStore.getState(), useInteractionStore.getState().roadBlocks) }
   catch (cause) { return { ok: false, error: cause instanceof Error ? `Impossibile conservare la partita precedente: ${cause.message}` : 'Impossibile conservare la partita precedente. Nessun dato è stato sostituito.' } }
   const target = backupRestoreStorage(storage)
   let entries: RestoreEntry[] | null = null
@@ -35,7 +49,7 @@ export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupSt
   try {
     entries = prepareBackupRestore(target, [
       { key: PREVIOUS_BACKUP_STORAGE_KEY, after: previousBackup },
-      ...(catalog ? [{ key: INTERACTION_STORAGE_KEY, after: JSON.stringify({ state: { interactions: catalog.interactions }, version: 0 }) }] : []),
+      ...(catalog ? [{ key: INTERACTION_STORAGE_KEY, after: JSON.stringify({ state: { ...catalog, dataVersion: GAME_DATA_VERSION, builtInRevision: BUILT_IN_REVISION }, version: 0 }) }] : []),
       ...(archive ? [{ key: BATTLE_ARCHIVE_STORAGE_KEY, after: JSON.stringify({ state: archive, version: 1 }) }] : []),
       { key: GAME_SAVE_STORAGE_KEY, after: JSON.stringify({ state: serializeGameState(restored), version: 0 }) },
     ])
@@ -62,7 +76,7 @@ export function restoreGameBackup(preview: GameBackupPreview, storage?: BackupSt
   if (catalog && interactionPersistence) useInteractionStore.persist.setOptions({ storage: { ...interactionPersistence, setItem: () => undefined } })
   if (archive && archivePersistence) useBattleArchiveStore.persist.setOptions({ storage: { ...archivePersistence, setItem: () => undefined } })
   try {
-    if (catalog) useInteractionStore.setState({ interactions: catalog.interactions })
+    if (catalog) useInteractionStore.setState({ interactions: catalog.interactions, roadBlocks: catalog.roadBlocks })
     if (archive) useBattleArchiveStore.setState({ ...archive, storageWarning: null })
     useGameStore.setState({ ...restored, campaignRevision: state.campaignRevision + 1, saveRecoveryWarnings: [...preview.warnings] })
   } finally {

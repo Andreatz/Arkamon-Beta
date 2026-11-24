@@ -21,7 +21,7 @@ export function SaveFailureNotice() {
   const discard = () => { cancel?.(); clear() }
   const download = () => {
     try {
-      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState()), gameBackupFilename())
+      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState(), useInteractionStore.getState().roadBlocks), gameBackupFilename())
       setDownloadError('')
     } catch (cause) { setDownloadError(cause instanceof Error ? cause.message : 'Il download non è riuscito. Riprova senza cancellare i dati del browser.') }
   }

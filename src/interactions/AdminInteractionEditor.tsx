@@ -12,6 +12,7 @@ import { exportTiledInteractions, importTiledInteractions } from './tiledAdapter
 import './interactions.css'
 import { hasArkaStore } from '@/shop/catalog'
 import { completionPrerequisiteOptions } from './schema'
+import { AdminRoadBlockEditor } from './AdminRoadBlockEditor'
 
 const maps = Object.values(LOCAL_MAPS)
 const createDraft = (mapId: string, nodeId: string) => newInteractionDefinition(mapId, nodeId, `interaction-${crypto.randomUUID()}`)
@@ -59,9 +60,9 @@ export function AdminInteractionEditor() {
       ...(kind === 'shop' ? { cost: { coins: 0, items: {} }, reward: { coins: 0, items: {} } } : {}) })
   }
   const pointName = (id: string) => map.nodes.find((node) => node.id === id)?.label ?? id
-  return <section className="interaction-editor" aria-label="Editor delle interazioni">
+  return <><section className="interaction-editor" aria-label="Editor delle interazioni">
     <h2>Interazioni dei pallini</h2>
-    <p>I numeri compaiono soltanto in questo editor. Le strade e le posizioni rimangono quelle delle foto. Le configurazioni vuote lasciano disponibili le attività attuali.</p>
+    <p>I numeri compaiono soltanto in questo editor. Le strade e le posizioni rimangono quelle delle foto. Le interazioni e le strade bloccate del gioco sono già presenti: modificale qui come le tue.</p>
     {recovery && <section role="alert" aria-label="Recupero catalogo interazioni">
       <h3>Catalogo da recuperare</h3><p>{recovery.error}</p>
       <p>Le interazioni salvate sono sospese. L’originale è conservato: scaricalo prima di sostituirlo con un catalogo valido nell’area Importa / esporta.</p>
@@ -144,4 +145,6 @@ export function AdminInteractionEditor() {
       </div>}
     </details>
   </section>
+  {/* Sezione separata: le etichette e lo stato dell'editor delle interazioni restano univoci. */}
+  <AdminRoadBlockEditor /></>
 }

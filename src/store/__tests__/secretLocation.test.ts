@@ -187,6 +187,25 @@ describe('store - luoghi nascosti dei Percorsi 3, 9, 11 e 12', () => {
     }))
   })
 
+  const winLeague = (id: 1 | 2) => useGameStore.setState((s) => ({ league: { ...s.league, players: { ...s.league.players, [id]: { ...s.league.players[id], status: 'completed' } } } }))
+
+  it.each([
+    ['Percorso_3', 'Leggendario_Percorso_3'],
+    ['Percorso_11', 'Leggendario_Percorso_11'],
+    ['Percorso_12', 'Leggendario_Percorso_12'],
+  ])('la porta da %s verso %s resta chiusa finché il giocatore non vince la Lega', (origin, hidden) => {
+    useGameStore.setState({ posizione1: world(origin), posizione2: world(origin) })
+    expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(false)
+    expect(useGameStore.getState().muoviAvatarMappaPrincipale(1, hidden)).toBe(false)
+    expect(useGameStore.getState().posizione1.luogo).toBe(origin)
+    expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)
+    winLeague(2)
+    expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(false)
+    winLeague(1)
+    expect(useGameStore.getState().attraversaPassaggioSegreto(1)).toBe(true)
+    expect(useGameStore.getState().posizione1.luogo).toBe(hidden)
+  })
+
   it.each([
     ['Percorso_3', 'Leggendario_Percorso_3'],
     ['Percorso_9', 'Nascondiglio_Team_Towers'],
@@ -194,6 +213,7 @@ describe('store - luoghi nascosti dei Percorsi 3, 9, 11 e 12', () => {
     ['Percorso_12', 'Leggendario_Percorso_12'],
   ])('da %s si entra in %s senza medaglie e si torna indietro, un movimento per lato', (origin, hidden) => {
     useGameStore.setState({ posizione1: world(origin), posizione2: world('Venezia') })
+    winLeague(1)
     const s = useGameStore.getState()
     expect(s.attraversaPassaggioSegreto(1)).toBe(true)
     expect(useGameStore.getState().posizione1.luogo).toBe(hidden)
@@ -211,6 +231,7 @@ describe('store - luoghi nascosti dei Percorsi 3, 9, 11 e 12', () => {
 
   it('il passaggio di un percorso non porta ai luoghi nascosti degli altri', () => {
     useGameStore.setState({ posizione1: world('Percorso_3') })
+    winLeague(1)
     const s = useGameStore.getState()
     expect(s.muoviAvatarMappaPrincipale(1, 'Leggendario_Percorso_11')).toBe(false)
     expect(s.muoviAvatarMappaPrincipale(1, 'Lega_Roma')).toBe(false)

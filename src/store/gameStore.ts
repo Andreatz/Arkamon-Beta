@@ -67,6 +67,9 @@ import {
   isSecretLocationConnection,
 } from '@data/secretLocation'
 import { canMoveOnLocalMap, getLocalMapNode } from '@engine/localMapMovement'
+import { applyLocalRoadBlocks, localRoadBlocks, mainRoadBlock } from '@engine/roadBlocks'
+import { roadBlockContextFor } from '@/interactions/roadBlockRuntime'
+import { MAIN_MAP_BLOCK_ID } from '@/interactions/types'
 import { consumaAzione, nuovoTurno } from '@engine/turnoOverworld'
 
 /** Una fusione di Axolux da annunciare: chi si è fuso e in cosa. */
@@ -802,6 +805,8 @@ export const useGameStore = create<GameState>()(
             || !canEnterHiddenLocation(giocatore, nascosto)
             || !isSecretLocationConnection(luogoCorrente, luogoDestinazione)) return false
         } else if (!areMainMapNodesConnected(luogoCorrente, luogoDestinazione)) return false
+        // Strade bloccate della mappa principale (anche le porte dei luoghi leggendari).
+        if (mainRoadBlock(useInteractionStore.getState().roadBlocks, roadBlockContextFor(state, giocatoreId), luogoCorrente, luogoDestinazione, MAIN_MAP_BLOCK_ID)) return false
 
         return set({
           [chiavePos]: posizioneMappaPrincipale(luogoDestinazione),
@@ -898,7 +903,8 @@ export const useGameStore = create<GameState>()(
         }
         const from = getLocalMapNode(map, state[positionKey][luogo]).id
         const range = localMoveRange(state[giocatoreId === 1 ? 'giocatore1' : 'giocatore2'].inventario, luogo)
-        if (!canMoveOnLocalMap(map, from, nodoDestinazione, range)) return false
+        const open = applyLocalRoadBlocks(map, localRoadBlocks(useInteractionStore.getState().roadBlocks, roadBlockContextFor(state, giocatoreId), luogo), from)
+        if (!canMoveOnLocalMap(open, from, nodoDestinazione, range)) return false
         return set({
           [positionKey]: { ...state[positionKey], [luogo]: nodoDestinazione },
           turnoOverworld: consumaAzione(state.turnoOverworld, 'movimento'),

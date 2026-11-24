@@ -20,6 +20,7 @@ vi.mock('@store/gameStore', async (importOriginal) => {
 })
 
 const world = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' as const })
+const winLeague = (id: 1 | 2) => useGameStore.setState((s) => ({ league: { ...s.league, players: { ...s.league.players, [id]: { ...s.league.players[id], status: 'completed' } } } }))
 const unlock = (id: 1 | 2) => {
   const key = id === 1 ? 'giocatore1' : 'giocatore2'
   useGameStore.setState((s) => ({ [key]: { ...s[key], allenatoriSconfitti: new Set(SECRET_LOCATION_GYM_IDS) } }))
@@ -103,8 +104,13 @@ describe('interfaccia dei luoghi nascosti dei percorsi e di Via Vittoria', () =>
   it.each([
     ['Percorso_3', 'Luogo leggendario del Percorso 3'],
     ['Percorso_11', 'Luogo leggendario del Percorso 11'],
-  ])('sulla mappa principale %s (senza mappa dipinta) offre il passaggio verso %s senza medaglie', (origin, label) => {
+  ])('sulla mappa principale %s (senza mappa dipinta) offre il passaggio verso %s dopo la Lega, senza medaglie', (origin, label) => {
     useGameStore.setState({ posizione1: world(origin) })
+    // Prima della Lega la porta è visibile ma chiusa.
+    const closed = renderToStaticMarkup(<MappaPrincipaleScene />)
+    expect(closed).toContain('Porta del leggendario chiusa')
+    expect(closed).not.toContain(`Verso ${label}`)
+    winLeague(1)
     expect(renderToStaticMarkup(<MappaPrincipaleScene />)).toContain(`Verso ${label} · 1 movimento`)
   })
 
@@ -114,6 +120,7 @@ describe('interfaccia dei luoghi nascosti dei percorsi e di Via Vittoria', () =>
   ])('nella mappa dipinta di %s il passaggio verso %s sta nella mappa locale', (origin, label) => {
     const map = getLocalMap(origin)!
     useGameStore.setState({ posizione1: world(origin), posizioniLocali1: { [origin]: map.startNode }, scenaCorrente: { scena: 'percorso', payload: { luogo: origin } } })
+    winLeague(1)
     expect(renderToStaticMarkup(<MappaPrincipaleScene />)).not.toContain('Verso ')
     expect(renderToStaticMarkup(<PercorsoScene />)).toContain(`Verso ${label} · 1 movimento`)
   })

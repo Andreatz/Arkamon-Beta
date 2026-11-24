@@ -1,15 +1,21 @@
-import { DATABASE_TRAINERS_VERSION, GAME_DATA_VERSION, LOCATION_RENAME_VERSION, migrateLegacyInteraction } from '@/data/trainerMigration'
-import { renameLegacyLocalMap } from '@/data/locationRename'
+import { GAME_DATA_VERSION } from '@/data/trainerMigration'
+import { migrateCatalogPayload } from './catalogMigration'
+export { migrateCatalogPayload } from './catalogMigration'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import type { InteractionDefinition } from './types'
-import { validateCatalog, validateInteraction } from './schema'
+import type { InteractionDefinition, RoadBlockDefinition } from './types'
+import { validateCatalog, validateInteraction, validateRoadBlock } from './schema'
+import { BUILT_IN_INTERACTIONS, BUILT_IN_REVISION, BUILT_IN_ROAD_BLOCKS, withBuiltInContent, withRequiredBuiltIns } from './builtInCatalog'
 import { isCampaignWritable, readCampaignCheckpoint, removeCampaignCheckpoint, sessionOwnershipMessage, writeCampaignCheckpoint } from '@/session/sessionOwnership'
 import { interactionRecoveryMessage, useInteractionRecoveryStatus } from './interactionRecovery'
 
 export const INTERACTION_STORAGE_KEY = 'arkamon-interactions-v1'
 interface InteractionState {
   interactions: InteractionDefinition[]
+  /** Strade bloccate del gioco e della regia (24 novembre 2026). */
+  roadBlocks: RoadBlockDefinition[]
+  saveRoadBlock: (block: RoadBlockDefinition) => string | null
+  removeRoadBlock: (id: string) => string | null
   saveInteraction: (interaction: InteractionDefinition) => string | null
   removeInteraction: (id: string) => string | null
   importCatalog: (json: string) => string | null
@@ -17,7 +23,8 @@ interface InteractionState {
   exportCatalog: () => string
 }
 /** Write the validated catalog before publishing it to subscribers. Quota errors leave both copies unchanged. */
-function commitCatalog(interactions: InteractionDefinition[], set: (patch: Pick<InteractionState, 'interactions'>) => void, replaceDamaged = false): string | null {
+type CatalogPatch = Pick<InteractionState, 'interactions' | 'roadBlocks'>
+function commitCatalog(interactions: InteractionDefinition[], roadBlocks: RoadBlockDefinition[], set: (patch: CatalogPatch) => void, replaceDamaged = false): string | null {
   if (!isCampaignWritable()) return sessionOwnershipMessage()
   const recovery = useInteractionRecoveryStatus.getState().recovery
   if (recovery && !replaceDamaged) return interactionRecoveryMessage
@@ -26,14 +33,14 @@ function commitCatalog(interactions: InteractionDefinition[], set: (patch: Pick<
   if (!storage) return 'Il salvataggio delle interazioni non è disponibile in questo browser. La configurazione precedente è stata conservata.'
   try {
     if (recovery && readCampaignCheckpoint(INTERACTION_STORAGE_KEY) !== recovery.raw) return 'Il catalogo originale è cambiato. Rileggi la sessione prima di scegliere il recupero.'
-    const result = storage.setItem(options.name ?? INTERACTION_STORAGE_KEY, { state: { interactions, dataVersion: GAME_DATA_VERSION }, version: options.version ?? 0 })
+    const result = storage.setItem(options.name ?? INTERACTION_STORAGE_KEY, { state: { interactions, roadBlocks, dataVersion: GAME_DATA_VERSION, builtInRevision: BUILT_IN_REVISION }, version: options.version ?? 0 })
     // This catalog uses synchronous browser storage. Never publish an unconfirmed asynchronous write.
     if (result instanceof Promise) {
       void result.catch(() => {})
       return 'Il salvataggio delle interazioni richiede un archivio locale disponibile. La configurazione precedente è stata conservata.'
     }
     useInteractionStore.persist.setOptions({ storage: { ...storage, setItem: () => undefined } })
-    try { set({ interactions }) } finally { useInteractionStore.persist.setOptions({ storage }) }
+    try { set({ interactions, roadBlocks }) } finally { useInteractionStore.persist.setOptions({ storage }) }
     useInteractionRecoveryStatus.setState({ recovery: null })
     return null
   } catch {
@@ -60,51 +67,65 @@ function readStoredCatalog(key: string): string | null {
   }
   return raw
 }
-/** Cataloghi salvati o esportati prima del Database: allenatori storici convertiti una sola volta. */
-export function migrateCatalogPayload(value: unknown): unknown {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return value
-  const record = value as { dataVersion?: unknown; interactions?: unknown }
-  if (record.dataVersion === GAME_DATA_VERSION || !Array.isArray(record.interactions)) return value
-  const version = typeof record.dataVersion === 'number' ? record.dataVersion : 0
-  const interactions = record.interactions.map((entry) => {
-    const candidate = entry as InteractionDefinition
-    if (!candidate || typeof candidate !== 'object' || !candidate.action || !candidate.requirements || !Array.isArray(candidate.requirements.gymIds)) return entry
-    const trainers = version < DATABASE_TRAINERS_VERSION ? migrateLegacyInteraction(candidate) : candidate
-    // Le interazioni stanno sui pallini delle pitture: seguono la mappa locale rinominata.
-    return version < LOCATION_RENAME_VERSION && typeof trainers.mapId === 'string' ? { ...trainers, mapId: renameLegacyLocalMap(trainers.mapId) } : trainers
-  })
-  return { ...record, dataVersion: GAME_DATA_VERSION, interactions }
+/** Un file senza strade bloccate (cataloghi precedenti, Tiled) conserva quelle già presenti. */
+function prepareImportedCatalog(value: unknown, currentBlocks: RoadBlockDefinition[]): { payload: unknown; revision: number } {
+  const migrated = migrateCatalogPayload(value)
+  if (!migrated || typeof migrated !== 'object' || Array.isArray(migrated)) return { payload: migrated, revision: BUILT_IN_REVISION }
+  const record = migrated as { roadBlocks?: unknown; builtInRevision?: unknown }
+  const hasBlocks = record.roadBlocks !== undefined
+  return {
+    payload: hasBlocks || !Array.isArray((record as { interactions?: unknown }).interactions) ? migrated
+      : { ...record, roadBlocks: currentBlocks, interactions: withRequiredBuiltIns((record as { interactions: InteractionDefinition[] }).interactions, currentBlocks) },
+    // Un file senza revisione precede i contenuti del gioco: le voci predefinite mancanti si aggiungono.
+    revision: typeof record.builtInRevision === 'number' ? record.builtInRevision : hasBlocks ? BUILT_IN_REVISION : 0,
+  }
 }
 
 export const useInteractionStore = create<InteractionState>()(persist((set, get) => ({
-  interactions: [],
+  interactions: structuredClone([...BUILT_IN_INTERACTIONS]),
+  roadBlocks: structuredClone([...BUILT_IN_ROAD_BLOCKS]),
   saveInteraction: (interaction) => {
     const error = validateInteraction(interaction)
     if (error) return error
     const existing = get().interactions
     const next = existing.some((entry) => entry.id === interaction.id)
       ? existing.map((entry) => entry.id === interaction.id ? interaction : entry) : [...existing, interaction]
-    const validated = validateCatalog({ version: 1, interactions: next }, { legacyInteractions: existing })
+    const validated = validateCatalog({ version: 1, interactions: next, roadBlocks: get().roadBlocks }, { legacyInteractions: existing })
     if (validated.error) return validated.error
-    return commitCatalog(validated.catalog!.interactions, set)
+    return commitCatalog(validated.catalog!.interactions, get().roadBlocks, set)
   },
   removeInteraction: (id) => {
     if (get().interactions.some((entry) => entry.requirements.completedInteractions.includes(id))) return 'Questa interazione è richiesta da una tappa successiva: rimuovi prima quel requisito.'
-    return commitCatalog(get().interactions.filter((entry) => entry.id !== id), set)
+    if (get().roadBlocks.some((block) => block.unlock.completedInteractions.includes(id))) return 'Questa interazione riapre una strada bloccata: rimuovi prima quella condizione.'
+    return commitCatalog(get().interactions.filter((entry) => entry.id !== id), get().roadBlocks, set)
   },
+  saveRoadBlock: (block) => {
+    const error = validateRoadBlock(block, get().interactions)
+    if (error) return error
+    const existing = get().roadBlocks
+    const next = existing.some((entry) => entry.id === block.id) ? existing.map((entry) => entry.id === block.id ? block : entry) : [...existing, block]
+    const validated = validateCatalog({ version: 1, interactions: get().interactions, roadBlocks: next }, { allowLegacyRepeatableRequirements: true })
+    if (validated.error) return validated.error
+    return commitCatalog(get().interactions, validated.catalog!.roadBlocks ?? [], set)
+  },
+  removeRoadBlock: (id) => commitCatalog(get().interactions, get().roadBlocks.filter((entry) => entry.id !== id), set),
   importCatalog: (json) => {
     try {
-      const validated = validateCatalog(migrateCatalogPayload(JSON.parse(json)))
+      const prepared = prepareImportedCatalog(JSON.parse(json), get().roadBlocks)
+      const validated = validateCatalog(prepared.payload)
       if (validated.error) return validated.error
-      return commitCatalog(validated.catalog!.interactions, set)
+      const catalog = withBuiltInContent({ interactions: validated.catalog!.interactions, roadBlocks: validated.catalog!.roadBlocks ?? [] }, prepared.revision)
+      return commitCatalog(catalog.interactions, catalog.roadBlocks, set)
     } catch { return 'Il file non contiene un JSON valido.' }
   },
   replaceDamagedCatalog: (json) => {
     if (!useInteractionRecoveryStatus.getState().recovery) return 'Non è presente un catalogo da recuperare.'
     try {
-      const validated = validateCatalog(migrateCatalogPayload(JSON.parse(json)))
+      const prepared = prepareImportedCatalog(JSON.parse(json), get().roadBlocks)
+      const validated = validateCatalog(prepared.payload)
       if (validated.error) return validated.error
-      return commitCatalog(validated.catalog!.interactions, set, true)
+      const catalog = withBuiltInContent({ interactions: validated.catalog!.interactions, roadBlocks: validated.catalog!.roadBlocks ?? [] }, prepared.revision)
+      return commitCatalog(catalog.interactions, catalog.roadBlocks, set, true)
     } catch { return 'Il file non contiene un JSON valido.' }
   },
   exportCatalog: () => {
@@ -113,25 +134,30 @@ export const useInteractionStore = create<InteractionState>()(persist((set, get)
       if (recovery.raw !== null) return recovery.raw
       throw new Error('L’archivio originale non è leggibile. Rileggi la sessione prima di esportarlo.')
     }
-    return JSON.stringify({ version: 1, dataVersion: GAME_DATA_VERSION, interactions: get().interactions }, null, 2)
+    return JSON.stringify({ version: 1, dataVersion: GAME_DATA_VERSION, builtInRevision: BUILT_IN_REVISION, interactions: get().interactions, roadBlocks: get().roadBlocks }, null, 2)
   },
 }), {
   name: INTERACTION_STORAGE_KEY,
   storage: createJSONStorage(() => ({ getItem: readStoredCatalog, setItem: writeCampaignCheckpoint, removeItem: removeCampaignCheckpoint })),
-  partialize: (state) => ({ interactions: state.interactions, dataVersion: GAME_DATA_VERSION }),
+  partialize: (state) => ({ interactions: state.interactions, roadBlocks: state.roadBlocks, dataVersion: GAME_DATA_VERSION, builtInRevision: BUILT_IN_REVISION }),
   onRehydrateStorage: () => (_state, error) => {
     if (error) recordRecovery('Il catalogo salvato non è leggibile. Le interazioni restano sospese e l’originale viene conservato.')
   },
   merge: (saved, current) => {
     const hasInteractions = saved && typeof saved === 'object' && 'interactions' in saved
     const raw = readCampaignCheckpoint(INTERACTION_STORAGE_KEY)
-    const payload = migrateCatalogPayload({ version: 1, dataVersion: (saved as { dataVersion?: unknown } | undefined)?.dataVersion, interactions: hasInteractions ? saved.interactions : raw === null ? [] : null })
+    const record = (saved ?? {}) as { dataVersion?: unknown; roadBlocks?: unknown; builtInRevision?: unknown }
+    const payload = migrateCatalogPayload({ version: 1, dataVersion: record.dataVersion, interactions: hasInteractions ? saved.interactions : raw === null ? [] : null,
+      roadBlocks: Array.isArray(record.roadBlocks) ? record.roadBlocks : [] })
     const validated = validateCatalog(payload, { allowLegacyRepeatableRequirements: true })
     if (!validated.catalog) {
       recordRecovery(validated.error ?? 'Il catalogo salvato non è valido.')
-      return { ...current, interactions: [] }
+      return { ...current, interactions: [], roadBlocks: [] }
     }
     useInteractionRecoveryStatus.setState({ recovery: null })
-    return { ...current, interactions: validated.catalog.interactions }
+    // I cataloghi precedenti ai contenuti del gioco ricevono una sola volta le voci predefinite.
+    const revision = typeof record.builtInRevision === 'number' ? record.builtInRevision : 0
+    const catalog = withBuiltInContent({ interactions: validated.catalog.interactions, roadBlocks: validated.catalog.roadBlocks ?? [] }, revision)
+    return { ...current, interactions: catalog.interactions, roadBlocks: catalog.roadBlocks }
   },
 }))

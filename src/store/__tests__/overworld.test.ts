@@ -111,6 +111,10 @@ describe('store overworld — mappa principale', () => {
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
     })
 
+    // Linea rossa della mappa (24 novembre 2026): Percorso 1 – Via Vittoria si apre dopo la Lega.
+    expect(useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')).toBe(false)
+    expect(useGameStore.getState().posizione1.luogo).toBe('Percorso_15')
+    useGameStore.setState((s) => ({ league: { ...s.league, players: { ...s.league.players, 1: { ...s.league.players[1], status: 'completed' } } } }))
     const ok = useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')
 
     expect(ok).toBe(true)

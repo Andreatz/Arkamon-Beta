@@ -130,6 +130,20 @@ Ogni pittura ha ora la sua rete. Le foto nuove di Venezia, Piacenza, Torino, Reg
 
 Per il budget di avvio tutte le reti sono scritte in un formato testuale compatto (`src/data/localMaps/codec.ts`: identificatori senza «n», coordinate in millesimi). I valori sono gli stessi, verificati confrontando tutte le mappe prima e dopo la conversione.
 
+### Strade bloccate: 24 novembre 2026
+
+Una strada bloccata resta disegnata (tratteggio rosso sulla mappa principale e nelle mappe locali) ma non si percorre. I pallini chiusi mostrano una barriera: non ci si entra, ma chi si trova già lì può uscirne. Il pallino d'ingresso di una mappa non si può chiudere. I blocchi valgono per il singolo giocatore che si muove: si riaprono quando soddisfa tutte le condizioni (vittoria della Lega, medaglie indicate, interazioni completate). Un blocco senza condizioni resta chiuso finché la regia non lo disattiva.
+
+| Blocco | Dove | Si apre con |
+| --- | --- | --- |
+| Percorso 1 – Percorso 15, Grosseto – Percorso 15, Civitavecchia – Roma | mappa principale (linee rosse) | vittoria della Lega |
+| Pallino 15 del Percorso 1, pallino 35 di Grosseto, pallini 37 e 45 di Civitavecchia | uscite locali delle stesse strade | vittoria della Lega |
+| Porte dei luoghi leggendari dei Percorsi 3, 11 e 12 | mappa principale o pittura del percorso | vittoria della Lega |
+| Otto pallini del Nascondiglio (76, 116, 113, 118, 88, 68, 122, 119) | Nascondiglio del Team Towers | postazione del codice (pallino 111) |
+| Strada 19–20 | Cagliari | nessuna: strada distrutta |
+
+Prima della Lega Roma si raggiunge dal giro completo: Pescara → Percorso 15 → Roma. Percorso 2 → 4 e Percorso 5 → Grosseto restano aperti. I blocchi stanno nel catalogo delle interazioni (`roadBlocks`), si modificano nella sezione «Strade bloccate» dell'Admin e viaggiano con esportazioni, pacchetti di configurazione e backup.
+
 ## Dati e salvataggi
 
 `src/data/localMaps.ts` contiene immagini, centri dei pallini, ingresso e collegamenti. Le strade includono solo i vertici intermedi: gli estremi sono i nodi. `src/engine/localMapMovement.ts` calcola adiacenze e percorsi senza dipendere dalla UI.

@@ -4,6 +4,9 @@ import { getLocalMap } from '@/data/localMaps'
 import { ALLENATORI } from '@/data'
 import { newInteractionDefinition } from '@/interactions/types'
 import { journalLocations, nextJournalObjective, routeToLocation } from '../journalModel'
+import { BUILT_IN_ROAD_BLOCKS } from '@/interactions/builtInCatalog'
+import { mainRoadBlock } from '@/engine/roadBlocks'
+import { MAIN_MAP_BLOCK_ID } from '@/interactions/types'
 vi.hoisted(() => vi.stubGlobal('localStorage', { getItem: () => null, setItem: () => {}, removeItem: () => {} }))
 const state = () => ({ ...initialGameSave(), giocatore1: { ...initialGameSave().giocatore1, squadra: [{ istanzaId: 'a', specieId: 1, nome: 'Vyrath', livello: 5, hp: 12, xp: 0 }] } })
 describe('diario: obiettivi derivati dai progressi reali', () => {
@@ -57,5 +60,15 @@ describe('diario: obiettivi derivati dai progressi reali', () => {
     const row2 = journalLocations(saved, 2, []).find((entry) => entry.mapId === trainer.luogo)!
     expect(row1.trainersCompleted).toBe(1); expect(row1.documented).toBe(true)
     expect(row2.trainersCompleted).toBe(0); expect(row2.documented).toBe(false)
+  })
+  it('il percorso suggerito evita le strade bloccate fino alla Lega', () => {
+    const ctx = { gymIds: new Set<number>(), leagueWon: false, isCompleted: () => false }
+    const closed = (a: string, b: string) => !!mainRoadBlock(BUILT_IN_ROAD_BLOCKS, ctx, a, b, MAIN_MAP_BLOCK_ID)
+    const open = routeToLocation('Civitavecchia', 'Roma')!
+    expect(open).toEqual(['Civitavecchia', 'Roma'])
+    const detour = routeToLocation('Civitavecchia', 'Roma', closed)
+    expect(detour).not.toBeNull()
+    expect(detour!.length).toBeGreaterThan(2)
+    for (let i = 1; i < detour!.length; i++) expect(closed(detour![i - 1], detour![i])).toBe(false)
   })
 })

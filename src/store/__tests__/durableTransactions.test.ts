@@ -43,7 +43,7 @@ describe('durable compound gameplay transactions', () => {
     disk.blocked.clear(); disk.values.clear(); disk.writes.length = 0
     useSaveWriteStatus.getState().clear()
     useSaveWriteStatus.setState({ backupWarning: null })
-    useInteractionStore.setState({ interactions: [] })
+    useInteractionStore.setState({ interactions: [], roadBlocks: [] })
     campaign()
   })
   afterEach(() => { cancelPendingRecoveryCopy(); disk.blocked.clear(); vi.restoreAllMocks() })

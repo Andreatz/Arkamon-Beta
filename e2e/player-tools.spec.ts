@@ -147,7 +147,7 @@ test('a configured interaction pays once, ends the turn and preserves separate p
   // Locate both players at this defined point without spending gameplay actions to reach it.
   const definition = await page.evaluate(() => {
     const catalog = JSON.parse(localStorage.getItem('arkamon-interactions-v1')!).state.interactions
-    const entry = catalog[0]
+    const entry = catalog.find((item: { title: string }) => item.title === 'Messaggio del ponte')
     const saved = JSON.parse(localStorage.getItem('arkamon-save')!)
     saved.state.posizione1.luogo = entry.mapId; saved.state.posizione2.luogo = entry.mapId
     saved.state.posizioniLocali1 = { [entry.mapId]: entry.nodeId }
@@ -188,4 +188,24 @@ test('a configured interaction pays once, ends the turn and preserves separate p
   expect(both.interactionProgress.completed1).toEqual([definition.id])
   expect(both.interactionProgress.completed2).toEqual([definition.id])
   expect(errors).toEqual([])
+})
+
+test('l’editor Admin mostra le strade bloccate del gioco con i numeri dei pallini e le salva', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Admin', exact: true }).click()
+  await page.getByRole('button', { name: 'Interazioni', exact: true }).click()
+  const blocks = page.getByRole('region', { name: 'Editor delle strade bloccate', exact: true })
+  await blocks.getByRole('combobox', { name: 'Luogo della strada bloccata', exact: true }).selectOption('Cagliari')
+  await blocks.getByRole('combobox', { name: 'Strada bloccata esistente', exact: true }).selectOption('cagliari-strada-distrutta')
+  await expect(blocks.getByRole('textbox', { name: /^Strade chiuse/ })).toHaveValue('19-20')
+  await blocks.getByRole('textbox', { name: 'Titolo della strada bloccata', exact: true }).fill('Ponte crollato')
+  await blocks.getByRole('button', { name: 'Salva strada bloccata', exact: true }).click()
+  await expect(blocks.getByRole('status')).toHaveText('Strada bloccata salvata.')
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-interactions-v1')!).state.roadBlocks
+    .find((block: { id: string }) => block.id === 'cagliari-strada-distrutta'))
+  expect(saved).toMatchObject({ title: 'Ponte crollato', roads: [['n11', 'n16']] })
+  // Un numero di pallino inesistente non viene salvato.
+  await blocks.getByRole('textbox', { name: /^Strade chiuse/ }).fill('19-999')
+  await blocks.getByRole('button', { name: 'Salva strada bloccata', exact: true }).click()
+  await expect(blocks.getByRole('status')).toContainText('non valida')
 })
