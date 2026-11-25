@@ -15,7 +15,7 @@ import { VisualRecoveryNotice } from '@/presentation/VisualRecoveryNotice'
 const WIDTH = 1920
 const HEIGHT = 1080
 const ASSET_PAGE_SIZE = 24
-const FONT_NAMES = [['norwester', 'Norwester'], ['chela', 'Chela One · precedente'], ['azonix', 'Azonix · se installato'], ['system', 'Sistema · leggibile']] as const
+const FONT_NAMES = [['norwester', 'Cinzel · unico carattere del gioco']] as const
 const EMPTY_SCREEN: UiScreenDesign = { elements: {}, layers: [] }
 const HANDLE_NAMES = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'] as const
 type Handle = typeof HANDLE_NAMES[number] | 'move'
@@ -165,7 +165,8 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
   const selected = elements.find(element => element.id === selectedId)
   const override = overrideOf(screen, selected)
   const rect = override.rect ?? selected?.rect
-  const fonts = useMemo(() => [...FONT_NAMES.map(([id, name]) => ({ id, name })), ...draft.media.filter(media => media.kind === 'font').map(media => ({ id: media.id, name: media.name }))], [draft.media])
+  // Un solo carattere nel gioco: i font importati non sono più selezionabili.
+  const fonts = useMemo(() => FONT_NAMES.map(([id, name]) => ({ id, name })), [])
   const allAssets = useMemo<UiBuiltinAsset[]>(() => [...UI_BUILTIN_ASSETS.filter(asset => asset.kind === 'image'), ...draft.media.filter(media => media.kind === 'image').map(media => ({ id: media.id, name: media.name, source: `ui-media:${media.id}`, category: 'Importati', kind: 'image' as const }))], [draft.media])
   const categories = useMemo(() => [...new Set(allAssets.map(asset => asset.category))].sort(), [allAssets])
   const matchingAssets = allAssets.filter(asset => (libraryCategory === 'all' || asset.category === libraryCategory) && `${asset.name} ${asset.category}`.toLocaleLowerCase('it').includes(librarySearch.toLocaleLowerCase('it')))
@@ -471,7 +472,7 @@ export default function UiStudioEditor({ onClose }: { onClose?: () => void }) {
             <section><h3>Font della schermata</h3>{(['body', 'heading', 'button'] as const).map(category => <details key={category}><summary>{({ body: 'Testi', heading: 'Titoli', button: 'Pulsanti' })[category]}</summary><TypographyFields fonts={fonts} value={screen.typography?.[category] ?? {}} update={patch => patchScreen({ typography: { ...screen.typography, [category]: { ...screen.typography?.[category], ...patch } } })} /></details>)}</section><button type="button" className="uis-danger" onClick={resetScreen}>Ripristina questa schermata</button>
           </> : null}
           {inspector === 'fonts' ? <>
-            <h2>Font di tutto il gioco</h2><p className="uis-help">Norwester è il nuovo carattere principale. Puoi differenziare testi, titoli e pulsanti; le scelte dei singoli elementi hanno precedenza.</p><button type="button" disabled={busy} onClick={() => fontRef.current?.click()}>Importa font OTF / TTF / WOFF</button><ImportedFiles document={draft} onRemove={removeImportedFile} />{(['body', 'heading', 'button'] as const).map(category => <section key={category}><h3>{({ body: 'Testi', heading: 'Titoli', button: 'Pulsanti' })[category]}</h3><TypographyFields fonts={fonts} value={draft.typography[category]} update={patch => { const next = cloneDesign(draftRef.current); next.typography[category] = { ...next.typography[category], ...patch }; setDraft(next) }} /></section>)}<button type="button" onClick={() => { const next = cloneDesign(draftRef.current); next.typography = createDefaultDesign().typography; setDraft(next) }}>Ripristina font predefiniti</button>
+            <h2>Font di tutto il gioco</h2><p className="uis-help">Cinzel è l’unico carattere del gioco. Puoi differenziare dimensioni e stile di testi, titoli e pulsanti.</p><ImportedFiles document={draft} onRemove={removeImportedFile} />{(['body', 'heading', 'button'] as const).map(category => <section key={category}><h3>{({ body: 'Testi', heading: 'Titoli', button: 'Pulsanti' })[category]}</h3><TypographyFields fonts={fonts} value={draft.typography[category]} update={patch => { const next = cloneDesign(draftRef.current); next.typography[category] = { ...next.typography[category], ...patch }; setDraft(next) }} /></section>)}<button type="button" onClick={() => { const next = cloneDesign(draftRef.current); next.typography = createDefaultDesign().typography; setDraft(next) }}>Ripristina font predefiniti</button>
           </> : null}
           {inspector === 'menus' ? <>
             <h2>Comandi della schermata</h2><p className="uis-help">Personalizza etichette e visibilità. Le frecce cambiano l’ordine all’interno dello stesso gruppo nel layout automatico. Per i comandi posizionati liberamente usa X e Y.</p>{menus.length ? Array.from(menuGroups, ([parentId, commands]) => <MenuGroup key={parentId} name={elements.find(element => element.id === parentId)?.label ?? elements.find(element => element.id === commands[0]?.parentId)?.label ?? 'Comandi generali'} commands={commands} screen={screen} onSelect={id => { setSelectedId(id); setInspector('element') }} onChange={changeCommand} onMove={moveCommand} />) : <p className="uis-empty">Nessun comando in questa schermata.</p>}

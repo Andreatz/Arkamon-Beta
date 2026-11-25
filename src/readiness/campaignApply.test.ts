@@ -24,9 +24,11 @@ vi.mock('@/store/gameStore', () => ({ useGameStore: { getState: () => ({ ...cont
   Object.assign(context.game, patch); return true
 } }) } }))
 vi.mock('@/interactions/interactionStore', () => ({ INTERACTION_STORAGE_KEY: 'arkamon-interactions-v1', useInteractionStore: {
-  getState: () => ({ interactions: context.interactions }), setState: (patch: { interactions: unknown[] }) => { context.interactions = patch.interactions },
+  getState: () => ({ interactions: context.interactions, roadBlocks: [] }), setState: (patch: { interactions: unknown[] }) => { context.interactions = patch.interactions },
   persist: { getOptions: () => ({ storage: { getItem: () => null, setItem: () => undefined, removeItem: () => undefined } }), setOptions: () => undefined },
 } }))
+import { BUILT_IN_INTERACTIONS, BUILT_IN_REVISION } from '@/interactions/builtInCatalog'
+import { GAME_DATA_VERSION } from '@/data/trainerMigration'
 import { applyCampaignConfiguration, CAMPAIGN_IMPORT_RECOVERY_KEY, recoverCampaignConfigurationImport } from './campaignApply'
 
 const catalogKey = 'arkamon-interactions-v1'
@@ -35,7 +37,7 @@ const entry = { ...newInteractionDefinition(map.id, map.startNode, 'new'), title
 function configuration() { return parseCampaignPackage(exportCampaignPackage('Prova', { version: 1, interactions: [entry] }, draftLeagueConfiguration())).configuration! }
 describe('applicazione durevole della sola configurazione', () => {
   beforeEach(() => {
-    context.values.clear(); context.failKey = ''; context.writable = true; context.gameCommit = true; context.interactions = []; context.checkpoint = null; context.onGameCommitFailure = null
+    context.values.clear(); context.failKey = ''; context.writable = true; context.gameCommit = true; context.interactions = structuredClone([...BUILT_IN_INTERACTIONS]); context.checkpoint = null; context.onGameCommitFailure = null
     useSaveWriteStatus.getState().clear()
     useSaveWriteStatus.setState({ backupWarning: null })
     context.game = { league: { config: null, players: { 1: { attempt: 0 }, 2: { attempt: 0 } }, winner: null }, giocatore1: { nome: 'Melia', monete: 123, squadra: [{ id: 'real' }] }, posizione1: { luogo: 'Venezia' }, interactionProgress: { completed1: ['old'] }, battaglia: null, challengeContext: null }
@@ -46,10 +48,19 @@ describe('applicazione durevole della sola configurazione', () => {
     const player = context.game.giocatore1, position = context.game.posizione1, progress = context.game.interactionProgress
     expect(applyCampaignConfiguration(configuration()).ok).toBe(true)
     expect(context.interactions).toEqual([entry])
+    // Il catalogo salvato porta versione dei dati e revisione: al ricaricamento non viene migrato di nuovo.
+    const stored = JSON.parse(context.values.get(catalogKey)!).state
+    expect(stored).toMatchObject({ dataVersion: GAME_DATA_VERSION, builtInRevision: BUILT_IN_REVISION, roadBlocks: [] })
     expect(context.game.giocatore1).toBe(player)
     expect(context.game.posizione1).toBe(position)
     expect(context.game.interactionProgress).toBe(progress)
     expect(context.values.has(CAMPAIGN_IMPORT_RECOVERY_KEY)).toBe(false)
+  })
+  it('un archivio precedente ai contenuti del gioco non viene scambiato per un catalogo cambiato altrove', () => {
+    const previous = { ...entry, id: 'previous', title: 'Precedente' }
+    context.values.set(catalogKey, JSON.stringify({ state: { interactions: [previous] }, version: 0 }))
+    context.interactions = [previous, ...structuredClone([...BUILT_IN_INTERACTIONS])]
+    expect(applyCampaignConfiguration(configuration()).ok).toBe(true)
   })
   it('una seconda console non può scrivere neppure il catalogo', () => {
     context.writable = false
@@ -59,7 +70,7 @@ describe('applicazione durevole della sola configurazione', () => {
   it('con main save rifiutato ripristina il catalogo precedente senza pubblicare dati parziali', () => {
     context.gameCommit = false
     expect(applyCampaignConfiguration(configuration()).ok).toBe(false)
-    expect(context.interactions).toEqual([])
+    expect(context.interactions).toEqual(BUILT_IN_INTERACTIONS)
     expect(context.values.get(catalogKey)).toBeUndefined()
     expect(context.game.league).toMatchObject({ config: null })
   })
@@ -71,7 +82,7 @@ describe('applicazione durevole della sola configurazione', () => {
     // The failed-save dialog can no longer resurrect a partial import after quota is restored.
     expect(useSaveWriteStatus.getState().retry?.()).toBeUndefined()
     expect(context.game.league).toMatchObject({ config: null })
-    expect(context.interactions).toEqual([])
+    expect(context.interactions).toEqual(BUILT_IN_INTERACTIONS)
     expect(context.values.get(catalogKey)).toBeUndefined()
     expect(context.values.has(CAMPAIGN_IMPORT_RECOVERY_KEY)).toBe(false)
   })
@@ -92,7 +103,7 @@ describe('applicazione durevole della sola configurazione', () => {
   it.each([CAMPAIGN_IMPORT_RECOVERY_KEY, catalogKey])('una scrittura fallita di %s non cambia catalogo né progressi', key => {
     context.failKey = key
     expect(applyCampaignConfiguration(configuration()).ok).toBe(false)
-    expect(context.interactions).toEqual([])
+    expect(context.interactions).toEqual(BUILT_IN_INTERACTIONS)
     expect(context.game.league).toMatchObject({ config: null })
   })
   it('un catalogo modificato altrove deve essere riletto prima dell’importazione', () => {
@@ -114,7 +125,7 @@ describe('applicazione durevole della sola configurazione', () => {
     context.values.set(catalogKey, afterCatalog)
     context.values.set(CAMPAIGN_IMPORT_RECOVERY_KEY, JSON.stringify({ version: 1, beforeCatalog: null, afterCatalog, beforeLeague: null, afterLeague: config.league }))
     expect(recoverCampaignConfigurationImport().message).toContain('annullata')
-    expect(context.interactions).toEqual([])
+    expect(context.interactions).toEqual(BUILT_IN_INTERACTIONS)
     expect(context.values.get(catalogKey)).toBeUndefined()
   })
   it('non altera una configurazione Lega modificata dopo il crash', () => {
@@ -182,6 +193,6 @@ describe('applicazione durevole della sola configurazione', () => {
     context.values.set(catalogKey, afterCatalog)
     context.values.set(CAMPAIGN_IMPORT_RECOVERY_KEY, JSON.stringify({ version: 1, beforeCatalog: null, afterCatalog, beforeLeague: null, afterLeague: null, beforeCampaign: null }))
     expect(recoverCampaignConfigurationImport().message).toContain('annullata')
-    expect(context.interactions).toEqual([])
+    expect(context.interactions).toEqual(BUILT_IN_INTERACTIONS)
   })
 })

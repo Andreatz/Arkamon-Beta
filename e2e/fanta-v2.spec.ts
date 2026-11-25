@@ -12,7 +12,7 @@ async function openCampaign(page: Page, legacyResult = false) {
       nome: `Compagno ${id}`, livello: 5, hp: 7, xp: 0 }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [],
       monete: id * 200, inventario: { masterball: id } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2),
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3, giocatore1: player(1), giocatore2: player(2),
       giocatoreAttivo: 1, rivaleStarterId: 9, posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null, audioMuted: true, battaglia: null } }))
     localStorage.setItem('arkamon-preferences-v1', JSON.stringify({ version: 1, state: { reducedMotion: 'on', animationSpeed: 'fast', musicVolume: 0, effectsVolume: 0 } }))

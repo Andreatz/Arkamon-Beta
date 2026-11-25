@@ -11,7 +11,7 @@ test('team level cap discards KO experience through reload and team changes, and
     const player = (id: number) => ({ id, nome: `Cap ${id}`, squadra: id === 1 ? [a, mate] : [], deposito: id === 1 ? { '1:1': boxed } : {},
       monete: 200, inventario: { masterball: 1 }, cespugliVisitati: [], allenatoriSconfitti: [] })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {},
       scenaCorrente: { scena: 'battaglia' }, scenaPrecedente: { scena: 'mappa-principale' }, audioMuted: true, rivaleStarterId: 9,
       battaglia: { tipo: 'NPC', pokemonA: a, pokemonB: enemy, squadraA: [a, mate], squadraB: [enemy], hpMaxA: 19, hpMaxB: 12,
@@ -56,7 +56,8 @@ test('team level cap discards KO experience through reload and team changes, and
   await page.getByRole('button', { name: 'Sposta o scambia', exact: true }).click()
   await page.getByRole('button', { name: 'Box 1, posto 2: vuoto', exact: true }).click()
   const relaxed = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore1)
-  expect(relaxed.squadra).toEqual([{ ...before.squadra[0], livello: 10, xp: 0, hp: 12 }])
+  // Gli HP sono quelli pieni della cura di fine battaglia (regola del 21 novembre 2026).
+  expect(relaxed.squadra).toEqual([{ ...before.squadra[0], livello: 10, xp: 0, hp: 19 }])
   expect(relaxed.deposito['1:2']).toEqual(before.squadra[1])
   expect(relaxed.deposito['1:1']).toMatchObject({ livello: 20, xp: 0, hp: 3 })
   expect(relaxed.inventario).toEqual(before.inventario)

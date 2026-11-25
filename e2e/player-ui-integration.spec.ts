@@ -38,7 +38,7 @@ async function seedCampaign(page: Page, location: 'map' | 'city' | 'route' | 'de
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
     const place = location === 'city' || location === 'deposit' ? 'Venezia' : location === 'route' ? 'Percorso_1' : 'Milano'
-    localStorage.setItem(key, JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem(key, JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null,
       posizione1: position(place), posizione2: position('Torino'), turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: location === 'city' ? { Venezia: 'n56' } : {}, posizioniLocali2: {},
@@ -401,11 +401,12 @@ test('six match utilities use their main cards, role-based typography and a sing
     bodyRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-body-font').trim(),
     displayRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-display-font').trim(),
     titleRole: getComputedStyle(element.querySelector('.pu-shell')!).getPropertyValue('--ui-title-font').trim(),
-    loaded: document.fonts.check('16px Georgia') && document.fonts.check('700 32px "Arkamon Cinzel"'),
+    loaded: document.fonts.check('16px "Arkamon Cinzel"') && document.fonts.check('700 32px "Arkamon Cinzel"'),
   }))
   const normalizeFont = (value: string) => value.replace(/["']/g, '').replace(/\s*,\s*/g, ',').toLowerCase()
-  expect(fonts.bodyRole).toMatch(/^Georgia,/)
-  expect(fonts.displayRole).toMatch(/^Georgia,/)
+  // 21 novembre 2026: un solo carattere in tutto il gioco, Cinzel.
+  expect(fonts.bodyRole).toMatch(/Arkamon Cinzel/)
+  expect(fonts.displayRole).toMatch(/Arkamon Cinzel/)
   const primaryFont = (value: string) => normalizeFont(value).split(',')[0]
   expect(primaryFont(fonts.button)).toBe(primaryFont(fonts.bodyRole))
   // I titoli di schermata hanno un ruolo proprio: Cinzel (audit UX/UI, decisione 4).

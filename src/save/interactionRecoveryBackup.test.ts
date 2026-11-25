@@ -17,7 +17,7 @@ const raw = '{original catalog to recover'
 beforeEach(async () => {
   values.clear(); useInteractionRecoveryStatus.setState({ recovery: null })
   useGameStore.setState({ ...initialGameSave(), challengeContext: null })
-  useInteractionStore.setState({ interactions: [] })
+  useInteractionStore.setState({ interactions: [], roadBlocks: [] })
   values.set(INTERACTION_STORAGE_KEY, raw)
   await useInteractionStore.persist.rehydrate()
 })

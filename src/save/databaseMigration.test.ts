@@ -21,9 +21,9 @@ describe('salvataggi precedenti al Database', () => {
     expect([...again.state.giocatore1.allenatoriSconfitti]).toEqual([203, 220])
   })
 
-  it('i salvataggi nuovi portano dataVersion 2 e non vengono migrati', () => {
+  it('i salvataggi nuovi portano la versione corrente dei dati e non vengono migrati', () => {
     const save = serializeGameState(initialGameSave())
-    expect(save.dataVersion).toBe(2)
+    expect(save.dataVersion).toBe(3)
     expect(normalizeGameSave(save).warnings.join(' ')).not.toContain('Database')
   })
 })

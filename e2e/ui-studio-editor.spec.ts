@@ -84,11 +84,11 @@ test.describe('complete visual editor workflow', () => {
     await page.getByRole('tab', { name: 'Font', exact: true }).click()
     await page.getByLabel('Importa caratteri', { exact: true }).setInputFiles('public/ui/studio/fonts/chela-one.ttf')
     await expect(page.getByRole('status')).toContainText('font importati')
+    // Un solo carattere nel gioco (regola del 21 novembre 2026): il font importato resta nel
+    // progetto, ma non si può scegliere e i titoli restano in Cinzel.
     const headingFont = page.getByRole('combobox', { name: 'Carattere', exact: true }).nth(1)
-    await headingFont.selectOption({ label: 'chela-one.ttf' })
-    const customFontId = await headingFont.inputValue()
-    await expect(preview(page).locator('.pu-page-head h1')).toHaveCSS('font-family', new RegExp(`UiUploaded_${customFontId}`))
-    await expect.poll(() => preview(page).locator('body').evaluate((_, id) => Array.from(document.fonts).some(face => face.family === `UiUploaded_${id}` && face.status === 'loaded'), customFontId)).toBe(true)
+    await expect(headingFont.locator('option', { hasText: 'chela-one.ttf' })).toHaveCount(0)
+    await expect(preview(page).locator('.pu-page-head h1')).toHaveCSS('font-family', /Arkamon Cinzel/)
     const download = page.waitForEvent('download')
     await page.getByRole('button', { name: 'Esporta', exact: true }).click()
     const exported = await download
@@ -97,7 +97,7 @@ test.describe('complete visual editor workflow', () => {
     await page.getByRole('button', { name: 'Applica al gioco', exact: true }).click()
     await page.reload()
     await expect(preview(page).locator(`[data-ui-id="${layerId}"]`)).toHaveCSS('background-image', /(?:blob:|data:image\/svg\+xml)/)
-    await expect(preview(page).locator('.pu-page-head h1')).toHaveCSS('font-family', new RegExp(`UiUploaded_${customFontId}`))
+    await expect(preview(page).locator('.pu-page-head h1')).toHaveCSS('font-family', /Arkamon Cinzel/)
     const persisted = await editorDraft(page)
     expect(persisted.media).toHaveLength(2)
     await page.getByRole('button', { name: '+ Testo', exact: true }).click()

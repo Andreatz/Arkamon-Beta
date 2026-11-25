@@ -87,6 +87,63 @@ Il Percorso 15 è un luogo segreto raggiungibile da **Roma** dopo aver sconfitto
 
 Nel luogo segreto non vengono inventati incontri, NPC o ricompense: le sue interazioni saranno definite dall'utente in seguito. Il salvataggio conserva gli accessi legittimi; una posizione segreta non sbloccata viene riportata a Roma senza azioni aggiuntive.
 
+### Dieci nuove reti: riferimenti del 23 novembre 2026
+
+Le foto «Interazioni» del 23 novembre definiscono **583 punti e 691 collegamenti** per le pitture nuove:
+
+| Mappa | Punti | Collegamenti | Ingresso |
+| --- | ---: | ---: | --- |
+| Civitavecchia | 45 | 57 | Punto 1 |
+| Grosseto | 94 | 108 | Punto 1 |
+| Percorso 5 | 44 | 57 | Punto 3 («ingresso da percorso 4») |
+| Percorso 6 | 37 | 37 | Punto 1 |
+| Percorso 7 | 45 | 51 | Punto 23 (una delle «entrate 23/36») |
+| Percorso 8 | 48 | 59 | Punto 1 |
+| Luogo leggendario del Percorso 3 | 37 | 42 | Punto 1 |
+| Luogo leggendario del Percorso 11 | 64 | 87 | Punto 1 |
+| Luogo leggendario del Percorso 12 | 45 | 47 | Punto 1 |
+| Nascondiglio del Team Towers | 124 | 146 | Punto 1 |
+
+Le reti sono state ricavate dalle foto in modo semiautomatico. Le cifre blu sono state lette con un classificatore addestrato sulle otto mappe già verificate. Le strade fucsia sono state tracciate seguendone lo scheletro. I raccordi senza pallino collegano tutte le coppie incidenti, come nelle mappe precedenti.
+
+Lo stesso procedimento, applicato alle otto foto di mappe esistenti (Cagliari, Foggia, Milano, Napoli, Palermo, Percorsi 1, 2 e 4), ritrova gli stessi pallini (scarto medio 1–2 px) e le stesse strade. Le uniche strade mancanti sono quelle coperte dalle etichette rosse delle foto. Quelle reti restano invariate.
+
+Casi particolari, da confermare:
+- Grosseto salta il numero 39: non viene inventato un punto.
+- Il luogo leggendario del Percorso 11 ripete il 63 e salta il 60: il 63 vicino a 59 e 64 diventa **Punto 60**.
+- Il Nascondiglio ripete il 120: quello vicino a 65 e 123 diventa **Punto 124**.
+- Nel Nascondiglio le strade 58–59, 62–63, 65–124 e 114–115 sono nascoste dai numeri della foto e sono state aggiunte a mano.
+
+I luoghi nascosti con una rete si aprono come mappe locali dopo il passaggio. La Lega di Roma attende ancora la pittura.
+
+### Cinque reti del 24 novembre 2026
+
+| Mappa | Punti | Collegamenti | Ingresso |
+| --- | ---: | ---: | --- |
+| Percorso 9 | 127 | 151 | Punto 1 («entrate 1/11»); la foto salta il 39 |
+| Percorso 10 | 120 | 155 | Punto 1 («1-12 entrata») |
+| Percorso 12 | 120 | 149 | Punto 39 («39-31 entrata») |
+| Pescara | 54 | 82 | Punto 39 («38-39 entrata»); il Punto 54 non è dipinto e lo disegna il gioco |
+| Via Vittoria, terza mappa | 55 | 68 | Punto 31 («entrata da parte 1»), non ancora collegata |
+
+Ogni pittura ha ora la sua rete. Le foto nuove di Venezia, Piacenza, Torino, Reggio Calabria, Roma, Percorsi 14 e 15 e Via Vittoria 2 confermano le reti esistenti: pallini a 1–2 px, nessuna strada in più. Le poche strade che le foto non mostrano sono coperte dalle etichette, tranne il collegamento 35–36 di Via Vittoria 2, che l'utente aveva confermato a parte e resta.
+
+Per il budget di avvio tutte le reti sono scritte in un formato testuale compatto (`src/data/localMaps/codec.ts`: identificatori senza «n», coordinate in millesimi). I valori sono gli stessi, verificati confrontando tutte le mappe prima e dopo la conversione.
+
+### Strade bloccate: 24 novembre 2026
+
+Una strada bloccata resta disegnata (tratteggio rosso sulla mappa principale e nelle mappe locali) ma non si percorre. I pallini chiusi mostrano una barriera: non ci si entra, ma chi si trova già lì può uscirne. Il pallino d'ingresso di una mappa non si può chiudere. I blocchi valgono per il singolo giocatore che si muove: si riaprono quando soddisfa tutte le condizioni (vittoria della Lega, medaglie indicate, interazioni completate). Un blocco senza condizioni resta chiuso finché la regia non lo disattiva.
+
+| Blocco | Dove | Si apre con |
+| --- | --- | --- |
+| Percorso 1 – Percorso 15, Grosseto – Percorso 15, Civitavecchia – Roma | mappa principale (linee rosse) | vittoria della Lega |
+| Pallino 15 del Percorso 1, pallino 35 di Grosseto, pallini 37 e 45 di Civitavecchia | uscite locali delle stesse strade | vittoria della Lega |
+| Porte dei luoghi leggendari dei Percorsi 3, 11 e 12 | mappa principale o pittura del percorso | vittoria della Lega |
+| Otto pallini del Nascondiglio (76, 116, 113, 118, 88, 68, 122, 119) | Nascondiglio del Team Towers | postazione del codice (pallino 111) |
+| Strada 19–20 | Cagliari | nessuna: strada distrutta |
+
+Prima della Lega Roma si raggiunge dal giro completo: Pescara → Percorso 15 → Roma. Percorso 2 → 4 e Percorso 5 → Grosseto restano aperti. I blocchi stanno nel catalogo delle interazioni (`roadBlocks`), si modificano nella sezione «Strade bloccate» dell'Admin e viaggiano con esportazioni, pacchetti di configurazione e backup.
+
 ## Dati e salvataggi
 
 `src/data/localMaps.ts` contiene immagini, centri dei pallini, ingresso e collegamenti. Le strade includono solo i vertici intermedi: gli estremi sono i nodi. `src/engine/localMapMovement.ts` calcola adiacenze e percorsi senza dipendere dalla UI.

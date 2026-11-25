@@ -63,7 +63,8 @@ test('a damaged catalog is visible, preserved and recoverable only through an ex
   await expect(editor.getByRole('status')).toHaveText('Catalogo recuperato e salvato.')
   await expect(editor.getByRole('alert', { name: 'Recupero catalogo interazioni' })).toHaveCount(0)
   await expect(editor.getByRole('button', { name: 'Salva interazione', exact: true })).toBeEnabled()
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-interactions-v1')!).state.interactions)).toEqual([valid])
+  // Il file sostitutivo non ha revisione: riceve anche i contenuti del gioco.
+  expect((await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-interactions-v1')!).state.interactions))[0]).toEqual(valid)
   expect(await page.evaluate(() => localStorage.getItem('arkamon-save'))).toBe(originalCampaign)
 
   await page.reload()

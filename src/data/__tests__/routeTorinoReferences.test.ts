@@ -28,7 +28,8 @@ interface SharedJunction {
 const references: CityReference[] = referenceData
 const counts: Record<string, [number, number]> = {
   Percorso_1: [50, 63], Percorso_2: [43, 58], Percorso_4: [47, 52],
-  Percorso_13: [36, 48], Percorso_14: [48, 59], Percorso_15: [36, 40], Torino: [51, 61],
+  // Rinomina del 18 novembre 2026: le vecchie reti 13, 14 e 15 sono ora Percorso 14, Percorso 15 (Via Vittoria) e Via Vittoria 2.
+  Percorso_14: [36, 48], Percorso_15: [48, 59], Via_Vittoria_2: [36, 40], Torino: [51, 61],
 }
 const edgeKey = (from: string, to: string) => [from, to].sort().join(':')
 const normalizedNodes = (nodes: LocalMapNode[]) => nodes.map(({ id, x, y, label, drawMarker }) =>
@@ -146,10 +147,10 @@ describe('precisazioni Torino e Percorso 15', () => {
     }
   })
 
-  it('conserva il collegamento 35–36 di Percorso 15 espressamente confermato dall’utente e la sua curva precedente', () => {
-    const reference = references.find((candidate) => candidate.city === 'Percorso_15')!
+  it('conserva il collegamento 35–36 della seconda mappa di Via Vittoria (ex Percorso 15) confermato dall’utente e la sua curva precedente', () => {
+    const reference = references.find((candidate) => candidate.city === 'Via_Vittoria_2')!
     expect(reference.authorizedNonMagentaEdges).toEqual([[35, 36]])
-    const map = getLocalMap('Percorso_15')!
+    const map = getLocalMap('Via_Vittoria_2')!
     const forward = getLocalRoadPath(map, 'n31', 'n34')
     expect(forward).toEqual([
       { x: 17.116, y: 66.684 }, { x: 12.292, y: 69.516 }, { x: 6.665, y: 71.74 },
@@ -158,7 +159,20 @@ describe('precisazioni Torino e Percorso 15', () => {
   })
 
   it('completa le sedici mappe con 771 punti, 922 collegamenti e soltanto sei pallini aggiunti', () => {
-    const maps = Object.values(LOCAL_MAPS)
+    // Le dieci reti del 23 novembre 2026 hanno il proprio conteggio in fondo.
+    const added = new Set(['Civitavecchia', 'Grosseto', 'Leggendario_Percorso_3', 'Leggendario_Percorso_11', 'Leggendario_Percorso_12',
+      'Nascondiglio_Team_Towers', 'Percorso_5', 'Percorso_6', 'Percorso_7', 'Percorso_8'])
+    const fresh = Object.values(LOCAL_MAPS).filter((map) => added.has(map.id))
+    expect(fresh).toHaveLength(10)
+    expect(fresh.reduce((total, map) => total + map.nodes.length, 0)).toBe(583)
+    expect(fresh.reduce((total, map) => total + map.roads.length, 0)).toBe(691)
+    expect(fresh.some((map) => map.nodes.some((node) => node.drawMarker))).toBe(false)
+    const latest = new Set(['Percorso_9', 'Percorso_10', 'Percorso_12', 'Pescara', 'Via_Vittoria_3'])
+    const newest = Object.values(LOCAL_MAPS).filter((map) => latest.has(map.id))
+    expect(newest.reduce((total, map) => total + map.nodes.length, 0)).toBe(476)
+    expect(newest.reduce((total, map) => total + map.roads.length, 0)).toBe(605)
+    expect(newest.flatMap((map) => map.nodes.filter((node) => node.drawMarker).map((node) => `${map.id}/${node.id}`))).toEqual(['Pescara/n54'])
+    const maps = Object.values(LOCAL_MAPS).filter((map) => !added.has(map.id) && !latest.has(map.id))
     expect(maps).toHaveLength(16)
     expect(maps.reduce((total, map) => total + map.nodes.length, 0)).toBe(771)
     expect(maps.reduce((total, map) => total + map.roads.length, 0)).toBe(922)

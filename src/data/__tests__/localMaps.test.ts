@@ -9,6 +9,7 @@ import routeTorinoReferences from './fixtures/routeTorinoReferences.json'
 
 const imageDirectory = fileURLToPath(new URL('../../../public/maps/', import.meta.url))
 const mapDefinitions = Object.values(LOCAL_MAPS)
+const LIGHT_MARKER_MAPS = new Set(['Leggendario_Percorso_3', 'Leggendario_Percorso_11', 'Nascondiglio_Team_Towers', 'Pescara'])
 
 /** Dimensioni del disegno, per confrontare distanze in pixel senza distorcere gli assi. */
 function distanceToSegment(point: LocalMapPoint, from: LocalMapPoint, to: LocalMapPoint): number {
@@ -29,20 +30,46 @@ describe('mappe locali disegnate', () => {
     expect([...reviewed, ...pending].sort()).toEqual(images)
     expect(new Set([...reviewed, ...pending]).size).toBe(images.length)
     for (const artwork of PENDING_LOCAL_MAP_ARTWORK) expect(getLocalMap(artwork.id)).toBeUndefined()
-    expect(mapDefinitions).toHaveLength(16)
+    expect(mapDefinitions).toHaveLength(31)
+    expect(PENDING_LOCAL_MAP_ARTWORK).toEqual([])
+    expect(getLocalMap('Via_Vittoria_3')?.image).toBe('/maps/Percorso_15-2.png')
     expect(getLocalMap('ReggioCalabria')?.image).toBe('/maps/Reggio-Calabria.png')
-    expect(getLocalMap('Percorso_15')?.image).toBe('/maps/Percorso_15-1.png')
+    // Rinomina del 18 novembre 2026: la vecchia rete del luogo segreto è la seconda mappa di Via Vittoria.
+    expect(getLocalMap('Via_Vittoria_2')?.image).toBe('/maps/Percorso_15-1.png')
+    expect(getLocalMap('Percorso_15')?.image).toBe('/maps/Percorso_14.png')
+    expect(getLocalMap('Percorso_14')?.image).toBe('/maps/Percorso_13.png')
+    expect(getLocalMap('Percorso_13')).toBeUndefined()
+    expect(getLocalMap('Lega_Roma')).toBeUndefined()
+    expect(getLocalMap('Nascondiglio_Team_Towers')?.image).toBe('/maps/Nascondiglio_Team_Towers.png')
     expect(getLocalMap('Pordenone')).toBeUndefined()
     expect(getLocalMap('toString')).toBeUndefined()
   })
 
-  it('conserva tutti i pallini contati e verificati visivamente sulle sedici immagini', () => {
+  it('conserva tutti i pallini contati e verificati visivamente sulle trentuno immagini', () => {
     expect(Object.fromEntries(mapDefinitions.map((map) => [map.id, map.nodes.length]))).toEqual({
       Cagliari: 41, Foggia: 59, Milano: 56, Napoli: 40, Palermo: 55,
-      Percorso_1: 50, Percorso_13: 36, Percorso_14: 48, Percorso_15: 36,
+      Percorso_1: 50, Percorso_14: 36, Percorso_15: 48, Via_Vittoria_2: 36,
       Percorso_2: 43, Percorso_4: 47, Piacenza: 56, ReggioCalabria: 46,
       Roma: 50, Torino: 51, Venezia: 57,
+      // Foto «Interazioni» del 23 novembre 2026.
+      Civitavecchia: 45, Grosseto: 94, Leggendario_Percorso_3: 37, Leggendario_Percorso_11: 64,
+      Leggendario_Percorso_12: 45, Nascondiglio_Team_Towers: 124, Percorso_5: 44, Percorso_6: 37,
+      Percorso_7: 45, Percorso_8: 48,
+      // Foto del 24 novembre 2026.
+      Percorso_9: 127, Percorso_10: 120, Percorso_12: 120, Pescara: 54, Via_Vittoria_3: 55,
     })
+  })
+
+  it('ogni mappa numera i pallini una sola volta, anche dove la foto ripeteva un numero', () => {
+    for (const map of mapDefinitions) {
+      const labels = map.nodes.map((node) => node.label)
+      expect(new Set(labels).size, map.id).toBe(labels.length)
+    }
+    // Grosseto salta il 39 come la foto; i doppioni del Leggendario 11 e del Nascondiglio sono rinumerati.
+    expect(getLocalMap('Grosseto')!.nodes.some((node) => node.label === 'Punto 39')).toBe(false)
+    expect(getLocalMap('Percorso_9')!.nodes.some((node) => node.label === 'Punto 39')).toBe(false)
+    expect(getLocalMap('Leggendario_Percorso_11')!.nodes.find((node) => node.label === 'Punto 60')).toBeDefined()
+    expect(getLocalMap('Nascondiglio_Team_Towers')!.nodes.find((node) => node.label === 'Punto 124')).toBeDefined()
   })
 
   it.each(mapDefinitions)('$id: i centri corrispondono ai pallini rossi del PNG originale', async (map) => {
@@ -60,10 +87,17 @@ describe('mappe locali disegnate', () => {
         expect(node).toEqual(photoAdded)
         continue
       }
+      // Pallino aggiunto dalla foto di Pescara del 24 novembre 2026: non è dipinto, lo disegna il gioco.
+      if (map.id === 'Pescara' && node.id === 'n54') {
+        expect(node.drawMarker).toBe(true)
+        continue
+      }
       const x = Math.round(node.x / 100 * info.width)
       const y = Math.round(node.y / 100 * info.height)
       const offset = (y * info.width + x) * info.channels
       expect(data[offset], `${map.id}/${node.id}: rosso`).toBeGreaterThan(145)
+      // Le pitture dei luoghi nascosti e la Pescara notturna hanno pallini chiari, rosa o arancioni invece che rossi.
+      if (LIGHT_MARKER_MAPS.has(map.id)) continue
       expect(data[offset + 1], `${map.id}/${node.id}: verde`).toBeLessThan(data[offset] * .6)
       expect(data[offset + 2], `${map.id}/${node.id}: blu`).toBeLessThan(data[offset] * .6)
     }

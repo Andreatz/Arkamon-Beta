@@ -29,7 +29,7 @@ describe('catalogo reale: importazione pacchetto e modifiche ordinarie condivido
   beforeEach(() => {
     context.coordinator = null; context.values.clear()
     context.league = { config: null, players: { 1: { attempt: 0 }, 2: { attempt: 0 } }, winner: null }
-    useInteractionStore.setState({ interactions: [] })
+    useInteractionStore.setState({ interactions: [], roadBlocks: [] })
   })
   it('import → editor normale → nuova importazione → ricaricamento restano scrivibili', async () => {
     const coordinator = new SessionCoordinator({ storage: localStorage, token: 'catalog-owner', settle: async () => {} })

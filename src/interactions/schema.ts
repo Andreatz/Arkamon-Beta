@@ -1,7 +1,9 @@
 import { getLocalMap } from '@/data/localMaps'
 import { getAllenatore, getIncontri, getPokemon, ALLENATORI } from '@/data'
-import type { InteractionCatalog, InteractionDefinition, InteractionProgress, InteractionResources } from './types'
-import { emptyInteractionProgress } from './types'
+import type { InteractionCatalog, InteractionDefinition, InteractionProgress, InteractionResources, RoadBlockDefinition } from './types'
+import { emptyInteractionProgress, MAIN_MAP_BLOCK_ID } from './types'
+import { areMainMapNodesConnected } from '@/data/mainMapRoads'
+import { isSecretLocationConnection } from '@/data/secretLocation'
 import { hasArkaStore, isShopItemId } from '@/shop/catalog'
 
 const object = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -49,8 +51,43 @@ export function validateInteraction(value: unknown): string | null {
   return null
 }
 
+/** Una strada bloccata deve indicare strade o pallini esistenti; le condizioni rimandano a tappe del catalogo. */
+export function validateRoadBlock(value: unknown, interactions: readonly InteractionDefinition[]): string | null {
+  if (!object(value) || !validId(value.id)) return 'Identificatore della strada bloccata non valido.'
+  if (!text(value.title, 120) || !value.title.trim()) return 'Dai un titolo alla strada bloccata (massimo 120 caratteri).'
+  if (!text(value.message, 1000)) return 'Il messaggio può contenere al massimo 1.000 caratteri.'
+  if (typeof value.enabled !== 'boolean' || !Array.isArray(value.roads) || !Array.isArray(value.nodes)) return 'Strade o pallini non validi.'
+  const pairs = value.roads as unknown[]
+  if (!pairs.every((pair) => Array.isArray(pair) && pair.length === 2 && pair.every((end) => typeof end === 'string') && pair[0] !== pair[1])) return 'Ogni strada collega due punti diversi.'
+  const roads = pairs as [string, string][]
+  if (!roads.length && !value.nodes.length) return 'Indica almeno una strada o un pallino da chiudere.'
+  if (value.mapId === MAIN_MAP_BLOCK_ID) {
+    if (value.nodes.length) return 'Sulla mappa principale si chiudono solo strade fra due luoghi.'
+    const missing = roads.find(([a, b]) => !areMainMapNodesConnected(a, b) && !isSecretLocationConnection(a, b))
+    if (missing) return `La mappa principale non collega ${missing[0].replace(/_/g, ' ')} e ${missing[1].replace(/_/g, ' ')}.`
+  } else {
+    const map = typeof value.mapId === 'string' ? getLocalMap(value.mapId) : undefined
+    if (!map) return 'Luogo inesistente.'
+    const missing = roads.find(([a, b]) => !map.roads.some((road) => (road.from === a && road.to === b) || (road.from === b && road.to === a)))
+    if (missing) return 'Una delle strade indicate non esiste in questa mappa.'
+    if (!value.nodes.every((id) => typeof id === 'string' && map.nodes.some((node) => node.id === id))) return 'Uno dei pallini indicati non esiste in questa mappa.'
+    if (value.nodes.includes(map.startNode)) return 'Il pallino d’ingresso della mappa non si può chiudere.'
+  }
+  const u = value.unlock
+  if (!object(u) || typeof u.league !== 'boolean' || !Array.isArray(u.gymIds)
+    || !u.gymIds.every((id) => integer(id) && ALLENATORI.some((trainer) => trainer.id === id && trainer.tipo === 'Capopalestra'))
+    || !Array.isArray(u.completedInteractions) || !u.completedInteractions.every(validId)) return 'Condizioni di riapertura non valide.'
+  for (const id of u.completedInteractions as string[]) {
+    const entry = interactions.find((candidate) => candidate.id === id)
+    if (!entry) return `La riapertura di «${value.title}» richiede un’interazione assente dal catalogo.`
+    if (entry.repeatable || entry.action.kind === 'shop') return `La riapertura di «${value.title}» richiede un’attività che non registra il completamento.`
+  }
+  return null
+}
+
 export function validateCatalog(value: unknown, options: { allowLegacyRepeatableRequirements?: boolean; legacyInteractions?: readonly InteractionDefinition[] } = {}): { catalog?: InteractionCatalog; error?: string; warning?: string } {
-  if (!object(value) || value.version !== 1 || !Array.isArray(value.interactions) || value.interactions.length > 200) return { error: 'Formato non valido: importa un catalogo Arkamon versione 1 (massimo 200 interazioni).' }
+  if (!object(value) || value.version !== 1 || !Array.isArray(value.interactions) || value.interactions.length > 600) return { error: 'Formato non valido: importa un catalogo Arkamon versione 1 (massimo 600 interazioni).' }
+  if (value.roadBlocks !== undefined && (!Array.isArray(value.roadBlocks) || value.roadBlocks.length > 200)) return { error: 'Le strade bloccate devono essere un elenco (massimo 200).' }
   const ids = new Set<string>()
   for (const entry of value.interactions) {
     const error = validateInteraction(entry)
@@ -88,7 +125,15 @@ export function validateCatalog(value: unknown, options: { allowLegacyRepeatable
     return false
   }
   if (entries.some((entry) => cycle(entry.id))) return { error: 'Le tappe precedenti formano un ciclo: nessuna potrebbe essere iniziata.' }
-  return { catalog: { version: 1, interactions: structuredClone(entries) }, ...(warning ? { warning } : {}) }
+  const blocks = (value.roadBlocks ?? []) as RoadBlockDefinition[]
+  const blockIds = new Set<string>()
+  for (const block of blocks) {
+    const error = validateRoadBlock(block, entries)
+    if (error) return { error }
+    if (blockIds.has(block.id)) return { error: 'Due strade bloccate hanno lo stesso identificatore.' }
+    blockIds.add(block.id)
+  }
+  return { catalog: { version: 1, interactions: structuredClone(entries), ...(value.roadBlocks !== undefined ? { roadBlocks: structuredClone(blocks) } : {}) }, ...(warning ? { warning } : {}) }
 }
 
 export function normalizeInteractionProgress(value: unknown): InteractionProgress {

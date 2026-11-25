@@ -27,7 +27,7 @@ function prepare() {
     posizione2: { mappaId: 'mappa-principale', luogo: map.id, x: 0, y: 0, direzione: 'S' },
     posizioniLocali1: { [map.id]: map.startNode }, posizioniLocali2: { [map.id]: map.startNode }, interactionProgress: emptyInteractionProgress(),
   })
-  useInteractionStore.setState({ interactions: [] })
+  useInteractionStore.setState({ interactions: [], roadBlocks: [] })
 }
 describe('interazioni configurate: regole, risorse e persistenza atomica', () => {
   beforeEach(prepare)

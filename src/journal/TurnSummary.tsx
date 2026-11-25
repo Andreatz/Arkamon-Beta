@@ -14,9 +14,10 @@ export function TurnSummary({ compact = false }: { compact?: boolean }) {
   const progress = useGameStore((s) => s.interactionProgress)
   const turn = useGameStore((s) => s.turnoOverworld)
   const interactions = useInteractionStore((s) => s.interactions)
+  const roadBlocks = useInteractionStore((s) => s.roadBlocks)
   const remaining = actor === turn.giocatoreAttivo ? turn.azioniRimaste : 0
   const objective = nextJournalObjective({ ...useGameStore.getState(), giocatore1: player1, giocatore2: player2,
-    posizione1: world1, posizione2: world2, battaglia: battle, interactionProgress: progress }, actor, interactions)
+    posizione1: world1, posizione2: world2, battaglia: battle, interactionProgress: progress }, actor, interactions, roadBlocks)
   return <div className={`turn-summary${compact ? ' turn-summary--compact' : ''}`} aria-label="Riepilogo del turno">
     <span>G{actor} · {remaining} {remaining === 1 ? 'azione rimasta' : 'azioni rimaste'}</span>
     <span>{remaining === 0 ? 'Turno concluso: passa il controllo.' : '2 movimenti oppure 1 movimento + 1 interazione.'}</span>

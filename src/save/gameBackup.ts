@@ -1,6 +1,9 @@
 import { initialGameSave, isSaveRecord, normalizeGameSave, serializeGameState, type GameSaveState } from './gamePersistence'
 import { validateCatalog } from '@/interactions/schema'
-import type { InteractionCatalog, InteractionDefinition } from '@/interactions/types'
+import type { InteractionCatalog, InteractionDefinition, RoadBlockDefinition } from '@/interactions/types'
+import { migrateCatalogPayload } from '@/interactions/catalogMigration'
+import { BUILT_IN_REVISION } from '@/interactions/builtInCatalog'
+import { GAME_DATA_VERSION } from '@/data/trainerMigration'
 import { normalizeBattleArchive, type BattleArchive } from '@/components/battle/battleArchiveStore'
 import { useInteractionRecoveryStatus } from '@/interactions/interactionRecovery'
 
@@ -46,7 +49,7 @@ function portableCampaignData(state: GameSaveState): Record<string, unknown> {
   return campaign
 }
 
-export function serializeGameBackup(state: GameSaveState & { challengeContext?: unknown }, createdAt = new Date(), interactions?: InteractionDefinition[], battleArchive?: BattleArchive): string {
+export function serializeGameBackup(state: GameSaveState & { challengeContext?: unknown }, createdAt = new Date(), interactions?: InteractionDefinition[], battleArchive?: BattleArchive, roadBlocks?: RoadBlockDefinition[]): string {
   if (interactions !== undefined && useInteractionRecoveryStatus.getState().recovery)
     throw new Error('Il catalogo interazioni richiede recupero. Esporta la campagna senza catalogo e conserva separatamente l’originale.')
   // During a challenge the visible roster is temporary. Both download entry
@@ -65,7 +68,7 @@ export function serializeGameBackup(state: GameSaveState & { challengeContext?: 
   const normalized = normalizeGameSave(campaign, initialGameSave()).state
   const text = JSON.stringify({ format: GAME_BACKUP_FORMAT, version: GAME_BACKUP_VERSION, saveSchemaVersion: 1,
     createdAt: createdAt.toISOString(), campaign: portableCampaignData(normalized),
-    ...(interactions === undefined ? {} : { interactionCatalog: { version: 1, interactions } }),
+    ...(interactions === undefined ? {} : { interactionCatalog: { version: 1, dataVersion: GAME_DATA_VERSION, builtInRevision: BUILT_IN_REVISION, interactions, ...(roadBlocks ? { roadBlocks } : {}) } }),
     ...(battleArchive === undefined ? {} : { battleArchive: normalizeBattleArchive(battleArchive) }),
   })
   // A downloaded safety copy must satisfy the same size contract as restore.
@@ -92,7 +95,11 @@ export function validateGameBackup(text: string): GameBackupValidation {
     return { ok: false, error: 'Mancano i dati essenziali dei due giocatori. Il file non può essere ripristinato.' }
   }
   const recovered = normalizeGameSave(campaign, initialGameSave())
-  const catalog = parsed.interactionCatalog === undefined ? undefined : validateCatalog(parsed.interactionCatalog, { allowLegacyRepeatableRequirements: true })
+  // I backup precedenti alla rinomina dei luoghi vengono migrati una volta, come i cataloghi importati.
+  const catalog = parsed.interactionCatalog === undefined ? undefined : validateCatalog(migrateCatalogPayload(parsed.interactionCatalog), { allowLegacyRepeatableRequirements: true })
+  const rawCatalog = isSaveRecord(parsed.interactionCatalog) ? parsed.interactionCatalog : {}
+  const builtInRevision = typeof rawCatalog.builtInRevision === 'number' ? rawCatalog.builtInRevision : rawCatalog.roadBlocks !== undefined ? BUILT_IN_REVISION : 0
+  const portableCatalog = catalog?.catalog ? { ...catalog.catalog, dataVersion: GAME_DATA_VERSION, builtInRevision } : undefined
   if (catalog?.error) return { ok: false, error: `Il catalogo delle interazioni non è valido: ${catalog.error}` }
   if (parsed.battleArchive !== undefined && (!isSaveRecord(parsed.battleArchive) || parsed.battleArchive.version !== 1 || !Array.isArray(parsed.battleArchive.matches))) {
     return { ok: false, error: 'Il formato dell’archivio battaglie non è supportato.' }
@@ -111,7 +118,7 @@ export function validateGameBackup(text: string): GameBackupValidation {
   if (foreignKeys.length) warnings.push('Ignorati campi estranei alla partita: impostazioni e collegamenti del pubblico restano esclusi.')
   const canonical = JSON.stringify({ format: GAME_BACKUP_FORMAT, version: GAME_BACKUP_VERSION, saveSchemaVersion: 1,
     createdAt: parsed.createdAt, campaign: portableCampaignData(state),
-    ...(catalog?.catalog ? { interactionCatalog: catalog.catalog } : {}) })
+    ...(portableCatalog ? { interactionCatalog: portableCatalog } : {}) })
   const canonicalWithArchive = archive ? JSON.stringify({ ...JSON.parse(canonical), battleArchive: archive }) : canonical
   return { ok: true, preview: {
     createdAt: parsed.createdAt, version: GAME_BACKUP_VERSION, warnings,
@@ -119,7 +126,7 @@ export function validateGameBackup(text: string): GameBackupValidation {
       deposit: Object.keys(g.deposito).length, coins: g.monete, defeatedTrainers: g.allenatoriSconfitti.size,
       location: state[g.id === 1 ? 'posizione1' : 'posizione2'].luogo ?? 'Mappa' })),
     scene: state.scenaCorrente.scena, battle: state.battaglia !== null, source: canonicalWithArchive,
-    ...(catalog?.catalog ? { interactionCatalog: catalog.catalog } : {}),
+    ...(portableCatalog ? { interactionCatalog: portableCatalog } : {}),
     ...(archive ? { battleArchive: archive } : {}),
   } }
 }

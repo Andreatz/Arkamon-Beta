@@ -19,7 +19,6 @@ import {
   defaultMainMapNodePositions,
   defaultMainMapRoads,
   defaultMainMapUiLayout,
-  defaultMapGridLayout,
   defaultLuogoLayout,
 } from '@/theme/defaultAdminTheme'
 
@@ -59,7 +58,6 @@ const assetKeys: (keyof AdminThemeAssets)[] = [
 
 const battleLayoutKeys = Object.keys(defaultBattleLayout) as (keyof typeof defaultBattleLayout)[]
 const mainMapUiLayoutKeys = Object.keys(defaultMainMapUiLayout) as (keyof typeof defaultMainMapUiLayout)[]
-const mapGridLayoutKeys = Object.keys(defaultMapGridLayout) as (keyof typeof defaultMapGridLayout)[]
 const luogoLayoutKeys = Object.keys(defaultLuogoLayout) as (keyof typeof defaultLuogoLayout)[]
 const depositLayoutKeys = Object.keys(defaultDepositLayout) as (keyof typeof defaultDepositLayout)[]
 const evolutionLayoutKeys = Object.keys(defaultEvolutionLayout) as (keyof typeof defaultEvolutionLayout)[]
@@ -223,7 +221,6 @@ export function parseThemeJson(value: string): { theme: AdminTheme; error: null 
     mainMapNodes: defaultMainMapNodePositions,
     mainMapRoads: defaultMainMapRoads,
     mainMapUi: defaultMainMapUiLayout,
-    mapGrid: defaultMapGridLayout,
     luogo: defaultLuogoLayout,
     deposit: defaultDepositLayout,
     evolution: defaultEvolutionLayout,
@@ -310,14 +307,7 @@ export function parseThemeJson(value: string): { theme: AdminTheme; error: null 
     if (mainMapUi.layout === null) return { theme: null, error: mainMapUi.error }
     layouts.mainMapUi = mainMapUi.layout as AdminThemeLayouts['mainMapUi']
 
-    const mapGrid = parseLayoutRects(
-      parsed.layouts.mapGrid,
-      defaultMapGridLayout,
-      mapGridLayoutKeys,
-      'mappa'
-    )
-    if (mapGrid.layout === null) return { theme: null, error: mapGrid.error }
-    layouts.mapGrid = mapGrid.layout as AdminThemeLayouts['mapGrid']
+    // Il layout «mapGrid» della vecchia mappa a griglia (rimossa il 18 novembre 2026) viene ignorato.
 
     const luogo = parseLayoutRects(
       parsed.layouts.luogo,

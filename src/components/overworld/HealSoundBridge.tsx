@@ -21,8 +21,8 @@ export function someoneHealed(before: HpSnapshot, after: HpSnapshot): boolean {
 }
 
 /**
- * Audit fase 6: suono di cura per ogni guarigione fuori dalla battaglia (Infermeria, oggetti,
- * interazioni). In battaglia la scena suona da sé, al ritmo della propria sequenza.
+ * Audit fase 6: suono di cura per ogni guarigione fuori dalla battaglia (cura automatica di fine
+ * battaglia, oggetti, interazioni). In battaglia la scena suona da sé, al ritmo della propria sequenza.
  */
 export function HealSoundBridge() {
   useEffect(() => {

@@ -14,7 +14,7 @@ test('deposit discards legacy EXP; swaps and cross-box moves survive reload with
     const secondPlayer = { ...felyss, istanzaId: 'deposit-player-two', nome: 'Felyss Due', hp: 5 }
     const player = (id: 1 | 2) => ({ id, nome: `Deposito ${id}`, squadra: id === 1 ? [vyrath, darklaw] : [secondPlayer], deposito: id === 1 ? { '1:1': felyss } : {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true, battaglia: null,
@@ -124,7 +124,7 @@ test('an NPC ballot resumes its same saved turn after reload and applies the moc
     const defender = { istanzaId: 'ballot-vyrath', specieId: 1, nome: 'Vyrath rivale', livello: 5, hp: 8, xp: 0, stato: { tipo: 'Avvelenato', turniRimanenti: -1, turniTrascorsi: 1 } }
     const player = (id: 1 | 2) => ({ id, nome: `Pubblico ${id}`, squadra: id === 1 ? [attacker] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {} })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Percorso_1' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 2, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,
@@ -209,7 +209,7 @@ test('healing moves show their real effect in team, analysis and Arkadex without
     const creature = { istanzaId: 'healing-facts', specieId: 95, nome: 'Beestrix', livello: 10, hp: 3, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Giocatore ${id}`, squadra: id === 1 ? [creature] : [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: {} })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Venezia' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true, battaglia: null,

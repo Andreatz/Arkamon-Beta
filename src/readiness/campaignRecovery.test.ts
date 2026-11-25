@@ -23,7 +23,7 @@ describe('configuration recovery with the real campaign durable store', () => {
     values.clear()
     useSaveWriteStatus.getState().clear()
     useGameStore.setState({ ...initialGameSave(), challengeContext: null, saveRecoveryWarnings: [] })
-    useInteractionStore.setState({ interactions: [] })
+    useInteractionStore.setState({ interactions: [], roadBlocks: [] })
   })
   afterEach(() => vi.restoreAllMocks())
 

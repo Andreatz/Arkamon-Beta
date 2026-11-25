@@ -91,7 +91,7 @@ export function AnalysisDetails({ pokemon }: { pokemon: PokemonIstanza }) {
             {status?.tipo === 'Avvelenato' && <p className="pu-note">Turni di veleno già trascorsi: {status.turniTrascorsi ?? 0}. Il danno cresce dal 10% degli HP massimi di altri 10 punti percentuali ogni turno.</p>}
             {status?.tipo === 'Confuso' && <p className="pu-note">La confusione influenza l’azione durante la battaglia.</p>}
             {!status && pokemon.hp > 0 && <p className="pu-note">Nessuno stato alterato attivo.</p>}
-            <p className="pu-note">Gli HP residui vengono conservati. Consulta la borsa per usare una cura, oppure raggiungi un’Infermeria Arka.</p>
+            <p className="pu-note">Alla fine di ogni battaglia la squadra torna a HP pieni e senza stati alterati. In battaglia puoi curarla con gli oggetti della borsa.</p>
             {species && <div className="pu-status-affinities"><h3>Affinità difensive</h3><div className="pu-affinity-grid pu-affinity-compact">{TABELLA_TIPI.tipi.map((type) => <div key={type}><TypeBadge type={type} /><strong>×{TABELLA_TIPI.efficacia[type]?.[species.tipo] ?? 1}</strong></div>)}</div><p className="pu-note">Danno ricevuto per tipo di attacco.</p></div>}
   </>
 }

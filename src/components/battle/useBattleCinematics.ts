@@ -4,8 +4,8 @@ import type { ScreenFx } from '@/motion/ScreenFx'
 import { call, hold, par, seq, wait, when, type Beat, type Playback } from '@/motion/director'
 import { useDirector } from '@/motion/useDirector'
 import {
-  attackerShot, damageTrauma, efficacyTone, frameBothSides, knockoutShot, outcomeShot, targetShot,
-  type BattleFocusPoints, type BattleSide, type EfficacyTone,
+  attackerShot, damageTrauma, efficacyTone, knockoutShot, outcomeShot, targetShot,
+  type BattleSide, type EfficacyTone,
 } from './battleCinematics'
 import { CAPTURE_TIMING, type CaptureDisplay } from './BattleCaptureLayer'
 import type { CapturePlan } from './battleCapture'
@@ -71,7 +71,7 @@ export interface BattleCinematics {
  * modifica il flusso di gioco: se la regia è disattivata (editor dei layout,
  * anteprime) ogni metodo è inerte.
  */
-export function useBattleCinematics({ rig, fx, enabled, focusPoints }: { rig: CameraRig; fx: ScreenFx; enabled: boolean; focusPoints?: BattleFocusPoints }): BattleCinematics {
+export function useBattleCinematics({ rig, fx, enabled }: { rig: CameraRig; fx: ScreenFx; enabled: boolean }): BattleCinematics {
   const director = useDirector('Regia della battaglia')
   const [banner, setBanner] = useState<MoveBannerDisplay | null>(null)
   const [damageNumber, setDamageNumber] = useState<DamageNumberDisplay | null>(null)
@@ -82,10 +82,6 @@ export function useBattleCinematics({ rig, fx, enabled, focusPoints }: { rig: Ca
     { playback: null, id: 0, enabled, suprema: false, knockout: false, concluded: false, captured: false },
   )
   runtime.current.enabled = enabled
-  const framing = useRef(focusPoints)
-  framing.current = focusPoints
-  // Audit fase 5: attacco e rilascio inquadrano entrambi gli Arkamon; KO ed esito restano primi piani.
-  const duel = (shot: ReturnType<typeof attackerShot>) => framing.current ? frameBothSides(shot, framing.current) : shot
 
   const controls = useMemo(() => {
     const state = runtime.current
@@ -117,7 +113,7 @@ export function useBattleCinematics({ rig, fx, enabled, focusPoints }: { rig: Ca
         const opening = par(
           call(() => { setBanner({ id: ++state.id, side, name: moveName, color, suprema }) }),
           call(() => fx.letterbox(true)),
-          call(() => camera.to(duel(attackerShot(side, suprema)))),
+          call(() => camera.to(attackerShot(side, suprema))),
         )
         if (!suprema || speciesId === undefined) {
           void play(opening)
@@ -185,7 +181,7 @@ export function useBattleCinematics({ rig, fx, enabled, focusPoints }: { rig: Ca
       },
       release(targetSide: BattleSide) {
         if (!state.enabled || state.concluded) return
-        play(call(() => camera.to(duel(targetShot(targetSide, state.suprema)))))
+        play(call(() => camera.to(targetShot(targetSide, state.suprema))))
       },
       impact() {
         if (!state.enabled || state.concluded) return

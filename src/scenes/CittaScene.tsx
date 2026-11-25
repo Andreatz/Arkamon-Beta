@@ -1,4 +1,5 @@
 import { GameButton } from '@/components/ui/GameButton'
+import { ExhaustedTeamNotice } from '@/components/overworld/ExhaustedTeamNotice'
 import { ArkaCardButton } from '@/ui-system/primitives'
 import { GameArt } from '@/ui-system/GameArt'
 import { useSceneNavigation } from '@/components/transitions/SceneNavigationContext'
@@ -22,7 +23,8 @@ const RICOMPENSA: Record<AllenatoreDef['tipo'], number> = {
 }
 
 /**
- * Scena città: allenatori, Infermeria Arka e ritorno alla mappa.
+ * Scena città: allenatori e ritorno alla mappa. Le infermerie non esistono più (21 novembre 2026):
+ * la squadra viene curata automaticamente alla fine di ogni battaglia.
  * Il layout admin è condiviso da tutte le città.
  */
 export function CittaScene() {
@@ -33,7 +35,6 @@ export function CittaScene() {
   )
   const vaiAScena = useGameStore((s) => s.vaiAScena)
   const iniziaBattagliaNPC = useGameStore((s) => s.iniziaBattagliaNPC)
-  const curaSquadra = useGameStore((s) => s.curaSquadra)
   const consumaInterazione = useGameStore((s) => s.consumaInterazioneMappaLocale)
   const turno = useGameStore((s) => s.turnoOverworld)
   const fallbackActivity = useGameStore((s) => s.fallbackLocationActivity)
@@ -70,24 +71,7 @@ export function CittaScene() {
   // Audit fase 2: schede comuni del design system con icone dipinte (niente più emoji né card vuote giganti).
   const activities = (
     <div className="grid w-full grid-cols-2 content-start gap-3 overflow-y-auto p-1 lg:grid-cols-3">
-          {!haPokemonVivi && (
-            <p role="status" className="arka-ds-panel col-span-full text-center text-amber-200" data-density="compact">
-              La squadra è esausta. Curala all’Infermeria Arka per tornare a combattere.
-            </p>
-          )}
-          <ArkaCardButton
-            disabled={layoutEditing || !interazioneDisponibile}
-            onClick={() => {
-              useGameStore.getState().eseguiTransazione(() => {
-                if (!consumaInterazione(giocatoreAttivo, luogo)) return
-                curaSquadra(giocatoreAttivo)
-              })
-            }}
-            icon={<GameArt id="node-heal" />}
-            title="Infermeria Arka"
-            meta="Cura tutta la squadra"
-          />
-
+          {!haPokemonVivi && giocatore.squadra.length > 0 && <ExhaustedTeamNotice playerId={giocatoreAttivo} className="col-span-full" />}
           {allenatoriOrdinati.map((a) => {
             const sconfitto = giocatore.allenatoriSconfitti.has(a.id)
             const primoPkmn = getPokemon(a.squadra[0]?.pokemonId)
@@ -186,7 +170,7 @@ export function CittaScene() {
         onChange={(rect) => updateLuogoLayout('subtitle', rect)}
       >
         <p className="arka-layout-content arka-readable-text flex h-full w-full items-center justify-center text-center italic text-arka-text-muted">
-          Sfida gli allenatori o cura la tua squadra all’Infermeria Arka
+          Sfida gli allenatori della città
         </p>
       </AdminLayoutItem>
 

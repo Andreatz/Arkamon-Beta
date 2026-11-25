@@ -1,9 +1,14 @@
 import { GameButton } from '@/components/ui/GameButton'
+import { isRouteLocation } from '@/data/routeLocation'
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LocalMapBoard, type LocalMapPlayer } from '@/components/map/LocalMapBoard'
 import { getLocalMap, type LocalMapDefinition } from '@/data/localMaps'
-import { SECRET_LOCATION_ID, SECRET_LOCATION_ORIGIN, canAccessSecretLocation, hasUnlockedSecretLocation } from '@/data/secretLocation'
-import { getReachableLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
+import { canAccessSecretLocation, canEnterHiddenLocation, getHiddenLocation, hiddenLocationFrom } from '@/data/secretLocation'
+import { placeLabel } from '@/utils/placeLabel'
+import { getAdjacentLocalMapNodes, getReachableLocalMapNodes, getLocalMapNode } from '@/engine/localMapMovement'
+import { applyLocalRoadBlocks, localBlockFor, localRoadBlocks, mainRoadBlock } from '@/engine/roadBlocks'
+import { roadBlockContextFor } from '@/interactions/roadBlockRuntime'
+import { MAIN_MAP_BLOCK_ID } from '@/interactions/types'
 import { localMoveRange } from '@/shop/catalog'
 import { useGameStore } from '@/store/gameStore'
 import { useSceneInputBlocked } from '@/components/transitions/SceneNavigationContext'
@@ -81,6 +86,9 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const player2 = useGameStore((s) => s.giocatore2)
   const battle = useGameStore((s) => s.battaglia)
   const definitions = useInteractionStore((s) => s.interactions)
+  const roadBlocks = useInteractionStore((s) => s.roadBlocks)
+  const progress = useGameStore((s) => s.interactionProgress)
+  const league = useGameStore((s) => s.league)
   const initialize = useGameStore((s) => s.inizializzaPosizioneLocale)
   const move = useGameStore((s) => s.muoviAvatarMappaLocale)
   const pass = useGameStore((s) => s.passaTurnoMappaLocale)
@@ -104,7 +112,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const closeInteraction = useCallback(() => setInteractionOpen(false), [])
   const samePlace = (world: typeof world1) => world.mappaId === 'mappa-principale' && world.luogo === map.id
   const allowedPlayer = (world: typeof world1, player: typeof player1) => samePlace(world)
-    && (map.id !== SECRET_LOCATION_ID || canAccessSecretLocation(player, world))
+    && (!getHiddenLocation(map.id) || canAccessSecretLocation(player, world, map.id))
 
   useEffect(() => {
     if (allowedPlayer(world1, player1)) initialize(1, map.id)
@@ -121,19 +129,33 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
   const remaining = turn.giocatoreAttivo === actor ? turn.azioniRimaste : 0
   const canMove = !!current && remaining > 0 && !blocked && !battle
   const moveRange = localMoveRange((actor === 1 ? player1 : player2).inventario, map.id)
-  const adjacent = current ? getReachableLocalMapNodes(map, current.nodeId, moveRange) : []
+  // Strade bloccate per il giocatore di turno (24 novembre 2026).
+  const blockContext = roadBlockContextFor({ giocatore1: player1, giocatore2: player2, interactionProgress: progress, league }, actor)
+  const closedHere = localRoadBlocks(roadBlocks, blockContext, map.id)
+  const walkable = applyLocalRoadBlocks(map, closedHere, current?.nodeId)
+  const closures = {
+    roads: closedHere.active.flatMap((block) => block.roads.map(([from, to]) => ({ from, to, title: block.title }))),
+    nodes: Object.fromEntries(closedHere.active.flatMap((block) => block.nodes.map((id) => [id, block.title]))),
+  }
+  const adjacent = current ? getReachableLocalMapNodes(walkable, current.nodeId, moveRange) : []
+  const nearbyClosures = current ? [...new Set(getAdjacentLocalMapNodes(map, current.nodeId)
+    .map((id) => localBlockFor(closedHere, current.nodeId, id)).filter((block) => !!block))] : []
   const currentNode = current ? getLocalMapNode(map, current.nodeId) : null
   const pointInteractions = definitions.filter((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === currentNode?.id)
   const interactionLabels = Object.fromEntries(definitions.filter((entry) => entry.enabled && entry.mapId === map.id).map((entry) => [entry.nodeId, entry.title]))
   const interactionKinds = nodeKinds(definitions.filter((entry) => entry.enabled && entry.mapId === map.id), isGymLeader)
   const nodeLabel = (id: string) => getLocalMapNode(map, id).label ?? id
-  const placeName = map.id.replace(/_/g, ' ')
+  const placeName = placeLabel(map.id)
   const currentKind = currentNode ? interactionKinds[currentNode.id] : undefined
   const player = actor === 1 ? player1 : player2
   const actorWorld = actor === 1 ? world1 : world2
-  const secret = map.id === SECRET_LOCATION_ID
-  const secretAccess = canAccessSecretLocation(player, actorWorld)
-  const secretPassageVisible = map.id === SECRET_LOCATION_ORIGIN && !!current && hasUnlockedSecretLocation(player)
+  const hiddenHere = getHiddenLocation(map.id)
+  const secret = !!hiddenHere
+  const secretAccess = canAccessSecretLocation(player, actorWorld, map.id)
+  const hiddenFromHere = hiddenLocationFrom(map.id)
+  const secretPassageVisible = !!hiddenFromHere && !!current && canEnterHiddenLocation(player, hiddenFromHere.id)
+  // Porta di un luogo nascosto chiusa da una strada bloccata (ad esempio fino alla vittoria della Lega).
+  const passageBlock = hiddenFromHere ? mainRoadBlock(roadBlocks, blockContext, map.id, hiddenFromHere.id, MAIN_MAP_BLOCK_ID) : undefined
   const moveTo = (id: string) => {
     if (!canMove) return false
     const moved = move(actor, map.id, id)
@@ -148,7 +170,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       const world = state.giocatoreAttivo === 1 ? state.posizione1 : state.posizione2
       const target = world.mappaId === 'mappa-principale' ? getLocalMap(world.luogo ?? '') : undefined
       if (target && state.apriMappaLocale(state.giocatoreAttivo, target.id)) {
-        navigate(target.id.startsWith('Percorso_') ? 'percorso' : 'citta', { luogo: target.id })
+        navigate(isRouteLocation(target.id) ? 'percorso' : 'citta', { luogo: target.id })
       } else navigate('mappa-principale')
     })
   }
@@ -158,15 +180,16 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     <GameButton onClick={() => navigate('mappa-principale')}>Mappa principale</GameButton>
   </section>
 
-  const passage = (secretPassageVisible || secret) && <GameButton
-    disabled={!canMove || activitiesOpen || interactionOpen} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
-    {secret ? 'Torna a Roma' : 'Passaggio segreto'} · 1 movimento
+  const passage = (secretPassageVisible || secret) && <GameButton className="ref-local-passage" title={!hiddenHere && passageBlock ? passageBlock.message : undefined}
+    disabled={!canMove || activitiesOpen || interactionOpen || (!hiddenHere && !!passageBlock)} onClick={() => { if (!blocked) crossSecretPassage(actor) }}>
+    {hiddenHere ? `Torna a ${placeLabel(hiddenHere.origin)} · 1 movimento` : passageBlock ? passageBlock.title : `Verso ${placeLabel(hiddenFromHere?.id ?? '')} · 1 movimento`}
   </GameButton>
   const budget = <span className="local-map-budget" role="status">{remaining} {remaining === 1 ? 'azione' : 'azioni'}</span>
   const pointInfo = <div className="local-map-point-info" role="status">
     {currentNode ? <><strong>{pointInteractions[0]?.title ?? nodeLabel(selected ?? currentNode.id)}</strong><span>{pointInteractions.length
       ? (stage ? pointInteractions[0]?.dialogue?.trim() || (currentKind ? KIND_LINES[currentKind] : `${pointInteractions.length} interazioni disponibili sul punto`) : `${pointInteractions.length} interazioni disponibili sul punto`)
-      : 'Nessuna interazione configurata sul punto'}</span></> : <span>Questo giocatore si trova in un altro luogo.</span>}
+      : 'Nessuna interazione configurata sul punto'}</span>
+      {nearbyClosures.map((block) => <span key={block.id} className="local-map-closure-note" data-road-block={block.id}><strong>{block.title}</strong> {block.message}</span>)}</> : <span>Questo giocatore si trova in un altro luogo.</span>}
   </div>
   const neighbours = <nav aria-label="Punti raggiungibili" className="local-map-neighbours">
     {adjacent.map((id) => <GameButton key={id} disabled={!canMove} onClick={() => moveTo(id)}>Vai a {nodeLabel(id)} · 1 azione</GameButton>)}
@@ -181,7 +204,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
     {stage ? <header className="local-map-toolbar">
       <div className="ref-local-place">
         <span className="ref-local-place-emblem" aria-hidden="true">{hasGameArt('menu-map') ? <GameArt id="menu-map" /> : <KitIcon id="icon-map" />}</span>
-        <div className="local-map-heading"><h1>{placeName}</h1><span>{map.id.startsWith('Percorso_') ? 'Percorso' : 'Città'} · G{actor} · {player.nome}</span></div>
+        <div className="local-map-heading"><h1>{placeName}</h1><span>{isRouteLocation(map.id) ? 'Percorso' : 'Città'} · G{actor} · {player.nome}</span></div>
         <TurnSummary compact />
       </div>
       <GameButton className="ref-local-back" disabled={blocked} onClick={() => navigate('mappa-principale')}>{secret ? '← Passaggio di ritorno' : '← Mappa principale'}</GameButton>
@@ -201,7 +224,7 @@ export function LocalMapScene({ map, activities }: { map: LocalMapDefinition; ac
       <GameButton tone="primary" disabled={blocked} onClick={passTurn}>Passa turno</GameButton>
     </header>}
     <div className="local-map-play-area">
-      <LocalMapBoard map={map} players={players} activePlayerId={actor} remainingActions={remaining} canMove={canMove} stage={stage} overview={overview}
+      <LocalMapBoard map={map} walkableMap={walkable} closures={closures} players={players} activePlayerId={actor} remainingActions={remaining} canMove={canMove} stage={stage} overview={overview}
         inputBlocked={blocked || activitiesOpen || interactionOpen} interactionLabels={interactionLabels} interactionKinds={interactionKinds} moveRange={moveRange} onMove={moveTo} onSelectNode={(id) => {
           setSelected(id)
           if (definitions.some((entry) => entry.enabled && entry.mapId === map.id && entry.nodeId === id)) setInteractionOpen(true)

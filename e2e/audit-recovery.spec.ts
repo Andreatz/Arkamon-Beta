@@ -8,7 +8,7 @@ async function openFixture(page: Page, battle = false, enemyHP = 4, poisoned = f
     const b = { istanzaId: 'audit-b', specieId: 13, nome: 'Wormaren Audit', livello: 5, hp: enemyHP, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: `Audit ${id}`, squadra: [id === 1 ? a : { ...a, istanzaId: 'audit-g2', nome: 'Vyrath Due', stato: undefined }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 1000, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, audioMuted: true,
@@ -116,7 +116,10 @@ test('a rejected capture save consumes nothing and retries the same action once'
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore1)).toEqual(captured.giocatore1)
   await page.getByRole('button', { name: 'Prosegui', exact: true }).click()
   await expect(page.locator('[data-presented-scene="mappa-principale"]')).toHaveAttribute('aria-busy', 'false')
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore1.squadra[0].hp)).toBe(18)
+  // Fine battaglia: HP pieni e nessuno status per la squadra che ha combattuto (regola del 21 novembre 2026).
+  const healed = await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore1.squadra[0])
+  expect(healed.hp).toBe(19)
+  expect(healed.stato).toBeUndefined()
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.giocatore2)).toEqual(before.giocatore2)
   expect(errors).toEqual([])
 })

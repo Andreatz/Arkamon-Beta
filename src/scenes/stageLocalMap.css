@@ -12,7 +12,7 @@ html .local-map-scene.local-map-scene--stage[data-reference-ui="aurora"] {
   height: 100%;
   overflow: hidden;
   background: var(--arka-ui-night, #031124);
-  font-family: var(--arka-ui-font-body, Georgia, serif);
+  font-family: var(--arka-ui-font-display);
 }
 html .local-map-scene--stage[data-reference-ui="aurora"] > .local-map-play-area { position: absolute; inset: 0; }
 
@@ -317,3 +317,15 @@ html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-menu { grid-
   html .local-map-scene--stage[data-reference-ui="aurora"] .local-map-point-info span { font-size: 13px; }
   html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-card > .game-button { min-height: 40px; font-size: 16px; }
 }
+
+/* Passaggio verso un luogo nascosto: i nomi lunghi («Nascondiglio del Team Towers») vanno a capo dentro il pulsante. */
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-passage {
+  max-width: 280px;
+  min-height: 46px;
+  padding: 6px 14px;
+  font-size: 14px;
+  line-height: 1.15;
+  white-space: normal;
+  text-align: center;
+}
+html .local-map-scene--stage[data-reference-ui="aurora"] .ref-local-passage * { white-space: normal; }

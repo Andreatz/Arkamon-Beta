@@ -15,7 +15,7 @@ async function fixture(page: Page, scenario: 'battle' | 'city' | 'evolution' | '
       deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 700 : 125,
       inventario: { masterball: id, ...(scenario === 'item' && id === 1 ? { potion: 2 } : {}) } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    const campaign = { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
+    const campaign = { dataVersion: 3, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: scenario === 'turn' ? { ...position, luogo: 'Pordenone' } : position, posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, audioMuted: true, scenaPrecedente: { scena: 'mappa-principale' },
       scenaCorrente: scenario === 'city' || scenario === 'turn' ? { scena: 'citta', payload: { luogo: 'Venezia' } } : scenario === 'names' ? { scena: 'laboratorio' } : scenario === 'evolution'
@@ -76,7 +76,9 @@ test('finished NPC reward, residual roster and navigation wait for one successfu
   const saved = await snapshot(page)
   expect(saved.giocatore1.monete).toBe(900)
   expect(saved.giocatore1.allenatoriSconfitti).toContain(202)
-  expect(saved.giocatore1.squadra[0]).toMatchObject({ livello: 11, hp: 3, stato: { tipo: 'Paralizzato', turniRimanenti: -1 } })
+  // Fine battaglia: HP pieni e nessuno status (regola del 21 novembre 2026).
+  expect(saved.giocatore1.squadra[0]).toMatchObject({ livello: 11, hp: 21 })
+  expect(saved.giocatore1.squadra[0].stato).toBeUndefined()
   expect(saved.giocatore2).toEqual(before.giocatore2)
   expect(saved.battaglia).toBeNull()
   expect(await page.evaluate(() => (window as unknown as { durableSuccesses: number }).durableSuccesses)).toBe(1)

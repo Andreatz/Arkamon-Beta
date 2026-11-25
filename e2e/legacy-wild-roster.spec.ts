@@ -13,7 +13,7 @@ test('a route wild encounter retains reserves through a poison KO, reload, captu
     const player = (id: 1 | 2) => ({ id, nome: `Audit G${id}`, squadra: id === 1 ? [lead, reserve] : [{ ...reserve, istanzaId: 'legacy-player2' }],
       deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 300, inventario: { masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Percorso_1', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, posizioniLocali1: {}, posizioniLocali2: {},
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, scenaCorrente: { scena: 'percorso', payload: { luogo: 'Percorso_1' } },

@@ -7,7 +7,7 @@ async function openConfiguration(page: Page) {
   await page.addInitScript(() => {
     const player = (id: 1 | 2) => ({ id, nome: `DEMO G${id}`, squadra: [], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 123, inventario: {} })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1,
       battaglia: null, posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       scenaCorrente: { scena: 'laboratorio' }, scenaPrecedente: null, audioMuted: true } }))
     const original = File.prototype.text

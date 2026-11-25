@@ -756,7 +756,7 @@ export function applicaXPDopoKO(
  * I messaggi sostituiscono il costo preventivo di calcolaDanno e rispettano
  * l'ordine danno/KO → livello → contraccolpo. La UI gestisce l'evoluzione.
  */
-export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa, levelLimit = LIVELLO_MAX): {
+export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa, levelLimit = LIVELLO_MAX, guadagnaEsperienza = true): {
   istanza: PokemonIstanza
   istanzaPrimaDelContraccolpo: PokemonIstanza
   xpAssegnata: number
@@ -767,10 +767,10 @@ export function risolviAttaccanteDopoMossa(risultato: RisultatoMossa, levelLimit
   messaggi: string[]
 } {
   const attaccante = risultato.attaccante
-  const progressione = applicaXPDopoKO(attaccante, risultato.difensore, {
-    ...risultato.difensore,
-    hp: risultato.difensoreSvenuto ? 0 : risultato.difensore.hp,
-  }, levelLimit)
+  // Gli Arkamon controllati dal gioco non guadagnano EXP (21 novembre 2026).
+  const progressione = guadagnaEsperienza
+    ? applicaXPDopoKO(attaccante, risultato.difensore, { ...risultato.difensore, hp: risultato.difensoreSvenuto ? 0 : risultato.difensore.hp }, levelLimit)
+    : { ...applicaXP(attaccante, 0, levelLimit), xpAssegnata: 0 }
   const { xpAssegnata } = progressione
   const istanzaPrimaDelContraccolpo = progressione.istanza
   const suprema = risultato.suprema ?? èMossaSuprema(risultato.mossa)

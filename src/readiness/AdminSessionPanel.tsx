@@ -22,6 +22,7 @@ function downloadConfiguration(json: string) {
 export function AdminSessionPanel({ onNavigate }: { onNavigate: (tab: ReadinessDestination) => void }) {
   const game = useGameStore()
   const interactions = useInteractionStore(state => state.interactions)
+  const roadBlocks = useInteractionStore(state => state.roadBlocks)
   const catalogRecovery = useInteractionRecoveryStatus(state => state.recovery)
   const audience = useAudienceStore()
   const { paused, busy, busyReason, setPaused } = useRegiaStore()
@@ -100,7 +101,7 @@ export function AdminSessionPanel({ onNavigate }: { onNavigate: (tab: ReadinessD
     </section>
 
     <section aria-label="Configurazione portabile della campagna"><h4 className="font-bold">Pacchetto di configurazione</h4><p>Trasporta solo interazioni e regole/squadre avversarie della Lega. Non importa squadre delle giocatrici, monete, oggetti, cronologia, posizioni o credenziali.</p>
-      <button type="button" className="arka-session-button" disabled={!!catalogRecovery} onClick={() => downloadConfiguration(exportCampaignPackage('Configurazione Arkamon', { version: 1, interactions }, game.league.config))}>Esporta configurazione</button>
+      <button type="button" className="arka-session-button" disabled={!!catalogRecovery} onClick={() => downloadConfiguration(exportCampaignPackage('Configurazione Arkamon', { version: 1, interactions, roadBlocks }, game.league.config))}>Esporta configurazione</button>
       {catalogRecovery && <p>Il catalogo salvato richiede recupero. Scarica l’originale nell’editor delle interazioni prima di esportare o importare la configurazione.</p>}
       <label className="block mt-3">Importa configurazione per anteprima<input type="file" accept="application/json,.json" aria-label="Importa configurazione campagna" className="block mt-2 max-w-full" onChange={event => { void previewImport(event.target.files?.[0]); event.target.value = '' }} /></label>
       {configuration && <div className="arka-session-import" aria-label="Anteprima configurazione campagna"><strong>{configuration.name}</strong><p>{configuration.catalog.interactions.length} interazioni ({configuration.catalog.interactions.filter(entry => entry.enabled).length} attive) · {configuration.league ? 'Lega inclusa' : 'Lega non configurata'}.</p>

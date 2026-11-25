@@ -27,7 +27,7 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
       inventario: { masterball: 3 },
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position(place), posizione2: position('Pordenone'),
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
@@ -55,8 +55,8 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
     body: getComputedStyle(document.body).fontFamily,
     loaded: Array.from(document.fonts).filter(face => face.status === 'loaded').map(face => face.family.replace(/["']/g, '')),
   }))
-  // Audit fase 2: un solo design system con due famiglie (display Cinzel, testo Georgia/Gelasio).
-  expect(fonts.body).toContain('Georgia')
+  // 21 novembre 2026: un solo carattere in tutto il gioco, Cinzel.
+  expect(fonts.body).toContain('Arkamon Cinzel')
   expect(fonts.body).not.toContain('Norwester')
   expect(fonts.loaded).not.toEqual(expect.arrayContaining(['Oxanium']))
   expect(fonts.loaded).not.toEqual(expect.arrayContaining(['Sora']))
@@ -91,8 +91,8 @@ async function assertCommandButton(button: Locator, responses: SvgResponses, ton
   await expect(button).toHaveAttribute('data-menu-artwork', 'css')
   expect(proof.background !== 'rgba(0, 0, 0, 0)' || proof.backgroundImage !== 'none', 'A solid or gradient surface visibly paints the control').toBe(true)
   expect(parseFloat(proof.borderWidth)).toBeGreaterThan(0)
-  // Audit fase 2: i comandi usano la famiglia display (Cinzel); la mappa locale resta in Georgia.
-  expect(proof.font).toContain(proof.localMap ? 'Georgia' : 'Arkamon Cinzel')
+  // 21 novembre 2026: anche la mappa locale usa Cinzel, unico carattere del gioco.
+  expect(proof.font).toContain('Arkamon Cinzel')
   expect(proof.disabled).toBe(disabled)
   expect(proof.bound.width).toBeGreaterThan(0)
   expect(proof.bound.height).toBeGreaterThan(0)
@@ -146,11 +146,8 @@ test('mappa principale e Venezia: i comandi correnti accompagnano la navigazione
   await page.getByRole('button', { name: 'Scorciatoie del Game Master', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Scorciatoie del Game Master', exact: true })
   await expect(dialog).toBeVisible()
-  // Audit fase 2: le scorciatoie del GM sono carte del design system (ArkaCardButton), non comandi GameButton.
-  const heal = dialog.getByRole('button', { name: /Infermeria Arka/ })
-  await expect(heal).toBeVisible()
-  await expect(heal).toBeEnabled()
-  await expect(heal).toHaveClass(/arka-ds-card/)
+  // 21 novembre 2026: le infermerie non esistono più, la squadra si cura a fine battaglia.
+  await expect(dialog.getByRole('button', { name: /Infermeria Arka/ })).toHaveCount(0)
   const close = dialog.getByRole('button', { name: 'Chiudi attività', exact: true })
   await assertCommandButton(close, responses)
   await close.click()

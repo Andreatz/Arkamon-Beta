@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { placeLabel } from '../src/utils/placeLabel'
 import { UI_STUDIO_SCREENS, UI_STUDIO_SCREEN_VIEWS, type UiDesignDocument, type UiScreenSnapshot } from '../src/ui-studio/types'
 
 async function launchStudio(page: Page) {
@@ -7,7 +8,7 @@ async function launchStudio(page: Page) {
     if (new URLSearchParams(location.search).has('uiStudioPreview')) return
     const creature = { istanzaId: 'studio-protected-campaign', specieId: 1, nome: 'Compagno da preservare', livello: 5, hp: 7, xp: 0 }
     const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Campagna Melia' : 'Campagna Maggi', squadra: [creature], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 731, inventario: { potion: 2 } })
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, posizione1: { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }, posizione2: { mappaId: 'mappa-principale', luogo: 'Pordenone', x: 0, y: 0, direzione: 'S' }, scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, battaglia: null, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true, rivaleStarterId: 9 } }))
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3, giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, posizione1: { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }, posizione2: { mappaId: 'mappa-principale', luogo: 'Pordenone', x: 0, y: 0, direzione: 'S' }, scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, battaglia: null, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true, rivaleStarterId: 9 } }))
     localStorage.setItem('arkamon-automatic-backups-v1', 'preserved-automatic-backups')
     localStorage.setItem('arkamon-active-challenge-v1', 'preserved-active-challenge')
     const target = window as typeof window & { studioMessages: unknown[] }
@@ -157,7 +158,7 @@ test.describe('isolated real-screen UI Studio preview', () => {
     await expect(preview.locator('[data-ui-id="inherited-caption"]')).toHaveText('Nota di base')
     expect(await protectedStorage(page)).toEqual(before)
   })
-  test('every city and route has an independent real map preview, including the isolated secret location', async ({ page }) => {
+  test('every city and route has an independent real map preview, including the second Via Vittoria map', async ({ page }) => {
     test.setTimeout(120_000)
     await launchStudio(page)
     const before = await protectedStorage(page)
@@ -166,7 +167,7 @@ test.describe('isolated real-screen UI Studio preview', () => {
       if (view === 'default') continue
       const screen = `${base}:${view}`
       await page.evaluate(key => window.document.querySelector('iframe')!.contentWindow!.postMessage({ source: 'arkamon-ui-studio', type: 'screen', screen: key }, location.origin), screen)
-      await expect(preview.locator('.local-map-scene')).toHaveAttribute('aria-label', `Esplorazione ${view.replace(/_/g, ' ')}`)
+      await expect(preview.locator('.local-map-scene')).toHaveAttribute('aria-label', `Esplorazione ${placeLabel(view)}`)
       await expect.poll(async () => (await lastSnapshot(page, screen))?.elements.length ?? 0).toBeGreaterThan(4)
       const snapshot = (await lastSnapshot(page, screen))!
       expect([snapshot.width, snapshot.height]).toEqual([1920, 1080])

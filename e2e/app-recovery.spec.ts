@@ -8,7 +8,7 @@ for (const [module, label] of [['TeamScreen', 'Squadra'], ['LaboratorioScene', '
         istanzaId: `recovery-g${id}`, specieId: id === 1 ? 1 : 5, nome: id === 1 ? 'Vyrath di Aldo' : 'Darklaw di Beatrice', livello: 12, hp: 3, xp: 0,
       }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 700, inventario: { potion: 2 } })
       const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-      localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+      localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
         giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9, battaglia: null,
         posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
         scenaCorrente: { scena: 'titolo' }, scenaPrecedente: null, posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,

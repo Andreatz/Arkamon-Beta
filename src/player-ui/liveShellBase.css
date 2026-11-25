@@ -11,8 +11,8 @@ html .pu-shell.pu-live-shell[data-ui-concept] {
   --ui-accent-ink: #1b2425;
   --ui-accent-soft: #d7b38118;
   --ui-radius: 10px;
-  --ui-display-font: Arkamon Norwester,Arial,sans-serif;
-  --ui-body-font: Arial,sans-serif;
+  --ui-display-font: var(--arka-ui-font-display);
+  --ui-body-font: var(--arka-ui-font-display);
   --ui-shadow: 0 12px 40px #0002;
   --ui-hero-glow: radial-gradient(ellipse,#608d7c30,transparent 67%);
   --arka-control-background: var(--ui-surface-raised);
@@ -192,7 +192,7 @@ html .pu-shell.pu-live-shell[data-ui-concept] :is(.studio-command,.pu-button,.ar
 html .pu-shell.pu-live-shell[data-ui-concept] .pu-kit-icon {
   display: inline-grid;
   place-items: center;
-  font-family: Arial,sans-serif;
+  font-family: var(--arka-ui-font-display);
   color: inherit;
   width: 24px;
   height: 24px;

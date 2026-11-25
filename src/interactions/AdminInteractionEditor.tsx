@@ -1,4 +1,6 @@
 import { isShopItemId, SHOP_ITEMS, type ShopItemId } from '@/shop/catalog'
+import { getHiddenLocation } from '@/data/secretLocation'
+import { placeLabel } from '@/utils/placeLabel'
 import { useState } from 'react'
 import { ALLENATORI, INCONTRI, POKEMON_BASE, getAllenatoriInLuogo } from '@/data'
 import { LOCAL_MAPS } from '@/data/localMaps'
@@ -10,6 +12,7 @@ import { exportTiledInteractions, importTiledInteractions } from './tiledAdapter
 import './interactions.css'
 import { hasArkaStore } from '@/shop/catalog'
 import { completionPrerequisiteOptions } from './schema'
+import { AdminRoadBlockEditor } from './AdminRoadBlockEditor'
 
 const maps = Object.values(LOCAL_MAPS)
 const createDraft = (mapId: string, nodeId: string) => newInteractionDefinition(mapId, nodeId, `interaction-${crypto.randomUUID()}`)
@@ -57,9 +60,9 @@ export function AdminInteractionEditor() {
       ...(kind === 'shop' ? { cost: { coins: 0, items: {} }, reward: { coins: 0, items: {} } } : {}) })
   }
   const pointName = (id: string) => map.nodes.find((node) => node.id === id)?.label ?? id
-  return <section className="interaction-editor" aria-label="Editor delle interazioni">
+  return <><section className="interaction-editor" aria-label="Editor delle interazioni">
     <h2>Interazioni dei pallini</h2>
-    <p>I numeri compaiono soltanto in questo editor. Le strade e le posizioni rimangono quelle delle foto. Le configurazioni vuote lasciano disponibili le attività attuali.</p>
+    <p>I numeri compaiono soltanto in questo editor. Le strade e le posizioni rimangono quelle delle foto. Le interazioni e le strade bloccate del gioco sono già presenti: modificale qui come le tue.</p>
     {recovery && <section role="alert" aria-label="Recupero catalogo interazioni">
       <h3>Catalogo da recuperare</h3><p>{recovery.error}</p>
       <p>Le interazioni salvate sono sospese. L’originale è conservato: scaricalo prima di sostituirlo con un catalogo valido nell’area Importa / esporta.</p>
@@ -67,8 +70,9 @@ export function AdminInteractionEditor() {
     </section>}
     <label>Luogo<select value={mapId} onChange={(e) => {
       const id = e.target.value; setMapId(id); setDraft(createDraft(id, LOCAL_MAPS[id].startNode)); setMessage('')
-    }}>{maps.map((item) => <option key={item.id} value={item.id}>{item.id.replace(/_/g, ' ')}</option>)}</select></label>
-    {mapId === 'Percorso_15' && <p className="interaction-note">Luogo segreto: l’accesso conserva il requisito delle otto palestre. Nessun contenuto viene creato automaticamente.</p>}
+    }}>{maps.map((item) => <option key={item.id} value={item.id}>{placeLabel(item.id)}</option>)}</select></label>
+    {getHiddenLocation(mapId) && <p className="interaction-note">Luogo nascosto raggiungibile da {placeLabel(getHiddenLocation(mapId)!.origin)}{getHiddenLocation(mapId)!.requiresAllGyms ? ': l’accesso conserva il requisito delle otto palestre' : ''}. Nessun contenuto viene creato automaticamente.</p>}
+    {mapId === 'Via_Vittoria_2' && <p className="interaction-note">Seconda mappa di Via Vittoria: non è ancora collegata alla prima, in attesa dei riferimenti dei passaggi.</p>}
     <div className="interaction-editor-map" role="group" aria-label="Scegli un pallino sulla mappa">
       <img src={assetUrl(map.image)} alt={`Riferimento ${mapId}`} onLoad={(e) => setDimensions({ width: e.currentTarget.naturalWidth, height: e.currentTarget.naturalHeight })} />
       {map.nodes.map((node) => <button type="button" key={node.id} aria-label={`Modifica ${node.label ?? node.id}`} aria-pressed={draft.nodeId === node.id}
@@ -87,7 +91,7 @@ export function AdminInteractionEditor() {
       </select></label>
       <p className="interaction-note">Nel completamento condiviso il premio va soltanto al giocatore che completa per primo. I requisiti riguardano sempre il giocatore che agisce.</p>
       <label>Attività<select value={draft.action.kind} onChange={(e) => chooseAction(e.target.value as InteractionAction['kind'])}>
-        <option value="dialogue">Dialogo / missione / ricompensa</option><option value="heal">Cura della squadra</option>
+        <option value="dialogue">Dialogo / missione / ricompensa</option>{/* Infermerie rimosse (21 novembre 2026): la cura avviene a fine battaglia. Resta visibile solo per le voci già salvate. */}{draft.action.kind === 'heal' && <option value="heal">Cura della squadra (non più necessaria)</option>}
         <option value="shop" disabled={!hasArkaStore(mapId)}>Arkastore</option>
         <option value="trainer" disabled={!trainers.length}>Allenatore esistente</option><option value="bush" disabled={!bushes.length}>Cespuglio esistente</option><option value="encounter">Incontro definito dalla regia</option>
       </select></label>
@@ -141,4 +145,6 @@ export function AdminInteractionEditor() {
       </div>}
     </details>
   </section>
+  {/* Sezione separata: le etichette e lo stato dell'editor delle interazioni restano univoci. */}
+  <AdminRoadBlockEditor /></>
 }

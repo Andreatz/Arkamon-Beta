@@ -4,7 +4,7 @@ import { initialGameSave, normalizeGameSave, serializeGameState } from '@/save/g
 import { serializeGameBackup, stateFromValidatedBackup, validateGameBackup } from '@/save/gameBackup'
 import { useSaveWriteStatus } from '@/save/durableWrites'
 import { SECRET_LOCATION_GYM_IDS } from '@/data/secretLocation'
-import { calcolaAzioneSuprema, esitoSquadre, risolviAttaccanteDopoMossa } from '@/engine/battleEngine'
+import { calcolaAzioneSuprema, calcolaHPMax, esitoSquadre, risolviAttaccanteDopoMossa } from '@/engine/battleEngine'
 import { createChallengeSession } from '@/challenges/challengeRules'
 import { exitChallenge, launchChallenge } from '@/challenges/challengeRuntime'
 import { draftLeagueConfiguration, leagueConfigurationProblems, type LeagueConfiguration } from './leagueModel'
@@ -67,7 +67,7 @@ describe('Lega: sequenza, checkpoint e campagna', () => {
     useGameStore.setState({ turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 } })
     expect(useGameStore.getState().iniziaLega().ok).toBe(true)
   })
-  it('runs all four battles in one turn, preserves HP, persists the first winner once and blocks new racing moves', () => {
+  it('runs all four battles in one turn, heals after each fight, persists the first winner once and blocks new racing moves', () => {
     useGameStore.getState().configuraLega(config())
     expect(useGameStore.getState().iniziaLega().ok).toBe(true)
     const originalTwo = serializeGameState(useGameStore.getState()).giocatore2
@@ -75,7 +75,8 @@ describe('Lega: sequenza, checkpoint e campagna', () => {
       const battle = useGameStore.getState().battaglia!
       expect(battle.leagueBattle?.stageIndex).toBe(stage)
       expect(battle.leagueOpponent?.tipo).toBe('Superquattro')
-      expect(battle.pokemonA.hp).toBe(stage === 0 ? 8 : 4)
+      // 21 novembre 2026: ogni incontro si chiude con la cura completa della squadra.
+      expect(battle.pokemonA.hp).toBe(stage === 0 ? 8 : calcolaHPMax(pokemon()))
       expect(finish('vittoria', [{ ...pokemon(), hp: 4 }]).ok).toBe(true)
       expect(useGameStore.getState().giocatoreAttivo).toBe(1)
       expect(useGameStore.getState().turnoOverworld).toEqual({ giocatoreAttivo: 1, azioniRimaste: 0 })
@@ -85,7 +86,7 @@ describe('Lega: sequenza, checkpoint e campagna', () => {
       if (stage < 3) expect(useGameStore.getState().prossimoIncontroLega().ok).toBe(true)
     }
     const state = useGameStore.getState()
-    expect(state.league.winner).toMatchObject({ name: 'Melia', playerId: 1, team: [{ hp: 4, xp: 0 }] })
+    expect(state.league.winner).toMatchObject({ name: 'Melia', playerId: 1, team: [{ hp: calcolaHPMax(pokemon()), xp: 0 }] })
     expect(state.league.players[1].completedStages).toEqual([0, 1, 2, 3])
     expect(serializeGameState(state).giocatore2).toEqual(originalTwo)
     state.passaTurnoOverworld(); state.cambiaGiocatoreAttivo()
@@ -105,19 +106,19 @@ describe('Lega: sequenza, checkpoint e campagna', () => {
     expect(finish('vittoria').ok).toBe(true)
     expect(useGameStore.getState().league.winner?.playerId).toBe(1)
   })
-  it.each(['restart', 'retry-stage'] as const)('defeat with %s consumes no healing and passes the map turn, then obeys the selected retry rule', (rule) => {
+  it.each(['restart', 'retry-stage'] as const)('defeat with %s heals the team and passes the map turn, then obeys the selected retry rule', (rule) => {
     useGameStore.getState().configuraLega(config(rule)); useGameStore.getState().iniziaLega(); finish('vittoria'); useGameStore.getState().prossimoIncontroLega()
     expect(finish('sconfitta', [{ ...pokemon(), hp: 0 }]).ok).toBe(true)
-    expect(useGameStore.getState().giocatore1.squadra[0].hp).toBe(0)
+    expect(useGameStore.getState().giocatore1.squadra[0].hp).toBe(calcolaHPMax(pokemon()))
     expect(useGameStore.getState().turnoOverworld).toEqual({ giocatoreAttivo: 2, azioniRimaste: 2 })
     useGameStore.setState({ giocatoreAttivo: 1, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 } })
-    expect(useGameStore.getState().iniziaLega().ok).toBe(false)
-    useGameStore.getState().curaSquadra(1)
     expect(useGameStore.getState().iniziaLega().ok).toBe(true)
     expect(useGameStore.getState().battaglia?.leagueBattle?.stageIndex).toBe(rule === 'restart' ? 0 : 1)
   })
-  it('allows explicit owned item use between fights without passing the reserved turn or implicit healing', () => {
+  it('allows explicit owned item use between fights without passing the reserved turn', () => {
     useGameStore.getState().configuraLega(config()); useGameStore.getState().iniziaLega(); finish('vittoria', [{ ...pokemon(), hp: 2 }])
+    expect(useGameStore.getState().giocatore1.squadra[0].hp).toBe(calcolaHPMax(pokemon()))
+    useGameStore.setState((s) => ({ giocatore1: { ...s.giocatore1, squadra: [{ ...s.giocatore1.squadra[0], hp: 2 }] } }))
     const turn = useGameStore.getState().turnoOverworld
     expect(useGameStore.getState().applicaOggetto(1, 'potion', 'league-player').ok).toBe(true)
     expect(useGameStore.getState().giocatore1.squadra[0].hp).toBeGreaterThan(2)

@@ -57,7 +57,7 @@ describe('passive public map geometry', () => {
     expect(Math.abs(Number(markers[0][2]) - Number(markers[1][2]))).toBeGreaterThan(Number(markers[0][4]) + Number(markers[1][4]))
     expect(markup).toContain('>G1</text>')
     expect(markup).toContain('>G2</text>')
-    expect(markup).not.toMatch(/>Melia<|>Maggi<|Percorso_15|<button|onclick=/)
+    expect(markup).not.toMatch(/>Melia<|>Maggi<|Lega_Roma|Leggendario|Nascondiglio|<button|onclick=/)
     expect(markup).toContain('aria-label="G1 · Melia"')
   })
   it('keeps coincident badges separated and inside the image at a local-map edge', () => {

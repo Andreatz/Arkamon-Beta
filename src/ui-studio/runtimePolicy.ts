@@ -1,6 +1,6 @@
 import type { UiDesignDocument, UiScreenDesign } from './types'
 
-/** Norwester is already declared by the product; an untouched document is a no-op. */
+/** Il carattere del gioco (id storico `norwester`, ora Cinzel) è già dichiarato: un documento intatto non cambia nulla. */
 export function hasRuntimeDesign(design: UiDesignDocument): boolean {
   if (Object.values(design.screens).some(screen => !!screen.background || !!screen.typography || requiresElementPass(screen))) return true
   return Object.values(design.typography).some(font => Object.entries(font).some(([key, value]) => value !== undefined && !(key === 'family' && value === 'norwester')))
