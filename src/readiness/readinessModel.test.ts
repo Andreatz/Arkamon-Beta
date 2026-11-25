@@ -10,7 +10,7 @@ describe('preparazione della live', () => {
   it('non inventa la storia né blocca le tappe intenzionalmente vuote', () => {
     const report = buildReadinessReport(initialGameSave(), [], disconnected)
     expect(report.counts.errors).toBe(0)
-    expect(report.maps.length).toBe(16)
+    expect(report.maps.length).toBe(31)
     expect(report.checks.find(check => check.id === 'interaction-coverage')).toMatchObject({ level: 'warning' })
     expect(report.checks.find(check => check.id === 'shop-access')).toMatchObject({ level: 'warning', destination: 'interactions' })
     expect(report.checks.find(check => check.id === 'connection')?.message).toContain('locale resta disponibile')

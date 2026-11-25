@@ -8,7 +8,7 @@ async function seed(context: BrowserContext, names = false, recent = false) {
       istanzaId: `roadmap-${id}`, specieId: id === 1 ? 1 : 5, nome: id === 1 ? 'Vyrath' : 'Darklaw', livello: 10, hp: 8, xp: 0,
     }], deposito: {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: id === 1 ? 700 : 125, inventario: { potion: 2, masterball: 1 } })
     const position = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, battaglia: null, rivaleStarterId: 9,
       posizione1: position, posizione2: position, posizioniLocali1: { Venezia: 'n56' }, posizioniLocali2: { Venezia: 'n56' },
       scenaCorrente: { scena: names ? 'laboratorio' : 'mappa-principale' }, scenaPrecedente: null,

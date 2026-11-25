@@ -19,7 +19,7 @@ const MAP_BG: Record<string, string> = {
   ReggioCalabria: '/backgrounds/reggio_calabria.png',
   Foggia: '/backgrounds/foggia.png',
   Napoli: '/backgrounds/napoli.png',
-  Molisnt: '/backgrounds/molise.png',
+  Percorso_13: '/backgrounds/molise.png',
   Pescara: '/backgrounds/pescara.png',
   Roma: '/backgrounds/roma.png',
 
@@ -36,8 +36,8 @@ const MAP_BG: Record<string, string> = {
   Percorso_10: '/backgrounds/route_10.png',
   Percorso_11: '/backgrounds/route_11.png',
   Percorso_12: '/backgrounds/route_12.png',
-  Percorso_13: '/backgrounds/route_13.jpg',
-  Percorso_14: '/backgrounds/route_14.jpg',
+  Percorso_14: '/backgrounds/route_13.jpg',
+  Percorso_15: '/backgrounds/route_14.jpg',
 }
 
 /** Background di battaglia di default (foresta). */

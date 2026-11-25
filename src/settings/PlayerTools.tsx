@@ -7,8 +7,6 @@ import { useGameStore } from '@/store/gameStore'
 import type { SceneId } from '@/types'
 import { useGlobalLauncherHidden } from './launcherVisibility'
 import { TeamRuleNotice } from './TeamRuleNotice'
-import { FusionNotice } from '@/components/fusion/FusionNotice'
-import { GrassOpeningOverlay } from '@/motion/encounter/GrassOpening'
 import { isPlayerUiScreen, PLAYER_UI_OPEN_EVENT, type PlayerUiAuxiliary, type PlayerUiOpenRequest } from '@/player-ui/navigation'
 import { useInteractionStore } from '@/interactions/interactionStore'
 import { shopAvailabilityMessage } from '@/shop/purchase'
@@ -17,12 +15,17 @@ import './playerToolsLauncher.css'
 /** Scene di gioco in cui Esc apre il menù «Partita» (fase U6). Le altre usano Esc per tornare indietro. */
 const ESCAPE_MENU_SCENES = new Set<SceneId>(['mappa-principale', 'citta', 'battaglia'])
 
+// Budget di avvio: l'erba dell'incontro resta montata, ma in un pezzo separato dal titolo.
+const GrassOpeningOverlay = lazy(() => import('@/motion/encounter/GrassOpening').then(module => ({ default: module.GrassOpeningOverlay })))
+// Budget di avvio: l'annuncio della fusione si carica solo quando serve.
+const FusionNotice = lazy(() => import('@/components/fusion/FusionNotice').then(module => ({ default: module.FusionNotice })))
 const PlayerUi = lazy(() => import('@/player-ui/PlayerUi').then(module => ({ default: module.PlayerUi })))
 export function PlayerTools() {
   const [open, setOpen] = useState(false)
   // Fase U6: nella mappa locale il comando «Partita» sta nella scheda del punto. Il pulsante globale
   // è smontato solo mentre quella scena è montata (Start del gamepad apre il menù via evento).
   const launcherHidden = useGlobalLauncherHidden()
+  const fusionPending = useGameStore(state => (state.avvisoFusione?.length ?? 0) > 0)
   const [request, setRequest] = useState<PlayerUiOpenRequest & { auxiliary?: PlayerUiAuxiliary; revision: number }>({ screen: 'partita', revision: 0 })
   useEffect(() => {
     const handleOpen = (event: Event) => {
@@ -67,8 +70,8 @@ export function PlayerTools() {
   return <>
     {createPortal(<SaveRecoveryNotice onOpenBackup={() => openDefault('backup')} />, document.body)}
     {!open && createPortal(<TeamRuleNotice />, document.body)}
-    {createPortal(<FusionNotice />, document.body)}
-    <GrassOpeningOverlay />
+    {fusionPending && createPortal(<Suspense fallback={null}><FusionNotice /></Suspense>, document.body)}
+    <Suspense fallback={null}><GrassOpeningOverlay /></Suspense>
     {!launcherHidden && createPortal(<GameButton aria-haspopup="dialog" aria-expanded={open} onClick={() => openDefault()} data-player-tools-launcher className="player-tools-launcher fixed bottom-3 left-3 z-[950] text-sm">Partita</GameButton>, document.body)}
     {open ? <GameDialog title="La tua partita" className="player-ui-dialog" showCloseButton={false} onClose={() => setOpen(false)}>
       <TeamRuleNotice />

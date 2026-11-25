@@ -1,6 +1,5 @@
 import { registerScenePreparer } from '@/components/transitions/scenePrefetch'
 import { HealSoundBridge } from '@/components/overworld/HealSoundBridge'
-import { TurnChangeBanner } from '@/components/overworld/TurnChangeBanner'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
@@ -18,7 +17,6 @@ import { ChallengeBanner } from '@/challenges/ChallengeBanner'
 import { SaveFailureNotice } from '@/save/SaveFailureNotice'
 import { SessionGate } from '@/session/SessionGate'
 import { PublicPresentationBridge } from '@/regia/PublicPresentationBridge'
-import { RegiaPause } from '@/regia/RegiaPause'
 import { AppliedUiDesign } from '@/ui-studio/AppliedUiDesign'
 import { isUiStudioPreview } from '@/ui-studio/previewMode'
 import { MotionRoot } from '@/motion/MotionRoot'
@@ -26,8 +24,6 @@ import { decodeImage } from '@/components/transitions/sceneTransitionRuntime'
 import { assetUrl } from '@/utils/assetUrl'
 import { getBackground } from '@/data/backgrounds'
 import '@/components/ui/gameControls.css'
-import { TiltController } from '@/motion/ui/TiltController'
-import { GamepadBridge } from '@/input/GamepadBridge'
 
 // Caricatori delle scene: condivisi fra `lazy` e il precaricamento delle transizioni.
 const sceneLoaders = {
@@ -48,6 +44,13 @@ const CittaScene = lazy(() => sceneLoaders.citta().then((module) => ({ default: 
 const DepositoScene = lazy(() => sceneLoaders.deposito().then((module) => ({ default: module.DepositoScene })))
 const EvoluzioneScene = lazy(() => sceneLoaders.evoluzione().then((module) => ({ default: module.EvoluzioneScene })))
 const LeagueScene = lazy(() => sceneLoaders.lega().then((module) => ({ default: module.LeagueScene })))
+// Budget di avvio (audit del 23 novembre 2026): pausa di regia, inclinazione delle schede e ponte
+// del gamepad non servono a disegnare il titolo; si caricano subito dopo, in pezzi separati.
+const RegiaPause = lazy(() => import('@/regia/RegiaPause').then(module => ({ default: module.RegiaPause })))
+const TiltController = lazy(() => import('@/motion/ui/TiltController').then(module => ({ default: module.TiltController })))
+const GamepadBridge = lazy(() => import('@/input/GamepadBridge').then(module => ({ default: module.GamepadBridge })))
+// Budget di avvio: la fascia del turno (con i ritratti della squadra) non serve al titolo.
+const TurnChangeBanner = lazy(() => import('@/components/overworld/TurnChangeBanner').then(module => ({ default: module.TurnChangeBanner })))
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
 const ReferenceUiPreview = lazy(() => import('@/ui-studio/ReferenceUiPreview').then(module => ({ default: module.ReferenceUiPreview })))
@@ -94,13 +97,12 @@ function App() {
       <AppliedUiDesign />
       <AdminOverlay />
       <PublicPresentationBridge />
-      <RegiaPause />
+      <Suspense fallback={null}><RegiaPause /></Suspense>
       <PlayerTools />
-      <TiltController />
-      <GamepadBridge />
+      <Suspense fallback={null}><TiltController /><GamepadBridge /></Suspense>
       <SaveFailureNotice />
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
-      <TurnChangeBanner key={`turn-banner-${campaignRevision}`} />
+      <Suspense fallback={null}><TurnChangeBanner key={`turn-banner-${campaignRevision}`} /></Suspense>
       <HealSoundBridge />
       <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene} prepareScene={prepareScene}>
         <AudioController />

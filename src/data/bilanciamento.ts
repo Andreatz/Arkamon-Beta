@@ -25,10 +25,10 @@ export const PROGRESSIONE_MAPPE = [
   'Percorso_11',
   'Percorso_12',
   'Napoli',
-  'Molisnt',
   'Percorso_13',
-  'Pescara',
   'Percorso_14',
+  'Pescara',
+  'Percorso_15',
   'Roma',
 ] as const
 
@@ -85,8 +85,8 @@ export const RANGE_INCONTRI_PERCORSO: Record<
   Percorso_10: { min: 41, max: 45 },
   Percorso_11: { min: 42, max: 46 },
   Percorso_12: { min: 43, max: 47 },
-  Percorso_13: { min: 47, max: 51 },
-  Percorso_14: { min: 51, max: 55 },
+  Percorso_14: { min: 47, max: 51 },
+  Percorso_15: { min: 51, max: 55 },
 }
 
 export const ROUTE_GENERATE = [
@@ -99,8 +99,8 @@ export const ROUTE_GENERATE = [
   'Percorso_10',
   'Percorso_11',
   'Percorso_12',
-  'Percorso_13',
   'Percorso_14',
+  'Percorso_15',
 ] as const
 
 export const CESPUGLI_STANDARD = ['A', 'B', 'C', 'D', 'E', 'F'] as const

@@ -24,7 +24,7 @@ test('a real private phone command resumes and executes exactly once in the actu
       const roundRequest = { turnKey: `${battleId}:B:1:${enemy.istanzaId}`, channel: 'boss', durationSeconds: 120,
         trainer: { name: 'Rivale PvP', kind: 'PVP' }, pokemon: { instanceId: enemy.istanzaId, speciesId: 1, name: enemy.nome, level: 5 },
         options: [{ index: 0, moveId: 1, name: 'Soffio', type: 'Normale', description: '1d6 + 1' }, { index: 1, moveId: 111, name: 'Brezza Profumata', type: 'Erba', description: '1d6 + 1' }], fallbackIndex: 0 }
-      localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+      localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
         giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
         posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 0 },
         posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true, scenaCorrente: { scena: 'battaglia' }, scenaPrecedente: { scena: 'percorso', payload: { luogo: 'Percorso_1' } },

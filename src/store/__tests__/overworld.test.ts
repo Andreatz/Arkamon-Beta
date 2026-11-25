@@ -106,11 +106,15 @@ describe('store overworld — mappa principale', () => {
         x: 0,
         y: 0,
         direzione: 'S',
-        luogo: 'Percorso_14',
+        luogo: 'Percorso_15',
       },
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
     })
 
+    // Linea rossa della mappa (24 novembre 2026): Percorso 1 – Via Vittoria si apre dopo la Lega.
+    expect(useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')).toBe(false)
+    expect(useGameStore.getState().posizione1.luogo).toBe('Percorso_15')
+    useGameStore.setState((s) => ({ league: { ...s.league, players: { ...s.league.players, 1: { ...s.league.players[1], status: 'completed' } } } }))
     const ok = useGameStore.getState().muoviAvatarMappaPrincipale(1, 'Percorso_1')
 
     expect(ok).toBe(true)
@@ -120,14 +124,18 @@ describe('store overworld — mappa principale', () => {
   it('modella le diramazioni principali senza percorso lineare unico', () => {
     expect(getAdjacentMainMapNodes('Percorso_3')).toEqual(['Milano'])
     expect(getAdjacentMainMapNodes('Percorso_11')).toEqual(['Foggia'])
-    expect(new Set(getAdjacentMainMapNodes('Percorso_14'))).toEqual(
+    // Rinomina del 18 novembre 2026: la strada Pescara–Roma è il Percorso 15 (Via Vittoria).
+    expect(new Set(getAdjacentMainMapNodes('Percorso_15'))).toEqual(
       new Set(['Percorso_1', 'Grosseto', 'Pescara', 'Roma'])
     )
+    expect(new Set(getAdjacentMainMapNodes('Percorso_13'))).toEqual(new Set(['Percorso_12', 'Percorso_14']))
+    expect(new Set(getAdjacentMainMapNodes('Percorso_14'))).toEqual(new Set(['Percorso_13', 'Pescara']))
+    expect(getAdjacentMainMapNodes('Molisnt')).toEqual([])
     expect(new Set(getAdjacentMainMapNodes('Percorso_4'))).toEqual(
       new Set(['Percorso_2', 'Percorso_5'])
     )
     expect(new Set(getAdjacentMainMapNodes('Percorso_12'))).toEqual(
-      new Set(['Foggia', 'Napoli', 'Molisnt'])
+      new Set(['Foggia', 'Napoli', 'Percorso_13'])
     )
   })
 
@@ -143,18 +151,19 @@ describe('store overworld — mappa principale', () => {
   })
 
   it('prenota una sola attività nei luoghi fallback senza mappa locale', () => {
+    // Dal 24 novembre 2026 Pescara ha la sua rete: il Percorso 11 resta senza pittura.
     useGameStore.setState({
-      posizione1: { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Pescara' },
+      posizione1: { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Percorso_11' },
       giocatoreAttivo: 1,
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },
       fallbackLocationActivity: null,
-      scenaCorrente: { scena: 'citta', payload: { luogo: 'Pescara' } },
+      scenaCorrente: { scena: 'percorso', payload: { luogo: 'Percorso_11' } },
     })
-    expect(useGameStore.getState().interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'luogo', luogo: 'Pescara' })
-    expect(useGameStore.getState().fallbackLocationActivity).toEqual({ playerId: 1, location: 'Pescara' })
-    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Pescara')).toBe(true)
+    expect(useGameStore.getState().interagisciLuogoMappaPrincipale(1)).toEqual({ tipo: 'luogo', luogo: 'Percorso_11' })
+    expect(useGameStore.getState().fallbackLocationActivity).toEqual({ playerId: 1, location: 'Percorso_11' })
+    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Percorso_11')).toBe(true)
     expect(useGameStore.getState().fallbackLocationActivity).toBeNull()
-    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Pescara')).toBe(false)
+    expect(useGameStore.getState().consumaInterazioneMappaLocale(1, 'Percorso_11')).toBe(false)
   })
 })
 

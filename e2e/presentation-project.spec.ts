@@ -7,7 +7,7 @@ async function seed(context: BrowserContext) {
     const creature = (id: number) => ({ istanzaId: `PRIVATE_INSTANCE_${id}`, specieId: id === 1 ? 1 : 5, nome: id === 1 ? 'Vyrath in onda' : 'Darklaw riservato', livello: 10, hp: 8, xp: 0 })
     const player = (id: 1 | 2) => ({ id, nome: id === 1 ? 'Melia' : 'Maggi', squadra: id === 1 ? [creature(id), { ...creature(2), istanzaId: 'PRIVATE_TEAM_2', nome: 'Secondo compagno', hp: 3 }] : [creature(id)], deposito: id === 1 ? { '1:1': { ...creature(2), istanzaId: 'PRIVATE_RESERVE', nome: 'PRIVATE_RESERVE_NAME' } } : {}, cespugliVisitati: [], allenatoriSconfitti: [], monete: 700, inventario: { potion: 37 } })
     const place = { mappaId: 'mappa-principale', luogo: 'Venezia', x: 0, y: 0, direzione: 'S' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, posizione1: place, posizione2: place,
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 }, scenaCorrente: { scena: 'mappa-principale' }, scenaPrecedente: null, battaglia: null, rivaleStarterId: 9, audioMuted: true,
     } }))

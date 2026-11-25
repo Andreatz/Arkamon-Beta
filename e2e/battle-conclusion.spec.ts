@@ -11,7 +11,7 @@ async function endedBattle(page: Page, reverse = false) {
     const player = (id: 1 | 2) => ({ id, nome: `Conclusione ${id}`, squadra: id === 1 ? squad : [], deposito: {},
       cespugliVisitati: [], allenatoriSconfitti: [], monete: 0, inventario: { revive: 0 } })
     const position = { mappaId: 'mappa-principale', x: 0, y: 0, direzione: 'S', luogo: 'Pordenone' }
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position, posizione2: position, turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 0 },
       posizioniLocali1: {}, posizioniLocali2: {}, audioMuted: true,
@@ -31,6 +31,8 @@ async function endedBattle(page: Page, reverse = false) {
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state.battaglia?.cronaca?.events.some((event: { kind: string }) => event.kind === 'outcome'))).toBe(true)
 }
 const snapshot = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('arkamon-save')!).state)
+/** Cura completa a fine battaglia (regola del 21 novembre 2026): Darklaw lv 11 → 24 HP, Vyrath lv 6 → 13 HP. */
+const healed = (team: { livello: number }[]) => team.map(p => ({ ...p, hp: p.livello === 11 ? 24 : 13 }))
 
 for (const reverse of [false, true]) test(`Prosegui preserves the valid final roster and rewards after reload, reversed=${reverse}`, async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message))
@@ -43,7 +45,7 @@ for (const reverse of [false, true]) test(`Prosegui preserves the valid final ro
   await page.getByRole('button', { name: 'Prosegui', exact: true }).click()
   await expect.poll(async () => (await snapshot(page)).battaglia).toBeNull()
   const after = await snapshot(page)
-  expect(after.giocatore1.squadra).toEqual(expected)
+  expect(after.giocatore1.squadra).toEqual(healed(expected))
   expect(after.giocatore1.monete).toBe(200)
   expect(after.giocatore1.allenatoriSconfitti).toContain(202)
   expect(after.giocatore1.inventario.revive).toBe(0)
@@ -74,7 +76,7 @@ test('a failed Prosegui write keeps roster, result and rewards together until th
   await page.getByRole('button', { name: 'Riprova salvataggio', exact: true }).click()
   await expect.poll(async () => (await snapshot(page)).battaglia).toBeNull()
   const after = await snapshot(page)
-  expect(after.giocatore1.squadra).toEqual(before.battaglia.squadraA)
+  expect(after.giocatore1.squadra).toEqual(healed(before.battaglia.squadraA))
   expect(after.giocatore1.monete).toBe(200)
   await page.reload()
   await expect(page.getByRole('heading', { name: 'Percorso 1', exact: true })).toBeVisible(); expect((await snapshot(page)).scenaCorrente).toEqual({ scena: 'percorso', payload: { luogo: 'Percorso_1' } })

@@ -3,6 +3,7 @@ import { getLocalMap } from '@/data/localMaps'
 import { INTERACTION_STORAGE_KEY, useInteractionStore } from '../interactionStore'
 import { newInteractionDefinition } from '../types'
 import { useInteractionRecoveryStatus } from '../interactionRecovery'
+import { BUILT_IN_INTERACTIONS, BUILT_IN_ROAD_BLOCKS } from '../builtInCatalog'
 const storageState = vi.hoisted(() => {
   const values = new Map<string, string>()
   const control = { fail: false, writes: 0, values }
@@ -21,7 +22,7 @@ describe('catalogo: pubblicazione soltanto dopo il salvataggio duraturo', () => 
   beforeEach(() => {
     storageState.fail = false
     useInteractionRecoveryStatus.setState({ recovery: null })
-    useInteractionStore.setState({ interactions: [] })
+    useInteractionStore.setState({ interactions: [], roadBlocks: [] })
     storageState.writes = 0
     useInteractionStore.getState().saveInteraction(entry('previous'))
   })
@@ -102,8 +103,9 @@ describe('catalogo: pubblicazione soltanto dopo il salvataggio duraturo', () => 
     storageState.fail = false
     expect(store.replaceDamagedCatalog(valid)).toBeNull()
     expect(useInteractionRecoveryStatus.getState().recovery).toBeNull()
-    expect(useInteractionStore.getState().interactions).toEqual([entry('recovered')])
-    expect(JSON.parse(storageState.values.get(INTERACTION_STORAGE_KEY)!).state.interactions).toEqual([entry('recovered')])
+    // Un file precedente ai contenuti del gioco li riceve insieme alla sostituzione.
+    expect(useInteractionStore.getState().interactions).toEqual([entry('recovered'), ...BUILT_IN_INTERACTIONS])
+    expect(JSON.parse(storageState.values.get(INTERACTION_STORAGE_KEY)!).state.interactions).toEqual([entry('recovered'), ...BUILT_IN_INTERACTIONS])
     expect(store.saveInteraction(entry('next'))).toBeNull()
   })
   it('non sostituisce un originale cambiato dopo l’anteprima di recupero', async () => {
@@ -121,11 +123,13 @@ describe('catalogo: pubblicazione soltanto dopo il salvataggio duraturo', () => 
     storageState.values.set(INTERACTION_STORAGE_KEY, JSON.stringify({ version: 0, state: { interactions: [entry('repaired')] } }))
     await useInteractionStore.persist.rehydrate()
     expect(useInteractionRecoveryStatus.getState().recovery).toBeNull()
-    expect(useInteractionStore.getState().interactions).toEqual([entry('repaired')])
+    expect(useInteractionStore.getState().interactions).toEqual([entry('repaired'), ...BUILT_IN_INTERACTIONS])
     storageState.values.delete(INTERACTION_STORAGE_KEY)
     await useInteractionStore.persist.rehydrate()
     expect(useInteractionRecoveryStatus.getState().recovery).toBeNull()
-    expect(useInteractionStore.getState().interactions).toEqual([])
+    // Una nuova installazione parte dai contenuti del gioco.
+    expect(useInteractionStore.getState().interactions).toEqual(BUILT_IN_INTERACTIONS)
+    expect(useInteractionStore.getState().roadBlocks).toEqual(BUILT_IN_ROAD_BLOCKS)
   })
   it.each(['null', '{}', '{"version":0,"state":{}}'])('un envelope persistito incompleto %s non viene scambiato per una nuova installazione', async raw => {
     storageState.values.set(INTERACTION_STORAGE_KEY, raw)
@@ -151,5 +155,31 @@ describe('catalogo: pubblicazione soltanto dopo il salvataggio duraturo', () => 
     expect(useInteractionStore.getState().importCatalog(JSON.stringify({ version: 1, interactions: [repeatable, repaired, second] }))).toMatch(/ripetibile/)
     expect(storageState.values.get(INTERACTION_STORAGE_KEY)).toBe(before)
     expect(useInteractionStore.getState().saveInteraction({ ...second, requirements: { ...second.requirements, completedInteractions: [] } })).toBeNull()
+  })
+  it('le strade bloccate si salvano, si eliminano e proteggono l’interazione che le riapre', () => {
+    const store = useInteractionStore.getState()
+    const code = { ...entry('codice'), title: 'Codice' }
+    expect(store.saveInteraction(code)).toBeNull()
+    const map = getLocalMap('Venezia')!
+    const road = map.roads[0]
+    const block = { id: 'blocco-prova', mapId: 'Venezia', title: 'Chiusa', message: '', enabled: true, roads: [[road.from, road.to]] as [string, string][], nodes: [],
+      unlock: { league: false, gymIds: [], completedInteractions: ['codice'] } }
+    expect(useInteractionStore.getState().saveRoadBlock(block)).toBeNull()
+    expect(useInteractionStore.getState().saveRoadBlock({ ...block, nodes: [map.startNode] })).toMatch(/ingresso/)
+    expect(useInteractionStore.getState().removeInteraction('codice')).toMatch(/strada bloccata/)
+    expect(JSON.parse(storageState.values.get(INTERACTION_STORAGE_KEY)!).state.roadBlocks).toEqual([block])
+    expect(useInteractionStore.getState().removeRoadBlock('blocco-prova')).toBeNull()
+    expect(useInteractionStore.getState().removeInteraction('codice')).toBeNull()
+  })
+  it('un import senza strade bloccate conserva quelle attuali e l’interazione che le riapre', () => {
+    useInteractionStore.setState({ interactions: [...structuredClone(BUILT_IN_INTERACTIONS)], roadBlocks: structuredClone([...BUILT_IN_ROAD_BLOCKS]) })
+    const exported = JSON.parse(useInteractionStore.getState().exportCatalog())
+    expect(useInteractionStore.getState().importCatalog(JSON.stringify({ version: 1, interactions: [entry('importata')] }))).toBeNull()
+    expect(useInteractionStore.getState().roadBlocks).toEqual(BUILT_IN_ROAD_BLOCKS)
+    expect(useInteractionStore.getState().interactions.map((item) => item.id)).toEqual(['importata', 'nascondiglio-postazione-codice'])
+    // Un file della revisione corrente senza una strada predefinita la lascia eliminata.
+    const trimmed = { ...exported, roadBlocks: exported.roadBlocks.slice(1) }
+    expect(useInteractionStore.getState().importCatalog(JSON.stringify(trimmed))).toBeNull()
+    expect(useInteractionStore.getState().roadBlocks).toHaveLength(BUILT_IN_ROAD_BLOCKS.length - 1)
   })
 })

@@ -5,6 +5,7 @@ import { GAME_BACKUP_FORMAT, MAX_GAME_BACKUP_BYTES, serializeGameBackup, stateFr
 import { readPreviousGameBackup, restoreGameBackup } from './restoreGameBackup'
 import { INTERACTION_STORAGE_KEY, useInteractionStore } from '@/interactions/interactionStore'
 import { newInteractionDefinition } from '@/interactions/types'
+import { BUILT_IN_INTERACTIONS, BUILT_IN_REVISION, BUILT_IN_ROAD_BLOCKS } from '@/interactions/builtInCatalog'
 import { getLocalMap } from '@/data/localMaps'
 import { normalizeBattleArchive, useBattleArchiveStore } from '@/components/battle/battleArchiveStore'
 import { createBattleChronicle } from '@/components/battle/battleChronicle'
@@ -65,7 +66,7 @@ describe('backup portabile e ripristino guidato della campagna', () => {
   beforeEach(() => {
     storageValues.clear()
     useGameStore.getState().reset()
-    useInteractionStore.setState({ interactions: [] })
+    useInteractionStore.setState({ interactions: [], roadBlocks: [] })
     useBattleArchiveStore.setState({ version: 1, matches: [] })
   })
   it('exports all 20 supported replays within the restore limit instead of exceeding it through indentation', () => {
@@ -122,7 +123,9 @@ describe('backup portabile e ripristino guidato della campagna', () => {
     const catalog = [prerequisite, dependent]
     localStorage.setItem(INTERACTION_STORAGE_KEY, JSON.stringify({ version: 0, state: { interactions: catalog } }))
     await useInteractionStore.persist.rehydrate()
-    expect(useInteractionStore.getState().interactions).toEqual(catalog)
+    // Un catalogo precedente ai contenuti del gioco li riceve al primo caricamento.
+    expect(useInteractionStore.getState().interactions).toEqual([...catalog, ...BUILT_IN_INTERACTIONS])
+    useInteractionStore.setState({ interactions: catalog, roadBlocks: [] })
     expect(useInteractionStore.getState().importCatalog(JSON.stringify({ version: 1, interactions: catalog }))).toMatch(/ripetibile/)
     expect(useInteractionStore.getState().interactions).toEqual(catalog)
     const checked = validateGameBackup(serializeGameBackup(campaign(), date, catalog))
@@ -130,10 +133,10 @@ describe('backup portabile e ripristino guidato della campagna', () => {
     if (!checked.ok) throw new Error(checked.error)
     expect(checked.preview.interactionCatalog?.interactions).toEqual(catalog)
     expect(checked.preview.warnings).toContainEqual(expect.stringMatching(/Correggi il requisito/))
-    useInteractionStore.setState({ interactions: [] })
+    useInteractionStore.setState({ interactions: [], roadBlocks: [] })
     expect(restoreGameBackup(checked.preview).ok).toBe(true)
     expect(useInteractionStore.getState().interactions).toEqual(catalog)
-    expect(JSON.parse(localStorage.getItem(INTERACTION_STORAGE_KEY)!).state.interactions).toEqual(catalog)
+    expect(JSON.parse(localStorage.getItem(INTERACTION_STORAGE_KEY)!).state).toMatchObject({ interactions: catalog, roadBlocks: [], builtInRevision: BUILT_IN_REVISION })
     expect(useGameStore.getState().saveRecoveryWarnings).toContainEqual(expect.stringMatching(/Correggi il requisito/))
   })
 
@@ -325,5 +328,16 @@ describe('backup portabile e ripristino guidato della campagna', () => {
     expect(result.state.interactionProgress.completed1).toEqual(['quest-a'])
     expect(JSON.stringify(serializeGameState(useGameStore.getState()))).not.toContain('dismissSaveRecoveryWarnings')
     expect(JSON.stringify(serializeGameState(useGameStore.getState()))).not.toContain('eseguiInterazioneConfigurata')
+  })
+  it('il backup porta le strade bloccate e non migra di nuovo i luoghi già rinominati', () => {
+    const block = { ...structuredClone(BUILT_IN_ROAD_BLOCKS[0]), title: 'Modificata dalla regia' }
+    const kept = { ...definition('percorso-14'), mapId: 'Percorso_14', nodeId: getLocalMap('Percorso_14')!.startNode }
+    const checked = validateGameBackup(serializeGameBackup(campaign(), date, [kept], undefined, [block]))
+    if (!checked.ok) throw new Error(checked.error)
+    expect(checked.preview.interactionCatalog).toMatchObject({ interactions: [kept], roadBlocks: [block], builtInRevision: BUILT_IN_REVISION })
+    useInteractionStore.setState({ interactions: [], roadBlocks: [] })
+    expect(restoreGameBackup(checked.preview).ok).toBe(true)
+    expect(useInteractionStore.getState().interactions).toEqual([kept])
+    expect(useInteractionStore.getState().roadBlocks).toEqual([block])
   })
 })

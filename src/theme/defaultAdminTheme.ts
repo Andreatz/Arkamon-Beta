@@ -9,7 +9,6 @@ export const defaultBattleLayout = {
 export const defaultMainMapNodePositions = suppliedTheme.layouts.mainMapNodes
 export const defaultMainMapRoads = suppliedTheme.layouts.mainMapRoads
 export const defaultMainMapUiLayout = suppliedTheme.layouts.mainMapUi
-export const defaultMapGridLayout = suppliedTheme.layouts.mapGrid
 export const defaultLuogoLayout = suppliedTheme.layouts.luogo
 // The imported theme predates the circular portrait deposit. Its old rectangles
 // are migrated on import, and new games must use the same current geometry.

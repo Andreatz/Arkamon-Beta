@@ -17,7 +17,8 @@ vi.hoisted(() => {
 
 const references = [
   { city: 'Cagliari', nodes: CAGLIARI_REFERENCE_NODES, removed: CAGLIARI_REMOVED_SHORTCUTS,
-    g1Path: [31, 32, 33, 34], g2Path: [19, 20, 21, 12], newId: 'n41' },
+    // 19–20 è la strada distrutta del documento INTERAZIONI: il Punto 20 si raggiunge dal 21.
+    g1Path: [31, 32, 33, 34], g2Path: [21, 20, 21, 12], newId: 'n41' },
   { city: 'Foggia', nodes: FOGGIA_REFERENCE_NODES, removed: FOGGIA_REMOVED_SHORTCUTS,
     g1Path: [47, 50, 27, 26], g2Path: [36, 37, 36, 35], newId: undefined },
 ]
@@ -188,5 +189,16 @@ describe('store - bivio di Foggia sotto il Punto 28', () => {
     expect(useGameStore.getState().posizioniLocali1.Foggia).toBe('n41')
     expect(useGameStore.getState().posizioniLocali2.Foggia).toBe('n55')
     expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(0)
+  })
+})
+
+describe('store - strada distrutta di Cagliari', () => {
+  it('fra i Punti 19 e 20 non si passa in nessuno dei due versi; la strada resta disegnata', () => {
+    useGameStore.getState().reset()
+    const world: PosizioneAvatar = { mappaId: 'mappa-principale', luogo: 'Cagliari', x: 0, y: 0, direzione: 'S' }
+    useGameStore.setState({ posizione1: world, posizione2: world, posizioniLocali1: { Cagliari: 'n11' }, posizioniLocali2: { Cagliari: 'n16' } })
+    expect(useGameStore.getState().muoviAvatarMappaLocale(1, 'Cagliari', 'n16')).toBe(false)
+    expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(2)
+    expect(getLocalMap('Cagliari')!.roads.some((road) => [road.from, road.to].sort().join() === 'n11,n16')).toBe(true)
   })
 })

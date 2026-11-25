@@ -27,7 +27,7 @@ async function openFixture(page: Page, scene: 'titolo' | 'mappa-principale' | 'b
       inventario: { masterball: 3 },
     })
     const position = (luogo: string) => ({ mappaId: 'mappa-principale', luogo, x: 0, y: 0, direzione: 'S' })
-    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 2,
+    localStorage.setItem('arkamon-save', JSON.stringify({ version: 0, state: { dataVersion: 3,
       giocatore1: player(1), giocatore2: player(2), giocatoreAttivo: 1, rivaleStarterId: 9,
       posizione1: position(place), posizione2: position('Pordenone'),
       turnoOverworld: { giocatoreAttivo: 1, azioniRimaste: 2 },

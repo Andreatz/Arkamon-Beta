@@ -40,7 +40,9 @@ export function parseCampaignPackage(json: string): CampaignPackageResult {
   }
   const catalog = validateCatalog(value.catalog)
   if (catalog.error) return { configuration: null, error: catalog.error }
-  if (!object(value.catalog) || !exactKeys(value.catalog, ['version', 'interactions']) || !catalog.catalog!.interactions.every(entry => {
+  if (!object(value.catalog) || !exactKeys(value.catalog, ['version', 'interactions', 'roadBlocks'])
+    || !(catalog.catalog!.roadBlocks ?? []).every(block => exactKeys(block as unknown as Record<string, unknown>, ['id', 'mapId', 'title', 'message', 'enabled', 'roads', 'nodes', 'unlock'])
+      && exactKeys(block.unlock as unknown as Record<string, unknown>, ['league', 'gymIds', 'completedInteractions'])) || !catalog.catalog!.interactions.every(entry => {
     const row = entry as unknown as Record<string, unknown>
     const actionKeys = { dialogue: ['kind'], heal: ['kind'], shop: ['kind'], trainer: ['kind', 'trainerId'], bush: ['kind', 'bush'], encounter: ['kind', 'speciesId', 'level'] }
     return exactKeys(row, ['id', 'mapId', 'nodeId', 'title', 'dialogue', 'scope', 'enabled', 'repeatable', 'requirements', 'cost', 'reward', 'action'])

@@ -24,7 +24,7 @@ export function BackupPanel() {
   const copies = readRecoveryCopies()
   const exportCurrent = () => {
     try {
-      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState()), gameBackupFilename())
+      downloadGameBackup(serializeGameBackup(useGameStore.getState(), new Date(), interactionCatalogForBackup(useInteractionStore.getState().interactions), useBattleArchiveStore.getState(), useInteractionStore.getState().roadBlocks), gameBackupFilename())
       setMessage(catalogRecovery ? 'File di salvataggio scaricato senza il catalogo danneggiato. Scarica separatamente l’originale da recuperare.' : 'File di salvataggio scaricato. Conservalo anche fuori da questo computer.')
       setError(null)
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Non riesco a scaricare il file di salvataggio. Riprova dal browser.'); setMessage(null) }

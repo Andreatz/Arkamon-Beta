@@ -1,18 +1,23 @@
 import { ALLENATORI, INCONTRI, MAPPE } from '@/data'
 import { getAdjacentMainMapNodes } from '@/data/mainMapRoads'
-import { hasUnlockedSecretLocation, SECRET_LOCATION_ID } from '@/data/secretLocation'
+import { hasUnlockedSecretLocation, isHiddenLocation, SECRET_LOCATION_ID } from '@/data/secretLocation'
+import { mainRoadBlock } from '@/engine/roadBlocks'
+import { roadBlockContextFor } from '@/interactions/roadBlockRuntime'
+import { MAIN_MAP_BLOCK_ID, type RoadBlockDefinition } from '@/interactions/types'
+import { emptyLeagueState } from '@/league/leagueModel'
 import { interactionRequirementMessage, isInteractionComplete, type InteractionRuntimeState } from '@/interactions/runtime'
 import type { InteractionDefinition } from '@/interactions/types'
 import type { LeagueState } from '@/league/leagueModel'
 
 export interface JournalObjective { title: string; detail: string; mapId?: string; nextStep?: string }
-export function routeToLocation(from: string, target: string): string[] | null {
+/** Percorso più breve sulla mappa principale; `closed` esclude le strade bloccate per il giocatore. */
+export function routeToLocation(from: string, target: string, closed: (from: string, to: string) => boolean = () => false): string[] | null {
   if (from === target) return [from]
   const visited = new Set([from]), paths = [[from]]
   while (paths.length) {
     const path = paths.shift()!
     for (const next of getAdjacentMainMapNodes(path[path.length - 1])) {
-      if (visited.has(next)) continue
+      if (visited.has(next) || closed(path[path.length - 1], next)) continue
       const candidate = [...path, next]
       if (next === target) return candidate
       visited.add(next); paths.push(candidate)
@@ -20,8 +25,11 @@ export function routeToLocation(from: string, target: string): string[] | null {
   }
   return null
 }
-export function nextJournalObjective(state: InteractionRuntimeState & { league?: LeagueState }, playerId: 1 | 2, definitions: InteractionDefinition[]): JournalObjective {
+export function nextJournalObjective(state: InteractionRuntimeState & { league?: LeagueState }, playerId: 1 | 2, definitions: InteractionDefinition[], roadBlocks: readonly RoadBlockDefinition[] = []): JournalObjective {
   const player = state[playerId === 1 ? 'giocatore1' : 'giocatore2']
+  const blockContext = roadBlockContextFor({ ...state, league: state.league ?? emptyLeagueState() }, playerId)
+  const closed = (from: string, to: string) => !!mainRoadBlock(roadBlocks, blockContext, from, to, MAIN_MAP_BLOCK_ID)
+  const route = (from: string, target: string) => routeToLocation(from, target, closed)
   const world = state[playerId === 1 ? 'posizione1' : 'posizione2']
   const here = world.luogo ?? 'Pordenone'
   if (state.battaglia && state.giocatoreAttivo === playerId) return { title: 'Completa la battaglia in corso', detail: 'Il movimento torna disponibile dopo lo scontro.' }
@@ -35,14 +43,15 @@ export function nextJournalObjective(state: InteractionRuntimeState & { league?:
   // Solo un vecchio salvataggio può avere la squadra tutta KO fuori battaglia (21 novembre 2026).
   if (!player.squadra.some((pokemon) => pokemon.hp > 0)) return { title: 'Recupera la squadra', detail: 'Questo salvataggio precede la cura automatica di fine battaglia. Apri una città o un percorso e scegli «Recupera la squadra».' }
   if (hasUnlockedSecretLocation(player)) return { title: league?.players[playerId].status === 'defeated' ? 'Riprova la Lega a Roma' : 'Affronta la Lega a Roma', mapId: 'Roma',
-    detail: `Hai completato le otto palestre. ${here === 'Roma' ? 'Apri la Lega dalla città.' : 'Raggiungi Roma per affrontare i Superquattro.'} Il passaggio segreto resta un’opportunità facoltativa.`, nextStep: routeToLocation(here, 'Roma')?.[1] }
+    detail: `Hai completato le otto palestre. ${here === 'Roma' ? 'Apri la Lega dalla città.' : 'Raggiungi Roma per affrontare i Superquattro.'} Il passaggio segreto resta un’opportunità facoltativa.`, nextStep: route(here, 'Roma')?.[1] }
   const candidates = definitions.filter((definition) => definition.enabled && !definition.repeatable
     && !isInteractionComplete(state.interactionProgress, definition, playerId)
     && !interactionRequirementMessage(state, definition, playerId)
-    && (definition.mapId !== SECRET_LOCATION_ID || hasUnlockedSecretLocation(player))
+    // I luoghi nascosti sono facoltativi: non diventano l'obiettivo suggerito.
+    && !isHiddenLocation(definition.mapId)
     && !(definition.action.kind === 'trainer' && player.allenatoriSconfitti.has(definition.action.trainerId))
     && !(definition.action.kind === 'bush' && player.cespugliVisitati.has(`${definition.mapId}:${definition.action.bush}`)))
-  const nearest = candidates.map((definition) => ({ definition, route: routeToLocation(here, definition.mapId) }))
+  const nearest = candidates.map((definition) => ({ definition, route: route(here, definition.mapId) }))
     .filter((entry) => !!entry.route).sort((a, b) => a.route!.length - b.route!.length)[0]
   if (nearest) return {
     title: nearest.definition.title, mapId: nearest.definition.mapId,
@@ -50,7 +59,7 @@ export function nextJournalObjective(state: InteractionRuntimeState & { league?:
     nextStep: nearest.route?.[1],
   }
   const gyms = ALLENATORI.filter((trainer) => trainer.tipo === 'Capopalestra' && !player.allenatoriSconfitti.has(trainer.id))
-  const gym = gyms.map((trainer) => ({ trainer, route: routeToLocation(here, trainer.luogo) })).filter((entry) => !!entry.route)
+  const gym = gyms.map((trainer) => ({ trainer, route: route(here, trainer.luogo) })).filter((entry) => !!entry.route)
     .sort((a, b) => a.route!.length - b.route!.length || a.trainer.id - b.trainer.id)[0]
   if (gym) return { title: `Palestra di ${gym.trainer.luogo}`, mapId: gym.trainer.luogo,
     detail: gym.trainer.luogo === here ? `${gym.trainer.nome} non è ancora stato sconfitto.` : 'La palestra più vicina fra quelle ancora da completare.', nextStep: gym.route?.[1] }

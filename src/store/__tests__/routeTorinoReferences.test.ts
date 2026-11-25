@@ -69,6 +69,9 @@ describe.each(references)('store - $city rinumerata e collegata come nella foto'
       expect(restored.turnoOverworld).toEqual({ giocatoreAttivo: activePlayer, azioniRimaste: actions })
       expect(getLocalMapNode(map, restored.posizioniLocali1[reference.city])).toMatchObject(first)
       expect(getLocalMapNode(map, restored.posizioniLocali2[reference.city])).toMatchObject(second)
+      // La seconda mappa di Via Vittoria non è ancora collegata: il nodo resta salvato, ma la ricarica
+      // riporta l'avatar su un luogo raggiungibile della mappa principale.
+      if (reference.city === 'Via_Vittoria_2') continue
       useGameStore.setState(restored)
       expect(useGameStore.getState().inizializzaPosizioneLocale(1, reference.city)).toBe(first.id)
       expect(useGameStore.getState().inizializzaPosizioneLocale(2, reference.city)).toBe(second.id)
@@ -169,7 +172,7 @@ describe('store - raccordi senza fermata dei percorsi e di Torino', () => {
   })
 })
 
-describe('store - nuovi pallini di Torino e collegamento confermato del luogo segreto', () => {
+describe('store - nuovi pallini di Torino e collegamento confermato di Via Vittoria', () => {
   it.each([[12, 13, 14], [45, 47, 48]])('Torino: richiede due movimenti per %i→%i→%i senza saltare il nuovo pallino', (from, middle, to) => {
     prepareMap('Torino')
     const reference = references.find((candidate) => candidate.city === 'Torino')!
@@ -186,16 +189,16 @@ describe('store - nuovi pallini di Torino e collegamento confermato del luogo se
     expect(useGameStore.getState().posizioniLocali2.Torino).toBe(idOf(19))
   })
 
-  it('dopo gli otto capipalestra reali percorre 35–36 di Percorso 15 spendendo un movimento per lato', () => {
+  it('percorre 35–36 della seconda mappa di Via Vittoria (ex Percorso 15) spendendo un movimento per lato', () => {
     expect(allGymIds).toHaveLength(8)
-    prepareMap('Percorso_15')
-    useGameStore.setState({ posizioniLocali1: { Percorso_15: 'n31' }, posizioniLocali2: { Percorso_15: 'n10' } })
+    prepareMap('Via_Vittoria_2')
+    useGameStore.setState({ posizioniLocali1: { Via_Vittoria_2: 'n31' }, posizioniLocali2: { Via_Vittoria_2: 'n10' } })
     const store = useGameStore.getState()
-    expect(store.muoviAvatarMappaLocale(1, 'Percorso_15', 'n34')).toBe(true)
+    expect(store.muoviAvatarMappaLocale(1, 'Via_Vittoria_2', 'n34')).toBe(true)
     expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(1)
-    expect(store.muoviAvatarMappaLocale(1, 'Percorso_15', 'n31')).toBe(true)
+    expect(store.muoviAvatarMappaLocale(1, 'Via_Vittoria_2', 'n31')).toBe(true)
     expect(useGameStore.getState().turnoOverworld.azioniRimaste).toBe(0)
-    expect(useGameStore.getState().posizioniLocali1.Percorso_15).toBe('n31')
-    expect(useGameStore.getState().posizioniLocali2.Percorso_15).toBe('n10')
+    expect(useGameStore.getState().posizioniLocali1.Via_Vittoria_2).toBe('n31')
+    expect(useGameStore.getState().posizioniLocali2.Via_Vittoria_2).toBe('n10')
   })
 })

@@ -33,7 +33,7 @@ beforeEach(() => {
   vi.stubGlobal('window', undefined)
   vi.stubGlobal('localStorage', fixture.storage)
   useGameStore.setState({ ...initialGameSave(), challengeContext: null, saveRecoveryWarnings: [], teamRuleMessage: null })
-  useInteractionStore.setState({ interactions: [] })
+  useInteractionStore.setState({ interactions: [], roadBlocks: [] })
   useBattleArchiveStore.setState({ version: 1, matches: [] })
   fixture.values.clear()
   for (const key of [GAME_SAVE_STORAGE_KEY, PREVIOUS_BACKUP_STORAGE_KEY, INTERACTION_STORAGE_KEY,

@@ -1,4 +1,6 @@
 import { LOCAL_MAPS } from '@/data/localMaps'
+import { isRouteLocation } from '@/data/routeLocation'
+import { placeLabel } from '@/utils/placeLabel'
 
 /** Visual configuration only: never contains campaign state or executable actions. */
 export interface UiRect { x: number; y: number; w: number; h: number }
@@ -106,6 +108,6 @@ export const UI_STUDIO_SCREEN_VIEWS: Record<string, readonly (readonly [string, 
   analisi: [['default', 'Scheda'], ['mosse', 'Mosse'], ['status', 'Status e cure']],
   arkadex: [['default', 'Informazioni'], ['moves', 'Mosse'], ['evolution', 'Evoluzioni']],
   battaglia: [['default', 'Comandi della battaglia'], ['dice', 'Pannello lancio dadi'], ['bag', 'Borsa in battaglia']],
-  citta: [['default', 'Layout comune · Venezia'], ...Object.keys(LOCAL_MAPS).filter(id => !id.startsWith('Percorso_')).map(id => [id, id] as const)],
-  percorso: [['default', 'Layout comune · Percorso 1'], ...Object.keys(LOCAL_MAPS).filter(id => id.startsWith('Percorso_')).map(id => [id, id.replace('_', ' ')] as const)],
+  citta: [['default', 'Layout comune · Venezia'], ...Object.keys(LOCAL_MAPS).filter(id => !isRouteLocation(id)).map(id => [id, placeLabel(id)] as const)],
+  percorso: [['default', 'Layout comune · Percorso 1'], ...Object.keys(LOCAL_MAPS).filter(id => isRouteLocation(id)).map(id => [id, placeLabel(id)] as const)],
 }
