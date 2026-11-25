@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getPokemon } from '@/data'
+import { getPokemon, POKEMON_BASE } from '@/data'
 import sourceCountsNovember4 from './fixtures/native-import-2026-11-04.json'
 import sourceCountsNovember5 from './fixtures/native-import-2026-11-05.json'
 import sourceCountsNovember9 from './fixtures/native-import-2026-11-09.json'
@@ -7,6 +7,7 @@ import sourceCountsNovember12 from './fixtures/native-import-2026-11-12.json'
 import { sourceCounts as sourceCountsNovember13 } from './fixtures/native-import-2026-11-13.json'
 import sourceCountsNovember16 from './fixtures/native-import-2026-11-16.json'
 import sourceCountsNovember18 from './fixtures/native-import-2026-11-18.json'
+import november22Clips from './fixtures/native-import-2026-11-22.json'
 import {
   ARKAMON_ANIMATION_MANIFEST,
   getArkamonAnimationAsset,
@@ -21,13 +22,9 @@ const ANIMATION_CONTRACT: Record<ArkamonBattleAnimation, true> = {
   idle: true, attack: true, hit: true, victory: true, ko: true,
 }
 const PLAYABLE_SPECIES_IDS = Array.from({ length: 110 }, (_, index) => index + 1)
-const PENDING_SPECIES_IDS = [
-  ...Array.from({ length: 56 }, (_, index) => index + 111),
-  ...Object.keys(sourceCountsNovember16).map(Number),
-  ...Object.keys(sourceCountsNovember18).map(Number),
-]
-const SPECIES_IDS = [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]
-const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 21]
+const SPECIES_IDS = POKEMON_BASE.map(species => species.id).sort((a, b) => a - b)
+const ORIGINAL_SPECIES_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 20, 21]
+const UPDATED_CLIPS: Record<number, { frames: Partial<Record<ArkamonBattleAnimation, number>> }> = november22Clips
 const ANIMATIONS = Object.keys(ANIMATION_CONTRACT) as ArkamonBattleAnimation[]
 
 describe('Arkamon animation manifest', () => {
@@ -47,9 +44,8 @@ describe('Arkamon animation manifest', () => {
   })
 
   it('every animated form is now a playable species of the Database', () => {
-    for (const speciesId of [...PLAYABLE_SPECIES_IDS, ...PENDING_SPECIES_IDS]) expect(getPokemon(speciesId)).toBeDefined()
-    for (const speciesId of PENDING_SPECIES_IDS) expect(getArkamonAnimationAsset(speciesId, 'front', 'idle')).toBeDefined()
-    expect(SPECIES_IDS.filter(id => getPokemon(id))).toEqual(SPECIES_IDS)
+    for (const speciesId of SPECIES_IDS) expect(getArkamonAnimationAsset(speciesId, 'front', 'idle')).toBeDefined()
+    expect(SPECIES_IDS).toHaveLength(206)
   })
 
   it.each(SPECIES_IDS.flatMap((speciesId) => ANIMATIONS.map((animation) => ({ speciesId, animation }))))(
@@ -183,9 +179,26 @@ describe('Arkamon animation manifest', () => {
     }
   })
 
-  it.each([167, 168, 194, 195])('keeps species %s on its supplied static portrait while videos are unavailable', speciesId => {
-    expect(getPokemon(speciesId)).toBeDefined()
-    for (const action of ANIMATIONS) expect(resolveArkamonAnimationAsset(speciesId, 'front', action)).toBeUndefined()
+  it('preserves every independently decoded frame of the 61 added or replaced clips', () => {
+    let clips = 0
+    let frames = 0
+    for (const [id, update] of Object.entries(UPDATED_CLIPS)) {
+      expect(getPokemon(Number(id))).toBeDefined()
+      for (const action of ANIMATIONS) {
+        const count = update.frames[action]
+        if (count === undefined) continue
+        const resolved = resolveArkamonAnimationAsset(Number(id), 'front', action)
+        expect(resolved?.isIdleFallback).toBe(false)
+        const asset = resolved!.asset
+        expect(asset.frameCount).toBe(count)
+        expect(asset.fps).toBe(24)
+        expect(asset.pages?.reduce((sum, page) => sum + page.frameCount, 0)).toBe(count)
+        clips++
+        frames += count
+      }
+    }
+    expect(clips).toBe(61)
+    expect(frames).toBe(5_738)
   })
 
   it('retains a view’s idle as the fallback when a dedicated action is unavailable', () => {
@@ -213,7 +226,7 @@ describe('Arkamon animation manifest', () => {
     }
   })
 
-  it('keeps the original eleven front sets at their existing native 96 frames and 24 FPS', () => {
+  it('keeps the unchanged original front sets at their existing native 96 frames and 24 FPS', () => {
     for (const speciesId of ORIGINAL_SPECIES_IDS) for (const animation of ANIMATIONS) {
       const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
       expect(asset.frameCount).toBe(96)
@@ -230,7 +243,7 @@ describe('Arkamon animation manifest', () => {
       '108/attack', '108/ko', '109/hit', '109/victory', '110/attack', '110/hit', '110/victory'])
     for (const speciesId of PLAYABLE_SPECIES_IDS.filter(id => id >= 39)) for (const animation of ANIMATIONS) {
       const asset = getArkamonAnimationAsset(speciesId, 'front', animation)!
-      const count = shortClips.has(`${speciesId}/${animation}`) ? 95 : 96
+      const count = UPDATED_CLIPS[speciesId]?.frames[animation] ?? (shortClips.has(`${speciesId}/${animation}`) ? 95 : 96)
       expect(asset.frameCount).toBe(count)
       expect(asset.fps).toBe(24)
       expect(asset.durationMs).toBeCloseTo(count / 24 * 1000)

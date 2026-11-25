@@ -123,6 +123,10 @@ for (const species of PENDING_NATIVE_RELEASE_SPECIES as readonly number[]) test(
   await expect(reference).toHaveAttribute('src', new RegExp(`/sprites/front_sprites/${species}\\.png$`))
   await expect.poll(() => reference.evaluate(element => (element as HTMLImageElement).complete && (element as HTMLImageElement).naturalWidth > 0)).toBe(true)
   await reference.evaluate(element => (element as HTMLImageElement).decode())
+  const portrait = media.assetCatalog.entries.find(entry => entry.id === species)?.sprites.front
+  expect(portrait).toBeDefined()
+  expect(media.served.some(entry => entry.path === portrait!.source.slice(1)
+    && entry.sha256 === portrait!.sha256 && entry.pendingPortraitFingerprintVerified)).toBe(true)
   await expect(page.locator('#arkamon-preview-move')).toHaveCount(1)
   await expect(page.locator('#arkamon-preview-target')).toHaveCount(1)
   await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
@@ -151,41 +155,6 @@ for (const species of PENDING_NATIVE_RELEASE_SPECIES as readonly number[]) test(
   await expect(comparison.locator('[data-arkamon-first-frame-fallback]')).toHaveCount(0)
   expect(media.errors).toEqual([])
   await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('compiled-pending-native.png') })
-  await media.attach()
-})
-
-for (const species of [167, 168, 194, 195]) test(`compiled ${species}: Database species without videos uses the exact pinned portrait`, async ({ page }, testInfo) => {
-  const media = await verifyLocalProductionMedia(page, testInfo)
-  await media.install
-  const original = media.assetCatalog.entries.find(entry => entry.id === species)
-  expect(original?.status).toBe('game-data-present')
-  const portrait = original!.sprites.front!
-  const originalUrl = new URL(portrait.source.slice(1), media.origin).href
-  await page.goto('./#arkamon-lab')
-  await page.locator('#darklaw-preview-species').selectOption(String(species))
-  const lab = page.locator('[data-darklaw-lab]')
-  await expect(lab).toHaveAttribute('data-asset-status', 'game-data-present')
-  await expect(lab).toHaveAttribute('data-preview-available', 'false')
-  await expect(page.locator('[data-asset-pending]')).toHaveCount(0)
-  await expect(page.getByText('Nessun video disponibile', { exact: false }).first()).toBeVisible()
-  const portraits = page.locator('[data-asset-portrait]')
-  await expect(portraits).toHaveCount(2)
-  for (const displayed of await portraits.all()) {
-    await expect(displayed).toHaveAttribute('data-asset-image-state', 'ready')
-    await expect(displayed).toBeVisible()
-    await expect(displayed.locator('image')).toHaveAttribute('href', originalUrl)
-  }
-  await expect.poll(() => media.served.some(entry => entry.path === portrait.source.slice(1)
-    && entry.sha256 === portrait.sha256 && entry.bytes === portrait.bytes && entry.pendingPortraitFingerprintVerified)).toBe(true)
-  await expect(lab.locator('[data-sprite-renderer="paged-canvas"]')).toHaveCount(0)
-  await expect(page.locator('#arkamon-preview-move')).toHaveCount(0)
-  await expect(page.locator('#arkamon-preview-target')).toHaveCount(0)
-  await expect(page.getByRole('button', { name: 'Retro', exact: true })).toBeDisabled()
-  const gameplay = JSON.parse(readFileSync('src/data/pokemon.json', 'utf8')) as { id: number }[]
-  expect(gameplay.some(entry => entry.id === species)).toBe(true)
-  expect(media.served.some(entry => entry.path.startsWith(`sprites/arkamon-paged/${species}/`))).toBe(false)
-  expect(media.errors).toEqual([])
-  await page.locator('.darklaw-lab__comparison').screenshot({ path: testInfo.outputPath('compiled-pending-portrait.png') })
   await media.attach()
 })
 

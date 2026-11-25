@@ -17,8 +17,6 @@ describe('graphic assets remain separate from playable forms', () => {
         expect(sprite!.bytes).toBeGreaterThan(0)
       }
     }
-    // 194 e 195 (Flastorm) usano un segnaposto finché non arriva lo sprite.
-    for (const id of [194, 195]) expect(getArkamonAssetEntry(id)?.sprites.front).toBeDefined()
     expect(getArkamonAssetEntry(207)).toBeUndefined()
   })
 
