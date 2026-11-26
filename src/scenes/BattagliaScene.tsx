@@ -21,7 +21,6 @@ import { BattleAudienceOverlay } from '@/components/battle/BattleAudienceOverlay
 import { audienceChannelForBattle, createAudienceBattleId, makeAudienceRoundRequest, validAudienceWinner } from '@/components/battle/audienceBattle'
 import { useAudienceStore } from '@/audience/useAudienceStore'
 import { useAudienceTurn } from '@/audience/useAudienceTurn'
-import { getMoveVfxAssignment } from '@/components/vfx/moveVfxAssignments'
 import { useGameStore, creaIstanza, haSpazioPokemon } from '@store/gameStore'
 import { useAdminStore } from '@store/adminStore'
 import { useState, useEffect, useRef, useCallback, useContext, useMemo } from 'react'
@@ -68,7 +67,9 @@ import type {
 } from '@/types'
 import { getBackground, BATTLE_BG_DEFAULT } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
-import { playSound } from '@/utils/soundManager'
+import { playSfx, preloadSfx, setMusicOverride, stopSfx } from '@/utils/soundManager'
+import { ALL_MOVE_SFX, BATTLE_PRELOAD_SFX, panForSide } from '@/audio/moveSounds'
+import { chronicleSfx } from '@/audio/battleSounds'
 import {
   getArkamonAnimationAsset,
   getArkamonAnimationDurationMs,
@@ -184,7 +185,12 @@ export function BattagliaScene() {
   const audienceSession = useAudienceStore((s) => s.session)
   const audienceDuration = useAudienceStore((s) => s.durationSeconds)
   const audienceBattleId = useRef(initialCheckpoint?.audienceBattleId ?? createAudienceBattleId())
-  const { chronicle, current: chronicleRef, beginAction, append: appendChronicle } = useBattleChronicle(battaglia?.cronaca, audienceBattleId.current)
+  const { chronicle, current: chronicleRef, beginAction, append: appendChronicleEvents } = useBattleChronicle(battaglia?.cronaca, audienceBattleId.current)
+  // Ogni voce della Cronaca che ha un suono proprio (stati, cambi) lo suona quando diventa pubblica.
+  const appendChronicle = useCallback((events: Parameters<typeof appendChronicleEvents>[0]) => {
+    appendChronicleEvents(events)
+    for (const cue of chronicleSfx(events)) playSfx(cue.id, { pan: cue.pan, delayMs: cue.delayMs })
+  }, [appendChronicleEvents])
   const { reducedMotion } = useGameMotionPreferences()
   const opponentTurnNumber = useRef(initialCheckpoint?.opponentTurnNumber ?? 0)
   type PendingAudience = NonNullable<BattleCheckpoint['audiencePending']> & { pokemon: PokemonIstanza; messages: string[] }
@@ -192,6 +198,22 @@ export function BattagliaScene() {
   const audienceVote = useAudienceTurn(audienceChoice?.request ?? null)
   const completedAudienceTurns = useRef(new Set<string>())
   const [esito, setEsito] = useState<'vittoria' | 'sconfitta' | null>(initialCheckpoint?.outcome ?? null)
+  // Esito sonoro: fanfara (o sconfitta), poi il brano del risultato. Un esito già salvato non risuona.
+  const outcomeSoundRef = useRef<'vittoria' | 'sconfitta' | 'capture' | 'restored' | null>(initialCheckpoint?.outcome ? 'restored' : null)
+  useEffect(() => {
+    if (!esito) { outcomeSoundRef.current = null; setMusicOverride(null); return }
+    const before = outcomeSoundRef.current
+    if (before === esito) return
+    outcomeSoundRef.current = esito
+    const victory = esito === 'vittoria'
+    if (before === 'restored') { setMusicOverride(victory ? 'victory' : 'defeat', { fadeOutMs: 300 }); return }
+    // Livello e avvisi annunciati nello stesso istante tornano nella scheda del risultato:
+    // la fanfara arriva dopo il KO, da sola.
+    stopSfx(['jingle.levelup', 'ui.notify'])
+    if (before !== 'capture') playSfx(victory ? 'jingle.victory' : 'jingle.defeat', { delayMs: 800 })
+    setMusicOverride(victory ? 'victory' : 'defeat', { fadeOutMs: 400, fadeInMs: 1600, delayMs: victory ? 3300 : 4100 })
+  }, [esito])
+  useEffect(() => () => setMusicOverride(null), [])
 
   const [pkmnA, updatePkmnA] = useState<PokemonIstanza | null>(null)
   const [pkmnB, updatePkmnB] = useState<PokemonIstanza | null>(null)
@@ -369,7 +391,10 @@ export function BattagliaScene() {
 
   useEffect(() => {
     preloadVfxAssets([...DEFAULT_PRELOAD_VFX_ASSET_IDS, ...BATTLE_DICE_ASSET_IDS])
-    if (!initialCheckpoint?.openingComplete && !initialCheckpoint?.outcome) playSound('battle-start')
+    // Gli effetti della battaglia si decodificano subito: il primo colpo non deve arrivare in ritardo.
+    preloadSfx([...BATTLE_PRELOAD_SFX, ...ALL_MOVE_SFX])
+    // Con il movimento ridotto non c'è la Carta VS (che ha il suo suono): basta il colpo d'apertura.
+    if (reducedMotion && !initialCheckpoint?.openingComplete && !initialCheckpoint?.outcome) playSfx('battle.vs')
     if (battaglia) {
       const turnoInizialeA = battaglia.turnoCorrente === 'A'
       setPkmnA(battaglia.pokemonA)
@@ -708,7 +733,8 @@ export function BattagliaScene() {
       })
     }
 
-    if (playHitSound && !getMoveVfxAssignment(move)) playSound('hit')
+    // Il suono del colpo arriva con l'effetto della mossa (MoveVfx), sull'impatto.
+    void playHitSound
   }
 
   const playMoveVisuals = (
@@ -840,6 +866,7 @@ export function BattagliaScene() {
 
     }, () => {
       if (èMossaSoloStato(risultato.mossa) && risultato.dannoFinale === 0) {
+        if (risultato.mancata) playSfx('battle.miss', { pan: panForSide(targetSide) })
         appendChronicle(revealedAttackEvents(risultato, side, actionId))
         onDamageReveal()
         setPendingHealth(null)
@@ -863,6 +890,11 @@ export function BattagliaScene() {
           setPendingHealth(null)
           appendChronicle(revealedAttackEvents(risultato, side, actionId))
           onDamageReveal()
+          // Il verdetto si sente insieme al numero del danno.
+          const pan = panForSide(targetSide)
+          if (risultato.mancata) playSfx('battle.miss', { pan })
+          else if (risultato.dannoFinale > 0 && risultato.moltiplicatoreTipo > 1) playSfx('battle.super', { pan, delayMs: 60 })
+          else if (risultato.dannoFinale > 0 && risultato.moltiplicatoreTipo < 1) playSfx('battle.weak', { pan, delayMs: 60 })
           // Il danno è appena diventato pubblico: solo ora la regia può mostrarlo.
           cine.damageReveal({
             targetSide, damage: risultato.dannoFinale, hpMax: target ? calcolaHPMax(target) : 0,
@@ -904,7 +936,7 @@ export function BattagliaScene() {
     playMoveVisuals(move, side, null, () => {}, () => {
       cine.attackEnd()
       // Audit fase 6: la cura ha il suo suono, insieme al bagliore della barra HP.
-      playSound('heal')
+      playSfx('battle.heal', { pan: panForSide(side) })
       onComplete()
       actionInProgressRef.current = false
       setAzioneInCorso(false)
@@ -1031,14 +1063,14 @@ export function BattagliaScene() {
   ) => {
     const messaggi: string[] = []
     if (xpRes.livelliGuadagnati > 0) {
-      playSound('level-up')
+      playSfx('jingle.levelup', { delayMs: 350 })
       if (annunciaLivello) messaggi.push(`${attivo.nome} è salito al livello ${xpRes.istanza.livello}!`)
     }
     if (annunciaLivello && xpRes.xpScartata > 0 && xpRes.istanza.livello < 100) {
       messaggi.push(`${attivo.nome} ha raggiunto il cap di squadra: l’EXP di questo KO non si accumula. Allena gli Arkamon di livello più basso.`)
     }
     if (xpRes.evoluzionePendente) {
-      playSound('evolution')
+      playSfx('ui.notify', { delayMs: 900 })
       messaggi.push(`Cosa? ${attivo.nome} si sta evolvendo!`)
       setEvoluzioniInAttesa((prev) =>
         prev.some((evoluzione) => evoluzione.istanzaId === attivo.istanzaId)
@@ -1077,7 +1109,7 @@ export function BattagliaScene() {
     const xpRes = applicaXPDopoKO(rivale, sconfittoPrima, sconfittoDopo, teamProgressionLimit(squadraB, rivale.istanzaId))
     appendChronicle(xpEvent(rivale, xpRes, 'B', `${beginAction()}:xp`))
     if (xpRes.livelliGuadagnati > 0) {
-      playSound('level-up')
+      playSfx('jingle.levelup', { delayMs: 350 })
       mostraMessaggi([`${rivale.nome} è salito al livello ${xpRes.istanza.livello}!`])
     }
     // B è una squadra temporanea: le sue evoluzioni non appartengono al giocatore A.
@@ -1108,7 +1140,7 @@ export function BattagliaScene() {
         actionInProgressRef.current = false
         setAzioneInCorso(false)
         mostraMessaggi([...statoRes.messaggi, `${pkmnAEffettivo.nome} è caduto!`])
-        playSound('ko')
+        playSfx('battle.ko', { pan: panForSide('A') })
         const aggiornatoB = premiaRivaleConXP(pkmnB, pkmnA, pkmnAEffettivo)
         appendChronicle([{ id: `${beginAction()}:winner`, kind: 'winner', side: 'B', winnerSide: 'B', title: `${aggiornatoB.nome} vince lo scontro`, messages: [], actor: logPokemon(aggiornatoB) }])
         setPkmnB(aggiornatoB)
@@ -1195,10 +1227,10 @@ export function BattagliaScene() {
       if (risoluzione.xpAssegnata) presentaPremioXP(pkmnAEffettivo, risoluzione, false)
       setPkmnA(aggiornatoA)
       setSquadraA(nuovaSquadraA)
-      if (nuovoB.hp <= 0 || aggiornatoA.hp <= 0) playSound('ko')
+      if (nuovoB.hp <= 0 || aggiornatoA.hp <= 0) playSfx('battle.ko', { pan: panForSide(nuovoB.hp <= 0 ? 'B' : 'A') })
 
       if (settlement.defenderProgression?.livelliGuadagnati) {
-        playSound('level-up')
+        playSfx('jingle.levelup', { delayMs: 350 })
         mostraMessaggi([`${nuovoB.nome} è salito al livello ${settlement.defender.livello}!`])
       }
       nuovoB = settlement.defender
@@ -1209,7 +1241,6 @@ export function BattagliaScene() {
       if (esitoDopoMossa) {
         const vittoria = esitoDopoMossa === 'vittoria'
         mostraMessaggi([vittoria ? 'Hai vinto la battaglia!' : 'Hai perso la battaglia...'])
-        if (vittoria) playSound('victory')
         setEsito(esitoDopoMossa)
         setTerminata(true)
         return
@@ -1274,7 +1305,8 @@ export function BattagliaScene() {
   const mostraCatturaConclusa = () => {
     setPendingCaptureSave(null)
     setAzioneInCorso(false)
-    playSound('capture')
+    // La fanfara della cattura l'ha già suonata la regia: niente fanfara di vittoria sopra.
+    outcomeSoundRef.current = 'capture'
     setEsito('vittoria')
     setTerminata(true)
   }
@@ -1367,6 +1399,7 @@ export function BattagliaScene() {
         turnoCorrente: side, checkpoint, cronaca: candidate, log: [...messages, `${name}! ${text}`] })
       if (!committed) { mostraMessaggi(['Oggetto non usato: il browser non può salvare la partita.']); return }
       beginAction(); appendChronicle([event])
+      playSfx('battle.boost', { pan: panForSide('A') })
       setPkmnA(active); setSquadraA(currentSquad); mostraMessaggi([...messages, `${name}! ${text}`]); passaTurnoAaB(pkmnB, 0)
     }, undefined, false)
     return { ok: true, message: 'Boost attivato.' }
@@ -1400,7 +1433,8 @@ export function BattagliaScene() {
       if (!committed) { mostraMessaggi(['Oggetto non usato: il browser non può salvare la partita.']); return }
       if (isChallenge) challengeActions.current += 1
       beginAction(); appendChronicle([event])
-      if (effect.pokemon.hp > currentTarget.hp) playSound('heal')
+      playSfx('battle.item')
+      if (effect.pokemon.hp > currentTarget.hp) playSfx('battle.heal', { delayMs: 220, pan: panForSide(side) })
       setPkmnA(nextA); setSquadraA(nextSquad); mostraMessaggi([...messages, effect.message]); passaTurnoAaB(pkmnB, 0)
     }, undefined, false)
     return { ok: true, message: 'Uso dell’oggetto avviato.' }
@@ -1426,7 +1460,7 @@ export function BattagliaScene() {
         setAzioneInCorso(false)
         mostraMessaggi(statoRes.messaggi)
         mostraMessaggi([`${bEffettivo.nome} è caduto!`])
-        playSound('ko')
+        playSfx('battle.ko', { pan: panForSide('B') })
         const aggiornatoA = premiaConXP(pkmnA, statoBcorrente, bEffettivo)
         appendChronicle([{ id: `${beginAction()}:winner`, kind: 'winner', side: 'A', winnerSide: 'A', title: `${aggiornatoA.nome} vince lo scontro`, messages: [], actor: logPokemon(aggiornatoA) }])
         setPkmnA(aggiornatoA)
@@ -1442,7 +1476,6 @@ export function BattagliaScene() {
           return
         }
         mostraMessaggi(['Hai vinto la battaglia!'])
-        playSound('victory')
         setEsito('vittoria')
         setTerminata(true)
       }
@@ -1555,12 +1588,12 @@ export function BattagliaScene() {
       const bDopoAutodanno = settlement.attacker
       appendChronicle(settledAttackEvents(ris, settlement, 'B', actionId))
       mostraMessaggi([...messaggiIniziali, ...risoluzione.messaggi])
-      if (risoluzione.livelliGuadagnati > 0) playSound('level-up')
+      if (risoluzione.livelliGuadagnati > 0) playSfx('jingle.levelup', { delayMs: 350 })
       // La squadra B resta nella battaglia; la coda evoluzioni appartiene ad A.
       setPkmnB(bDopoAutodanno)
       const nuovaSquadraB = settlement.squadB
       setSquadraB(nuovaSquadraB)
-      if (nuovoA.hp <= 0 || bDopoAutodanno.hp <= 0) playSound('ko')
+      if (nuovoA.hp <= 0 || bDopoAutodanno.hp <= 0) playSfx('battle.ko', { pan: panForSide(nuovoA.hp <= 0 ? 'A' : 'B') })
 
       // Se A sopravvive al colpo e B cade per il proprio contraccolpo, A vince.
       // Nel doppio KO il premio è già stato assegnato al solo attaccante B.
@@ -1572,7 +1605,6 @@ export function BattagliaScene() {
       if (esitoDopoMossa) {
         const vittoria = esitoDopoMossa === 'vittoria'
         mostraMessaggi([vittoria ? 'Hai vinto la battaglia!' : 'Hai perso la battaglia...'])
-        if (vittoria) playSound('victory')
         setEsito(esitoDopoMossa)
         setTerminata(true)
         return

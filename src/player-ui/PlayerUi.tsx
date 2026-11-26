@@ -1,5 +1,6 @@
 import { gameArtUrl } from '@/ui-system/GameArt'
 import { lazy, Suspense, useState, useContext, useEffect, useRef, useMemo, type CSSProperties } from 'react'
+import { playSfx } from '@/utils/soundManager'
 import { DialogNavigationContext } from '@/components/ui/DialogNavigation'
 import { useGameStore } from '@/store/gameStore'
 import { GameSettingsPanel } from '@/settings/GameSettingsPanel'
@@ -72,6 +73,8 @@ export interface PlayerUiProps {
   sharedElement?: string
 }
 
+let menuCloseTimer: number | null = null
+
 export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialInstanceId, initialAuxiliary, initialShopInteractionId, onClose, sharedElement }: PlayerUiProps) {
   const [screen, setScreen] = useState<PlayerUiScreen>(initialScreen === 'negozio' && !initialShopInteractionId ? 'partita' : initialScreen)
   const [playerId, setPlayerId] = useState<1 | 2>(() => initialPlayerId ?? useGameStore.getState().giocatoreAttivo)
@@ -80,6 +83,19 @@ export function PlayerUi({ initialScreen = 'partita', initialPlayerId, initialIn
   const registerBack = useContext(DialogNavigationContext)
   const shell = useRef<HTMLDivElement>(null)
   const [history, setHistory] = useState<{ screen: PlayerUiScreen; tool: PlayerUiAuxiliary | null; instanceId?: string; focus?: string }[]>([])
+  // Il menù si apre e si chiude con un soffio; ogni cambio di pagina sfoglia.
+  useEffect(() => {
+    // Un rimontaggio immediato (StrictMode, cambio di chiave) non è una chiusura seguita da un'apertura.
+    if (menuCloseTimer !== null) { window.clearTimeout(menuCloseTimer); menuCloseTimer = null }
+    else playSfx('ui.menu-open')
+    return () => { menuCloseTimer = window.setTimeout(() => { menuCloseTimer = null; playSfx('ui.menu-close') }, 0) }
+  }, [])
+  const shownScreen = useRef(screen)
+  useEffect(() => {
+    if (shownScreen.current === screen) return
+    shownScreen.current = screen
+    playSfx('ui.page')
+  }, [screen])
   const restoreFocus = useRef<string>()
   const player1 = useGameStore(state => state.giocatore1)
   const player2 = useGameStore(state => state.giocatore2)

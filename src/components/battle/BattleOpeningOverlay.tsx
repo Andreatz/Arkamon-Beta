@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { playSfx } from '@/utils/soundManager'
 import { motion } from 'framer-motion'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { BattleDie } from './DiceRollOverlay'
@@ -61,6 +62,19 @@ export function BattleOpeningOverlay({ kind, value, title, result, onContinue, c
   useEffect(() => {
     if (ready) continueRef.current?.focus({ preventScroll: true })
   }, [ready])
+
+  // La moneta gira e ricade al 78% dell'animazione (vedi `times` qui sotto).
+  useEffect(() => {
+    if (kind === 'die') return reduced ? undefined : playSfx('dice.roll')
+    if (reduced) { playSfx('battle.coin-land'); return }
+    const stopSpin = playSfx('battle.coin-spin', { rate: Math.min(1.6, Math.max(0.8, speed)) })
+    const land = window.setTimeout(() => playSfx('battle.coin-land'), (2400 / speed) * 0.78)
+    return () => { stopSpin(); window.clearTimeout(land) }
+    // Una volta per apertura.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  // Il dado di stato suona quando si ferma, cioè quando il risultato diventa leggibile.
+  useEffect(() => { if (ready && kind === 'die') playSfx('dice.land') }, [ready, kind])
 
   const continueOnce = () => {
     if (!ready || continuedRef.current) return

@@ -1,9 +1,8 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { defaultAdminTheme } from '@/theme/defaultAdminTheme'
 import { createDefaultDesign } from '@/ui-studio/designModel'
-import { normalizePresentationProject, readPresentationHistory, usePresentationProject, exportPresentationProject, importPresentationProject, capturePresentationProject } from './presentationProject'
+import { normalizePresentationProject, readPresentationHistory, usePresentationProject, exportPresentationProject, importPresentationProject } from './presentationProject'
 import { VISUAL_JOURNAL_KEY, useVisualRecoveryStatus } from './presentationTransaction'
-import { AUDIO_CHOICES_KEY } from '@/components/audio/audioCuration'
 import { getAppliedAudioSelection, normalizePresentationAudio, PRESENTATION_STORAGE_KEY, setAppliedAudio } from './presentationRuntime'
 import { useAdminStore } from '@/store/adminStore'
 import { useVfxAdminStore } from '@/store/vfxAdminStore'
@@ -114,17 +113,6 @@ describe('versioned presentation project', () => {
     const text = await exportPresentationProject(project)
     expect(await importPresentationProject(text)).toEqual(project)
     expect(JSON.parse(text).format).toBe('arkamon-presentation')
-  })
-  it('keeps applied custom audio while capturing an unrelated Audio Lab draft', async () => {
-    const applied = normalizePresentationProject(source())
-    usePresentationProject.setState({ applied })
-    const local = { 'move:1': { soundId: 'draft-sound', volume: .7, cue: 'impact', delayMs: 10, status: 'confirmed' } }
-    localStorage.setItem(AUDIO_CHOICES_KEY, JSON.stringify({ version: 1, choices: local }))
-    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => ({ files: [{ id: 'draft-sound', src: 'audio-lab/draft.ogg' }] }) })))
-    const captured = await capturePresentationProject('Merged audio')
-    expect(captured.audio.choices['event:click']).toEqual(applied.audio.choices['event:click'])
-    expect(captured.audio.sounds.sample).toEqual(applied.audio.sounds.sample)
-    expect(captured.audio.choices['move:1']).toEqual(local['move:1'])
   })
   it('restores theme, VFX draft and history if a later apply step cannot persist', () => {
     const theme = structuredClone(useAdminStore.getState().theme)

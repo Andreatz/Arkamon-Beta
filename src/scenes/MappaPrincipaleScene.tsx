@@ -733,6 +733,7 @@ export function MappaPrincipaleScene() {
             <motion.button
               type="button"
               disabled={!layoutEditing && !isActionable}
+              data-sfx="map.select"
               whileHover={!layoutEditing && isActionable ? { scale: 1.25 } : {}}
               whileTap={!layoutEditing && isActionable ? { scale: 0.9 } : {}}
               onClick={() => click(luogo.nome, coord.tipo)}

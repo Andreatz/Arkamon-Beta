@@ -7,7 +7,7 @@ import { SceneTransitionOverlay } from './SceneTransitionOverlay'
 import { createSceneTransitionState, getSceneKey, sceneTransitionReducer } from './sceneTransitionState'
 import { getSceneTransitionProfile, type SceneTransitionProfile } from './sceneTransitionProfiles'
 import { measureTransitionAnchor, PREPARE_LIMIT_MS, supportsViewTransitions, type AnchorPoint } from './sceneTransitionRuntime'
-import { playSelectedAudio } from '@/utils/soundManager'
+import { playSfx } from '@/utils/soundManager'
 import { useRegiaStore } from '@/regia/regiaStore'
 
 let transitionStyles: Promise<unknown> | undefined
@@ -50,7 +50,8 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
       : initialState
   })
   useLayoutEffect(() => {
-    if (state.phase === 'cover' && state.target.scena !== 'battaglia') return playSelectedAudio('event:transition')
+    // La battaglia ha il suo ingresso (Carta VS, con il suo suono): qui solo i passaggi fra luoghi e menù.
+    if (state.phase === 'cover' && state.target.scena !== 'battaglia') return playSfx('transition.whoosh')
   }, [state.phase, state.revision, state.target.scena])
   const lastRequest = useRef({ navigation, reducedMotion })
   const sceneRef = useRef<HTMLDivElement>(null)

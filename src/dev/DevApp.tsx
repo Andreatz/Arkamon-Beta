@@ -15,7 +15,7 @@ import '@/components/ui/gameControls.css'
  */
 export const LABS: Record<string, { title: string; component: LazyExoticComponent<ComponentType> }> = {
   'battle-rules-lab': { title: 'Regole di battaglia', component: lazy(() => import('@/components/battle/BattleRulesLab').then(module => ({ default: module.BattleRulesLab }))) },
-  'audio-lab': { title: 'Audio', component: lazy(() => import('@/components/audio/AudioLab').then(module => ({ default: module.AudioLab }))) },
+  'audio-lab': { title: 'Suoni e musica', component: lazy(() => import('@/components/audio/SoundLab').then(module => ({ default: module.SoundLab }))) },
   'transition-lab': { title: 'Transizioni', component: lazy(() => import('@/components/transitions/SceneTransitionLab').then(module => ({ default: module.SceneTransitionLab }))) },
   'vfx-lab': { title: 'VFX', component: lazy(() => import('@/components/vfx/VfxGallery').then(module => ({ default: module.VfxGallery }))) },
   'dice-lab': { title: 'Dadi', component: lazy(() => import('@/components/battle/BattleDiceLab').then(module => ({ default: module.BattleDiceLab }))) },

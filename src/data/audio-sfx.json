@@ -1,0 +1,535 @@
+{
+  "version": 1,
+  "generator": "scripts/audio/generate-sfx.py",
+  "sampleRate": 44100,
+  "sounds": {
+    "ui.hover": {
+      "file": "audio/sfx/ui-hover.ogg",
+      "category": "ui",
+      "durationMs": 22,
+      "description": "Passaggio su un pulsante: un ticchettio appena percettibile."
+    },
+    "ui.select": {
+      "file": "audio/sfx/ui-select.ogg",
+      "category": "ui",
+      "durationMs": 62,
+      "description": "Clic su un pulsante."
+    },
+    "ui.confirm": {
+      "file": "audio/sfx/ui-confirm.ogg",
+      "category": "ui",
+      "durationMs": 200,
+      "description": "Conferma di una scelta importante."
+    },
+    "ui.back": {
+      "file": "audio/sfx/ui-back.ogg",
+      "category": "ui",
+      "durationMs": 135,
+      "description": "Indietro, chiudi, annulla."
+    },
+    "ui.error": {
+      "file": "audio/sfx/ui-error.ogg",
+      "category": "ui",
+      "durationMs": 240,
+      "description": "Azione non disponibile."
+    },
+    "ui.tab": {
+      "file": "audio/sfx/ui-tab.ogg",
+      "category": "ui",
+      "durationMs": 60,
+      "description": "Cambio di scheda o di pagina nel menù."
+    },
+    "ui.page": {
+      "file": "audio/sfx/ui-page.ogg",
+      "category": "ui",
+      "durationMs": 160,
+      "description": "Cambio di schermata dentro il menù Partita."
+    },
+    "ui.toggle-on": {
+      "file": "audio/sfx/ui-toggle-on.ogg",
+      "category": "ui",
+      "durationMs": 50,
+      "description": "Interruttore acceso."
+    },
+    "ui.toggle-off": {
+      "file": "audio/sfx/ui-toggle-off.ogg",
+      "category": "ui",
+      "durationMs": 50,
+      "description": "Interruttore spento."
+    },
+    "ui.tick": {
+      "file": "audio/sfx/ui-tick.ogg",
+      "category": "ui",
+      "durationMs": 16,
+      "description": "Contatore che scorre, cursore di un cursore a scorrimento."
+    },
+    "ui.menu-open": {
+      "file": "audio/sfx/ui-menu-open.ogg",
+      "category": "ui",
+      "durationMs": 340,
+      "description": "Apertura del menù Partita."
+    },
+    "ui.menu-close": {
+      "file": "audio/sfx/ui-menu-close.ogg",
+      "category": "ui",
+      "durationMs": 220,
+      "description": "Chiusura del menù Partita."
+    },
+    "ui.dialog": {
+      "file": "audio/sfx/ui-dialog.ogg",
+      "category": "ui",
+      "durationMs": 80,
+      "description": "Comparsa di una finestra o di un dialogo."
+    },
+    "ui.notify": {
+      "file": "audio/sfx/ui-notify.ogg",
+      "category": "ui",
+      "durationMs": 454,
+      "description": "Avviso o messaggio importante."
+    },
+    "ui.start": {
+      "file": "audio/sfx/ui-start.ogg",
+      "category": "ui",
+      "durationMs": 1295,
+      "description": "Premi un tasto, dal titolo."
+    },
+    "ui.coins": {
+      "file": "audio/sfx/ui-coins.ogg",
+      "category": "ui",
+      "durationMs": 410,
+      "description": "Monete guadagnate."
+    },
+    "ui.purchase": {
+      "file": "audio/sfx/ui-purchase.ogg",
+      "category": "ui",
+      "durationMs": 660,
+      "description": "Acquisto nel negozio."
+    },
+    "map.select": {
+      "file": "audio/sfx/map-select.ogg",
+      "category": "map",
+      "durationMs": 80,
+      "description": "Selezione di un luogo o di un pallino sulla mappa."
+    },
+    "map.travel": {
+      "file": "audio/sfx/map-travel.ogg",
+      "category": "map",
+      "durationMs": 700,
+      "description": "La pedina si mette in viaggio sulla mappa."
+    },
+    "map.step": {
+      "file": "audio/sfx/map-step.ogg",
+      "category": "map",
+      "durationMs": 145,
+      "description": "Un passo sulla mappa locale."
+    },
+    "map.arrive": {
+      "file": "audio/sfx/map-arrive.ogg",
+      "category": "map",
+      "durationMs": 190,
+      "description": "Arrivo a destinazione."
+    },
+    "map.enter": {
+      "file": "audio/sfx/map-enter.ogg",
+      "category": "map",
+      "durationMs": 550,
+      "description": "Ingresso in un luogo."
+    },
+    "map.turn": {
+      "file": "audio/sfx/map-turn.ogg",
+      "category": "map",
+      "durationMs": 950,
+      "description": "Cambio di turno fra i giocatori."
+    },
+    "map.encounter": {
+      "file": "audio/sfx/map-encounter.ogg",
+      "category": "map",
+      "durationMs": 350,
+      "description": "Incontro nell'erba alta: il punto esclamativo."
+    },
+    "map.blocked": {
+      "file": "audio/sfx/map-blocked.ogg",
+      "category": "map",
+      "durationMs": 180,
+      "description": "Strada bloccata o luogo non raggiungibile."
+    },
+    "transition.whoosh": {
+      "file": "audio/sfx/transition-whoosh.ogg",
+      "category": "map",
+      "durationMs": 750,
+      "description": "Transizione fra scene."
+    },
+    "battle.encounter": {
+      "file": "audio/sfx/battle-encounter.ogg",
+      "category": "battle",
+      "durationMs": 1275,
+      "description": "Inizio di una battaglia."
+    },
+    "battle.vs": {
+      "file": "audio/sfx/battle-vs.ogg",
+      "category": "battle",
+      "durationMs": 1014,
+      "description": "Carta VS: colpo d'apertura."
+    },
+    "battle.coin-spin": {
+      "file": "audio/sfx/battle-coin-spin.ogg",
+      "category": "battle",
+      "durationMs": 1679,
+      "description": "La moneta del primo turno gira in aria."
+    },
+    "battle.coin-land": {
+      "file": "audio/sfx/battle-coin-land.ogg",
+      "category": "battle",
+      "durationMs": 500,
+      "description": "La moneta atterra e rimbalza."
+    },
+    "dice.roll": {
+      "file": "audio/sfx/dice-roll.ogg",
+      "category": "battle",
+      "durationMs": 607,
+      "description": "I dadi rotolano."
+    },
+    "dice.land": {
+      "file": "audio/sfx/dice-land.ogg",
+      "category": "battle",
+      "durationMs": 320,
+      "description": "I dadi si fermano: il risultato è rivelato."
+    },
+    "battle.banner": {
+      "file": "audio/sfx/battle-banner.ogg",
+      "category": "battle",
+      "durationMs": 300,
+      "description": "Il nome della mossa entra in scena."
+    },
+    "battle.supreme": {
+      "file": "audio/sfx/battle-supreme.ogg",
+      "category": "battle",
+      "durationMs": 2297,
+      "description": "Mossa Suprema: carica e stacco a tutto schermo (1,25 s)."
+    },
+    "battle.super": {
+      "file": "audio/sfx/battle-super.ogg",
+      "category": "battle",
+      "durationMs": 500,
+      "description": "Colpo superefficace."
+    },
+    "battle.weak": {
+      "file": "audio/sfx/battle-weak.ogg",
+      "category": "battle",
+      "durationMs": 260,
+      "description": "Colpo poco efficace."
+    },
+    "battle.miss": {
+      "file": "audio/sfx/battle-miss.ogg",
+      "category": "battle",
+      "durationMs": 280,
+      "description": "La mossa va a vuoto."
+    },
+    "battle.ko": {
+      "file": "audio/sfx/battle-ko.ogg",
+      "category": "battle",
+      "durationMs": 1020,
+      "description": "Un Arkamon va KO."
+    },
+    "battle.switch-in": {
+      "file": "audio/sfx/battle-switch-in.ogg",
+      "category": "battle",
+      "durationMs": 380,
+      "description": "Un Arkamon entra in campo."
+    },
+    "battle.item": {
+      "file": "audio/sfx/battle-item.ogg",
+      "category": "battle",
+      "durationMs": 370,
+      "description": "Uso di un oggetto della Borsa."
+    },
+    "battle.boost": {
+      "file": "audio/sfx/battle-boost.ogg",
+      "category": "battle",
+      "durationMs": 615,
+      "description": "Potenziamento: velocità o danno in aumento."
+    },
+    "battle.heal": {
+      "file": "audio/sfx/battle-heal.ogg",
+      "category": "battle",
+      "durationMs": 989,
+      "description": "Cura: gli HP risalgono."
+    },
+    "status.paralysis": {
+      "file": "audio/sfx/status-paralysis.ogg",
+      "category": "battle",
+      "durationMs": 600,
+      "description": "Paralisi."
+    },
+    "status.sleep": {
+      "file": "audio/sfx/status-sleep.ogg",
+      "category": "battle",
+      "durationMs": 1505,
+      "description": "Sonno."
+    },
+    "status.confusion": {
+      "file": "audio/sfx/status-confusion.ogg",
+      "category": "battle",
+      "durationMs": 1000,
+      "description": "Confusione."
+    },
+    "status.poison": {
+      "file": "audio/sfx/status-poison.ogg",
+      "category": "battle",
+      "durationMs": 591,
+      "description": "Avvelenamento."
+    },
+    "status.tick": {
+      "file": "audio/sfx/status-tick.ogg",
+      "category": "battle",
+      "durationMs": 185,
+      "description": "Danno da veleno a fine turno."
+    },
+    "status.cure": {
+      "file": "audio/sfx/status-cure.ogg",
+      "category": "battle",
+      "durationMs": 580,
+      "description": "Stato alterato curato."
+    },
+    "status.shield": {
+      "file": "audio/sfx/status-shield.ogg",
+      "category": "battle",
+      "durationMs": 1049,
+      "description": "Immunità agli stati: barriera."
+    },
+    "capture.throw": {
+      "file": "audio/sfx/capture-throw.ogg",
+      "category": "battle",
+      "durationMs": 500,
+      "description": "Il Sacchettino viene lanciato."
+    },
+    "capture.absorb": {
+      "file": "audio/sfx/capture-absorb.ogg",
+      "category": "battle",
+      "durationMs": 360,
+      "description": "Il Sacchettino si apre e assorbe l'Arkamon."
+    },
+    "capture.settle": {
+      "file": "audio/sfx/capture-settle.ogg",
+      "category": "battle",
+      "durationMs": 250,
+      "description": "Il Sacchettino cade a terra."
+    },
+    "capture.shake": {
+      "file": "audio/sfx/capture-shake.ogg",
+      "category": "battle",
+      "durationMs": 160,
+      "description": "Il Sacchettino oscilla."
+    },
+    "capture.escape": {
+      "file": "audio/sfx/capture-escape.ogg",
+      "category": "battle",
+      "durationMs": 450,
+      "description": "L'Arkamon esce dal Sacchettino."
+    },
+    "capture.caught": {
+      "file": "audio/sfx/capture-caught.ogg",
+      "category": "battle",
+      "durationMs": 1772,
+      "description": "Cattura riuscita: scatto e fanfara."
+    },
+    "jingle.victory": {
+      "file": "audio/sfx/jingle-victory.ogg",
+      "category": "jingle",
+      "durationMs": 2720,
+      "description": "Vittoria."
+    },
+    "jingle.defeat": {
+      "file": "audio/sfx/jingle-defeat.ogg",
+      "category": "jingle",
+      "durationMs": 3496,
+      "description": "Sconfitta."
+    },
+    "jingle.levelup": {
+      "file": "audio/sfx/jingle-levelup.ogg",
+      "category": "jingle",
+      "durationMs": 1370,
+      "description": "Salita di livello."
+    },
+    "jingle.evolution": {
+      "file": "audio/sfx/jingle-evolution.ogg",
+      "category": "jingle",
+      "durationMs": 2472,
+      "description": "Evoluzione completata."
+    },
+    "jingle.medal": {
+      "file": "audio/sfx/jingle-medal.ogg",
+      "category": "jingle",
+      "durationMs": 2127,
+      "description": "Medaglia ottenuta."
+    },
+    "jingle.item": {
+      "file": "audio/sfx/jingle-item.ogg",
+      "category": "jingle",
+      "durationMs": 1042,
+      "description": "Oggetto ricevuto."
+    },
+    "jingle.heal": {
+      "file": "audio/sfx/jingle-heal.ogg",
+      "category": "jingle",
+      "durationMs": 2219,
+      "description": "Squadra curata fuori dalla battaglia."
+    },
+    "jingle.starter": {
+      "file": "audio/sfx/jingle-starter.ogg",
+      "category": "jingle",
+      "durationMs": 1586,
+      "description": "Scelta dello starter nel Laboratorio."
+    },
+    "evolution.charge": {
+      "file": "audio/sfx/evolution-charge.ogg",
+      "category": "jingle",
+      "durationMs": 3340,
+      "description": "Evoluzione: la luce cresce (3,2 s)."
+    },
+    "move.normale.light": {
+      "file": "audio/sfx/move-normale-light.ogg",
+      "category": "move",
+      "durationMs": 180,
+      "description": "Mossa normale, potenza light."
+    },
+    "move.normale.medium": {
+      "file": "audio/sfx/move-normale-medium.ogg",
+      "category": "move",
+      "durationMs": 300,
+      "description": "Mossa normale, potenza medium."
+    },
+    "move.normale.heavy": {
+      "file": "audio/sfx/move-normale-heavy.ogg",
+      "category": "move",
+      "durationMs": 854,
+      "description": "Mossa normale, potenza heavy."
+    },
+    "move.fuoco.light": {
+      "file": "audio/sfx/move-fuoco-light.ogg",
+      "category": "move",
+      "durationMs": 360,
+      "description": "Mossa fuoco, potenza light."
+    },
+    "move.fuoco.medium": {
+      "file": "audio/sfx/move-fuoco-medium.ogg",
+      "category": "move",
+      "durationMs": 597,
+      "description": "Mossa fuoco, potenza medium."
+    },
+    "move.fuoco.heavy": {
+      "file": "audio/sfx/move-fuoco-heavy.ogg",
+      "category": "move",
+      "durationMs": 1281,
+      "description": "Mossa fuoco, potenza heavy."
+    },
+    "move.acqua.light": {
+      "file": "audio/sfx/move-acqua-light.ogg",
+      "category": "move",
+      "durationMs": 338,
+      "description": "Mossa acqua, potenza light."
+    },
+    "move.acqua.medium": {
+      "file": "audio/sfx/move-acqua-medium.ogg",
+      "category": "move",
+      "durationMs": 610,
+      "description": "Mossa acqua, potenza medium."
+    },
+    "move.acqua.heavy": {
+      "file": "audio/sfx/move-acqua-heavy.ogg",
+      "category": "move",
+      "durationMs": 1303,
+      "description": "Mossa acqua, potenza heavy."
+    },
+    "move.erba.light": {
+      "file": "audio/sfx/move-erba-light.ogg",
+      "category": "move",
+      "durationMs": 300,
+      "description": "Mossa erba, potenza light."
+    },
+    "move.erba.medium": {
+      "file": "audio/sfx/move-erba-medium.ogg",
+      "category": "move",
+      "durationMs": 500,
+      "description": "Mossa erba, potenza medium."
+    },
+    "move.erba.heavy": {
+      "file": "audio/sfx/move-erba-heavy.ogg",
+      "category": "move",
+      "durationMs": 1017,
+      "description": "Mossa erba, potenza heavy."
+    },
+    "move.elettro.light": {
+      "file": "audio/sfx/move-elettro-light.ogg",
+      "category": "move",
+      "durationMs": 300,
+      "description": "Mossa elettro, potenza light."
+    },
+    "move.elettro.medium": {
+      "file": "audio/sfx/move-elettro-medium.ogg",
+      "category": "move",
+      "durationMs": 550,
+      "description": "Mossa elettro, potenza medium."
+    },
+    "move.elettro.heavy": {
+      "file": "audio/sfx/move-elettro-heavy.ogg",
+      "category": "move",
+      "durationMs": 1050,
+      "description": "Mossa elettro, potenza heavy."
+    },
+    "move.terra.light": {
+      "file": "audio/sfx/move-terra-light.ogg",
+      "category": "move",
+      "durationMs": 360,
+      "description": "Mossa terra, potenza light."
+    },
+    "move.terra.medium": {
+      "file": "audio/sfx/move-terra-medium.ogg",
+      "category": "move",
+      "durationMs": 620,
+      "description": "Mossa terra, potenza medium."
+    },
+    "move.terra.heavy": {
+      "file": "audio/sfx/move-terra-heavy.ogg",
+      "category": "move",
+      "durationMs": 1395,
+      "description": "Mossa terra, potenza heavy."
+    },
+    "move.psico.light": {
+      "file": "audio/sfx/move-psico-light.ogg",
+      "category": "move",
+      "durationMs": 474,
+      "description": "Mossa psico, potenza light."
+    },
+    "move.psico.medium": {
+      "file": "audio/sfx/move-psico-medium.ogg",
+      "category": "move",
+      "durationMs": 751,
+      "description": "Mossa psico, potenza medium."
+    },
+    "move.psico.heavy": {
+      "file": "audio/sfx/move-psico-heavy.ogg",
+      "category": "move",
+      "durationMs": 1485,
+      "description": "Mossa psico, potenza heavy."
+    },
+    "move.oscurita.light": {
+      "file": "audio/sfx/move-oscurita-light.ogg",
+      "category": "move",
+      "durationMs": 410,
+      "description": "Mossa oscurita, potenza light."
+    },
+    "move.oscurita.medium": {
+      "file": "audio/sfx/move-oscurita-medium.ogg",
+      "category": "move",
+      "durationMs": 740,
+      "description": "Mossa oscurita, potenza medium."
+    },
+    "move.oscurita.heavy": {
+      "file": "audio/sfx/move-oscurita-heavy.ogg",
+      "category": "move",
+      "durationMs": 1650,
+      "description": "Mossa oscurita, potenza heavy."
+    }
+  }
+}

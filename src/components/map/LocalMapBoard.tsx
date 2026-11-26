@@ -369,6 +369,7 @@ export function LocalMapBoard({
               data-reachable={isReachable ? 'true' : 'false'}
               data-node-kind={kind}
               data-closed={closed ? 'true' : undefined}
+              data-sfx={closed ? 'map.blocked' : 'map.select'}
               className={`local-map-node${isCurrent ? ' local-map-node--current' : ''}${isReachable ? ' local-map-node--reachable' : ''}${closed ? ' local-map-node--closed' : ''}`}
               style={{ left: `${node.x}%`, top: `${node.y}%` }}
               disabled={!enabled}

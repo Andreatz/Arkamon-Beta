@@ -1,4 +1,5 @@
 import { useEffect, useSyncExternalStore, type CSSProperties } from 'react'
+import { playSfx } from '@/utils/soundManager'
 import { createPortal } from 'react-dom'
 import { getAnimationDuration, useGameMotionPreferences, useGamePreferences } from '@/settings/gamePreferences'
 import './grassOpening.css'
@@ -26,6 +27,8 @@ export function playGrassOpening(): Promise<void> {
   if (active) return Promise.resolve()
   return new Promise(resolve => {
     const id = ++counter
+    // Fruscio e punto esclamativo: qualcosa si muove nell'erba alta.
+    playSfx('map.encounter')
     active = { id, done: () => { if (active?.id === id) { active = null; emit() } resolve() } }
     emit()
   })

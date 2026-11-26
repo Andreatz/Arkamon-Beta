@@ -11,7 +11,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { EVOLUTION_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
-import { playSound } from '@/utils/soundManager'
+import { playSfx } from '@/utils/soundManager'
 import { useGameMotionPreferences, getAnimationDuration } from '@/settings/gamePreferences'
 import { getPortraitFraming } from '@/player-ui/portraitFraming'
 import type { AdminEvolutionLayoutKey, AdminLayoutRect } from '@/theme/adminThemeTypes'
@@ -130,7 +130,7 @@ export function EvoluzioneScene() {
   // same evolution and only then reveals the confirmation screen.
   useEffect(() => {
     if (fase === 'morphing' && istanza?.specieId === corrente?.newSpecieId) {
-      playSound('level-up')
+      playSfx('jingle.evolution')
       setBusy(false, undefined, 'evolution')
       setFase('post')
     }
@@ -156,7 +156,8 @@ export function EvoluzioneScene() {
 
   const avvia = () => {
     if (fase !== 'pre') return
-    playSound('evolution')
+    // La luce cresce per tutta la metamorfosi; con la velocità di regia il suono accelera con lei.
+    if (!reducedMotion) playSfx('evolution.charge', { rate: Math.max(0.8, Math.min(1.6, EVOLUTION_MORPH_MS / Math.max(1, getAnimationDuration(EVOLUTION_MORPH_MS)))) })
     setFase('morphing')
     if (evolutionTimerRef.current !== null) {
       window.clearTimeout(evolutionTimerRef.current)

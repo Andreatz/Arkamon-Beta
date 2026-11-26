@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto'
 import { validateNativeManifestCompleteness } from './native-manifest-completeness.mjs'
 
 export const MAX_WEB_BYTES = 900 * 1024 * 1024
-export const STATIC_DIRS = ['ui', 'maps', 'backgrounds', 'assets', 'sprites/back_sprites', 'sprites/small_sprites', 'audio', 'audio-lab']
+export const STATIC_DIRS = ['ui', 'maps', 'backgrounds', 'assets', 'sprites/back_sprites', 'sprites/small_sprites', 'audio']
 /** The authored game catalog decides which portraits are needed locally during play. */
 export function readPlayableFrontSpriteIds(root) {
   const species = JSON.parse(readFileSync(path.join(root, 'src/data/pokemon.json'), 'utf8'))

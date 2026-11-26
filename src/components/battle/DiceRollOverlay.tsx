@@ -6,7 +6,7 @@ import { assetUrl } from '@/utils/assetUrl'
 import { AnimatedSprite } from '../vfx/AnimatedSprite'
 import { BATTLE_DICE_EXIT_MS, getBattleDiceSequence } from './battleDiceAssets'
 import { createBattleDiceReveal } from './battleDiceReveal'
-import { playSelectedAudio } from '@/utils/soundManager'
+import { playSfx } from '@/utils/soundManager'
 import { EFFICACY_LABEL, diceCellWidth, type EfficacyTone } from './battleCinematics'
 import './battleDice.css'
 
@@ -42,6 +42,7 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
   const onVisibleRef = useRef(onVisible)
   onVisibleRef.current = onVisible
   const diceCount = roll.rolls.length
+  const side = roll.side
 
   useDiceLayoutEffect(() => {
     if (staticPreview) return
@@ -58,18 +59,21 @@ function DiceRollPresentation({ roll, forceFallback = false, onVisible, staticPr
         }
       },
       onReveal: () => {
-        playSelectedAudio('event:dice')
+        playSfx('dice.land')
         setDamageVisible(true)
         onVisibleRef.current?.()
       },
     })
     revealRef.current = reveal
+    // I dadi rotolano mentre il vassoio entra; si fermano (e suonano) alla rivelazione.
+    const stopRoll = playSfx('dice.roll', { pan: side === 'A' ? -0.2 : 0.2 })
     if (reducedMotion) reveal.panelVisible()
     return () => {
+      stopRoll()
       reveal.cancel()
       if (revealRef.current === reveal) revealRef.current = null
     }
-  }, [diceCount, reducedMotion, staticPreview])
+  }, [diceCount, reducedMotion, staticPreview, side])
   const total = roll.rolls.reduce((sum, value) => sum + value, 0)
   // Pochi dadi diventano grandi: sono il momento centrale del turno.
   const cell = diceCellWidth(roll.rolls.length)

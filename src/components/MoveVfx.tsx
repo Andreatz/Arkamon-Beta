@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { getMoveVfxAssignment } from './vfx/moveVfxAssignments'
-import { playSelectedAudio, getSelectedAudioCue } from '@/utils/soundManager'
+import { playSfx } from '@/utils/soundManager'
+import { moveSoundFor, panForSide } from '@/audio/moveSounds'
 import type { MossaDef } from '@/types'
 import { SpriteMoveVfx } from './vfx/SpriteMoveVfx'
 
@@ -23,13 +24,18 @@ export interface MoveVfxPlaybackCallbacks {
 }
 
 export function MoveVfx({ effect, soundEnabled = false, ...callbacks }: { effect: MoveVfxEvent; soundEnabled?: boolean } & MoveVfxPlaybackCallbacks) {
-  const stopAudio = useRef<(() => void) | null>(null)
   const played = useRef(false)
-  useEffect(() => { played.current = false; return () => { stopAudio.current?.() } }, [effect.id])
+  // Il suono non si tronca quando l'effetto visivo sparisce: la coda si spegne da sola.
+  useEffect(() => { played.current = false }, [effect.id])
   function cue(point: 'start' | 'impact') {
+    if (!soundEnabled || played.current) return
+    // Elemento × potenza dell'assegnazione VFX; le mosse di stato hanno il loro suono.
     const assignment = getMoveVfxAssignment(effect.move)
-    const key = assignment ? `move:${assignment.sourceMoveId}` : ''
-    if (soundEnabled && !played.current && getSelectedAudioCue(key) === point) { played.current = true; stopAudio.current = playSelectedAudio(key) }
+    const sound = moveSoundFor(effect.move, assignment?.tier ?? 'medium', assignment?.type)
+    if (sound.cue !== point) return
+    played.current = true
+    const hits = effect.target === 'self' ? effect.side : effect.side === 'A' ? 'B' : 'A'
+    playSfx(sound.id, { rate: sound.rate, pan: panForSide(hits) })
   }
   return <SpriteMoveVfx effect={effect} {...callbacks}
     onStart={() => { cue('start'); callbacks.onStart?.() }}

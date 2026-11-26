@@ -1,4 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react'
+import { playSfx } from '@/utils/soundManager'
+import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { useGameStore } from '@store/gameStore'
 import { getAllenatore } from '@data/index'
 import { assetUrl } from '@/utils/assetUrl'
@@ -21,6 +23,11 @@ export function BattleVsCard() {
   const model = battleVsModel(battle, playerName, `Giocatore ${activeId}`, getAllenatore)
   const [splashCatalog, setSplashCatalog] = useState<SplashCatalog | null>(null)
   const hasMatchup = model !== null
+
+  // La rincorsa del suono d'incontro si chiude con il lampo bianco della scheda.
+  const { speed } = useGameMotionPreferences()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => playSfx('battle.encounter', { rate: Math.min(1.6, Math.max(0.8, speed)) }), [])
 
   // La scheda parte subito. Il catalogo serve solo per le illustrazioni del confronto.
   useEffect(() => {

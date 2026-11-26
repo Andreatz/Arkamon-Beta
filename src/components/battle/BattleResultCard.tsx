@@ -7,7 +7,10 @@ import { GameArt, gameArtUrl } from '@/ui-system/GameArt'
 import { getAnimationDuration, useGameMotionPreferences } from '@/settings/gamePreferences'
 import { AnimatedNumber } from '@/motion/ui/AnimatedNumber'
 import { flyCoins } from '@/motion/ui/coinFlight'
-import { playSound } from '@/utils/soundManager'
+import { playSfx } from '@/utils/soundManager'
+
+/** Il livello si annuncia dopo la fanfara di vittoria, che parte quando compare la scheda. */
+const LEVEL_UP_AFTER_FANFARE_MS = 2600
 import './battleRpg.css'
 
 /** Audit fase 6: intervallo fra una riga del riepilogo e la successiva (ms, a velocità normale). */
@@ -64,7 +67,7 @@ export function BattleResultCard({ chronicle, outcome, gymVictory = false, messa
     <ResultRow index={1}>{summary.partial ? 'Negli ultimi eventi: ' : ''}{summary.enemyKOs} KO avversari · {summary.playerKOs} KO in squadra</ResultRow>
     {levelRows.length > 0 && <ul aria-label="Livelli guadagnati">{levelRows.map(({ level, index }) => <ResultRow as="li" key={`${level.name}-${index}`} index={index} className="battle-result-level">
       <span>{level.name} · Lv. </span>
-      <CountUp from={level.before} to={level.after} delayMs={index * RESULT_ROW_STAGGER_MS + 160} onDone={index === levelRows[0].index ? () => playSound('level-up') : undefined} />
+      <CountUp from={level.before} to={level.after} delayMs={index * RESULT_ROW_STAGGER_MS + 160} onDone={index === levelRows[0].index ? () => playSfx('jingle.levelup', { delayMs: LEVEL_UP_AFTER_FANFARE_MS }) : undefined} />
       <span className="battle-result-level-gain" aria-hidden="true">+{level.after - level.before}</span>
     </ResultRow>)}</ul>}
     {coinDelta !== 0 && <ResultRow as="div" index={coinIndex} className="battle-result-coins">

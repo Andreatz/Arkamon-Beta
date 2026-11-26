@@ -13,7 +13,7 @@ import { LABORATORY_BG } from '@data/backgrounds'
 import { assetUrl } from '@/utils/assetUrl'
 import { getOwnedPokemon, hasOwnedPokemon } from '@/engine/pokemonOwnership'
 import { professorLine, type ProfessorMoment } from './laboratoryLines'
-import { playSound } from '@/utils/soundManager'
+import { playSfx } from '@/utils/soundManager'
 
 const capsuleColors = ['blu', 'nera', 'viola'] as const
 
@@ -81,7 +81,7 @@ export function LaboratorioScene() {
   const scegli = (id: number, nome: string) => {
     const player = nomeGiocatoreAttivo
     if (!scegliStarter(id)) return
-    playSound('capture')
+    playSfx('jingle.starter')
     setAppenaScelto(id)
     setMomento({ kind: 'chosen', player, name: nome })
   }
