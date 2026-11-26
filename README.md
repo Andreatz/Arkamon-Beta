@@ -59,7 +59,7 @@ Consolidamento del **18 ottobre 2026**: [roadmap e stato di implementazione](./d
 - Mappa principale con movimento a turni, percorsi e citta interattivi.
 - [Mappe locali di città e percorsi](./docs/local-maps.md): 16 immagini con pallini e strade percorribili, posizioni separate per G1/G2, curve e ponti, salvataggi e comandi accessibili. Budget condiviso con la mappa principale: due movimenti oppure un movimento e un'interazione. I nuovi punti attendono l'assegnazione delle loro interazioni; le eccezioni sono accessibili esplicitamente da Admin → Regia → Scorciatoie del Game Master.
 - Bilanciamento codificato: progressione mappe, range livelli, economia, incontri e soglie stati/cure/Supreme.
-- Audio da file per mosse, eventi, dadi e transizioni; musica generativa Web Audio per scene, effetti generativi di riserva e toggle muto persistito.
+- Audio rifatto il 26 novembre 2026: colonna sonora in 15 contesti (scene e tipi di battaglia), 88 effetti 8 bit sintetizzati da `scripts/audio/generate-sfx.py`, toggle muto persistito. Vedi [docs/audio.md](docs/audio.md).
 - Scaffold desktop Tauri 2 con configurazione finestra e script dedicati.
 - Pubblico con QR esclusivamente per le mosse degli NPC normali; ospiti privati con invito per capipalestra, rivale, Superquattro e campione; [configurazione e utilizzo](./docs/audienceVoting.md).
 - Menu **Partita**: Registro unico con Diario, Eventi del match e Cronache delle ultime 20 battaglie; Gara e Ripresa basate sui progressi reali; backup versionato con anteprima/ripristino/copia precedente e preferenze separate per musica, effetti, velocità e movimento ridotto.

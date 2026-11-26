@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { leadPokemon, shouldAnnounceTurn, TURN_BANNER_MS } from './TurnChangeBanner'
-import { someoneHealed } from './HealSoundBridge'
+import { someoneHealed } from '@/components/audio/AudioEventBridge'
 import { prefetchScene, registerScenePreparer, resetScenePrefetch } from '@/components/transitions/scenePrefetch'
 import type { PokemonIstanza } from '@/types'
 

@@ -1,4 +1,16 @@
-import type { AudioChoice, AudioChoices } from '@/components/audio/audioCuration'
+/**
+ * Associazioni audio dei pacchetti visivi (formato v1). Dal 26 novembre 2026 il gioco suona soltanto
+ * gli effetti generati (`public/audio/sfx`) e la colonna sonora: queste associazioni restano nel
+ * formato per leggere e riesportare i pacchetti esistenti, ma il motore audio non le usa più.
+ */
+export interface AudioChoice {
+  soundId: string
+  volume: number
+  cue: 'start' | 'impact'
+  delayMs: number
+  status: 'candidate' | 'confirmed' | 'selected'
+}
+export type AudioChoices = Record<string, AudioChoice>
 
 export const PRESENTATION_STORAGE_KEY = 'arkamon-presentation-project-v1'
 export interface PresentationAudio { choices: AudioChoices; sounds: Record<string, { src: string }> }

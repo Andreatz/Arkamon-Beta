@@ -1,43 +1,106 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
+import sfxCatalog from '@/data/audio-sfx.json'
+import musicCatalog from '@/data/audio-music.json'
+import { SFX_IDS } from '@/audio/sfxIds'
 import {
-  AUDIO_EVENTI,
   isAudioMuted,
-  musicForScene,
-  playSound,
+  musicContextFor,
+  MUSIC_CONTEXTS,
+  nextTrackFor,
+  playSfx,
   setAudioMuted,
+  setMusicOverride,
+  setSceneMusic,
+  sfxCategory,
+  sfxUrl,
+  type MusicTrackId,
 } from '@/utils/soundManager'
 
-describe('soundManager', () => {
-  it('mappa le scene sulla musica corretta', () => {
-    expect(musicForScene('titolo')).toBe('title')
-    expect(musicForScene('laboratorio')).toBe('title')
-    expect(musicForScene('battaglia')).toBe('battle')
-    expect(musicForScene('evoluzione')).toBe('evolution')
-    expect(musicForScene('mappa-griglia')).toBe('map')
+describe('catalogo audio', () => {
+  it('ha un identificatore TypeScript per ogni effetto generato, e viceversa', () => {
+    expect([...SFX_IDS].sort()).toEqual(Object.keys(sfxCatalog.sounds).sort())
   })
 
-  it('espone gli eventi sonori richiesti dalla roadmap audio', () => {
-    expect(AUDIO_EVENTI).toEqual([
-      'click',
-      'battle-start',
-      'hit',
-      'ko',
-      'capture',
-      'victory',
-      'level-up',
-      'evolution',
-    ])
+  it('trova su disco ogni effetto e ogni brano', () => {
+    for (const id of SFX_IDS) {
+      expect(sfxUrl(id)).toBe((sfxCatalog.sounds as Record<string, { file: string }>)[id].file)
+      expect(existsSync(resolve('public', sfxUrl(id))), id).toBe(true)
+    }
+    for (const track of Object.values(musicCatalog.tracks)) expect(existsSync(resolve('public', track.file)), track.file).toBe(true)
   })
 
-  it('gestisce mute e playSound come no-op sicuro in Vitest', () => {
+  it('usa ogni brano della colonna sonora in almeno un contesto', () => {
+    const used = new Set(Object.values(musicCatalog.contexts).flat())
+    expect([...used].sort()).toEqual(Object.keys(musicCatalog.tracks).sort())
+    for (const track of Object.values(musicCatalog.tracks)) expect(track.gain).toBeGreaterThan(0.7)
+  })
+
+  it('non contiene più la libreria di suoni di provenienza incerta', () => {
+    expect(existsSync(resolve('src/data/audio-selections.json'))).toBe(false)
+    const source = readFileSync(resolve('src/utils/soundManager.ts'), 'utf8')
+    expect(source).not.toMatch(/sounds\/Part|audio\/selected/)
+  })
+
+  it('classifica gli effetti per canale', () => {
+    expect(sfxCategory('ui.hover')).toBe('ui')
+    expect(sfxCategory('transition.whoosh')).toBe('map')
+    expect(sfxCategory('evolution.charge')).toBe('jingle')
+    expect(sfxCategory('move.fuoco.heavy')).toBe('move')
+    expect(sfxCategory('capture.shake')).toBe('battle')
+  })
+})
+
+describe('musica per scena', () => {
+  it('assegna un contesto a ogni scena e lascia suonare quella del luogo nei menù', () => {
+    expect(musicContextFor({ scena: 'titolo' })).toBe('title')
+    expect(musicContextFor({ scena: 'laboratorio' })).toBe('laboratory')
+    expect(musicContextFor({ scena: 'mappa-principale' })).toBe('world-map')
+    expect(musicContextFor({ scena: 'citta', luogo: 'Venezia' })).toBe('city')
+    expect(musicContextFor({ scena: 'percorso', luogo: 'Percorso_1' })).toBe('route')
+    expect(musicContextFor({ scena: 'percorso', luogo: 'x', nascosto: true })).toBe('hidden')
+    expect(musicContextFor({ scena: 'lega' })).toBe('hidden')
+    expect(musicContextFor({ scena: 'evoluzione' })).toBe('evolution')
+    expect(musicContextFor({ scena: 'deposito' })).toBeNull()
+    expect(musicContextFor({ scena: 'squadra' })).toBeNull()
+  })
+
+  it('distingue le battaglie per avversario', () => {
+    const battle = (tipo: 'Selvatico' | 'NPC' | 'PVP', tipoAllenatore?: 'PVP' | 'NPC' | 'Capopalestra' | 'Superquattro' | 'Campione', lega = false) =>
+      musicContextFor({ scena: 'battaglia', battaglia: { tipo, tipoAllenatore, lega } })
+    expect(battle('Selvatico')).toBe('battle-wild')
+    expect(battle('NPC', 'NPC')).toBe('battle-trainer')
+    expect(battle('PVP')).toBe('battle-pvp')
+    expect(battle('NPC', 'Capopalestra')).toBe('battle-gym')
+    expect(battle('PVP', 'Capopalestra')).toBe('battle-gym')
+    expect(battle('NPC', 'Superquattro')).toBe('battle-elite')
+    expect(battle('NPC', 'NPC', true)).toBe('battle-elite')
+    expect(battle('NPC', 'Campione', true)).toBe('battle-champion')
+    for (const context of MUSIC_CONTEXTS) expect(musicCatalog.contexts[context].length).toBeGreaterThan(0)
+  })
+
+  it('fa ruotare le scalette e passa al brano successivo a fine brano', () => {
+    const first = nextTrackFor('city')
+    const second = nextTrackFor('city')
+    expect(first).not.toBe(second)
+    expect(nextTrackFor('city', 'pixel-pulse' as MusicTrackId)).toBe('8-bit-groove-2')
+    expect(nextTrackFor('title', 'pixel-adventure' as MusicTrackId)).toBe('pixel-adventure')
+  })
+})
+
+describe('motore audio senza browser', () => {
+  it('silenzio e riproduzione sono no-op sicuri in Vitest', () => {
     setAudioMuted(true)
     expect(isAudioMuted()).toBe(true)
-    expect(() => playSound('click')).not.toThrow()
+    expect(() => playSfx('ui.select')).not.toThrow()
     setAudioMuted(false)
     expect(isAudioMuted()).toBe(false)
+    expect(() => playSfx('move.acqua.heavy', { rate: 9, pan: -4, volume: Number.NaN })).not.toThrow()
+    expect(() => { setSceneMusic('route'); setMusicOverride('victory'); setMusicOverride(null) }).not.toThrow()
   })
 
-  it('sblocca Web Audio sul gesto utente e gestisce un rifiuto del browser', async () => {
+  it('sblocca Web Audio sul gesto utente e tollera un rifiuto del browser', async () => {
     vi.resetModules()
     const resume = vi.fn().mockRejectedValue(new Error('autoplay denied'))
     const construct = vi.fn()
@@ -60,96 +123,64 @@ describe('soundManager', () => {
     } finally { vi.unstubAllGlobals() }
   })
 
-  it('interrompe subito anche i toni musicali già programmati quando viene disattivato l’audio', async () => {
+  it('decodifica una volta, rispetta il limite di voci e ferma tutto quando si toglie l’audio', async () => {
     vi.resetModules()
-    const oscillators: { stop: ReturnType<typeof vi.fn>; disconnect: ReturnType<typeof vi.fn>; onended: (() => void) | null }[] = []
-    const gains: { disconnect: ReturnType<typeof vi.fn> }[] = []
-    const clearInterval = vi.fn()
+    const sources: { start: ReturnType<typeof vi.fn>; stop: ReturnType<typeof vi.fn>; playbackRate: { value: number }; onended: (() => void) | null }[] = []
+    const decode = vi.fn(async () => ({ duration: 0.2 }))
+    const node = () => ({ connect: vi.fn(), disconnect: vi.fn() })
     class FakeContext {
       state = 'running'
-      currentTime = 10
+      currentTime = 3
       destination = {}
-      createOscillator() {
-        const oscillator = { type: 'sine', frequency: { setValueAtTime: vi.fn() },
-          connect: vi.fn(), start: vi.fn(), stop: vi.fn(), disconnect: vi.fn(), onended: null as (() => void) | null }
-        oscillators.push(oscillator)
-        return oscillator
-      }
-      createGain() {
-        const gain = { gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }, connect: vi.fn(), disconnect: vi.fn() }
-        gains.push(gain)
-        return gain
+      decodeAudioData = decode
+      createGain() { return { ...node(), gain: { value: 1, setTargetAtTime: vi.fn() } } }
+      createStereoPanner() { return { ...node(), pan: { value: 0 } } }
+      createBufferSource() {
+        const source = { ...node(), buffer: null, start: vi.fn(), stop: vi.fn(), playbackRate: { value: 1 }, onended: null as (() => void) | null }
+        sources.push(source)
+        return source
       }
     }
-    vi.stubGlobal('window', { AudioContext: FakeContext, setInterval: vi.fn().mockReturnValue(7), clearInterval })
+    const fetchMock = vi.fn(async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(8) }))
+    vi.stubGlobal('window', { AudioContext: FakeContext })
+    vi.stubGlobal('fetch', fetchMock)
     try {
       const audio = await import('../soundManager')
-      audio.playMusic('title')
-      expect(oscillators).toHaveLength(3)
+      for (let i = 0; i < 6; i++) audio.playSfx('dice.land', { rate: 1.2 })
+      await new Promise((done) => setTimeout(done, 0))
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(decode).toHaveBeenCalledOnce()
+      expect(sources).toHaveLength(6)
+      // Quattro voci al massimo: le due più vecchie sono state fermate.
+      expect(sources.filter((source) => source.stop.mock.calls.length > 0)).toHaveLength(2)
+      expect(sources[5].playbackRate.value).toBe(1.2)
+      expect(sources[5].start).toHaveBeenCalledWith(3)
       audio.setAudioMuted(true)
-      expect(clearInterval).toHaveBeenCalledWith(7)
-      for (const oscillator of oscillators) {
-        // The first stop schedules the normal end; the second cancels it now.
-        expect(oscillator.stop.mock.calls).toEqual([[expect.any(Number)], []])
-        expect(oscillator.disconnect).toHaveBeenCalledOnce()
-        expect(oscillator.onended).toBeNull()
-      }
-      // The channel bus is reused; per-tone envelope nodes are released.
-      for (const [index, gain] of gains.entries()) expect(gain.disconnect).toHaveBeenCalledTimes(index === 1 ? 0 : 1)
-      audio.playMusic('battle')
-      expect(oscillators).toHaveLength(3)
+      expect(sources.slice(2).every((source) => source.stop.mock.calls.length > 0)).toBe(true)
+      audio.playSfx('dice.land')
+      await new Promise((done) => setTimeout(done, 0))
+      expect(sources).toHaveLength(6)
     } finally { vi.unstubAllGlobals() }
   })
 
-  it('rilascia un tono finito e cancella solo la melodia attiva quando cambia scena', async () => {
+  it('non ripete il passaggio del mouse in una raffica', async () => {
     vi.resetModules()
-    const oscillators: { stop: ReturnType<typeof vi.fn>; disconnect: ReturnType<typeof vi.fn>; onended: (() => void) | null }[] = []
+    const sources: unknown[] = []
     class FakeContext {
       state = 'running'
       currentTime = 0
       destination = {}
-      createOscillator() {
-        const oscillator = { type: 'sine', frequency: { setValueAtTime: vi.fn() }, connect: vi.fn(),
-          start: vi.fn(), stop: vi.fn(), disconnect: vi.fn(), onended: null as (() => void) | null }
-        oscillators.push(oscillator)
-        return oscillator
-      }
-      createGain() {
-        return { gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }, connect: vi.fn(), disconnect: vi.fn() }
-      }
+      decodeAudioData = async () => ({ duration: 0.02 })
+      createGain() { return { connect: vi.fn(), disconnect: vi.fn(), gain: { value: 1 } } }
+      createBufferSource() { const source = { connect: vi.fn(), disconnect: vi.fn(), start: vi.fn(), stop: vi.fn(), playbackRate: { value: 1 }, onended: null }; sources.push(source); return source }
     }
-    vi.stubGlobal('window', { AudioContext: FakeContext, setInterval: vi.fn(), clearInterval: vi.fn() })
+    vi.stubGlobal('window', { AudioContext: FakeContext })
+    vi.stubGlobal('fetch', async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(8) }))
     try {
       const audio = await import('../soundManager')
-      audio.playMusic('title')
-      oscillators[0].onended?.()
-      audio.playMusic('battle')
-      expect(oscillators).toHaveLength(7)
-      expect(oscillators[0].stop).toHaveBeenCalledOnce()
-      expect(oscillators[0].disconnect).toHaveBeenCalledOnce()
-      for (const oscillator of oscillators.slice(1, 3)) expect(oscillator.stop).toHaveBeenCalledTimes(2)
-      audio.stopMusic()
-      for (const oscillator of oscillators.slice(3)) expect(oscillator.disconnect).toHaveBeenCalledOnce()
-    } finally { vi.unstubAllGlobals() }
-  })
-
-  it('updates independent music/effects channel gains while sounds are active', async () => {
-    vi.resetModules()
-    const gains: { gain: { setValueAtTime: ReturnType<typeof vi.fn>; exponentialRampToValueAtTime: ReturnType<typeof vi.fn> } }[] = []
-    class FakeContext {
-      state = 'running'; currentTime = 2; destination = {}
-      createOscillator() { return { frequency: { setValueAtTime: vi.fn() }, connect: vi.fn(), start: vi.fn(), stop: vi.fn(), disconnect: vi.fn(), onended: null } }
-      createGain() { const node = { gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }, connect: vi.fn(), disconnect: vi.fn() }; gains.push(node); return node }
-    }
-    vi.stubGlobal('window', { AudioContext: FakeContext, setInterval: vi.fn(), clearInterval: vi.fn() })
-    try {
-      const audio = await import('../soundManager')
-      audio.playMusic('title')
-      audio.setChannelVolumes(0.2, 0.7)
-      expect(gains[1].gain.setValueAtTime).toHaveBeenLastCalledWith(0.2, 2)
-      audio.setChannelVolumes(0, 0.9)
-      expect(gains[1].gain.setValueAtTime).toHaveBeenLastCalledWith(0, 2)
-      audio.stopMusic()
+      audio.playSfx('ui.hover'); audio.playSfx('ui.hover'); audio.playSfx('ui.hover')
+      await new Promise((done) => setTimeout(done, 0))
+      expect(sources).toHaveLength(1)
     } finally { vi.unstubAllGlobals() }
   })
 })

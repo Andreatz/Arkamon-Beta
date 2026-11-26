@@ -1,5 +1,4 @@
 import { registerScenePreparer } from '@/components/transitions/scenePrefetch'
-import { HealSoundBridge } from '@/components/overworld/HealSoundBridge'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useGameStore } from '@store/gameStore'
 import { TitoloScene } from '@scenes/TitoloScene'
@@ -50,6 +49,7 @@ const RegiaPause = lazy(() => import('@/regia/RegiaPause').then(module => ({ def
 const TiltController = lazy(() => import('@/motion/ui/TiltController').then(module => ({ default: module.TiltController })))
 const GamepadBridge = lazy(() => import('@/input/GamepadBridge').then(module => ({ default: module.GamepadBridge })))
 // Budget di avvio: la fascia del turno (con i ritratti della squadra) non serve al titolo.
+const AudioEventBridge = lazy(() => import('@/components/audio/AudioEventBridge').then(module => ({ default: module.AudioEventBridge })))
 const TurnChangeBanner = lazy(() => import('@/components/overworld/TurnChangeBanner').then(module => ({ default: module.TurnChangeBanner })))
 const UiStudioEditor = lazy(() => import('@/ui-studio/UiStudioEditor').then(module => ({ default: module.UiStudioEditor })))
 const UiStudioPreview = lazy(() => import('@/ui-studio/UiStudioPreview').then(module => ({ default: module.UiStudioPreview })))
@@ -103,7 +103,7 @@ function App() {
       <SaveFailureNotice />
       <ChallengeBanner key={`challenge-banner-${campaignRevision}`} />
       <Suspense fallback={null}><TurnChangeBanner key={`turn-banner-${campaignRevision}`} /></Suspense>
-      <HealSoundBridge />
+      <Suspense fallback={null}><AudioEventBridge /></Suspense>
       <SceneTransition key={campaignRevision} navigation={scenaCorrente} renderScene={renderPresentedScene} prepareScene={prepareScene}>
         <AudioController />
       </SceneTransition>

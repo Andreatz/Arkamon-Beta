@@ -135,7 +135,7 @@ export function TitoloScene() {
         transition={instant ? { duration: 0 } : { delay: .3 / speed }}
       >
         <GameButton
-          tone="primary" className="text-xl"
+          tone="primary" className="text-xl" data-sfx="ui.start"
           onClick={async () => {
             if (haGiocatori && !await confirm({
               title: 'Nuova partita',
@@ -150,7 +150,7 @@ export function TitoloScene() {
         </GameButton>
         {haGiocatori && (
           <GameButton
-            className="text-lg"
+            className="text-lg" data-sfx="ui.start"
             onClick={() => vaiAScena(starterCompletati ? 'mappa-principale' : 'laboratorio')}
           >
             Continua

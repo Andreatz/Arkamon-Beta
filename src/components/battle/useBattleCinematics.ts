@@ -10,6 +10,7 @@ import {
 import { CAPTURE_TIMING, type CaptureDisplay } from './BattleCaptureLayer'
 import type { CapturePlan } from './battleCapture'
 import { SUPREME_CUT_IN_MS, type SupremeCutInDisplay } from './SupremeCutIn'
+import { playSfx } from '@/utils/soundManager'
 
 export interface MoveBannerDisplay {
   id: number
@@ -107,11 +108,14 @@ export function useBattleCinematics({ rig, fx, enabled }: { rig: CameraRig; fx: 
     return {
       attackStart({ side, moveName, color, suprema = false, speciesId, pokemonName }: { side: BattleSide; moveName: string; color: string; suprema?: boolean; speciesId?: number; pokemonName?: string }) {
         if (!state.enabled || state.concluded) return Promise.resolve()
+        // Con lo stacco della Suprema il suo suono copre anche la fascia del nome.
+        let cutInPlayed = false
         state.suprema = suprema
         state.knockout = false
         setDamageNumber(null); setKnockoutSide(null)
         const opening = par(
           call(() => { setBanner({ id: ++state.id, side, name: moveName, color, suprema }) }),
+          call(() => { if (!cutInPlayed) playSfx('battle.banner', { pan: side === 'A' ? -0.25 : 0.25 }) }),
           call(() => fx.letterbox(true)),
           call(() => camera.to(attackerShot(side, suprema))),
         )
@@ -124,6 +128,7 @@ export function useBattleCinematics({ rig, fx, enabled }: { rig: CameraRig; fx: 
         const ready = new Promise<void>((resolve) => { releaseAttack = resolve })
         void play(seq(
           when((context) => !context.settings.reducedMotion, seq(
+            call(() => { cutInPlayed = true; playSfx('battle.supreme') }),
             call(() => { setCutIn({ id: ++state.id, side, speciesId, pokemonName: pokemonName ?? '', moveName, color }) }),
             wait(SUPREME_CUT_IN_MS),
             call(() => { setCutIn(null) }),
@@ -143,32 +148,32 @@ export function useBattleCinematics({ rig, fx, enabled }: { rig: CameraRig; fx: 
           id, kind: plan.kind, item: plan.item, phase: 'throw', shake: shakes, revealed, maxTotal: plan.maxTotal, minRoll: plan.minRoll, ...(current?.id === id ? current : {}), ...patch,
         }))
         const oscillations = plan.steps.map((step) => seq(
-          call(() => { shakes += 1; show({ phase: 'shake', shake: shakes }) }),
+          call(() => { shakes += 1; show({ phase: 'shake', shake: shakes }); playSfx('capture.shake', { pan: 0.3 }) }),
           wait(CAPTURE_TIMING.shake),
           call(() => { revealed = [...revealed, step]; show({ revealed }) }),
           // I dadi vanno letti anche con il movimento ridotto.
           step.die === null ? wait(220) : hold(560),
         ))
         return play(seq(
-          call(() => { setBanner(null); setDamageNumber(null); setKnockoutSide(null); show({ phase: 'throw' }) }),
+          call(() => { setBanner(null); setDamageNumber(null); setKnockoutSide(null); show({ phase: 'throw' }); playSfx('capture.throw', { pan: 0.15 }) }),
           par(
             call(() => fx.letterbox(true)),
             call(() => camera.to({ focus: 'enemy', zoom: 1.2, ms: 560, ease: 'out' })),
             wait(CAPTURE_TIMING.throw),
           ),
-          call(() => { show({ phase: 'absorb' }) }),
+          call(() => { show({ phase: 'absorb' }); playSfx('capture.absorb', { pan: 0.3 }) }),
           par(call(() => fx.flash({ ms: CAPTURE_TIMING.absorb, peak: 0.55 })), wait(CAPTURE_TIMING.absorb)),
-          call(() => { show({ phase: 'settle' }) }),
+          call(() => { show({ phase: 'settle' }); playSfx('capture.settle', { pan: 0.3 }) }),
           wait(CAPTURE_TIMING.settle),
           ...oscillations,
           plan.caught
             ? seq(
-              call(() => { state.captured = true; show({ phase: 'caught' }) }),
+              call(() => { state.captured = true; show({ phase: 'caught' }); playSfx('capture.caught') }),
               par(call(() => camera.punch({ zoom: 1.06, ms: 220 })), call(() => fx.flash({ ms: 280, peak: 0.45 }))),
               hold(900),
             )
             : seq(
-              call(() => { show({ phase: 'escaped' }) }),
+              call(() => { show({ phase: 'escaped' }); playSfx('capture.escape', { pan: 0.3 }) }),
               call(() => { camera.impact(0.5) }),
               hold(700),
               call(() => { setCapture(null) }),

@@ -1,12 +1,9 @@
 import { create } from 'zustand'
-import selections from '@/data/audio-selections.json'
 import { useAdminStore } from '@/store/adminStore'
 import { useVfxAdminStore, type AdminMoveVfxOverride } from '@/store/vfxAdminStore'
 import { parseThemeJson } from '@/theme/parseAdminTheme'
 import { normalizeDesign } from '@/ui-studio/designModel'
 import { exportUiDesign, importUiDesign } from '@/ui-studio/mediaStorage'
-import { AUDIO_CHOICES_KEY, parseAudioChoices, type AudioCatalog, type AudioChoices } from '@/components/audio/audioCuration'
-import { assetUrl } from '@/utils/assetUrl'
 import type { AdminTheme } from '@/theme/adminThemeTypes'
 import type { UiDesignDocument } from '@/ui-studio/types'
 import { normalizeVfxOverrides } from './vfxValidation'
@@ -53,7 +50,7 @@ function persist(history: ProjectHistory, transaction = false) {
   if (typeof localStorage !== 'undefined') localStorage.setItem(PRESENTATION_STORAGE_KEY, JSON.stringify(history))
 }
 function currentProject(name: string): PresentationProject {
-  return normalizePresentationProject({ version: 1, name, theme: useAdminStore.getState().theme, vfx: useVfxAdminStore.getState().overrides, audio: { choices: selections.choices, sounds: Object.fromEntries(Object.entries(selections.sounds).map(([id, value]) => [id, { src: value.src }])) } })
+  return normalizePresentationProject({ version: 1, name, theme: useAdminStore.getState().theme, vfx: useVfxAdminStore.getState().overrides, audio: { choices: {}, sounds: {} } })
 }
 interface ProjectState extends ProjectHistory {
   error: string | null
@@ -134,19 +131,6 @@ export async function capturePresentationProject(name: string, design?: UiDesign
   if (applied) project.audio = clone(applied.audio)
   if (design) project.theme.design = normalizeDesign(design)
   project.vfx = normalizeVfxOverrides(useVfxAdminStore.getState().draftOverrides)
-  const text = typeof localStorage === 'undefined' ? null : localStorage.getItem(AUDIO_CHOICES_KEY)
-  if (text) {
-    const response = await fetch(assetUrl('audio-lab/catalog.json'))
-    if (!response.ok) throw new Error('Catalogo audio non disponibile: bozza non acquisita.')
-    const catalog = await response.json() as AudioCatalog
-    if (!Array.isArray(catalog.files)) throw new Error('Catalogo audio non valido.')
-    const files = new Map(catalog.files.filter(file => !file.error).map(file => [file.id, file]))
-    const local = parseAudioChoices(text, new Set(files.keys()))
-    const choices: AudioChoices = { ...project.audio.choices, ...local }
-    const sounds = { ...project.audio.sounds }
-    for (const value of Object.values(local)) { const file = files.get(value.soundId); if (file) sounds[value.soundId] = { src: file.src } }
-    project.audio = normalizePresentationAudio({ choices, sounds })
-  }
   return normalizePresentationProject(project)
 }
 export async function exportPresentationProject(project: PresentationProject): Promise<string> {
