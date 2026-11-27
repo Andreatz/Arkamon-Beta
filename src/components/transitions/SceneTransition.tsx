@@ -113,7 +113,7 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
     for (const revision of coverStartsCovered.current.keys()) if (revision < state.revision - 4) coverStartsCovered.current.delete(revision)
   }
 
-  // Regia: clip (incontro, luce) oppure dissolvenza fra le due scene (View Transition).
+  // Regia: clip (luce, titolo, fumo) oppure dissolvenza fra le due scene (View Transition).
   // Una copertura che parte già chiusa resta classica.
   const baseCinematic = resolvedProfile.cinematic
   const cinematic = transitioning && baseCinematic && coverStartsCovered.current.get(state.revision) === false
@@ -127,10 +127,10 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
     previousTransition.current = { revision: state.revision, phase: state.phase }
   }, [state.revision, state.phase])
 
-  // Le clip si scaricano quando il gioco è fermo: l'incontro può arrivare da qualsiasi luogo.
+  // Le clip si scaricano quando il gioco è fermo: viaggio e battaglia possono partire da qualsiasi luogo.
   useLayoutEffect(() => {
     if (reducedMotion) return
-    const timer = window.setTimeout(() => { preloadTransitionClip('incontro'); preloadTransitionClip('luce') }, 2500)
+    const timer = window.setTimeout(() => { preloadTransitionClip('fumo'); preloadTransitionClip('luce'); preloadTransitionClip('titolo') }, 2500)
     return () => window.clearTimeout(timer)
   }, [reducedMotion])
 

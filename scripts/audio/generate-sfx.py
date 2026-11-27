@@ -863,20 +863,32 @@ def _():
     return m.out()
 
 
-@sfx('transition.encounter', 'battle', -17, 'Transizione: le schegge della clip tx_incontro chiudono lo schermo al nero.')
+@sfx('transition.smoke', 'map', -19, 'Transizione: fumo anime che copre lo schermo e si apre sul luogo (clip tx-fumo).')
 def _():
     m = Mix()
-    # Tempi della clip (public/ui/transitions/tx-incontro.mp4): le schegge entrano a 0,12 s,
-    # lo schermo si chiude a 1,06 s, il nero pieno arriva a 1,54 s e passa la Carta VS.
-    m.add(0.08, pulse(hz('E7'), 0.07, 0.25) * env_exp(0.07, 0.03), 0.45)
-    m.add(0.08, burst(0.12, 'shatter', hpf=2600, decay=0.03), 0.6)
-    spin = vibrato(sweep(160, 1400, 0.95, 1.4), 0.95, 16, 1.0)
-    m.add(0.12, pulse(spin, 0.95, 0.25) * env_rise(0.95, 1.4), 0.26)
-    m.add(0.12, whoosh(0.95, 260, 5200, 'spiral', q=1.3, peak=0.96), 0.6)
-    m.add(1.06, kick(0.4, 140, 32), 1.0)
-    m.add(1.06, burst(0.18, 'close', lpf=1800, decay=0.05), 0.5)
-    m.add(1.06, rumble(0.5, 'void', 120) * env_exp(0.5, 0.2), 0.45)
-    return m.out()
+    # Tempi della clip: il fumo entra in diagonale, copre tutto a 0,68 s e si ritira entro 1,4 s.
+    m.add(0, whoosh(0.68, 400, 3800, 'smoke-in', q=0.8, peak=0.95), 0.75)
+    m.add(0.05, rumble(0.6, 'smoke-body', 260) * env_rise(0.6, 1.6), 0.3)
+    m.add(0.68, burst(0.2, 'smoke-puff', lpf=2600, decay=0.07), 0.45)
+    m.add(0.7, whoosh(0.7, 3200, 500, 'smoke-out', q=0.9, peak=0.15), 0.6)
+    m.add(0.7, melody([('E5', 1), ('B5', 1), ('E6', 3)], 0.06, 'pulse', 0.125, decay=0.1), 0.16)
+    return echo(m.out(), 0.11, 0.22, 2)
+
+
+@sfx('transition.title', 'map', -18, 'Transizione: vortice di sabbia d\'oro dal titolo al gioco (clip tx-titolo).')
+def _():
+    m = Mix()
+    # Tempi della clip: il vortice cresce fino alla copertura a 1,12 s, poi soffia via verso destra.
+    spin = vibrato(sweep(180, 900, 1.1, 1.3), 1.1, 9, 1.0)
+    m.add(0, pulse(spin, 1.1, 0.25) * env_rise(1.1, 1.5), 0.2)
+    m.add(0, whoosh(1.12, 300, 5000, 'title-swirl', q=1.2, peak=0.97), 0.6)
+    m.add(0.2, crackle(0.9, 40, 'title-sand', hpf=5000), 0.25)
+    m.add(1.12, chord(['E5', 'G#5', 'B5', 'E6'], 0.9, 'pulse', 0.125, decay=0.3), 0.35)
+    m.add(1.12, burst(0.18, 'title-flash', hpf=1800, decay=0.05), 0.4)
+    cascade = ['E7', 'B6', 'G#6', 'E6', 'B6', 'G#6', 'E6', 'B5']
+    m.add(1.2, melody([(n, 1) for n in cascade], 0.05, 'pulse', 0.125, decay=0.06), 0.2)
+    m.add(1.15, whoosh(1.2, 4000, 600, 'title-out', q=1.0, peak=0.1), 0.5)
+    return echo(m.out(), 0.12, 0.3, 3, 6000)
 
 
 @sfx('transition.radiance', 'map', -18, 'Transizione: la luce della clip tx_luce esplode e si apre sulla scena nuova.')

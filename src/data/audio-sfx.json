@@ -159,11 +159,17 @@
       "durationMs": 750,
       "description": "Transizione fra scene."
     },
-    "transition.encounter": {
-      "file": "audio/sfx/transition-encounter.ogg",
-      "category": "battle",
-      "durationMs": 1560,
-      "description": "Transizione: le schegge della clip tx_incontro chiudono lo schermo al nero."
+    "transition.smoke": {
+      "file": "audio/sfx/transition-smoke.ogg",
+      "category": "map",
+      "durationMs": 1525,
+      "description": "Transizione: fumo anime che copre lo schermo e si apre sul luogo (clip tx-fumo)."
+    },
+    "transition.title": {
+      "file": "audio/sfx/transition-title.ogg",
+      "category": "map",
+      "durationMs": 2536,
+      "description": "Transizione: vortice di sabbia d'oro dal titolo al gioco (clip tx-titolo)."
     },
     "transition.radiance": {
       "file": "audio/sfx/transition-radiance.ogg",

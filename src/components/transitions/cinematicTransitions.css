@@ -1,8 +1,8 @@
 /*
  * Regie delle transizioni (27 novembre 2026, seconda versione).
- * 1. Clip generate con Flow (incontro, luce), composte in WebGL sopra la scena: .arka-tx-clip;
+ * 1. Clip (luce, titolo, fumo), composte in WebGL sopra la scena: .arka-tx-clip;
  * 2. dissolvenza fra le istantanee delle due scene: html[data-arka-tx='dissolve']::view-transition-*;
- * 3. la Carta VS che si apre in due dopo la clip dell'incontro.
+ * 3. la Carta VS che si apre in due (regole rimaste per l'overlay con `data-cinematic`).
  * Le durate arrivano già scalate dalla velocità di regia.
  */
 
@@ -10,6 +10,7 @@
 .arka-tx-clip {
   --arka-tx-clip-dark: radial-gradient(ellipse at 50% 50%, #12101a, #050409 72%);
   --arka-tx-clip-light: radial-gradient(ellipse at 50% 50%, #fffdf6, #f6e7c4 78%);
+  --arka-tx-clip-gold: radial-gradient(ellipse at 50% 50%, #fbe7a8, #c89a3c 80%);
   position: absolute;
   inset: 0;
   z-index: 85;

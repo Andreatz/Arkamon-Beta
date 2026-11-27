@@ -91,7 +91,7 @@ describe('libreria di transizioni guidata da partenza e arrivo', () => {
   const route = { scena: 'percorso', payload: { luogo: 'Percorso_2' } } as const
 
   it('fra le scene ordinarie usa una dissolvenza, con la regia nel profilo', () => {
-    for (const [to, from] of [[venice, map], [map, route], [route, venice], [{ scena: 'laboratorio' }, { scena: 'titolo' }], [{ scena: 'titolo' }, map], [{ scena: 'lega' }, map]] as const) {
+    for (const [to, from] of [[route, venice], [{ scena: 'laboratorio' }, map], [{ scena: 'titolo' }, map], [{ scena: 'lega' }, map]] as const) {
       const profile = getSceneTransitionProfile(to, from)
       expect(profile.mode).toBe('fade')
       expect(profile.cinematic?.kind).toBe('dissolve')

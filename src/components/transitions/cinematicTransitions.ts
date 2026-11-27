@@ -3,29 +3,28 @@ import type { SfxId } from '@/audio/sfxIds'
 import type { TransitionClipId } from './TransitionClip'
 
 /**
- * Transizioni di scena (27 novembre 2026, seconda versione).
+ * Transizioni di scena (27 novembre 2026, terza versione).
  *
- * Solo due passaggi hanno una regia: le clip generate con Flow (lotto 5), composte in WebGL
- * sopra la scena viva.
- * - `encounter` (`tx_incontro`): schegge a spirale che chiudono lo schermo al nero, poi la
- *   Carta VS (`overlay`).
- * - `radiance` (`tx_luce`): a fine battaglia la luce esplode; sotto il bianco pieno la scena
- *   cambia e la clip prosegue aprendosi su quella nuova (`clip`). Verso l'evoluzione il
- *   bianco lascia il posto al dado (`overlay`).
+ * Tre passaggi hanno una regia: clip con l'alfa, composte in WebGL sopra la scena viva. La scena
+ * cambia sotto la copertura totale della clip, che poi prosegue aprendosi su quella nuova (`clip`).
+ * - `radiance` (`tx_luce`, Flow): a fine battaglia la luce esplode; verso l'evoluzione il bianco
+ *   lascia il posto al dado (`overlay`).
+ * - `title` (`tx_titolo`, Flow): vortice di sabbia d'oro dal titolo al gioco.
+ * - `smoke` (fumo anime Filmbro): viaggio dalla mappa a un luogo e ritorno.
  *
- * Tutti gli altri cambi di scena sono una dissolvenza semplice fra le due scene
- * (View Transitions API, `snapshot`); senza API restano le dissolvenze dell'overlay.
+ * L'ingresso in battaglia è la Carta VS dell'overlay. Tutti gli altri cambi di scena sono una
+ * dissolvenza semplice fra le due scene (View Transitions API, `snapshot`).
  */
-export type CinematicKind = 'encounter' | 'radiance' | 'dissolve'
+export type CinematicKind = 'radiance' | 'title' | 'smoke' | 'dissolve'
 
-export const CINEMATIC_KINDS: readonly CinematicKind[] = ['encounter', 'radiance', 'dissolve']
+export const CINEMATIC_KINDS: readonly CinematicKind[] = ['radiance', 'title', 'smoke', 'dissolve']
 
 export interface CinematicSpec {
   readonly kind: CinematicKind
   /** Clip che guida il passaggio; assente nella dissolvenza. */
   readonly clip: TransitionClipId | null
   /**
-   * - `overlay`: la clip copre lo schermo e si ferma; la sequenza dedicata (Carta VS, dado) prende il posto;
+   * - `overlay`: la clip copre lo schermo e si ferma; la sequenza dedicata (dado) prende il posto;
    * - `clip`: la scena cambia sotto la copertura della clip, che poi prosegue fino alla fine;
    * - `snapshot`: dissolvenza fra le istantanee delle due scene (View Transition).
    */
@@ -40,7 +39,7 @@ const DISSOLVE: CinematicSpec = { kind: 'dissolve', clip: null, handoff: 'snapsh
 
 /**
  * Regia per la coppia partenza → arrivo, oppure `null` (si usa la transizione dell'overlay:
- * elemento condiviso del Deposito, stessa scena, primo caricamento, evoluzione fuori battaglia).
+ * Carta VS, elemento condiviso del Deposito, stessa scena, primo caricamento, evoluzione fuori battaglia).
  */
 export function chooseCinematic(destination: NavigazioneScena, origin: NavigazioneScena | undefined): CinematicSpec | null {
   if (!origin) return null
@@ -51,10 +50,15 @@ export function chooseCinematic(destination: NavigazioneScena, origin: Navigazio
   if (from === to && origin.payload?.luogo === destination.payload?.luogo) return null
   if ((from === 'mappa-principale' && to === 'deposito') || (from === 'deposito' && to === 'mappa-principale')) return null
 
-  if (to === 'battaglia') return { kind: 'encounter', clip: 'incontro', handoff: 'overlay', revealMs: 0, sound: 'transition.encounter' }
+  if (to === 'battaglia') return null
   if (from === 'battaglia') {
     return { kind: 'radiance', clip: 'luce', handoff: to === 'evoluzione' ? 'overlay' : 'clip', revealMs: 0, sound: 'transition.radiance' }
   }
   if (to === 'evoluzione') return null
+  if (from === 'titolo') return { kind: 'title', clip: 'titolo', handoff: 'clip', revealMs: 0, sound: 'transition.title' }
+  const fromLocal = from === 'citta' || from === 'percorso'
+  if ((from === 'mappa-principale' && local) || (fromLocal && to === 'mappa-principale')) {
+    return { kind: 'smoke', clip: 'fumo', handoff: 'clip', revealMs: 0, sound: 'transition.smoke' }
+  }
   return DISSOLVE
 }

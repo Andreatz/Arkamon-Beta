@@ -31,7 +31,9 @@ interface TransitionClipProps {
 }
 
 /** Ripiego senza WebGL o senza video: un velo nel colore dominante della clip. */
-const FALLBACK_COLOR: Record<TransitionClipId, string> = { incontro: 'var(--arka-tx-clip-dark)', luce: 'var(--arka-tx-clip-light)' }
+const FALLBACK_COLOR: Record<TransitionClipId, string> = {
+  luce: 'var(--arka-tx-clip-light)', titolo: 'var(--arka-tx-clip-gold)', fumo: 'var(--arka-tx-clip-light)',
+}
 
 const VERTEX = `attribute vec2 p;varying vec2 uv;void main(){uv=vec2(p.x*.5+.5,.25-p.y*.25);gl_Position=vec4(p,0.,1.);}`
 // Metà superiore: colore premoltiplicato; metà inferiore: opacità. uv.y copre solo la metà alta.

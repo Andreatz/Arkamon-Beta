@@ -15,11 +15,14 @@ import { MotionPlaybackContext } from '@/settings/motionPlayback'
 interface Pair { id: string; label: string; from: NavigazioneScena; to: NavigazioneScena }
 
 const PAIRS: Pair[] = [
-  { id: 'encounter', label: 'Percorso → Battaglia (clip incontro e Carta VS)', from: { scena: 'percorso', payload: { luogo: 'Percorso_1' } }, to: { scena: 'battaglia' } },
+  { id: 'smoke', label: 'Mappa → Venezia (fumo)', from: { scena: 'mappa-principale' }, to: { scena: 'citta', payload: { luogo: 'Venezia' } } },
+  { id: 'smoke-back', label: 'Percorso 1 → Mappa (fumo)', from: { scena: 'percorso', payload: { luogo: 'Percorso_1' } }, to: { scena: 'mappa-principale' } },
+  { id: 'title', label: 'Titolo → Mappa (vortice d\'oro)', from: { scena: 'titolo' }, to: { scena: 'mappa-principale' } },
+  { id: 'battle', label: 'Percorso → Battaglia (Carta VS)', from: { scena: 'percorso', payload: { luogo: 'Percorso_1' } }, to: { scena: 'battaglia' } },
   { id: 'radiance', label: 'Battaglia → Percorso (clip luce)', from: { scena: 'battaglia' }, to: { scena: 'percorso', payload: { luogo: 'Percorso_1' } } },
   { id: 'evolution', label: 'Battaglia → Evoluzione (clip luce e dado)', from: { scena: 'battaglia' }, to: { scena: 'evoluzione' } },
-  { id: 'dissolve', label: 'Mappa → Venezia (dissolvenza)', from: { scena: 'mappa-principale' }, to: { scena: 'citta', payload: { luogo: 'Venezia' } } },
-  { id: 'dissolve-title', label: 'Titolo → Laboratorio (dissolvenza)', from: { scena: 'titolo' }, to: { scena: 'laboratorio' } },
+  { id: 'dissolve', label: 'Venezia → Percorso 1 (dissolvenza)', from: { scena: 'citta', payload: { luogo: 'Venezia' } }, to: { scena: 'percorso', payload: { luogo: 'Percorso_1' } } },
+  { id: 'dissolve-lab', label: 'Laboratorio → Mappa (dissolvenza)', from: { scena: 'laboratorio' }, to: { scena: 'mappa-principale' } },
 ]
 
 function backgroundOf(navigation: NavigazioneScena): string {
@@ -73,7 +76,7 @@ export function SceneTransitionLab() {
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="max-w-2xl space-y-2">
           <h1 className="text-2xl font-black sm:text-3xl">Transizioni</h1>
-          <p className="text-sm leading-relaxed text-slate-300">Inizio e fine battaglia sono clip generate con Flow, composte sopra la scena; ogni altro passaggio è una dissolvenza. Qui girano con lo stesso motore del gioco, su scene finte.</p>
+          <p className="text-sm leading-relaxed text-slate-300">Fine battaglia, titolo e viaggio mappa ↔ luoghi sono clip composte sopra la scena; l'ingresso in battaglia è la Carta VS; ogni altro passaggio è una dissolvenza. Qui girano con lo stesso motore del gioco, su scene finte.</p>
           {!supportsViewTransitions() && <p className="text-sm text-amber-300">Questo browser non ha la View Transitions API: le dissolvenze ripiegano su un velo.</p>}
         </header>
 
