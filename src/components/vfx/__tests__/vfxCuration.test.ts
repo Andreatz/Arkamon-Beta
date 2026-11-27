@@ -20,7 +20,7 @@ describe('VFX curation', () => {
   it('reduces the review to confirmed choices and proposals while keeping reserves accessible', () => {
     const reserve = 'generated:hekatoneff_1011-img_hit-images_nested_sheet'
     const result = filterVfxAssetIds(MOVE_VFX_ASSETS, { recommendedOnly: true })
-      .filter((id) => !id.startsWith('moveset:') && !id.startsWith('pilot:'))
+      .filter((id) => !id.startsWith('moveset:'))
     expect(result).toHaveLength(18)
     expect(result.filter((id) => getVfxCuration(id)?.reviewed)).toHaveLength(10)
     const proposals = result.filter((id) => getVfxCuration(id)?.recommendation === 'proposed')

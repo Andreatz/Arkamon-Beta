@@ -5,7 +5,6 @@ import { MOVE_VFX_ASSETS } from '../vfxManifest'
 import { MOVE_VFX_ASSIGNMENTS, MOVE_VFX_ASSIGNMENT_COUNTS, VFX_MOVE_PREVIEWS, getMoveVfxAssignment } from '../moveVfxAssignments'
 import { resolveMoveVfxAsset, resolveMoveVfxRecipe } from '../resolveMoveVfxAsset'
 import { resolveMoveVfxProfile } from '../moveVfxProfiles'
-import { getPilotVfxAssetId } from '../pilotVfx'
 
 describe('individual moveset VFX assignments', () => {
   afterEach(() => useVfxAdminStore.getState().resetOverrides())
@@ -28,7 +27,6 @@ describe('individual moveset VFX assignments', () => {
   it('resolves every reserved asset exactly once without a composite recipe or manifest mutation', () => {
     for (const move of VFX_MOVE_PREVIEWS) {
       const entry = getMoveVfxAssignment(move)!
-      if (getPilotVfxAssetId(move)) continue // lotto pilota: pilotVfx.test.ts
       expect(entry).toBeDefined()
       expect(entry.assetId).not.toBeNull()
       if (!entry.assetId) throw new Error(`Missing VFX for source move ${entry.sourceMoveId}`)
@@ -54,7 +52,6 @@ describe('individual moveset VFX assignments', () => {
   it('uses the worksheet colors, including light Voltaggio and medium Alta tensione/Colpo felpato', () => {
     for (const move of VFX_MOVE_PREVIEWS) {
       const entry = getMoveVfxAssignment(move)!
-      if (getPilotVfxAssetId(move)) continue // lotto pilota: pilotVfx.test.ts
       expect(resolveMoveVfxProfile(move).intensity).toBe(entry.tier === 'status' ? 'subtle' : entry.tier)
     }
     for (const [id, tier] of [[5, 'light'], [6, 'medium'], [29, 'medium'], [130, 'light']] as const) {
