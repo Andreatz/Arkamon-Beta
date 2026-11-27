@@ -90,22 +90,16 @@ describe('libreria di transizioni guidata da partenza e arrivo', () => {
   const venice = { scena: 'citta', payload: { luogo: 'Venezia' } } as const
   const route = { scena: 'percorso', payload: { luogo: 'Percorso_2' } } as const
 
-  it('entra nel nodo della mappa con uno zoom ancorato al luogo di arrivo', () => {
-    const profile = getSceneTransitionProfile(venice, map)
-    expect(profile.mode).toBe('zoom-in')
-    expect(profile.anchor).toEqual({ name: 'Venezia', scene: 'outgoing' })
-    expect(getSceneTransitionProfile(route, map).anchor).toEqual({ name: 'Percorso_2', scene: 'outgoing' })
+  it('fra le scene ordinarie usa una dissolvenza, con la regia nel profilo', () => {
+    for (const [to, from] of [[route, venice], [{ scena: 'laboratorio' }, map], [{ scena: 'titolo' }, map], [{ scena: 'lega' }, map]] as const) {
+      const profile = getSceneTransitionProfile(to, from)
+      expect(profile.mode).toBe('fade')
+      expect(profile.cinematic?.kind).toBe('dissolve')
+    }
+    expect(getSceneTransitionProfile(map, route).label).toBe('Ritorno alla mappa principale')
   })
 
-  it('al ritorno la mappa si allarga dal luogo appena lasciato', () => {
-    const profile = getSceneTransitionProfile(map, route)
-    expect(profile.mode).toBe('zoom-out')
-    expect(profile.anchor).toEqual({ name: 'Percorso_2', scene: 'incoming' })
-    expect(profile.label).toBe('Ritorno alla mappa principale')
-  })
-
-  it('usa il taglio diagonale fra due mappe locali e l’elemento condiviso per il deposito', () => {
-    expect(getSceneTransitionProfile(route, venice).mode).toBe('diagonal')
+  it('usa l’elemento condiviso per il deposito', () => {
     const deposit = getSceneTransitionProfile({ scena: 'deposito' }, map)
     expect(deposit.mode).toBe('shared')
     expect(deposit.sharedElement).toBe('deposito')
@@ -114,13 +108,9 @@ describe('libreria di transizioni guidata da partenza e arrivo', () => {
     expect(deposit.coverMs + deposit.durationMs).toBeLessThan(500)
   })
 
-  it('riserva bianco, pennellata e iride ai rispettivi passaggi', () => {
+  it('dopo la battaglia il ripiego è il bianco', () => {
     expect(getSceneTransitionProfile(route, { scena: 'battaglia' }).mode).toBe('white')
-    expect(getSceneTransitionProfile(map, { scena: 'evoluzione' }).mode).toBe('white')
-    expect(getSceneTransitionProfile({ scena: 'lega' }, map).mode).toBe('white')
-    expect(getSceneTransitionProfile({ scena: 'laboratorio' }, { scena: 'titolo' }).mode).toBe('brush')
-    expect(getSceneTransitionProfile(map, { scena: 'laboratorio' }).mode).toBe('iris')
-    expect(getSceneTransitionProfile({ scena: 'titolo' }, map).mode).toBe('fade')
+    expect(getSceneTransitionProfile(route, { scena: 'battaglia' }).cinematic).toMatchObject({ kind: 'radiance', clip: 'luce', handoff: 'clip' })
   })
 
   it('le sequenze dedicate prevalgono su qualunque partenza', () => {
@@ -139,10 +129,6 @@ describe('libreria di transizioni guidata da partenza e arrivo', () => {
       if (profile.mode !== 'battle-vs' && profile.mode !== 'arkamon-dice') {
         expect(profile.coverMs + profile.durationMs).toBeLessThan(1600)
       }
-      if (profile.mode === 'zoom-in' || profile.mode === 'zoom-out') expect(profile.anchor).not.toBeNull()
-      // Dal titolo la polvere d'oro (transizione cinematografica) esplode dal logo.
-      else if (profile.cinematic?.kind === 'gold-burst') expect(profile.anchor).toEqual({ name: 'title-logo', scene: 'outgoing' })
-      else expect(profile.anchor).toBeNull()
     }
   })
 })

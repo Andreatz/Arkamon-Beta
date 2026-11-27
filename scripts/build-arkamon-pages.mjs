@@ -43,7 +43,14 @@ async function saveProgress() {
   report.runtimeEncodedBytes = report.clips.reduce((sum, clip) => sum + clip.runtimeEncodedBytes, 0)
   report.allVisibleRgbaPixelsAndAlphaPreserved = report.clips.every(clip => clip.allVisibleRgbaPixelsAndAlphaPreserved === true)
   report.maxPageDecodedBytes = Math.max(0, ...Object.values(manifest.clips).flatMap(clip => clip.pages.map(page => page.decodedBytes)))
-  const sourceSizes = await Promise.all(Object.values(manifest.clips).map(clip => fs.stat(path.join(sourceRoot, String(clip.speciesId), 'front', `${clip.animation}.webp`)).then(stat => stat.size)))
+  // In un checkout parziale gli atlas non convertiti possono mancare: la dimensione viene dai loro metadati.
+  const sourceSizes = await Promise.all(Object.values(manifest.clips).map(clip => {
+    const atlas = path.join(sourceRoot, String(clip.speciesId), 'front', `${clip.animation}.webp`)
+    return fs.stat(atlas).then(stat => stat.size, async error => {
+      if (error.code !== 'ENOENT') throw error
+      return JSON.parse(await fs.readFile(atlas.replace(/\.webp$/, '.metadata.json'), 'utf8')).sheet.sizeBytes
+    })
+  }))
   report.sourceEncodedBytes = sourceSizes.reduce((sum, size) => sum + size, 0)
   // The report may lead the manifest if interrupted between these two atomic
   // writes; runtime readers use only the final manifest commit.

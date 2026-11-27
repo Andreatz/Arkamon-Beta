@@ -3,6 +3,7 @@ import { MOSSE } from '@data/index'
 import { useVfxAdminStore } from '@store/vfxAdminStore'
 import { MOVE_VFX_ASSETS } from '../vfxManifest'
 import { getMoveVfxAssignment } from '../moveVfxAssignments'
+import { getPilotVfxAssetId } from '../pilotVfx'
 import { resolveMoveVfxProfile, resolveProfileAssetId } from '../moveVfxProfiles'
 import { VFX_CURATION, getCuratedBattleAssetId, getVfxCurationPreviewAsset } from '../vfxCuration'
 import {
@@ -38,6 +39,12 @@ describe('individual battle VFX and preserved legacy calibration', () => {
       expect(getVfxCurationPreviewAsset(MOVE_VFX_ASSETS[assetId])).toMatchObject({ id: assetId, anchor, scale })
       const assignment = getMoveVfxAssignment(move)!
       const asset = resolveMoveVfxAsset(move)
+      // Le mosse del lotto pilota usano il nuovo VFX (vedi pilotVfx.test.ts).
+      if (getPilotVfxAssetId(move)) {
+        expect(asset.id).toBe(getPilotVfxAssetId(move))
+        expect(MOVE_VFX_ASSETS[assetId]).toEqual(original)
+        return
+      }
       expect(asset).toMatchObject({ id: assignment.assetId, anchor: assignment.anchor, scale: 1, blendMode: 'normal' })
       expect(asset.id).toMatch(/^moveset:/)
       expect(asset).toEqual(MOVE_VFX_ASSETS[assignment.assetId!])

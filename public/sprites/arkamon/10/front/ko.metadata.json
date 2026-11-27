@@ -9,7 +9,7 @@
     "height": 1080,
     "fps": 24.0,
     "durationSeconds": 3.92,
-    "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+    "ffmpegVersion": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
     "sha256": "81b8f1ffb03e56d091cef2a89925c2296f0e13451d65a27774af6a072b2919d3",
     "sizeBytes": 2257647,
     "decodedFrameCount": 94,
@@ -228,8 +228,8 @@
     "durationMs": 3917,
     "width": 5760,
     "height": 5760,
-    "sizeBytes": 6191978,
-    "sha256": "e08749b3b4657ba406277a159cd7d070f57b7009044d7f256f269003314edc41",
+    "sizeBytes": 6184258,
+    "sha256": "16642b4942a76dfb24a96b3ce043b471c65aadf7df8bfc0f27dcc1545a733785",
     "viewport": {
       "width": 256,
       "height": 256,
@@ -240,8 +240,8 @@
   "poster": {
     "file": "ko-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 65134,
-    "sha256": "70e0ff95a57ae1dc64bced552e31d456c7800d35c8bc2a0fe56e143af22f8af8"
+    "sizeBytes": 64936,
+    "sha256": "9e5686bb5daf62fc53eb068d6818faa73ab80a1ae6f7f3c1c0daa4035a3998f3"
   },
   "viewport": {
     "width": 256,
@@ -1564,23 +1564,37 @@
     "screenColourRatioTolerance": 0.12,
     "screenDominanceCleanup": false,
     "screenDominanceRatio": null,
-    "screenFringeCleanup": false,
-    "screenFringeProfile": null
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "neutralRedBlueTolerance": 10,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features."
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "yellowGreenDiagnosticPixelsAllFrames": 664,
+    "yellowGreenDiagnosticPixelsAllFrames": 102,
     "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
-    "occupiedPixelsAllFrames": 2760311,
-    "redDominantPixelsAllFrames": 8914,
+    "occupiedPixelsAllFrames": 2759318,
+    "redDominantPixelsAllFrames": 8910,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.540269,
-      "bodyAlphaMeanAbsoluteDifference": 0.734737,
-      "bodyChangedPixelFractionOver5Percent": 0.981609,
-      "adjacentMedianBodyRgbDifference": 0.075742,
-      "adjacentMaxBodyRgbDifference": 0.284102,
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.540188,
+      "bodyAlphaMeanAbsoluteDifference": 0.734462,
+      "bodyChangedPixelFractionOver5Percent": 0.981524,
+      "adjacentMedianBodyRgbDifference": 0.075731,
+      "adjacentMaxBodyRgbDifference": 0.284587,
       "seamToAdjacentMedianRatio": 7.133
     },
     "loopSeamPerfect": false,
@@ -1625,8 +1639,8 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.537528,
-      "bodyAlphaMeanAbsoluteDifference": 0.732534,
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.537521,
+      "bodyAlphaMeanAbsoluteDifference": 0.732529,
       "bodyChangedPixelFractionOver5Percent": 0.980821
     }
   }

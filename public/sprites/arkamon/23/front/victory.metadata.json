@@ -9,7 +9,7 @@
     "height": 1080,
     "fps": 24.0,
     "durationSeconds": 3.92,
-    "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+    "ffmpegVersion": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
     "sha256": "1f0651d4983b5a1b645cd4dccb32b7b7f2a85b2ca1b8429c0e333a11e7010aa0",
     "sizeBytes": 2711496,
     "decodedFrameCount": 94,
@@ -228,8 +228,8 @@
     "durationMs": 3917,
     "width": 7680,
     "height": 7680,
-    "sizeBytes": 8490992,
-    "sha256": "f6a77536043ab6aa99749f6b63566a9491d4a2d7595e4d858a3be474b435b40b",
+    "sizeBytes": 8019662,
+    "sha256": "b76cdde59b083d7cefd2f990bf443cbafd90c7f2d149fe8ff8e771414f4be2bd",
     "viewport": {
       "width": 288,
       "height": 288,
@@ -240,8 +240,8 @@
   "poster": {
     "file": "victory-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 40956,
-    "sha256": "4ba7af2e6d729391c649c8ba7c973e07c85bf613faca1a97afbe8261c18f020a"
+    "sizeBytes": 40914,
+    "sha256": "a33531ad575d0c18dd77d0b654804d73264a595db329e2f0458f5d1bc218a896"
   },
   "viewport": {
     "width": 288,
@@ -664,7 +664,7 @@
       [
         0,
         0,
-        1920,
+        1912,
         1080
       ],
       [
@@ -1564,44 +1564,38 @@
     "screenColourRatioTolerance": 0.12,
     "screenDominanceCleanup": false,
     "screenDominanceRatio": null,
-    "screenFringeCleanup": false,
-    "screenFringeProfile": null,
-    "screenBackgroundFallback": [
-      19,
-      236,
-      25
-    ],
-    "screenBackgroundFallbackFrames": [
-      27,
-      28,
-      29,
-      30,
-      31,
-      32,
-      33,
-      34,
-      39,
-      40,
-      82,
-      83,
-      84
-    ]
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "neutralRedBlueTolerance": 10,
+      "warmBloomRadiusSourcePixels": 0,
+      "warmBloomProtection": null,
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features."
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "yellowGreenDiagnosticPixelsAllFrames": 118,
+    "yellowGreenDiagnosticPixelsAllFrames": 21,
     "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
-    "occupiedPixelsAllFrames": 3089534,
-    "redDominantPixelsAllFrames": 931,
+    "occupiedPixelsAllFrames": 2885145,
+    "redDominantPixelsAllFrames": 2505,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.229086,
-      "bodyAlphaMeanAbsoluteDifference": 0.216905,
-      "bodyChangedPixelFractionOver5Percent": 0.705652,
-      "adjacentMedianBodyRgbDifference": 0.251601,
-      "adjacentMaxBodyRgbDifference": 0.3967,
-      "seamToAdjacentMedianRatio": 0.911
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.228714,
+      "bodyAlphaMeanAbsoluteDifference": 0.216518,
+      "bodyChangedPixelFractionOver5Percent": 0.705403,
+      "adjacentMedianBodyRgbDifference": 0.258704,
+      "adjacentMaxBodyRgbDifference": 0.499437,
+      "seamToAdjacentMedianRatio": 0.884
     },
     "loopSeamPerfect": false,
     "originalFinalFramePreserved": true,
@@ -1693,9 +1687,9 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.346583,
-      "bodyAlphaMeanAbsoluteDifference": 0.424785,
-      "bodyChangedPixelFractionOver5Percent": 0.912349
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.385733,
+      "bodyAlphaMeanAbsoluteDifference": 0.434769,
+      "bodyChangedPixelFractionOver5Percent": 0.897337
     }
   }
 }
