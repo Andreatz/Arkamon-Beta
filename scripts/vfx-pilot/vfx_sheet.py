@@ -32,6 +32,23 @@ PILOT_MOVES: dict[int, dict] = {
 }
 
 
+def move_info(move_id: int) -> dict:
+    """Nome, tipo e Arkamon di una mossa qualsiasi (le 8 pilota hanno già i loro dati)."""
+    if move_id in PILOT_MOVES:
+        return PILOT_MOVES[move_id]
+    import re
+    import unicodedata
+    moves = {m['id']: m for m in json.loads((ROOT / 'src/data/mosse.json').read_text(encoding='utf-8'))}
+    species = json.loads((ROOT / 'src/data/pokemon.json').read_text(encoding='utf-8'))
+    if move_id not in moves:
+        raise SystemExit(f'Mossa {move_id} inesistente')
+    owners = [s for s in species if move_id in s['mosse']]
+    owner = max(owners, key=lambda s: s['id']) if owners else {'nome': '?', 'id': 0}
+    name = moves[move_id]['nome']
+    slug = re.sub(r'[^a-z0-9]+', '_', unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode().lower()).strip('_')
+    return {'name': name, 'type': moves[move_id]['tipo'], 'arkamon': owner['nome'], 'arkamonId': owner['id'], 'slug': slug}
+
+
 def load_catalog() -> dict:
     if CATALOG.exists():
         return json.loads(CATALOG.read_text(encoding='utf-8'))
@@ -60,12 +77,12 @@ def write_variant(move_id: int, method: str, frames: list[np.ndarray], *, fps: i
                   activate: bool = False, notes: str = '') -> dict:
     if method not in METHODS:
         raise ValueError(method)
-    move = PILOT_MOVES[move_id]
+    move = move_info(move_id)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     columns = min(len(frames), 6)
     sheet = pack(frames, columns)
     name = f'{move_id:03d}_{move["slug"]}_{method}.webp'
-    sheet.save(OUT_DIR / name, 'WEBP', quality=84, alpha_quality=90, method=6)
+    sheet.save(OUT_DIR / name, 'WEBP', quality=74, alpha_quality=72, method=6)
     duration = round(len(frames) / fps * 1000)
     entry = {
         'src': f'vfx/moves/pilot/{name}',

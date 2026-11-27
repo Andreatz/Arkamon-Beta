@@ -8,7 +8,9 @@
 | `flow` | Clip di Flow (Veo) su verde #00FF00 o nero | `python3 scripts/vfx-pilot/import-vfx.py flow <id> <clip>` |
 | `imagegen` | Foglio 3×3 di ChatGPT, trasparente o su verde/nero | `python3 scripts/vfx-pilot/import-vfx.py imagegen <id> <png> --grid 3x3` |
 
-I prompt per Flow e ImageGen sono nel documento di progetto «arkamon-prompt-vfx-pilota».
+I prompt per Flow e ImageGen del pilota sono nel documento di progetto «arkamon-prompt-vfx-pilota».
+
+**Decisione del 27 novembre 2026:** per tutte le mosse si usano ImageGen (9 pose chiave, intermedi calcolati da `import-vfx.py` con il flusso ottico, 24 fps) e le clip o GIF di Gemini. I prompt di tutte le 515 mosse sono in `docs/vfx-prompt-mosse/`, generati da `python3 scripts/vfx-prompts/build-prompts.py docs/vfx-prompt-mosse` (concept per mossa in `concepts_*.py`, aspetto degli Arkamon 111–206 in `species_extra.py`). Le consegne vanno in `asset-inbox/vfx/imagegen/` e `asset-inbox/vfx/gemini/` e si importano tutte con `python3 scripts/vfx-pilot/import-vfx.py --inbox asset-inbox/vfx`.
 
 ## Formato
 
