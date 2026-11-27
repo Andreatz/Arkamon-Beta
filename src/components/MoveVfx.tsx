@@ -11,6 +11,7 @@ export type MoveVfxTarget = 'opponent' | 'self'
 export interface MoveVfxEvent {
   id: number
   move: MossaDef
+  attackerSpeciesId?: number
   side: MoveVfxSide
   target?: MoveVfxTarget
 }

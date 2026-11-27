@@ -28,10 +28,11 @@ export function useBattleAssetReadiness(active: readonly number[], reserves: rea
     let idle: number | undefined
     let timer: number | undefined
     setReady(false)
-    const moves = [...new Set(plan.current.flatMap(id => getPokemon(id)?.mosse ?? []).filter(Boolean))]
-      .map(getMossa).filter((move): move is NonNullable<typeof move> => !!move)
-    // prepareImageAsset deduplicates simultaneous requests with the renderer.
-    void Promise.all(moves.map(move => prepareMoveVfxPlayback(move, 0))).then(() => { if (!cancelled) setReady(true) })
+    const requests = plan.current.flatMap(id => (getPokemon(id)?.mosse ?? []).flatMap(moveId => {
+      const move = getMossa(moveId)
+      return move ? [prepareMoveVfxPlayback(move, 0, false, id)] : []
+    }))
+    void Promise.all(requests).then(() => { if (!cancelled) setReady(true) })
     const next = () => {
       if (cancelled) return
       const id = plan.deferred.shift()

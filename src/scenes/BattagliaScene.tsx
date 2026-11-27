@@ -1,3 +1,4 @@
+import { battleImpactDelay } from '@/components/vfx/signature/battleSequence'
 import { AmbientParticles } from '@/motion/ambient/AmbientParticles'
 import { ArkaButton } from '@/ui-system/primitives'
 import { DepthBackground } from '@/motion/depth/DepthBackground'
@@ -115,10 +116,7 @@ import {
   BATTLE_DICE_EXIT_GRACE_MS,
   battleDiceDismissDelayMs,
 } from '@/components/battle/battleDiceAssets'
-import {
-  getMoveVfxFeedback,
-  getMoveVfxImpactDelayMs,
-} from '@/components/vfx/resolveMoveVfxAsset'
+import { getMoveVfxFeedback } from '@/components/vfx/resolveMoveVfxAsset'
 import { VFX_TYPE_COLORS } from '@/components/vfx/vfxTypeColors'
 
 
@@ -627,6 +625,7 @@ export function BattagliaScene() {
     side: MoveVfxSide,
     id: number,
     callbacks: Omit<NonNullable<typeof moveVfxCallbacksRef.current>, 'id'>,
+    attackerSpeciesId: number,
     target: MoveVfxTarget = 'opponent'
   ) => {
     moveVfxCallbacksRef.current = { id, ...callbacks }
@@ -634,6 +633,7 @@ export function BattagliaScene() {
       id,
       move,
       side,
+      attackerSpeciesId,
       target,
     })
   }
@@ -758,7 +758,7 @@ export function BattagliaScene() {
     const plan = planBattleAnimationPlayback(
       attackAsset ? (attackAsset.releaseFrame ?? 0) / attackAsset.fps * 1000 : 0,
       dedicatedHit && targetAsset ? (targetAsset.reactionFrame ?? 0) / targetAsset.fps * 1000 : 0,
-      getMoveVfxImpactDelayMs(move), reducedMotion
+      battleImpactDelay(move, attacker.specieId), reducedMotion
     )
     const effectId = ++moveVfxIdRef.current
     const sequence = createBattleVisualSequence({
@@ -770,7 +770,7 @@ export function BattagliaScene() {
           onStart: () => playback.vfxStart(),
           onImpact: () => sequence.impact(),
           onComplete: () => sequence.vfxComplete(),
-        }, targetSide ? 'opponent' : 'self')
+        }, attacker.specieId, targetSide ? 'opponent' : 'self')
       },
       onImpact: () => {
         setHeldHitReactions({})
@@ -818,7 +818,7 @@ export function BattagliaScene() {
     void Promise.all([
       prepareArkamonAnimationPlayback(attacker.specieId, attackerView, 'attack'),
       target ? prepareArkamonAnimationPlayback(target.specieId, targetView, 'hit') : Promise.resolve(),
-      prepareMoveVfxPlayback(move, effectId),
+      prepareMoveVfxPlayback(move, effectId, false, attacker.specieId),
     ]).then(() => {
       if (activePlaybackRef.current === active) playback.start()
     })

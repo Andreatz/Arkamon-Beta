@@ -1,3 +1,5 @@
+import motifAtlas from './signature/motifs.webp'
+import { battleSequence } from './signature/battleSequence'
 import { assetUrl } from '@/utils/assetUrl'
 import { getMossa, getPokemon } from '@data/index'
 import {
@@ -18,7 +20,8 @@ function playbackSource(asset: MoveVfxAsset, effectId: number, replay: boolean):
 }
 
 /** The exact URLs rendered by this event, including GIF replay cache keys. */
-export function getMoveVfxPlaybackSources(move: MossaDef, effectId: number, replay = true): string[] {
+export function getMoveVfxPlaybackSources(move: MossaDef, effectId: number, replay = true, formId?: number): string[] {
+  if (battleSequence(move, formId)) return [motifAtlas]
   const recipe = resolveMoveVfxRecipe(move)
   if (!recipe) return [playbackSource(resolveMoveVfxAsset(move), effectId, replay)]
   return recipe.steps.flatMap((step, index) => {
@@ -27,10 +30,10 @@ export function getMoveVfxPlaybackSources(move: MossaDef, effectId: number, repl
   })
 }
 
-export async function prepareMoveVfxPlayback(move: MossaDef, effectId: number, replay = false): Promise<void> {
+export async function prepareMoveVfxPlayback(move: MossaDef, effectId: number, replay = false, formId?: number): Promise<void> {
   // The GIF's unique replay URL is prepared at release, so its clock does not
   // run invisibly through the creature's wind-up while the base image loads.
-  await Promise.all(getMoveVfxPlaybackSources(move, effectId, replay).map(prepareImageAsset))
+  await Promise.all(getMoveVfxPlaybackSources(move, effectId, replay, formId).map(prepareImageAsset))
 }
 
 export function preloadVfxAssets(assetIds: string[]) {
@@ -57,6 +60,10 @@ export function preloadMoveVfxForPokemon(speciesIds: number[]) {
       const move = getMossa(moveId)
       if (!move) continue
 
+      if (battleSequence(move, speciesId)) {
+        void prepareImageAsset(motifAtlas)
+        continue
+      }
       const recipe = resolveMoveVfxRecipe(move)
       if (recipe) {
         for (const step of recipe.steps) assetIds.add(step.assetId)
