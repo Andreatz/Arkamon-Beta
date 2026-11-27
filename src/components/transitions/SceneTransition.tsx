@@ -1,13 +1,13 @@
-import { useCallback, useLayoutEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import type { NavigazioneScena } from '@/types'
 import { SceneInputContext, SceneNavigationContext } from './SceneNavigationContext'
 import { SceneTransitionOverlay } from './SceneTransitionOverlay'
-import { CinematicFx, type CinematicStage } from './CinematicFx'
+import { TransitionClip, preloadTransitionClip } from './TransitionClip'
 import { createSceneTransitionState, getSceneKey, sceneTransitionReducer } from './sceneTransitionState'
 import { getSceneTransitionProfile, type SceneTransitionProfile } from './sceneTransitionProfiles'
-import { measureTransitionAnchor, PREPARE_LIMIT_MS, supportsViewTransitions, type AnchorPoint } from './sceneTransitionRuntime'
+import { PREPARE_LIMIT_MS, supportsViewTransitions } from './sceneTransitionRuntime'
 import { playSfx } from '@/utils/soundManager'
 import { useRegiaStore } from '@/regia/regiaStore'
 
@@ -36,39 +36,22 @@ interface Preparation {
 }
 
 /** Modalità disegnate in CSS che partono solo dopo la preparazione del livello di scena. */
-const PRIMED_MODES = new Set<SceneTransitionProfile['mode']>(['fade', 'white', 'iris', 'diagonal', 'brush', 'zoom-in', 'zoom-out'])
-
-/** Attesa massima della preparazione prima di avviare comunque la copertura. */
-const PRIME_LIMIT_MS = 700
+const PRIMED_MODES = new Set<SceneTransitionProfile['mode']>(['fade', 'white'])
 
 const waitFrame = () => new Promise<void>(resolve => window.setTimeout(resolve, 16))
 
-/** Margine massimo oltre la durata prevista dell'anticipazione, se le animazioni partono in ritardo. */
-const ANTICIPATION_SLACK_MS = 650
 /** Margine massimo oltre la durata prevista della rivelazione. */
 const REVEAL_SLACK_MS = 1600
 
+type CinematicStage = 'cover' | 'overlay' | 'reveal'
+
 type StartViewTransition = (update: () => Promise<void>) => { finished: Promise<void>; skipTransition?: () => void }
 
-/** Variabili della View Transition sul documento: le istantanee vivono fuori dall'albero di React. */
-const VT_VARS = ['--arka-tx-rev', '--arka-tx-x', '--arka-tx-y', '--arka-tx-nx', '--arka-tx-ny', '--arka-tx-cx', '--arka-tx-cy', '--arka-tx-dx', '--arka-tx-dy', '--arka-tx-rmax'] as const
 function clearViewTransitionStage(): void {
   const root = document.documentElement
   delete root.dataset.arkaTx
-  for (const name of VT_VARS) root.style.removeProperty(name)
+  root.style.removeProperty('--arka-tx-rev')
 }
-
-/** Punto della scena (percentuale del suo riquadro) in percentuale della finestra. */
-function toViewport(scene: HTMLElement | null, point: { x: number; y: number }): { x: number; y: number } {
-  if (!scene || typeof window === 'undefined' || !window.innerWidth || !window.innerHeight) return point
-  const box = scene.getBoundingClientRect()
-  return {
-    x: Math.round((box.left + box.width * point.x / 100) / window.innerWidth * 10000) / 100,
-    y: Math.round((box.top + box.height * point.y / 100) / window.innerHeight * 10000) / 100,
-  }
-}
-
-const coverRadius = () => typeof window === 'undefined' ? 1600 : Math.ceil(Math.hypot(window.innerWidth, window.innerHeight) / 2) + 24
 
 export function SceneTransition({ navigation, renderScene, prepareScene, children, replayBattleIntro = true }: SceneTransitionProps) {
   const { reducedMotion, speed } = useGameMotionPreferences()
@@ -130,30 +113,34 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
     for (const revision of coverStartsCovered.current.keys()) if (revision < state.revision - 4) coverStartsCovered.current.delete(revision)
   }
 
-  // Transizione cinematografica: anticipazione sulla scena viva, poi le due scene insieme
-  // (View Transition) oppure la sequenza dedicata (Carta VS, dado d'evoluzione).
+  // Regia: clip (incontro, luce) oppure dissolvenza fra le due scene (View Transition).
+  // Una copertura che parte già chiusa resta classica.
   const baseCinematic = resolvedProfile.cinematic
   const cinematic = transitioning && baseCinematic && coverStartsCovered.current.get(state.revision) === false
-    && (baseCinematic.handoff === 'overlay' || supportsViewTransitions())
-    ? { ...baseCinematic, anticipateMs: baseCinematic.anticipateMs / speed, revealMs: baseCinematic.revealMs / speed } : null
+    && (baseCinematic.clip !== null || supportsViewTransitions())
+    ? { ...baseCinematic, revealMs: baseCinematic.revealMs / speed } : null
   const [cinematicStep, setCinematicStep] = useState<{ revision: number; stage: CinematicStage } | null>(null)
-  const cinematicStage: CinematicStage = cinematicStep?.revision === state.revision ? cinematicStep.stage : 'anticipate'
-  const fxRef = useRef<HTMLDivElement>(null)
+  const cinematicStage: CinematicStage = cinematicStep?.revision === state.revision ? cinematicStep.stage : 'cover'
   const activeViewTransition = useRef<{ revision: number; skip: () => void } | null>(null)
 
   useLayoutEffect(() => {
     previousTransition.current = { revision: state.revision, phase: state.phase }
   }, [state.revision, state.phase])
 
-  // Suono del passaggio: quello della transizione cinematografica, altrimenti un soffio.
-  // La battaglia classica ha già il suo ingresso (Carta VS, con il suo suono).
-  const cinematicSound = cinematic?.sound
+  // Le clip si scaricano quando il gioco è fermo: l'incontro può arrivare da qualsiasi luogo.
   useLayoutEffect(() => {
-    if (state.phase !== 'cover') return
-    if (cinematicSound) return playSfx(cinematicSound)
-    if (state.target.scena !== 'battaglia') return playSfx('transition.whoosh')
-  }, [state.phase, state.revision, state.target.scena, cinematicSound])
+    if (reducedMotion) return
+    const timer = window.setTimeout(() => { preloadTransitionClip('incontro'); preloadTransitionClip('luce') }, 2500)
+    return () => window.clearTimeout(timer)
+  }, [reducedMotion])
 
+  // Suono del passaggio. Quello di una clip parte con la clip (`onStart`); la battaglia
+  // classica ha già il suo ingresso (Carta VS, con il suo suono).
+  const clipDriven = !!cinematic?.clip
+  useLayoutEffect(() => {
+    if (state.phase !== 'cover' || clipDriven) return
+    if (state.target.scena !== 'battaglia') return playSfx('transition.whoosh')
+  }, [state.phase, state.revision, state.target.scena, clipDriven])
   useLayoutEffect(() => {
     if (lastRequest.current.navigation === navigation && lastRequest.current.reducedMotion === reducedMotion) return
     lastRequest.current = { navigation, reducedMotion }
@@ -195,83 +182,33 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
     void entry.promise.then(go)
   }, [ensurePrepared])
 
-  // Punto di fuga di iride e zoom: il nodo della mappa nella scena che esce o in quella che entra.
-  const [anchor, setAnchor] = useState<{ revision: number; point: AnchorPoint } | null>(null)
-  const anchorName = transitioning ? profile.anchor?.name : undefined
-  const anchorScene = profile.anchor?.scene
-  useLayoutEffect(() => {
-    if (!anchorName) return
-    const revision = state.revision
-    const read = () => {
-      const scene = sceneRef.current
-      const point = scene ? measureTransitionAnchor(scene, anchorName) : null
-      if (point) setAnchor(previous => previous?.revision === revision && previous.point.x === point.x && previous.point.y === point.y
-        ? previous : { revision, point })
-      return point
-    }
-    if (anchorScene === 'outgoing' && state.phase === 'cover') { read(); return }
-    if (anchorScene !== 'incoming' || state.phase !== 'reveal') return
-    // La scena di arrivo può impiegare qualche fotogramma a montare il nodo.
-    let frame = 0, attempts = 0
-    const poll = () => { if (!read() && ++attempts < 24) frame = requestAnimationFrame(poll) }
-    poll()
-    return () => cancelAnimationFrame(frame)
-  }, [anchorName, anchorScene, state.phase, state.revision])
-  const anchorPoint = anchor?.revision === state.revision ? anchor.point : null
-
-  // Regia della transizione cinematografica. I valori cambiano durante l'anticipazione
-  // (punto di fuga misurato, bersaglio aggiornato): il tempo la legge sempre aggiornata.
-  const cinematicRef = useRef({ cinematic, anchorPoint, target: state.target, anchor: profile.anchor })
-  cinematicRef.current = { cinematic, anchorPoint, target: state.target, anchor: profile.anchor }
+  const cinematicRef = useRef({ cinematic, target: state.target })
+  cinematicRef.current = { cinematic, target: state.target }
   const cinematicKey = cinematic ? `${state.revision}:${cinematic.kind}` : ''
+
+  /** La scena di arrivo (modulo e sfondo) è pronta, o il limite d'attesa è passato. */
+  const prepared = useCallback((target: NavigazioneScena): Promise<unknown> => {
+    const entry = ensurePrepared(target)
+    return entry.done ? Promise.resolve() : Promise.race([entry.promise, new Promise(resolve => window.setTimeout(resolve, PREPARE_LIMIT_MS))])
+  }, [ensurePrepared])
+
+  // Dissolvenza: si attende la scena di arrivo, poi la View Transition fotografa quella che esce.
   useLayoutEffect(() => {
-    if (!cinematicKey || !stylesReady || state.phase !== 'cover' || cinematicStage !== 'anticipate') return
+    if (!cinematicKey || !stylesReady || state.phase !== 'cover' || cinematicStage !== 'cover') return
+    if (cinematicRef.current.cinematic?.handoff !== 'snapshot') return
     const revision = state.revision
     let cancelled = false
-    const hold = cinematicRef.current.cinematic!.anticipateMs
-    // L'anticipazione finisce quando le sue animazioni finiscono davvero (un primo fotogramma
-    // lento le fa partire in ritardo), mai prima del tempo previsto né oltre un piccolo margine.
-    const settled = () => {
-      const running = [...(fxRef.current?.getAnimations?.({ subtree: true }) ?? []), ...(sceneRef.current?.getAnimations?.() ?? [])]
-        .filter(animation => animation.playState === 'running')
-      return Promise.race([
-        Promise.all(running.map(animation => animation.finished.catch(() => undefined))),
-        new Promise(resolve => window.setTimeout(resolve, ANTICIPATION_SLACK_MS)),
-      ])
-    }
-    const timer = window.setTimeout(() => void settled().then(() => {
-      const current = cinematicRef.current.cinematic
-      if (cancelled || !current) return
-      if (current.handoff === 'overlay') { setCinematicStep({ revision, stage: 'overlay' }); return }
-      // Si attende la scena di arrivo (modulo e sfondo) prima di fotografare quella che esce.
-      const entry = ensurePrepared(cinematicRef.current.target)
-      const ready = entry.done ? Promise.resolve() : Promise.race([entry.promise, new Promise(resolve => window.setTimeout(resolve, PREPARE_LIMIT_MS))])
-      void ready.then(() => { if (!cancelled) runViewTransition(revision) })
-    }), hold)
-    return () => { cancelled = true; window.clearTimeout(timer) }
+    void prepared(cinematicRef.current.target).then(() => { if (!cancelled) runViewTransition(revision) })
+    return () => { cancelled = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cinematicKey, stylesReady, state.phase, cinematicStage])
 
   const runViewTransition = (revision: number) => {
-    const { cinematic: current, anchorPoint: point, anchor } = cinematicRef.current
+    const current = cinematicRef.current.cinematic
     if (!current) return
     const root = document.documentElement
-    const origin = toViewport(sceneRef.current, point ?? { x: 50, y: 50 })
-    const center = toViewport(sceneRef.current, { x: 50, y: 50 })
-    const box = sceneRef.current?.getBoundingClientRect()
-    const rmax = box ? Math.ceil(Math.hypot(box.width, box.height) / 2) + 24 : coverRadius()
     root.style.setProperty('--arka-tx-rev', `${Math.round(current.revealMs)}ms`)
-    root.style.setProperty('--arka-tx-x', `${origin.x}%`)
-    root.style.setProperty('--arka-tx-y', `${origin.y}%`)
-    root.style.setProperty('--arka-tx-nx', `${center.x}%`)
-    root.style.setProperty('--arka-tx-ny', `${center.y}%`)
-    root.style.setProperty('--arka-tx-cx', `${center.x}%`)
-    root.style.setProperty('--arka-tx-cy', `${center.y}%`)
-    root.style.setProperty('--arka-tx-dx', String(current.direction.x))
-    root.style.setProperty('--arka-tx-dy', String(current.direction.y))
-    root.style.setProperty('--arka-tx-rmax', `${rmax}px`)
     root.dataset.arkaTx = current.kind
-    fxRef.current?.style.setProperty('view-transition-name', 'arka-tx-fx')
     let finished = false
     let guard = 0
     const finish = () => {
@@ -279,33 +216,21 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
       finished = true
       window.clearTimeout(guard)
       clearViewTransitionStage()
-      fxRef.current?.style.removeProperty('view-transition-name')
       if (activeViewTransition.current?.revision === revision) activeViewTransition.current = null
       dispatch({ type: 'revealed', revision })
     }
     try {
       const start = (document as Document & { startViewTransition?: StartViewTransition }).startViewTransition!
       const transition = start.call(document, async () => {
-        // Scambio delle scene sotto l'istantanea: la nuova monta già nella sua posa di partenza.
+        // Scambio delle scene sotto l'istantanea.
         flushSync(() => {
           dispatch({ type: 'covered', revision })
           setCinematicStep({ revision, stage: 'reveal' })
         })
         for (let attempt = 0; attempt < 3; attempt++) await waitFrame()
-        // La risalita parte dal luogo appena lasciato, ora visibile sulla mappa che entra.
-        if (anchor?.scene === 'incoming' && sceneRef.current) {
-          let found = measureTransitionAnchor(sceneRef.current, anchor.name)
-          for (let attempt = 0; !found && attempt < 12; attempt++) { await waitFrame(); found = measureTransitionAnchor(sceneRef.current, anchor.name) }
-          if (found) {
-            const target = toViewport(sceneRef.current, found)
-            root.style.setProperty('--arka-tx-nx', `${target.x}%`)
-            root.style.setProperty('--arka-tx-ny', `${target.y}%`)
-          }
-        }
       })
       activeViewTransition.current = { revision, skip: () => transition.skipTransition?.() }
-      // Su una macchina in affanno la rivelazione non deve tenere il gioco bloccato: oltre un
-      // margine si salta all'ultimo fotogramma (la scena nuova è già al suo posto).
+      // Su una macchina in affanno la rivelazione non deve tenere il gioco bloccato.
       guard = window.setTimeout(() => transition.skipTransition?.(), current.revealMs + REVEAL_SLACK_MS)
       void transition.finished.then(finish, finish)
     } catch {
@@ -317,6 +242,24 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
       finish()
     }
   }
+
+  // Clip: lo schermo è coperto. Con `overlay` la sequenza dedicata prende il posto;
+  // con `clip` la scena cambia sotto la copertura e la clip riparte quando è pronta.
+  const clipCovered = useCallback((revision: number): Promise<unknown> | void => {
+    const current = cinematicRef.current.cinematic
+    if (!current) return
+    if (current.handoff === 'overlay') { setCinematicStep({ revision, stage: 'overlay' }); return }
+    return prepared(cinematicRef.current.target).then(() => {
+      flushSync(() => {
+        dispatch({ type: 'covered', revision })
+        setCinematicStep({ revision, stage: 'reveal' })
+      })
+      return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    })
+  }, [prepared])
+  const clipEnded = useCallback((revision: number) => {
+    if (cinematicRef.current.cinematic?.handoff === 'clip') dispatch({ type: 'revealed', revision })
+  }, [])
 
   // Una nuova navigazione durante la rivelazione chiude subito quella in corso.
   useLayoutEffect(() => {
@@ -397,51 +340,31 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
     }
   }, [transitioning])
 
-  // Preparazione: l'overlay resta invisibile finché la scena non può davvero animarsi.
+  // Preparazione: l'overlay resta invisibile finché la scena non è pronta ad animarsi.
   // Il primo fotogramma dopo il clic può costare centinaia di millisecondi (lavoro di React,
-  // rasterizzazione della mappa): senza questa attesa lo zoom verrebbe tagliato dal timer.
+  // rasterizzazione della mappa): l'overlay parte due fotogrammi dopo.
   const [primedStep, setPrimedStep] = useState('')
   const needsPriming = PRIMED_MODES.has(profile.mode)
   const step = `${state.revision}:${state.phase}`
   // Una copertura che parte già chiusa non deve mostrare la scena per due fotogrammi.
   const skipPriming = !transitioning || !stylesReady || !needsPriming || (state.phase === 'cover' && coverStartsCovered.current.get(state.revision) === true)
-  const zoomMode = profile.mode === 'zoom-in' || profile.mode === 'zoom-out'
   useLayoutEffect(() => {
     if (skipPriming || primedStep === step) return
-    let settled = false
-    const go = () => { if (!settled) { settled = true; setPrimedStep(step) } }
-    // Lo zoom della scena è un'animazione del compositore: parte solo quando il livello
-    // ingrandito è rasterizzato. Iride e tempi dell'overlay la aspettano (`ready`), sia
-    // all'entrata sia alla rivelazione.
-    const animations = zoomMode ? sceneRef.current?.getAnimations?.() ?? [] : []
-    if (animations.length) {
-      void Promise.all(animations.map(animation => animation.ready)).then(go, go)
-      const limit = window.setTimeout(go, PRIME_LIMIT_MS)
-      return () => { settled = true; window.clearTimeout(limit) }
-    }
     let second = 0
-    const first = requestAnimationFrame(() => { second = requestAnimationFrame(go) })
-    return () => { settled = true; cancelAnimationFrame(first); cancelAnimationFrame(second) }
-  }, [primedStep, skipPriming, step, zoomMode])
+    const first = requestAnimationFrame(() => { second = requestAnimationFrame(() => setPrimedStep(step)) })
+    return () => { cancelAnimationFrame(first); cancelAnimationFrame(second) }
+  }, [primedStep, skipPriming, step])
   const primed = skipPriming || primedStep === step
 
-  // Gli stati interni della transizione (preparazione, punto di fuga) non devono
-  // ridisegnare l'intera scena: l'elemento cambia solo con la scena mostrata.
+  // Gli stati interni della transizione non devono ridisegnare l'intera scena:
+  // l'elemento cambia solo con la scena mostrata.
   const presentedScene = useMemo(() => renderScene(state.shown), [renderScene, state.shown])
 
-  const zooming = transitioning && stylesReady && !cinematic && (profile.mode === 'zoom-in' || profile.mode === 'zoom-out')
-  // Camera viva durante l'anticipazione; nella rivelazione la scena nuova entra senza trasformazioni.
-  const anticipating = !!cinematic && stylesReady && state.phase === 'cover' && cinematicStage !== 'reveal'
-  const sceneMotion = anticipating ? `cx-${cinematic.kind}` : zooming ? `${profile.mode}-${state.phase}` : undefined
-  const sceneStyle = zooming || anticipating ? {
-    '--tx-x': `${anchorPoint?.x ?? 50}%`,
-    '--tx-y': `${anchorPoint?.y ?? 50}%`,
-    '--tx-cover-ms': `${profile.coverMs}ms`,
-    '--tx-reveal-ms': `${profile.durationMs}ms`,
-    ...(cinematic ? { '--tx-ant-ms': `${Math.round(cinematic.anticipateMs)}ms`, '--tx-dx': cinematic.direction.x, '--tx-dy': cinematic.direction.y } : {}),
-  } as CSSProperties : undefined
-  const showFx = !!cinematic && stylesReady && (state.phase === 'cover' || cinematic.handoff === 'snapshot')
+  const clip = cinematic?.clip ?? null
+  // La clip resta sopra la scena per tutta la copertura; con `clip` anche durante la rivelazione.
+  const showClip = !!clip && stylesReady && (state.phase === 'cover' || cinematic?.handoff === 'clip')
   const showOverlay = transitioning && stylesReady && (!cinematic || (cinematic.handoff === 'overlay' && (cinematicStage === 'overlay' || state.phase === 'reveal')))
+  const revision = state.revision
 
   return (
     <SceneNavigationContext.Provider value={state.shown}>
@@ -451,8 +374,6 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
         ref={sceneRef}
         className="absolute inset-0"
         data-presented-scene={getSceneKey(state.shown)}
-        data-scene-motion={sceneMotion}
-        style={sceneStyle}
         aria-busy={transitioning}
       >
         <div key={getSceneKey(state.shown)} className="absolute inset-0">
@@ -460,33 +381,28 @@ export function SceneTransition({ navigation, renderScene, prepareScene, childre
         </div>
       </div>
       {transitioning && stylesReady ? <p className="sr-only" role="status">{profile.label}</p> : null}
-      {showFx && cinematic ? (
-        <CinematicFx
-          key={`fx-${state.revision}`}
-          ref={fxRef}
-          kind={cinematic.kind}
-          stage={cinematicStage}
-          anchor={anchorPoint ?? { x: 50, y: 50 }}
-          direction={cinematic.direction}
-          anticipateMs={cinematic.anticipateMs}
-          revealMs={cinematic.revealMs}
-          coverRadiusPx={sceneRef.current ? Math.ceil(Math.hypot(sceneRef.current.clientWidth, sceneRef.current.clientHeight) / 2) + 24 : coverRadius()}
+      {showClip && clip ? (
+        <TransitionClip
+          key={`clip-${revision}`}
+          clip={clip}
+          speed={speed}
+          hold={cinematic?.handoff === 'overlay'}
+          onStart={() => { if (cinematic) playSfx(cinematic.sound, { rate: speed }) }}
+          onCovered={() => clipCovered(revision)}
+          onEnded={() => clipEnded(revision)}
         />
       ) : null}
       {showOverlay ? (
-        <>
-          <SceneTransitionOverlay
-            key={state.revision}
-            cinematic={!!cinematic}
-            startCovered={startCovered}
-            phase={state.phase === 'cover' ? 'cover' : 'reveal'}
-            profile={profile}
-            anchor={anchorPoint}
-            primed={primed}
-            onCovered={() => covered(state.revision, state.target)}
-            onRevealed={() => dispatch({ type: 'revealed', revision: state.revision })}
-          />
-        </>
+        <SceneTransitionOverlay
+          key={revision}
+          cinematic={!!cinematic}
+          startCovered={startCovered}
+          phase={state.phase === 'cover' ? 'cover' : 'reveal'}
+          profile={profile}
+          primed={primed}
+          onCovered={() => covered(revision, state.target)}
+          onRevealed={() => dispatch({ type: 'revealed', revision })}
+        />
       ) : null}
       </SceneInputContext.Provider>
     </SceneNavigationContext.Provider>

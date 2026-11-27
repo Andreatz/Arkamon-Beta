@@ -159,53 +159,17 @@
       "durationMs": 750,
       "description": "Transizione fra scene."
     },
-    "transition.dive": {
-      "file": "audio/sfx/transition-dive.ogg",
-      "category": "map",
-      "durationMs": 1775,
-      "description": "Transizione: la camera scende fra le nuvole dentro un luogo."
-    },
-    "transition.rise": {
-      "file": "audio/sfx/transition-rise.ogg",
-      "category": "map",
-      "durationMs": 1634,
-      "description": "Transizione: la camera risale sopra le nuvole verso la mappa."
-    },
-    "transition.whip": {
-      "file": "audio/sfx/transition-whip.ogg",
-      "category": "map",
-      "durationMs": 540,
-      "description": "Transizione: panoramica a frusta da un luogo all'altro."
-    },
     "transition.encounter": {
       "file": "audio/sfx/transition-encounter.ogg",
       "category": "battle",
-      "durationMs": 900,
-      "description": "Transizione: doppio lampo e spirale prima della Carta VS."
+      "durationMs": 1560,
+      "description": "Transizione: le schegge della clip tx_incontro chiudono lo schermo al nero."
     },
     "transition.radiance": {
       "file": "audio/sfx/transition-radiance.ogg",
       "category": "map",
-      "durationMs": 1537,
-      "description": "Transizione: la scena si scioglie nella luce."
-    },
-    "transition.sparkle": {
-      "file": "audio/sfx/transition-sparkle.ogg",
-      "category": "map",
-      "durationMs": 1596,
-      "description": "Transizione: il logo esplode in polvere d'oro."
-    },
-    "transition.iris": {
-      "file": "audio/sfx/transition-iris.ogg",
-      "category": "map",
-      "durationMs": 1510,
-      "description": "Transizione: cerchio d'oro che si allarga."
-    },
-    "transition.curtain": {
-      "file": "audio/sfx/transition-curtain.ogg",
-      "category": "map",
-      "durationMs": 1649,
-      "description": "Transizione: sipario verso il titolo."
+      "durationMs": 2314,
+      "description": "Transizione: la luce della clip tx_luce esplode e si apre sulla scena nuova."
     },
     "battle.encounter": {
       "file": "audio/sfx/battle-encounter.ogg",
