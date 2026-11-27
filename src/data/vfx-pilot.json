@@ -122,7 +122,7 @@
       "type": "Oscurità",
       "arkamon": "Darklaw",
       "arkamonId": 8,
-      "active": "codice",
+      "active": "imagegen",
       "variants": {
         "codice": {
           "src": "vfx/moves/pilot/031_abisso_tenebroso_codice.webp",
@@ -143,6 +143,46 @@
           "blendMode": "normal",
           "bytes": 637194,
           "notes": "Disegnato in codice (fx_abisso_tenebroso.py), Darklaw."
+        },
+        "imagegen": {
+          "src": "vfx/moves/pilot/031_abisso_tenebroso_imagegen.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 2,
+            "frameCount": 9,
+            "fps": 12
+          },
+          "durationMs": 750,
+          "impactAtMs": 250,
+          "anchor": "target",
+          "width": 460,
+          "height": 460,
+          "offsetY": 0,
+          "blendMode": "normal",
+          "bytes": 652820,
+          "notes": "Importato da 8e56c601-image.png."
+        },
+        "flow": {
+          "src": "vfx/moves/pilot/031_abisso_tenebroso_flow.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 4,
+            "frameCount": 23,
+            "fps": 10
+          },
+          "durationMs": 2300,
+          "impactAtMs": 1500,
+          "anchor": "target",
+          "width": 460,
+          "height": 460,
+          "offsetY": 0,
+          "blendMode": "normal",
+          "bytes": 524178,
+          "notes": "Importato da 7aac2ae4-image.gif."
         }
       }
     },
