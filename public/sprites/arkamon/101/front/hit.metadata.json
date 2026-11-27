@@ -9,7 +9,7 @@
     "height": 1080,
     "fps": 24.0,
     "durationSeconds": 4.0,
-    "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+    "ffmpegVersion": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
     "sha256": "013c2389b9f746ffeca7e5addd38073f97dd266b6de7584ae303b26762143702",
     "sizeBytes": 1719533,
     "decodedFrameCount": 96,
@@ -232,8 +232,8 @@
     "durationMs": 4000,
     "width": 5120,
     "height": 5120,
-    "sizeBytes": 2540528,
-    "sha256": "b4ce6adb5586a06619de4ad03a79fb0f1a7af508a38b5365aa62e59adfd05b27",
+    "sizeBytes": 2432730,
+    "sha256": "19b4f6afaf6d123db6b17d9d79a059386d94331c76d5a34a4e5f813534665bc0",
     "viewport": {
       "width": 192,
       "height": 192,
@@ -244,8 +244,8 @@
   "poster": {
     "file": "hit-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 22510,
-    "sha256": "f31ca7b564719756297c8e6fcc0d7f4daafa6a1de0361c5848788b37f07c1442"
+    "sizeBytes": 22450,
+    "sha256": "e4922d998fce332a4be1b6f145f9b6adcc23e58a84e133a41abfe8ab1c166f24"
   },
   "viewport": {
     "width": 192,
@@ -506,19 +506,19 @@
         66,
         240,
         1306,
-        868
+        864
       ],
       [
         83,
         236,
         1334,
-        868
+        862
       ],
       [
         236,
         232,
         1352,
-        932
+        916
       ],
       [
         228,
@@ -530,43 +530,43 @@
         370,
         240,
         1404,
-        948
+        946
       ],
       [
         233,
         241,
-        1404,
-        950
+        1378,
+        938
       ],
       [
         128,
         242,
         1434,
-        960
+        952
       ],
       [
         112,
         226,
         1492,
-        976
+        970
       ],
       [
-        484,
-        224,
+        496,
+        242,
         1550,
-        978
+        968
       ],
       [
-        467,
-        212,
+        474,
+        224,
         1596,
-        989
+        982
       ],
       [
         460,
-        210,
+        224,
         1606,
-        990
+        987
       ],
       [
         442,
@@ -810,7 +810,7 @@
       ],
       [
         580,
-        281,
+        282,
         1228,
         832
       ],
@@ -1084,67 +1084,67 @@
         55,
         180,
         365,
-        340
+        337
       ],
       [
         59,
         179,
         372,
-        340
+        337
       ],
       [
         97,
         178,
         376,
-        356
+        352
       ],
       [
         93,
         179,
         378,
-        355
+        354
       ],
       [
         130,
         180,
         387,
-        360
+        358
       ],
       [
         96,
         180,
-        387,
-        360
+        383,
+        356
       ],
       [
         70,
         180,
         395,
-        363
+        361
       ],
       [
         66,
-        177,
+        178,
         409,
-        367
+        364
       ],
       [
-        157,
-        176,
+        161,
+        181,
         423,
-        367
+        363
       ],
       [
-        152,
-        173,
+        155,
+        176,
         436,
-        370
+        367
       ],
       [
         151,
-        173,
+        176,
         437,
-        370
+        368
       ],
       [
         146,
@@ -1341,7 +1341,7 @@
       [
         170,
         190,
-        333,
+        332,
         324
       ],
       [
@@ -1358,7 +1358,7 @@
       ],
       [
         176,
-        191,
+        192,
         337,
         326
       ],
@@ -1401,7 +1401,7 @@
       [
         185,
         189,
-        350,
+        351,
         331
       ],
       [
@@ -1430,7 +1430,7 @@
       ],
       [
         191,
-        182,
+        183,
         360,
         331
       ],
@@ -1591,30 +1591,38 @@
     "screenColourRatioTolerance": 0.12,
     "screenDominanceCleanup": false,
     "screenDominanceRatio": null,
-    "screenFringeCleanup": false,
-    "screenFringeProfile": null,
-    "screenBackgroundFallback": [
-      39,
-      244,
-      24
-    ],
-    "screenBackgroundFallbackFrames": []
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "neutralRedBlueTolerance": 30,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features."
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
     "remainingGreenDominantPixelsOver8": 0,
-    "yellowGreenDiagnosticPixelsAllFrames": 56181,
+    "yellowGreenDiagnosticPixelsAllFrames": 5419,
     "yellowGreenDiagnosticNote": "Includes genuine gold light; review source effects and silhouette on light/dark backgrounds. Green-dominance count alone does not prove clean edges.",
-    "occupiedPixelsAllFrames": 1147566,
-    "redDominantPixelsAllFrames": 12070,
+    "occupiedPixelsAllFrames": 1099701,
+    "redDominantPixelsAllFrames": 12543,
     "transparentFrameIndices": [],
     "loopSeam": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.02249,
-      "bodyAlphaMeanAbsoluteDifference": 0.012803,
-      "bodyChangedPixelFractionOver5Percent": 0.110981,
-      "adjacentMedianBodyRgbDifference": 0.071817,
-      "adjacentMaxBodyRgbDifference": 0.323284,
-      "seamToAdjacentMedianRatio": 0.313
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.022751,
+      "bodyAlphaMeanAbsoluteDifference": 0.012943,
+      "bodyChangedPixelFractionOver5Percent": 0.114288,
+      "adjacentMedianBodyRgbDifference": 0.069246,
+      "adjacentMaxBodyRgbDifference": 0.383727,
+      "seamToAdjacentMedianRatio": 0.329
     },
     "loopSeamPerfect": false,
     "originalFinalFramePreserved": true,
@@ -1625,14 +1633,9 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.038705,
-      "bodyAlphaMeanAbsoluteDifference": 0.024833,
-      "bodyChangedPixelFractionOver5Percent": 0.231421
-    },
-    "preview": {
-      "file": "hit\\preview-battle.mp4",
-      "sizeBytes": 173108,
-      "sha256": "784215055989b2b7069324878eea9f1aee9f8d72ae096ee9496df4ab3347200c"
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.038704,
+      "bodyAlphaMeanAbsoluteDifference": 0.024834,
+      "bodyChangedPixelFractionOver5Percent": 0.231517
     }
   },
   "timing": {
