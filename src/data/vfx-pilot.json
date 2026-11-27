@@ -1,0 +1,237 @@
+{
+  "note": "Lotto pilota dei VFX: tre metodi a confronto sulle stesse 8 mosse. Generato da scripts/vfx-pilot.",
+  "moves": {
+    "4": {
+      "name": "Carica ossidrica",
+      "type": "Normale",
+      "arkamon": "Vyrath",
+      "arkamonId": 4,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/004_carica_ossidrica_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 4,
+            "frameCount": 24,
+            "fps": 20
+          },
+          "durationMs": 1200,
+          "impactAtMs": 450,
+          "anchor": "target",
+          "width": 536,
+          "height": 536,
+          "offsetY": 0,
+          "blendMode": "normal",
+          "bytes": 853754,
+          "notes": "Disegnato in codice (fx_carica_ossidrica.py), Vyrath."
+        }
+      }
+    },
+    "10": {
+      "name": "Tormenta glaciale",
+      "type": "Acqua",
+      "arkamon": "Blizzaquil",
+      "arkamonId": 73,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/010_tormenta_glaciale_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 5,
+            "frameCount": 26,
+            "fps": 20
+          },
+          "durationMs": 1300,
+          "impactAtMs": 350,
+          "anchor": "target",
+          "width": 559,
+          "height": 559,
+          "offsetY": -10,
+          "blendMode": "normal",
+          "bytes": 729648,
+          "notes": "Disegnato in codice (fx_tormenta_glaciale.py), Blizzaquil."
+        }
+      }
+    },
+    "13": {
+      "name": "Cratere",
+      "type": "Terra",
+      "arkamon": "Clastoom",
+      "arkamonId": 18,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/013_cratere_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 5,
+            "frameCount": 26,
+            "fps": 20
+          },
+          "durationMs": 1300,
+          "impactAtMs": 350,
+          "anchor": "target",
+          "width": 559,
+          "height": 559,
+          "offsetY": -10,
+          "blendMode": "normal",
+          "bytes": 616662,
+          "notes": "Disegnato in codice (fx_cratere.py), Clastoom."
+        }
+      }
+    },
+    "19": {
+      "name": "Elettrocarica",
+      "type": "Elettro",
+      "arkamon": "Grimbolt",
+      "arkamonId": 25,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/019_elettrocarica_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 4,
+            "frameCount": 22,
+            "fps": 20
+          },
+          "durationMs": 1100,
+          "impactAtMs": 350,
+          "anchor": "target",
+          "width": 536,
+          "height": 536,
+          "offsetY": 0,
+          "blendMode": "normal",
+          "bytes": 490632,
+          "notes": "Disegnato in codice (fx_elettrocarica.py), Grimbolt."
+        }
+      }
+    },
+    "31": {
+      "name": "Abisso tenebroso",
+      "type": "Oscurità",
+      "arkamon": "Darklaw",
+      "arkamonId": 8,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/031_abisso_tenebroso_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 4,
+            "frameCount": 24,
+            "fps": 20
+          },
+          "durationMs": 1200,
+          "impactAtMs": 450,
+          "anchor": "target",
+          "width": 559,
+          "height": 559,
+          "offsetY": -10,
+          "blendMode": "normal",
+          "bytes": 637194,
+          "notes": "Disegnato in codice (fx_abisso_tenebroso.py), Darklaw."
+        }
+      }
+    },
+    "37": {
+      "name": "Ardemonio",
+      "type": "Fuoco",
+      "arkamon": "Impise",
+      "arkamonId": 76,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/037_ardemonio_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 5,
+            "frameCount": 26,
+            "fps": 20
+          },
+          "durationMs": 1300,
+          "impactAtMs": 400,
+          "anchor": "target",
+          "width": 559,
+          "height": 559,
+          "offsetY": -20,
+          "blendMode": "normal",
+          "bytes": 737132,
+          "notes": "Disegnato in codice (fx_ardemonio.py), Impise."
+        }
+      }
+    },
+    "58": {
+      "name": "Occhio universale",
+      "type": "Psico",
+      "arkamon": "Felyss",
+      "arkamonId": 12,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/058_occhio_universale_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 4,
+            "frameCount": 24,
+            "fps": 20
+          },
+          "durationMs": 1200,
+          "impactAtMs": 500,
+          "anchor": "target",
+          "width": 548,
+          "height": 548,
+          "offsetY": -10,
+          "blendMode": "normal",
+          "bytes": 962704,
+          "notes": "Disegnato in codice (fx_occhio_universale.py), Felyss."
+        }
+      }
+    },
+    "73": {
+      "name": "Divoramento",
+      "type": "Erba",
+      "arkamon": "Weedrug",
+      "arkamonId": 48,
+      "active": "codice",
+      "variants": {
+        "codice": {
+          "src": "vfx/moves/pilot/073_divoramento_codice.webp",
+          "sprite": {
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "columns": 6,
+            "rows": 5,
+            "frameCount": 26,
+            "fps": 20
+          },
+          "durationMs": 1300,
+          "impactAtMs": 550,
+          "anchor": "target",
+          "width": 480,
+          "height": 480,
+          "offsetY": -10,
+          "blendMode": "normal",
+          "bytes": 575018,
+          "notes": "Disegnato in codice (fx_divoramento.py), Weedrug."
+        }
+      }
+    }
+  }
+}
