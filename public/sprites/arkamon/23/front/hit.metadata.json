@@ -9,7 +9,7 @@
     "height": 1080,
     "fps": 24.0,
     "durationSeconds": 4.0,
-    "ffmpegVersion": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+    "ffmpegVersion": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
     "sha256": "dc03a7f32339d299bc4b85756c0edd61eb1cb1d481737ede7b4d4cdd481b1db9",
     "sizeBytes": 1752974,
     "decodedFrameCount": 96,
@@ -221,6 +221,7 @@
     "file": "hit.webp",
     "format": "static lossless WebP RGBA",
     "animated": false,
+    "compressionMethod": 1,
     "cellWidth": 768,
     "cellHeight": 768,
     "columns": 10,
@@ -231,8 +232,8 @@
     "durationMs": 4000,
     "width": 7680,
     "height": 7680,
-    "sizeBytes": 6036224,
-    "sha256": "da3a6b4cd89d9abf136ae9c606d900f85cc9a425db154b506572c934cc58b793",
+    "sizeBytes": 6028610,
+    "sha256": "c2752c326b4086746fff5c211454977d3915caf41a28e6b36a99b5e7da86a6f1",
     "viewport": {
       "width": 288,
       "height": 288,
@@ -243,8 +244,8 @@
   "poster": {
     "file": "hit-poster.webp",
     "frameIndex": 0,
-    "sizeBytes": 49208,
-    "sha256": "93da4f48906dfef84612de7db49dfd3dd3524373327433248fdf8ca31c395eb7"
+    "sizeBytes": 50794,
+    "sha256": "ad57b2cd1710f6f2a3bbe5104dc94ddc58c5cb1d2f619809f558e62efa61a194"
   },
   "viewport": {
     "width": 288,
@@ -1591,8 +1592,22 @@
     "screenColourRatioTolerance": 0.12,
     "screenDominanceCleanup": false,
     "screenDominanceRatio": null,
-    "screenFringeCleanup": false,
-    "screenFringeProfile": null
+    "screenFringeCleanup": true,
+    "screenFringeProfile": {
+      "hueFadeDegrees": [
+        35,
+        45
+      ],
+      "hueEndDegrees": 170,
+      "minimumSaturation": 0.2,
+      "minimumGreenMinusBlue": 12,
+      "warmLightProtection": "R >= 230 and G <= R+6, or R >= 190 and R > G+15",
+      "preserveNeutralAndCyanEffects": true,
+      "neutralRedBlueTolerance": 30,
+      "warmBloomRadiusSourcePixels": 8,
+      "warmBloomProtection": "Seeds R >= 190, G <= R+25, R > B+50; nearby hue < 65 and R >= G-25.",
+      "scope": "Original RGB, including enclosed screen pockets; opt-in for characters without green features."
+    }
   },
   "qa": {
     "losslessDecodedRgbaMatches": true,
@@ -1649,14 +1664,9 @@
     ],
     "notes": "Original source motion, effects, pauses and final frame are retained. Only idle loops; action clips play once.",
     "returnToIdleFirst": {
-      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.400762,
-      "bodyAlphaMeanAbsoluteDifference": 0.519413,
-      "bodyChangedPixelFractionOver5Percent": 0.948246
-    },
-    "preview": {
-      "file": "hit\\preview-battle.mp4",
-      "sizeBytes": 590069,
-      "sha256": "e1298b7b42f9dfece1bd0ed2efdd057e555029cfdc2f0a657943849ebc166b47"
+      "bodyPremultipliedRgbMeanAbsoluteDifference": 0.450572,
+      "bodyAlphaMeanAbsoluteDifference": 0.566387,
+      "bodyChangedPixelFractionOver5Percent": 0.946827
     }
   },
   "timing": {

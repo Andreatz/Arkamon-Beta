@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { assetUrl } from '@/utils/assetUrl'
-import { MAIN_MAP_COORDS } from '@/data/mainMapCoords'
 import type { NavigazioneScena } from '@/types'
 import { SceneTransition } from './SceneTransition'
 import { getSceneTransitionProfile } from './sceneTransitionProfiles'
@@ -16,18 +15,14 @@ import { MotionPlaybackContext } from '@/settings/motionPlayback'
 interface Pair { id: string; label: string; from: NavigazioneScena; to: NavigazioneScena }
 
 const PAIRS: Pair[] = [
-  { id: 'dive', label: 'Mappa → Venezia (in volo fra le nuvole)', from: { scena: 'mappa-principale' }, to: { scena: 'citta', payload: { luogo: 'Venezia' } } },
-  { id: 'rise', label: 'Venezia → Mappa (risalita)', from: { scena: 'citta', payload: { luogo: 'Venezia' } }, to: { scena: 'mappa-principale' } },
-  { id: 'whip', label: 'Venezia → Percorso 1 (frusta)', from: { scena: 'citta', payload: { luogo: 'Venezia' } }, to: { scena: 'percorso', payload: { luogo: 'Percorso_1' } } },
-  { id: 'whip-back', label: 'Percorso 1 → Venezia (frusta al contrario)', from: { scena: 'percorso', payload: { luogo: 'Percorso_1' } }, to: { scena: 'citta', payload: { luogo: 'Venezia' } } },
-  { id: 'encounter', label: 'Percorso → Battaglia (spirale e Carta VS)', from: { scena: 'percorso', payload: { luogo: 'Percorso_1' } }, to: { scena: 'battaglia' } },
-  { id: 'radiance', label: 'Battaglia → Percorso (luce)', from: { scena: 'battaglia' }, to: { scena: 'percorso', payload: { luogo: 'Percorso_1' } } },
-  { id: 'evolution', label: 'Battaglia → Evoluzione (luce e dado)', from: { scena: 'battaglia' }, to: { scena: 'evoluzione' } },
-  { id: 'title', label: 'Titolo → Mappa (polvere d\'oro)', from: { scena: 'titolo' }, to: { scena: 'mappa-principale' } },
-  { id: 'lab', label: 'Laboratorio → Mappa (iride d\'oro)', from: { scena: 'laboratorio' }, to: { scena: 'mappa-principale' } },
-  { id: 'league', label: 'Mappa → Lega (luce)', from: { scena: 'mappa-principale' }, to: { scena: 'lega' } },
-  { id: 'curtain', label: 'Mappa → Titolo (sipario)', from: { scena: 'mappa-principale' }, to: { scena: 'titolo' } },
-  { id: 'dissolve', label: 'Titolo → Laboratorio (dissolvenza)', from: { scena: 'titolo' }, to: { scena: 'laboratorio' } },
+  { id: 'smoke', label: 'Mappa → Venezia (fumo)', from: { scena: 'mappa-principale' }, to: { scena: 'citta', payload: { luogo: 'Venezia' } } },
+  { id: 'smoke-back', label: 'Percorso 1 → Mappa (fumo)', from: { scena: 'percorso', payload: { luogo: 'Percorso_1' } }, to: { scena: 'mappa-principale' } },
+  { id: 'title', label: 'Titolo → Mappa (vortice d\'oro)', from: { scena: 'titolo' }, to: { scena: 'mappa-principale' } },
+  { id: 'battle', label: 'Percorso → Battaglia (Carta VS)', from: { scena: 'percorso', payload: { luogo: 'Percorso_1' } }, to: { scena: 'battaglia' } },
+  { id: 'radiance', label: 'Battaglia → Percorso (clip luce)', from: { scena: 'battaglia' }, to: { scena: 'percorso', payload: { luogo: 'Percorso_1' } } },
+  { id: 'evolution', label: 'Battaglia → Evoluzione (clip luce e dado)', from: { scena: 'battaglia' }, to: { scena: 'evoluzione' } },
+  { id: 'dissolve', label: 'Venezia → Percorso 1 (dissolvenza)', from: { scena: 'citta', payload: { luogo: 'Venezia' } }, to: { scena: 'percorso', payload: { luogo: 'Percorso_1' } } },
+  { id: 'dissolve-lab', label: 'Laboratorio → Mappa (dissolvenza)', from: { scena: 'laboratorio' }, to: { scena: 'mappa-principale' } },
 ]
 
 function backgroundOf(navigation: NavigazioneScena): string {
@@ -48,16 +43,12 @@ const NAMES: Partial<Record<NavigazioneScena['scena'], string>> = {
   'mappa-principale': 'Mappa principale', battaglia: 'Battaglia', evoluzione: 'Evoluzione', laboratorio: 'Laboratorio', lega: 'Lega Arkamon', titolo: 'Titolo',
 }
 
-/** Scena finta: sfondo, nome e i punti di fuga che le transizioni cercano nella scena vera. */
+/** Scena finta: sfondo e nome. */
 function MockScene({ navigation }: { navigation: NavigazioneScena }) {
   const place = typeof navigation.payload?.luogo === 'string' ? navigation.payload.luogo.replace(/_/g, ' ') : ''
   return <div className="absolute inset-0 overflow-hidden bg-slate-900">
     <img src={assetUrl(backgroundOf(navigation))} alt="" className="absolute inset-0 h-full w-full object-cover" />
-    {navigation.scena === 'mappa-principale' && Object.entries(MAIN_MAP_COORDS).map(([name, coord]) => (
-      <span key={name} data-transition-anchor={name} className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-200 bg-amber-400/80"
-        style={{ left: `${coord.x}%`, top: `${coord.y}%` }} title={name} />
-    ))}
-    {navigation.scena === 'titolo' && <img data-transition-anchor="title-logo" src={assetUrl('/ui/game-art/logo.webp')} alt="Arkamon"
+    {navigation.scena === 'titolo' && <img src={assetUrl('/ui/game-art/logo.webp')} alt="Arkamon"
       className="absolute left-1/2 top-[30%] w-[38%] -translate-x-1/2 -translate-y-1/2" />}
     <p className="absolute bottom-4 left-5 rounded bg-slate-950/70 px-3 py-1 text-lg font-black text-white">{place || NAMES[navigation.scena] || navigation.scena}</p>
   </div>
@@ -85,8 +76,8 @@ export function SceneTransitionLab() {
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="max-w-2xl space-y-2">
           <h1 className="text-2xl font-black sm:text-3xl">Transizioni</h1>
-          <p className="text-sm leading-relaxed text-slate-300">Ogni passaggio fra due scene ha una sua regia: anticipazione sulla scena che esce, poi le due scene insieme. Qui girano con lo stesso motore del gioco, su scene finte.</p>
-          {!supportsViewTransitions() && <p className="text-sm text-amber-300">Questo browser non ha la View Transitions API: vedrai le transizioni di riserva.</p>}
+          <p className="text-sm leading-relaxed text-slate-300">Fine battaglia, titolo e viaggio mappa ↔ luoghi sono clip composte sopra la scena; l'ingresso in battaglia è la Carta VS; ogni altro passaggio è una dissolvenza. Qui girano con lo stesso motore del gioco, su scene finte.</p>
+          {!supportsViewTransitions() && <p className="text-sm text-amber-300">Questo browser non ha la View Transitions API: le dissolvenze ripiegano su un velo.</p>}
         </header>
 
         <div className="flex flex-wrap items-end gap-4">
@@ -112,7 +103,7 @@ export function SceneTransitionLab() {
             Riproduci
           </button>
           <p className="pb-2 text-xs text-slate-400">
-            {profile.cinematic ? `${profile.cinematic.kind} · anticipazione ${profile.cinematic.anticipateMs} ms · ${profile.cinematic.handoff === 'snapshot' ? `rivelazione ${profile.cinematic.revealMs} ms` : `poi ${profile.mode}`}` : profile.mode}
+            {profile.cinematic ? `${profile.cinematic.kind} · ${profile.cinematic.clip ? `clip ${profile.cinematic.clip}${profile.cinematic.handoff === 'overlay' ? `, poi ${profile.mode}` : ''}` : `dissolvenza ${profile.cinematic.revealMs} ms`}` : profile.mode}
           </p>
         </div>
 

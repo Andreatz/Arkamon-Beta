@@ -61,30 +61,6 @@ describe('scene transition artwork selection', () => {
 
 describe('livelli della libreria di transizioni', () => {
   const map = { scena: 'mappa-principale' } as const
-  const venice = { scena: 'citta', payload: { luogo: 'Venezia' } } as const
-
-  it('l’iride dello zoom si centra sul nodo ricevuto', () => {
-    const markup = renderToStaticMarkup(<SceneTransitionOverlay phase="cover" startCovered={false}
-      profile={getSceneTransitionProfile(venice, map)} anchor={{ x: 41.5, y: 22 }} onCovered={vi.fn()} onRevealed={vi.fn()} />)
-    expect(markup).toContain('data-transition-mode="zoom-in"')
-    expect(markup).toContain('data-transition-layer="iris"')
-    expect(markup).toContain('--tx-x:41.5%')
-    expect(markup).toContain('--tx-y:22%')
-  })
-
-  it('senza nodo il punto di fuga è il centro', () => {
-    const markup = overlayMarkup('mappa-principale', 'reveal', false, getSceneTransitionProfile(map, { scena: 'laboratorio' }))
-    expect(markup).toContain('data-transition-layer="iris"')
-    expect(markup).toContain('--tx-x:50%')
-  })
-
-  it('disegna lama diagonale e pennellate come livelli propri', () => {
-    const diagonal = overlayMarkup('percorso', 'cover', false, getSceneTransitionProfile({ scena: 'percorso', payload: { luogo: 'Percorso_2' } }, venice))
-    expect(diagonal).toContain('data-transition-layer="diagonal"')
-    const brush = overlayMarkup('laboratorio', 'cover', false, getSceneTransitionProfile({ scena: 'laboratorio' }, { scena: 'titolo' }))
-    expect(brush).toContain('data-transition-layer="brush"')
-    expect(brush.match(/arka-tx-brush__stroke/g)).toHaveLength(5)
-  })
 
   it('bianco, nero ed elemento condiviso non montano livelli aggiuntivi', () => {
     for (const profile of [getSceneTransitionProfile(map, { scena: 'battaglia' }), getSceneTransitionProfile({ scena: 'deposito' }, map), getSceneTransitionProfile({ scena: 'titolo' }, map)]) {

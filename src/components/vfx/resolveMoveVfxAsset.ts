@@ -17,9 +17,11 @@ import type {
 import { getAdminMoveVfxOverride } from '@store/vfxAdminStore'
 import { getCuratedBattleAssetId, getVfxCurationPreviewAsset } from './vfxCuration'
 import { getMoveVfxAssignment } from './moveVfxAssignments'
+import { getPilotVfxAssetId } from './pilotVfx'
 
 function resolveBaseMoveVfxAssetId(move: MossaDef): MoveVfxAssetId {
-  return getMoveVfxAssignment(move)?.assetId ?? MOVE_VFX_BY_MOVE_ID[move.id] ?? resolveProfileAssetId(move)
+  // Lotto pilota: la variante scelta prevale sull'assegnazione di ottobre.
+  return getPilotVfxAssetId(move) ?? getMoveVfxAssignment(move)?.assetId ?? MOVE_VFX_BY_MOVE_ID[move.id] ?? resolveProfileAssetId(move)
 }
 
 export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
@@ -28,6 +30,8 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
   const adminOverride = getAdminMoveVfxOverride(move.id)
 
   if (!adminOverride) {
+    // Il pilota porta già scala, ancoraggio e posizione calibrati per l'effetto.
+    if (getPilotVfxAssetId(move)) return baseAsset
     const assignment = getMoveVfxAssignment(move)
     if (assignment?.assetId) {
       return {
@@ -61,7 +65,7 @@ export function resolveMoveVfxAsset(move: MossaDef): MoveVfxAsset {
 export function resolveMoveVfxRecipe(move: MossaDef): MoveVfxRecipe | undefined {
   // An admin override is an explicit request for a single asset. Keep the editor
   // predictable by bypassing automatic recipes while an override is active.
-  if (getAdminMoveVfxOverride(move.id) || getMoveVfxAssignment(move)?.assetId) return undefined
+  if (getAdminMoveVfxOverride(move.id) || getPilotVfxAssetId(move) || getMoveVfxAssignment(move)?.assetId) return undefined
 
   const assetId = resolveBaseMoveVfxAssetId(move)
   const recipeId = MOVE_VFX_RECIPE_BY_PRIMARY_ASSET[assetId]

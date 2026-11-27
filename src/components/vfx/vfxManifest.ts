@@ -1,4 +1,5 @@
 import { GENERATED_MOVE_VFX_ASSETS } from './generatedVfxAssets'
+import { PILOT_VFX_ASSETS } from './pilotVfx'
 import { applyVfxPresentationOverride } from './vfxPresentationOverrides'
 import type { MoveVfxAsset } from './types'
 
@@ -288,6 +289,7 @@ const CORE_MOVE_VFX_ASSETS = {
 const baseAssets: Record<string, MoveVfxAsset> = {
   ...CORE_MOVE_VFX_ASSETS,
   ...GENERATED_MOVE_VFX_ASSETS,
+  ...PILOT_VFX_ASSETS,
 }
 
 export const MOVE_VFX_ASSETS: Record<string, MoveVfxAsset> = Object.fromEntries(
