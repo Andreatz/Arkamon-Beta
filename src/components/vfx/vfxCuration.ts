@@ -348,8 +348,7 @@ export function filterVfxAssetIds(
 
     // All entries are shortlisted, including preferred and special effects.
     if (curatedOnly && !curation) return false
-    // Il lotto pilota (pilot:*) è sempre fra i proposti: è ciò che si sta confrontando.
-    if (recommendedOnly && !assetId.startsWith('pilot:') && !curation?.reviewed && curation?.recommendation !== 'proposed') return false
+    if (recommendedOnly && !curation?.reviewed && curation?.recommendation !== 'proposed') return false
     if (category !== 'all' && !curation?.categories.includes(category)) return false
 
     return !query || [assetId, asset.label, asset.kind, ...(curation?.categories ?? [])]

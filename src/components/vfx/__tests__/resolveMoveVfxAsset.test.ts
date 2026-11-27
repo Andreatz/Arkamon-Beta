@@ -93,11 +93,11 @@ describe('resolveMoveVfxAsset', () => {
   })
 
   it('aligns the hit with the shortened effect when an editor duration ends before its native impact', () => {
-    const configuredMove = MOSSE.find((entry) => entry.id === 30)!
-    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(450)
+    const configuredMove = MOSSE.find((entry) => entry.id === 31)!
+    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(563)
     useVfxAdminStore.getState().setOverride({
-      moveId: 30,
-      assetId: 'moveset:030',
+      moveId: 31,
+      assetId: 'moveset:031',
       scale: 1,
       offsetX: 0,
       offsetY: 0,
@@ -112,10 +112,10 @@ describe('resolveMoveVfxAsset', () => {
   })
 
   it('keeps the original impact when an editor duration extends the effect', () => {
-    const configuredMove = MOSSE.find((entry) => entry.id === 30)!
+    const configuredMove = MOSSE.find((entry) => entry.id === 31)!
     useVfxAdminStore.getState().setOverride({
-      moveId: 30,
-      assetId: 'moveset:030',
+      moveId: 31,
+      assetId: 'moveset:031',
       scale: 1,
       offsetX: 0,
       offsetY: 0,
@@ -125,14 +125,14 @@ describe('resolveMoveVfxAsset', () => {
       mirrorForEnemy: true,
       blendMode: 'normal',
     })
-    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(450)
+    expect(getMoveVfxImpactDelayMs(configuredMove)).toBe(563)
   })
 
   it.each([0, -100, Number.NaN, Number.POSITIVE_INFINITY])('keeps the hit delay finite for an invalid editor duration (%s)', (durationMs) => {
-    const configuredMove = MOSSE.find((entry) => entry.id === 30)!
+    const configuredMove = MOSSE.find((entry) => entry.id === 31)!
     useVfxAdminStore.getState().setOverride({
-      moveId: 30,
-      assetId: 'moveset:030',
+      moveId: 31,
+      assetId: 'moveset:031',
       scale: 1,
       offsetX: 0,
       offsetY: 0,

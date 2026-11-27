@@ -1,4 +1,3 @@
-import { getPilotVfxAssetId } from '../pilotVfx'
 import { describe, expect, it } from 'vitest'
 import { MOSSE } from '@data/index'
 import { useVfxAdminStore } from '@store/vfxAdminStore'
@@ -51,7 +50,7 @@ describe('MOVE_VFX_RECIPES', () => {
 
   it('uses single specific effects for configured moves and retains recipes for unassigned moves', () => {
     for (const move of MOSSE.filter((entry) => entry.id <= 276)) {
-      expect(resolveMoveVfxAsset(move).id).toMatch(getPilotVfxAssetId(move) ? /^pilot:/ : /^moveset:/)
+      expect(resolveMoveVfxAsset(move).id).toMatch(/^moveset:/)
       expect(resolveMoveVfxRecipe(move)).toBeUndefined()
     }
     const unassigned = { ...MOSSE[0], id: 9000, nome: 'Dardo elettrico', tipo: 'Elettro' as const }
