@@ -1,0 +1,393 @@
+/*
+ * Transizioni cinematografiche (27 novembre 2026). Tre livelli:
+ * 1. la scena viva durante l'anticipazione: [data-scene-motion='cx-<tipo>'];
+ * 2. il livello effetti .arka-cfx (nuvole, luce, scintille, spirale), vivo sopra tutto;
+ * 3. le due istantanee della View Transition: html[data-arka-tx='<tipo>']::view-transition-*.
+ * Tutte le durate arrivano già scalate dalla velocità di regia.
+ */
+
+@property --cfx-spiral-w { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --cfx-spiral-r { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --cfx-hole { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
+/* ---------- 1. Scena viva: anticipazione ---------- */
+[data-presented-scene][data-scene-motion^='cx-'] {
+  transform-origin: var(--tx-x, 50%) var(--tx-y, 50%);
+  will-change: transform;
+  animation-duration: var(--tx-ant-ms, 600ms);
+  animation-fill-mode: both;
+}
+[data-scene-motion='cx-sky-dive'] { animation-name: cx-dive-ant; animation-timing-function: cubic-bezier(0.6, 0, 0.85, 0.35); }
+[data-scene-motion='cx-sky-rise'] { animation-name: cx-rise-ant; animation-timing-function: cubic-bezier(0.45, 0, 0.7, 0.4); }
+[data-scene-motion='cx-whip'] { animation-name: cx-whip-ant; animation-timing-function: cubic-bezier(0.5, -0.4, 0.9, 0.3); }
+[data-scene-motion='cx-encounter'] { animation-name: cx-encounter-ant; animation-timing-function: linear; }
+[data-scene-motion='cx-radiance'] { animation-name: cx-breathe-in; animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
+[data-scene-motion='cx-gold-burst'] { animation-name: cx-burst-ant; animation-timing-function: cubic-bezier(0.65, 0, 0.85, 0.3); }
+[data-scene-motion='cx-golden-iris'] { animation-name: cx-breathe-out; animation-timing-function: cubic-bezier(0.3, 0, 0.5, 1); }
+[data-scene-motion='cx-curtain'] { animation-name: cx-breathe-out; animation-timing-function: ease-in; }
+[data-scene-motion='cx-dissolve'] { animation-name: cx-breathe-in; animation-timing-function: ease-in; }
+
+@keyframes cx-dive-ant { from { transform: scale(1); } to { transform: scale(2.35) rotate(0.8deg); } }
+@keyframes cx-rise-ant { from { transform: scale(1); } to { transform: scale(0.9) translateY(3.5%); } }
+@keyframes cx-whip-ant {
+  from { transform: translate(0, 0); }
+  to { transform: translate(calc(var(--tx-dx, 1) * -7vw), calc(var(--tx-dy, 0) * -7vh)); }
+}
+@keyframes cx-encounter-ant {
+  0% { transform: scale(1); }
+  6% { transform: scale(1.02) translate(-0.6%, 0.4%); }
+  12% { transform: scale(1.02) translate(0.6%, -0.3%); }
+  20% { transform: scale(1.03) translate(-0.4%, -0.4%); }
+  26% { transform: scale(1.03) translate(0.4%, 0.3%); }
+  40% { transform: scale(1.05) rotate(0deg); }
+  100% { transform: scale(1.32) rotate(-9deg); }
+}
+@keyframes cx-breathe-in { from { transform: scale(1); } to { transform: scale(1.045); } }
+@keyframes cx-breathe-out { from { transform: scale(1); } to { transform: scale(0.97); } }
+@keyframes cx-burst-ant { from { transform: scale(1); } to { transform: scale(1.38); } }
+
+/* ---------- 2. Livello effetti ---------- */
+.arka-cfx {
+  position: absolute;
+  inset: 0;
+  z-index: 85;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  container-type: size;
+  --fx-dur: var(--fx-ant);
+}
+.arka-cfx[data-cfx-stage='reveal'] { --fx-dur: var(--fx-rev); }
+.arka-cfx > *, .arka-cfx__clouds > *, .arka-cfx__sparks > *, .arka-cfx__dust > * {
+  animation-duration: var(--fx-dur);
+  animation-fill-mode: both;
+}
+
+/* Vignettatura: ogni anticipazione stringe un poco l'inquadratura. */
+.arka-cfx__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at var(--fx-x) var(--fx-y), transparent 34%, rgb(4 6 16 / 0.7) 100%);
+  opacity: 0;
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__vignette { animation-name: cfx-fade-in; animation-timing-function: ease-in; }
+[data-cfx-stage='overlay'] > .arka-cfx__vignette { opacity: 1; }
+[data-cfx-stage='reveal'] > .arka-cfx__vignette { animation-name: cfx-fade-out; animation-timing-function: ease-out; animation-duration: calc(var(--fx-rev) * 0.6); }
+[data-cfx-kind='radiance'] > .arka-cfx__vignette,
+[data-cfx-kind='gold-burst'] > .arka-cfx__vignette { display: none; }
+@keyframes cfx-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cfx-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* Nuvole: si stringono attorno al punto di fuga, poi passano accanto alla camera. */
+.arka-cfx__clouds { position: absolute; inset: 0; }
+.arka-cfx__cloud {
+  position: absolute;
+  left: var(--fx-x);
+  top: var(--fx-y);
+  width: 44cqmax;
+  aspect-ratio: 16 / 9;
+  margin: calc(44cqmax * -9 / 32) 0 0 -22cqmax;
+  background: center / contain no-repeat;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation-delay: calc(var(--c-delay) * var(--fx-dur));
+}
+[data-cfx-kind='sky-dive'][data-cfx-stage='anticipate'] .arka-cfx__cloud { animation-name: cfx-cloud-close; animation-timing-function: cubic-bezier(0.4, 0, 0.7, 1); }
+[data-cfx-kind='sky-dive'][data-cfx-stage='reveal'] .arka-cfx__cloud { animation-name: cfx-cloud-pass; animation-timing-function: cubic-bezier(0.25, 0.6, 0.3, 1); animation-delay: 0ms; }
+/* Le nuvole incorniciano il luogo senza coprirlo: il centro resta aperto fino allo scambio. */
+@keyframes cfx-cloud-close {
+  from { opacity: 0; transform: translate(calc(var(--c-x) * 1.9), calc(var(--c-y) * 1.9)) scale(calc(var(--c-s) * 0.5)) scaleX(var(--c-flip)); }
+  to { opacity: 0.95; transform: translate(calc(var(--c-x) * 0.78), calc(var(--c-y) * 0.78)) scale(calc(var(--c-s) * 1.1)) scaleX(var(--c-flip)); }
+}
+@keyframes cfx-cloud-pass {
+  from { opacity: 0.95; transform: translate(calc(var(--c-x) * 0.78), calc(var(--c-y) * 0.78)) scale(calc(var(--c-s) * 1.1)) scaleX(var(--c-flip)); }
+  40% { opacity: 0.55; }
+  to { opacity: 0; transform: translate(calc(var(--c-x) * 2.6), calc(var(--c-y) * 2.6)) scale(calc(var(--c-s) * 2.6)) scaleX(var(--c-flip)); }
+}
+/* Risalita: le nuvole salgono dal basso, poi scendono sotto la camera che sale. */
+[data-cfx-kind='sky-rise'] .arka-cfx__cloud { left: 50%; top: 50%; }
+[data-cfx-kind='sky-rise'][data-cfx-stage='anticipate'] .arka-cfx__cloud { animation-name: cfx-cloud-rise; animation-timing-function: cubic-bezier(0.3, 0, 0.6, 1); }
+[data-cfx-kind='sky-rise'][data-cfx-stage='reveal'] .arka-cfx__cloud { animation-name: cfx-cloud-sink; animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1); animation-delay: 0ms; }
+@keyframes cfx-cloud-rise {
+  from { opacity: 0; transform: translate(calc(var(--c-x) * 1.1), calc(55cqh + var(--c-y))) scale(calc(var(--c-s) * 1.1)) scaleX(var(--c-flip)); }
+  to { opacity: 0.95; transform: translate(calc(var(--c-x) * 0.85), calc(var(--c-y) * 0.6 + 8cqh)) scale(calc(var(--c-s) * 1.3)) scaleX(var(--c-flip)); }
+}
+@keyframes cfx-cloud-sink {
+  from { opacity: 0.95; transform: translate(calc(var(--c-x) * 0.85), calc(var(--c-y) * 0.6 + 8cqh)) scale(calc(var(--c-s) * 1.3)) scaleX(var(--c-flip)); }
+  45% { opacity: 0.55; }
+  to { opacity: 0; transform: translate(calc(var(--c-x) * 1.5), calc(85cqh + var(--c-y))) scale(calc(var(--c-s) * 0.75)) scaleX(var(--c-flip)); }
+}
+
+/* Anello di luce sul luogo scelto. */
+.arka-cfx__ring {
+  position: absolute;
+  left: var(--fx-x);
+  top: var(--fx-y);
+  width: 16cqmin;
+  aspect-ratio: 1;
+  margin: -8cqmin 0 0 -8cqmin;
+  border-radius: 50%;
+  border: 2px solid rgb(255 214 128 / 0.9);
+  box-shadow: 0 0 24px 6px rgb(255 196 90 / 0.55), inset 0 0 18px 4px rgb(255 230 170 / 0.5);
+  opacity: 0;
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__ring { animation-name: cfx-ring; animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); }
+@keyframes cfx-ring { 0% { opacity: 0; transform: scale(0.3); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(3.2); } }
+
+/* Frusta: scie di velocità nella direzione del viaggio. */
+.arka-cfx__streaks {
+  position: absolute;
+  inset: -50%;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3.2cqh, rgb(255 246 222 / 0.55) 3.2cqh 3.35cqh, transparent 3.35cqh 7.1cqh),
+    repeating-linear-gradient(0deg, transparent 0 1.7cqh, rgb(160 190 255 / 0.28) 1.7cqh 1.8cqh, transparent 1.8cqh 4.6cqh);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  transform: rotate(var(--fx-angle));
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__streaks { animation-name: cfx-streak-in; animation-timing-function: ease-in; }
+[data-cfx-stage='reveal'] > .arka-cfx__streaks { animation-name: cfx-streak-out; animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); animation-duration: calc(var(--fx-rev) * 0.7); }
+@keyframes cfx-streak-in { from { opacity: 0; transform: rotate(var(--fx-angle)) translateX(20%); } to { opacity: 0.9; transform: rotate(var(--fx-angle)) translateX(-10%); } }
+@keyframes cfx-streak-out { from { opacity: 0.9; transform: rotate(var(--fx-angle)) translateX(-10%); } to { opacity: 0; transform: rotate(var(--fx-angle)) translateX(-45%); } }
+
+/* Incontro: due lampi, poi una spirale di lame scure che inghiotte la mappa. */
+.arka-cfx__flash { position: absolute; inset: 0; background: #fffaf0; opacity: 0; mix-blend-mode: screen; }
+[data-cfx-stage='anticipate'] > .arka-cfx__flash { animation-name: cfx-double-flash; animation-timing-function: linear; }
+@keyframes cfx-double-flash { 0% { opacity: 0.95; } 7% { opacity: 0; } 18% { opacity: 0; } 21% { opacity: 0.85; } 30% { opacity: 0; } 100% { opacity: 0; } }
+.arka-cfx__spiral {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200cqmax;
+  aspect-ratio: 1;
+  margin: -100cqmax 0 0 -100cqmax;
+  background: repeating-conic-gradient(from var(--cfx-spiral-r), #05040b 0deg var(--cfx-spiral-w), transparent var(--cfx-spiral-w) 30deg);
+  opacity: 0;
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__spiral { animation-name: cfx-spiral; animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.6); }
+[data-cfx-stage='overlay'] > .arka-cfx__spiral { opacity: 1; --cfx-spiral-w: 30deg; }
+@keyframes cfx-spiral {
+  0%, 34% { opacity: 0; --cfx-spiral-w: 0deg; --cfx-spiral-r: 0deg; }
+  38% { opacity: 1; }
+  100% { opacity: 1; --cfx-spiral-w: 30deg; --cfx-spiral-r: 300deg; }
+}
+.arka-cfx__core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 240cqmax;
+  aspect-ratio: 1;
+  margin: -120cqmax 0 0 -120cqmax;
+  background: radial-gradient(circle, transparent 0 var(--cfx-hole), #05040b calc(var(--cfx-hole) + 0.5cqmax));
+  opacity: 0;
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__core { animation-name: cfx-core; animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5); }
+[data-cfx-stage='overlay'] > .arka-cfx__core { opacity: 1; --cfx-hole: 0cqmax; }
+@keyframes cfx-core { 0%, 50% { opacity: 0; --cfx-hole: 80cqmax; } 60% { opacity: 1; } 100% { opacity: 1; --cfx-hole: 0cqmax; } }
+
+/* Luce: bagliore che cresce, raggi che ruotano piano. */
+.arka-cfx__bloom {
+  position: absolute;
+  left: var(--fx-x);
+  top: var(--fx-y);
+  width: 260cqmax;
+  aspect-ratio: 1;
+  margin: -130cqmax 0 0 -130cqmax;
+  background: radial-gradient(circle, #fffef8 0%, #fff4d6 16%, rgb(255 226 160 / 0.75) 30%, rgb(255 210 130 / 0) 52%);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__bloom { animation-name: cfx-bloom-in; animation-timing-function: cubic-bezier(0.5, 0, 0.8, 0.4); }
+[data-cfx-stage='overlay'] > .arka-cfx__bloom { opacity: 1; transform: scale(1); }
+[data-cfx-stage='reveal'] > .arka-cfx__bloom { animation-name: cfx-bloom-out; animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); }
+@keyframes cfx-bloom-in { from { opacity: 0; transform: scale(0.08); } to { opacity: 1; transform: scale(1); } }
+@keyframes cfx-bloom-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.3); } }
+[data-cfx-kind='gold-burst'] > .arka-cfx__bloom { background: radial-gradient(circle, #fffef4 0%, #ffe7a8 12%, rgb(242 186 74 / 0.6) 26%, rgb(242 186 74 / 0) 46%); }
+.arka-cfx__rays {
+  position: absolute;
+  left: var(--fx-x);
+  top: var(--fx-y);
+  width: 220cqmax;
+  aspect-ratio: 1;
+  margin: -110cqmax 0 0 -110cqmax;
+  background: repeating-conic-gradient(from 0deg, rgb(255 238 196 / 0.5) 0deg 2.2deg, transparent 2.2deg 11deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0, rgb(0 0 0 / 0.6) 18%, transparent 46%);
+  mask-image: radial-gradient(circle, #000 0, rgb(0 0 0 / 0.6) 18%, transparent 46%);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__rays { animation-name: cfx-rays-in; animation-timing-function: ease-in; }
+[data-cfx-stage='overlay'] > .arka-cfx__rays { opacity: 0.9; }
+[data-cfx-stage='reveal'] > .arka-cfx__rays { animation-name: cfx-rays-out; animation-timing-function: ease-out; }
+@keyframes cfx-rays-in { from { opacity: 0; transform: rotate(0deg) scale(0.6); } to { opacity: 0.9; transform: rotate(14deg) scale(1); } }
+@keyframes cfx-rays-out { from { opacity: 0.9; transform: rotate(14deg) scale(1); } to { opacity: 0; transform: rotate(32deg) scale(1.25); } }
+
+/* Iride d'oro: il bordo segue il cerchio che rivela la scena nuova. */
+.arka-cfx__iris-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--fx-rmax) * 2);
+  aspect-ratio: 1;
+  margin: calc(var(--fx-rmax) * -1) 0 0 calc(var(--fx-rmax) * -1);
+  border-radius: 50%;
+  border: 3px solid rgb(255 214 128 / 0.95);
+  box-shadow: 0 0 34px 10px rgb(255 190 80 / 0.45), inset 0 0 30px 8px rgb(255 214 140 / 0.4);
+  opacity: 0;
+  transform: scale(0);
+}
+[data-cfx-stage='anticipate'] > .arka-cfx__iris-ring { animation-name: cfx-iris-spark; animation-timing-function: ease-out; }
+[data-cfx-stage='reveal'] > .arka-cfx__iris-ring { animation-name: cfx-iris-open; animation-timing-function: cubic-bezier(0.55, 0.05, 0.3, 1); }
+@keyframes cfx-iris-spark { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(0.012); } }
+@keyframes cfx-iris-open { 0% { opacity: 1; transform: scale(0.012); } 85% { opacity: 1; } 100% { opacity: 0; transform: scale(1); } }
+
+/* Sipario: bande nere che si chiudono come al cinema. */
+.arka-cfx__bar { position: absolute; left: 0; right: 0; height: 51%; background: #05040b; transform: scaleY(0); }
+.arka-cfx__bar.is-top { top: 0; transform-origin: top; }
+.arka-cfx__bar.is-bottom { bottom: 0; transform-origin: bottom; }
+[data-cfx-stage='anticipate'] > .arka-cfx__bar { animation-name: cfx-bar-close; animation-timing-function: cubic-bezier(0.6, 0, 0.4, 1); }
+[data-cfx-stage='reveal'] > .arka-cfx__bar { animation-name: cfx-bar-open; animation-timing-function: cubic-bezier(0.5, 0, 0.2, 1); animation-delay: calc(var(--fx-rev) * 0.25); animation-duration: calc(var(--fx-rev) * 0.75); }
+@keyframes cfx-bar-close { from { transform: scaleY(0); } to { transform: scaleY(0.32); } }
+@keyframes cfx-bar-open { from { transform: scaleY(0.32); } to { transform: scaleY(0); } }
+
+/* Dissolvenza: una lama di luce attraversa lo schermo mentre le scene si scambiano. */
+.arka-cfx__sheen {
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(105deg, transparent 38%, rgb(255 244 214 / 0.0) 42%, rgb(255 244 214 / 0.45) 50%, rgb(255 244 214 / 0) 58%, transparent 62%);
+  mix-blend-mode: screen;
+  transform: translateX(-60%);
+}
+[data-cfx-stage='reveal'] > .arka-cfx__sheen { animation-name: cfx-sheen; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes cfx-sheen { from { transform: translateX(-60%); } to { transform: translateX(60%); } }
+
+/* Scintille d'oro: esplodono dal logo, poi ricadono piano. */
+.arka-cfx__sparks { position: absolute; inset: 0; }
+.arka-cfx__spark {
+  position: absolute;
+  left: var(--fx-x);
+  top: var(--fx-y);
+  width: var(--s-size);
+  height: var(--s-size);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbe6 0, #ffd36e 45%, rgb(255 170 40 / 0) 70%);
+  box-shadow: 0 0 8px 2px rgb(255 200 90 / 0.7);
+  opacity: 0;
+}
+[data-cfx-stage='anticipate'] .arka-cfx__spark { animation-name: cfx-spark-gather; animation-timing-function: cubic-bezier(0.5, 0, 0.8, 0.4); animation-delay: calc(var(--s-delay) * var(--fx-ant)); }
+[data-cfx-stage='reveal'] .arka-cfx__spark { animation-name: cfx-spark-burst; animation-timing-function: cubic-bezier(0.1, 0.8, 0.3, 1); animation-delay: 0ms; }
+@keyframes cfx-spark-gather { from { opacity: 0; transform: translate(calc(var(--s-x) * 0.6), calc(var(--s-y) * 0.6)) scale(0.4); } to { opacity: 1; transform: translate(0, 0) scale(1); } }
+@keyframes cfx-spark-burst {
+  0% { opacity: 1; transform: translate(0, 0) scale(1.4); }
+  45% { opacity: 1; transform: translate(var(--s-x), var(--s-y)) scale(1); }
+  100% { opacity: 0; transform: translate(calc(var(--s-x) * 1.15), calc(var(--s-y) + var(--s-drift))) scale(0.5); }
+}
+
+/* Pulviscolo dorato che sale nella luce. */
+.arka-cfx__dust { position: absolute; inset: 0; }
+.arka-cfx__mote {
+  position: absolute;
+  width: var(--m-size);
+  height: var(--m-size);
+  border-radius: 50%;
+  background: #ffe6a6;
+  box-shadow: 0 0 6px 1px rgb(255 210 120 / 0.8);
+  opacity: 0;
+}
+[data-cfx-stage='reveal'] .arka-cfx__mote { animation-name: cfx-mote; animation-timing-function: cubic-bezier(0.2, 0.5, 0.4, 1); animation-delay: calc(var(--m-delay) * var(--fx-rev) * 0.5); }
+@keyframes cfx-mote { 0% { opacity: 0; transform: translateY(0); } 20% { opacity: 0.9; } 100% { opacity: 0; transform: translateY(calc(var(--m-rise) * -1)); } }
+
+/* ---------- 3. Le due scene insieme (View Transitions) ---------- */
+html[data-arka-tx]::view-transition-group(root) { animation: none; }
+html[data-arka-tx]::view-transition-image-pair(root) { isolation: auto; }
+html[data-arka-tx]::view-transition-old(root),
+html[data-arka-tx]::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation-duration: var(--arka-tx-rev, 900ms);
+  animation-fill-mode: both;
+  will-change: transform, opacity, filter;
+}
+html[data-arka-tx]::view-transition-old(root) { z-index: 2; transform-origin: var(--arka-tx-x, 50%) var(--arka-tx-y, 50%); }
+html[data-arka-tx]::view-transition-new(root) { z-index: 1; transform-origin: var(--arka-tx-nx, 50%) var(--arka-tx-ny, 50%); }
+/* Gli effetti restano vivi sopra entrambe le scene. */
+html[data-arka-tx]::view-transition-group(arka-tx-fx) { animation: none; z-index: 5; }
+html[data-arka-tx]::view-transition-old(arka-tx-fx) { display: none; }
+html[data-arka-tx]::view-transition-new(arka-tx-fx) { animation: none; mix-blend-mode: normal; }
+
+/* In volo dentro il luogo: la vecchia vista continua a tuffarsi e svanisce, la nuova si assesta dall'alto. */
+html[data-arka-tx='sky-dive']::view-transition-old(root) { animation-name: vt-dive-old; animation-timing-function: cubic-bezier(0.3, 0.1, 0.5, 1); }
+html[data-arka-tx='sky-dive']::view-transition-new(root) { animation-name: vt-dive-new; animation-timing-function: cubic-bezier(0.16, 0.84, 0.3, 1); }
+@keyframes vt-dive-old { from { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); } 45% { opacity: 0; } to { opacity: 0; transform: scale(1.7); filter: blur(10px) brightness(1.35); } }
+@keyframes vt-dive-new { from { transform: scale(1.32); filter: blur(9px) brightness(1.3) saturate(0.85); } 60% { filter: blur(0) brightness(1.04) saturate(1); } to { transform: scale(1); filter: none; } }
+
+/* Risalita: il luogo si allontana, la mappa si apre dal punto appena lasciato. */
+html[data-arka-tx='sky-rise']::view-transition-old(root) { animation-name: vt-rise-old; animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); transform-origin: var(--arka-tx-cx, 50%) var(--arka-tx-cy, 50%); }
+html[data-arka-tx='sky-rise']::view-transition-new(root) { animation-name: vt-rise-new; animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes vt-rise-old { from { opacity: 1; transform: scale(1); filter: blur(0); } 40% { opacity: 0; } to { opacity: 0; transform: scale(0.62) translateY(14%); filter: blur(6px); } }
+@keyframes vt-rise-new { from { transform: scale(2.3); filter: blur(7px) brightness(1.2); } 55% { filter: blur(0) brightness(1.03); } to { transform: scale(1); filter: none; } }
+
+/* Frusta: la vecchia vista scappa nella direzione opposta al viaggio, la nuova arriva con la scia. */
+html[data-arka-tx='whip']::view-transition-old(root) { animation-name: vt-whip-old; animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.5); animation-duration: calc(var(--arka-tx-rev) * 0.45); }
+html[data-arka-tx='whip']::view-transition-new(root) { animation-name: vt-whip-new; animation-timing-function: cubic-bezier(0.1, 0.75, 0.2, 1); }
+@keyframes vt-whip-old {
+  from { transform: translate(0, 0); filter: blur(0); opacity: 1; }
+  to { transform: translate(calc(var(--arka-tx-dx) * -60vw), calc(var(--arka-tx-dy) * -60vh)); filter: blur(14px) brightness(1.15); opacity: 0; }
+}
+@keyframes vt-whip-new {
+  from { transform: translate(calc(var(--arka-tx-dx) * 55vw), calc(var(--arka-tx-dy) * 55vh)); filter: blur(16px) brightness(1.15); }
+  55% { filter: blur(1px) brightness(1.02); }
+  to { transform: translate(0, 0); filter: none; }
+}
+
+/* Luce: la scena si scioglie nel bianco e la nuova riaffiora dalla luce. */
+html[data-arka-tx='radiance']::view-transition-old(root) { animation-name: vt-radiance-old; animation-timing-function: ease-out; animation-duration: calc(var(--arka-tx-rev) * 0.5); }
+html[data-arka-tx='radiance']::view-transition-new(root) { animation-name: vt-radiance-new; animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); }
+@keyframes vt-radiance-old { from { opacity: 1; filter: brightness(1.6) saturate(0.6); } to { opacity: 0; filter: brightness(3) saturate(0.2); } }
+@keyframes vt-radiance-new { from { transform: scale(1.07); filter: brightness(2.6) saturate(0.4); } to { transform: scale(1); filter: none; } }
+
+/* Polvere d'oro: la camera attraversa il logo, il gioco appare dalla luce. */
+html[data-arka-tx='gold-burst']::view-transition-old(root) { animation-name: vt-burst-old; animation-timing-function: cubic-bezier(0.3, 0, 0.6, 1); animation-duration: calc(var(--arka-tx-rev) * 0.55); }
+html[data-arka-tx='gold-burst']::view-transition-new(root) { animation-name: vt-burst-new; animation-timing-function: cubic-bezier(0.16, 0.8, 0.3, 1); }
+@keyframes vt-burst-old { from { opacity: 1; transform: scale(1); filter: brightness(1.2) blur(0); } to { opacity: 0; transform: scale(2.2); filter: brightness(2.4) blur(8px); } }
+@keyframes vt-burst-new { from { transform: scale(1.14); filter: brightness(1.9) blur(5px); } to { transform: scale(1); filter: none; } }
+
+/* Iride d'oro: la scena nuova si apre in un cerchio sopra la vecchia, che si spegne. */
+html[data-arka-tx='golden-iris']::view-transition-new(root) { z-index: 3; animation-name: vt-iris-new; animation-timing-function: cubic-bezier(0.55, 0.05, 0.3, 1); }
+html[data-arka-tx='golden-iris']::view-transition-old(root) { animation-name: vt-iris-old; animation-timing-function: ease-in; transform-origin: var(--arka-tx-cx, 50%) var(--arka-tx-cy, 50%); }
+@keyframes vt-iris-new { from { clip-path: circle(0px at var(--arka-tx-cx, 50%) var(--arka-tx-cy, 50%)); transform: scale(1.12); } to { clip-path: circle(var(--arka-tx-rmax, 150vmax) at var(--arka-tx-cx, 50%) var(--arka-tx-cy, 50%)); transform: scale(1); } }
+@keyframes vt-iris-old { from { transform: scale(0.97); filter: brightness(1); } to { transform: scale(0.9); filter: brightness(0.35) blur(3px); } }
+
+/* Sipario: la partita si spegne, il titolo affiora dal buio. */
+html[data-arka-tx='curtain']::view-transition-old(root) { animation-name: vt-curtain-old; animation-timing-function: ease-in; animation-duration: calc(var(--arka-tx-rev) * 0.5); transform-origin: var(--arka-tx-cx, 50%) var(--arka-tx-cy, 50%); }
+html[data-arka-tx='curtain']::view-transition-new(root) { animation-name: vt-curtain-new; animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1); }
+@keyframes vt-curtain-old { from { opacity: 1; filter: grayscale(0) brightness(1); } to { opacity: 0; filter: grayscale(1) brightness(0.3) blur(4px); transform: scale(0.96); } }
+@keyframes vt-curtain-new { 0% { opacity: 0; transform: scale(1.06); filter: brightness(0.4); } 35% { opacity: 0; } 100% { opacity: 1; transform: scale(1); filter: none; } }
+
+/* Dissolvenza incrociata con un leggero movimento di macchina. */
+html[data-arka-tx='dissolve']::view-transition-old(root) { animation-name: vt-dissolve-old; animation-timing-function: ease-in-out; transform-origin: var(--arka-tx-cx, 50%) var(--arka-tx-cy, 50%); }
+html[data-arka-tx='dissolve']::view-transition-new(root) { animation-name: vt-dissolve-new; animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); }
+@keyframes vt-dissolve-old { from { opacity: 1; transform: scale(1.045); filter: blur(0); } to { opacity: 0; transform: scale(1.1); filter: blur(5px); } }
+@keyframes vt-dissolve-new { from { transform: scale(0.97); filter: blur(4px); } to { transform: scale(1); filter: none; } }
+
+/* La scena di arrivo è sotto la vecchia (z-index 1): perché si veda, la vecchia deve sparire. */
+
+/* ---------- Carta VS: le due metà si aprono sulla battaglia ---------- */
+.arka-scene-transition[data-transition-mode='battle-vs'][data-cinematic='true'][data-scene-transition='reveal'] {
+  animation: arka-vs-release var(--scene-blend-ms) ease-in both;
+  background: transparent;
+}
+.arka-scene-transition[data-cinematic='true'][data-scene-transition='reveal'] .battle-vs { background: transparent; }
+.arka-scene-transition[data-cinematic='true'][data-scene-transition='reveal'] .battle-vs__side.is-left { animation: arka-vs-split-left var(--scene-blend-ms) cubic-bezier(0.6, 0, 0.9, 0.4) both; }
+.arka-scene-transition[data-cinematic='true'][data-scene-transition='reveal'] .battle-vs__side.is-right { animation: arka-vs-split-right var(--scene-blend-ms) cubic-bezier(0.6, 0, 0.9, 0.4) both; }
+.arka-scene-transition[data-cinematic='true'][data-scene-transition='reveal'] .battle-vs__emblem { animation: arka-vs-emblem-out var(--scene-blend-ms) ease-in both; }
+.arka-scene-transition[data-cinematic='true'][data-scene-transition='reveal'] .battle-vs__seam { transform: rotate(12deg) scaleY(1); animation: arka-vs-seam-out var(--scene-blend-ms) ease-in both; }
+.arka-scene-transition[data-cinematic='true'][data-scene-transition='reveal'] .battle-vs__flash { animation: none; opacity: 0; }
+@keyframes arka-vs-seam-out { from { opacity: 1; } to { opacity: 0; scale: 1 0.2; } }
+@keyframes arka-vs-release { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes arka-vs-split-left { from { translate: 0 0; rotate: 0deg; } to { translate: -75% 8%; rotate: -4deg; } }
+@keyframes arka-vs-split-right { from { translate: 0 0; rotate: 0deg; } to { translate: 75% -8%; rotate: 4deg; } }
+@keyframes arka-vs-emblem-out { from { opacity: 1; scale: 1; } to { opacity: 0; scale: 2.2; filter: blur(6px); } }
+
+/* Il movimento ridotto è una preferenza del gioco (che segue quella di sistema): con lui le transizioni non partono. */

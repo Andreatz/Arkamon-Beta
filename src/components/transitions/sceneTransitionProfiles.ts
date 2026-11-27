@@ -1,4 +1,5 @@
 import type { NavigazioneScena, SceneId } from '@/types'
+import { chooseCinematic, type CinematicSpec } from './cinematicTransitions'
 
 export const TRANSITION_VIDEO_PATH = '/assets/Transizione Battaglia.mp4'
 export const TRANSITION_VIDEO_START_SECONDS = 5
@@ -46,6 +47,11 @@ export interface SceneTransitionProfile {
   readonly anchor: SceneTransitionAnchor | null
   /** Nome dell'elemento condiviso (`data-shared-element`) per la modalità `shared`. */
   readonly sharedElement: string | null
+  /**
+   * Versione cinematografica (anticipazione sulla scena viva, poi le due scene insieme).
+   * `null` = solo la transizione qui sopra. Vedi `cinematicTransitions.ts`.
+   */
+  readonly cinematic: CinematicSpec | null
 }
 
 const SCENE_LABELS: Record<SceneId, string> = {
@@ -114,7 +120,8 @@ function choose(destination: NavigazioneScena, origin: NavigazioneScena | undefi
   if (from === 'evoluzione') return { mode: 'white', coverMs: 200, durationMs: 520, blendMs: 360 }
   if (to === 'lega') return { mode: 'white', coverMs: 260, durationMs: 700, blendMs: 440 }
   if (to === 'titolo') return { mode: 'fade', coverMs: 260, durationMs: 620, blendMs: 360 }
-  if (from === 'titolo') return { mode: 'brush', coverMs: 540, durationMs: 780, blendMs: 540 }
+  // Il logo del titolo è il punto da cui esplode la polvere d'oro (versione cinematografica).
+  if (from === 'titolo') return { mode: 'brush', coverMs: 540, durationMs: 780, blendMs: 540, anchor: { name: 'title-logo', scene: 'outgoing' } }
   if (from === 'laboratorio') return { mode: 'iris', coverMs: 480, durationMs: 660, blendMs: 520 }
   if (to === 'mappa-principale' || isLocal(to)) return { mode: 'fade', coverMs: 80, durationMs: 500, blendMs: 140 }
   return { mode: 'fade', coverMs: 20, durationMs: 120, blendMs: 70 }
@@ -138,5 +145,6 @@ export function getSceneTransitionProfile(destination: NavigazioneScena, origin?
     failSafeMs: Math.min(8000, choice.coverMs + choice.durationMs + choice.blendMs + 1500),
     anchor: choice.anchor ?? null,
     sharedElement: choice.sharedElement ?? null,
+    cinematic: chooseCinematic(destination, origin),
   }
 }

@@ -23,6 +23,8 @@ interface SceneTransitionOverlayProps {
   primed?: boolean
   onCovered: () => void
   onRevealed: () => void
+  /** Preceduto da un'anticipazione cinematografica: la Carta VS si apre in due sulla battaglia. */
+  cinematic?: boolean
 }
 
 /** Pennellate d'inchiostro: altezza e ritardo di ciascuna striscia (in frazioni della fase). */
@@ -55,7 +57,7 @@ function TransitionArtwork({ mode }: { mode: SceneTransitionProfile['mode'] }) {
   return null
 }
 
-export function SceneTransitionOverlay({ phase, profile, startCovered, anchor, primed = true, onCovered, onRevealed }: SceneTransitionOverlayProps) {
+export function SceneTransitionOverlay({ phase, profile, startCovered, anchor, primed = true, onCovered, onRevealed, cinematic = false }: SceneTransitionOverlayProps) {
   const beganCovered = useRef(startCovered).current
   const videoRef = useRef<HTMLVideoElement>(null)
   const callbacks = useRef({ onCovered, onRevealed })
@@ -148,6 +150,7 @@ export function SceneTransitionOverlay({ phase, profile, startCovered, anchor, p
       data-start-covered={beganCovered}
       data-video-ready={videoReady}
       data-transition-mode={profile.mode}
+      data-cinematic={cinematic || undefined}
       style={style}
       aria-hidden="true"
     >
