@@ -863,6 +863,90 @@ def _():
     return m.out()
 
 
+@sfx('transition.dive', 'map', -19, 'Transizione: la camera scende fra le nuvole dentro un luogo.')
+def _():
+    m = Mix()
+    # Vento che cresce mentre la camera si tuffa, poi lo strappo delle nuvole che si aprono.
+    m.add(0, whoosh(0.75, 300, 2600, 'dive-wind', q=0.7, peak=0.9), 0.75)
+    m.add(0, rumble(0.9, 'dive-rumble', 220) * env_rise(0.9, 1.6), 0.35)
+    m.add(0.7, whoosh(0.9, 3800, 500, 'dive-part', q=0.8, peak=0.12), 0.85)
+    m.add(0.72, melody([('B5', 1), ('E6', 1), ('G#6', 1), ('B6', 3)], 0.05, 'pulse', 0.125, decay=0.09), 0.22)
+    m.add(0.72, tri(hz('E4'), 0.8) * env_exp(0.8, 0.3), 0.35)
+    return echo(m.out(), 0.12, 0.25, 2)
+
+
+@sfx('transition.rise', 'map', -19, 'Transizione: la camera risale sopra le nuvole verso la mappa.')
+def _():
+    m = Mix()
+    m.add(0, whoosh(0.6, 1200, 400, 'rise-lift', q=0.8, peak=0.3), 0.6)
+    m.add(0.35, whoosh(1.0, 400, 3600, 'rise-climb', q=0.7, peak=0.7), 0.8)
+    m.add(0.55, melody([('E5', 1), ('B5', 1), ('E6', 1), ('F#6', 1), ('G#6', 4)], 0.06, 'pulse', 0.125, decay=0.1), 0.2)
+    m.add(0.55, tri(sweep(hz('B3'), hz('E4'), 0.9), 0.9) * env_bell(0.9, 0.4), 0.3)
+    return echo(m.out(), 0.12, 0.25, 2)
+
+
+@sfx('transition.whip', 'map', -18, 'Transizione: panoramica a frusta da un luogo all\'altro.')
+def _():
+    m = Mix()
+    m.add(0, whoosh(0.12, 900, 2400, 'whip-a', q=1.1, peak=0.8), 0.4)
+    m.add(0.12, whoosh(0.42, 5200, 600, 'whip-b', q=1.0, peak=0.18), 1.0)
+    m.add(0.14, burst(0.05, 'whip-snap', hpf=2500, decay=0.012), 0.45)
+    return m.out()
+
+
+@sfx('transition.encounter', 'battle', -17, 'Transizione: doppio lampo e spirale prima della Carta VS.')
+def _():
+    m = Mix()
+    for at in (0.0, 0.18):
+        m.add(at, pulse(hz('E7'), 0.08, 0.25) * env_exp(0.08, 0.04), 0.5)
+        m.add(at, burst(0.08, f'flash{at}', hpf=3000, decay=0.02), 0.45)
+    spin = vibrato(sweep(220, 1200, 0.55, 1.2), 0.55, 18, 1.0)
+    m.add(0.34, pulse(spin, 0.55, 0.25) * env_rise(0.55, 1.2), 0.3)
+    m.add(0.34, whoosh(0.56, 300, 5200, 'spiral', q=1.4, peak=0.97), 0.55)
+    return m.out()
+
+
+@sfx('transition.radiance', 'map', -19, 'Transizione: la scena si scioglie nella luce.')
+def _():
+    m = Mix()
+    m.add(0, whoosh(0.7, 2000, 8000, 'rad-air', q=1.6, peak=0.85), 0.35)
+    for i, n in enumerate(['E5', 'B5', 'E6', 'G#6', 'B6']):
+        m.add(i * 0.08, pulse(vibrato(hz(n), 1.1, 6, 0.12), 1.1 - i * 0.08, 0.125) * env_bell(1.1 - i * 0.08, 0.35), 0.13)
+    m.add(0, tri(hz('E4'), 1.2) * env_bell(1.2, 0.4), 0.4)
+    m.add(0.5, crackle(0.8, 45, 'rad-twinkle', hpf=6500), 0.3)
+    return echo(m.out(), 0.14, 0.35, 3, 6000)
+
+
+@sfx('transition.sparkle', 'map', -18, 'Transizione: il logo esplode in polvere d\'oro.')
+def _():
+    m = Mix()
+    m.add(0, whoosh(0.6, 500, 4000, 'spk-in', q=1.2, peak=0.9), 0.5)
+    m.add(0.6, burst(0.25, 'spk-burst', lpf=6000, decay=0.06), 0.7)
+    m.add(0.6, sine(sweep(140, 40, 0.5), 0.5) * env_exp(0.5, 0.18), 0.6)
+    cascade = ['E7', 'B6', 'G#6', 'E6', 'B6', 'G#6', 'E6', 'B5', 'G#6', 'E6', 'B5', 'G#5']
+    m.add(0.62, melody([(n, 1) for n in cascade], 0.045, 'pulse', 0.125, decay=0.06), 0.22)
+    m.add(0.62, crackle(0.9, 70, 'spk-dust', hpf=7000), 0.35)
+    return echo(m.out(), 0.12, 0.3, 3, 6000)
+
+
+@sfx('transition.iris', 'map', -19, 'Transizione: cerchio d\'oro che si allarga.')
+def _():
+    m = Mix()
+    m.add(0, ping(1318, 1.2, 0.4), 0.5)
+    m.add(0.02, ping(1976, 1.0, 0.3), 0.3)
+    m.add(0.2, whoosh(0.9, 600, 4800, 'iris', q=1.3, peak=0.35), 0.55)
+    m.add(0.2, tri(hz('E4'), 1.0) * env_bell(1.0, 0.25), 0.35)
+    return echo(m.out(), 0.13, 0.3, 3)
+
+
+@sfx('transition.curtain', 'map', -21, 'Transizione: sipario verso il titolo.')
+def _():
+    m = Mix()
+    m.add(0, whoosh(0.9, 1800, 300, 'curtain', q=0.8, peak=0.3), 0.7)
+    m.add(0.35, melody([('B4', 2), ('G#4', 2), ('E4', 6)], 0.09, 'tri', sustain=0.8), 0.45)
+    return echo(m.out(), 0.15, 0.3, 3, 3000)
+
+
 # --- Battaglia: messa in scena ---------------------------------------------
 @sfx('battle.encounter', 'battle', -16, 'Inizio di una battaglia.')
 def _():
@@ -1251,7 +1335,7 @@ def export_ogg(x: np.ndarray, dest: Path, wav_dir: Path | None) -> None:
         wav_path = tmp.name
     try:
         dest.parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wav_path, '-c:a', 'libvorbis', '-q:a', '5',
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wav_path, '-c:a', 'libvorbis', '-q:a', '5', '-serial_offset', '1',
                         '-map_metadata', '-1', str(dest)], check=True)
         if wav_dir:
             wav_dir.mkdir(parents=True, exist_ok=True)

@@ -140,6 +140,8 @@ describe('libreria di transizioni guidata da partenza e arrivo', () => {
         expect(profile.coverMs + profile.durationMs).toBeLessThan(1600)
       }
       if (profile.mode === 'zoom-in' || profile.mode === 'zoom-out') expect(profile.anchor).not.toBeNull()
+      // Dal titolo la polvere d'oro (transizione cinematografica) esplode dal logo.
+      else if (profile.cinematic?.kind === 'gold-burst') expect(profile.anchor).toEqual({ name: 'title-logo', scene: 'outgoing' })
       else expect(profile.anchor).toBeNull()
     }
   })

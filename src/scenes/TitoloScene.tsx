@@ -110,6 +110,7 @@ export function TitoloScene() {
         src={assetUrl(logoPath)}
         alt="Arkamon"
         className="rpg-title-logo relative z-10 drop-shadow-2xl"
+        data-transition-anchor="title-logo"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={instant ? { duration: 0 } : { delay: 0.2 / speed, type: 'spring' }}
