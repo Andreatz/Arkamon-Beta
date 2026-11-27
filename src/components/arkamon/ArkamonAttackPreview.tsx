@@ -1,3 +1,5 @@
+import { èMossaCura } from '@/engine/battleEngine'
+import { battleImpactDelay } from '@/components/vfx/signature/battleSequence'
 import { useGameMotionPreferences } from '@/settings/gamePreferences'
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { getMossa, getPokemon } from '@/data'
@@ -11,7 +13,6 @@ import {
   type BattleAnimationPlayback,
   type BattleVisualSequence,
 } from '@/components/battle/battleVisualSequence'
-import { getMoveVfxImpactDelayMs } from '@/components/vfx/resolveMoveVfxAsset'
 import { prepareMoveVfxPlayback } from '@/components/vfx/preloadVfxAssets'
 import { ArkamonBattleSprite } from './ArkamonBattleSprite'
 import { prepareArkamonAnimationPlayback } from './preloadArkamonAnimations'
@@ -110,6 +111,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusy
   const play = async () => {
     const move = getMossa(moveId)
     if (!move || busy || starting.current) return
+    const self = èMossaCura(move)
     starting.current = true
     stopRuntime()
     const id = generation.current
@@ -138,16 +140,16 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusy
       if (!active()) return
       await Promise.all([
         prepareArkamonAnimationPlayback(speciesId, attackerSide, 'attack'),
-        prepareArkamonAnimationPlayback(targetId, 'front', 'hit'),
-        prepareMoveVfxPlayback(move, id),
+        !self && prepareArkamonAnimationPlayback(targetId, 'front', 'hit'),
+        prepareMoveVfxPlayback(move, id, false, speciesId),
       ])
       if (!active()) return
       const attackAsset = getArkamonAnimationAsset(speciesId, attackerSide, 'attack')
-      const hitAsset = getArkamonAnimationAsset(targetId, 'front', 'hit')
+      const hitAsset = self ? undefined : getArkamonAnimationAsset(targetId, 'front', 'hit')
       const plan = planBattleAnimationPlayback(
         attackAsset ? (attackAsset.releaseFrame ?? 0) / attackAsset.fps * 1000 : 0,
         hitAsset ? (hitAsset.reactionFrame ?? 0) / hitAsset.fps * 1000 : 0,
-        getMoveVfxImpactDelayMs(move), reducedMotion,
+        battleImpactDelay(move, speciesId), reducedMotion,
       )
       const timers = new Set<number>()
       const frames = new Set<number>()
@@ -158,14 +160,14 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusy
           if (!active()) return
           record('release')
           setPhase('effect')
-          setEffect({ id, move, side: 'A', target: 'opponent' })
+          setEffect({ id, move, attackerSpeciesId: speciesId, side: 'A', target: self ? 'self' : 'opponent' })
         },
         onImpact: () => {
           if (!active()) return
           record('impact')
           setPhase('impact')
           setHoldHitReaction(false)
-          if (!hitAsset) setTargetAnimation('hit')
+          if (!hitAsset && !self) setTargetAnimation('hit')
         },
         onComplete: () => {
           if (!active()) return
@@ -212,7 +214,7 @@ export function ArkamonAttackPreview({ speciesId, stageStyle, background, onBusy
         if (readySides.size === 2) resolve()
       })
       setAttackerAnimation('attack')
-      setTargetAnimation('hit')
+      setTargetAnimation(self ? 'idle' : 'hit')
       setHoldHitReaction(!!hitAsset)
       setClipsPrepared(true)
       await clipReadiness
